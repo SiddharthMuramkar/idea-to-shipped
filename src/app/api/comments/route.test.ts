@@ -117,4 +117,14 @@ describe("edge cases", () => {
       expect(await res.json()).toEqual({ error: "Request body must be a JSON object." });
     }
   });
+
+  test("a body or name that isn't text is rejected with 400, not a crash", async () => {
+    const badBody = await post({ lesson: LESSON, body: 123 });
+    expect(badBody.status).toBe(400);
+    expect(await badBody.json()).toEqual({ error: "Comment must be text." });
+
+    const badName = await post({ lesson: LESSON, name: 5, body: "hi" });
+    expect(badName.status).toBe(400);
+    expect(await badName.json()).toEqual({ error: "Name must be text." });
+  });
 });

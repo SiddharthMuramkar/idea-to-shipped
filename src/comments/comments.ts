@@ -2,9 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { comments } from "@/db/schema";
 import { lessons } from "@/lessons/lessons";
-
-const MAX_BODY = 2000;
-const MAX_NAME = 50;
+import { MAX_BODY, MAX_NAME } from "./limits";
 
 export type Comment = { id: number; name: string; body: string; createdAt: string };
 
@@ -28,14 +26,21 @@ async function isLesson(slug: unknown): Promise<boolean> {
   return typeof slug === "string" && slug !== "" && (await lessons.lessonExists(slug));
 }
 
-export async function postComment(input: {
-  lesson: string;
-  name?: string;
-  body: string;
-}): Promise<Result<Comment>> {
-  if (!(await isLesson(input.lesson))) return UNKNOWN_LESSON;
-  const body = (input.body ?? "").trim();
-  const name = (input.name ?? "").trim();
+// Accepts whatever JSON the request carried and checks every field itself.
+export async function postComment(input: unknown): Promise<Result<Comment>> {
+  if (typeof input !== "object" || input === null || Array.isArray(input)) {
+    return { ok: false, error: "Request body must be a JSON object." };
+  }
+  const fields = input as Record<string, unknown>;
+  if (!(await isLesson(fields.lesson))) return UNKNOWN_LESSON;
+  if (fields.body !== undefined && typeof fields.body !== "string") {
+    return { ok: false, error: "Comment must be text." };
+  }
+  if (fields.name !== undefined && fields.name !== null && typeof fields.name !== "string") {
+    return { ok: false, error: "Name must be text." };
+  }
+  const body = (fields.body ?? "").trim();
+  const name = (fields.name ?? "").trim();
   if (!body) return { ok: false, error: "Comment can't be empty." };
   if (body.length > MAX_BODY) {
     return { ok: false, error: `Comment must be ${MAX_BODY} characters or fewer.` };
@@ -46,7 +51,7 @@ export async function postComment(input: {
 
   const [row] = await db
     .insert(comments)
-    .values({ lessonSlug: input.lesson, name: name || null, body })
+    .values({ lessonSlug: fields.lesson as string, name: name || null, body })
     .returning();
   return { ok: true, value: toComment(row) };
 }

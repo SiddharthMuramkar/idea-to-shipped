@@ -21,7 +21,7 @@ export default async function Home() {
           <li key={l.slug}>
             <Link href={`/learn/${l.slug}`}>
               <span className="lesson-number">Lesson {l.number}</span>
-              <span className="lesson-title">{l.title}</span>
+              <span className="lesson-title">— {l.title}</span>
             </Link>
           </li>
         ))}
