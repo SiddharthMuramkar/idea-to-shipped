@@ -1,6 +1,6 @@
 # 01 — Scaffold the app
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: —
 
 ## What
