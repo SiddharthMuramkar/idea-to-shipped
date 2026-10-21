@@ -1,6 +1,6 @@
 # 03 — Lesson pages from Markdown
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01
 
 ## What
