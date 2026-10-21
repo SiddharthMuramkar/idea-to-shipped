@@ -41,9 +41,9 @@ One table, `comments`: `id`, `lesson_slug`, `name` (nullable), `body`, `created_
 ### Environments (see ADR 0002)
 | Environment | Neon branch |
 |---|---|
-| Local `npm run dev` | `dev` |
+| Local `npm run dev` | `vercel-dev` (created by the integration) |
 | `npm test` | `test` |
-| PR preview | auto-created per PR (setup to be verified in the docs) |
+| PR preview | `preview/<git-branch>`, auto-created per PR by the Neon-managed Vercel integration |
 | Production | `main` |
 
 Drizzle Kit migrations are committed to git and applied automatically during every Vercel build.
