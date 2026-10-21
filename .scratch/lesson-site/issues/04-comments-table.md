@@ -1,6 +1,6 @@
 # 04 — Comments table and migrations-on-build
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 02
 
 ## What
