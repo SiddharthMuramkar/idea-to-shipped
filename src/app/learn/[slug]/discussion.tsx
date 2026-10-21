@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Comment } from "@/comments/comments";
+import { MAX_BODY, MAX_NAME } from "@/comments/limits";
 
 // The sticky Discussion panel: lists a Lesson's Comments and posts new ones
 // through the comments API.
@@ -52,14 +53,14 @@ export function Discussion({ lesson }: { lesson: string }) {
         <input
           placeholder="Name (optional)"
           value={name}
-          maxLength={50}
+          maxLength={MAX_NAME}
           onChange={(e) => setName(e.target.value)}
         />
         <textarea
           placeholder="Leave a comment…"
           rows={3}
           value={body}
-          maxLength={2000}
+          maxLength={MAX_BODY}
           onChange={(e) => setBody(e.target.value)}
         />
         {error && <p className="form-error">{error}</p>}

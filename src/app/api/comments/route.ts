@@ -18,9 +18,6 @@ export async function POST(request: Request) {
   } catch {
     return Response.json({ error: "Request body must be JSON." }, { status: 400 });
   }
-  if (typeof input !== "object" || input === null || Array.isArray(input)) {
-    return Response.json({ error: "Request body must be a JSON object." }, { status: 400 });
-  }
   const result = await postComment(input);
   if (!result.ok) return Response.json({ error: result.error }, { status: 400 });
   return Response.json(result.value, { status: 201 });
