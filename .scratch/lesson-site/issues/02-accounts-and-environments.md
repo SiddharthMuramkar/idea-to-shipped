@@ -1,6 +1,6 @@
 # 02 — Connect GitHub, Vercel and Neon
 
-Status: ready-for-human
+Status: resolved
 Blocked by: 01
 
 ## What
