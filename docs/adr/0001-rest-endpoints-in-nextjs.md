@@ -1,0 +1,3 @@
+# REST endpoints inside Next.js, not Server Actions or a separate backend
+
+Comments are read and written through real REST endpoints (`GET /api/comments`, `POST /api/comments`) implemented as Next.js Route Handlers. The endpoints stay thin: they call a comments module, which uses Drizzle to talk to Neon. The idiomatic Next.js choice would be Server Actions, and a separate FastAPI service was also possible. We chose explicit endpoints because a core goal of this project is learning how an HTTP API works end to end: you can `curl` it, read it, and trace one request through each layer. All of that stays in one codebase with one deploy.

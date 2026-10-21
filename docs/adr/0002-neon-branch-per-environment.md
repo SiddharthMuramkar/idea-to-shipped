@@ -1,0 +1,3 @@
+# One Neon branch per environment, migrations applied on every build
+
+Each environment gets its own Neon branch: `dev` for local, `test` for the test suite, a throwaway branch per PR preview, and `main` for production. Drizzle Kit migrations are committed to git and applied automatically during every Vercel build, so a PR preview tests a migration against its own branch before the merge applies it to `main`. We chose this over a single shared database and over running migrations by hand, which risk test data leaking into production and forgotten migrations.

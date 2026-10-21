@@ -1,0 +1,3 @@
+# Comments reference file-based Lessons by a permanent slug, with no foreign key
+
+Lessons are Markdown files and Comments are rows in Neon, so Postgres can't enforce the link between them. Each Comment stores its Lesson's slug as plain text. We protect that link with a rule, not a constraint: a slug never changes once it's published. Position numbers live in filenames (`01-grilling.md`) and on the page, never in the slug, so lessons can be reordered safely. We rejected moving Lessons into the database to get a real foreign key, because for an 11-lesson personal site that means a table, migrations and in-database editing just to guard against a rename that should never happen.
