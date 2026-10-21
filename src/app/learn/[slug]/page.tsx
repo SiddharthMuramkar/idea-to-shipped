@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { lessons } from "@/lessons/lessons";
+import { Discussion } from "./discussion";
 
 export async function generateStaticParams() {
   return (await lessons.listLessons()).map(({ slug }) => ({ slug }));
@@ -46,10 +47,7 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
           )}
         </nav>
       </article>
-      <aside className="discussion">
-        <h3>Discussion</h3>
-        <p className="muted">Comments are coming soon.</p>
-      </aside>
+      <Discussion lesson={lesson.slug} />
     </div>
   );
 }

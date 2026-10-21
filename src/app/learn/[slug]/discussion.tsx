@@ -1,0 +1,90 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import type { Comment } from "@/comments/comments";
+
+// The sticky Discussion panel: lists a Lesson's Comments and posts new ones
+// through the comments API.
+export function Discussion({ lesson }: { lesson: string }) {
+  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [loadError, setLoadError] = useState(false);
+  const [name, setName] = useState("");
+  const [body, setBody] = useState("");
+  const [error, setError] = useState("");
+  const [posting, setPosting] = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/comments?lesson=${encodeURIComponent(lesson)}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then(setComments)
+      .catch(() => setLoadError(true));
+  }, [lesson]);
+
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    setPosting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ lesson, name, body }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Something went wrong.");
+        return;
+      }
+      setComments((current) => [data, ...(current ?? [])]);
+      setBody("");
+    } catch {
+      setError("Couldn't reach the server. Try again.");
+    } finally {
+      setPosting(false);
+    }
+  }
+
+  return (
+    <aside className="discussion">
+      <h3>Discussion{comments ? ` · ${comments.length}` : ""}</h3>
+
+      <form className="comment-form" onSubmit={submit}>
+        <input
+          placeholder="Name (optional)"
+          value={name}
+          maxLength={50}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <textarea
+          placeholder="Leave a comment…"
+          rows={3}
+          value={body}
+          maxLength={2000}
+          onChange={(e) => setBody(e.target.value)}
+        />
+        {error && <p className="form-error">{error}</p>}
+        <button type="submit" disabled={posting}>
+          {posting ? "Posting…" : "Post comment"}
+        </button>
+      </form>
+
+      {loadError && <p className="form-error">Couldn&apos;t load comments.</p>}
+      {!comments && !loadError && <p className="muted">Loading…</p>}
+      {comments?.length === 0 && <p className="muted">No comments yet. Be the first.</p>}
+
+      <ul className="comment-list">
+        {comments?.map((c) => (
+          <li key={c.id} className="comment">
+            <div className="comment-meta">
+              <strong>{c.name}</strong>{" "}
+              <span className="muted">
+                · {new Date(c.createdAt).toLocaleDateString(undefined, { dateStyle: "medium" })}
+              </span>
+            </div>
+            <p>{c.body}</p>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  );
+}
