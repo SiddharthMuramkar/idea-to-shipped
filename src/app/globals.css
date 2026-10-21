@@ -245,3 +245,47 @@ button:hover {
     max-height: none;
   }
 }
+
+/* Discussion panel: comment form and list. */
+.comment-form {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.comment-form button {
+  justify-self: start;
+}
+
+.comment-form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.form-error {
+  color: #b00020;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.comment-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.comment {
+  border-left: 3px solid var(--blue);
+  padding: 0.25rem 0 0.25rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.comment p {
+  margin: 0.2rem 0 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.comment-meta {
+  font-size: 0.9rem;
+}

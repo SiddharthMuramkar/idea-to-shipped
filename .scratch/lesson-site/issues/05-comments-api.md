@@ -1,6 +1,6 @@
 # 05 — Comments API
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 03, 04
 
 ## What
