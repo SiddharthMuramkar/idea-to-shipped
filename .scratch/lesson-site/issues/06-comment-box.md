@@ -1,6 +1,6 @@
 # 06 — Comment box on Lesson pages
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 05
 
 ## What
