@@ -9,7 +9,7 @@ Load Lessons from `content/lessons/*.md` (frontmatter `title`, `slug`, `order`),
 ## Done when
 - The home page lists the existing Lessons in order as "Lesson N — Title".
 - `/learn/grilling` and `/learn/domain-modeling` render, with working Previous/Next links.
-- `/learn/nope` returns 404.
+- `/learn/nope` shows the not-found page. (Status is 200, not 404: with Cache Components the page streams, and the status is sent before `notFound()` runs. Next.js still adds `noindex`. Accepted for v1. A true 404 would need a Proxy check.)
 - Tests cover loading, ordering, and the slug lookup.
 
 ## Comments

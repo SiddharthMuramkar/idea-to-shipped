@@ -23,7 +23,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             Idea to Shipped
           </Link>
         </header>
-        <main className="container">{children}</main>
+        <main>{children}</main>
       </body>
     </html>
   );

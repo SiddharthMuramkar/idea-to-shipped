@@ -142,3 +142,106 @@ button:hover {
 .muted {
   color: var(--muted);
 }
+
+/* Home: the numbered lesson list. */
+.lesson-list {
+  list-style: none;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.lesson-list a {
+  display: flex;
+  gap: 1.25rem;
+  align-items: baseline;
+  padding: 0.9rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.lesson-list a:hover {
+  background: var(--bg-soft);
+  color: var(--blue);
+}
+
+.lesson-number {
+  min-width: 6.5rem;
+  color: var(--blue);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+}
+
+.lesson-title {
+  font-weight: 600;
+}
+
+/* Lesson page: content on the left, Discussion panel on the right. */
+.lesson-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 2.5rem;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.lesson-band {
+  background: var(--blue);
+  color: #ffffff;
+  padding: 1.5rem 1.5rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.lesson-band span {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.lesson-band h1 {
+  color: #ffffff;
+  margin: 0.25rem 0 0;
+}
+
+.prose {
+  overflow-wrap: anywhere;
+}
+
+.prev-next {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.5rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+}
+
+.discussion {
+  position: sticky;
+  top: 1.5rem;
+  align-self: start;
+  border: 2px solid var(--blue);
+  padding: 1rem 1.1rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+}
+
+.discussion h3 {
+  margin: 0 0 0.5rem;
+}
+
+@media (max-width: 860px) {
+  .lesson-layout {
+    grid-template-columns: 1fr;
+  }
+  .discussion {
+    position: static;
+    max-height: none;
+  }
+}
