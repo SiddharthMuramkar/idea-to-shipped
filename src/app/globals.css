@@ -352,6 +352,12 @@ button:hover,
   transition: box-shadow 0.3s;
 }
 
+/* The card's own shadow would hide the focus ring's navy inner edge, so put
+   the ring back on top of it. */
+.lesson-card:focus-visible {
+  box-shadow: 0 0 0 2px var(--navy), var(--shadow-soft);
+}
+
 .lesson-card:hover {
   color: var(--ink);
   box-shadow: 0 14px 40px rgb(10 20 51 / 0.18), 0 1px 2px rgb(10 20 51 / 0.06);
@@ -809,7 +815,7 @@ html:not([data-header]):has([data-hero]) .site-header {
 }
 
 /* Keep a command whole, e.g. never "/implement-" then "spec". */
-.flow-step-commands code {
+.flow-step-skills code {
   white-space: nowrap;
 }
 

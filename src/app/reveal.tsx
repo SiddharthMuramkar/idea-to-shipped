@@ -11,6 +11,14 @@ const TARGETS = "[data-reveal], [data-reveal-children] > :not([data-reveal-child
 // never makes the last one wait.
 const MAX_STAGGER = 5;
 
+// An item's place among its siblings in the same data-reveal-children group,
+// so a row of cards fades in left to right. A lone data-reveal item is 0.
+function staggerIndex(el: HTMLElement) {
+  const group = el.parentElement;
+  if (!group?.hasAttribute("data-reveal-children")) return 0;
+  return Array.prototype.indexOf.call(group.children, el);
+}
+
 // Put this once in a page. It hides the page's reveal targets that are still
 // below the screen, then shows each one, once, as it scrolls into view, by
 // setting data-reveal-state="hidden|shown", which globals.css reads.
@@ -26,11 +34,10 @@ export function Reveal() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        let i = 0;
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           const el = entry.target as HTMLElement;
-          el.style.setProperty("--reveal-i", String(Math.min(i++, MAX_STAGGER)));
+          el.style.setProperty("--reveal-i", String(Math.min(staggerIndex(el), MAX_STAGGER)));
           el.dataset.revealState = "shown";
           observer.unobserve(el);
         }
