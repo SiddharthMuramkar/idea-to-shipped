@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import { HeaderOverlay } from "@/app/header-overlay";
 import { LessonCard } from "@/app/lesson-card";
+import { PhotoBand, PhotoCredit } from "@/app/photo-band";
 import { Reveal } from "@/app/reveal";
 import { lessons } from "@/lessons/lessons";
 import { Discussion } from "./discussion";
@@ -33,26 +32,11 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
   return (
     <>
       <Reveal />
-      {/* The Lesson's photo, full width, under the see-through header. It's the
-          first thing on screen, so it loads straight away. */}
-      <header className="photo-band lesson-hero" data-hero>
-        <HeaderOverlay />
-        <div className="photo-band-photo">
-          <Image
-            src={lesson.image}
-            alt={lesson.imageAlt}
-            fill
-            sizes="100vw"
-            loading="eager"
-            fetchPriority="high"
-          />
-        </div>
-        <div className="photo-band-inner" data-reveal-children>
-          <span className="eyebrow">Lesson {lesson.number}</span>
-          <h1>{lesson.title}</h1>
-          <p className="photo-credit">Photo: {lesson.imageCredit} / Unsplash</p>
-        </div>
-      </header>
+      <PhotoBand as="header" className="lesson-hero" image={lesson.image} imageAlt={lesson.imageAlt}>
+        <span className="eyebrow">Lesson {lesson.number}</span>
+        <h1>{lesson.title}</h1>
+        <PhotoCredit name={lesson.imageCredit} />
+      </PhotoBand>
 
       <div className="lesson-layout">
         <article>

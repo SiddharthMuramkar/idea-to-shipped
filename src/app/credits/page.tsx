@@ -67,13 +67,13 @@ export default async function Credits() {
         {Object.values(homePhotos).map((p) => (
           <li key={p.image} className="credit">
             <span className="credit-photo">
-              <Image src={p.image} alt={p.alt} fill sizes="160px" />
+              <Image src={p.image} alt={p.imageAlt} fill sizes="160px" />
             </span>
             <span>
               <Link href="/" className="credit-lesson">
-                Home: {p.where}
+                Home: {p.label}
               </Link>
-              <PhotoBy image={p.image} credit={p.credit} />
+              <PhotoBy image={p.image} credit={p.imageCredit} />
             </span>
           </li>
         ))}

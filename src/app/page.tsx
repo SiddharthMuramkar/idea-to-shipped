@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { HeaderOverlay } from "@/app/header-overlay";
 import { homePhotos } from "@/app/home-photos";
 import { LessonCard } from "@/app/lesson-card";
+import { PhotoBand, PhotoCredit } from "@/app/photo-band";
 import { Reveal } from "@/app/reveal";
 import { lessons } from "@/lessons/lessons";
 
@@ -18,32 +18,32 @@ const CARD_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px";
 // Lesson tells the whole story, forks included.
 const FLOW_STEPS = [
   {
-    commands: ["/grill-with-docs"],
+    skills: ["/grill-with-docs"],
     title: "Grill the idea",
     text: "Claude questions you until the plan is clear, and writes down the words you agree on.",
   },
   {
-    commands: ["/to-spec"],
+    skills: ["/to-spec"],
     title: "Write the spec",
     text: "One document says what to build, for whom, and what's out of scope.",
   },
   {
-    commands: ["/to-tickets"],
+    skills: ["/to-tickets"],
     title: "Cut it into tickets",
     text: "The spec becomes small tickets, each one a single session of work.",
   },
   {
-    commands: ["/implement", "/implement-spec"],
+    skills: ["/implement", "/implement-spec"],
     title: "Build and review",
     text: "Drive one ticket at a time, or let it run through all of them.",
   },
   {
-    commands: ["/pr"],
+    skills: ["/pr"],
     title: "Open the pull request",
     text: "The agent writes the description when the work goes up for review.",
   },
   {
-    commands: ["/retro"],
+    skills: ["/retro"],
     title: "Look back",
     text: "Go over the session and improve your setup, so the next build starts better.",
   },
@@ -57,39 +57,24 @@ export default async function Home() {
   return (
     <>
       <Reveal />
-      {/* The first screen: a full-screen photo under the see-through header.
-          It's what you see first, so it loads straight away; every other
-          photo on the page loads as you scroll. */}
-      <section className="photo-band home-hero" data-hero>
-        <HeaderOverlay />
-        <div className="photo-band-photo">
-          <Image
-            src={hero.image}
-            alt={hero.alt}
-            fill
-            sizes="100vw"
-            loading="eager"
-            fetchPriority="high"
-          />
+      {/* The first screen: a full-screen photo under the see-through header. */}
+      <PhotoBand className="home-hero" image={hero.image} imageAlt={hero.imageAlt}>
+        <span className="eyebrow">A free course in agentic coding</span>
+        <h1>From idea to shipped, one Skill at a time.</h1>
+        <p className="home-hero-lead">
+          A small course on Matt Pocock&apos;s Skills, written as a journal
+          while building this very site: what I typed, and what happened.
+        </p>
+        <div className="button-row">
+          <Link href={`/learn/${first.slug}`} className="button button-light">
+            Start with Lesson {first.number}
+          </Link>
+          <Link href="/learn/main-flow" className="button button-outline">
+            See the main flow
+          </Link>
         </div>
-        <div className="photo-band-inner" data-reveal-children>
-          <span className="eyebrow">A free course in agentic coding</span>
-          <h1>From idea to shipped, one Skill at a time.</h1>
-          <p className="home-hero-lead">
-            A small course on Matt Pocock&apos;s Skills, written as a journal
-            while building this very site: what I typed, and what happened.
-          </p>
-          <div className="button-row">
-            <Link href={`/learn/${first.slug}`} className="button button-light">
-              Start with Lesson {first.number}
-            </Link>
-            <Link href="/learn/main-flow" className="button button-outline">
-              See the main flow
-            </Link>
-          </div>
-          <p className="photo-credit">Photo: {hero.credit} / Unsplash</p>
-        </div>
-      </section>
+        <PhotoCredit name={hero.imageCredit} />
+      </PhotoBand>
 
       <section id="about" className="band-light">
         <div className="home-section home-intro" data-reveal-children>
@@ -109,13 +94,13 @@ export default async function Home() {
             <span className="home-intro-photo">
               <Image
                 src={intro.image}
-                alt={intro.alt}
+                alt={intro.imageAlt}
                 fill
                 sizes="(max-width: 860px) 100vw, 600px"
               />
             </span>
-            <figcaption className="figure-credit">
-              Photo: {intro.credit} / Unsplash
+            <figcaption>
+              <PhotoCredit name={intro.imageCredit} className="figure-credit" />
             </figcaption>
           </figure>
         </div>
@@ -139,7 +124,7 @@ export default async function Home() {
 
       <section id="flow" className="band-dark">
         <div className="home-section" data-reveal-children>
-          <span className="eyebrow">Which command, when</span>
+          <span className="eyebrow">Which Skill, when</span>
           <h2>The main flow</h2>
           <p className="section-lead">
             Most work takes the same path through the Skills, from idea to
@@ -150,8 +135,8 @@ export default async function Home() {
               <li key={step.title} className="flow-step">
                 <span className="flow-step-number">{i + 1}</span>
                 <h3>{step.title}</h3>
-                <p className="flow-step-commands">
-                  {step.commands.map((c, j) => (
+                <p className="flow-step-skills">
+                  {step.skills.map((c, j) => (
                     <span key={c}>
                       {j > 0 && " or "}
                       <code>{c}</code>
@@ -175,7 +160,7 @@ export default async function Home() {
 
       <section id="start" className="photo-band home-cta">
         <div className="photo-band-photo">
-          <Image src={cta.image} alt={cta.alt} fill sizes="100vw" />
+          <Image src={cta.image} alt={cta.imageAlt} fill sizes="100vw" />
         </div>
         <div className="photo-band-inner" data-reveal-children>
           <span className="eyebrow">Your turn</span>
@@ -186,7 +171,7 @@ export default async function Home() {
           <Link href={`/learn/${first.slug}`} className="button button-light">
             Start with Lesson {first.number}
           </Link>
-          <p className="photo-credit">Photo: {cta.credit} / Unsplash</p>
+          <PhotoCredit name={cta.imageCredit} />
         </div>
       </section>
     </>

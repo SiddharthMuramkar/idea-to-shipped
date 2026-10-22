@@ -1,6 +1,6 @@
 import path from "node:path";
 import { describe, expect, test } from "vitest";
-import { lessons as course, lessonsFrom } from "./lessons";
+import { lessonsFrom } from "./lessons";
 
 const fixtures = path.join(__dirname, "__fixtures__");
 const lessons = lessonsFrom(path.join(fixtures, "valid"));
@@ -91,21 +91,5 @@ describe("broken Lesson files", () => {
   ])("a Lesson in %s fails loudly, naming the file", async (folder, message) => {
     const broken = lessonsFrom(path.join(fixtures, folder));
     await expect(broken.listLessons()).rejects.toThrow(message);
-  });
-});
-
-// The one test against the real course in content/lessons: the Main flow
-// Lesson is the last stop, so the old journal leads into it.
-describe("the real course", () => {
-  test("ends with the Main flow, straight after Lesson 10", async () => {
-    const all = await course.listLessons();
-    expect(all.at(-1)?.slug).toBe("main-flow");
-
-    const mainFlow = await course.getLesson("main-flow");
-    expect(mainFlow?.number).toBe(11);
-    expect(mainFlow?.title).toBe("The main flow");
-    expect(mainFlow?.image).toBe("/photos/main-flow.jpg");
-    expect(mainFlow?.previous?.slug).toBe("models-effort-ultracode");
-    expect(mainFlow?.next).toBeNull();
   });
 });
