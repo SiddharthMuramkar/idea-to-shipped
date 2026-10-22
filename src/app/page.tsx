@@ -15,7 +15,10 @@ export default async function Home() {
         A small course on Matt Pocock&apos;s skills and agentic coding, written
         while building this site.
       </p>
-      <h2>Lessons</h2>
+      <Link href={`/learn/${all[0].slug}`} className="button">
+        Start with Lesson {all[0].number}
+      </Link>
+      <h2 id="lessons">Lessons</h2>
       <ol className="lesson-list">
         {all.map((l) => (
           <li key={l.slug}>
