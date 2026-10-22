@@ -2,6 +2,9 @@
 title: Code review
 slug: code-review
 order: 7
+image: /photos/code-review.jpg
+imageAlt: A woman leans over a desk to review work on a laptop with a seated colleague.
+imageCredit: Vitaly Gariev
 ---
 
 ## What it is

@@ -2,6 +2,9 @@
 title: Prototype
 slug: prototype
 order: 5
+image: /photos/prototype.jpg
+imageAlt: A hand with a pen points at hand-drawn mobile app wireframes spread across a table.
+imageCredit: Amélie Mourichon
 ---
 
 ## What it is

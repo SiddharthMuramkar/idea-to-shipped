@@ -2,6 +2,9 @@
 title: Wizard
 slug: wizard
 order: 4
+image: /photos/wizard.jpg
+imageAlt: A man in a dark room carefully plugs a cable into a server rack.
+imageCredit: ThisisEngineering
 ---
 
 ## What it is

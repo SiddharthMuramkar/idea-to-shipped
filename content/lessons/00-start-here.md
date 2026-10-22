@@ -2,6 +2,9 @@
 title: Start here
 slug: start-here
 order: 0
+image: /photos/start-here.jpg
+imageAlt: A wooden desk with a brass lamp beside an open balcony door overlooking the sea at dawn.
+imageCredit: Ruben Aster
 ---
 
 ## What it is
