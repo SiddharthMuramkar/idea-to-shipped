@@ -16,6 +16,14 @@ _Avoid_: Lesson ID, endpoint, path
 One of Matt Pocock's Claude Code skills (e.g. grilling, tdd) that a Lesson teaches.
 _Avoid_: Command, tool, plugin
 
+**Main flow**:
+The path most work takes through the Skills, from idea to shipped: grill the idea, split it into a spec and tickets if it's too big for one session, then implement and review it.
+_Avoid_: Workflow, pipeline, process
+
+**Built-in command**:
+A command that comes with Claude Code itself, such as `/clear` or `/compact`. Not a Skill, though the Main flow uses both.
+_Avoid_: Skill
+
 **Phase**:
 One step of building this site, done with one Skill. Each Lesson is written right after its Phase ends.
 _Avoid_: Stage, step, milestone

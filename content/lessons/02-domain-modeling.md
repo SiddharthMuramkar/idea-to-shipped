@@ -2,6 +2,9 @@
 title: Domain modeling
 slug: domain-modeling
 order: 2
+image: /photos/domain-modeling.jpg
+imageAlt: A thick dictionary with thumb-index tabs lies open on a pale wooden table against a dark wall.
+imageCredit: Pisit Heng
 ---
 
 ## What it is

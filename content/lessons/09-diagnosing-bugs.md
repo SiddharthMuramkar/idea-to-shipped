@@ -2,6 +2,9 @@
 title: Diagnosing bugs
 slug: diagnosing-bugs
 order: 9
+image: /photos/diagnosing-bugs.jpg
+imageAlt: A mechanic in a workshop studies and works on a motorcycle engine.
+imageCredit: Aaron Huber
 ---
 
 ## What it is

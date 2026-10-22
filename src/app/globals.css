@@ -1,23 +1,67 @@
 /* The whole look of the site lives in this one file. */
 
+/* Design tokens: every colour, font, size and gap below comes from here. */
 :root {
+  /* Colour. Blue is the brand; navy is for dark bands and the footer;
+     amber is the one accent, used sparingly (numbers, highlights, focus). */
   --blue: #1e3fcc;
   --blue-dark: #142c94;
-  --text: #111111;
-  --muted: #5a5a5a;
-  --line: #d9d9d9;
+  --navy: #0a1433;
+  --navy-raised: #131f48;
+  --amber: #ffb020;
+  --ink: #0d1526;
+  --text: #1c2333;
+  --muted: #5b6475;
+  --line: #dde1ea;
   --bg: #ffffff;
-  --bg-soft: #f4f6fd;
-  --font: var(--font-inter), system-ui, sans-serif;
+  --bg-soft: #f3f5fb;
+  --on-dark: #ffffff;
+  --on-dark-muted: #b9c2dc;
+  --error: #b00020;
+
+  /* Type. Inter for reading, Inter Tight for the large, light headings. */
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-heading: var(--font-display), var(--font-inter), system-ui, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --text-sm: 0.875rem;
+  --text-lg: 1.2rem;
+  --display-1: clamp(2.4rem, 1.5rem + 4vw, 4.75rem);
+  --display-2: clamp(1.8rem, 1.3rem + 2.2vw, 3rem);
+  --display-3: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+
+  /* Spacing. */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-s: 0.75rem;
+  --space-m: 1rem;
+  --space-l: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --page-max: 1240px;
+  --read-max: 720px;
+
+  /* Shape. Photos and cards stay square; buttons are pills. */
+  --radius-pill: 999px;
+  --shadow-soft: 0 6px 24px rgb(10 20 51 / 0.1), 0 1px 2px rgb(10 20 51 / 0.06);
+  --header-h: 4.5rem;
 }
 
-/* Sharp everywhere: no rounded corners on anything. */
+@media (max-width: 560px) {
+  :root {
+    --header-h: 3.75rem;
+  }
+}
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  border-radius: 0 !important;
+}
+
+html {
+  scroll-padding-top: calc(var(--header-h) + var(--space-m));
 }
 
 html,
@@ -25,48 +69,41 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font);
+  font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.65;
 }
 
-.site-header {
-  border-top: 6px solid var(--blue);
-  border-bottom: 1px solid var(--line);
-  padding: 1rem 1.25rem;
-}
-
-.site-title {
-  color: var(--blue);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-
-.container {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 2.5rem 1.25rem 4rem;
+::selection {
+  background: var(--amber);
+  color: var(--ink);
 }
 
 h1,
 h2,
 h3 {
-  color: var(--blue);
-  line-height: 1.25;
+  font-family: var(--font-heading);
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 h1 {
-  font-size: 2.1rem;
-  margin: 0 0 1rem;
+  font-size: var(--display-1);
+  margin: 0 0 var(--space-l);
 }
 
 h2 {
-  font-size: 1.3rem;
-  margin-top: 2.5rem;
-  padding-bottom: 0.35rem;
-  border-bottom: 2px solid var(--blue);
+  font-size: var(--display-2);
+  margin: var(--space-2xl) 0 var(--space-m);
+}
+
+h3 {
+  font-size: var(--text-lg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 a {
@@ -77,16 +114,29 @@ a:hover {
   color: var(--blue-dark);
 }
 
+/* One focus ring for everything: amber outside, navy inside, so it shows on
+   white, on navy and on photos alike. */
+:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--navy);
+}
+
 code,
 pre {
   font-family: var(--mono);
   font-size: 0.9em;
 }
 
+:not(pre) > code {
+  background: var(--bg-soft);
+  padding: 0.1em 0.3em;
+}
+
 pre {
   background: var(--bg-soft);
   border-left: 3px solid var(--blue);
-  padding: 1rem;
+  padding: var(--space-m);
   overflow-x: auto;
 }
 
@@ -98,7 +148,7 @@ table {
 th,
 td {
   border: 1px solid var(--line);
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-xs) var(--space-s);
   text-align: left;
   vertical-align: top;
 }
@@ -118,124 +168,791 @@ textarea {
   width: 100%;
   border: 1px solid var(--line);
   padding: 0.6rem 0.75rem;
+  color: var(--text);
+  background: var(--bg);
 }
 
 input:focus,
 textarea:focus {
-  outline: 2px solid var(--blue);
-  outline-offset: -1px;
+  border-color: var(--blue);
 }
 
-button {
+/* Buttons: a pill, and links styled as buttons carry an arrow. */
+button,
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 1.5em;
+  border: 1.5px solid var(--blue);
+  border-radius: var(--radius-pill);
   background: var(--blue);
-  color: #ffffff;
-  border: none;
-  padding: 0.6rem 1.25rem;
+  color: var(--on-dark);
   font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
-button:hover {
+button:hover,
+.button:hover {
   background: var(--blue-dark);
+  border-color: var(--blue-dark);
+  color: var(--on-dark);
+}
+
+.button::after {
+  content: "→";
+  content: "→" / "";
+  transition: transform 0.2s;
+}
+
+.button:hover::after {
+  transform: translateX(0.25em);
+}
+
+/* White pill, for photos and dark bands. */
+.button-light {
+  background: var(--bg);
+  border-color: var(--bg);
+  color: var(--ink);
+}
+
+.button-light:hover {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+}
+
+/* Outline pill, the quieter second choice next to a solid one. */
+.button-outline {
+  background: transparent;
+  border-color: currentColor;
+  color: inherit;
+}
+
+.button-outline:hover {
+  background: var(--on-dark);
+  border-color: var(--on-dark);
+  color: var(--ink);
 }
 
 .muted {
   color: var(--muted);
 }
 
-/* Home: the numbered lesson list. */
-.lesson-list {
+/* Small uppercase label above a heading, e.g. "Lesson 3". */
+.eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.container {
+  max-width: calc(var(--read-max) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: var(--space-xl) var(--gutter) var(--space-2xl);
+}
+
+/* Full-width bands that alternate down a page. */
+.band-light {
+  background: var(--bg-soft);
+}
+
+.band-dark {
+  background: var(--navy);
+  color: var(--on-dark-muted);
+}
+
+.band-dark :is(h1, h2, h3) {
+  color: var(--on-dark);
+}
+
+.band-dark a:not(.button),
+.band-dark .button-outline {
+  color: var(--on-dark);
+}
+
+/* A full-width photo with white text over it. The photo sits in
+   .photo-band-photo (a box of its own, so it can move without the text), a
+   dark gradient covers it, and .photo-band-inner holds the text on top. The
+   gradient is darkest behind the text at the bottom, so a bright photo never
+   hides it. */
+.photo-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  background: var(--navy);
+  color: var(--on-dark);
+}
+
+.photo-band-photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.photo-band-photo img {
+  object-fit: cover;
+}
+
+.photo-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to top,
+    rgb(5 10 25 / 0.88) 0%,
+    rgb(5 10 25 / 0.6) 40%,
+    rgb(5 10 25 / 0.25) 75%,
+    rgb(5 10 25 / 0.35) 100%
+  );
+}
+
+.photo-band-inner {
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: calc(var(--header-h) + var(--space-2xl)) var(--gutter) var(--space-xl);
+}
+
+.photo-band :is(h1, h2) {
+  color: var(--on-dark);
+  text-shadow: 0 1px 24px rgb(5 10 25 / 0.4);
+}
+
+.photo-band .eyebrow {
+  color: var(--amber);
+}
+
+/* "Photo: <name> / Unsplash", small, under the title. */
+.photo-credit {
+  margin: 0;
+  color: var(--on-dark-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+/* A Lesson as a photo card (see lesson-card.tsx): square-edged photo on top,
+   "Lesson N" and the title below. The photo zooms in a little on hover. */
+.lesson-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.3s;
+}
+
+/* The card's own shadow would hide the focus ring's navy inner edge, so put
+   the ring back on top of it. */
+.lesson-card:focus-visible {
+  box-shadow: 0 0 0 2px var(--navy), var(--shadow-soft);
+}
+
+.lesson-card:hover {
+  color: var(--ink);
+  box-shadow: 0 14px 40px rgb(10 20 51 / 0.18), 0 1px 2px rgb(10 20 51 / 0.06);
+}
+
+.lesson-card-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--navy);
+}
+
+.lesson-card-photo img {
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.lesson-card:hover .lesson-card-photo img {
+  transform: scale(1.04);
+}
+
+.lesson-card-body {
+  display: grid;
+  gap: var(--space-2xs);
+  padding: var(--space-m) var(--space-l) var(--space-l);
+}
+
+.lesson-card .eyebrow {
+  color: var(--blue);
+}
+
+.lesson-card-title {
+  font-family: var(--font-heading);
+  font-size: var(--display-3);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.lesson-card:hover .lesson-card-title {
+  text-decoration: underline;
+  text-decoration-color: var(--amber);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+/* Header: stays at the top. Solid by default; see-through while a page's top
+   photo band (marked data-hero, holding <HeaderOverlay/>) sits under it. Before
+   the page's code runs, a page with a band starts see-through too. */
+.site-header {
+  --header-fg: var(--ink);
+  --header-bg: var(--bg);
+  --header-shadow: var(--shadow-soft);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-h);
+  color: var(--header-fg);
+  background: var(--header-bg);
+  box-shadow: var(--header-shadow);
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+html[data-header="clear"] .site-header,
+html:not([data-header]):has([data-hero]) .site-header {
+  --header-fg: var(--on-dark);
+  --header-bg: linear-gradient(rgb(5 10 25 / 0.55), transparent);
+  --header-shadow: none;
+}
+
+/* A top photo band slides up under the header. */
+[data-hero] {
+  margin-top: calc(-1 * var(--header-h));
+}
+
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  height: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.brand:hover {
+  color: inherit;
+}
+
+.brand-mark {
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+}
+
+.site-nav {
+  display: flex;
+  gap: var(--space-l);
+}
+
+.site-nav a {
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a:hover {
+  color: inherit;
+  border-bottom-color: var(--amber);
+}
+
+@media (max-width: 560px) {
+  .brand {
+    font-size: 0.78rem;
+  }
+  .brand-word {
+    max-width: 5.5em;
+  }
+  .brand-mark {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  .site-nav {
+    gap: var(--space-m);
+  }
+  .site-nav a {
+    font-size: var(--text-sm);
+  }
+}
+
+/* Footer: dark, every Lesson, then the photo credits. */
+.site-footer {
+  background: var(--navy);
+  color: var(--on-dark-muted);
+  font-size: 0.95rem;
+}
+
+.site-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--space-xl);
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--gutter) var(--space-xl);
+}
+
+.footer-about .brand {
+  color: var(--on-dark);
+}
+
+.footer-about p {
+  max-width: 24rem;
+  margin: var(--space-m) 0 0;
+}
+
+.footer-heading {
+  margin: 0 0 var(--space-m);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-dark-muted);
+}
+
+.footer-lessons ol {
+  columns: 2 15rem;
+  column-gap: var(--space-xl);
   list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-lessons li {
+  break-inside: avoid;
+  padding: var(--space-2xs) 0;
+}
+
+.site-footer a {
+  color: var(--on-dark);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--on-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--amber);
+  text-underline-offset: 0.2em;
+}
+
+.footer-number {
+  display: inline-block;
+  min-width: 1.6em;
+  color: var(--amber);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.site-footer-base {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-l) var(--gutter);
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  font-size: var(--text-sm);
+}
+
+.site-footer-base p {
+  margin: 0;
+}
+
+.site-footer-base a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (max-width: 720px) {
+  .site-footer-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Credits: one row per photo, a small thumbnail and who took it. */
+.credit-list {
+  list-style: none;
+  margin: 0;
   padding: 0;
   border-top: 1px solid var(--line);
 }
 
-.lesson-list a {
-  display: flex;
-  gap: 0.5rem;
-  align-items: baseline;
-  padding: 0.9rem 0.5rem;
+.credit {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--space-m);
+  align-items: center;
+  padding: var(--space-s) 0;
   border-bottom: 1px solid var(--line);
+}
+
+.credit-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  background: var(--navy);
+}
+
+.credit-photo img {
+  object-fit: cover;
+}
+
+.credit-lesson {
+  display: block;
+  color: var(--ink);
+  font-weight: 600;
   text-decoration: none;
+}
+
+.credit-by {
+  display: block;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+/* Home, top to bottom: the full-screen photo, the light intro, the Lesson
+   grid, the dark Main flow band, and the closing photo. */
+.home-section {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--gutter);
+}
+
+.home-section h2 {
+  margin: var(--space-xs) 0 var(--space-m);
+}
+
+.home-section > .eyebrow,
+.home-intro .eyebrow {
+  color: var(--blue);
+}
+
+.band-dark .eyebrow {
+  color: var(--amber);
+}
+
+.section-lead {
+  max-width: 40rem;
+  font-size: var(--text-lg);
   color: var(--text);
 }
 
-.lesson-list a:hover {
-  background: var(--bg-soft);
-  color: var(--blue);
+.band-dark .section-lead {
+  color: var(--on-dark);
 }
 
-.lesson-number {
-  min-width: 5.5rem;
-  color: var(--blue);
-  font-weight: 700;
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
 }
 
-.lesson-title {
-  font-weight: 600;
+/* The opening photo fills the first screen. Its people sit on the right, so
+   the text goes bottom-left, over a gradient that's darkest on that side. */
+.home-hero {
+  min-height: 100vh;
+  min-height: 100svh;
 }
 
-/* Lesson page: content on the left, Discussion panel on the right. */
+.home-hero::before {
+  background:
+    linear-gradient(to right, rgb(5 10 25 / 0.7) 0%, rgb(5 10 25 / 0.15) 70%),
+    linear-gradient(to top, rgb(5 10 25 / 0.85) 0%, rgb(5 10 25 / 0.2) 55%, rgb(5 10 25 / 0.4) 100%);
+}
+
+.home-hero .photo-band-photo img {
+  object-position: 70% 50%;
+}
+
+.home-hero .photo-band-inner {
+  padding-bottom: var(--space-2xl);
+}
+
+.home-hero h1 {
+  max-width: 15ch;
+  margin: var(--space-s) 0 var(--space-m);
+}
+
+.home-hero-lead {
+  max-width: 34rem;
+  margin: 0 0 var(--space-xl);
+  font-size: var(--text-lg);
+  color: var(--on-dark);
+}
+
+.photo-band .button-row + .photo-credit,
+.photo-band .button + .photo-credit {
+  margin-top: var(--space-xl);
+}
+
+/* About the course: text on the left, a photo on the right. */
+.home-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-2xl);
+  align-items: center;
+}
+
+.home-intro-figure {
+  margin: 0;
+}
+
+.home-intro-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: var(--navy);
+}
+
+.home-intro-photo img {
+  object-fit: cover;
+}
+
+.figure-credit {
+  margin-top: var(--space-xs);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 860px) {
+  .home-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+}
+
+/* Every Lesson as a photo card, three to a row, then two, then one. */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-l);
+  margin: var(--space-xl) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson-grid li {
+  display: flex;
+}
+
+.lesson-grid .lesson-card {
+  flex: 1;
+}
+
+@media (max-width: 1024px) {
+  .lesson-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .lesson-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The Main flow's steps on the navy band, each under an amber number. Three
+   to a row, two on tablets, one on phones. */
+.flow-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-xl) var(--space-l);
+  margin: var(--space-xl) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow-step {
+  padding-top: var(--space-m);
+  border-top: 1px solid rgb(255 255 255 / 0.18);
+}
+
+.flow-step-number {
+  display: block;
+  color: var(--amber);
+  font-family: var(--font-heading);
+  font-size: var(--display-2);
+  font-weight: 300;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.flow-step h3 {
+  margin: var(--space-m) 0 var(--space-xs);
+}
+
+.flow-step p {
+  margin: 0 0 var(--space-xs);
+}
+
+/* Keep a command whole, e.g. never "/implement-" then "spec". */
+.flow-step-skills code {
+  white-space: nowrap;
+}
+
+.band-dark :not(pre) > code {
+  background: var(--navy-raised);
+  color: var(--on-dark);
+}
+
+.flow-note {
+  max-width: 40rem;
+  margin: 0 0 var(--space-l);
+}
+
+@media (max-width: 960px) {
+  .flow-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .flow-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The closing photo: a call to start the course. */
+.home-cta {
+  min-height: clamp(28rem, 72vh, 44rem);
+}
+
+/* Keep the top of the rocket's arc in the frame. */
+.home-cta .photo-band-photo img {
+  object-position: 60% 15%;
+}
+
+.home-cta .photo-band-inner {
+  padding-top: var(--space-3xl);
+}
+
+.home-cta h2 {
+  margin: var(--space-s) 0 var(--space-m);
+}
+
+@media (max-width: 560px) {
+  .home-section {
+    padding: var(--space-2xl) var(--gutter);
+  }
+}
+
+/* Lesson page: the photo band, then content on the left and the Discussion
+   panel on the right. */
+.lesson-hero {
+  min-height: clamp(24rem, 64vh, 40rem);
+}
+
+.lesson-hero h1 {
+  max-width: 18ch;
+  margin: var(--space-s) 0 var(--space-m);
+}
+
 .lesson-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 2.5rem;
-  max-width: 1120px;
+  gap: var(--space-xl);
+  max-width: var(--page-max);
   margin: 0 auto;
-  padding: 2.5rem 1.25rem 4rem;
-}
-
-.lesson-band {
-  background: var(--blue);
-  color: #ffffff;
-  padding: 1.5rem 1.5rem 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.lesson-band span {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.lesson-band h1 {
-  color: #ffffff;
-  margin: 0.25rem 0 0;
+  padding: var(--space-xl) var(--gutter) var(--space-2xl);
 }
 
 .prose {
   overflow-wrap: anywhere;
 }
+.prose h2 {
+  font-size: var(--display-3);
+  margin: var(--space-xl) 0 var(--space-s);
+}
 
+.prose > :first-child {
+  margin-top: 0;
+}
+
+/* A wide table scrolls on its own instead of pushing the page sideways, so
+   its words can wrap whole instead of breaking mid-word. */
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.prose :is(th, td) {
+  overflow-wrap: normal;
+}
+
+/* Previous/Next: two photo cards side by side, Next always on the right. */
 .prev-next {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 2.5rem 0;
-  padding: 1rem 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-l);
+  margin: var(--space-2xl) 0 var(--space-xl);
+  padding-top: var(--space-xl);
   border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  font-weight: 600;
+}
+
+.prev-next .next {
+  grid-column: 2;
+}
+
+@media (max-width: 640px) {
+  .prev-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .prev-next .next {
+    grid-column: auto;
+  }
 }
 
 .discussion {
   position: sticky;
-  top: 1.5rem;
+  top: calc(var(--header-h) + var(--space-l));
   align-self: start;
-  border: 2px solid var(--blue);
-  padding: 1rem 1.1rem;
-  max-height: calc(100vh - 3rem);
+  background: var(--bg-soft);
+  border-top: 3px solid var(--blue);
+  padding: var(--space-l);
+  max-height: calc(100vh - var(--header-h) - 2 * var(--space-l));
   overflow-y: auto;
 }
 
 .discussion h3 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-xs);
+  font-family: var(--font-heading);
+  font-size: var(--display-3);
+  font-weight: 300;
 }
 
 @media (max-width: 860px) {
   .lesson-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .discussion {
     position: static;
@@ -247,7 +964,7 @@ button:hover {
 .comment-form {
   display: grid;
   gap: 0.6rem;
-  margin: 0.75rem 0 1.25rem;
+  margin: var(--space-s) 0 1.25rem;
 }
 
 .comment-form button {
@@ -260,7 +977,7 @@ button:hover {
 }
 
 .form-error {
-  color: #b00020;
+  color: var(--error);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -272,9 +989,10 @@ button:hover {
 }
 
 .comment {
+  background: var(--bg);
   border-left: 3px solid var(--blue);
-  padding: 0.25rem 0 0.25rem 0.9rem;
-  margin-bottom: 1rem;
+  padding: var(--space-s) var(--space-m);
+  margin-bottom: var(--space-s);
 }
 
 .comment p {
@@ -285,4 +1003,77 @@ button:hover {
 
 .comment-meta {
   font-size: 0.9rem;
+}
+
+/* Scroll motion. Both effects only run when motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Reveal: reveal.tsx hides what's still below the screen, then shows each
+     item once as it arrives. It fades in and rises a little; items arriving
+     together follow each other by 80ms (--reveal-i is their place in line).
+     Without JavaScript no item is ever marked hidden, so all of it shows. */
+  [data-reveal-state="hidden"] {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+
+  [data-reveal-state="shown"] {
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: calc(var(--reveal-i, 0) * 80ms);
+  }
+
+  /* Parallax: a band's photo moves slower than the page, in browsers with
+     scroll-driven animations. Elsewhere it simply stays still. Only the
+     photo's box moves; the band's overflow: hidden keeps it from showing
+     past the edges. The animation-timeline must come after the animation
+     shorthand, which resets it. The timeline is the band's own trip
+     across the screen: the photo can't use view() itself, because the band's
+     overflow: hidden makes the band the photo's scroller. */
+  @supports (animation-timeline: view()) {
+    .photo-band {
+      view-timeline: --band block;
+    }
+
+    /* A top band: as it scrolls away, its photo drifts down behind it. */
+    [data-hero] .photo-band-photo {
+      animation: band-drift linear both;
+      animation-timeline: --band;
+      animation-range: exit 0% exit 100%;
+    }
+
+    /* A band further down: a taller photo box glides through it from top
+       to bottom while the band crosses the screen. */
+    .home-cta .photo-band-photo {
+      inset: -12% 0;
+      animation: band-glide linear both;
+      animation-timeline: --band;
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+@keyframes band-drift {
+  to {
+    transform: translateY(30%);
+  }
+}
+
+@keyframes band-glide {
+  from {
+    transform: translateY(-9%);
+  }
+  to {
+    transform: translateY(9%);
+  }
+}
+
+/* Reduce motion: nothing slides or fades. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

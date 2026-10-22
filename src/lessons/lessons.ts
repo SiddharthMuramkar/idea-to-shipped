@@ -2,7 +2,17 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { marked } from "marked";
 
-export type LessonSummary = { number: number; slug: string; title: string };
+// Every place that shows a Lesson shows its photo, so the summary carries it:
+// the photo's path under public/, a description for screen readers, and the
+// photographer's name for the "Photo: <name> / Unsplash" credit.
+export type LessonSummary = {
+  number: number;
+  slug: string;
+  title: string;
+  image: string;
+  imageAlt: string;
+  imageCredit: string;
+};
 
 export type Lesson = LessonSummary & {
   html: string;
@@ -16,6 +26,11 @@ type ParsedLesson = LessonSummary & { body: string };
 //   title: Grilling
 //   slug: grilling
 //   order: 1
+//   image: /photos/grilling.jpg
+//   imageAlt: A woman in glasses questions a man across a desk.
+//   imageCredit: Vitaly Gariev
+const REQUIRED = ["title", "slug", "order", "image", "imageAlt", "imageCredit"];
+
 function parseLesson(file: string, raw: string): ParsedLesson {
   const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!match) throw new Error(`${file}: missing the --- header`);
@@ -25,19 +40,23 @@ function parseLesson(file: string, raw: string): ParsedLesson {
       return [line.slice(0, i).trim(), line.slice(i + 1).trim()];
     }),
   );
-  for (const key of ["title", "slug", "order"]) {
+  for (const key of REQUIRED) {
     if (!fields[key]) throw new Error(`${file}: missing ${key}`);
   }
   return {
     number: Number(fields.order),
     slug: fields.slug,
     title: fields.title,
+    image: fields.image,
+    imageAlt: fields.imageAlt,
+    imageCredit: fields.imageCredit,
     body: match[2],
   };
 }
 
-function summarize({ number, slug, title }: ParsedLesson): LessonSummary {
-  return { number, slug, title };
+function summarize(lesson: ParsedLesson): LessonSummary {
+  const { number, slug, title, image, imageAlt, imageCredit } = lesson;
+  return { number, slug, title, image, imageAlt, imageCredit };
 }
 
 export function lessonsFrom(dir: string) {
