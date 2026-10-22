@@ -50,4 +50,16 @@ export const unsplash: Record<string, { page: string; profile: string }> = {
     page: "https://unsplash.com/photos/aerial-photography-of-roads-on-city-during-daytime-Zeu57mprpaI",
     profile: "https://unsplash.com/@dnevozhai",
   },
+  "/photos/home-hero.jpg": {
+    page: "https://unsplash.com/photos/two-men-working-on-computers-at-night-QN1Sz74hVjg",
+    profile: "https://unsplash.com/@bluext",
+  },
+  "/photos/home-intro.jpg": {
+    page: "https://unsplash.com/photos/man-presenting-ideas-on-whiteboard-to-colleagues-QiUWAuFleVg",
+    profile: "https://unsplash.com/@silverkblack",
+  },
+  "/photos/home-cta.jpg": {
+    page: "https://unsplash.com/photos/rocket-launch-light-trail-at-dusk--p-KCm6xB9I",
+    profile: "https://unsplash.com/@spacex",
+  },
 };

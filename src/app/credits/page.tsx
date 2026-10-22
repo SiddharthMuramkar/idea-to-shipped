@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { homePhotos } from "@/app/home-photos";
 import { lessons } from "@/lessons/lessons";
 import { unsplash } from "./unsplash";
 
@@ -11,8 +12,27 @@ async function loadLessons() {
   return lessons.listLessons();
 }
 
+// "Photo by <name> on Unsplash", linked to the photographer and the photo's
+// page when unsplash.ts knows them.
+function PhotoBy({ image, credit }: { image: string; credit: string }) {
+  const links = unsplash[image];
+  return (
+    <span className="credit-by">
+      {links ? (
+        <>
+          Photo by <a href={links.profile}>{credit}</a> on{" "}
+          <a href={links.page}>Unsplash</a>
+        </>
+      ) : (
+        <>Photo by {credit} on Unsplash</>
+      )}
+    </span>
+  );
+}
+
 // The full list of photos and photographers. Each Lesson's photo and credit
-// come from its own header; the links come from unsplash.ts.
+// come from its own header, the home page's from home-photos.ts; the links
+// come from unsplash.ts.
 export default async function Credits() {
   const all = await loadLessons();
   return (
@@ -27,31 +47,36 @@ export default async function Credits() {
 
       <h2>Lesson photos</h2>
       <ul className="credit-list">
-        {all.map((l) => {
-          const links = unsplash[l.image];
-          return (
-            <li key={l.slug} className="credit">
-              <span className="credit-photo">
-                <Image src={l.image} alt={l.imageAlt} fill sizes="160px" />
-              </span>
-              <span>
-                <Link href={`/learn/${l.slug}`} className="credit-lesson">
-                  Lesson {l.number}: {l.title}
-                </Link>
-                <span className="credit-by">
-                  {links ? (
-                    <>
-                      Photo by <a href={links.profile}>{l.imageCredit}</a> on{" "}
-                      <a href={links.page}>Unsplash</a>
-                    </>
-                  ) : (
-                    <>Photo by {l.imageCredit} on Unsplash</>
-                  )}
-                </span>
-              </span>
-            </li>
-          );
-        })}
+        {all.map((l) => (
+          <li key={l.slug} className="credit">
+            <span className="credit-photo">
+              <Image src={l.image} alt={l.imageAlt} fill sizes="160px" />
+            </span>
+            <span>
+              <Link href={`/learn/${l.slug}`} className="credit-lesson">
+                Lesson {l.number}: {l.title}
+              </Link>
+              <PhotoBy image={l.image} credit={l.imageCredit} />
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <h2>Home page photos</h2>
+      <ul className="credit-list">
+        {Object.values(homePhotos).map((p) => (
+          <li key={p.image} className="credit">
+            <span className="credit-photo">
+              <Image src={p.image} alt={p.alt} fill sizes="160px" />
+            </span>
+            <span>
+              <Link href="/" className="credit-lesson">
+                Home: {p.where}
+              </Link>
+              <PhotoBy image={p.image} credit={p.credit} />
+            </span>
+          </li>
+        ))}
       </ul>
     </div>
   );
