@@ -999,6 +999,69 @@ html:not([data-header]):has([data-hero]) .site-header {
   font-size: 0.9rem;
 }
 
+/* Scroll motion. Both effects only run when motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Reveal: reveal.tsx hides what's still below the screen, then shows each
+     item once as it arrives. It fades in and rises a little; items arriving
+     together follow each other by 80ms (--reveal-i is their place in line).
+     Without JavaScript no item is ever marked hidden, so all of it shows. */
+  [data-reveal-state="hidden"] {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+
+  [data-reveal-state="shown"] {
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: calc(var(--reveal-i, 0) * 80ms);
+  }
+
+  /* Parallax: a band's photo moves slower than the page, in browsers with
+     scroll-driven animations. Elsewhere it simply stays still. Only the
+     photo's box moves; the band's overflow: hidden keeps it from showing
+     past the edges. The animation-timeline must come after the animation
+     shorthand, which resets it. The timeline is the band's own trip
+     across the screen: the photo can't use view() itself, because the band's
+     overflow: hidden makes the band the photo's scroller. */
+  @supports (animation-timeline: view()) {
+    .photo-band {
+      view-timeline: --band block;
+    }
+
+    /* A top band: as it scrolls away, its photo drifts down behind it. */
+    [data-hero] .photo-band-photo {
+      animation: band-drift linear both;
+      animation-timeline: --band;
+      animation-range: exit 0% exit 100%;
+    }
+
+    /* A band further down: a taller photo box glides through it from top
+       to bottom while the band crosses the screen. */
+    .home-cta .photo-band-photo {
+      inset: -12% 0;
+      animation: band-glide linear both;
+      animation-timeline: --band;
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+@keyframes band-drift {
+  to {
+    transform: translateY(30%);
+  }
+}
+
+@keyframes band-glide {
+  from {
+    transform: translateY(-9%);
+  }
+  to {
+    transform: translateY(9%);
+  }
+}
+
 /* Reduce motion: nothing slides or fades. */
 @media (prefers-reduced-motion: reduce) {
   *,
