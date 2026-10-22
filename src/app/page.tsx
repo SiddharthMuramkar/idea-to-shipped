@@ -36,6 +36,16 @@ const FLOW_STEPS = [
     title: "Build and review",
     text: "Drive one ticket at a time, or let it run through all of them.",
   },
+  {
+    commands: ["/pr"],
+    title: "Open the pull request",
+    text: "The agent writes the description when the work goes up for review.",
+  },
+  {
+    commands: ["/retro"],
+    title: "Look back",
+    text: "Go over the session and improve your setup, so the next build starts better.",
+  },
 ];
 
 export default async function Home() {
@@ -151,8 +161,9 @@ export default async function Home() {
             ))}
           </ol>
           <p className="flow-note">
-            A small job that fits in one session? Go from grilling straight to{" "}
-            <code>/implement</code>.
+            A question that talking can&apos;t settle? Build a throwaway{" "}
+            <code>/prototype</code> first. A small job that fits in one session?
+            Go from grilling straight to <code>/implement</code>.
           </p>
           <Link href="/learn/main-flow" className="button button-light">
             See the main flow

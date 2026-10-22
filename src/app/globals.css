@@ -774,12 +774,12 @@ html:not([data-header]):has([data-hero]) .site-header {
   }
 }
 
-/* The Main flow's steps in a row on the navy band, each under an amber
-   number. Two to a row on tablets, one on phones. */
+/* The Main flow's steps on the navy band, each under an amber number. Three
+   to a row, two on tablets, one on phones. */
 .flow-steps {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-l);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-xl) var(--space-l);
   margin: var(--space-xl) 0;
   padding: 0;
   list-style: none;
@@ -819,13 +819,13 @@ html:not([data-header]):has([data-hero]) .site-header {
 }
 
 .flow-note {
+  max-width: 40rem;
   margin: 0 0 var(--space-l);
 }
 
 @media (max-width: 960px) {
   .flow-steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: var(--space-xl);
   }
 }
 
