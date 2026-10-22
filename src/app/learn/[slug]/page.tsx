@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
+import { HeaderOverlay } from "@/app/header-overlay";
+import { LessonCard } from "@/app/lesson-card";
 import { lessons } from "@/lessons/lessons";
 import { Discussion } from "./discussion";
 
@@ -20,34 +22,60 @@ export async function generateMetadata({
   return { title: lesson ? `${lesson.title} · Idea to Shipped` : "Not found" };
 }
 
+// Previous/Next sit two to a row in the reading column, one per row on phones.
+const NEIGHBOUR_SIZES = "(max-width: 640px) 100vw, (max-width: 860px) 50vw, 420px";
+
 export default async function LessonPage({ params }: PageProps<"/learn/[slug]">) {
   const lesson = await loadLesson((await params).slug);
   if (!lesson) notFound();
 
   return (
-    <div className="lesson-layout">
-      <article>
-        <header className="lesson-band">
-          <span>Lesson {lesson.number}</span>
+    <>
+      {/* The Lesson's photo, full width, under the see-through header. It's the
+          first thing on screen, so it loads straight away. */}
+      <header className="photo-band lesson-hero" data-hero>
+        <HeaderOverlay />
+        <div className="photo-band-photo">
+          <Image
+            src={lesson.image}
+            alt={lesson.imageAlt}
+            fill
+            sizes="100vw"
+            loading="eager"
+            fetchPriority="high"
+          />
+        </div>
+        <div className="photo-band-inner">
+          <span className="eyebrow">Lesson {lesson.number}</span>
           <h1>{lesson.title}</h1>
-        </header>
-        <div className="prose" dangerouslySetInnerHTML={{ __html: lesson.html }} />
-        <nav className="prev-next">
-          {lesson.previous ? (
-            <Link href={`/learn/${lesson.previous.slug}`}>
-              ← Lesson {lesson.previous.number}: {lesson.previous.title}
-            </Link>
-          ) : (
-            <span />
-          )}
-          {lesson.next && (
-            <Link href={`/learn/${lesson.next.slug}`}>
-              Lesson {lesson.next.number}: {lesson.next.title} →
-            </Link>
-          )}
-        </nav>
-      </article>
-      <Discussion lesson={lesson.slug} />
-    </div>
+          <p className="photo-credit">Photo: {lesson.imageCredit} / Unsplash</p>
+        </div>
+      </header>
+
+      <div className="lesson-layout">
+        <article>
+          <div className="prose" dangerouslySetInnerHTML={{ __html: lesson.html }} />
+          <nav className="prev-next" aria-label="More Lessons">
+            {lesson.previous && (
+              <LessonCard
+                lesson={lesson.previous}
+                label="Previous"
+                sizes={NEIGHBOUR_SIZES}
+                className="prev"
+              />
+            )}
+            {lesson.next && (
+              <LessonCard
+                lesson={lesson.next}
+                label="Next"
+                sizes={NEIGHBOUR_SIZES}
+                className="next"
+              />
+            )}
+          </nav>
+        </article>
+        <Discussion lesson={lesson.slug} />
+      </div>
+    </>
   );
 }
