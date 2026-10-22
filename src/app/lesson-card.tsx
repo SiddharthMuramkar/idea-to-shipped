@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { LessonSummary } from "@/lessons/lessons";
 
 // A Lesson as a photo card: its photo, then "Lesson N" and the title. Used
-// for Previous/Next on a Lesson page. `label` goes before the number (e.g.
+// for the home page's Lesson grid and for Previous/Next on a Lesson page. `label` goes before the number (e.g.
 // "Next"), and `sizes` tells the browser how wide the card is drawn, so phones
 // don't download a desktop-sized photo.
 export function LessonCard({

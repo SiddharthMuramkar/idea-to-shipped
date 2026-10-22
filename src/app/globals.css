@@ -633,36 +633,230 @@ html:not([data-header]):has([data-hero]) .site-header {
   font-size: var(--text-sm);
 }
 
-/* Home: the numbered lesson list. */
-.lesson-list {
-  list-style: none;
-  padding: 0;
-  border-top: 1px solid var(--line);
+/* Home, top to bottom: the full-screen photo, the light intro, the Lesson
+   grid, the dark Main flow band, and the closing photo. */
+.home-section {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--gutter);
 }
 
-.lesson-list a {
-  display: flex;
-  gap: var(--space-xs);
-  align-items: baseline;
-  padding: 0.9rem var(--space-xs);
-  border-bottom: 1px solid var(--line);
-  text-decoration: none;
+.home-section h2 {
+  margin: var(--space-xs) 0 var(--space-m);
+}
+
+.home-section > .eyebrow,
+.home-intro .eyebrow {
+  color: var(--blue);
+}
+
+.band-dark .eyebrow {
+  color: var(--amber);
+}
+
+.section-lead {
+  max-width: 40rem;
+  font-size: var(--text-lg);
   color: var(--text);
 }
 
-.lesson-list a:hover {
-  background: var(--bg-soft);
-  color: var(--blue);
+.band-dark .section-lead {
+  color: var(--on-dark);
 }
 
-.lesson-number {
-  min-width: 5.5rem;
-  color: var(--blue);
-  font-weight: 700;
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
 }
 
-.lesson-title {
-  font-weight: 600;
+/* The opening photo fills the first screen. Its people sit on the right, so
+   the text goes bottom-left, over a gradient that's darkest on that side. */
+.home-hero {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.home-hero::before {
+  background:
+    linear-gradient(to right, rgb(5 10 25 / 0.7) 0%, rgb(5 10 25 / 0.15) 70%),
+    linear-gradient(to top, rgb(5 10 25 / 0.85) 0%, rgb(5 10 25 / 0.2) 55%, rgb(5 10 25 / 0.4) 100%);
+}
+
+.home-hero .photo-band-photo img {
+  object-position: 70% 50%;
+}
+
+.home-hero .photo-band-inner {
+  padding-bottom: var(--space-2xl);
+}
+
+.home-hero h1 {
+  max-width: 15ch;
+  margin: var(--space-s) 0 var(--space-m);
+}
+
+.home-hero-lead {
+  max-width: 34rem;
+  margin: 0 0 var(--space-xl);
+  font-size: var(--text-lg);
+  color: var(--on-dark);
+}
+
+.photo-band .button-row + .photo-credit,
+.photo-band .button + .photo-credit {
+  margin-top: var(--space-xl);
+}
+
+/* About the course: text on the left, a photo on the right. */
+.home-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-2xl);
+  align-items: center;
+}
+
+.home-intro-figure {
+  margin: 0;
+}
+
+.home-intro-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: var(--navy);
+}
+
+.home-intro-photo img {
+  object-fit: cover;
+}
+
+.figure-credit {
+  margin-top: var(--space-xs);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 860px) {
+  .home-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+}
+
+/* Every Lesson as a photo card, three to a row, then two, then one. */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-l);
+  margin: var(--space-xl) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson-grid li {
+  display: flex;
+}
+
+.lesson-grid .lesson-card {
+  flex: 1;
+}
+
+@media (max-width: 1024px) {
+  .lesson-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .lesson-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The Main flow's steps in a row on the navy band, each under an amber
+   number. Two to a row on tablets, one on phones. */
+.flow-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-l);
+  margin: var(--space-xl) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow-step {
+  padding-top: var(--space-m);
+  border-top: 1px solid rgb(255 255 255 / 0.18);
+}
+
+.flow-step-number {
+  display: block;
+  color: var(--amber);
+  font-family: var(--font-heading);
+  font-size: var(--display-2);
+  font-weight: 300;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.flow-step h3 {
+  margin: var(--space-m) 0 var(--space-xs);
+}
+
+.flow-step p {
+  margin: 0 0 var(--space-xs);
+}
+
+/* Keep a command whole, e.g. never "/implement-" then "spec". */
+.flow-step-commands code {
+  white-space: nowrap;
+}
+
+.band-dark :not(pre) > code {
+  background: var(--navy-raised);
+  color: var(--on-dark);
+}
+
+.flow-note {
+  margin: 0 0 var(--space-l);
+}
+
+@media (max-width: 960px) {
+  .flow-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--space-xl);
+  }
+}
+
+@media (max-width: 560px) {
+  .flow-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The closing photo: a call to start the course. */
+.home-cta {
+  min-height: clamp(28rem, 72vh, 44rem);
+}
+
+/* Keep the top of the rocket's arc in the frame. */
+.home-cta .photo-band-photo img {
+  object-position: 60% 15%;
+}
+
+.home-cta .photo-band-inner {
+  padding-top: var(--space-3xl);
+}
+
+.home-cta h2 {
+  margin: var(--space-s) 0 var(--space-m);
+}
+
+@media (max-width: 560px) {
+  .home-section {
+    padding: var(--space-2xl) var(--gutter);
+  }
 }
 
 /* Lesson page: the photo band, then content on the left and the Discussion
