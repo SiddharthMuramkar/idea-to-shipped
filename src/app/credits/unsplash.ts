@@ -46,4 +46,8 @@ export const unsplash: Record<string, { page: string; profile: string }> = {
     page: "https://unsplash.com/photos/a-black-and-white-photo-of-a-jet-engine-dqrwTvNAAH0",
     profile: "https://unsplash.com/@zymot",
   },
+  "/photos/main-flow.jpg": {
+    page: "https://unsplash.com/photos/aerial-photography-of-roads-on-city-during-daytime-Zeu57mprpaI",
+    profile: "https://unsplash.com/@dnevozhai",
+  },
 };
