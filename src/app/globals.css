@@ -1,23 +1,67 @@
 /* The whole look of the site lives in this one file. */
 
+/* Design tokens: every colour, font, size and gap below comes from here. */
 :root {
+  /* Colour. Blue is the brand; navy is for dark bands and the footer;
+     amber is the one accent, used sparingly (numbers, highlights, focus). */
   --blue: #1e3fcc;
   --blue-dark: #142c94;
-  --text: #111111;
-  --muted: #5a5a5a;
-  --line: #d9d9d9;
+  --navy: #0a1433;
+  --navy-raised: #131f48;
+  --amber: #ffb020;
+  --ink: #0d1526;
+  --text: #1c2333;
+  --muted: #5b6475;
+  --line: #dde1ea;
   --bg: #ffffff;
-  --bg-soft: #f4f6fd;
-  --font: var(--font-inter), system-ui, sans-serif;
+  --bg-soft: #f3f5fb;
+  --on-dark: #ffffff;
+  --on-dark-muted: #b9c2dc;
+  --error: #b00020;
+
+  /* Type. Inter for reading, Inter Tight for the large, light headings. */
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-heading: var(--font-display), var(--font-inter), system-ui, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --text-sm: 0.875rem;
+  --text-lg: 1.2rem;
+  --display-1: clamp(2.4rem, 1.5rem + 4vw, 4.75rem);
+  --display-2: clamp(1.8rem, 1.3rem + 2.2vw, 3rem);
+  --display-3: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+
+  /* Spacing. */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-s: 0.75rem;
+  --space-m: 1rem;
+  --space-l: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --page-max: 1240px;
+  --read-max: 720px;
+
+  /* Shape. Photos and cards stay square; buttons are pills. */
+  --radius-pill: 999px;
+  --shadow-soft: 0 6px 24px rgb(10 20 51 / 0.1), 0 1px 2px rgb(10 20 51 / 0.06);
+  --header-h: 4.5rem;
 }
 
-/* Sharp everywhere: no rounded corners on anything. */
+@media (max-width: 560px) {
+  :root {
+    --header-h: 3.75rem;
+  }
+}
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  border-radius: 0 !important;
+}
+
+html {
+  scroll-padding-top: calc(var(--header-h) + var(--space-m));
 }
 
 html,
@@ -25,48 +69,41 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font);
+  font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.65;
 }
 
-.site-header {
-  border-top: 6px solid var(--blue);
-  border-bottom: 1px solid var(--line);
-  padding: 1rem 1.25rem;
-}
-
-.site-title {
-  color: var(--blue);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-
-.container {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 2.5rem 1.25rem 4rem;
+::selection {
+  background: var(--amber);
+  color: var(--ink);
 }
 
 h1,
 h2,
 h3 {
-  color: var(--blue);
-  line-height: 1.25;
+  font-family: var(--font-heading);
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 h1 {
-  font-size: 2.1rem;
-  margin: 0 0 1rem;
+  font-size: var(--display-1);
+  margin: 0 0 var(--space-l);
 }
 
 h2 {
-  font-size: 1.3rem;
-  margin-top: 2.5rem;
-  padding-bottom: 0.35rem;
-  border-bottom: 2px solid var(--blue);
+  font-size: var(--display-2);
+  margin: var(--space-2xl) 0 var(--space-m);
+}
+
+h3 {
+  font-size: var(--text-lg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 a {
@@ -77,16 +114,29 @@ a:hover {
   color: var(--blue-dark);
 }
 
+/* One focus ring for everything: amber outside, navy inside, so it shows on
+   white, on navy and on photos alike. */
+:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--navy);
+}
+
 code,
 pre {
   font-family: var(--mono);
   font-size: 0.9em;
 }
 
+:not(pre) > code {
+  background: var(--bg-soft);
+  padding: 0.1em 0.3em;
+}
+
 pre {
   background: var(--bg-soft);
   border-left: 3px solid var(--blue);
-  padding: 1rem;
+  padding: var(--space-m);
   overflow-x: auto;
 }
 
@@ -98,7 +148,7 @@ table {
 th,
 td {
   border: 1px solid var(--line);
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-xs) var(--space-s);
   text-align: left;
   vertical-align: top;
 }
@@ -118,29 +168,305 @@ textarea {
   width: 100%;
   border: 1px solid var(--line);
   padding: 0.6rem 0.75rem;
+  color: var(--text);
+  background: var(--bg);
 }
 
 input:focus,
 textarea:focus {
-  outline: 2px solid var(--blue);
-  outline-offset: -1px;
+  border-color: var(--blue);
 }
 
-button {
+/* Buttons: a pill, and links styled as buttons carry an arrow. */
+button,
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 1.5em;
+  border: 1.5px solid var(--blue);
+  border-radius: var(--radius-pill);
   background: var(--blue);
-  color: #ffffff;
-  border: none;
-  padding: 0.6rem 1.25rem;
+  color: var(--on-dark);
   font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
-button:hover {
+button:hover,
+.button:hover {
   background: var(--blue-dark);
+  border-color: var(--blue-dark);
+  color: var(--on-dark);
+}
+
+.button::after {
+  content: "→";
+  content: "→" / "";
+  transition: transform 0.2s;
+}
+
+.button:hover::after {
+  transform: translateX(0.25em);
+}
+
+/* White pill, for photos and dark bands. */
+.button-light {
+  background: var(--bg);
+  border-color: var(--bg);
+  color: var(--ink);
+}
+
+.button-light:hover {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+}
+
+/* Outline pill, the quieter second choice next to a solid one. */
+.button-outline {
+  background: transparent;
+  border-color: currentColor;
+  color: inherit;
+}
+
+.button-outline:hover {
+  background: var(--on-dark);
+  border-color: var(--on-dark);
+  color: var(--ink);
 }
 
 .muted {
   color: var(--muted);
+}
+
+/* Small uppercase label above a heading, e.g. "Lesson 3". */
+.eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.container {
+  max-width: calc(var(--read-max) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: var(--space-xl) var(--gutter) var(--space-2xl);
+}
+
+/* Full-width bands that alternate down a page. */
+.band-light {
+  background: var(--bg-soft);
+}
+
+.band-dark {
+  background: var(--navy);
+  color: var(--on-dark-muted);
+}
+
+.band-dark :is(h1, h2, h3) {
+  color: var(--on-dark);
+}
+
+.band-dark a:not(.button),
+.band-dark .button-outline {
+  color: var(--on-dark);
+}
+
+/* Header: stays at the top. Solid by default; see-through while a page's top
+   photo band (marked data-hero, holding <HeaderOverlay/>) sits under it. Before
+   the page's code runs, a page with a band starts see-through too. */
+.site-header {
+  --header-fg: var(--ink);
+  --header-bg: var(--bg);
+  --header-shadow: var(--shadow-soft);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-h);
+  color: var(--header-fg);
+  background: var(--header-bg);
+  box-shadow: var(--header-shadow);
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+html[data-header="clear"] .site-header,
+html:not([data-header]):has([data-hero]) .site-header {
+  --header-fg: var(--on-dark);
+  --header-bg: linear-gradient(rgb(5 10 25 / 0.55), transparent);
+  --header-shadow: none;
+}
+
+/* A top photo band slides up under the header. */
+[data-hero] {
+  margin-top: calc(-1 * var(--header-h));
+}
+
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  height: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.brand:hover {
+  color: inherit;
+}
+
+.brand-mark {
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+}
+
+.site-nav {
+  display: flex;
+  gap: var(--space-l);
+}
+
+.site-nav a {
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a:hover {
+  color: inherit;
+  border-bottom-color: var(--amber);
+}
+
+@media (max-width: 560px) {
+  .brand {
+    font-size: 0.78rem;
+  }
+  .brand-word {
+    max-width: 5.5em;
+  }
+  .brand-mark {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  .site-nav {
+    gap: var(--space-m);
+  }
+  .site-nav a {
+    font-size: var(--text-sm);
+  }
+}
+
+/* Footer: dark, every Lesson, then the photo credits. */
+.site-footer {
+  background: var(--navy);
+  color: var(--on-dark-muted);
+  font-size: 0.95rem;
+}
+
+.site-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--space-xl);
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--gutter) var(--space-xl);
+}
+
+.footer-about .brand {
+  color: var(--on-dark);
+}
+
+.footer-about p {
+  max-width: 24rem;
+  margin: var(--space-m) 0 0;
+}
+
+.footer-heading {
+  margin: 0 0 var(--space-m);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-dark-muted);
+}
+
+.footer-lessons ol {
+  columns: 2 15rem;
+  column-gap: var(--space-xl);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-lessons li {
+  break-inside: avoid;
+  padding: var(--space-2xs) 0;
+}
+
+.site-footer a {
+  color: var(--on-dark);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--on-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--amber);
+  text-underline-offset: 0.2em;
+}
+
+.footer-number {
+  display: inline-block;
+  min-width: 1.6em;
+  color: var(--amber);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.site-footer-base {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-l) var(--gutter);
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  font-size: var(--text-sm);
+}
+
+.site-footer-base p {
+  margin: 0;
+}
+
+.site-footer-base a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (max-width: 720px) {
+  .site-footer-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* Home: the numbered lesson list. */
@@ -152,9 +478,9 @@ button:hover {
 
 .lesson-list a {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-xs);
   align-items: baseline;
-  padding: 0.9rem 0.5rem;
+  padding: 0.9rem var(--space-xs);
   border-bottom: 1px solid var(--line);
   text-decoration: none;
   color: var(--text);
@@ -179,41 +505,48 @@ button:hover {
 .lesson-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 2.5rem;
-  max-width: 1120px;
+  gap: var(--space-xl);
+  max-width: var(--page-max);
   margin: 0 auto;
-  padding: 2.5rem 1.25rem 4rem;
+  padding: var(--space-xl) var(--gutter) var(--space-2xl);
 }
 
 .lesson-band {
-  background: var(--blue);
-  color: #ffffff;
-  padding: 1.5rem 1.5rem 1rem;
-  margin-bottom: 1.5rem;
+  background: var(--navy);
+  color: var(--on-dark);
+  padding: var(--space-xl) var(--space-l) var(--space-l);
+  margin-bottom: var(--space-l);
 }
 
 .lesson-band span {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.85rem;
+  display: block;
+  color: var(--amber);
+  font-size: 0.8rem;
   font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .lesson-band h1 {
-  color: #ffffff;
-  margin: 0.25rem 0 0;
+  color: var(--on-dark);
+  font-size: var(--display-2);
+  margin: var(--space-xs) 0 0;
 }
 
 .prose {
   overflow-wrap: anywhere;
 }
+.prose h2 {
+  font-size: var(--display-3);
+  margin: var(--space-xl) 0 var(--space-s);
+}
 
 .prev-next {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
-  margin: 2.5rem 0;
-  padding: 1rem 0;
+  gap: var(--space-m);
+  margin: var(--space-xl) 0;
+  padding: var(--space-m) 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   font-weight: 600;
@@ -221,21 +554,22 @@ button:hover {
 
 .discussion {
   position: sticky;
-  top: 1.5rem;
+  top: calc(var(--header-h) + var(--space-l));
   align-self: start;
-  border: 2px solid var(--blue);
-  padding: 1rem 1.1rem;
-  max-height: calc(100vh - 3rem);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--blue);
+  padding: var(--space-m) 1.1rem;
+  max-height: calc(100vh - var(--header-h) - 2 * var(--space-l));
   overflow-y: auto;
 }
 
 .discussion h3 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-xs);
 }
 
 @media (max-width: 860px) {
   .lesson-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .discussion {
     position: static;
@@ -247,7 +581,7 @@ button:hover {
 .comment-form {
   display: grid;
   gap: 0.6rem;
-  margin: 0.75rem 0 1.25rem;
+  margin: var(--space-s) 0 1.25rem;
 }
 
 .comment-form button {
@@ -260,7 +594,7 @@ button:hover {
 }
 
 .form-error {
-  color: #b00020;
+  color: var(--error);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -273,8 +607,8 @@ button:hover {
 
 .comment {
   border-left: 3px solid var(--blue);
-  padding: 0.25rem 0 0.25rem 0.9rem;
-  margin-bottom: 1rem;
+  padding: var(--space-2xs) 0 var(--space-2xs) 0.9rem;
+  margin-bottom: var(--space-m);
 }
 
 .comment p {
@@ -285,4 +619,14 @@ button:hover {
 
 .comment-meta {
   font-size: 0.9rem;
+}
+
+/* Reduce motion: nothing slides or fades. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }
