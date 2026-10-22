@@ -2,6 +2,9 @@
 title: TDD
 slug: tdd
 order: 6
+image: /photos/tdd.jpg
+imageAlt: A scientist in a white lab coat works at a lab bench full of instruments and cables.
+imageCredit: ThisisEngineering
 ---
 
 ## What it is

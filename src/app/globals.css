@@ -277,6 +277,129 @@ button:hover,
   color: var(--on-dark);
 }
 
+/* A full-width photo with white text over it. The photo sits in
+   .photo-band-photo (a box of its own, so it can move without the text), a
+   dark gradient covers it, and .photo-band-inner holds the text on top. The
+   gradient is darkest behind the text at the bottom, so a bright photo never
+   hides it. */
+.photo-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  background: var(--navy);
+  color: var(--on-dark);
+}
+
+.photo-band-photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.photo-band-photo img {
+  object-fit: cover;
+}
+
+.photo-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to top,
+    rgb(5 10 25 / 0.88) 0%,
+    rgb(5 10 25 / 0.6) 40%,
+    rgb(5 10 25 / 0.25) 75%,
+    rgb(5 10 25 / 0.35) 100%
+  );
+}
+
+.photo-band-inner {
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: calc(var(--header-h) + var(--space-2xl)) var(--gutter) var(--space-xl);
+}
+
+.photo-band :is(h1, h2) {
+  color: var(--on-dark);
+  text-shadow: 0 1px 24px rgb(5 10 25 / 0.4);
+}
+
+.photo-band .eyebrow {
+  color: var(--amber);
+}
+
+/* "Photo: <name> / Unsplash", small, under the title. */
+.photo-credit {
+  margin: 0;
+  color: var(--on-dark-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+/* A Lesson as a photo card (see lesson-card.tsx): square-edged photo on top,
+   "Lesson N" and the title below. The photo zooms in a little on hover. */
+.lesson-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.3s;
+}
+
+.lesson-card:hover {
+  color: var(--ink);
+  box-shadow: 0 14px 40px rgb(10 20 51 / 0.18), 0 1px 2px rgb(10 20 51 / 0.06);
+}
+
+.lesson-card-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--navy);
+}
+
+.lesson-card-photo img {
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.lesson-card:hover .lesson-card-photo img {
+  transform: scale(1.04);
+}
+
+.lesson-card-body {
+  display: grid;
+  gap: var(--space-2xs);
+  padding: var(--space-m) var(--space-l) var(--space-l);
+}
+
+.lesson-card .eyebrow {
+  color: var(--blue);
+}
+
+.lesson-card-title {
+  font-family: var(--font-heading);
+  font-size: var(--display-3);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.lesson-card:hover .lesson-card-title {
+  text-decoration: underline;
+  text-decoration-color: var(--amber);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
 /* Header: stays at the top. Solid by default; see-through while a page's top
    photo band (marked data-hero, holding <HeaderOverlay/>) sits under it. Before
    the page's code runs, a page with a band starts see-through too. */
@@ -469,6 +592,47 @@ html:not([data-header]):has([data-hero]) .site-header {
   }
 }
 
+/* Credits: one row per photo, a small thumbnail and who took it. */
+.credit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.credit {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--space-m);
+  align-items: center;
+  padding: var(--space-s) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.credit-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  background: var(--navy);
+}
+
+.credit-photo img {
+  object-fit: cover;
+}
+
+.credit-lesson {
+  display: block;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.credit-by {
+  display: block;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
 /* Home: the numbered lesson list. */
 .lesson-list {
   list-style: none;
@@ -501,7 +665,17 @@ html:not([data-header]):has([data-hero]) .site-header {
   font-weight: 600;
 }
 
-/* Lesson page: content on the left, Discussion panel on the right. */
+/* Lesson page: the photo band, then content on the left and the Discussion
+   panel on the right. */
+.lesson-hero {
+  min-height: clamp(24rem, 64vh, 40rem);
+}
+
+.lesson-hero h1 {
+  max-width: 18ch;
+  margin: var(--space-s) 0 var(--space-m);
+}
+
 .lesson-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
@@ -509,28 +683,6 @@ html:not([data-header]):has([data-hero]) .site-header {
   max-width: var(--page-max);
   margin: 0 auto;
   padding: var(--space-xl) var(--gutter) var(--space-2xl);
-}
-
-.lesson-band {
-  background: var(--navy);
-  color: var(--on-dark);
-  padding: var(--space-xl) var(--space-l) var(--space-l);
-  margin-bottom: var(--space-l);
-}
-
-.lesson-band span {
-  display: block;
-  color: var(--amber);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.lesson-band h1 {
-  color: var(--on-dark);
-  font-size: var(--display-2);
-  margin: var(--space-xs) 0 0;
 }
 
 .prose {
@@ -541,30 +693,61 @@ html:not([data-header]):has([data-hero]) .site-header {
   margin: var(--space-xl) 0 var(--space-s);
 }
 
+.prose > :first-child {
+  margin-top: 0;
+}
+
+/* A wide table scrolls on its own instead of pushing the page sideways, so
+   its words can wrap whole instead of breaking mid-word. */
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.prose :is(th, td) {
+  overflow-wrap: normal;
+}
+
+/* Previous/Next: two photo cards side by side, Next always on the right. */
 .prev-next {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-m);
-  margin: var(--space-xl) 0;
-  padding: var(--space-m) 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-l);
+  margin: var(--space-2xl) 0 var(--space-xl);
+  padding-top: var(--space-xl);
   border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  font-weight: 600;
+}
+
+.prev-next .next {
+  grid-column: 2;
+}
+
+@media (max-width: 640px) {
+  .prev-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .prev-next .next {
+    grid-column: auto;
+  }
 }
 
 .discussion {
   position: sticky;
   top: calc(var(--header-h) + var(--space-l));
   align-self: start;
-  border: 1px solid var(--line);
+  background: var(--bg-soft);
   border-top: 3px solid var(--blue);
-  padding: var(--space-m) 1.1rem;
+  padding: var(--space-l);
   max-height: calc(100vh - var(--header-h) - 2 * var(--space-l));
   overflow-y: auto;
 }
 
 .discussion h3 {
   margin: 0 0 var(--space-xs);
+  font-family: var(--font-heading);
+  font-size: var(--display-3);
+  font-weight: 300;
 }
 
 @media (max-width: 860px) {
@@ -606,9 +789,10 @@ html:not([data-header]):has([data-hero]) .site-header {
 }
 
 .comment {
+  background: var(--bg);
   border-left: 3px solid var(--blue);
-  padding: var(--space-2xs) 0 var(--space-2xs) 0.9rem;
-  margin-bottom: var(--space-m);
+  padding: var(--space-s) var(--space-m);
+  margin-bottom: var(--space-s);
 }
 
 .comment p {
