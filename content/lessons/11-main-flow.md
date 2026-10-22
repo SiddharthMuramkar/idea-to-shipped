@@ -13,7 +13,7 @@ The **Main flow** is the road most work takes through Matt Pocock's Skills, from
 
 Lessons 0–10 follow the order I happened to use while building v1. Since then, Matt has folded those steps into fewer, bigger Skills. This Lesson is the up-to-date map. The table at the end of "When to use it" translates the old Lessons into today's Skills.
 
-Sources: Matt's video [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM) (2026-07-16), and the `ask-matt` Skill that comes with the Skills (version 1.3.1, read on 2026-10-22). `/implement-spec` arrived after the video, in v1.3, so for that one the `ask-matt` Skill is the source.
+Sources: Matt's video [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM) (2026-07-16), and the `ask-matt` Skill that comes with the Skills (version 1.3.1, read on 2026-10-22). `/implement-spec` isn't in the video, so for that one the `ask-matt` Skill is the source.
 
 **The path, in order:**
 
@@ -83,7 +83,7 @@ The other Skills, the agent picks up on its own when the job fits: `/tdd`, `/cod
 - **`/clear`** empties the conversation. The agent forgets everything said so far and starts fresh. The old session isn't deleted; you can go back to it.
 - **`/compact`** squeezes the conversation into a summary and carries on from that summary. It's handy, but some detail is always lost.
 
-**The rule: keep the grilling, the spec and the tickets in one session. `/clear` only after `/to-tickets`.** `/to-spec` doesn't interview you again. It writes the spec from the conversation it can see. Clear before it, and the *why* behind every answer you gave is gone. After `/to-tickets`, everything that matters is written down in the spec and the tickets, so each `/implement` can start clean.
+**The rule: keep the grilling, the spec and the tickets in one session. Don't `/clear` or `/compact` until after `/to-tickets`.** (The one exception is the smart zone, below.) `/to-spec` doesn't interview you again. It writes the spec from the conversation it can see. Clear before it, and the *why* behind every answer you gave is gone. After `/to-tickets`, everything that matters is written down in the spec and the tickets, so each `/implement` can start clean.
 
 **The smart zone.** A model only thinks sharply for so long. Per `ask-matt`, that's roughly the first 150,000 tokens of a session (a token is a small piece of a word). Matt calls this window the [smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone). If a session gets close to it before `/to-tickets`, don't push on half-asleep: `/compact` at the end of a step (say, right after the grilling) and carry on from there.
 
@@ -95,7 +95,8 @@ The other Skills, the agent picks up on its own when the job fits: `/tdd`, `/cod
 | `write the spec` (Lesson 3) | `/to-spec`, then `/to-tickets` | The spec and the tickets are now two named Skills |
 | `/tdd` ×4 (Lesson 6), then `/code-review` (Lesson 7) | `/implement` per ticket, or `/implement-spec` | Both run `/tdd` and `/code-review` for you |
 | `gh pr create`, done by the agent (Lesson 8) | Nothing: the agent uses `/pr` | `/pr` shapes the PR description |
-| `/wizard` (Lesson 4), `/prototype` (Lesson 5), `/diagnosing-bugs` (Lesson 9) | The same | `/prototype` is now fork 1 of the Main flow |
+| `/wizard` (Lesson 4), `/prototype` (Lesson 5) | The same | `/prototype` is now fork 1 of the Main flow |
+| Nothing (Lesson 9): the agent ran the bug loop on its own | `/diagnosing-bugs`, or nothing | The agent can still start it itself when something breaks |
 
 ## What I typed
 
@@ -112,14 +113,16 @@ I never typed `/clear`. Steps 1 to 3 stayed in one session, as the rule says.
 
 ## What happened
 
-*Draft: I'll finish this section after the build, once I know how `/implement-spec` and the final `/code-review` went.*
-
 **1. I said "grilling with docs" in plain words, not as a Skill.** Because `/grill-with-docs` only starts when *you* type it, the agent couldn't run it. It ran `/grilling` and then `/domain-modeling` instead, the two halves `/grill-with-docs` is made of. Same result, but if I'd typed `/grill-with-docs` myself, it would have been one step.
 
 **2. I changed my mind about where this Lesson goes.** First I asked for a new Lesson 0, then for "the last lesson". It became Lesson 11. The old Lessons kept their numbers, and Comments are attached to a Lesson's Slug, which never changes, so nothing broke.
 
-**3. I wasn't sure typing a Skill counted as a "yes".** I typed `/to-spec` and `/to-tickets`, then asked whether the tickets had really been made, because I'd never said "yes" to the spec. Typing the Skill *is* the yes. The spec and all five tickets were already sitting in `.scratch/`.
+**3. The grilling decided the scope, and it grew once.** A new last Lesson, then a redesign I added halfway through, then a photo for every Lesson.
 
-**4. I asked when to run `/code-review`:** now, or after the tickets? Neither, by hand. `/implement-spec` runs one `/code-review` over the integration branch once every ticket is done.
+**4. I typed the next Skill before answering the agent.** `/to-spec` stopped to ask me to check one design choice. I typed `/to-tickets` instead of answering, so the spec got written then, with the agent's best guess. When it went to write the tickets, I said no at first, then typed `/implement-spec`.
 
-*Still to write: how the build went, what the review found, and what I'd do differently next time.*
+**5. The build ran itself.** Five tickets, built by helper agents in parallel, each in its own worktree: 01, then 02, then 03 and 04 together, then 05. Each one was merged into the one integration branch. An early review ran while 05 was still being built.
+
+**6. The review found about 15 problems.** `/code-review` checks two things: does the code follow the repo's rules, and does it match the spec? It found things like the home page calling Skills "commands" (the glossary says not to), a focus ring too faint to see on the Lesson cards, and a wrong claim in this very Lesson about Lesson 9. One fix-up agent fixed them all, then `/pr` wrote the pull request.
+
+**What I'd do differently:** answer the agent's open question before typing the next Skill. It asked for a reason.
