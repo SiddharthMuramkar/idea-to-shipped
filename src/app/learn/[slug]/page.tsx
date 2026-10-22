@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { HeaderOverlay } from "@/app/header-overlay";
 import { LessonCard } from "@/app/lesson-card";
+import { Reveal } from "@/app/reveal";
 import { lessons } from "@/lessons/lessons";
 import { Discussion } from "./discussion";
 
@@ -31,6 +32,7 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
 
   return (
     <>
+      <Reveal />
       {/* The Lesson's photo, full width, under the see-through header. It's the
           first thing on screen, so it loads straight away. */}
       <header className="photo-band lesson-hero" data-hero>
@@ -45,7 +47,7 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
             fetchPriority="high"
           />
         </div>
-        <div className="photo-band-inner">
+        <div className="photo-band-inner" data-reveal-children>
           <span className="eyebrow">Lesson {lesson.number}</span>
           <h1>{lesson.title}</h1>
           <p className="photo-credit">Photo: {lesson.imageCredit} / Unsplash</p>
@@ -54,8 +56,8 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
 
       <div className="lesson-layout">
         <article>
-          <div className="prose" dangerouslySetInnerHTML={{ __html: lesson.html }} />
-          <nav className="prev-next" aria-label="More Lessons">
+          <div className="prose" data-reveal-children dangerouslySetInnerHTML={{ __html: lesson.html }} />
+          <nav className="prev-next" aria-label="More Lessons" data-reveal-children>
             {lesson.previous && (
               <LessonCard
                 lesson={lesson.previous}

@@ -46,7 +46,7 @@ export function Discussion({ lesson }: { lesson: string }) {
   }
 
   return (
-    <aside className="discussion">
+    <aside className="discussion" data-reveal>
       <h3>Discussion{comments ? ` · ${comments.length}` : ""}</h3>
 
       <form className="comment-form" onSubmit={submit}>

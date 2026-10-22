@@ -3,6 +3,7 @@ import Link from "next/link";
 import { HeaderOverlay } from "@/app/header-overlay";
 import { homePhotos } from "@/app/home-photos";
 import { LessonCard } from "@/app/lesson-card";
+import { Reveal } from "@/app/reveal";
 import { lessons } from "@/lessons/lessons";
 
 async function loadLessons() {
@@ -55,6 +56,7 @@ export default async function Home() {
 
   return (
     <>
+      <Reveal />
       {/* The first screen: a full-screen photo under the see-through header.
           It's what you see first, so it loads straight away; every other
           photo on the page loads as you scroll. */}
@@ -70,7 +72,7 @@ export default async function Home() {
             fetchPriority="high"
           />
         </div>
-        <div className="photo-band-inner">
+        <div className="photo-band-inner" data-reveal-children>
           <span className="eyebrow">A free course in agentic coding</span>
           <h1>From idea to shipped, one Skill at a time.</h1>
           <p className="home-hero-lead">
@@ -90,8 +92,8 @@ export default async function Home() {
       </section>
 
       <section id="about" className="band-light">
-        <div className="home-section home-intro">
-          <div>
+        <div className="home-section home-intro" data-reveal-children>
+          <div data-reveal-children>
             <span className="eyebrow">About the course</span>
             <h2>A journal, not a manual.</h2>
             <p className="section-lead">
@@ -119,14 +121,14 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="lessons" className="home-section">
+      <section id="lessons" className="home-section" data-reveal-children>
         <span className="eyebrow">The course</span>
         <h2>Lessons</h2>
         <p className="section-lead">
           {all.length} Lessons, read in order. Each one ends with what really
           happened.
         </p>
-        <ol className="lesson-grid">
+        <ol className="lesson-grid" data-reveal-children>
           {all.map((l) => (
             <li key={l.slug}>
               <LessonCard lesson={l} sizes={CARD_SIZES} />
@@ -136,14 +138,14 @@ export default async function Home() {
       </section>
 
       <section id="flow" className="band-dark">
-        <div className="home-section">
+        <div className="home-section" data-reveal-children>
           <span className="eyebrow">Which command, when</span>
           <h2>The main flow</h2>
           <p className="section-lead">
             Most work takes the same path through the Skills, from idea to
             shipped.
           </p>
-          <ol className="flow-steps">
+          <ol className="flow-steps" data-reveal-children>
             {FLOW_STEPS.map((step, i) => (
               <li key={step.title} className="flow-step">
                 <span className="flow-step-number">{i + 1}</span>
@@ -175,7 +177,7 @@ export default async function Home() {
         <div className="photo-band-photo">
           <Image src={cta.image} alt={cta.alt} fill sizes="100vw" />
         </div>
-        <div className="photo-band-inner">
+        <div className="photo-band-inner" data-reveal-children>
           <span className="eyebrow">Your turn</span>
           <h2>Got an idea? Ship it.</h2>
           <p className="home-hero-lead">
