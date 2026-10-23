@@ -6,6 +6,8 @@ You don't need to know React, Next.js or the database to write a Lesson. You nee
 
 > **Why this file isn't in `content/lessons/`:** every `.md` file in that folder is read as a Lesson, so a guide there would break the build.
 
+> **What the page does today (2026-10-23).** Write Lessons to this whole contract, but know that the first release of the Lesson engine draws less than it describes. Scenes show their final state, every item at once, with their steps as numbered captions; they don't step or animate as you scroll. Every Checkpoint and Final test question shows a "Show the answer" box with the right option and all the feedback; nothing is graded, scored, ticked or stored, and there are no crowd stats. The section bar and the highlight sweep aren't built either. Those arrive with tickets 04 and 05 in `.scratch/lesson-engine/issues/`.
+
 **New in v1.4.** Each rule is explained where it belongs below.
 
 - **Typed blocks sit at the top level.** A ` ```checkpoint ` (or any other kind) inside a list, a `> ` quote or another block is now an error instead of silently showing as code ([section 4](#4-typed-blocks)).
@@ -102,7 +104,7 @@ Special parts of a Lesson (goals, Scenes, questions, callouts and so on) are wri
 
 | Block | First line | What it makes | Where |
 |---|---|---|---|
-| goals | ` ```goals ` | The "By the end of this Lesson you can" card | Intro only |
+| goals | ` ```goals ` | The "By the end of this Lesson" card | Intro only |
 | scene | ` ```scene chat ` (or `terminal`, `flow`, `files`, `meter`) | A Scene that builds step by step as the reader scrolls | In a Section, at most one per Section. Never in the intro |
 | checkpoint | ` ```checkpoint <id> ` | One question with instant feedback. Never counts towards passing | Anywhere, usually right after the idea it checks |
 | test | ` ```test <id> ` | One Final test question. All of them together form the Final test | One unbroken run in a Section. Never in the intro |
@@ -190,10 +192,11 @@ A Scene is a small picture on the stage beside the text (or pinned above it on a
 - **Write a `title`.** It's optional, but the stage shows it as the Scene's heading, so it's worth having.
 - **Markdown or plain text?** Captions and chat messages are inline Markdown, so **bold**, `code` and links work. Everything else in a Scene is **plain text** and shows exactly as typed, asterisks and backticks included: the `title`, flow node labels, file paths, meter labels and terminal lines.
 - **These are errors:**
-  - an unknown setting, `title` or `zone` written twice, or two flow nodes with the same id
+  - an unknown setting, `title` or `zone` written twice, an empty `title:`, or two flow nodes with the same id
   - an item line that doesn't fit the kind's grammar
   - an item before the first `# ` caption
   - a Scene with no steps at all
+  - a meter with no `fill:` line in any step (a step may add none, keeping the last reading, but the gauge needs at least one)
   - a second Scene in the same Section
   - a Scene in the intro
 - **Keep it short.** Aim for 3–6 steps, and say in each caption what just changed.

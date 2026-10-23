@@ -105,7 +105,7 @@ What PR A builds:
   - **Every Lesson:** it parses; slugs and orders are unique; the filename prefix `NN` equals `order`; all 12 legacy slugs exist (ADR 0004); the header photo exists under `public/`; once every Lesson has a `part`, `part` never goes down as `order` goes up.
   - **Every rewritten Lesson** (any Lesson not in `PENDING_REWRITE`): 3–4 goals; at least one Scene; 3–5 Checkpoints; a Final test of the right size (start-here 5–6, main-flow 8–15, all others 8–10) and, except start-here, the right mix of question kinds by id prefix (at least 3 `scenario-`, 2 `spot-` and 1 `sequence-`); a Site story for the 12 legacy slugs; sources with at least 3 linked items; a `part`; 1,800–3,000 words of teaching (start-here 900–1,400); no "Lesson <number>" in the body; every `/learn/<slug>` link resolves; every backticked `/name` is a known Skill or Built-in command.
   - `PENDING_REWRITE` starts as all 12 current slugs. The pilot removes `grilling`, and PR B empties the set as it rewrites each Lesson.
-- **Vitest is split into two projects.** `content` (the Lessons module and the course lint, no setup file, no env) and `db` (everything else, with `setup-env.ts` and `fileParallelism: false`). `npm run test:content` runs only `content`, and `npm test` runs both.
+- **Vitest is split into projects.** `content` (the Lessons module and the course lint, no setup file, no env) and `db` (everything else, with `setup-env.ts` and `fileParallelism: false`). The first release added `render` (page components rendered on the server, no env). `npm run test:content` runs `content` and `render`, and `npm test` runs all of them.
 - **The Lesson page** (`src/app/learn/[slug]/page.tsx`) stays a cached Server Component that never reads cookies, so it stays static. A Visitor's data arrives only through client fetches, the same pattern as `discussion.tsx` (ADR 0006).
   - **Rendered on the server:** prose, goals, callout, try, site story, sources, and each Scene's markup with every step and item rendered up front. Checkpoints and the Final test are server markup too, with their answers inside a `<details>` that only shows without JavaScript.
   - **Client islands, none with dependencies:**
@@ -239,7 +239,7 @@ Everything here is progressive enhancement. The page is complete and readable be
 
 ### Block by block
 
-- **Goals.** A card before the first Section, headed "By the end of this Lesson you can". It lists 3–4 items, each with an empty tick circle. Items enter with the Reveal stagger. When the Visitor passes the Final test (now, or on an earlier visit), each circle draws a tick, 80ms apart, and the heading gains "Done".
+- **Goals.** A card before the first Section, headed "By the end of this Lesson" (each goal reads "You'll be able to …"). It lists 3–4 items, each with an empty tick circle. Items enter with the Reveal stagger. When the Visitor passes the Final test (now, or on an earlier visit), each circle draws a tick, 80ms apart, and the heading gains "Done".
 - **Prose and headings.** Body text at reading width. `## ` headings are bold and rise as described above. Each Section's heading has a small numeral ("02") beside it. `strong` is 700.
 - **Scene.** A `<figure>` in the stage with its `title` as the `<figcaption>`, plus caption cards in the text column (see **The five Scene kinds**).
 - **Checkpoint.** A card in the text column, headed "Checkpoint", with the prompt as the `<legend>` and the options as large radio cards. The states are:

@@ -46,6 +46,10 @@ _Avoid_: Context limit, token budget
 
 ## Inside a Lesson
 
+**Section**:
+One `## ` heading's worth of a Lesson, numbered "01", "02", … on the page. Its text sits beside a stage that holds its Scene, or its number in outline. The Final test is a band of its own, not a numbered Section.
+_Avoid_: Chapter, part, step
+
 **Scene**:
 A small picture inside a Lesson (a chat, a terminal, a flow, a file tree or a context meter) that builds step by step as you scroll past its captions.
 _Avoid_: Animation, diagram, widget, slideshow

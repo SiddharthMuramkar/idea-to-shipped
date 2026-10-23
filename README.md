@@ -6,7 +6,7 @@
 
 [![Live site](https://img.shields.io/badge/live-idea--to--shipped.vercel.app-1E3FCC?style=flat-square&logo=vercel&logoColor=white)](https://idea-to-shipped.vercel.app)
 ![Status](https://img.shields.io/badge/status-v1%20shipped-1E3FCC?style=flat-square)
-![Lessons](https://img.shields.io/badge/lessons-11-1E3FCC?style=flat-square)
+![Lessons](https://img.shields.io/badge/lessons-12-1E3FCC?style=flat-square)
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)
