@@ -72,3 +72,9 @@ Don't run `npm test` (it hits the shared Neon `test` branch, and PR A's suite em
 
 1. **Word count**: plain words in prose (paragraphs, lists and tables between fences) plus the bodies of `callout`, `try` and `site-story`. Excluded: headings, code blocks (including code inside those blocks), `goals`, `scene`, `checkpoint`, `test` and `sources`. Range 1,800–3,000 (Start here 900–1,400).
 2. **Final test kinds** come from `test` id prefixes: at least 3 `scenario-…`, at least 2 `spot-…`, at least 1 `sequence-…`. Any other id is a free kind (e.g. `predict-…`, `why-…`). Checkpoint ids are unconstrained. Ids are permanent, so pick the prefix carefully.
+
+## v1.2 (2026-10-23)
+
+1. Start here's Final test (5–6 questions) is exempt from the kind mix. Every other Lesson needs at least 3 `scenario-`, 2 `spot-` and 1 `sequence-` test ids. The main flow may have 8–15 questions; every other Lesson has 8–10.
+2. Backticked `/name` allowlist: every 1.3.1 Skill, including the misc ones (`git-guardrails-claude-code`, `setup-pre-commit`, `migrate-to-shoehorn`, `scaffold-exercises`), plus these Built-in commands: `/clear` `/compact` `/context` `/model` `/effort` `/fast` `/rewind` `/init` `/help` `/config` `/permissions` `/plan` `/resume` `/agents` `/mcp` `/hooks` `/memory` `/cost` `/usage` `/status` `/doctor` `/login` `/logout` `/plugin` `/skills` `/ultrareview` `/review` `/add-dir` `/exit` `/export` `/terminal-setup` `/vim`. Ask the engine session before using any other. Paths like `/learn/x` aren't checked; only single-segment names are.
+3. `/learn/<slug>` links must point at Slugs that exist on this branch.
