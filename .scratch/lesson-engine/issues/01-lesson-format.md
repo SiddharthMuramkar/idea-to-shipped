@@ -14,13 +14,13 @@ See the spec's "Lessons module", "The parser", "Types", "Question rules" and "Th
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] `npm run test:content` passes with no `.env*` files present, and `npm test` runs both projects
-- [ ] The header accepts `part` 1–4 or no `part`. An unknown key, a bad `part`, a duplicate slug or a duplicate order each fail with the file name(s) in the message
-- [ ] `getLesson` returns the intro and Sections (ids slugified and de-duplicated) with typed blocks of every kind, all five Scene kinds included, and the Final test as one block built from the contiguous `test` fences
-- [ ] `getQuestions(slug)` returns every Checkpoint and Final test question with positional option ids `a`–`d`, the answer and feedback per option, and `null` for an unknown slug
-- [ ] There's one broken fixture per error, each asserting that the message names the file, the block kind and the id:
+- [x] `npm run test:content` passes with no `.env*` files present, and `npm test` runs both projects
+- [x] The header accepts `part` 1–4 or no `part`. An unknown key, a bad `part`, a duplicate slug or a duplicate order each fail with the file name(s) in the message
+- [x] `getLesson` returns the intro and Sections (ids slugified and de-duplicated) with typed blocks of every kind, all five Scene kinds included, and the Final test as one block built from the contiguous `test` fences
+- [x] `getQuestions(slug)` returns every Checkpoint and Final test question with positional option ids `a`–`d`, the answer and feedback per option, and `null` for an unknown slug
+- [x] There's one broken fixture per error, each asserting that the message names the file, the block kind and the id:
   - [ ] no `[x]`, or two `[x]`
   - [ ] missing feedback
   - [ ] fewer than 3 or more than 4 options
@@ -33,10 +33,16 @@ See the spec's "Lessons module", "The parser", "Types", "Question rules" and "Th
   - [ ] a flow `at:` naming an undeclared node
   - [ ] a near-miss kind ("did you mean …?")
   - [ ] a `# ` heading in the body
-- [ ] Fences tagged with an allowlisted language (e.g. `ts`, `text`, `txt`) stay ordinary code
-- [ ] `==mark==` renders `<mark>`, while `a == b` and `===` stay literal. A four-backtick `try` or `site-story` holding a three-backtick code block parses
-- [ ] The runtime parser does no `public/` checks. The course lint checks header photos exist under `public/`
-- [ ] `course.test.ts` implements every course-wide and per-Lesson rule from `docs/authoring-lessons.md`, skips per-Lesson rules for `PENDING_REWRITE`, and passes on today's 12 Lessons
-- [ ] All 12 current Lessons still parse and render exactly as before, and a deliberately broken Lesson fails `npm run build`
+- [x] Fences tagged with an allowlisted language (e.g. `ts`, `text`, `txt`) stay ordinary code
+- [x] `==mark==` renders `<mark>`, while `a == b` and `===` stay literal. A four-backtick `try` or `site-story` holding a three-backtick code block parses
+- [x] The runtime parser does no `public/` checks. The course lint checks header photos exist under `public/`
+- [x] `course.test.ts` implements every course-wide and per-Lesson rule from `docs/authoring-lessons.md`, skips per-Lesson rules for `PENDING_REWRITE`, and passes on today's 12 Lessons
+- [x] All 12 current Lessons still parse and render exactly as before, and a deliberately broken Lesson fails `npm run build`
 - [ ] The full example in `docs/authoring-lessons.md` parses without errors
-- [ ] Existing tests, lint, `tsc --noEmit` and build pass
+- [x] Existing tests, lint, `tsc --noEmit` and build pass
+
+## Comments
+
+- 2026-10-23: Shipped in the first release (branch `lesson-page-v2`). tsc, lint, `npm run test:content` (140 tests, no env), `npm test` (153 tests incl. the Neon test lane) and `npm run build` all pass on the branch. Two-axis `mattpocock-skills:code-review` (Standards + Spec, fixed point d21fc2c): every Standards breach and the Spec defects fixed (9a759e0, f314488); bug hunt round 1 (5 lenses, 2 skeptics per finding): 9 confirmed, all fixed; round 2 stopped early at the user's call to ship.
+- Added since: a meter with no `fill:` line and an empty `title:` are errors (now listed in the contract), and a terminal line that's only `#` is output, as the contract already said.
+- Left open: the full example in `docs/authoring-lessons.md` was not run through the parser.
