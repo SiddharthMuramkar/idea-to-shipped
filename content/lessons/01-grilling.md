@@ -93,14 +93,14 @@ Some Skills only start when you type their name. Matt calls these ==user-invoked
 
 That difference matters in practice. Plain words can start a model-invoked Skill, but never a user-invoked one. If you write "let's grill with docs" in a sentence, the agent can't start `/grill-with-docs` for you; you have to type its name yourself, at the start of your message.
 
-There's a third way in, and it's the one you'll use most once you're working on a real project: `/grill-with-docs`. It runs the same interview *plus* the domain-modeling Skill, which writes the project's terms into a glossary (`GLOSSARY.md`) as you go, and offers a short decision record (an ADR) for the rare choice that's hard to reverse. Matt makes it the first step of his Main flow (the path most work takes, from idea to shipped) whenever you're working in a repo: a project folder tracked with Git. Files in the repo outlive the conversation, so the next session (a fresh Claude Code conversation), or the next agent, can read the words you agreed on. It gets its own Lesson: [Domain modeling](/learn/domain-modeling).
+There's a third way in, and it's the one you'll use most once you're working on a real project: `/grill-with-docs`. It runs the same interview *plus* the domain-modeling Skill, which writes the project's terms into a glossary (`GLOSSARY.md`) as you go, and offers a short decision record (an ADR) for the rare choice that's hard to reverse. Matt makes it the first step of his Main flow (the path most work takes, from idea to shipped) whenever you're working in a project folder (Matt calls it a working directory). Files in that folder outlive the conversation, so the next session (a fresh Claude Code conversation), or the next agent, can read the words you agreed on. It gets its own Lesson: [Domain modeling](/learn/domain-modeling).
 
 | Your situation | Reach for |
 |---|---|
-| No repo, or not code at all: a plan, a decision, a talk, a job offer | `/grill-me` |
-| In a repo: any change you can plan in one sitting, even if building it takes several sessions | `/grill-with-docs` |
+| No project folder, or not code at all: a plan, a decision, a talk, a job offer | `/grill-me` |
+| In a project folder: any change you can plan in one sitting, even if building it takes several sessions | `/grill-with-docs` |
 | A question you can't settle by talking, like how a page should look | `/prototype`, then come back |
-| A huge, foggy effort you can't even plan in one sitting, like a whole new product | `/wayfinder` (Part 4) |
+| A huge, foggy effort you can't even plan in one sitting, like a whole new product | `/wayfinder` |
 | You want the bare interview with no wrapper, or a Skill of your own that needs one | `/grilling` |
 
 ```checkpoint who-can-start
@@ -126,7 +126,7 @@ agent: ❓ **Q1** - **Accounts**: Can Visitors comment without an account? ➡�
 agent: ❓ **Q2** - **Editing**: Should comments be permanent once posted? ➡️ Yes: no editing or deleting in v1.
 agent: ❓ **Q3** - **Order**: Should the newest comments show first? ➡️ Yes.
 # You answer the whole round in one line. "Yes" accepts a recommendation; "no" plus a few words replaces it.
-you: 1 yes, 2 yes, 3 no: oldest first, so it reads like a conversation.
+you: 1 yes, 2 yes, 3 no: oldest first, so it reads like a conversation. And no moderation in v1.
 # It looks facts up itself instead of asking you, and writes down a word you've just settled.
 agent: I checked the project: it already has a Postgres database, so I won't ask which one to use. Added **Visitor** (anyone reading the site; no account) to GLOSSARY.md.
 # Your answers unlock round 2: questions that hung off them are now on the frontier.
@@ -214,7 +214,7 @@ Grilling settled a small change: rename one button and update its tests. The ses
 **Other developers** have built their own habits around it:
 
 - A Hacker News commenter now reaches for `/grill-me` more and more instead of plan mode, and forked it to use Claude Code's built-in question tool for a smoother experience.
-- A Reddit user extended grill-me to save every question, answer and decision to a memory store, because otherwise the decisions only live in the chat. That's the gap `/to-spec` closes by turning them into a spec.
+- A Reddit post shares a prompt for building a grill-me variant that saves every question, answer and decision to a memory store. Without something like that, the decisions only live in the chat. That's the gap `/to-spec` closes by turning them into a spec.
 
 ## Try it yourself
 
@@ -224,7 +224,9 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. In your terminal, make an empty folder and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir book-club && cd book-club && claude
+mkdir book-club
+cd book-club
+claude
 ```
 
 2. Type a slash and the word grill. If `grill-me` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -429,11 +431,11 @@ A friend says: "Grilling is a waste of time. The agent writes good code, so I ju
 ```
 
 ```sources
-- [grilling SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [grill-me SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [grill-with-docs SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md) and [domain-modeling SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (the Main flow, the Smart zone, the prototype detour, `/wayfinder` vs `/grill-with-docs`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/main/README.md) ("The Agent Didn't Do What I Want"; user-invoked vs model-invoked): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [grilling SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/grilling/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [grill-me SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/grill-me/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [grill-with-docs SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/grill-with-docs/SKILL.md) and [domain-modeling SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/domain-modeling/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the Main flow, the Smart zone, the prototype detour, `/wayfinder` vs `/grill-with-docs`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/README.md) ("The Agent Didn't Do What I Want"; user-invoked vs model-invoked): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /grilling Skill](https://www.aihero.dev/skills-grilling), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [The /grill-me Skill](https://www.aihero.dev/skills-grill-me), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (grilling and the `/implement` vs `/to-spec` fork at 8:24–11:23).
