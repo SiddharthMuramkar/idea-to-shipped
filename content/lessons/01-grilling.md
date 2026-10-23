@@ -21,7 +21,7 @@ Before an agent writes a single line of code, let it interview you until you bot
 
 You type one sentence into Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal): "add comments to my site". The agent gets to work. Twenty minutes later you have login screens, a moderation queue and a database table you never asked for, and no way to leave a comment without an account. Nothing is broken. It's just not what you meant.
 
-Matt Pocock, a developer and teacher, publishes a popular set of Skills for Claude Code. A Skill is a short instruction file the agent loads when you type its name, like `/grill-me`, or when a task matches its description. ([Start here](/learn/start-here) covers installing them.) Matt calls the problem above the most common failure in software, with or without AI: ==misalignment==. The README (front-page guide) of his Skills repo borrows a line from *The Pragmatic Programmer*: "No-one knows exactly what they want." You don't, at the start. And an agent can't read your mind, so every gap in your sentence gets filled with a guess. The guesses look confident, so the problem stays hidden until you use what was built.
+Matt Pocock, a developer and teacher, publishes a popular set of Skills for Claude Code. A Skill is a short instruction file the agent loads when you type its name, like `/grill-me`, or when a task matches its description. (The Try it yourself section below shows how to install them.) Matt calls the problem above the most common failure in software, with or without AI: ==misalignment==. The README (front-page guide) of his Skills repo borrows a line from *The Pragmatic Programmer*: "No-one knows exactly what they want." You don't, at the start. And an agent can't read your mind, so every gap in your sentence gets filled with a guess. The guesses look confident, so the problem stays hidden until you use what was built.
 
 The fix is cheap. Questions cost minutes; wrong code costs hours, and a lot of tokens (the small chunks of text that AI usage is measured, and often billed, in). So you flip the direction of the conversation. Instead of you briefing the agent, ==the agent interviews you==. It asks about every decision your idea depends on, suggests an answer for each one, and doesn't stop until nothing is left to guess. That interview is a grilling session.
 
@@ -56,8 +56,8 @@ How long does that take? It varies: Matt's docs on AI Hero give examples from th
 ```scene flow
 title: The frontier moving outward (illustrative)
 node: idea | A comment box under each Lesson
+node: editing | Can comments be edited? | side
 node: accounts | Do Visitors need accounts?
-node: editing | Can comments be edited?
 node: name | Is a name required?
 node: done | Shared understanding
 # Everything starts from your idea, however rough.
@@ -93,7 +93,7 @@ Some Skills only start when you type their name. Matt calls these ==user-invoked
 
 That difference matters in practice. Plain words can start a model-invoked Skill, but never a user-invoked one. If you write "let's grill with docs" in a sentence, the agent can't start `/grill-with-docs` for you; you have to type its name yourself, at the start of your message.
 
-There's a third way in, and it's the one you'll use most once you're working on a real project: `/grill-with-docs`. It runs the same interview *plus* the domain-modeling Skill, which writes the project's terms into a glossary (`GLOSSARY.md`) as you go, and offers a short decision record (an ADR) for the rare choice that's hard to reverse. Matt makes it the first step of his Main flow (the path most work takes, from idea to shipped) whenever you're working in a project folder (Matt calls it a working directory). Files in that folder outlive the conversation, so the next session (a fresh Claude Code conversation), or the next agent, can read the words you agreed on. It gets its own Lesson: [Domain modeling](/learn/domain-modeling).
+There's a third way in, and it's the one you'll use most once you're working on a real project: `/grill-with-docs`. It runs the same interview *plus* the domain-modeling Skill, which writes the project's terms into a glossary (`GLOSSARY.md`) as you go, and offers a short decision record (an ADR) for the rare choice that's hard to reverse. Matt makes it the first step of his Main flow (the path most work takes, from idea to shipped) whenever you're working in a project folder (Matt calls it a working directory). Files in that folder outlive the conversation, so the next session (a fresh Claude Code conversation), or the next agent, can read the words you agreed on. The glossary and decision records get their own Lesson: [Domain modeling](/learn/domain-modeling).
 
 | Your situation | Reach for |
 |---|---|
@@ -183,7 +183,7 @@ When you confirm the summary, the decisions are sitting in the conversation. A s
 **Don't throw the decisions away.** The next step depends on the size of the work:
 
 - **It fits in the room this session has left**, like a small change: type `/implement` (Matt's Skill that builds the agreed change) right here, in the same conversation.
-- **It's a multi-session build**: type `/to-spec` in the same conversation to turn the decisions into a spec (a written description of what to build and why), then `/to-tickets` to split it into tickets (small tasks that can each be built in one session). See [Spec + issues](/learn/spec-and-issues).
+- **It's a multi-session build**: type `/to-spec` in the same conversation to turn the decisions into a spec (a written description of what to build and why), then `/to-tickets` to split it into tickets (small tasks that can each be built in one session). [Spec + issues](/learn/spec-and-issues) shows how this site went through that step.
 
 In his July 2026 walkthrough, Matt judged that a small cleanup fitted his remaining room, so he'd normally type `/implement` there; he took the `/to-spec` road only to demo it. The whole map lives in [The main flow](/learn/main-flow).
 
@@ -219,7 +219,7 @@ Grilling settled a small change: rename one button and update its tests. The ses
 ## Try it yourself
 
 ````try
-You need Claude Code installed and signed in (see [Start here](/learn/start-here)).
+You need Claude Code installed and signed in (Anthropic's [quickstart](https://code.claude.com/docs/en/quickstart) shows how).
 
 1. In your terminal, make an empty folder and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
@@ -436,6 +436,7 @@ A friend says: "Grilling is a waste of time. The agent writes good code, so I ju
 - [grill-with-docs SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/grill-with-docs/SKILL.md) and [domain-modeling SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/domain-modeling/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the Main flow, the Smart zone, the prototype detour, `/wayfinder` vs `/grill-with-docs`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [mattpocock/skills README](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/README.md) ("The Agent Didn't Do What I Want"; user-invoked vs model-invoked): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [Claude Code quickstart](https://code.claude.com/docs/en/quickstart), Anthropic docs (installing and signing in), read 2026-10-23.
 - [The /grilling Skill](https://www.aihero.dev/skills-grilling), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [The /grill-me Skill](https://www.aihero.dev/skills-grill-me), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (grilling and the `/implement` vs `/to-spec` fork at 8:24–11:23).
