@@ -9,7 +9,7 @@ export type Block =
   | { type: "scene"; scene: Scene }
   | { type: "checkpoint"; question: Question }
   | { type: "finalTest"; questions: Question[] }
-  | { type: "callout"; tone: "tip" | "watch-out" | "big-idea"; html: string }
+  | { type: "callout"; tone: CalloutTone; html: string }
   | { type: "try"; html: string }
   | { type: "siteStory"; html: string }
   | { type: "sources"; html: string };
@@ -160,7 +160,7 @@ export function countProseWords(blocks: Block[]): number {
 }
 
 const CALLOUT_TONES = ["tip", "watch-out", "big-idea"] as const;
-type CalloutTone = (typeof CALLOUT_TONES)[number];
+export type CalloutTone = (typeof CALLOUT_TONES)[number];
 
 // How many words each kind takes after its name: checkpoint <id>,
 // test <id>, callout <tone>, scene <type>; the rest take none.
@@ -210,7 +210,7 @@ export function parseBody(file: string, body: string): LessonBody {
   let blocks = intro;
   let prose: Token[] = [];
   // The Final test while its test blocks are still arriving back to back.
-  let openTest: Question[] | null = null;
+  let openFinalTest: Question[] | null = null;
   let hasFinalTest = false;
 
   function flushProse() {
@@ -239,8 +239,8 @@ export function parseBody(file: string, body: string): LessonBody {
     questionIds.add(question.id);
     if (kind === "checkpoint") {
       blocks.push({ type: "checkpoint", question });
-    } else if (openTest) {
-      openTest.push(question);
+    } else if (openFinalTest) {
+      openFinalTest.push(question);
     } else if (hasFinalTest) {
       throw fail(
         "test blocks must sit together (only blank lines between them) to form one Final test",
@@ -248,9 +248,9 @@ export function parseBody(file: string, body: string): LessonBody {
     } else if (sections.length === 0) {
       throw fail("the Final test goes in a Section (after a ## heading), not in the intro");
     } else {
-      openTest = [question];
+      openFinalTest = [question];
       hasFinalTest = true;
-      blocks.push({ type: "finalTest", questions: openTest });
+      blocks.push({ type: "finalTest", questions: openFinalTest });
     }
   }
 
@@ -308,7 +308,7 @@ export function parseBody(file: string, body: string): LessonBody {
     if (token.type === "heading" && (token as Tokens.Heading).depth === 2) {
       flushProse();
       openSection(token as Tokens.Heading);
-      openTest = null;
+      openFinalTest = null;
       continue;
     }
     if (token.type === "code" && token.lang) {
@@ -316,13 +316,13 @@ export function parseBody(file: string, body: string): LessonBody {
       const kind = kindOf(file, word);
       if (kind) {
         flushProse();
-        if (kind !== "test") openTest = null;
+        if (kind !== "test") openFinalTest = null;
         addTypedBlock(kind, args, (token as Tokens.Code).text);
         continue;
       }
     }
     for (const [inner, where] of nestedBlocks(token)) checkNested(file, inner, where);
-    if (token.type !== "space") openTest = null;
+    if (token.type !== "space") openFinalTest = null;
     prose.push(token);
   }
   flushProse();

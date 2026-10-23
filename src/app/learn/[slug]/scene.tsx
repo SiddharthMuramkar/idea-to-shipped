@@ -14,12 +14,13 @@ import { Icon } from "./icons";
 //   column. The figure and its captions share one .scene-run wrapper.
 // - The stepper sets data-stepper="on" and data-active-step on the figure,
 //   and only then may CSS hide items whose step is past the active one (with
-//   opacity, never display or visibility). Kind-specific state it updates:
+//   opacity, never display or visibility), and pin the stage at a fixed
+//   height. Without it the stage takes its full height (globals.css). Kind-specific state it updates:
 //   flow nodes' data-state and aria-current, files rows' data-change, the
 //   meter's --fill, data-zone and the reading marked data-current, and the
 //   terminal command marked data-cursor.
 
-type Kind<K extends Scene["kind"]> = Extract<Scene, { kind: K }>;
+type SceneOf<K extends Scene["kind"]> = Extract<Scene, { kind: K }>;
 
 // Data attributes that are either present (empty) or left out.
 const flag = (on: boolean) => (on ? "" : undefined);
@@ -33,12 +34,14 @@ const DEFAULT_TITLES: Record<Scene["kind"], string> = {
   meter: "Meter",
 };
 
+const titleOf = (scene: Scene) => scene.title ?? DEFAULT_TITLES[scene.kind];
+
 // Every item of every step, in order, tagged with its step number.
 function itemsOf<I>(steps: { items: I[] }[]): (I & { step: number })[] {
   return steps.flatMap((step, i) => step.items.map((item) => ({ ...item, step: i + 1 })));
 }
 
-function Chat({ scene }: { scene: Kind<"chat"> }) {
+function Chat({ scene }: { scene: SceneOf<"chat"> }) {
   const last = scene.steps.length;
   const items = itemsOf(scene.steps);
   return (
@@ -64,7 +67,7 @@ function Chat({ scene }: { scene: Kind<"chat"> }) {
   );
 }
 
-function Terminal({ scene }: { scene: Kind<"terminal"> }) {
+function Terminal({ scene }: { scene: SceneOf<"terminal"> }) {
   const last = scene.steps.length;
   const lines = itemsOf(scene.steps);
   const cursorAt = lines.findLastIndex((line) => line.type === "command");
@@ -96,7 +99,7 @@ function Terminal({ scene }: { scene: Kind<"terminal"> }) {
   );
 }
 
-type FlowNode = Kind<"flow">["nodes"][number];
+type FlowNode = SceneOf<"flow">["nodes"][number];
 
 // Where a flow stands in its final state: when each node is first reached,
 // every step that lands on it, and the node reached last.
@@ -129,15 +132,15 @@ function FlowEdge({ from, to, side = false, state }: { from: string; to: string;
 
 function FlowNodeBox({ node, state }: { node: FlowNode; state: FlowState }) {
   const { id, label, side } = node;
-  const at = id === state.current ? "current" : state.firstReached.has(id) ? "done" : "idle";
+  const progress = id === state.current ? "current" : state.firstReached.has(id) ? "done" : "idle";
   return (
     <div
       className={`flow-node${side ? " flow-node--side" : ""}`}
       data-node={id}
       data-step={state.firstReached.get(id)}
       data-at={state.landings.get(id)?.join(" ")}
-      data-state={at}
-      aria-current={at === "current" ? "step" : undefined}
+      data-state={progress}
+      aria-current={progress === "current" ? "step" : undefined}
     >
       <span className="flow-mark" aria-hidden="true">
         <Icon name="check" />
@@ -147,7 +150,7 @@ function FlowNodeBox({ node, state }: { node: FlowNode; state: FlowState }) {
   );
 }
 
-function Flow({ scene }: { scene: Kind<"flow"> }) {
+function Flow({ scene }: { scene: SceneOf<"flow"> }) {
   const visits = itemsOf(scene.steps);
   const state: FlowState = { firstReached: new Map(), landings: new Map(), current: visits.at(-1)?.at ?? null };
   for (const { at, step } of visits) {
@@ -186,11 +189,13 @@ function Flow({ scene }: { scene: Kind<"flow"> }) {
   );
 }
 
-function Files({ scene }: { scene: Kind<"files"> }) {
+type FileChange = SceneOf<"files">["steps"][number]["items"][number]["change"];
+
+function Files({ scene }: { scene: SceneOf<"files"> }) {
   const last = scene.steps.length;
   // One row per path, in the order paths first appear. A later "~" (or "+")
   // for a path that's already there re-badges its row instead of adding one.
-  const rows = new Map<string, { step: number; history: { step: number; change: string }[] }>();
+  const rows = new Map<string, { step: number; history: { step: number; change: FileChange }[] }>();
   for (const { path, change, step } of itemsOf(scene.steps)) {
     const row = rows.get(path);
     if (row) row.history.push({ step, change });
@@ -225,11 +230,16 @@ function Files({ scene }: { scene: Kind<"files"> }) {
   );
 }
 
-function Meter({ scene, titleId }: { scene: Kind<"meter">; titleId: string }) {
+// The meter's reading in the final state: its last one. The parser insists
+// on at least one; an empty gauge is the fallback if one ever slips through,
+// never a crashed page.
+function latestReading(scene: SceneOf<"meter">) {
+  return itemsOf(scene.steps).at(-1) ?? { fill: 0, label: "Empty", step: 0 };
+}
+
+function Meter({ scene, titleId }: { scene: SceneOf<"meter">; titleId: string }) {
   const readings = itemsOf(scene.steps);
-  // The parser insists on at least one reading; an empty gauge is the
-  // fallback if one ever slips through, never a crashed page.
-  const now = readings.at(-1) ?? { fill: 0, label: "Empty" };
+  const now = latestReading(scene);
   const { zone } = scene;
   return (
     <div
@@ -300,12 +310,11 @@ function SceneBody({ scene, titleId }: { scene: Scene; titleId: string }) {
 
 function zoneOf(scene: Scene): "smart" | "dumb" | undefined {
   if (scene.kind !== "meter" || scene.zone === null) return undefined;
-  const fill = scene.steps.flatMap((step) => step.items).at(-1)?.fill ?? 0;
-  return fill >= scene.zone ? "dumb" : "smart";
+  return latestReading(scene).fill > scene.zone ? "dumb" : "smart";
 }
 
 // The picture itself: a figure with its title as the figcaption.
-export function SceneFigure({ scene, id }: { scene: Scene; id: string }) {
+function SceneFigure({ scene, id }: { scene: Scene; id: string }) {
   const titleId = `${id}--title`;
   return (
     <figure
@@ -323,7 +332,7 @@ export function SceneFigure({ scene, id }: { scene: Scene; id: string }) {
             <span />
           </span>
         )}
-        {scene.title ?? DEFAULT_TITLES[scene.kind]}
+        {titleOf(scene)}
       </figcaption>
       <div className="scene-frame">
         <SceneBody scene={scene} titleId={titleId} />
@@ -342,7 +351,7 @@ export function SceneRun({ scene, id }: { scene: Scene; id: string }) {
       <div className="stage stage--scene">
         <SceneFigure scene={scene} id={id} />
       </div>
-      <ol className="scene-steps" aria-label={`${scene.title ?? DEFAULT_TITLES[scene.kind]}, step by step`} data-reveal-children>
+      <ol className="scene-steps" aria-label={`${titleOf(scene)}, step by step`} data-reveal-children>
         {scene.steps.map((step, i) => (
           <li key={i} className="scene-step" data-step={i + 1}>
             <span className="scene-step-num" aria-hidden="true">

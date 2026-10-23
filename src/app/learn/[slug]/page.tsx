@@ -3,10 +3,9 @@ import { notFound } from "next/navigation";
 import { LessonCard } from "@/app/lesson-card";
 import { PhotoBand, PhotoCredit } from "@/app/photo-band";
 import { Reveal } from "@/app/reveal";
-import { lessons, type Lesson } from "@/lessons/lessons";
-import type { LessonContext } from "./blocks";
+import { courseHasParts, lessons } from "@/lessons/lessons";
 import { Discussion } from "./discussion";
-import { LessonIntro, LessonSection } from "./section";
+import { LessonArticle } from "./section";
 
 export async function generateStaticParams() {
   return (await lessons.listLessons()).map(({ slug }) => ({ slug }));
@@ -33,15 +32,6 @@ export async function generateMetadata({
 // Previous/Next sit two to a row at text width, one per row on phones.
 const NEIGHBOUR_SIZES = "(max-width: 640px) 100vw, (max-width: 860px) 50vw, 380px";
 
-// Numbers each Checkpoint in reading order, for "Checkpoint 2 of 5".
-function checkpointNumbers(lesson: Lesson): Map<string, number> {
-  const numbers = new Map<string, number>();
-  for (const block of [lesson.intro, ...lesson.sections.map((s) => s.blocks)].flat()) {
-    if (block.type === "checkpoint") numbers.set(block.question.id, numbers.size + 1);
-  }
-  return numbers;
-}
-
 // A cached Server Component: it never reads cookies, so every Lesson page
 // is static. What a Visitor has done (Comments, and later Answers) arrives
 // through the client components' own requests.
@@ -49,12 +39,7 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
   const lesson = await loadLesson((await params).slug);
   if (!lesson) notFound();
 
-  const ctx: LessonContext = { slug: lesson.slug, checkpoints: checkpointNumbers(lesson) };
-  // Like the home page's grid, the Part shows only once every Lesson has one.
-  const showPart = lesson.part !== null && (await loadCourse()).every((l) => l.part !== null);
-  // Sections are numbered "01", "02", … in order; the Final test's band has
-  // no number of its own.
-  const numbered = lesson.sections.filter((s) => !s.blocks.some((block) => block.type === "finalTest"));
+  const showPart = courseHasParts(await loadCourse());
 
   return (
     <>
@@ -75,17 +60,7 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
       </PhotoBand>
 
       <div className="lesson" data-lesson={lesson.slug}>
-        <article className="lesson-article">
-          <LessonIntro blocks={lesson.intro} ctx={ctx} />
-          {lesson.sections.map((section) => (
-            <LessonSection
-              key={section.id}
-              section={section}
-              number={numbered.indexOf(section) + 1}
-              ctx={ctx}
-            />
-          ))}
-        </article>
+        <LessonArticle lesson={lesson} />
 
         <div className="discussion-band">
           <Discussion lesson={lesson.slug} />

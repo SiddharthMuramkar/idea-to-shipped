@@ -44,13 +44,15 @@ function parseSteps<I>(
     setting: (key: string, value: string) => void;
     item: (line: string) => I | null;
     describe: string;
+    // A line that's only "#" (no space after it) is an item, not a step.
+    bareHashIsItem?: boolean;
   },
 ): SceneStep<I>[] {
   const steps: SceneStep<I>[] = [];
   for (const raw of lines) {
     const line = raw.trimEnd();
     if (line.trim() === "") continue;
-    const step = /^#(?: (.*))?$/.exec(line);
+    const step = grammar.bareHashIsItem && raw === "#" ? null : /^#(?: (.*))?$/.exec(line);
     if (step) {
       const caption = (step[1] ?? "").trim();
       if (caption === "") throw fail('a step needs a caption after the "# "');
@@ -122,9 +124,11 @@ export function parseScene(file: string, type: string | undefined, body: string)
         itemKeys: [],
         setting: setting(),
         describe: "terminal line",
+        bareHashIsItem: true,
         // "$ command" is typed in; every other line is what it prints. Output
-        // that starts with "#" (a shell comment) is written "\#", since a
-        // plain "# " line starts the next step. The backslash isn't shown.
+        // that starts with "# " (a shell comment) is written "\# ", since a
+        // plain "# " line starts the next step. The backslash isn't shown. A
+        // "#" with no space after it ("#!/bin/sh", or "#" alone) is output.
         item(line) {
           const command = /^\$(?: (.*))?$/.exec(line);
           if (!command) return { type: "output" as const, text: line.replace(/^\\#/, "#") };

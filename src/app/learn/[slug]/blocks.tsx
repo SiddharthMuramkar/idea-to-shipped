@@ -1,8 +1,8 @@
-import type { Block } from "@/lessons/lessons";
+import type { Block, CalloutTone } from "@/lessons/lessons";
 import { htmlToText } from "@/lessons/markdown";
 import { CopyButton } from "./copy-button";
 import { Icon, type IconName } from "./icons";
-import { Checkpoint, FinalTest } from "./question";
+import { Checkpoint } from "./question";
 import { SceneRun } from "./scene";
 
 // What every block on a Lesson page may need to know about the page.
@@ -12,7 +12,7 @@ export type LessonContext = {
   checkpoints: Map<string, number>;
 };
 
-const CALLOUTS: Record<"tip" | "watch-out" | "big-idea", { label: string; icon: IconName }> = {
+const CALLOUTS: Record<CalloutTone, { label: string; icon: IconName }> = {
   tip: { label: "Tip", icon: "tip" },
   "watch-out": { label: "Watch out", icon: "watch-out" },
   "big-idea": { label: "Big idea", icon: "big-idea" },
@@ -28,7 +28,7 @@ function BlockLabel({ icon, children }: { icon: IconName; children: string }) {
   );
 }
 
-type Part = { type: "html"; html: string } | { type: "code"; html: string; text: string };
+type Chunk = { type: "html"; html: string } | { type: "code"; html: string; text: string };
 
 const VOID_TAGS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"]);
 
@@ -36,13 +36,13 @@ const VOID_TAGS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "i
 // between them, so each code block can get a Copy button. Only top-level
 // <pre>s are split out (a code block inside a list item stays where it is,
 // without a button), so the HTML around them is never cut in half.
-function splitCodeBlocks(html: string): Part[] {
-  const parts: Part[] = [];
+function splitCodeBlocks(html: string): Chunk[] {
+  const chunks: Chunk[] = [];
   const tags = /<(\/?)([a-zA-Z][a-zA-Z0-9-]*)\b[^>]*>/g;
   let depth = 0;
   let from = 0;
-  const push = (part: Part) => {
-    if (part.type === "code" || part.html.trim() !== "") parts.push(part);
+  const push = (chunk: Chunk) => {
+    if (chunk.type === "code" || chunk.html.trim() !== "") chunks.push(chunk);
   };
   for (let match = tags.exec(html); match; match = tags.exec(html)) {
     const [tag, closing, rawName] = match;
@@ -68,7 +68,7 @@ function splitCodeBlocks(html: string): Part[] {
     tags.lastIndex = stop;
   }
   push({ type: "html", html: html.slice(from) });
-  return parts;
+  return chunks;
 }
 
 function Goals({ itemsHtml, slug }: { itemsHtml: string[]; slug: string }) {
@@ -96,7 +96,7 @@ function Goals({ itemsHtml, slug }: { itemsHtml: string[]; slug: string }) {
   );
 }
 
-function Callout({ tone, html }: { tone: keyof typeof CALLOUTS; html: string }) {
+function Callout({ tone, html }: { tone: CalloutTone; html: string }) {
   const { label, icon } = CALLOUTS[tone];
   return (
     <aside className={`callout callout--${tone}`} data-reveal>
@@ -112,13 +112,13 @@ function Try({ html }: { html: string }) {
     <div className="try" data-reveal>
       <BlockLabel icon="try">Your turn</BlockLabel>
       <div className="prose try-body">
-        {splitCodeBlocks(html).map((part, i) =>
-          part.type === "html" ? (
-            <div key={i} className="html-part" dangerouslySetInnerHTML={{ __html: part.html }} />
+        {splitCodeBlocks(html).map((chunk, i) =>
+          chunk.type === "html" ? (
+            <div key={i} className="html-part" dangerouslySetInnerHTML={{ __html: chunk.html }} />
           ) : (
             <div key={i} className="code-block">
-              <div className="html-part" dangerouslySetInnerHTML={{ __html: part.html }} />
-              <CopyButton text={part.text} />
+              <div className="html-part" dangerouslySetInnerHTML={{ __html: chunk.html }} />
+              <CopyButton text={chunk.text} />
             </div>
           ),
         )}
@@ -166,7 +166,9 @@ export function BlockView({ block, ctx, sceneId }: { block: Block; ctx: LessonCo
         />
       );
     case "finalTest":
-      return <FinalTest questions={block.questions} slug={ctx.slug} id={`${ctx.slug}--final-test`} titleHtml="Final test" />;
+      // The Final test is a band of its own (FinalTestSection in
+      // section.tsx), never a block in the text.
+      return null;
     case "callout":
       return <Callout tone={block.tone} html={block.html} />;
     case "try":

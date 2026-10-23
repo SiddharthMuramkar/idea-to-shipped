@@ -14,6 +14,8 @@ imageCredit: Ada Lens
 $ cat .env.example
 \# DATABASE_URL is your Neon connection string
 DATABASE_URL=postgres://...
+#!/bin/sh
+#
 # A plain "# " line still starts the next step.
 $ npm test
 ```

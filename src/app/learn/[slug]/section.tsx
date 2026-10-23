@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { Block, Section } from "@/lessons/lessons";
+import { allBlocks, type Block, type Lesson, type Section } from "@/lessons/lessons";
 import { BlockView, type LessonContext } from "./blocks";
 import { FinalTest } from "./question";
 
@@ -23,13 +23,13 @@ export function LessonIntro({ blocks, ctx }: { blocks: Block[]; ctx: LessonConte
 // blocks written after the questions (usually the sources) follow it at text
 // width.
 function FinalTestSection({ section, at, ctx }: { section: Section; at: number; ctx: LessonContext }) {
-  const test = section.blocks[at];
-  if (test.type !== "finalTest") return null;
+  const finalTest = section.blocks[at];
+  if (finalTest.type !== "finalTest") return null;
   const sceneId = `${section.id}--scene`;
   const after = section.blocks.slice(at + 1);
   return (
     <>
-      <FinalTest questions={test.questions} slug={ctx.slug} id={section.id} titleHtml={section.titleHtml}>
+      <FinalTest questions={finalTest.questions} slug={ctx.slug} id={section.id} titleHtml={section.titleHtml}>
         {section.blocks.slice(0, at).map((block, i) => (
           <BlockView key={i} block={block} ctx={ctx} sceneId={sceneId} />
         ))}
@@ -99,5 +99,29 @@ export function LessonSection({ section, number, ctx }: { section: Section; numb
         ),
       )}
     </section>
+  );
+}
+
+// Numbers each Checkpoint in reading order, for "Checkpoint 2 of 5".
+function checkpointNumbers(lesson: Lesson): Map<string, number> {
+  const numbers = new Map<string, number>();
+  for (const block of allBlocks(lesson)) {
+    if (block.type === "checkpoint") numbers.set(block.question.id, numbers.size + 1);
+  }
+  return numbers;
+}
+
+// The Lesson's text: the intro, then every Section. Sections are numbered
+// "01", "02", … in order; the Final test's band has no number of its own.
+export function LessonArticle({ lesson }: { lesson: Lesson }) {
+  const ctx: LessonContext = { slug: lesson.slug, checkpoints: checkpointNumbers(lesson) };
+  const numbered = lesson.sections.filter((s) => !s.blocks.some((block) => block.type === "finalTest"));
+  return (
+    <article className="lesson-article">
+      <LessonIntro blocks={lesson.intro} ctx={ctx} />
+      {lesson.sections.map((section) => (
+        <LessonSection key={section.id} section={section} number={numbered.indexOf(section) + 1} ctx={ctx} />
+      ))}
+    </article>
   );
 }

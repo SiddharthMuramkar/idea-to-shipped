@@ -1,22 +1,31 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { countProseWords, parseBody, type Block, type Section } from "./blocks";
+import { countProseWords, parseBody, type Block, type LessonBody, type Section } from "./blocks";
 import { countWordsIn } from "./markdown";
 import type { Question } from "./questions";
 
-export type { Block, Section } from "./blocks";
+export type { Block, CalloutTone, Section } from "./blocks";
 export type { Question, QuestionOption } from "./questions";
 export type { Scene } from "./scenes";
 
+export type PartNumber = 1 | 2 | 3 | 4;
+
 // The course is split into four Parts, in this order.
-export const PARTS: Record<1 | 2 | 3 | 4, string> = {
+export const PARTS: Record<PartNumber, string> = {
   1: "Foundations",
   2: "The main flow",
   3: "When things go wrong",
   4: "Level up",
 };
 
-export type Part = { number: 1 | 2 | 3 | 4; title: string };
+export type Part = { number: PartNumber; title: string };
+
+// Parts show (the home page's headings, a Lesson's header) only once every
+// Lesson has one. Until then the old Lessons are still being rewritten, and
+// the course reads as one list.
+export function courseHasParts(all: LessonSummary[]): boolean {
+  return all.length > 0 && all.every((lesson) => lesson.part !== null);
+}
 
 // Every place that shows a Lesson shows its photo, so the summary carries it:
 // the photo's path under public/, a description for screen readers, and the
@@ -140,8 +149,13 @@ function checkUnique(lessons: ParsedLesson[]) {
 
 // The Lesson's running-text word count (see countProseWords). The content
 // lint in course.test.ts holds every rewritten Lesson to a range.
-export function countWords(lesson: Pick<Lesson, "intro" | "sections">): number {
-  return countProseWords([lesson.intro, ...lesson.sections.map((s) => s.blocks)].flat());
+export function countWords(lesson: LessonBody): number {
+  return countProseWords(allBlocks(lesson));
+}
+
+// Every block of a Lesson in reading order: the intro, then each Section.
+export function allBlocks(lesson: LessonBody): Block[] {
+  return [lesson.intro, ...lesson.sections.map((section) => section.blocks)].flat();
 }
 
 function summarize(lesson: ParsedLesson): LessonSummary {
@@ -185,7 +199,7 @@ export function lessonsFrom(dir: string) {
     async getQuestions(slug: string): Promise<Question[] | null> {
       const lesson = await getLesson(slug);
       if (!lesson) return null;
-      return [lesson.intro, ...lesson.sections.map((s) => s.blocks)].flat().flatMap((block) =>
+      return allBlocks(lesson).flatMap((block) =>
         block.type === "checkpoint" ? [block.question] : block.type === "finalTest" ? block.questions : [],
       );
     },

@@ -146,7 +146,7 @@ describe("getLesson", () => {
 });
 
 describe("Checkpoints and the Final test", () => {
-  const quiz = lessonsFrom(path.join(fixtures, "questions"));
+  const questionsFixture = lessonsFrom(path.join(fixtures, "questions"));
 
   const checkpoint = {
     id: "who-owns-details",
@@ -200,7 +200,7 @@ describe("Checkpoints and the Final test", () => {
   };
 
   test("a checkpoint block becomes one question, with feedback on every option", async () => {
-    const lesson = await quiz.getLesson("questions");
+    const lesson = await questionsFixture.getLesson("questions");
     expect(lesson?.sections[0].blocks).toEqual([
       { type: "prose", html: "<p>Most bad output starts with an unmade decision.</p>\n" },
       { type: "checkpoint", question: checkpoint },
@@ -209,16 +209,16 @@ describe("Checkpoints and the Final test", () => {
   });
 
   test("test blocks that sit together form one Final test", async () => {
-    const lesson = await quiz.getLesson("questions");
+    const lesson = await questionsFixture.getLesson("questions");
     expect(lesson?.sections[1].blocks).toEqual([{ type: "finalTest", questions: [frontier, spot] }]);
   });
 
   test("getQuestions lists every question in the order the Lesson asks them", async () => {
-    expect(await quiz.getQuestions("questions")).toEqual([checkpoint, frontier, spot]);
+    expect(await questionsFixture.getQuestions("questions")).toEqual([checkpoint, frontier, spot]);
   });
 
   test("getQuestions is null for a Lesson that doesn't exist", async () => {
-    expect(await quiz.getQuestions("nope")).toBeNull();
+    expect(await questionsFixture.getQuestions("nope")).toBeNull();
   });
 
   test.each([
@@ -661,6 +661,8 @@ describe("Scenes", () => {
                 { type: "command", text: "cat .env.example" },
                 { type: "output", text: "# DATABASE_URL is your Neon connection string" },
                 { type: "output", text: "DATABASE_URL=postgres://..." },
+                { type: "output", text: "#!/bin/sh" },
+                { type: "output", text: "#" },
               ],
             },
             {

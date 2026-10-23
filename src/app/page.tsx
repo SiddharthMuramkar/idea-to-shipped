@@ -4,7 +4,7 @@ import { homePhotos } from "@/app/home-photos";
 import { LessonCard } from "@/app/lesson-card";
 import { PhotoBand, PhotoCredit } from "@/app/photo-band";
 import { Reveal } from "@/app/reveal";
-import { lessons, type LessonSummary, type Part } from "@/lessons/lessons";
+import { courseHasParts, lessons, type LessonSummary, type Part } from "@/lessons/lessons";
 
 async function loadLessons() {
   "use cache";
@@ -15,10 +15,9 @@ async function loadLessons() {
 const CARD_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px";
 
 // The Lessons under a heading per Part, in course order. Null until every
-// Lesson has a Part (the old Lessons gain theirs as they're rewritten), and
-// until then the grid stays flat.
+// Lesson has a Part, and until then the grid stays flat.
 function byPart(all: LessonSummary[]): { part: Part; lessons: LessonSummary[] }[] | null {
-  if (all.length === 0 || all.some((l) => l.part === null)) return null;
+  if (!courseHasParts(all)) return null;
   const groups: { part: Part; lessons: LessonSummary[] }[] = [];
   for (const lesson of all) {
     const part = lesson.part!;

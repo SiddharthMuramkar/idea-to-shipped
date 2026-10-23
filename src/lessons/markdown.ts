@@ -28,8 +28,18 @@ const mark: TokenizerAndRendererExtension = {
 };
 
 // The course's own Markdown renderer. It's a private instance, so the global
-// `marked` (and anything else that imports it) is never changed.
-const md = new Marked({ gfm: true, extensions: [mark] });
+// `marked` (and anything else that imports it) is never changed. A checklist
+// ("- [ ] …") is a list to read, not a form, so its boxes are drawn squares
+// hidden from screen readers instead of disabled, unlabeled checkboxes.
+const md = new Marked({
+  gfm: true,
+  extensions: [mark],
+  renderer: {
+    checkbox({ checked }) {
+      return `<span class="task-box"${checked ? " data-checked" : ""} aria-hidden="true"></span>`;
+    },
+  },
+});
 
 export function lex(src: string): Token[] {
   return md.lexer(src);

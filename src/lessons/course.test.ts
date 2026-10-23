@@ -3,7 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
 import { bodyText, lessonNumberMentions, partsGoingBackwards, unknownSlashNames } from "./course-lint";
-import { countWords, lessons, type Block, type Lesson, type LessonSummary } from "./lessons";
+import { allBlocks, countWords, courseHasParts, lessons, type Block, type Lesson, type LessonSummary } from "./lessons";
 
 // The content lint: the real course in content/lessons, checked against the
 // authoring contract (docs/authoring-lessons.md). A failure names the Lesson
@@ -60,10 +60,6 @@ const DEFAULT_WORD_RANGE: [number, number] = [1800, 3000];
 const summaries: LessonSummary[] = await lessons.listLessons().catch(() => []);
 const rewritten = summaries.filter((lesson) => !PENDING_REWRITE.has(lesson.slug));
 
-function allBlocks(lesson: Lesson): Block[] {
-  return [lesson.intro, ...lesson.sections.map((section) => section.blocks)].flat();
-}
-
 function blocksOf<T extends Block["type"]>(lesson: Lesson, type: T) {
   return allBlocks(lesson).filter((block): block is Extract<Block, { type: T }> => block.type === type);
 }
@@ -115,7 +111,7 @@ describe("the course", () => {
 
   test("once every Lesson has a Part, Parts never go backwards as order goes up", async () => {
     const all = await lessons.listLessons();
-    if (all.some((lesson) => lesson.part === null)) return;
+    if (!courseHasParts(all)) return;
     expect(partsGoingBackwards(all)).toEqual([]);
   });
 

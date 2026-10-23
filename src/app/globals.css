@@ -29,6 +29,15 @@
   --line-strong: #c4cad8;
   /* Links on navy: light enough for 4.5:1. */
   --link-on-dark: #a9bcff;
+  /* Code on navy, the Site story's label, and the terminal Scene's window. */
+  --code-on-dark: #e3e8f8;
+  --warm-label: #7a5000;
+  --term-bg: #0b1230;
+  --term-bar: #141d45;
+  --term-text: #d6ddf5;
+  --term-output: #aab4d4;
+  --term-dot-red: #ff6b5f;
+  --term-dot-green: #3fbf6f;
 
   /* Type. Inter for reading, Inter Tight for the bold headings. */
   --font-body: var(--font-inter), system-ui, sans-serif;
@@ -1079,15 +1088,20 @@ html:not([data-header]):has([data-hero]) .site-header {
   display: none;
 }
 
-/* A Scene: its stage, then its captions. On phones the stage pins under the
-   header across its own captions only, then scrolls away with them. At
-   min(34svh, 18rem) it leaves at least 55% of a phone's screen for text. */
+/* A Scene: its stage, then its captions. Until the stepper runs (ticket 04)
+   the Scene shows its final state, every item at once, so its stage takes
+   its full height and scrolls with the page: a pinned, fixed-height stage
+   would only ever show the start of the picture.
+
+   With the stepper on, the stage pins under the header across its own
+   captions only, then scrolls away with them. At min(34svh, 18rem) it leaves
+   at least 55% of a phone's screen for text. */
 .scene-run {
   display: grid;
   row-gap: var(--space-m);
 }
 
-.scene-run > .stage--scene {
+.scene-run > .stage--scene:has([data-stepper="on"]) {
   position: sticky;
   top: calc(var(--header-h) + var(--lesson-bar-h));
   z-index: 2;
@@ -1201,7 +1215,14 @@ html:not([data-header]):has([data-hero]) .site-header {
     display: block;
   }
 
+  /* Beside its captions, a Scene's stage pins only once the stepper runs;
+     until then it sits at the top of its Section at full height. */
   .scene-run > .stage--scene {
+    position: static;
+  }
+
+  .scene-run > .stage--scene:has([data-stepper="on"]) {
+    position: sticky;
     z-index: auto;
     height: min(calc(100svh - var(--stage-top) - var(--space-l)), 50rem);
     margin: 0;
@@ -1278,12 +1299,13 @@ html:not([data-header]):has([data-hero]) .site-header {
 }
 
 /* A checklist ("- [ ] …"): an empty square instead of a bullet. */
-.prose li:has(> input[type="checkbox"]) {
+.prose li:has(> .task-box) {
   list-style: none;
 }
 
-.prose li > input[type="checkbox"] {
-  appearance: none;
+.prose li > .task-box {
+  display: inline-block;
+  box-sizing: border-box;
   width: 1rem;
   height: 1rem;
   margin: 0 0.6em 0 -1.5em;
@@ -1292,7 +1314,7 @@ html:not([data-header]):has([data-hero]) .site-header {
   background: var(--bg);
 }
 
-.prose li > input[type="checkbox"]:checked {
+.prose li > .task-box[data-checked] {
   background: var(--blue);
 }
 
@@ -1367,7 +1389,7 @@ html:not([data-header]):has([data-hero]) .site-header {
   padding: var(--space-m) var(--space-l);
   background: var(--navy);
   border-left: 3px solid var(--amber);
-  color: #e3e8f8;
+  color: var(--code-on-dark);
   font-size: 0.85rem;
   line-height: 1.6;
   overflow-x: auto;
@@ -1592,7 +1614,7 @@ html:not([data-header]):has([data-hero]) .site-header {
 }
 
 .site-story .block-label {
-  color: #7a5000;
+  color: var(--warm-label);
 }
 
 .site-story-body {
@@ -1635,9 +1657,10 @@ html:not([data-header]):has([data-hero]) .site-header {
 }
 
 /* --------------------------------------------------------------------------
-   Scenes: a figure on the stage with its title bar, then a frame. With no
-   JavaScript every item shows (the final state), so a frame that overflows
-   scrolls; ticket 04 shifts the content instead once it steps the Scene.
+   Scenes: a figure on the stage with its title bar, then a frame. Without
+   the stepper every item shows (the final state) and the frame grows to fit
+   them. Once the stepper pins the stage at a fixed height, a frame that
+   overflows scrolls, until ticket 04 shifts the content instead.
    -------------------------------------------------------------------------- */
 .scene {
   display: flex;
@@ -1767,13 +1790,13 @@ html:not([data-header]):has([data-hero]) .site-header {
 
 /* terminal: a navy window, commands after an amber prompt, output below. */
 .scene--terminal {
-  background: #0b1230;
-  border-color: #0b1230;
-  color: #d6ddf5;
+  background: var(--term-bg);
+  border-color: var(--term-bg);
+  color: var(--term-text);
 }
 
 .scene--terminal .scene-title {
-  background: #141d45;
+  background: var(--term-bar);
   border-bottom-color: rgb(255 255 255 / 0.08);
   color: var(--on-dark-muted);
 }
@@ -1788,7 +1811,7 @@ html:not([data-header]):has([data-hero]) .site-header {
   width: 0.6rem;
   height: 0.6rem;
   border-radius: 50%;
-  background: #ff6b5f;
+  background: var(--term-dot-red);
 }
 
 .scene-dots span:nth-child(2) {
@@ -1796,7 +1819,7 @@ html:not([data-header]):has([data-hero]) .site-header {
 }
 
 .scene-dots span:nth-child(3) {
-  background: #3fbf6f;
+  background: var(--term-dot-green);
 }
 
 .scene--terminal .scene-frame {
@@ -1837,7 +1860,7 @@ samp.term-line {
 }
 
 .term-out {
-  color: #aab4d4;
+  color: var(--term-output);
 }
 
 /* A block cursor after the newest command. It doesn't blink. */
@@ -2342,6 +2365,21 @@ samp.term-line {
   line-height: 1.5;
 }
 
+/* Forced-colour modes (Windows High Contrast) replace backgrounds, which
+   would hide the dot and the picked card's tint: keep the dot, and outline
+   the picked card. */
+@media (forced-colors: active) {
+  .option input[type="radio"]::before {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+
+  .option:has(:checked) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
+
 .question-answer {
   margin-top: var(--space-m);
   padding-top: var(--space-s);
@@ -2414,12 +2452,19 @@ samp.term-line {
   margin-bottom: var(--space-l);
 }
 
-.final-test-main .prose {
+/* Blocks written before the questions: plain prose turns light on navy,
+   while boxes keep their own light surface and dark text. */
+.final-test-main > .prose,
+.final-test-main > .prose :is(strong, blockquote, h3) {
   color: var(--on-dark);
 }
 
-.final-test-main .prose a {
+.final-test-main > .prose a {
   color: var(--link-on-dark);
+}
+
+.final-test-main > :is(.callout--tip, .callout--watch-out, .try, .site-story) {
+  color: var(--text);
 }
 
 .final-test-questions {

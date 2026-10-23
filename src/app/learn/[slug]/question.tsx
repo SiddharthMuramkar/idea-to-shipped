@@ -12,13 +12,13 @@ import { Icon } from "./icons";
 // Next keeps up to three visited pages mounted, so two Lessons can be in the
 // DOM at once. Slugs and question ids are kebab-case (single dashes), so "--"
 // can't appear inside either and the parts never run together.
-export function questionIds(slug: string, questionId: string) {
+function questionIds(slug: string, questionId: string) {
   const base = `q--${slug}--${questionId}`;
   return { name: base, option: (optionId: string) => `${base}--${optionId}` };
 }
 
 // One question: the prompt as the legend, then its options as radio cards.
-export function QuestionFields({ question, slug, label }: { question: Question; slug: string; label?: string }) {
+function QuestionFields({ question, slug, label }: { question: Question; slug: string; label?: string }) {
   const ids = questionIds(slug, question.id);
   return (
     <fieldset className="question-fields" data-question={question.id}>
