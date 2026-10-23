@@ -124,9 +124,9 @@ you: `/grill-with-docs` I want a comment box under each Lesson, saved in a datab
 # The agent looks around the project, then asks round 1: the whole frontier, each with a recommendation.
 agent: ❓ **Q1** - **Accounts**: Can Visitors comment without an account? ➡️ Yes: no login in v1.
 agent: ❓ **Q2** - **Editing**: Should comments be permanent once posted? ➡️ Yes: no editing or deleting in v1.
-agent: ❓ **Q3** - **Order**: Should the newest comments show first? ➡️ Yes.
+agent: ❓ **Q3** - **Order**: Should the oldest comments show first, like a conversation? ➡️ Yes.
 # You answer the whole round in one line. "Yes" accepts a recommendation; "no" plus a few words replaces it.
-you: 1 yes, 2 yes, 3 no: oldest first, so it reads like a conversation. And no moderation in v1.
+you: 1 yes, 2 yes, 3 no: newest first, so a new question gets seen. And no moderation in v1.
 # It looks facts up itself instead of asking you, and writes down a word you've just settled.
 agent: I checked the project: it already has a Postgres database, so I won't ask which one to use. Added **Visitor** (anyone reading the site; no account) to GLOSSARY.md.
 # Your answers unlock round 2: questions that hung off them are now on the frontier.
@@ -134,13 +134,13 @@ agent: ❓ **Q4** - **Name**: With no accounts, should a name be optional, shown
 # You steer: you own the scope, it owns the small details.
 you: 4 yes. And don't ask me about CSS or file names: decide those yourself using best practice.
 # The frontier is empty. It summarises and waits for your confirmation before building anything.
-agent: That covers every branch. Anonymous comments, optional name, permanent, oldest first. Out of scope: login, editing, moderation. Is that our shared understanding?
+agent: That covers every branch. Anonymous comments, optional name, permanent, newest first. Out of scope: login, editing, moderation. Is that our shared understanding?
 ```
 
 Notice what you *didn't* have to do: write a plan, list the unusual cases or think about storage. You answered questions and pushed back where a recommendation was wrong.
 
 ```checkpoint confirm-summary
-The agent ends: "Anonymous comments, optional name, permanent, oldest first. Out of scope: login, editing, moderation. Is that our shared understanding?" You actually wanted people to be able to edit a comment for five minutes. What do you do?
+The agent ends: "Anonymous comments, optional name, permanent, newest first. Out of scope: login, editing, moderation. Is that our shared understanding?" You actually wanted people to be able to edit a comment for five minutes. What do you do?
 - [ ] Say yes for now, and ask for editing once the code has been written.
   > Then the code gets built on a decision you don't share. Fixing it now costs one sentence; fixing it later costs a rebuild.
 - [x] Correct it now: editing is in, for five minutes. Then confirm.
