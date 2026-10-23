@@ -97,3 +97,19 @@ Don't run `npm test` (it hits the shared Neon `test` branch, and PR A's suite em
 9. Code-fence languages: case-insensitive, broad allowlist (tree, rust, ruby, go, java, csv, xml, dockerfile, log, http, …). A bare word that looks like a block name (```` ```tip ````, ```` ```chat ````) is an error ("did you mean `callout tip` / `scene chat`?").
 10. `zone: 40` and `zone: 40%` both work; fills may be decimals. A duplicate header key is an error. Exactly one `goals` and one `sources` block. Every Lesson's photo must exist under `public/` in the same commit.
 11. Allowlist (v1.3 plus): `/mattpocock-skills:<skill>`, `/btw` `/reload-skills` `/reload-plugins` `/workflows` `/autocompact` `/simplify` `/security-review` `/loop` `/schedule` `/statusline`. A bare backticked `/learn` fails; write `/learn/` or a real link.
+
+## v1.5 (2026-10-23)
+
+1. **New Scene kind `photos`:** each step cross-fades to a photo. Exactly one `photo: <path> | <alt> | <credit>` line per step; the path starts with `/photos/` and the file must exist in `public/photos` (lint-enforced). Same placement rules as other Scenes. Reuse existing photos freely; new downloads need the user's OK and an entry in `src/app/credits/unsplash.ts`.
+
+````md
+```scene photos
+title: plain text title
+# Caption the reader sees (inline Markdown)
+photo: /photos/grilling.jpg | Alt text describing the photo | Photographer Name
+# Next caption
+photo: /photos/main-flow.jpg | Alt text | Photographer Name
+```
+````
+
+2. **`PENDING_REWRITE`:** in PR B's final commit, after PR A merges and main is synced, delete the `PENDING_REWRITE` set and its uses from `src/lessons/course.test.ts` (the second named exception to "don't touch src/**", alongside `unsplash.ts`). PR A adds a guard test that fails while a rewritten Lesson's slug is still in the set.

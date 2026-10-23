@@ -8,8 +8,12 @@
 
 **Blocked by:** none
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] 20 notes exist, one per Slug
-- [ ] Every fact cites a source with a read-on date
-- [ ] No transcript text is committed
+- [x] 20 notes exist, one per Slug
+- [x] Every fact cites a source with a read-on date
+- [x] No transcript text is committed
+
+## Comments
+
+- Resolved in 3c77457 (20 notes plus cross-lesson findings; private details scrubbed before commit) and 9466fca (community usage, Matt's writing, video catalogue, changes after 1.3.1). Transcripts (21 videos) stay in the session scratchpad.

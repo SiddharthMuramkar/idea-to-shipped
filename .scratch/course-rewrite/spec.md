@@ -2,7 +2,7 @@
 
 Status: ready-for-agent
 
-Read first: `GLOSSARY.md` (use its terms exactly: Lesson, Skill, Main flow, Built-in command, Visitor, Slug) and `docs/adr/0004` (Slugs never change). This spec covers the content half of the course rebuild. The engine half (the parser for typed blocks, scroll scenes, checkpoint quizzes and the final Test stored in Neon) is PR A, on branch `claude/lesson-content-scrolling-ux-2a9171`. This spec deliberately reverses user story 34 and the "Lessons 0–10 text untouched" lines in `.scratch/main-flow-and-redesign/spec.md`.
+Read first: `GLOSSARY.md` (use its terms exactly: Lesson, Skill, Main flow, Built-in command, Visitor, Slug) and `docs/adr/0004` (Slugs never change). This spec covers the content half of the course rebuild. The engine half (the parser for typed blocks, scroll scenes, checkpoint quizzes and the final Test stored in Neon) is PR A, on branch `claude/lesson-content-scrolling-ux-2a9171`. Where this spec and `contract-v1.md` differ, the contract (latest version) wins on sizes, kinds and word counts. This spec deliberately reverses user story 34 and the "Lessons 0–10 text untouched" lines in `.scratch/main-flow-and-redesign/spec.md`.
 
 ## Problem Statement
 
