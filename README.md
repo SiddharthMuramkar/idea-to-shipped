@@ -65,15 +65,21 @@ This is my first full-stack app that actually made it to production. Everything 
 flowchart LR
     V([Visitor]) --> P["Lesson page<br/>/learn/[slug]<br/>static, built at deploy"]
     MD[("content/lessons/*.md")] -. build time .-> P
-    P -- "fetch" --> R["Route Handler<br/>/api/comments<br/>HTTP only"]
-    R --> C["comments module<br/>validation, save, list"]
+    P -- "fetch" --> RC["Route Handler<br/>/api/comments<br/>HTTP only"]
+    P -- "fetch" --> RQ["Route Handlers<br/>/api/answers, /api/attempts,<br/>/api/progress<br/>HTTP only"]
+    RC --> C["comments module<br/>validation, save, list"]
+    RQ --> Q["quiz module<br/>re-grade, save, stats"]
+    MD -. answer key .-> Q
     C --> D["Drizzle ORM"]
+    Q --> D
     D --> N[("Neon Postgres")]
 ```
 
-Every layer has one job. The Route Handler only deals with HTTP. The comments module checks input and decides what's valid. Drizzle builds the SQL, and Neon stores the rows.
+Every layer has one job. The Route Handlers only deal with HTTP. The comments and quiz modules check input and decide what's valid. Drizzle builds the SQL, and Neon stores the rows.
 
 Lessons are files and Comments are database rows, so Postgres can't link them with a foreign key. Instead, each Comment stores its Lesson's permanent **slug**. The comments module rejects any slug that doesn't match a Lesson file. Slugs never change once a Lesson is published. ([ADR 0004](docs/adr/0004-comments-reference-lessons-by-permanent-slug.md))
+
+Checkpoints and the Final test work the same way. Each Answer stores the Lesson's slug plus the question's permanent id from the Lesson file. ([ADR 0005](docs/adr/0005-answers-reference-questions-by-permanent-id.md)) The page ships each question's answer key, so your browser grades the moment you press Check. It then sends your Answer to the API in the background, and the quiz module grades it again from the Lesson file before saving it. The page itself stays static: your own progress only ever arrives through those API calls. ([ADR 0006](docs/adr/0006-anonymous-visitor-cookie-and-server-regrading.md))
 
 ## API
 
@@ -81,8 +87,34 @@ Lessons are files and Comments are database rows, so Postgres can't link them wi
 |---|---|---|---|
 | `GET` | `/api/comments?lesson=<slug>` | `200` + `[{ id, name, body, createdAt }]`, newest first | `400` if the slug is missing or unknown |
 | `POST` | `/api/comments` | `201` + the created Comment | `400` + `{ error }` if the input is invalid |
+| `POST` | `/api/answers` | `201` + the graded Answer and how other Visitors answered | `400` + `{ error }` if the input is invalid; `413` if the body is too large |
+| `GET` | `/api/answers?lesson=<slug>` | `200` + this Visitor's Answers and latest Final test result for that Lesson | `400` if the slug is missing or unknown |
+| `POST` | `/api/attempts` | `201` + the score, whether it passed, and each question's result | `400` + `{ error }` if the input is invalid; `413` if the body is too large |
+| `GET` | `/api/progress` | `200` + `{ passed, tried }`, the slugs of the Lessons this Visitor has passed and tried | none |
 
-The `POST` body is `{ lesson, name?, body }`. `body` is required and must be 1–2000 characters after trimming. `name` is optional, up to 50 characters, and shows as "Anonymous" when empty.
+**Comments.** The `POST` body is `{ lesson, name?, body }`. `body` is required and must be 1–2000 characters after trimming. `name` is optional, up to 50 characters, and shows as "Anonymous" when empty.
+
+**Checkpoints.** The `POST /api/answers` body is `{ lesson, question, option }`:
+
+- `lesson` is a slug.
+- `question` is a question id from that Lesson's file.
+- `option` is the option's position: `a`, `b`, `c` or `d`.
+
+A Final test question can't be answered here: submit the whole Final test instead.
+
+**The Final test.** The `POST /api/attempts` body is `{ lesson, answers: { [questionId]: optionId } }`, with an option for every Final test question in the Lesson. A score of 80% or more passes, and the latest Attempt is the one that counts.
+
+**These four are private to each Visitor:**
+
+- **Every response** sends `Cache-Control: private, no-store`.
+- **The server never trusts the browser's grade.** It re-grades every Answer from the Lesson file before saving it.
+- **Bodies over 4,096 characters** get a `413`.
+
+**The `visitor` cookie.** There are no accounts. A Visitor is known only by a random ID in a cookie called `visitor`: HttpOnly, SameSite=Lax, Secure in production, kept for a year.
+
+- **Only a `POST` sets it,** and every `POST` renews it.
+- **A `GET` without the cookie** returns empty data and never touches the database, so just reading the site never creates an ID.
+- **Nothing else about a Visitor is stored:** no name, no IP address. ([ADR 0006](docs/adr/0006-anonymous-visitor-cookie-and-server-regrading.md))
 
 Try it:
 
@@ -94,6 +126,15 @@ curl "https://idea-to-shipped.vercel.app/api/comments?lesson=grilling"
 curl -X POST http://localhost:3000/api/comments \
   -H "Content-Type: application/json" \
   -d '{"lesson": "grilling", "name": "Ada", "body": "Great lesson!"}'
+
+# Answer a Checkpoint and save the visitor cookie (local dev server).
+# Use a real question id from content/lessons/01-grilling.md.
+curl -c cookies.txt -X POST http://localhost:3000/api/answers \
+  -H "Content-Type: application/json" \
+  -d '{"lesson": "grilling", "question": "<question id>", "option": "b"}'
+
+# See your progress, sending the same cookie back
+curl -b cookies.txt http://localhost:3000/api/progress
 ```
 
 ## Tech stack
@@ -117,13 +158,17 @@ curl -X POST http://localhost:3000/api/comments \
 ├── src/
 │   ├── app/
 │   │   ├── page.tsx        # Home: the ordered list of Lessons
-│   │   ├── learn/[slug]/   # Lesson page + Discussion (comment box)
-│   │   └── api/comments/   # GET and POST /api/comments
+│   │   ├── learn/[slug]/   # Lesson page: blocks, Scenes, Checkpoints, Final test, Discussion
+│   │   └── api/            # comments, answers, attempts, progress
 │   ├── comments/           # Validation, saving and listing Comments
-│   ├── lessons/            # Reading and parsing the Lesson files
+│   ├── quiz/               # Re-grading and saving Answers and Attempts, the visitor cookie
+│   ├── progress/           # The browser's copy of this Visitor's progress (the ticks)
+│   ├── lessons/            # Reading, parsing and checking the Lesson files, plus the course lint
 │   └── db/                 # Drizzle schema and Neon client
 ├── drizzle/                # Migrations (committed, applied on every build)
-├── docs/adr/               # Architecture Decision Records
+├── docs/
+│   ├── adr/                # Architecture Decision Records
+│   └── authoring-lessons.md  # How to write a Lesson: header, blocks, questions, lint
 └── GLOSSARY.md             # The words this project uses, and what they mean
 ```
 
@@ -149,7 +194,7 @@ DATABASE_URL=postgres://...
 ```
 
 > [!WARNING]
-> The tests empty the `comments` table. That's why they only ever read `DATABASE_URL` from `.env.test.local`. Point it at the `test` branch, never at production.
+> The database tests empty the `comments`, `answers` and `test_attempts` tables. That's why they only ever read `DATABASE_URL` from `.env.test.local`. Point it at the `test` branch, never at production.
 
 Then:
 
@@ -159,33 +204,73 @@ npm run db:migrate:test   # apply migrations to the test branch
 npm run dev               # http://localhost:3000
 ```
 
+Only writing Lessons? You don't need a database or either env file for that. `npm install`, then `npm run test:content` checks every Lesson.
+
 ### Scripts
 
 | Command | What it does |
 |---|---|
 | `npm run dev` | Start the dev server |
-| `npm test` | Run the Vitest suite against the Neon `test` branch |
+| `npm test` | Run every test: the content tests, then the database tests against the Neon `test` branch |
+| `npm run test:content` | Check every Lesson file and run the course lint. Needs no database or env file |
 | `npm run lint` | Run ESLint |
-| `npm run build` | Apply migrations, then build for production (what Vercel runs) |
+| `npm run build` | Apply migrations, then build for production (what Vercel runs). A broken Lesson fails it |
 | `npm run db:generate` | Generate a new migration from `src/db/schema.ts` |
 | `npm run db:migrate` | Apply migrations to the dev branch |
+| `npm run db:migrate:test` | Apply migrations to the test branch |
 
 ## Writing a Lesson
 
-Add a file to `content/lessons/` named `NN-<slug>.md`, with this header:
+The full guide, with an annotated example of every block, is [docs/authoring-lessons.md](docs/authoring-lessons.md). The short version follows.
+
+Add a file to `content/lessons/` named `NN-<slug>.md`, where `NN` is its `order` padded to two digits. Start it with this header:
 
 ```markdown
 ---
 title: Grilling
 slug: grilling
 order: 1
+part: 2
+image: /photos/grilling.jpg
+imageAlt: A woman in glasses takes notes while questioning a man across an office desk.
+imageCredit: Vitaly Gariev
 ---
 ```
 
-The page title and position come from the header, not the filename. The `NN-` prefix only keeps the files sorted on disk.
+| Key | What it is |
+|---|---|
+| `title` | The Lesson's title |
+| `slug` | Its permanent id, used in its URL (`/learn/grilling`) |
+| `order` | Its position in the course; must match `NN` |
+| `part` | Its Part: `1` Foundations, `2` The main flow, `3` When things go wrong, `4` Level up |
+| `image`, `imageAlt`, `imageCredit` | Its photo under `public/`, a description for screen readers, and the photographer's name |
+
+Any other key is an error, and so is a slug or `order` that another Lesson already uses. The page title and position come from the header, not the filename.
+
+**The body is Markdown.** `## ` headings split it into Sections, and `==key phrase==` highlights a phrase. The special parts of a Lesson are fenced code blocks whose first word names the kind:
+
+| Block | What it makes |
+|---|---|
+| `goals` | The 3–4 things a Visitor will be able to do, before the first `##` |
+| `scene chat` / `terminal` / `flow` / `files` / `meter` | A Scene that builds step by step as you scroll, at most one per Section |
+| `checkpoint <id>` | One question with instant feedback. It never counts towards passing |
+| `test <id>` | One Final test question. They sit together at the end, and 80% passes |
+| `callout tip` / `watch-out` / `big-idea` | A highlighted box |
+| `try` | A "Your turn" exercise, with copy buttons on its code |
+| `site-story` | How I used it building this site |
+| `sources` | Where the facts come from, as a list of links |
+
+Check your work:
+
+```bash
+npm run test:content   # parse every Lesson and run the course lint (no database needed)
+npm run dev            # then read it at http://localhost:3000/learn/<slug>
+```
+
+A broken Lesson fails the build, and the error names the file, the block and the question id.
 
 > [!IMPORTANT]
-> **Never change a published slug.** Comments are linked to their Lesson by its slug, so renaming one would cut a Lesson off from its Comments.
+> **Never change a published slug or question id.** Comments and Answers are linked to their Lesson by its slug, and Answers to their question by its id, so renaming either cuts them off. You can reword a question and its options, but never reorder or remove options: an option's id is its position (`a`, `b`, `c`, `d`). To change what a question asks, give it a new id. ([ADR 0004](docs/adr/0004-comments-reference-lessons-by-permanent-slug.md), [ADR 0005](docs/adr/0005-answers-reference-questions-by-permanent-id.md))
 
 ## Deployment
 
@@ -208,6 +293,9 @@ The reasons behind the architecture are written down as ADRs:
 2. [One Neon branch per environment, migrations applied on every build](docs/adr/0002-neon-branch-per-environment.md)
 3. [Tests run against a real Neon branch, not a mocked database](docs/adr/0003-tests-hit-real-postgres.md)
 4. [Comments reference file-based Lessons by a permanent slug, with no foreign key](docs/adr/0004-comments-reference-lessons-by-permanent-slug.md)
+5. [Answers reference questions by permanent ids, with no foreign key](docs/adr/0005-answers-reference-questions-by-permanent-id.md)
+6. [Visitors are a random cookie ID, and Answers are graded in the browser, then re-graded on the server](docs/adr/0006-anonymous-visitor-cookie-and-server-regrading.md)
+7. [Lesson blocks are typed fenced Markdown, not MDX, and scroll effects are CSS plus IntersectionObserver, not an animation library](docs/adr/0007-typed-markdown-blocks-and-css-scroll-effects.md)
 
 ## What's not in v1
 
