@@ -1,7 +1,7 @@
 ---
 title: Grilling
 slug: grilling
-order: 1
+order: 4
 part: 2
 image: /photos/grilling.jpg
 imageAlt: A woman in glasses takes notes while questioning a man across an office desk.

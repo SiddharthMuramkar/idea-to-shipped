@@ -1,7 +1,8 @@
 ---
 title: Models, effort & ultracode
 slug: models-effort-ultracode
-order: 10
+order: 19
+part: 4
 image: /photos/models-effort-ultracode.jpg
 imageAlt: A black-and-white close-up of a jet engine's fan blades spiralling into the centre.
 imageCredit: Joao

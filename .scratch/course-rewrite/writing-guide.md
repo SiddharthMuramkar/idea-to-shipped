@@ -101,3 +101,23 @@ Lesson text is in your own words. At most one direct quote per source, under 15 
 ## Before you hand back
 
 Run the local lint: `node <scratchpad>/tools/lint-lesson.mjs <file>` until it prints no ERROR lines. Check every backticked `/name` against the lists above.
+
+## Lessons from the pilot review (grilling, 2026-10-23)
+
+Three reviewers found these problems in the first draft of `grilling`. Avoid them from the start.
+
+- **Every Lesson must stand alone for a cold reader.** Define Claude Code, agent, Skill, token, session, repo, spec, ticket, context window and any mode you mention at first use, in a clause, even if an earlier Lesson defines them properly. Introduce Matt Pocock once ("a developer and teacher who publishes a popular set of Skills for Claude Code").
+- **Don't call a Skill a "command".** The glossary keeps "command" for Built-in commands. Say "type its name" or "type `/name`", not "type the command".
+- **Check every claim about what Matt did against the transcript**, not the research note's paraphrase. (The draft said Matt went straight to `/implement` in his July video; he said he normally would, then demoed `/to-spec`.) Cite the timestamps that cover the claim.
+- **Don't over-claim what a Skill saves or does.** `/grill-with-docs` writes terms to `GLOSSARY.md` and offers an ADR only for rare hard-to-reverse decisions; most decisions live in the conversation until `/to-spec`.
+- **`/grill-with-docs` vs `/wayfinder`**: the split is whether you can *plan* it in one sitting, not whether *building* takes one session. A multi-session build still starts with `/grill-with-docs` and goes `/to-spec` → `/to-tickets`.
+- **Worked examples must model the advice.** Inside a repo, a Scene should use `/grill-with-docs`, not `/grill-me`. Two Scenes must not contradict a rule (e.g. one treating storage as a decision, the other as a fact).
+- **Don't highlight a flow node whose caption says it never happens.**
+- **Paraphrase SKILL.md.** Don't copy a sentence of 15+ words without quotation marks.
+- **Try blocks start from zero:** `mkdir … && cd … && claude`, say Yes to the trust prompt, the plugin install with `/exit` and restart, how to check the mode ("if you see 'plan mode on', press Shift+Tab until it changes"), how to stop it (Esc, or choose No at a permission prompt) and `/exit`. Don't backtick partial names like `/grill`.
+- **Questions test transfer, not recognition.** Use a fresh situation (a book club, a recipe site), not the body's own example sentence. Don't restate the defining phrase of the right answer in the prompt. No distractor about a retired Skill the Lesson never mentions.
+- **Every goal gets at least one Final test question**, and no Checkpoint duplicates a Final test question.
+- **Place each Checkpoint right after the section it checks.**
+- **Keep the session-length story consistent** (one set of numbers, stated once).
+- **Word budget:** aim for 2,300–2,800 words (lint range 1,800–3,000) to leave margin; `try`, `callout` and `site-story` bodies count. Cut repetition (Common mistakes shouldn't restate a whole earlier section; point back to it in one line).
+- **Site story wording:** the author owns decisions. Write "we agreed" or "I decided", not "it decided", for scope.
