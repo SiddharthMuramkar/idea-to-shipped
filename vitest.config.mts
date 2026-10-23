@@ -1,11 +1,33 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
+// Two projects. Inline projects inherit this root config (Vitest 5), so the
+// shared settings live here and each project adds only what differs.
+//   content: the Lesson parser and the course lint. Plain files on disk, no
+//            database and no env files, so `npm run test:content` runs anywhere.
+//   db:      everything else. These tests hit the Neon `test` branch (ADR 0003),
+//            so they load .env.test.local and run one file at a time.
 export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
   test: {
     environment: "node",
-    setupFiles: ["./src/test/setup-env.ts"],
+    projects: [
+      {
+        test: {
+          name: "content",
+          include: ["src/lessons/**/*.test.ts"],
+        },
+      },
+      {
+        test: {
+          name: "db",
+          include: ["src/**/*.test.{ts,tsx}"],
+          exclude: [...configDefaults.exclude, "src/lessons/**"],
+          setupFiles: ["./src/test/setup-env.ts"],
+          fileParallelism: false,
+        },
+      },
+    ],
   },
 });
