@@ -83,3 +83,17 @@ Don't run `npm test` (it hits the shared Neon `test` branch, and PR A's suite em
 
 1. Namespaced Skills are allowed: `/mattpocock-skills:<name>` for any 1.3.1 Skill name (the namespace must be exactly `mattpocock-skills`). A backticked name followed by arguments, like `/code-review max`, isn't checked.
 2. Added Built-in commands: `/btw` `/reload-skills` `/reload-plugins` `/workflows` `/autocompact`.
+
+## v1.4 (2026-10-23): settled by an adversarial review of the parser
+
+1. **Typed blocks only at the top level.** A typed fence inside a list item, a blockquote or another block's body (e.g. a `callout` inside a ````` ````try `````) is an ERROR. Ordinary code fences (`sh`, `text`, …) inside `try` are fine.
+2. **Question prompts are ONE paragraph of inline Markdown.** A prompt line starting with `- `, `* `, `1. `, `> ` or a fence is an error. Put orderings and transcript snippets inside the options (e.g. "grill → spec → tickets") or inline in backticks. Options start at column 0 (`- [ ]`; `[X]` also accepted).
+3. **Terminal Scenes:** `# ` at the start of a line always starts a step. Show an output line beginning with "# " as `\# …` (the backslash is dropped).
+4. **Plain text, no Markdown:** Scene `title:`, flow labels, meter labels, file paths. Captions (`# …`) and chat lines are inline Markdown.
+5. **Placement:** no Scene and no Final test in the intro (before the first `##`). A flow `side` node must come after at least one main node; it hangs off the main node declared just before it. In a files Scene, repeating `~ path` updates that row.
+6. **Word count:** inline `code` spans don't count (same as fenced code).
+7. **"Lesson <digit>"** is checked in the Lesson's own text only, including the Site story and source titles: write "it became the Main flow Lesson", not "it became Lesson 11".
+8. Write comparisons like `a == b` in backticks; bare `==x==` is a highlight.
+9. Code-fence languages: case-insensitive, broad allowlist (tree, rust, ruby, go, java, csv, xml, dockerfile, log, http, …). A bare word that looks like a block name (```` ```tip ````, ```` ```chat ````) is an error ("did you mean `callout tip` / `scene chat`?").
+10. `zone: 40` and `zone: 40%` both work; fills may be decimals. A duplicate header key is an error. Exactly one `goals` and one `sources` block. Every Lesson's photo must exist under `public/` in the same commit.
+11. Allowlist (v1.3 plus): `/mattpocock-skills:<skill>`, `/btw` `/reload-skills` `/reload-plugins` `/workflows` `/autocompact` `/simplify` `/security-review` `/loop` `/schedule` `/statusline`. A bare backticked `/learn` fails; write `/learn/` or a real link.
