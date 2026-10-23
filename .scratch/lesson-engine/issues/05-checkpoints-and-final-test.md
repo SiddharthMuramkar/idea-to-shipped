@@ -35,3 +35,7 @@ See the spec's "Scroll experience" (Block by block: Checkpoint and Final test; A
 - [ ] With JavaScript off, each Checkpoint shows its `<details>` answer and the Final test shows its JavaScript note
 - [ ] With reduce motion on, every state change still happens, without movement
 - [ ] Existing tests, lint, `tsc --noEmit` and build pass. A keyboard-only pass through a Checkpoint and the Final test, and screenshots of a correct, a wrong, a passed and a failed state
+
+## Comments
+
+- 2026-10-23: **Deferred from the first release.** Until this ticket ships, each Checkpoint and Final test question renders a visible "Show the answer" `<details>` and no Check button or score card (`src/app/learn/[slug]/question.tsx`). Question ids and radio names come from `questionIds(slug, questionId)`, not `useId()`, so they stay unique when Next keeps several Lessons mounted. This ticket brings back the Check buttons and the score ring, and decides whether the answer box stays as the no-JavaScript fallback.

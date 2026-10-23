@@ -32,3 +32,7 @@
 - [ ] README, GLOSSARY, `docs/authoring-lessons.md` and ADRs 0005–0007 match the code, and every ticket has a `## Comments` section
 - [ ] The PR is open with a `/pr` body. On its preview, the Neon branch has migrated, `POST /api/answers` returns 201 with a `visitor` cookie, and progress survives a reload
 - [ ] After the merge, the user is reminded that PR B can now sync with main, and that `/retro` is worth running
+
+## Comments
+
+- 2026-10-23: **Done in part, for the first release.** Branch `lesson-page-v2` shipped tickets 01, 03 and 06 without 02, 04, 05 or 08: the gate, a two-axis review and a bug hunt, browser QA at 390px and 1440px, and a Vercel preview check. The quiz behaviour, the Firefox `@supports` path, PR B's drafts and the cookie checks on the preview wait for the tickets they depend on.

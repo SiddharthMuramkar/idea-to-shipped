@@ -36,3 +36,7 @@ See the spec's "Scroll experience" section in full.
 - [ ] No `scroll`, `resize` or `wheel` listeners. Continuous effects use transform and opacity only, plus the two named exceptions (heading `clip-path`, mark `background-size`). CLS reads 0
 - [ ] The new client JavaScript is under 8 KB gzipped (from `next build` output against `main`), with no new dependencies
 - [ ] Existing tests, lint, `tsc --noEmit` and build pass. Mid-scroll screenshots at 3 points on `grilling` (or the example page) at 390px and 1440px, with reduce motion off and on
+
+## Comments
+
+- 2026-10-23: **Deferred from the first release.** Scenes ship in their final state with no stepping. The markup contract that shipped is the one in the header comment of `src/app/learn/[slug]/scene.tsx` (ticket 03): items carry `data-step="<n>"`, and the stepper is to set `data-stepper="on"` and `data-active-step` on the figure. That differs from this ticket's wording (`data-on` / `data-new` on items); follow the shipped markup, or change both together.

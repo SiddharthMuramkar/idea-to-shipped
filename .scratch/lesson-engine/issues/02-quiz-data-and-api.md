@@ -33,3 +33,7 @@ See the spec's "Question data in Neon", "Rules for the data", "The quiz module" 
 - [ ] Module tests (`src/quiz/quiz.test.ts`) and route tests run against the Neon `test` branch with no mocks (ADR 0003), using a fixture Lesson with 2 Checkpoints and a 5-question Final test
 - [ ] The README API section and ADRs 0005 and 0006 match what was built
 - [ ] Existing tests, lint, `tsc --noEmit` and build pass
+
+## Comments
+
+- 2026-10-23: **Deferred from the first release.** The Lesson page shipped first without quizzes (branch `lesson-page-v2`): every question shows its answer in a "Show the answer" box, and nothing is stored. This ticket's code was written but never reviewed or committed. It is kept in the pushed tag `wip/pr-a-2026-10-23` (commit 5296171): `drizzle/0001_*`, `src/db/schema.ts`, `src/quiz/**`, `src/result.ts`, `src/app/api/{answers,attempts,progress}/**`, and the matching edits to `comments.ts`, `next.config.ts` and `src/test/setup-env.ts`. A later copy of two files (a 413 test and `src/test/requests.ts`) is in the local `.handoff/t02-cell/`; that 413 test is expected to fail until `readJson` checks the size before reading the whole body. Start from a fresh branch off `main` and restore these paths from the tag; don't rebase the old branch.

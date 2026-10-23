@@ -76,7 +76,7 @@ What PR A builds:
 
 ## Implementation Decisions
 
-- **Two PRs, one contract.** The authoring contract (v1.1) is frozen and written up in full in `docs/authoring-lessons.md`. PR B is already writing Lessons against it. Any change goes to PR B by message first, and `src/lessons/course.test.ts` catches any drift between the two. File ownership:
+- **Two PRs, one contract.** The authoring contract is written up in full in `docs/authoring-lessons.md` (v1.4, what the parser follows; it started as v1.1). PR B's v1.5 adds the `photos` Scene (ticket 08, not built yet) and the `PENDING_REWRITE` guard (built). PR B is already writing Lessons against it. Any change goes to PR B by message first, and `src/lessons/course.test.ts` catches any drift between the two. File ownership:
   - PR A owns `src/**` (except `src/app/credits/unsplash.ts`), `globals.css`, `drizzle/**`, `GLOSSARY.md`, `docs/adr/**`, `docs/authoring-lessons.md`, the README sections "Writing a Lesson", API, "How it works" and setup, and `content/lessons/01-grilling.md` (only through the pilot cherry-pick).
   - PR B owns every other Lesson file, the renumbering, new photos, `.scratch/course-rewrite/**`, the README Lesson table and the lessons badge.
 - **The Lessons module stays the one seam.** Everything that reads a Lesson goes through its public functions.
