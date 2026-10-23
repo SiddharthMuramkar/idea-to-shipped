@@ -605,6 +605,7 @@ describe("Scenes", () => {
     ["unknown-scene-setting", "colour", 'colour.md: scene chat: unknown setting "colour"'],
     ["item-before-step", "early", 'early.md: scene chat: "you: hello" comes before the first "# " step'],
     ["scene-without-steps", "empty", 'empty.md: scene meter: needs at least one "# " step'],
+    ["meter-without-fills", "gauge", 'gauge.md: scene meter: needs at least one "fill: <0-100>% | label" line'],
     ["bad-scene-line", "stray", 'stray.md: scene files: "src/x.ts" isn\'t a files line ("+ path" or "~ path")'],
     [
       "unknown-scene-type",

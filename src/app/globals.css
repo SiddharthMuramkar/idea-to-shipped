@@ -1166,6 +1166,7 @@ html:not([data-header]):has([data-hero]) .site-header {
 
   .lesson-intro > *,
   .lesson-after > *,
+  .final-test-inner > *,
   .discussion > * {
     max-width: var(--text-col);
   }
@@ -2341,51 +2342,6 @@ samp.term-line {
   line-height: 1.5;
 }
 
-.question-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-s) var(--space-m);
-  margin-top: var(--space-m);
-}
-
-/* Check is the quiet choice until an option is picked. */
-.question-check {
-  background: transparent;
-  color: var(--blue);
-}
-
-.question:has(:checked) .question-check {
-  background: var(--blue);
-  color: var(--on-dark);
-}
-
-/* Not wired up yet (or still loading): it looks unavailable. */
-.question-check[aria-disabled="true"] {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.question-check[aria-disabled="true"]:hover {
-  background: transparent;
-  border-color: var(--blue);
-  color: var(--blue);
-}
-
-/* The status line is reserved, so feedback never pushes the page down. */
-.question-status {
-  flex: 1 1 12rem;
-  min-height: 1.65em;
-  margin: 0;
-}
-
-/* Without JavaScript nothing can check an answer, so there's no button. */
-@media (scripting: none) {
-  .question-check {
-    display: none;
-  }
-}
-
 .question-answer {
   margin-top: var(--space-m);
   padding-top: var(--space-s);
@@ -2420,8 +2376,8 @@ samp.term-line {
 }
 
 /* --------------------------------------------------------------------------
-   The Final test: a navy band of its own, with light question cards and a
-   score card that pins beside them from 1080px (above them on phones).
+   The Final test: a navy band of its own, with light question cards. Its
+   text stays in the left column, like the rest of the Lesson.
    -------------------------------------------------------------------------- */
 .final-test {
   margin-top: var(--space-xl);
@@ -2454,7 +2410,7 @@ samp.term-line {
   font-size: var(--text-lg);
 }
 
-.final-test-main > :not(form) {
+.final-test-main > :not(.final-test-questions) {
   margin-bottom: var(--space-l);
 }
 
@@ -2472,150 +2428,6 @@ samp.term-line {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.final-test-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-s) var(--space-m);
-  margin-top: var(--space-xl);
-}
-
-/* On navy, Check is a white pill. */
-.final-test .final-test-check,
-.final-test .final-test-check[aria-disabled="true"]:hover {
-  background: var(--bg);
-  border-color: var(--bg);
-  color: var(--ink);
-}
-
-.final-test-status {
-  flex: 1 1 14rem;
-  min-height: 1.65em;
-  margin: 0;
-  color: var(--on-dark);
-}
-
-.final-test-noscript {
-  margin: 0;
-  color: var(--on-dark);
-  font-weight: 600;
-}
-
-/* The score card: the ring's slot (ticket 05 draws it) and the pass mark. */
-.score-card {
-  display: flex;
-  align-items: center;
-  gap: var(--space-l);
-  padding: var(--space-l);
-  background: var(--navy-raised);
-  border: 1px solid rgb(255 255 255 / 0.1);
-}
-
-.score-ring {
-  position: relative;
-  flex: none;
-  width: 6rem;
-}
-
-.score-ring svg {
-  display: block;
-  width: 100%;
-  transform: rotate(-90deg);
-}
-
-.score-ring circle {
-  fill: none;
-  stroke-width: 10;
-}
-
-.score-ring-track {
-  stroke: rgb(255 255 255 / 0.14);
-}
-
-.score-ring-fill {
-  stroke: var(--amber);
-  stroke-dasharray: 0 100;
-}
-
-.score-ring-label {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  margin: 0;
-  color: var(--on-dark-muted);
-  font-size: 0.72rem;
-  line-height: 1.15;
-  text-align: center;
-}
-
-.score-ring-label strong {
-  display: block;
-  color: var(--on-dark);
-  font-family: var(--font-heading);
-  font-size: 1.9rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.score-pass {
-  display: grid;
-  gap: 0.2rem;
-  margin: 0;
-}
-
-.score-pass strong {
-  color: var(--on-dark);
-  font-family: var(--font-heading);
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-@media (min-width: 1080px) {
-  .final-test-inner {
-    grid-template-columns: minmax(0, var(--text-col)) minmax(20rem, 1fr);
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      "head score"
-      "main score";
-    column-gap: clamp(2.5rem, 5vw, var(--space-2xl));
-    row-gap: var(--space-xl);
-  }
-
-  .final-test-head {
-    grid-area: head;
-  }
-
-  .final-test-main {
-    grid-area: main;
-  }
-
-  .score-card {
-    position: sticky;
-    top: var(--stage-top);
-    grid-area: score;
-    flex-direction: column;
-    align-self: start;
-    justify-self: center;
-    width: min(100%, 22rem);
-    padding: var(--space-xl);
-    text-align: center;
-  }
-
-  .score-ring {
-    width: 11rem;
-  }
-
-  .score-ring-label {
-    font-size: 0.85rem;
-  }
-
-  .score-ring-label strong {
-    font-size: 3rem;
-  }
 }
 
 /* --------------------------------------------------------------------------

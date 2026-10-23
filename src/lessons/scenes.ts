@@ -201,6 +201,11 @@ export function parseScene(file: string, type: string | undefined, body: string)
           return { fill, label: match[2].trim() };
         },
       });
+      // A step may leave the fill where it was, but the gauge needs a reading
+      // to show at all.
+      if (steps.every((step) => step.items.length === 0)) {
+        throw fail('needs at least one "fill: <0-100>% | label" line');
+      }
       return { kind, title, zone, steps };
     }
   }

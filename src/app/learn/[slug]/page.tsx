@@ -17,6 +17,12 @@ async function loadLesson(slug: string) {
   return lessons.getLesson(slug);
 }
 
+// Header-only summaries of the whole course, to know whether it has Parts yet.
+async function loadCourse() {
+  "use cache";
+  return lessons.listLessons();
+}
+
 export async function generateMetadata({
   params,
 }: PageProps<"/learn/[slug]">): Promise<Metadata> {
@@ -44,6 +50,8 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
   if (!lesson) notFound();
 
   const ctx: LessonContext = { slug: lesson.slug, checkpoints: checkpointNumbers(lesson) };
+  // Like the home page's grid, the Part shows only once every Lesson has one.
+  const showPart = lesson.part !== null && (await loadCourse()).every((l) => l.part !== null);
   // Sections are numbered "01", "02", … in order; the Final test's band has
   // no number of its own.
   const numbered = lesson.sections.filter((s) => !s.blocks.some((block) => block.type === "finalTest"));
@@ -53,7 +61,7 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
       <Reveal />
       <PhotoBand as="header" className="lesson-hero" image={lesson.image} imageAlt={lesson.imageAlt}>
         <p className="eyebrow lesson-eyebrow">
-          {lesson.part && (
+          {showPart && lesson.part && (
             <span>
               Part {lesson.part.number} · {lesson.part.title}
             </span>

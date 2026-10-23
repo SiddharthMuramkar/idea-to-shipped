@@ -227,7 +227,9 @@ function Files({ scene }: { scene: Kind<"files"> }) {
 
 function Meter({ scene, titleId }: { scene: Kind<"meter">; titleId: string }) {
   const readings = itemsOf(scene.steps);
-  const now = readings[readings.length - 1];
+  // The parser insists on at least one reading; an empty gauge is the
+  // fallback if one ever slips through, never a crashed page.
+  const now = readings.at(-1) ?? { fill: 0, label: "Empty" };
   const { zone } = scene;
   return (
     <div
