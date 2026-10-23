@@ -130,6 +130,23 @@ describe("the course", () => {
     const slugs = (await lessons.listLessons()).map((lesson) => lesson.slug);
     expect([...PENDING_REWRITE].filter((slug) => !slugs.includes(slug))).toEqual([]);
   });
+
+  // The guard on the list above: a Lesson that has a Part or any typed block
+  // has been rewritten, and staying on the list would hide it from every
+  // per-Lesson rule below.
+  test("PENDING_REWRITE names only Lessons still in their old journal form", async () => {
+    const rewrittenButPending: string[] = [];
+    for (const slug of PENDING_REWRITE) {
+      const lesson = await lessons.getLesson(slug);
+      if (!lesson) continue;
+      const typed = [...new Set(allBlocks(lesson).map((block) => block.type))].filter((type) => type !== "prose");
+      if (lesson.part !== null || typed.length > 0) {
+        const signs = [...(lesson.part !== null ? [`part ${lesson.part.number}`] : []), ...typed];
+        rewrittenButPending.push(`${slug} (has ${signs.join(", ")}): take it off PENDING_REWRITE`);
+      }
+    }
+    expect(rewrittenButPending).toEqual([]);
+  });
 });
 
 describe.each(rewritten)("Lesson $slug", ({ slug }) => {
