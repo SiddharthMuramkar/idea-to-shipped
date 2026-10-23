@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Fragment } from "react";
 import { LessonCard } from "@/app/lesson-card";
 import { PhotoBand, PhotoCredit } from "@/app/photo-band";
 import { Reveal } from "@/app/reveal";
-import { lessons, type Block } from "@/lessons/lessons";
+import { lessons, type Lesson } from "@/lessons/lessons";
+import type { LessonContext } from "./blocks";
 import { Discussion } from "./discussion";
+import { LessonIntro, LessonSection } from "./section";
 
 export async function generateStaticParams() {
   return (await lessons.listLessons()).map(({ slug }) => ({ slug }));
@@ -23,97 +24,75 @@ export async function generateMetadata({
   return { title: lesson ? `${lesson.title} · Idea to Shipped` : "Not found" };
 }
 
-// STOPGAP until ticket 03 (page layout + blocks) replaces it: just enough to
-// show every block. Prose keeps data-reveal-children so its paragraphs still
-// fade in one by one; Scenes and questions are plain placeholders.
-function Blocks({ blocks }: { blocks: Block[] }) {
-  return blocks.map((block, i) => {
-    switch (block.type) {
-      case "prose":
-        return <div key={i} data-reveal-children dangerouslySetInnerHTML={{ __html: block.html }} />;
-      case "goals":
-        return (
-          <ul key={i} data-block="goals">
-            {block.itemsHtml.map((html, j) => (
-              <li key={j} dangerouslySetInnerHTML={{ __html: html }} />
-            ))}
-          </ul>
-        );
-      case "scene":
-        return (
-          <ol key={i} data-block="scene">
-            {block.scene.steps.map((step, j) => (
-              <li key={j} dangerouslySetInnerHTML={{ __html: step.captionHtml }} />
-            ))}
-          </ol>
-        );
-      case "checkpoint":
-        return <div key={i} data-block="checkpoint" dangerouslySetInnerHTML={{ __html: block.question.promptHtml }} />;
-      case "finalTest":
-        return (
-          <ol key={i} data-block="finalTest">
-            {block.questions.map((question) => (
-              <li key={question.id} dangerouslySetInnerHTML={{ __html: question.promptHtml }} />
-            ))}
-          </ol>
-        );
-      case "callout":
-        return <aside key={i} data-block={`callout-${block.tone}`} dangerouslySetInnerHTML={{ __html: block.html }} />;
-      case "try":
-      case "siteStory":
-      case "sources":
-        return <aside key={i} data-block={block.type} dangerouslySetInnerHTML={{ __html: block.html }} />;
-    }
-  });
+// Previous/Next sit two to a row at text width, one per row on phones.
+const NEIGHBOUR_SIZES = "(max-width: 640px) 100vw, (max-width: 860px) 50vw, 380px";
+
+// Numbers each Checkpoint in reading order, for "Checkpoint 2 of 5".
+function checkpointNumbers(lesson: Lesson): Map<string, number> {
+  const numbers = new Map<string, number>();
+  for (const block of [lesson.intro, ...lesson.sections.map((s) => s.blocks)].flat()) {
+    if (block.type === "checkpoint") numbers.set(block.question.id, numbers.size + 1);
+  }
+  return numbers;
 }
 
-// Previous/Next sit two to a row in the reading column, one per row on phones.
-const NEIGHBOUR_SIZES = "(max-width: 640px) 100vw, (max-width: 860px) 50vw, 420px";
-
+// A cached Server Component: it never reads cookies, so every Lesson page
+// is static. What a Visitor has done (Comments, and later Answers) arrives
+// through the client components' own requests.
 export default async function LessonPage({ params }: PageProps<"/learn/[slug]">) {
   const lesson = await loadLesson((await params).slug);
   if (!lesson) notFound();
+
+  const ctx: LessonContext = { slug: lesson.slug, checkpoints: checkpointNumbers(lesson) };
+  // Sections are numbered "01", "02", … in order; the Final test's band has
+  // no number of its own.
+  const numbered = lesson.sections.filter((s) => !s.blocks.some((block) => block.type === "finalTest"));
 
   return (
     <>
       <Reveal />
       <PhotoBand as="header" className="lesson-hero" image={lesson.image} imageAlt={lesson.imageAlt}>
-        <span className="eyebrow">Lesson {lesson.number}</span>
+        <p className="eyebrow lesson-eyebrow">
+          {lesson.part && (
+            <span>
+              Part {lesson.part.number} · {lesson.part.title}
+            </span>
+          )}
+          <span>
+            Lesson {lesson.number} · {lesson.minutes} min read
+          </span>
+        </p>
         <h1>{lesson.title}</h1>
         <PhotoCredit name={lesson.imageCredit} />
       </PhotoBand>
 
-      <div className="lesson-layout">
-        <article>
-          <div className="prose" data-reveal-children>
-            <Blocks blocks={lesson.intro} />
-            {lesson.sections.map((section) => (
-              <Fragment key={section.id}>
-                <h2 id={section.id} dangerouslySetInnerHTML={{ __html: section.titleHtml }} />
-                <Blocks blocks={section.blocks} />
-              </Fragment>
-            ))}
-          </div>
+      <div className="lesson" data-lesson={lesson.slug}>
+        <article className="lesson-article">
+          <LessonIntro blocks={lesson.intro} ctx={ctx} />
+          {lesson.sections.map((section) => (
+            <LessonSection
+              key={section.id}
+              section={section}
+              number={numbered.indexOf(section) + 1}
+              ctx={ctx}
+            />
+          ))}
+        </article>
+
+        <div className="discussion-band">
+          <Discussion lesson={lesson.slug} />
+        </div>
+
+        {(lesson.previous || lesson.next) && (
           <nav className="prev-next" aria-label="More Lessons" data-reveal-children>
             {lesson.previous && (
-              <LessonCard
-                lesson={lesson.previous}
-                label="Previous"
-                sizes={NEIGHBOUR_SIZES}
-                className="prev"
-              />
+              <LessonCard lesson={lesson.previous} label="Previous" sizes={NEIGHBOUR_SIZES} className="prev" />
             )}
             {lesson.next && (
-              <LessonCard
-                lesson={lesson.next}
-                label="Next"
-                sizes={NEIGHBOUR_SIZES}
-                className="next"
-              />
+              <LessonCard lesson={lesson.next} label="Next" sizes={NEIGHBOUR_SIZES} className="next" />
             )}
           </nav>
-        </article>
-        <Discussion lesson={lesson.slug} />
+        )}
       </div>
     </>
   );
