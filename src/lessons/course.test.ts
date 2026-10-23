@@ -14,7 +14,6 @@ const LESSONS_DIR = path.join(process.cwd(), "content/lessons");
 // each one leaves this list in the commit that rewrites it.
 const PENDING_REWRITE = new Set([
   "start-here",
-  "grilling",
   "domain-modeling",
   "spec-and-issues",
   "wizard",
@@ -31,7 +30,6 @@ const PENDING_REWRITE = new Set([
 // they must never disappear, and each of them tells its Site story.
 const LEGACY_SLUGS = [
   "start-here",
-  "grilling",
   "domain-modeling",
   "spec-and-issues",
   "wizard",
