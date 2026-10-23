@@ -1,0 +1,199 @@
+{
+ "slug": "architecture",
+ "lenses": {
+  "reader": [
+   {
+    "severity": "high",
+    "where": "Try it yourself, step 3 (line 212), with steps 5-7 and the check on line 231",
+    "problem": "The exercise tells the reader to answer No to every permission prompt, but the survey has to write its report and open it. In Manual mode both of those ask first. A reader who follows the step exactly refuses the report write, so no report opens, and the checks 'The report opened from your temp folder' and 'Every card has...' cannot pass.",
+    "evidence": "improve-codebase-architecture SKILL.md step 2 says to write `<tmpdir>/architecture-review-<timestamp>.html` (from $TMPDIR, falling back to /tmp) and then run `open <path>` / `xdg-open` / `start`. how-agents-work line 90 says that in Manual mode 'Editing a file asks. Shell commands ask, apart from a built-in list of read-only ones.' A file outside the project folder, plus an `open` shell command, both prompt.",
+    "fix": "Replace the second half of step 3 with: \"Now the agent asks before it creates or edits a file, or runs most commands. Today, choose Yes only when it asks to create the report file `architecture-review-\u2026.html` in your temp folder (a path starting with `/var/folders/` or `/tmp/`), or to run `open` on that file. Choose No to anything inside the idea-to-shipped folder, such as GLOSSARY.md or a new ADR.\""
+   },
+   {
+    "severity": "medium",
+    "where": "A survey, step by step, item 4 (line 133), and the Try check on line 233",
+    "problem": "The report contains things the Lesson never prepares the reader for. In the 1.3.1 report format each card's benefits appear as 'Wins' bullets, and each card carries a second tag naming a dependency category (`in-process`, `local-substitutable`, `ports & adapters`, `mock`). A cold reader told to 'read every card' meets unexplained tags. They may also mark the 'benefits' check as failed when the heading says 'Wins'.",
+    "evidence": "HTML-REPORT.md, Candidate card: 'Badge row: recommendation strength \u2026 plus a tag for the dependency category (`in-process`, `local-substitutable`, `ports & adapters`, `mock`)' and 'Wins: bullets, \u22646 words each'.",
+    "fix": "Add to item 4: \"Next to the badge, a second tag such as `in-process` or `ports & adapters` names what kind of thing the module talks to; you can ignore it for now. The benefits may be headed 'Wins'.\" Change the check on line 233 to: \"Every card has files, a problem, a solution, benefits (perhaps headed 'Wins'), a before-and-after diagram and a `Strong` / `Worth exploring` / `Speculative` badge, and the report ends with a Top recommendation.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 6 (line 225)",
+    "problem": "The step doesn't say how to pick a candidate or how to answer a round. The report opens in a web browser, but the reader has to go back to the terminal and type their choice there. How to answer numbered questions (for example '1 yes') appears only in the chat Scene, and the \u2753/\u27a1\ufe0f markers are never explained.",
+    "evidence": "Line 225: 'Read every card in the page that opens. Pick one and answer one round of questions.' The only model of an answer is the Scene line `you: Yes to the ADR. 1 yes.`",
+    "fix": "Rewrite step 6 as: \"Read every card in the browser page that opens. Back in the terminal, type the title of the card you pick. The agent then asks numbered questions (\u2753 Q1, \u2753 Q2\u2026), each with its recommended answer after \u27a1\ufe0f. Answer the whole round in one reply by number, for example `1 yes, 2 keep it in one file`. Then type: \"Stop here. I'm not changing anything today.\"\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 2 (line 206) into step 4",
+    "problem": "The step says 'the list' without saying that a list pops up. It also never tells the reader to clear the '/improve' they just typed. Left in place, that text sits in front of the warm-up prompt pasted in step 4, and the message starts with the wrong name.",
+    "evidence": "Line 206: 'Type a slash and the word improve. If `improve-codebase-architecture` isn't in the list\u2026'. The pilot's wording: 'If `grill-me` isn't in the list that pops up'.",
+    "fix": "\"Type a slash and the word improve. A list of matching Skills pops up. If `improve-codebase-architecture` is in it, delete what you typed with Backspace. If it isn't, type `/exit`, install Matt's Skills, then run `claude` again:\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, checks on lines 230-231",
+    "problem": "Two checks are hard to verify exactly as written. (1) The test code uses several fixture folders (valid, missing-title, missing-image\u2026), so the agent may say 'many adapters' or 'one per fixture folder' and the reader thinks the warm-up failed. (2) 'The report opened from your temp folder' and '`git status` says nothing changed' don't give the text the reader will actually see. On macOS the temp folder is /var/folders/\u2026, which a beginner won't recognise.",
+    "evidence": "src/lessons/__fixtures__/ has valid/, missing-title/, missing-image/, missing-image-alt/, missing-image-credit/, and lessons.test.ts calls lessonsFrom on several of them. SKILL.md: 'tell them the absolute path'.",
+    "fix": "Line 230: \"The warm-up called the Lessons module deep and said `lessonsFrom(dir)` has at least two adapters: the real `content/lessons` folder and the test folders of fake Lessons.\" Line 231: \"The report's path, which the agent printed, starts with `/var/folders/` or `/tmp/`, not inside idea-to-shipped, and `git status` printed `nothing to commit, working tree clean`.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Body text, terms used before or without explanation",
+    "problem": "Several terms reach a cold reader before their definition, or never get one: 'tests' (line 24, defined only at line 61); 'Markdown files' and 'header' (line 34); 'Git-tracked' (line 63; Git is explained only in the Try block); 'Postgres' (line 63); 'driver Skill' (line 110); 'router Skill' (line 112); 'spec' and 'tickets' (used in the `/to-spec` and `/to-tickets` names at line 137 and in Checkpoint feedback at line 166, defined only at lines 175-176); 'auto mode' (line 185, never defined); 'front end and back end' (line 185); 'README' (line 184); 'pass-through' (line 59).",
+    "evidence": "Line 24: 'Good structure also makes good tests possible, and tests are how the agent checks its work'. Line 110: 'let a driver Skill run the session'. Line 185: 'he switched auto mode off first'. Writing guide: 'Explain every term at or before first use, in a clause \u2026 Define \u2026 spec, ticket \u2026 and any mode you mention at first use.'",
+    "fix": "Line 24: 'good tests (small programs that check the code does what it should)', then on line 61 just say 'the tests'. Line 34: 'reads the Lesson files (plain-text Markdown files), checks each file's header (the title, Slug and photo at its top)'. Line 63: 'the real Postgres database (the database software this site uses)' and 'kept in the repo, the project's folder tracked by Git, the tool that records its history'. Line 110: 'let a driver Skill (one with steps and a point where it stops) run the session'. Line 112: 'Matt's router Skill, `/ask-matt`, which points you to the right Skill for a job'. Line 137: 'take the decision into `/grill-with-docs` or `/to-spec` (which writes it up as a spec, the written plan), then `/to-tickets` (which splits the spec into tickets, small tasks one session can finish) and `/implement`'. Line 185: 'he switched off auto mode (where Claude Code approves its own actions without asking you)' and 'two separate implementations, in the browser code and the server code'. Line 184: 'His README (the front page of his Skills repo)'. Line 59: 'it was a pass-through (code that only hands the call on)'."
+   },
+   {
+    "severity": "medium",
+    "where": "The words, adapter bullet (line 37), and the flow Scene, first caption (line 78); Site story table (line 259)",
+    "problem": "The adapter definition is abstract and has no example until line 61. The first Scene caption then calls the comments route 'a thin adapter' without saying what a route is or which seam it fills. A beginner who just learned 'an adapter is a concrete thing that plugs into a seam' can't see why a route counts as one.",
+    "evidence": "Line 37: 'An adapter is a concrete thing that plugs into a seam. The word names the slot it fills, not what's inside.' Line 78: 'The route only turns web requests into calls to the comments module: a thin adapter, on purpose.' 'route' is never defined anywhere in the Lesson.",
+    "fix": "Line 37: add 'For example, the real database in the live app and a fake one in tests are two adapters at the same seam.' Line 72 / 78: define the route on first use: '# The comments route (the code that answers when a Visitor posts a Comment) only turns web requests into calls on the comments module's interface. It's the web's adapter to that module, thin on purpose.'"
+   },
+   {
+    "severity": "medium",
+    "where": "Skill names used without saying what they do (lines 108, 110, 137, 284; tests scenario-settle-words and scenario-grown-fast)",
+    "problem": "`/tdd`, `/grill-with-docs`, `/to-spec`, `/to-tickets` and `/implement` appear as if the reader knows them. A cold reader can't tell what 'let a driver Skill \u2026 such as `/grill-with-docs`, `/improve-codebase-architecture` or `/tdd`' would do. The Final test also opens 'Halfway through a `/tdd` session'.",
+    "evidence": "Line 108: '`/tdd` and `/improve-codebase-architecture` both lean on it.' Line 110: 'such as `/grill-with-docs`, `/improve-codebase-architecture` or `/tdd`'. None of the three is glossed.",
+    "fix": "First mention on line 108: '`/tdd` (Matt's Skill for building test-first) and `/improve-codebase-architecture` both lean on it.' Line 110: 'such as `/grill-with-docs` (an interview that also updates the glossary), `/improve-codebase-architecture` or `/tdd`'. Line 137: gloss `/to-spec` and `/to-tickets` as in the earlier finding, and add '`/implement` (which builds one ticket)'."
+   },
+   {
+    "severity": "medium",
+    "where": "Jargon that appears only in Scenes, Checkpoints, the Final test and the Site story",
+    "problem": "Several words are never explained: 'diff' (chat Scene caption, line 153, and spot-carried-on feedback, line 352); 'mock' / 'Mocking' (spot-one-adapter option b, line 341); 'in-memory fake' (line 344); 'effort setting' (Checkpoint reference-not-driver, line 118); 'only speaks HTTP' and 'is this a JSON object?' (Site story, line 265); 'blind judge' and 'Go service' (line 193); 'the Lesson check' (line 80).",
+    "evidence": "Line 153: '# It ends with a decision, not a diff.' Line 341: 'The tests should mock the database instead.' Line 265: 'moved the \"is this a JSON object?\" check \u2026 the route \u2026 only speaks HTTP'.",
+    "fix": "Line 153 and line 352: 'not a code change'. Line 341: 'The tests should mock the database (swap in a fake one) instead.' Line 344: 'like a fake database the tests keep in memory'. Line 265: 'moved the \"is this posted data even the right shape?\" check out of the route and into `postComment` \u2026 the route only handles the web request'. Line 193: 'on a 20,000-line program written in Go, a judge who didn't know which output was which slightly preferred\u2026'. Line 80: 'input checks, the check that the Lesson exists, length limits'. Line 118: 'Your effort setting (how hard the model thinks) was too low'."
+   },
+   {
+    "severity": "low",
+    "where": "Why it matters, line 22 vs line 24",
+    "problem": "'Skills' is used (Matt 'publishes a popular set of Skills') a paragraph before it is defined on line 24.",
+    "evidence": "Line 22: 'who publishes a popular set of Skills for Claude Code'. Line 24: 'A Skill is a short instruction file\u2026'.",
+    "fix": "Move the line-24 definition up, or gloss it in place: 'publishes a popular set of Skills (short instruction files the agent loads on demand) for Claude Code'."
+   },
+   {
+    "severity": "low",
+    "where": "Try it yourself, step 3 (line 212)",
+    "problem": "'Status bar' is not explained, and it differs from the course's wording elsewhere ('the label under the prompt box').",
+    "evidence": "Pilot and how-agents-work line 108: 'the label under the prompt box shows the current one'.",
+    "fix": "\"If the label under the prompt box says 'auto mode on', press Shift+Tab until it says 'manual mode on'.\""
+   },
+   {
+    "severity": "low",
+    "where": "Chat Scene, third step (line 146)",
+    "problem": "The Scene shows a bare file name. The Skill tells the agent to print the absolute path, and the Try check depends on the reader seeing a temp-folder path.",
+    "evidence": "SKILL.md: 'tell them the absolute path'. Line 146: 'Report written to your temp folder and opened: architecture-review-20261023-1412.html'.",
+    "fix": "agent: Report written and opened: /var/folders/\u2026/T/architecture-review-20261023-1412.html. Three candidates. \u2026"
+   },
+   {
+    "severity": "low",
+    "where": "Chat Scene, Q1 line (line 150) and caption (line 151)",
+    "problem": "The \u2753/\u27a1\ufe0f markers and the reply '1 yes' are never explained, so the caption sequence doesn't tell the reader that '1 yes' accepts the recommendation for Q1.",
+    "evidence": "Line 151: '# You answer the round in one line.' Line 152: 'Yes to the ADR. 1 yes.'",
+    "fix": "Caption line 149: '# It offers to record the rejection, then starts grilling: each question (\u2753) comes with its recommended answer (\u27a1\ufe0f).' Caption line 151: '# You answer the round in one line: \"1 yes\" accepts the recommendation for question 1.'"
+   },
+   {
+    "severity": "low",
+    "where": "Repetition: Site story line 263; How Matt bullet line 186; Common mistakes lines 242-246",
+    "problem": "Issue #449 is retold in the Site story after being told in full on line 110. 'One at a time' (line 186) repeats 'One candidate per session' from Your part. Common mistakes restates the Checkpoint and Your part points almost word for word. This is padding for a reader who just read them.",
+    "evidence": "Line 263: 'issue #449 shows the same Skill, handed a session to drive, spiralling for 105k tokens.' Line 186 versus line 175.",
+    "fix": "Cut the #449 sentence from the Site story, or shorten it to 'Compare the spiral in issue #449 above.' Merge line 186 into line 184: '\u2026 every few days, and one candidate at a time, since these decisions need taste.'"
+   },
+   {
+    "severity": "low",
+    "where": "Site story, line 263",
+    "problem": "Lowercase 'lesson' in its everyday sense, inside a course where 'Lesson' is a GLOSSARY term for a page of the course.",
+    "evidence": "'knowing when not to restructure is a useful lesson too'",
+    "fix": "'knowing when not to restructure is worth learning too.'"
+   },
+   {
+    "severity": "low",
+    "where": "Lines 176, 248 and test scenario-big-build",
+    "problem": "'Matt's docs' is never identified, so a reader can't tell whether it means the SKILL.md, the README or the AI Hero site.",
+    "evidence": "Line 176: 'Matt's docs suggest pointing it at the spec'. Line 248: 'Matt's docs are firm'.",
+    "fix": "On first use: 'Matt's docs on his AI Hero site suggest\u2026'."
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "high",
+    "where": "content/lessons/16-architecture.md:337-347 (test spot-one-adapter)",
+    "problem": "This question has two defensible answers, and it copies the body's own example. Option b (\"The tests should mock the database instead\") is a real fix: a test fake is a second adapter, and the right option's own feedback recommends exactly that (\"Add the seam when a second adapter, like an in-memory fake for tests, actually exists\"). The setup (a store in front of Postgres, one adapter, tests on a real database) is lines 63 of the body almost word for word, so it tests recognition rather than transfer. Its \"swap it later\" premise also repeats Checkpoint real-seam's option b (\"You might switch... one day\").",
+    "evidence": "Line 344: the feedback on [x] says to add the seam once an in-memory fake exists, which is what option b proposes. Line 63: \"The comments module talks to the database directly, and only one adapter ever fills that slot: the real Postgres database. Even the tests use a real copy\". Line 96: \"You might switch to a different email provider one day.\"",
+    "fix": "Turn it around so it tests the same rule in a fresh setting (rename the id while it is still unpublished):\n```test spot-removed-seam\nKai deletes the app's `PaymentGateway` interface, calling it \"a pass-through\". The live app plugged Stripe into it, and the tests plugged in a fake that records charges. Spot the mistake.\n- [ ] His call was right: one function is too shallow to keep.\n  > One function can hide a lot, and a seam is judged by what varies across it. Here two things did.\n- [ ] It should have been renamed a boundary, since Stripe sits outside the app.\n  > The vocabulary bans \"boundary\". The name was never the problem.\n- [x] Two adapters filled it, so it was a real seam worth keeping.\n  > Right. The real gateway and the test fake both plug in there. Without it, every test needs real Stripe.\n- [ ] The deletion test backs him, because the live app still runs without it.\n  > Look at every caller, tests included: each would now need real Stripe or its own workaround. The complexity comes back, so it was earning its keep.\n```\nIf you would rather keep a one-adapter question, move it to a fresh setting (for example a `SettingsSource` around a settings file, \"in case we move to a settings server\", with tests reading a real sample file). Then replace option b with \"Settings code is too small to be a module at all.\" and this feedback: \"A module can be any size, even one function. Size isn't the issue.\""
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/16-architecture.md:157-167 (checkpoint after-the-report) vs 349-359 (test spot-carried-on)",
+    "problem": "The Checkpoint duplicates a Final test question. Both have the same correct move (one candidate, then the Main flow) and the same distractors (build now, commit the HTML, do the other candidates), and they share the feedback line \"Carry the decision forward, not the file.\" The writing guide forbids a Checkpoint that duplicates a Final test question, and a reader who just answered the Checkpoint gets the test question free.",
+    "evidence": "Line 161: \"Commit the HTML file so the team can work through all nine.\" Line 357: \"Commit the HTML report first, so the edits can point back to it.\" Lines 162 and 358 have the same feedback. Lines 159 and 351 are both \"build it now\". Line 355 is \"do the other candidates too\".",
+    "fix": "Keep spot-carried-on. Replace the Checkpoint with one on another part of the \"A survey, step by step\" section, the ADR offer (new id, right answer in position d):\n```checkpoint turned-down\nMid-grilling, you turn a candidate down for good: \"Orders stay in one table, because the finance team queries it by hand.\" What does the Skill offer to do next?\n- [ ] Add \"one table\" to `GLOSSARY.md` as a project term.\n  > The glossary holds the project's domain words, like Order. A lasting design decision belongs in an ADR.\n- [ ] Rewrite the report so that card is hidden from your teammates.\n  > The report is a one-off file in your temp folder. The record that lasts lives in the repo.\n- [ ] Move on and refactor the next candidate on the list.\n  > It never changes code, and it works on the one candidate you picked.\n- [x] Record an ADR, so later surveys don't suggest it again.\n  > Right. It offers this only for a lasting reason a future survey would need, not for \"not right now\".\n```\nRe-run the lint to confirm the right option is not the longest."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/16-architecture.md:16 (goal 3) vs Final test 289-407",
+    "problem": "Goal 3 includes \"read its report\", but no Final test question checks whether the reader can interpret a report: the badges, the Top recommendation, or what an all-Speculative report means. Only the Checkpoint touches badges, and Checkpoints don't count. scenario-legacy, meanwhile, recalls a \"How Matt uses it\" bullet that matches no goal: its right answer restates line 187 almost word for word.",
+    "evidence": "Line 177: \"If every card is `Speculative`, it found nothing worth doing.\" Line 187: \"he recommends starting here, to find the seams where tests can go.\" Line 321: \"Run the survey to find seams where tests can go.\"",
+    "fix": "Replace scenario-legacy with a report-reading question. This keeps 3 scenario- ids (grown-fast, big-build, settle-words) and puts the right answer in d:\n```test spot-all-speculative\nAna's survey report has four cards, every one badged `Speculative`. Feeling the run must produce something, she turns all four into tickets. What's the mistake?\n- [ ] Four is too few; she should rerun it until a `Strong` card appears.\n  > It exists to find things, so rerunning pushes it to stretch. A thin report is a real answer.\n- [ ] She should have taken just the Top recommendation into the Main flow.\n  > Even the top card is `Speculative`. The Top recommendation names the best of what it found, not proof it's worth doing.\n- [ ] She should grill all four in one session to decide faster.\n  > One candidate per session, and here none of them has earned a grilling.\n- [x] Nothing was worth doing; she can leave the code alone.\n  > Right. An all-`Speculative` report means the code is in decent shape. Changing nothing is a valid outcome.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/16-architecture.md:397-407 (test why-locality)",
+    "problem": "The prompt restates the right answer's defining phrase. \"I fixed the rounding bug once, and every page... got the fix\" is the highlighted line 39 \"fix it once, fixed everywhere\", so this is recognition. The framing also leans on many callers (\"every page that shows a price\"), which is how the Skill defines leverage (\"One implementation pays back across N call sites\"). That is why option b's feedback has to open with \"Close, but\". Option d (shallowness because the fix was small) isn't a real misconception.",
+    "evidence": "Line 39: \"==fix it once, fixed everywhere==\". Line 398: the prompt. Line 402: \"Close, but leverage is what callers get\". codebase-design SKILL.md: \"Leverage... One implementation pays back across N call sites and M tests.\"",
+    "fix": "```test why-locality\nBefore a deepening, fixing a rounding bug meant hunting through five files that each rounded prices their own way. Now there's one place to look and one place to change. Which benefit of depth is that?\n- [x] Locality, which maintainers get\n  > Right. Change, bugs and checking now live in one place, so a fix there is a fix everywhere.\n- [ ] Leverage, which callers get\n  > Leverage is what callers get: more capability per thing they learn. This is about where a maintainer has to look and change.\n- [ ] A real seam, since prices now pass through one spot\n  > A seam is where adapters can be swapped. Nothing is being swapped here.\n- [ ] Depth in the implementation, since the module now holds more code\n  > Depth is measured at the interface, not by how much code sits inside. What the maintainer feels here is locality.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/16-architecture.md:301-311 (test scenario-big-build)",
+    "problem": "This is recall, not transfer. The prompt asks what \"Matt's docs suggest\", and the right answer restates line 176 almost word for word (\"pointing it at the spec and asking 'how can we make this change easy?'\"). A reader can match the sentence without understanding why a direction matters (hot-spot scoping).",
+    "evidence": "Line 176: \"Before a big build, Matt's docs suggest pointing it at the spec (the written plan) and asking 'how can we make this change easy?'\" Line 303: \"Point it at the spec and ask how to make that change easy.\"",
+    "fix": "Ask about the consequence instead. The right answer stays in position a:\n```test scenario-big-build\nNext week you build a large feature from a finished spec. It reworks the checkout code, which nobody has touched in a year. Today you type `/improve-codebase-architecture` with nothing after it. What's the risk?\n- [x] It follows recent changes, so it may never look at checkout.\n  > Right. With no direction it follows the hot spots in the history. Point it at the spec and ask how to make that change easy.\n- [ ] It will start refactoring the checkout code before you're ready.\n  > It never changes code. The risk is where it looks, not what it edits.\n- [ ] With no direction it won't run until you name a module.\n  > It doesn't need one: it infers hot spots from the history. That's exactly why it may miss checkout.\n- [ ] It skips `GLOSSARY.md` and the ADRs when no direction is given.\n  > It reads the project's words and decisions either way. The problem is the scope it picks.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/16-architecture.md:367-368 (test spot-layered-tests, option c feedback)",
+    "problem": "The feedback contradicts the Lesson's own principle. Line 68 says a deep module may have \"private internal seams its own tests use\", and DEEPENING.md allows internal seams. The feedback calls such a seam \"testing past the interface with extra steps\". It also says \"A seam needs two real adapters\", which reads as if a test fake didn't count as an adapter, against line 61 and the Checkpoint real-seam.",
+    "evidence": "Line 68: \"A deep module can be built from small parts, even with private internal seams its own tests use.\" Line 368: \"That's testing past the interface with extra steps. A seam needs two real adapters, not a wish to fake things.\"",
+    "fix": "Replace line 368 with: \"  > Internal seams are allowed, but they don't fix this: the old tests would still target the parts inside. Test at the interface and delete the rest.\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/16-architecture.md:385-395 (test predict-deletion)",
+    "problem": "The prompt does the deletion test for the reader (\"If you deleted it, each of those would need its own tax rules...\"), so the reader only has to match \"complexity reappears\" to \"earning its keep\".",
+    "evidence": "Line 386: \"If you deleted it, each of those would need its own tax rules, discounts and rounding. What does the deletion test say?\"",
+    "fix": "Prompt: \"A `priceFor(cart)` function holds the tax rules, discounts and rounding, and the cart page, checkout, invoices and receipt emails all call it. Run the deletion test on it. What's the verdict?\" Option a feedback: \"A pass-through is one whose complexity vanishes when it's deleted. Delete this and the tax rules, discounts and rounding come back in four callers.\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/16-architecture.md:373-383 (test sequence-survey)",
+    "problem": "The wording gives the answer away. The right option is the only one with five steps and the only one containing \"you pick one\", so a reader can choose it as the most complete-looking option.",
+    "evidence": "Line 379: \"Find hot spots in the history \u2192 explore \u2192 report \u2192 you pick one \u2192 grill\". Every other option has three steps.",
+    "fix": "Give every option four steps. Keep c right and not the longest:\n- [ ] Ask you which module to explore \u2192 explore \u2192 report \u2192 grill\n  > With no direction it doesn't ask first: it reads the history for hot spots. You choose after the report.\n- [ ] Explore every folder evenly \u2192 report \u2192 grill on its top pick\n  > It starts from the hot spots, and it grills only on the candidate you pick, not its own favourite.\n- [x] Find hot spots \u2192 explore \u2192 report \u2192 grill the one you pick\n  > Right. Scope, explore, report and stop; the grilling runs only on the candidate you chose.\n- [ ] Write the report \u2192 refactor the `Strong` cards \u2192 grill the rest\n  > It never changes code, and it grills only on the one candidate you pick."
+   },
+   {
+    "severity": "low",
+    "where": "Final test and Checkpoints: lines 160, 310, 318, 354, 382",
+    "problem": "\"It never changes code\" is the feedback on five options. Across the questions, readers learn that any option involving editing is wrong, which becomes a cross-question tell.",
+    "evidence": "Lines 160, 310, 318, 354 and 382 all rest on \"It never changes code\".",
+    "fix": "Keep the never-changes-code point in spot-carried-on and in at most one other question. Elsewhere, write distractors around other misconceptions (scope, report contents, one candidate per session). The rewrites above already do this for scenario-big-build, scenario-legacy and after-the-report."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/16-architecture.md:290 (test scenario-grown-fast)",
+    "problem": "\"Changes now feel slow\" can be read as a performance problem, and the 1.3.1 `/diagnosing-bugs` description covers \"slow\" and performance regressions. That gives the distractor a sliver of plausibility the feedback (\"Nothing is broken here\") doesn't fully address.",
+    "evidence": "Line 290: \"Changes now feel slow and risky\". The diagnosing-bugs description: \"reports something broken/throwing/failing/slow.\"",
+    "fix": "Prompt: \"Your team's app gained a dozen features in a month. Each new change now touches more files than it should, but nobody can say which part is the problem. Which Skill do you type?\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/16-architecture.md:325-335 (test scenario-settle-words, options c and d)",
+    "problem": "The distractors use Skills the Lesson never introduces. `/grill-me` doesn't appear anywhere in the body, and `/domain-modeling` is never named. A reader who arrives cold can only rule them out by elimination, not from what this Lesson teaches.",
+    "evidence": "The body mentions GLOSSARY.md (line 131) but neither `/domain-modeling` nor `/grill-me`.",
+    "fix": "Replace d with a Skill the Lesson teaches: \"- [ ] `/improve-codebase-architecture`, typed at the start of your next message\" with this feedback: \"Typing it is right for a survey, but that scans a whole area and writes a report. You need shared words for one question.\" Then reword a so the two don't overlap, for example \"- [ ] `/tdd` itself, which already holds the deep-module words\" with this feedback: \"`/tdd` leans on `/codebase-design` for those words; it isn't their source.\" Keep c only if Domain modeling is linked in the body, for example a clause at line 131: \"see [Domain modeling](/learn/domain-modeling)\"."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

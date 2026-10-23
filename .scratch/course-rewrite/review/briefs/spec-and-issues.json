@@ -1,0 +1,18 @@
+{
+ "n": 7,
+ "slug": "spec-and-issues",
+ "title": "Spec + tickets",
+ "part": 2,
+ "old": "03-spec-and-issues.md",
+ "img": [
+  "/photos/spec-and-issues.jpg",
+  "A person drafts on a large sheet with a scale ruler and a rolled blueprint on a wooden table.",
+  "Daniel McCullough"
+ ],
+ "skills": [
+  "engineering/to-spec",
+  "engineering/to-tickets",
+  "engineering/setup-matt-pocock-skills"
+ ],
+ "extra": "Teach `/to-spec` (no re-interview, seams check, template), `/to-tickets` (tracer-bullet vertical slices, blocking edges, the quiz step, local tracker files), expand–contract for wide refactors, not triaging these tickets, keeping grill→spec→tickets in one window."
+}

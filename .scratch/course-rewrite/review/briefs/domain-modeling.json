@@ -1,0 +1,18 @@
+{
+ "n": 5,
+ "slug": "domain-modeling",
+ "title": "Domain modeling",
+ "part": 2,
+ "old": "02-domain-modeling.md",
+ "img": [
+  "/photos/domain-modeling.jpg",
+  "A thick dictionary with thumb-index tabs lies open on a pale wooden table against a dark wall.",
+  "Pisit Heng"
+ ],
+ "skills": [
+  "engineering/grill-with-docs",
+  "engineering/domain-modeling",
+  "productivity/wait-what"
+ ],
+ "extra": "Teach `/grill-with-docs` (= grilling + domain-modeling), GLOSSARY.md format, ADRs (the three tests), lazy creation, `/wait-what`. Correct the old Lesson: domain modeling runs during grilling, writing terms inline; most decisions stay in the conversation."
+}

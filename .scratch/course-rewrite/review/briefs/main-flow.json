@@ -1,0 +1,16 @@
+{
+ "n": 12,
+ "slug": "main-flow",
+ "title": "The main flow",
+ "part": 2,
+ "old": "11-main-flow.md",
+ "img": [
+  "/photos/main-flow.jpg",
+  "An aerial view of a large highway interchange at sunset with ramps looping over one another.",
+  "Denys Nevozhai"
+ ],
+ "skills": [
+  "engineering/ask-matt"
+ ],
+ "extra": "Capstone. Also read /Users/siddharth/Developer/idea-to-shipped-work/state/skills/skills/engineering/ask-matt/PHASE-BOUNDARIES.md and every other Lesson file present in content/lessons for consistency. Final test may have up to 15 questions. Teach the ordered map with both forks, context hygiene, phase boundaries, who can type what, on-ramps (triage, diagnosing-bugs, wayfinder), codebase health, standalones, and an old-way → today table for the author's v1 build. A `flow` Scene of the whole map fits here. Link every Skill to the Lesson that teaches it."
+}

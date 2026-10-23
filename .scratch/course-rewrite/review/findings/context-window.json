@@ -1,0 +1,385 @@
+{
+ "slug": "context-window",
+ "lenses": {
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "content/lessons/02-context-window.md:385-419 (test spot-rule-in-chat, spot-compact-first, spot-louder-rule)",
+    "problem": "All three spot questions have a wording tell. In each one, every wrong option starts \"Sam/She/He should\u2026\" and only the right option is phrased differently, as a diagnosis. A test-wise reader can pick the odd one out without understanding anything, which is 3 of the 10 Final test points.",
+    "evidence": "spot-rule-in-chat: a/b/d start \"Sam should have\u2026\", right c reads \"The rule lived only in chat, where a summary can drop it.\" spot-compact-first: a/b/c start \"She should\u2026\", right d reads \"When the context is irrelevant, `/clear` is the move.\" spot-louder-rule: b/c/d start \"He should\u2026\", right a reads \"He's adding context when the fix is removing it.\"",
+    "fix": "Give the right option the same form as its siblings. Lengths are checked: none of these is the longest option.\nspot-rule-in-chat, option c: `- [x] Sam should have put the rule in \\`CLAUDE.md\\`.` with feedback `  > Right. A summary keeps the gist, not every line. \\`CLAUDE.md\\` is reloaded from disk after compacting, so the rule survives.`\nspot-compact-first, option d: `- [x] She should \\`/clear\\` when nothing carries over.` (keep the current feedback).\nspot-louder-rule, option a: `- [x] He should shrink the window at the next boundary.` with feedback `  > Right. Past the Smart zone, more tokens make it worse. Start a smaller window at a boundary, and put the rule in \\`CLAUDE.md\\`.`"
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/02-context-window.md:17 (goal 4) and 337-455 (Final test)",
+    "problem": "Goal 4 says the reader can say \"what its file carries\", but no Final test question checks what a handoff file contains (path references instead of copies, secrets removed, suggested skills, saved to the temporary folder). Only the optional Try checklist touches it. Separately, why-big-window (line 445) tests the same idea as Checkpoint quality-not-size (\"free space isn't quality\"), and its distractor c (\"deletes your oldest messages after 200k\") is nearly the Checkpoint's distractor a (\"oldest messages have been cut\"). So the slot is better spent on goal 4.",
+    "evidence": "The Final test ids are find-callers, switch-harness, next-ticket, near-zone, rule-in-chat, compact-first, louder-rule, prototype-detour, predict-context-growth and why-big-window. None of them asks about the file's contents. The writing guide says \"Every goal gets at least one Final test question\".",
+    "fix": "Replace why-big-window with:\n```test spot-handoff-file\nBefore sending a half-built feature to a colleague, you open the `/handoff` file. It copies in the whole 300-line spec and lists the staging database password. Spot the mistake.\n- [ ] It should also paste in the whole conversation, so nothing is lost.\n  > A handoff is a short summary aimed at what's next. The full conversation is exactly what it replaces.\n- [x] It should point to the spec by path and leave the password out.\n  > Right. The file references specs, tickets and commits by path or link, and has keys and passwords removed.\n- [ ] It should be saved in the project folder, so it's committed with the code.\n  > The Skill writes to your temporary folder on purpose, not the project. Copy it somewhere safe if it will wait.\n- [ ] It should drop the suggested-skills section to stay short.\n  > That section tells the next agent which Skills to load. It's one of the things the file is for.\n```\nThe right answer (b) is not the longest; c is. The Final test still has 3 or more spot- questions."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/02-context-window.md:433-443 (test predict-context-growth)",
+    "problem": "This tests recall, not transfer. The body's table already labels Messages as \"the conversation, file reads and command output\" and says \"File reads are usually the biggest cost\". Try step 4 is the same experiment (read files, then `/context`, then the checklist item \"Messages grew clearly\"). Distractor d, \"Memory files\", is a row the Lesson never shows or explains: its table leaves it out, so a cold reader can't map it to `CLAUDE.md`. The question also doesn't check the second half of goal 2 (\"spot the signs that it has left the Smart zone\"), which no Final test question asks about directly.",
+    "evidence": "Line 41: \"File reads are usually the biggest cost.\" Line 48: \"Messages: the conversation, file reads and command output\". Line 295: \"Messages grew clearly in step 4\". The table at lines 45-53 has no Memory files row.",
+    "fix": "Replace it with a transfer question that reads a `/context` breakdown and links a sign to its cause. The new id is fine because nothing is published yet.\n```test read-context-rows\nAn hour into a session, the agent contradicts a decision you made together earlier. `/context` shows Messages 150k, System tools 16k, Skills 10k, System prompt 4k and Free space 820k. Which row is the one to shrink, and how?\n- [ ] Free space: use it up before reaching for `/clear`.\n  > Free space isn't headroom. About 180k is used, past Matt's rule of thumb, and quality has already slipped.\n- [ ] Skills: uninstall most of your Skills.\n  > 10k is small, and it's the same in every session. The big row is elsewhere.\n- [x] Messages: shrink it at the next Phase boundary.\n  > Right. The conversation is nearly all of the total, and contradicting its own context is a classic sign. Let Matt's tree pick clear, hand off or compact.\n- [ ] System tools: switch off Claude Code's built-in tools.\n  > That's a fixed startup cost, and the agent needs those tools to work.\n```\nThe right answer (c) is not the longest; d is. With this and spot-handoff-file in place, the Final test's right answers run b,d,a,c,c,d,a,b,c,b (a2 b3 c3 d2)."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/02-context-window.md:451-452 (test why-big-window, option c feedback), if the question is kept",
+    "problem": "The feedback contradicts the Lesson's own section on idle compaction. It says Claude Code keeps everything until auto-compact runs near the end of the window. But the body says a conversation of 200k tokens or more that sits idle for nearly an hour is compacted, so the distractor \"after 200k\" is partly true in the Lesson's own terms. Option d's feedback (\"Mostly they don't\") also states a pricing fact the Lesson never teaches.",
+    "evidence": "Line 120: \"if a long conversation (200k tokens or more) sits idle for nearly an hour, Claude Code compacts it\". Line 452: \"It doesn't. It keeps everything until auto-compact summarises it, near the end of the window.\"",
+    "fix": "If why-big-window stays, change the option c feedback to: `  > It never deletes them. Compaction summarises them instead: near the end of the window, or after a long idle spell past 200k.` and the option d feedback to: `  > Cost isn't the point. Even when money is no object, a long session reasons worse.`"
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/02-context-window.md:369-370 (test scenario-next-ticket, option d feedback)",
+    "problem": "The feedback rests on \"likely end past the Smart zone\". But the Lesson's question 1 says you can continue \"if there's enough Smart zone left\", and at 90k there's about 60k left. So a careful reader could argue that continuing is allowed. The rule that settles it is the Main flow's \"`/clear` between tickets\", and the feedback doesn't mention it.",
+    "evidence": "Line 146: \"Yes if the next Phase needs this one firsthand, or if there's enough Smart zone left (about 150k)\". Line 154: \"Then `/clear` between `/implement` tickets, since each stands on its own.\"",
+    "fix": "Option d feedback: `  > The 1M window isn't the limit; the Smart zone is. And Matt's Main flow clears between tickets anyway: ticket 3 stands on its own, so ticket 2's context is only weight.`"
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/02-context-window.md:126-136 (checkpoint side-question)",
+    "problem": "The prompt restates the defining phrase of the right answer and reuses the body's own example. The body says `/btw what does this regex flag do?` and \"whose answer never enters the conversation\". The prompt says \"what a regular-expression flag means\u2026 you don't want it cluttering the conversation\". So this checks recognition, not transfer.",
+    "evidence": "Line 122 (body): \"`/btw what does this regex flag do?`, whose answer never enters the conversation\". Line 127 (prompt): \"you want to know what a regular-expression flag means. The answer won't matter to the work, and you don't want it cluttering the conversation.\"",
+    "fix": "Prompt: `Halfway through implementing a feature, you wonder what the \\`-u\\` flag on a \\`git push\\` the agent just ran means. You'll never need the answer for this feature. What do you type?` Keep the options. Change the right option's feedback to `  > Right. A \\`/btw\\` answer is shown to you but never joins the conversation, so the feature work stays as it was.`"
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/02-context-window.md:386 (test spot-rule-in-chat prompt) and 350 (test scenario-switch-harness prompt)",
+    "problem": "Both prompts reuse the body's own examples instead of a fresh situation. spot-rule-in-chat uses the exact rule from the Why it matters section (\"never edit the migrations folder\"). scenario-switch-harness uses the body's exact reason-1 example (Claude Code to Codex).",
+    "evidence": "Line 22: Early on you told it \"never edit the migrations folder\". Line 386: Sam told the agent \"never edit the migrations folder\". Line 200: \"from Claude Code to Codex\". Line 350: \"finish the feature in Codex\".",
+    "fix": "spot-rule-in-chat prompt: `Early in a long session, Sam told the agent \"don't touch anything under payments/\". Hours later, after a line saying the conversation had been compacted, the agent edits a payments file. Spot the mistake.` For scenario-switch-harness, keep Codex (it's the only other harness the Lesson names) but change the situation, for example: `Your company is moving the team from Claude Code to Codex, a different coding agent, tomorrow. You're halfway through a photo-gallery feature today. What carries the work across?`"
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/02-context-window.md:337-347 (test scenario-find-callers prompt)",
+    "problem": "The prompt gives the answer away. \"You don't want forty file reads piling into the conversation\" rules out option a and leaves only the subagent as a non-destructive choice. The deciding idea the reader should apply is Thariq's test (raw output or only the conclusion?), and the prompt answers it for them.",
+    "evidence": "Line 338: \"You don't want forty file reads piling into the conversation you're grilling in.\"",
+    "fix": "Prompt: `You're grilling a change to a recipe site and need to know which files call \\`formatServings\\`. There are about forty candidate files, and all you need is the list of paths. What do you do?` Keep the options and feedback."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/02-context-window.md:16 (goal 3) and 337-455 (Final test)",
+    "problem": "Goal 3 starts with \"continuing\", and the Lesson stresses that continue comes first. But no Final test question has \"continue\" as its right answer. Only the Checkpoint continue-first, which doesn't count toward passing, tests it. A reader can pass without ever applying question 1 of the tree.",
+    "evidence": "Final test right answers: subagent, handoff, clear, compact, CLAUDE.md, clear, shrink the window, the handoff detour, Messages, \"reasoning slips\". Continue never appears.",
+    "fix": "Optionally rewrite spot-compact-first so that continue is the right answer, using a situation other than the Checkpoint's grilling-to-build case: prompt `Ana finishes building a search box at 60k tokens and runs \\`/compact\\` before testing it by hand, \"to start QA clean\". Spot the mistake.` with options a `She should \\`/clear\\` instead, for a cleaner start.` (feedback: QA needs the build's context; clearing loses it for good), b `She should compact mid-build next time, before it gets heavy.` (feedback: compacting mid-Phase loses the thread), c `She should \\`/handoff\\` so nothing is lost.` (feedback: nothing is travelling, and a handoff is a summary too), d `- [x] She should carry on in the same session.` (feedback: Right. QA needs the build firsthand and there's plenty of Smart zone left, so question 1 says yes. Continuing costs nothing). Clear-over-compact stays covered by scenario-next-ticket."
+   }
+  ],
+  "reader": [
+   {
+    "severity": "high",
+    "where": "Table at lines 45-53 ('Total used' row) and Try step 3 (line 272: 'Note Total used, Messages and Free space')",
+    "problem": "`/context` has no row called 'Total used'. A reader doing step 3 will look for a label that isn't there. The table also says it lists the 'rows it showed', so it presents a label Claude Code doesn't print.",
+    "evidence": "The author's real `/context` output in the session log (the same reading as the table) prints the total as a header next to the grid: '204.8k/1m tokens (20%)'. Below that come 'Estimated usage by category' rows: System prompt, System tools, MCP tools, MCP server instructions, Custom agents, Memory files, Skills, Messages, Free space, Autocompact buffer. None of them is 'Total used'.",
+    "fix": "Table: change the first row to '| The total at the top (`204.8k/1m tokens`) | about 205k of 1M (20%) |'. Try step 3: 'Type `/context`. Note the total at the top (it looks like `20k/1m tokens`), the Messages and Free space rows, and which row is biggest.'"
+   },
+   {
+    "severity": "high",
+    "where": "Try step 4 (lines 273-277) and checklist line 295 ('Messages grew clearly in step 4, and much less in step 7')",
+    "problem": "The Lesson says Claude Code 'starts them on its own for big searches' (line 124). If it hands step 4's reading to an Explore subagent without being asked, Messages barely grows in step 4. Step 4 and step 7 then look the same, and the exercise's main comparison doesn't work.",
+    "evidence": "Line 124: 'Claude Code starts them on its own for big searches'. The step 4 prompt doesn't rule a subagent out.",
+    "fix": "Step 4 prompt: 'Without using a subagent, read every .ts and .tsx file in src/app yourself and give me a one-line summary of each.'"
+   },
+   {
+    "severity": "high",
+    "where": "Final test why-big-window, feedback on option c (line 452)",
+    "problem": "The feedback is wrong by the Lesson's own teaching. Line 120 teaches idle compaction: a conversation of 200k tokens or more is compacted after nearly an hour idle, long before the end of the window. The feedback says Claude Code keeps everything until auto-compact runs near the end of the window.",
+    "evidence": "Line 452: 'It keeps everything until auto-compact summarises it, near the end of the window.' Line 120: 'if a long conversation (200k tokens or more) sits idle for nearly an hour, Claude Code compacts it'.",
+    "fix": "'It doesn't delete them. The conversation stays until it's compacted into a summary: by auto-compact near the end of the window, or after a long idle break.'"
+   },
+   {
+    "severity": "medium",
+    "where": "Line 152 ('Every move except continuing swaps the session as it happened for a summary of it.')",
+    "problem": "This contradicts what the reader has just read. `/clear` leaves no summary (line 116: it frees the window), and a subagent leaves 'your session untouched' (line 149). A beginner can't square these. It paraphrases PHASE-BOUNDARIES.md, but that file's own table only lists `/compact` and `/handoff` as the secondary sources.",
+    "evidence": "Line 149: 'Send it to a subagent and leave your session untouched.' Line 152: 'Every move except continuing swaps the session ... for a summary of it.'",
+    "fix": "'Every move except continuing gives up the session as it happened for something smaller: a summary (`/compact`), a file (`/handoff`), a helper's report (a subagent), or nothing at all (`/clear`). That's the price, and why continuing comes first.'"
+   },
+   {
+    "severity": "medium",
+    "where": "Flow Scene, fourth caption (line 169, QA step)",
+    "problem": "The caption says 'the build's context matters', but by question 1 as the Lesson words it ('Yes if the next Phase needs this one firsthand'), that sounds like a yes to continuing. A reader applying the tree gets 'continue', not compact. The caption doesn't say why question 1 fails.",
+    "evidence": "Line 146: 'Yes if the next Phase needs this one firsthand, or if there's enough Smart zone left'. Line 169: 'the build's context matters ... `/compact we're going to QA dark mode`'.",
+    "fix": "'QA is next. It needs the gist of the build, not every word of it, and there isn't room left in the Smart zone, so question 1 says no. The context still matters (not 2), nothing is travelling (not 3), and QA needs you (not 4): `/compact we're going to QA dark mode`.'"
+   },
+   {
+    "severity": "medium",
+    "where": "Line 142 vs Flow Scene step 2 (line 165) and handoff reason 4 (line 203)",
+    "problem": "Line 142 says the boundary is the 'only place to decide what happens to the context' and that mid-Phase you can only keep going or use subagents. The Flow Scene then shows a mid-build `/handoff` lit up as one of the 'five decisions'. The reader sees the rule broken a few lines after reading it.",
+    "evidence": "Line 142: 'Mid-Phase, keep going or hand the rest to subagents'. Line 165: 'Mid-build you spot a messy settings file ... You fork it to a second agent with `/handoff`'.",
+    "fix": "Line 142: 'Mid-Phase, keep going, hand the rest to subagents, or fork a side task to another session with `/handoff` (it leaves your own window untouched).' Caption, line 165: 'Mid-build you spot a messy settings file that's out of scope. Forking a side task is the one handoff that happens mid-Phase: you `/handoff` it to a second agent and keep building.'"
+   },
+   {
+    "severity": "medium",
+    "where": "Meter Scene captions (lines 88-98)",
+    "problem": "Read as a sequence of captions, this Scene uses terms that are explained only later or never: `/grill-with-docs`, grilling, `/to-spec`, `/to-tickets`, ticket and `/implement` (ticket and the spec and tickets Skills are explained at line 154, `/implement` never), and 'Phase boundary' (explained at line 142).",
+    "evidence": "Line 88: '`/grill-with-docs`: questions, answers...'. Line 90: '`/to-spec` and `/to-tickets` in the same window'. Line 92: 'A Phase boundary.' Line 94: '`/implement` on ticket 1'.",
+    "fix": "Line 88: '`/grill-with-docs`: the agent interviews you about the feature, reading files to check facts.' Line 90: '`/to-spec` and `/to-tickets` turn the decisions into a written plan and a list of small tasks (tickets), in the same window so they build on the same thinking.' Line 92: 'Planning is done and the decisions now live in files, so you type `/clear`...' Line 94: '`/implement` builds ticket 1: file reads, test runs, edits.'"
+   },
+   {
+    "severity": "medium",
+    "where": "Terms used before or without explanation (whole Lesson)",
+    "problem": "Several terms that the writing guide's pilot lessons say must be defined at first use are never explained, or are explained only after first use.",
+    "evidence": "repo: line 176 (Checkpoint), line 201, never defined. spec: line 154, '(decisions into a spec)', with spec itself never defined. grilling: line 142 'the grilling', line 146, the Flow Scene, never defined. model: line 30 'Models read tokens', never defined. `/implement`: lines 94 and 154, never explained. `/retro`: lines 154 and 171, never explained. `ask-matt`: used at line 75, explained only at line 140. `/tdd`: line 216, never explained.",
+    "fix": "Line 30: 'Models (the AI behind the agent) read tokens...'. Line 142: 'the grilling (the agent interviewing you about your plan)'. Line 154: '`/to-spec` (turns the decisions into a spec, a written description of what to build)', '`/implement` (builds one ticket)', and 'run `/retro` (which looks back at how the work went and suggests improvements for next time)'. Line 75: 'Matt's `ask-matt` Skill (his guide to which Skill to use when)'. Line 201: 'Moving to another folder or repo (a project folder tracked by git).' Line 216: 'suggests the `/tdd` Skill (Matt's test-first way of building)'."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 116 (`/clear` paragraph)",
+    "problem": "'`/resume` can reopen it. But it doesn't come back into the session you're in.' is self-contradictory to a beginner: reopening it sounds like it does come back.",
+    "evidence": "Line 116, as quoted.",
+    "fix": "'The old conversation isn't deleted: `/resume` lists it, and you can switch back to it as its own session. Nothing from it carries into the fresh one.'"
+   },
+   {
+    "severity": "medium",
+    "where": "Line 26 ('the skill issue he sees most often')",
+    "problem": "'Skill issue' is slang for user error. In the same sentence the Lesson defines Skill as an instruction file, so a cold reader may think this is a problem with a Skill.",
+    "evidence": "Line 26: 'says the skill issue he sees most often is ==not thinking about the context window==. (A Skill is a short instruction file...'",
+    "fix": "'says the mistake he sees most often is ==not thinking about the context window==.'"
+   },
+   {
+    "severity": "medium",
+    "where": "Try step 8 (line 287) and checklist line 298",
+    "problem": "After step 7 the conversation is tiny (a fresh session plus one subagent report), so `/compact` may barely change Messages. Also, the agent can simply re-read the files to answer 'Which file handles the comments API?', so a correct answer doesn't show that the summary kept anything.",
+    "evidence": "Step 6 clears the window, step 7 only adds a short report, step 8 then compacts it and asks a question the agent can answer with tools.",
+    "fix": "'Type `/compact keep only the one-line summaries`, then `/context`. Then ask: \"Without reading any files, which file handles the comments API?\"' Checklist: 'After `/compact`, Messages was no bigger, and the agent answered from its summary without reading a file.'"
+   },
+   {
+    "severity": "low",
+    "where": "Section 'Tools for a crowded window' (line 116 onward) and the cheat sheet",
+    "problem": "Only `/context` is called a Built-in command. `/clear`, `/compact`, `/btw`, `/resume` and `/autocompact` are never labelled, so a reader can't tell them from Skills until line 189 says `/handoff` is 'the one Skill'.",
+    "evidence": "Line 43 labels `/context` as a Built-in command. No other command is labelled.",
+    "fix": "Add at the start of the section: 'Like `/context`, `/clear`, `/compact` and `/btw` are Built-in commands, not Skills.'"
+   },
+   {
+    "severity": "low",
+    "where": "Table lines 45-53 and Final test predict-context-growth (line 441)",
+    "problem": "`CLAUDE.md` appears in `/context` as 'Memory files', but the Lesson never says so. The Final test then offers 'Memory files' as an option the reader has never met. The rows also don't add up for a careful reader (1M - 205k = 795k, but Free space is 762k), because the 33k Autocompact buffer row is left out.",
+    "evidence": "The real output includes 'Memory files: 194 tokens' and 'Autocompact buffer: 33k tokens (3.3%)'. Neither is in the table.",
+    "fix": "Add the rows '| Memory files (your `CLAUDE.md`) | 194 |' and '| Autocompact buffer (kept free for compacting) | 33k |'."
+   },
+   {
+    "severity": "low",
+    "where": "Try step 5 (line 279)",
+    "problem": "The step doesn't say how to close the `/btw` answer. A reader who has never seen it may not know how to get back to the prompt before typing `/context`.",
+    "evidence": "Step 5: 'Type `/btw how many files did you just read?`, then `/context`.' Not checked against the docs here: the `/btw` answer appears to show in a panel you dismiss (PLAUSIBLE).",
+    "fix": "'Type `/btw how many files did you just read?`. Read the answer, press Esc to close it, then type `/context`.'"
+   },
+   {
+    "severity": "low",
+    "where": "Try step 9 (line 288)",
+    "problem": "'open it' doesn't tell a beginner how to open a file in a temporary folder.",
+    "evidence": "'Ask for the file's path if it isn't shown, and open it.'",
+    "fix": "'Ask for the file's path if it isn't shown. Then, in a second terminal, type `cat ` followed by that path to read it.'"
+   },
+   {
+    "severity": "low",
+    "where": "Line 79 (status line)",
+    "problem": "The Lesson says Matt calls a status line essential but doesn't tell the reader how to get one, so they can't act on it.",
+    "evidence": "'or with a status line (a line under the prompt box) showing tokens used, which Matt calls essential.'",
+    "fix": "Add: 'Type `/statusline` and ask for one that shows tokens used.' (`/statusline` is on the contract v1.4 allowlist.)"
+   },
+   {
+    "severity": "low",
+    "where": "Line 209 ('pasting its text into a shell command can silently cut it short')",
+    "problem": "A beginner wouldn't paste into a shell command, so the warning is confusing noise.",
+    "evidence": "Line 209, as quoted.",
+    "fix": "'Give the next session the file's path rather than pasting its text in.'"
+   },
+   {
+    "severity": "low",
+    "where": "Line 146 (question 1)",
+    "problem": "'enough Smart zone left (about 150k)' can be read as 150k of room left, rather than the zone ending at about 150k.",
+    "evidence": "'or if there's enough Smart zone left (about 150k) for it to fit.'",
+    "fix": "'or if the next Phase fits before you reach the Smart zone's edge (about 150k tokens used).'"
+   },
+   {
+    "severity": "low",
+    "where": "Chat Scene (lines 218 and 222)",
+    "problem": "The grilling format ('\u2753 **Q5** - **Units**: ... \u27a1\ufe0f Yes.') isn't explained in this Lesson, so '\u27a1\ufe0f Yes' doesn't read as a recommendation. 'First slice: a failing test' is unexplained jargon.",
+    "evidence": "Lines 218 and 222.",
+    "fix": "Line 218: 'agent: With the parser out of scope, question 4 no longer applies. Question 5: should recipes show metric only? I recommend yes.' Line 222: 'agent: Loading `/tdd`, as the handoff suggests. I'll start with one test for \"2 1/2 cups\" that fails until the parser handles it.'"
+   },
+   {
+    "severity": "low",
+    "where": "Goals (lines 14 and 17) vs Final test",
+    "problem": "Two goal parts have no Final test question: 'explain what tokens ... are' (goal 1) and 'what its file carries' (goal 4). The writing guide asks that each goal be checkable by the Final test.",
+    "evidence": "No `test` fence asks about tokens or about the contents of a handoff file.",
+    "fix": "Either trim the goals ('...read `/context`...'; 'say when `/handoff` is the right move') or swap one question for one on what the handoff file holds (for example, specs pointed to by path, a suggested-skills section, secrets removed)."
+   },
+   {
+    "severity": "low",
+    "where": "Line 22 (Why it matters), line 30 (tokens), line 43 onward ('k'/'1M')",
+    "problem": "These lines use jargon a terminal-only reader may not know: 'migrations folder', 're-broken a test', 'function', 'Hashes, generated IDs and minified code'. The abbreviations 'k' and 'M' are never spelled out.",
+    "evidence": "Line 22: 'never edit the migrations folder'. Line 30: 'Hashes, generated IDs and minified code'. Line 47: '205k of 1M'.",
+    "fix": "Line 22: 'never edit the migrations folder (the scripts that change your database)'. Line 30: 'Random-looking strings, like IDs and squashed-up code, split into many tokens.' Add once: '(k means thousand and M means million, so 1M is a million tokens).'"
+   },
+   {
+    "severity": "low",
+    "where": "Site story (lines 311 and 317)",
+    "problem": "'OpenSpec' and 'branch' are unexplained for a cold reader.",
+    "evidence": "'compared OpenSpec with Matt's Skills'; 'kept on a `prototype/lesson-page` branch'.",
+    "fix": "'compared OpenSpec (another planning tool for agents) with Matt's Skills'; 'kept on a separate git branch, `prototype/lesson-page`'."
+   },
+   {
+    "severity": "low",
+    "where": "Line 116 ('It's instant and frees the whole window.')",
+    "problem": "This slightly overstates what `/clear` frees. The startup cost stays, as the meter Scene itself shows ('drops back to its startup cost').",
+    "evidence": "Line 116 vs the line 92 caption.",
+    "fix": "'It's instant and frees everything but the startup cost.'"
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "high",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:222 (scene chat, last agent line)",
+    "problem": "The Scene gets /tdd wrong. The fresh agent loads `/tdd` and goes straight to \"First slice: a failing test for '2 1/2 cups'\". In 1.3.1, /tdd must first write down the seams to test and confirm them with the user. No test is written at a seam the user hasn't confirmed. This is a forked side task started mid-grilling, so no spec or seams were agreed. A cold reader learns the wrong first step of /tdd.",
+    "evidence": "/Users/siddharth/Developer/idea-to-shipped-work/state/skills/skills/engineering/tdd/SKILL.md:22: \"Before writing any test, write down the seams under test and confirm them with the user. No test is written at an unconfirmed seam.\" and :24: \"Ask: 'What's the public interface, and which seams should we test?'\". The CHANGELOG says the same: \"confirmed with the user before any test is written\".",
+    "fix": "Change the line to the real first step, e.g. `agent: Loading /tdd, as the handoff suggests. Before any test: which seams should we test? I'd propose parseQuantity() for fractions like \"2 1/2 cups\"...` (or add a you/agent exchange that confirms the seam before the first failing test)."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:146 vs :327 (cheat sheet), :169 (flow Scene QA step), :373-383 (test scenario-near-zone)",
+    "problem": "The Lesson states question 1 two different ways. Line 146 copies Matt's \"or\": continue if the next Phase needs this one firsthand, OR there's enough Smart zone left. Read that way, needing it firsthand is enough on its own, even past the Smart zone. The cheat sheet says \"needs it firsthand AND fits\". The keyed answers follow the \"and\" reading. In scenario-near-zone, /to-tickets needs the grilling/spec session firsthand (line 154 says they must 'build on the same thinking'), so line 146 gives 'continue'. The keyed answer is `/compact`. The flow Scene's QA step ('the build's context matters' -> compact) has the same tension.",
+    "evidence": "PHASE-BOUNDARIES.md:21: \"Two things make the answer yes: the next phase needs this phase as a primary source, or you have enough smart zone left\". ask-matt/SKILL.md:40 overrides this near the limit: \"If a session approaches it before /to-tickets, don't push on degraded; /compact at the nearest phase boundary\". Lesson :327: \"Phase over; the next one needs it firsthand and fits | Continue\".",
+    "fix": "Keep Matt's wording but add one sentence after question 1: past (or near) the Smart zone, continuing is off the table even when the next Phase needs this one firsthand (ask-matt: 'don't push on degraded'). Then line 146, the cheat sheet, the flow Scene and scenario-near-zone all agree."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:241 vs :150 and :404",
+    "problem": "Two different 'defaults' are never reconciled. The tree section calls `/compact` Matt's 'default, not the first reach', and spot-compact-first feedback repeats 'as the default'. Then 'How Matt uses it' opens with 'Clearing is his default.' A reader who has never coded with an agent can't tell which one is Matt's default.",
+    "evidence": "Lesson :150 \"Matt calls it 'the default, not the first reach'\"; :404 \"/compact sits at the bottom of Matt's tree as the default\"; :241 \"**Clearing is his default.**\". PHASE-BOUNDARIES.md:40 uses 'default' to mean the fallback at the bottom of the tree. The Oct 2025 video (-uW5-TaVXu4 6:51-6:57) uses 'default' to mean his habit.",
+    "fix": "Reword line 241, e.g. '**He prefers clearing.**' Or add a clause: in his tree, 'default' means where you land when nothing above says yes. In practice he clears whenever the context is disposable."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:241",
+    "problem": "The Lesson misstates what Matt did in the 2025 video. It says he 'got nervous with about 50k tokens left in a 200k window, and cleared'. On screen he had about 105k free and said that was fine. He described clearing at about 50k left as what he WOULD do, then demoed `/compact`. He didn't clear. The writing guide flags this exact kind of error.",
+    "evidence": "-uW5-TaVXu4 5:40-5:54: \"105k tokens of free space, that feels pretty good to me. But I would definitely start getting scared once I only had about, let's say, 50k tokens left, at which point I would run clear\". Then 5:56-6:47 shows the compact demo. Writing guide :111: \"Check every claim about what Matt did against the transcript\".",
+    "fix": "E.g. 'In his October 2025 video he said he'd clear once only about 50k of a 200k window was left, and that clearing should be your default; `/compact` was for keeping the gist.'"
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:191",
+    "problem": "The Lesson gets /handoff's core action wrong. 'It writes the conversation into one markdown file' sounds like a transcript dump. The Skill writes a summary of the conversation for a fresh agent: a targeted compression aimed at the next task. Later the Lesson relies on the reader knowing it's a summary (spot-compact-first feedback: 'it's a summary too').",
+    "evidence": "handoff/SKILL.md:8: \"Write a handoff document summarising the current conversation so a fresh agent can continue the work.\"; SKILL.md:3: \"Compact the current conversation into a handoff document\"; docs/productivity/handoff.md:3 \"compacts the conversation you are in into a handoff document\". Lesson :400 \"it's a summary too\".",
+    "fix": "'It summarises the conversation into one markdown file in your computer's temporary folder, not your project.'"
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:88 (meter Scene caption); also :338 (test scenario-find-callers premise)",
+    "problem": "The meter Scene misdescribes grilling. It says /grill-with-docs fills the window with 'the agent reading files to look up facts'. In 1.3.1, grilling sends fact lookups to a sub-agent, so those file reads stay out of the main window. That's the very context-isolation point this Lesson teaches, and the pilot Grilling Lesson teaches it too. Relatedly, scenario-find-callers makes the reader decide to use a subagent mid-grilling, but /grilling already does this on its own. The keyed answer is still right; the feedback just misses the chance to say so.",
+    "evidence": "grilling/SKILL.md:28: \"When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent to find it\". content/lessons/04-grilling.md:51: \"it sends a helper agent (a sub-agent) to find out instead of asking you\".",
+    "fix": "Caption: '`/grill-with-docs`: questions, answers, glossary updates, and short reports from the sub-agents it sends to look up facts.' Optionally add to the scenario-find-callers right-answer feedback: '/grilling does this on its own when a question needs a fact.'"
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:451-452 (test why-big-window, option C feedback)",
+    "problem": "The feedback contradicts the Lesson's own idle-compaction paragraph. It says Claude Code 'keeps everything until auto-compact summarises it, near the end of the window'. Line 120 teaches that a 200k+ conversation left idle for nearly an hour gets compacted far from the end of the window. Auto-compact also clears old tool outputs before it summarises. The distractor ('deletes your oldest messages after 200k') is close enough to idle compaction at 200k that a careful reader may hesitate.",
+    "evidence": "Lesson :120: \"if a long conversation (200k tokens or more) sits idle for nearly an hour, Claude Code compacts it while you're away\". research/context-window.md:122 (auto-compact first clears old tool outputs) and :127-131 (idle compaction at 200,000 tokens after about 54 minutes).",
+    "fix": "E.g. 'It doesn't delete them. Messages stay until a compaction summarises them: auto-compact near the end of the window, or idle compaction after about an hour away.'"
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:17 (goal 4) vs Final test :337-455",
+    "problem": "Goal 4 has two halves, 'when /handoff is the right move' and 'what its file carries'. No Final test question checks the second half. The suggested-skills section, pointing to files by path instead of copying them, and redacted secrets appear only in the body and the optional Try step.",
+    "evidence": "Goal :17 \"say when `/handoff` is the right move and what its file carries\". Only scenario-switch-harness and sequence-prototype-detour cover /handoff, and both are about when. Writing guide :119: \"Every goal gets at least one Final test question\". The file contents come from handoff/SKILL.md:10-14.",
+    "fix": "Add a predict- or spot- question, e.g. 'A teammate's handoff file pastes the whole spec and includes the Neon password. What's wrong?' Right answer: specs go in by path, and secrets are redacted."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:152 vs :149",
+    "problem": "Line 152 says 'Every move except continuing swaps the session as it happened for a summary of it.' Three lines earlier the subagent move 'leave[s] your session untouched', and `/clear` leaves no summary at all. The sentence is faithful to Matt's primary-versus-secondary-source idea, but as worded it contradicts the Lesson.",
+    "evidence": "PHASE-BOUNDARIES.md:36 (subagent: \"leave this session untouched\") and :44. docs/productivity/handoff.md:28: \"`/clear` preserves nothing\".",
+    "fix": "E.g. 'Every move except continuing means the next piece of work runs from something secondhand (a summary, a file or a report) instead of the session as it happened.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:147 and :180 vs :116",
+    "problem": "Line 116 teaches that `/resume` can reopen a cleared conversation. Two lines later, clearing the wrong context means the why is 'gone for good', and checkpoint continue-first says 'Clearing loses the why for good'. In Claude Code 2.1.309 you can /resume the old session, so 'for good' overstates it and contradicts the Lesson.",
+    "evidence": "PHASE-BOUNDARIES.md:23: \"/clear also isn't terminal: the old session stays resumable.\" Writing-guide canon :79: the old conversation can be reopened with /resume but doesn't come back into the current session.",
+    "fix": "'...the why is gone from the session you carry on in' (and similarly at :180)."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:189",
+    "problem": "'`/handoff` is the one Skill in this Lesson' is literally false. The Lesson also presents Matt's `ask-matt` Skill as the source of the Smart zone figure and the five-question tree, and the brief lists both Skills for this Lesson.",
+    "evidence": "Lesson :75 \"Matt's `ask-matt` Skill puts the Smart zone...\", :140 \"his `ask-matt` Skill\". Brief skills: ['productivity/handoff', 'engineering/ask-matt'].",
+    "fix": "'`/handoff` is the one Skill this Lesson has you run; the rest are Built-in commands.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:124",
+    "problem": "The Lesson gives the wrong reason for code-review's subagents. The SKILL.md says the two axes run as parallel sub-agents so they don't pollute each other's context. 'Fresh eyes' compared with the build is Matt's separate April-workshop point, already covered at line 245.",
+    "evidence": "code-review/SKILL.md:11: \"Both axes run as **parallel sub-agents** so they don't pollute each other's context\"; README.md:239: \"run as parallel sub-agents so neither pollutes the other\".",
+    "fix": "'Matt's code-review Skill runs its two reviewers in separate subagents, so neither review colours the other and neither carries the build's context.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:216 (scene chat)",
+    "problem": "The handoff file 'points to `src/parser.ts` and the spec by path', but this happens mid-grilling. In the Main flow the spec doesn't exist until /to-spec, after grilling. A reader who knows the flow will wonder which spec.",
+    "evidence": "ask-matt/SKILL.md:19-25 (grill first, then /to-spec). Scene caption :213 'Grilling a recipe site'.",
+    "fix": "Point to something that exists mid-grilling, e.g. '`src/parser.ts` and `GLOSSARY.md` by path'. Or say 'the parser's old spec'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:369-370 (test scenario-next-ticket, option D feedback)",
+    "problem": "The wrong-option feedback relies on a guess ('likely end past the Smart zone'). With 90k used, about 60k of Smart zone is left. Matt says himself that you can sometimes squeeze in one more ticket, so the guess doesn't make 'keep going' clearly wrong. The rule the Lesson actually teaches is the Main flow's clear-between-tickets.",
+    "evidence": "ask-matt/SKILL.md:26: \"/implement per ticket, /clear-ing context between each one... Each ticket is self-contained\". M6mYodf0dJM.en.json 14:31-14:39: \"maybe we can squeeze in one more ticket here, but usually I would say you clear in between every single ticket\".",
+    "fix": "'Matt's Main flow clears between tickets: ticket 3 stands alone, and the 90k of ticket 2 only spends Smart zone it doesn't need. Window size isn't the limit.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:441-442 (test predict-context-growth, option D)",
+    "problem": "The distractor 'Memory files' and its feedback ('standing notes loaded at startup') rely on something the Lesson never teaches. The startup list (:34-39) and the /context table (:45-53) both leave out memory files.",
+    "evidence": "research/context-window.md:56 and :74 (auto memory and the 'Memory files 194' row), neither carried into the Lesson body. Writing guide :118: distractors should be real misconceptions about things the Lesson covers.",
+    "fix": "Swap in a row the Lesson teaches, e.g. 'MCP tools' (feedback: their details load only when a tool is used). Or add memory files to the startup list."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:386 vs :22",
+    "problem": "spot-rule-in-chat reuses the body's own example rule word for word ('never edit the migrations folder'), so it tests recognition rather than transfer.",
+    "evidence": "Lesson :22 'Early on you told it \"never edit the migrations folder\"'; :386 'Sam told the agent \"never edit the migrations folder\"'. Writing guide :118: \"Use a fresh situation... not the body's own example sentence.\"",
+    "fix": "Use a fresh rule and site, e.g. 'always use British spelling in recipe titles'."
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:241 (and the sources line 462: \"`/context` and clearing at 50k left 5:10\u20135:54\")",
+    "problem": "Says that in the October 2025 video Matt \"got nervous with about 50k tokens left in a 200k window, and cleared\". In the video he is at 95k used / 105k free and describes a hypothetical: he WOULD start getting scared at about 50k left, at which point he WOULD run clear. He does not clear on camera; the only command he actually runs after `/context` is `/compact`, as a demo. The sentence misreports what he did.",
+    "evidence": "Transcript -uW5-TaVXu4.json 5:16\u20135:54: \"We've used 95k tokens out of 200k limit\u2026 105k tokens of free space, that feels pretty good to me. But I would definitely start getting scared once I only had about, let's say, 50k tokens left, at which point I would run clear\"; 5:56\u20136:24: \"You do have an alternative\u2026 which is to compact the conversation. If I run this\u2026 It's already taken about a minute doing this\".",
+    "fix": "Reword to what he said, not did: \"In his October 2025 video on context windows he said he'd start to get nervous with about 50k tokens left in a 200k window and would clear; `/compact` was for keeping the gist.\" In the sources line change \"clearing at 50k left\" to \"when he'd clear (50k left)\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:58 (checkpoint startup-tokens) and :87 (meter step \"Startup, about 20k\")",
+    "problem": "The checkpoint and the meter Scene put a brand-new session's startup cost at \"about 20k\", but the Lesson's own `/context` table (lines 45\u201355) shows the fixed startup rows adding up to just under 40k (16k + 9.9k + 4.3k + 4.3k, plus the omitted 3.4k MCP server instructions and ~0.4k memory/agents). One set of numbers contradicts the other; the writing guide asks for one consistent session-length story.",
+    "evidence": "Session log 8230810b `/context` table: System prompt 4.3k, System tools 16k, MCP tools 4.3k, MCP server instructions 3.4k, Custom agents 173, Memory files 194, Skills 9.9k \u2192 \u224838.3k before any message. Lesson line 55 itself says \"the fixed startup costs come to under 40k\".",
+    "fix": "Either make the illustrative figures match (\"about 40k\" in the checkpoint prompt and meter step, with fills adjusted) or soften the checkpoint to \"tens of thousands of tokens\" and note the meter is a lighter setup."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:120 and :392",
+    "problem": "\"`CLAUDE.md`, which is reloaded from disk after every compaction\" is stated for CLAUDE.md in general. The docs say the project-root CLAUDE.md (and unscoped rules, auto memory) reload from disk; nested CLAUDE.md files and path-scoped rules reload only on demand.",
+    "evidence": "code.claude.com/docs/en/glossary (CLAUDE.md, Compaction): \"Project-root CLAUDE.md and auto memory survive compaction and reload from disk\"; research note context-window.md lines 136\u2013140: \"Path-scoped rules and nested CLAUDE.md files reload only on demand\".",
+    "fix": "Say \"your project's root `CLAUDE.md`, which is reloaded from disk after every compaction\" in both places."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:120",
+    "problem": "Idle compaction is described as unconditional (\"if a long conversation (200k tokens or more) sits idle for nearly an hour, Claude Code compacts it while you're away\"). The docs tie it to an interactive terminal session, the one-hour prompt-cache TTL, reachable feature flags and the computer being awake at the ~54-minute mark; a reader on the desktop app or a sleeping laptop won't see it.",
+    "evidence": "code.claude.com/docs/en/settings-reference, `idleCompaction`: on by default only when \"you're in an interactive terminal session\", \"the conversation is on the one-hour prompt cache TTL\", \"Claude Code can fetch feature flags\", context \u2265 200,000 tokens, and \"about 54 minutes have passed since the last request, and your computer is awake at that point\".",
+    "fix": "Add the key condition in a clause: \"\u2026sits idle in a terminal session for nearly an hour (with your computer awake), Claude Code compacts it\u2026\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/02-context-window.md:124",
+    "problem": "\"Matt's code-review Skill runs its two reviewers in subagents so they judge the code with fresh eyes\" gives a reason the 1.3.1 SKILL.md doesn't state; the SKILL.md's stated reason is that the two axes don't pollute each other's context. The \"fresh eyes\" rationale is Matt's from the July 2026 video, which isn't cited for it here.",
+    "evidence": "mattpocock-skills/1.3.1/skills/engineering/code-review/SKILL.md line 11: \"Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.\" The fresh-context reasoning is in M6mYodf0dJM.en.json 14:58\u201316:08 (per _cross-lesson.md), not in the Lesson's sources.",
+    "fix": "Either state the SKILL.md reason (\"so the two reviews don't pollute each other's context\") or keep \"fresh eyes\" and add the July 2026 video timestamps (14:58\u201316:08) to the sources entry."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

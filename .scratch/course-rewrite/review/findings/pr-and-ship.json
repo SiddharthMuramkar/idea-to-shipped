@@ -1,0 +1,301 @@
+{
+ "slug": "pr-and-ship",
+ "lenses": {
+  "reader": [
+   {
+    "severity": "medium",
+    "where": "Lines 11 and 22 (promise and Why it matters), before the definition at line 35",
+    "problem": "\"pull request\" is used three times before it is explained. A cold reader meets \"a person reading a pull request\" and \"pull requests are still the main bottleneck\" without knowing what one is. The definition only arrives in the vocabulary list.",
+    "evidence": "L22: \"on a careful project that someone is a person reading a pull request. Matt Pocock ... says pull requests are still the main bottleneck\". L35: \"A **pull request (PR)** asks GitHub to merge one branch into another.\"",
+    "fix": "Gloss it at first use on L22: \"...that someone is a person reading a pull request (a request to add a set of changes to the real site's code, with a description, which others review before it goes in).\" Keep the fuller definition at L35."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 24 first use, then L104, L128-129, Evidence sections, Try step 4, and the Final test",
+    "problem": "\"test\" in the sense of an automated test (code that checks other code) is never explained, yet Evidence depends on it: \"the exact test that failed before the change and passes after it\". A reader who knows only a terminal can read \"tests pass\" as \"someone tried it\", and then the difference between a claim and a before/after is lost. \"lint\" and \"type checks\" (L152) and \"vitest, eslint, tsc, next build\" (L314) are not explained either.",
+    "evidence": "L24: \"Added comment box, all tests pass.\" L104: \"the exact test that failed before the change and passes after it\". No definition anywhere in the Lesson.",
+    "fix": "At L24: \"...all tests pass\" (tests are small programs, kept in the repo, that run the code and check it gives the right answers)\". In the Site story, change \"vitest (24), eslint, tsc and next build pass\" to \"results like 'all 24 tests, the style and type checks, and the build pass'\", or keep the quote and add \"(tests, style checks and a build)\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Example body L116 and L122 (\"A non-text body or name\"), plus chat Scene L169",
+    "problem": "\"body\" means two things here. Everywhere else it is the PR body (the description). In the example and the Scene it is a Comment's text field. A beginner who has just learned \"PR body\" will read \"A non-text body ... is now rejected\" as something about the PR description.",
+    "evidence": "L35 defines body as the PR description. L116: \"A non-text body or name is now rejected before it reaches `trim`.\" L169: \"*if body or name is not text \u2192 400*\".",
+    "fix": "Add one sentence before the example (after L111): \"In this example, `body` and `name` are the two fields of a Comment, its text and its author's name, not the PR body.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Example PR body L113-140 and chat Scene L171-177",
+    "problem": "The worked example is full of terms the reader has not met: `trim`, the status codes 500 and 400, `POST /api/comments`, \"route handler\", \"JSON\", \"schema\" and \"`.trim is not a function`\". A cold reader can't tell whether the Summary or the Evidence is good, which is the very skill this example is meant to teach (goal 3).",
+    "evidence": "L116 \"before it reaches `trim`\"; L119-121 \"POST /api/comments / route handler: parse JSON only\"; L128 \"\u2192 500, `.trim is not a function`\"; L135 \"No schema or data changes\"; L173/L177 \"no schema or data change\".",
+    "fix": "Add a short key just before the code block: \"To read it: a 500 is the server's 'I crashed' reply and a 400 its 'your request was invalid' reply; `trim` is the step that strips spaces off a Comment, and it crashed when given a number; 'schema' is the database's structure (its tables and columns).\" That makes the Summary and the before/after readable."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 87 first use, then L201, L202, L207, cheat sheet, and test scenario-need-to-type",
+    "problem": "`/implement` is named repeatedly, as the example of a user-invoked Skill and as the thing that \"commits to whatever branch you're on\", but the Lesson never says what it does. A cold reader doesn't know it is the Skill that builds the code, so \"Start on a branch\" and the \"/implement already wrote the body\" distractor are hard to follow.",
+    "evidence": "L87: \"Compare user-invoked Skills like `/implement`, which start only when you type their name.\" L201: \"`/implement` commits to whatever branch you're on.\"",
+    "fix": "At L87: \"Compare user-invoked Skills like `/implement` (Matt's Skill that builds a ticket's code test-first, reviews it and commits it), which start only when you type their name. See [Implement](/learn/implement).\""
+   },
+   {
+    "severity": "medium",
+    "where": "Summary table, L100 (\"A shaped diff\")",
+    "problem": "\"shaped diff\" is never explained. \"diff\" was defined (every line added or removed), but \"shaped\" plus \"in a shape that already exists\" means nothing to a beginner. The term then comes back in L169 and in the test spot-prose-summary feedback.",
+    "evidence": "L100: \"| What changes in a shape that already exists | A shaped diff |\"",
+    "fix": "Change the cell to: \"A shaped diff: one of the views above (say, a call tree) with + and \u2212 marking just the lines that change\". The example at L118-124 then shows it."
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 2 (L250)",
+    "problem": "Step 2 says to type a slash and \"pr\" to check that the Skill is installed, but doesn't say what a match looks like or warn against pressing Enter. Claude Code's menu can show other entries that start with \"pr\", and pressing Enter runs `/pr` on an empty folder.",
+    "evidence": "L250: \"Type a slash and the letters pr. If `pr` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again\"",
+    "fix": "\"Type `/pr` but don't press Enter. Look for an entry named `pr` that mentions mattpocock-skills or 'Use when writing a PR body'. Then press Backspace to clear it. If it isn't there, type `/exit`, run this in your terminal, then start `claude` again:\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 4 (L265)",
+    "problem": "\"Test-first\" is jargon the Lesson never explains, and the exercise relies on it: the before half of the Evidence check (\"the new test failing, then passing\") only exists if the agent writes a failing test first. A beginner has no way to see why the phrase matters or to check that it happened.",
+    "evidence": "L265: \"Make a branch called anonymous-name. Test-first, change the function so an empty or blank name shows as \\\"Anonymous\\\". Commit to that branch.\"",
+    "fix": "Prompt: \"Make a branch called anonymous-name. First write a test that an empty or blank name shows as \\\"Anonymous\\\" and run it so we see it fail. Then change the function so it passes, and commit to that branch.\" Add one line to the step: \"Writing the failing test first is what gives the PR body a real 'before'.\""
+   },
+   {
+    "severity": "low",
+    "where": "Try it yourself, steps 3 and 7",
+    "problem": "How to stop the agent comes last, in step 7, after the agent has already been creating files and committing in steps 3-5. Also, on a fresh Git install the first commit can fail because Git doesn't yet know the user's name and email, and nothing says what to do then.",
+    "evidence": "L275: \"Type `/exit` when you're done. Press Esc at any point to stop the agent.\" L259: \"Commit it to main.\"",
+    "fix": "Move \"Press Esc at any point to stop the agent, or choose No at a permission prompt\" into step 3. Add to step 3: \"If Git says it doesn't know who you are, let the agent set a name and email for this folder only (`git config user.name ...` without `--global`).\""
+   },
+   {
+    "severity": "low",
+    "where": "Chat Scene caption, L174",
+    "problem": "\"ask it to ship\" goes against the Lesson's own definition of shipping, which means reaching production after preview, test and merge. At this point the user is only asking to push and open the PR. A caption-only reader learns the wrong meaning of \"ship\".",
+    "evidence": "L174: \"# You check the call that matters most, then ask it to ship.\" Compare the flow Scene and the cheat sheet: \"Ship it | Preview \u2192 test it \u2192 squash and merge \u2192 production\".",
+    "fix": "\"# You check the call that matters most, then ask it to push the branch and open the PR.\""
+   },
+   {
+    "severity": "low",
+    "where": "Chat Scene L177 and flow Scene L53-56, before `gh` is defined at L205",
+    "problem": "`gh pr create` appears in the Scene before the Lesson explains `gh` (at L205). The two Scenes also give different orders: the flow shows the PR opening and then the body being written, while the session writes the body first and then pushes and opens the PR.",
+    "evidence": "L177: \"Pushed the branch and opened the PR with `gh pr create`.\" Flow L53-56: \"pushes the branch and opens a pull request\" then \"Writing the body ...\"",
+    "fix": "L177: \"...opened the PR with `gh pr create` (GitHub's command-line tool).\" Flow caption at L55: \"# The agent writes the PR's body (here or just before opening it); that's what the `pr` Skill describes, so it loads without being asked.\""
+   },
+   {
+    "severity": "low",
+    "where": "Checkpoint body-only, option b feedback (L187)",
+    "problem": "The feedback names `/implement-spec` and \"draft PRs\", which the Lesson only explains later at L207. At this point a cold reader can't use the feedback.",
+    "evidence": "L187: \"Only `/implement-spec` opens draft PRs, and only in specific cases. `/pr` never does.\"",
+    "fix": "\"`/pr` never opens anything, draft or not. (One other Skill, `/implement-spec`, can open a draft PR, a PR marked not ready for review, in specific cases.)\""
+   },
+   {
+    "severity": "low",
+    "where": "How Matt and others use it, L236",
+    "problem": "\"feature flag\" is not explained, and without it the point (reversible until the first write in the new shape) doesn't land.",
+    "evidence": "L236: \"a change hidden behind a feature flag stays reversible only until it first saves data in the new shape.\"",
+    "fix": "\"...a change hidden behind a feature flag (a switch that turns new code on or off without a new release) stays reversible only until...\""
+   },
+   {
+    "severity": "low",
+    "where": "L205 (\"follow your repo's own PR template\") and test scenario-repo-template",
+    "problem": "\"PR template\" and `.github/pull_request_template.md` are never explained, so the Final test question relies on a concept the reader hasn't been taught.",
+    "evidence": "L205: \"follow your repo's own PR template (settle any clash in `CLAUDE.md`)\"",
+    "fix": "\"follow your repo's own PR template (a file of headings GitHub pre-fills into every new PR, usually `.github/pull_request_template.md`; settle any clash in `CLAUDE.md`)\""
+   },
+   {
+    "severity": "low",
+    "where": "Goals L16-17",
+    "problem": "The goals use \"Merge Danger call\", \"door call\" and \"one-way or two-way\" with no hint of what they mean, so for a cold reader the fourth goal is opaque.",
+    "evidence": "L17: \"make the door call yourself, one-way or two-way, and decide how hard to review\"",
+    "fix": "L17: \"You'll be able to judge whether a change can be undone (a two-way door) or not (a one-way door), and use that to decide how hard to review and when to test before merging.\""
+   },
+   {
+    "severity": "low",
+    "where": "L202",
+    "problem": "\"Built-in review\" is not the exact GLOSSARY term (\"Built-in command\").",
+    "evidence": "L202: \"If the short name runs Claude Code's own Built-in review instead\"",
+    "fix": "\"If the short name runs Claude Code's own Built-in `/code-review` command instead, type `/mattpocock-skills:code-review`\""
+   },
+   {
+    "severity": "low",
+    "where": "Site story, L312 and L314",
+    "problem": "\"red test\" and `alembic upgrade head` aren't explained for a reader who has never coded. (Both are the author's own material, from the d21fc2c journal and PR #7, so keeping them is allowed.)",
+    "evidence": "L314: \"a red test reproducing `.trim is not a function`\"; L312: \"Nobody has to remember `alembic upgrade head`.\"",
+    "fix": "\"a failing ('red') test reproducing...\"; \"Nobody has to remember to run the migration by hand (`alembic upgrade head` in the Python tool I knew).\" Or simply: \"Nobody has to remember to run the migration by hand.\""
+   },
+   {
+    "severity": "low",
+    "where": "Common mistakes L288-295 and Cheat sheet",
+    "problem": "Common mistakes repeats almost every bullet of \"Your part\" (claim Evidence, trusting two-way/small, merge-then-test, building on main, expecting /pr to push, too many diagrams), and the cheat sheet repeats it again. The writing guide asks Common mistakes not to restate an earlier section. \"`/implement` commits to whatever branch\" appears five times.",
+    "evidence": "L201/L293/L321 all say /implement commits wherever you are; L199/L291 both say to distrust \"two-way, small\".",
+    "fix": "Cut Common mistakes to the three not already a bullet in \"Your part\" (merging then testing, a wall of diagrams or a huge PR, claim Evidence), plus one line: \"The rest are in Your part, above.\" That also frees words for the glosses suggested here."
+   },
+   {
+    "severity": "low",
+    "where": "L102 and L109",
+    "problem": "Two small unexplained terms: \"Dex Horthy's show-me Skill\" (who he is) and \"layout shift\".",
+    "evidence": "L102: \"Matt credits this menu to Dex Horthy's show-me Skill.\" L109: \"such as layout shift, problems on phones\"",
+    "fix": "\"Matt credits this menu to show-me, a Skill by Dex Horthy of HumanLayer.\" \"such as layout shift (parts of a page jumping as it loads), problems on phones...\""
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "high",
+    "where": "content/lessons/11-pr-and-ship.md:357-367 (test scenario-review-effort)",
+    "problem": "Two options can be defended. The right answer's feedback quotes Matt's rule, \"you don't need to review every reversible decision\", and that rule supports option c (\"None\") just as well as b. The prompt also says \"and the diff agrees\", which means the reader has already checked the call. That removes the only reason c's feedback gives against it (\"You still check that the call is right\").",
+    "evidence": "Feedback on b: \"Matt's rule: you don't need to review every reversible decision, but you must review every irreversible one.\" Feedback on c: \"Skimming isn't skipping. You still check that the call is right and the Evidence is real.\" The LlgiOCmFG_w transcript at 22:09-22:15 says reversible decisions don't really need review. The English v1.3 video (BsJGo1wFTvQ 7:01-7:05) says only that you don't need to review a small-blast-radius two-way door \"very hard\", and that line is the one that actually supports a skim.",
+    "fix": "Replace the block with:\n```test scenario-review-effort\nA PR changes the wording on one button. Its Merge Danger says \"Door: two-way. Blast Radius: small.\" How much review does it need?\n- [ ] A line-by-line read, because every PR deserves equal care.\n  > Equal care for everything means too little care for the PRs that can't be undone. Spend it where reversal is hard.\n- [x] A quick skim that checks the door call holds.\n  > Right. Matt says a small two-way door doesn't need a hard review. The skim is how you confirm the call, because the agent that wrote the code made it.\n- [ ] None: a two-way door can be merged unread.\n  > The call comes from the agent that wrote the code. A quick look is how you catch a \"two-way\" that isn't.\n- [ ] Block it until the team writes screenshot tests.\n  > That's out of proportion for a wording change that a revert undoes.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/11-pr-and-ship.md:146-156 (checkpoint evidence-no-ui) and 393-403 (test spot-claim-evidence)",
+    "problem": "The Checkpoint and a Final test question test the same thing. The Checkpoint's distractor c (\"All tests are green, and lint and type checks are clean\") is almost exactly the prompt of spot-claim-evidence (\"All 24 tests pass, and lint is clean\"), and both have the same answer: a before and an after. The test prompt also echoes the Site story's PR #9 Evidence (\"vitest (24), eslint\u2026\"), so it checks recall, not transfer. The right answer is the phrase the body repeats six times.",
+    "evidence": "Checkpoint c: \"All tests are green, and lint and type checks are clean.\" > \"That's a claim. Evidence shows a before and an after.\" Test prompt: \"All 24 tests pass, and lint is clean.\" Right answer: \"A before and an after.\" Site story line 314: \"vitest (24), eslint, tsc and next build pass\". The writing guide says no Checkpoint may duplicate a Final test question.",
+    "fix": "(1) In the Checkpoint, replace option c with: `- [ ] A note that `/code-review` checked the branch and found no problems.` / `  > A review checks the code's quality and its fit to the spec. Evidence shows the change working, with a before and an after.` This keeps the right answer from being the longest option. (2) Replace the test with a fresh case:\n```test spot-claim-evidence\nA PR fixes a recipe site's search, which found nothing when you typed \"Pasta\" with a capital P. Its Evidence reads: \"Fixed. Full suite green (112 tests), types clean.\" Spot the mistake.\n- [ ] Evidence should be a Mermaid diagram of the search module.\n  > A diagram shows the shape of the change, so it belongs in the Summary. Evidence shows the change working.\n- [x] Nothing shows \"Pasta\" failing before and working after.\n  > Right. A green suite is a claim. Show the search test that failed before the fix and passes now.\n- [ ] It should list how many files changed.\n  > The diff already shows that, and it proves nothing about whether search works.\n- [ ] Nothing: a full green suite is the strongest evidence there is.\n  > Screenshots rank higher for visible changes, and a green suite with no before doesn't show this bug was ever caught.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/11-pr-and-ship.md:182-192 (checkpoint body-only)",
+    "problem": "The prompt gives the answer away and reuses the body's own example sentence. Because it says \"don't push\", a reader can rule out options a and c without knowing anything about /pr, so the Checkpoint tests whether the agent obeys, not what /pr does. The prompt is also almost word for word the Scene's and the Try block's prompt, which the writing guide forbids (\"not the body's own example sentence\").",
+    "evidence": "Prompt: \"You tell the agent: 'Write the PR body for this branch. Show it here; don't push.'\" Scene line 165 and Try line 271: \"Write the PR body for this branch against main. Show it to me here; don't push or open anything.\"",
+    "fix": "Replace the block with:\n```checkpoint body-only\nOn a book-club site, you type `/pr` on a finished, reviewed branch and say nothing else. When it's done, what has the Skill given you?\n- [ ] An open PR on GitHub with that body.\n  > `/pr` only shapes the body. Pushing and opening the PR are separate steps the agent takes when you ask.\n- [ ] A draft PR, waiting for your approval.\n  > Among Matt's Skills, only `/implement-spec` opens draft PRs, and only in specific cases. `/pr` never does.\n- [ ] The branch pushed, with the PR left for you to open.\n  > Pushing is a separate step too. `/pr` doesn't touch Git or GitHub.\n- [x] A PR body in your terminal, and nothing else.\n  > Right. It writes the body and stops. Ask the agent to push the branch and open the PR when you're ready.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/11-pr-and-ship.md:441-451 (test sequence-ship)",
+    "problem": "Two of the three distractors are not real misconceptions: b has the preview before the branch, and d merges before the PR exists. Option a (merge, then test) checks the same point as spot-merge-then-test. The right chain is copied from goal 1, the flow Scene and the Cheat sheet, so the question is recall. It also misses a sequencing rule the Lesson teaches but never tests: review comes before the body (`/code-review`, then `/pr`), and you branch before you build.",
+    "evidence": "Right answer: \"branch \u2192 pull request \u2192 preview with its own database \u2192 test it \u2192 squash and merge \u2192 production\". Cheat sheet line 329: \"Preview \u2192 test it \u2192 squash and merge \u2192 production\". Body lines 201-202 teach \"Start on a branch\" and \"Review before the body\", and no question tests either.",
+    "fix": "Replace the block with the version below. All four options use the same steps and three are the same length, so there's no length tell. If this id is already in the live database, use a new id.\n```test sequence-ship\nA small feature for a recipe site set up like this one is ready to build. Which order gets it to production safely?\n- [ ] branch \u2192 build \u2192 `/pr` writes the body \u2192 `/code-review` \u2192 open the PR \u2192 test the preview \u2192 squash and merge\n  > The body should describe a diff that's already been reviewed, so `/code-review` comes first.\n- [ ] branch \u2192 build \u2192 `/code-review` \u2192 open the PR \u2192 test the preview \u2192 squash and merge \u2192 `/pr` writes the body\n  > The body is for the reviewer, so it has to exist before anyone reviews or merges the PR.\n- [x] branch \u2192 build \u2192 `/code-review` \u2192 `/pr` writes the body \u2192 open the PR \u2192 test the preview \u2192 squash and merge\n  > Right. Review, then describe, then test on the copy. The merge is the last step and the only one that touches production.\n- [ ] build on `main` \u2192 `/code-review` \u2192 branch \u2192 `/pr` writes the body \u2192 open the PR \u2192 test the preview \u2192 squash and merge\n  > `/implement` commits to whatever branch you're on, so building first puts the work on `main`. Branch before you build.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/11-pr-and-ship.md:417-427 (test spot-email-door)",
+    "problem": "The scenario is Matt's own example (a tiny change that emails a lot of people), and the right answer restates the Lesson's one direct quote (\"rolling back a commit won't unsend a batch of emails\"), so it's easy to spot by recall. Distractors b and d are straw men: no one thinks only big PRs have doors, or that email features shouldn't go through a PR. The real misconception, that reverting switches the feature off again, isn't offered.",
+    "evidence": "Right answer: \"A revert can't unsend emails that already went out.\" Body line 199 quotes \"rolling back a commit won't unsend a batch of emails\". Option d: \"Email features should never ship through a PR.\"",
+    "fix": "Keep the prompt and option c, and change the others:\n- [x] Emails already sent stay sent after a revert.\n  > Right. Anything sent out into the world is a one-way door, however small the diff. Read this one slowly.\n- [ ] Nothing: reverting turns the weekly email off again.\n  > It stops future emails. The ones that already went out can't be pulled back, and that's what makes the door one-way.\n- [ ] The call is right; it just needs a wider blast radius.\n  > (keep the current feedback)\n- [ ] Nothing: a two-line diff is too small to be a one-way door.\n  > Size doesn't decide the door. Matt's own one-way example is a tiny change that accidentally emails 60,000 people.\nThe right answer stays in position a and is the shortest option."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/11-pr-and-ship.md:381-391 (test scenario-repo-template)",
+    "problem": "The right answer, \"It's unclear until you settle it\", reads like a hedge, close to a none-of-the-above. Option d begins \"Neither\", which is how the docs answer this exact question (\"Neither, by default\"), so a reader who has seen the docs may pick the wrong one. Asking what to do tests the same fact more cleanly.",
+    "evidence": "c: \"It's unclear until you settle it in `CLAUDE.md`.\" d: \"Neither, because `/pr` refuses to run when a repo template exists.\" docs/engineering/pr.md: \"Which one wins? Neither, by default.\"",
+    "fix": "Replace with:\n```test scenario-repo-template\nYour team's repo already has a `.github/pull_request_template.md`, and you want agent-written bodies to respect it. What do you do?\n- [ ] Nothing: `/pr` finds the repo's template and fills it in.\n  > `/pr` has its own template and doesn't look for yours. Left alone, the agent has two competing instructions.\n- [ ] Delete the repo's template so only one is left.\n  > That throws away your team's template. You can keep both by saying how they combine.\n- [x] Say in `CLAUDE.md` how the two templates combine.\n  > Right. For example: fill the repo's template, with Summary, Evidence and Merge Danger under it.\n- [ ] Type `/pr` yourself, so it reads the repo's template.\n  > Typing the name loads the same Skill, which still doesn't look for your template.\n```"
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/11-pr-and-ship.md:429-439 (test spot-merge-then-test)",
+    "problem": "This retells the Site story's mistake and the Common mistakes bullet almost word for word, so it tests recall. Distractor c (\"GitHub blocks merging until someone has opened the preview\") is a straw man.",
+    "evidence": "Common mistakes line 292: \"On a PR with a migration, the merge has already changed the real database.\" Right answer: \"The merge already ran the migration on the real database.\"",
+    "fix": "Move it to a fresh case and use a real misconception for c: prompt \"On a recipe site set up like this one, a PR's migration renames the `ingredients` table. Sam clicks Squash and merge, then opens the preview to check the rename worked. Why is that order risky?\" Replace c with `- [ ] The preview's database branch is deleted the moment you merge, so there's nothing left to test.` / `  > The preview is still there, but testing it now tells you nothing new: production already has the change.` Keep a, b and d as they are."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/11-pr-and-ship.md:13-18 (goals) vs Final test",
+    "problem": "Goal 2's \"it writes only the PR body\" is checked only by the Checkpoint body-only, which doesn't count toward passing. No Final test question asks whether `/pr` pushes or opens the PR. scenario-stale-body and scenario-repo-template cover what it leaves to you, but not this part.",
+    "evidence": "Goal: \"it's model-invoked, and it writes only the PR body.\" scenario-need-to-type tests only the model-invoked half.",
+    "fix": "In scenario-need-to-type, replace distractor c with `- [ ] Yes, because only typing `/pr` makes the agent push the branch and open the PR.` / `  > `/pr` never pushes or opens anything; it only shapes the body. The agent opens the PR with `gh` because you asked.` That way the Final test touches the body-only half without adding an eleventh question, since 10 is the cap."
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "low",
+    "where": "content/lessons/11-pr-and-ship.md:85 (\"It arrived in version 1.3 of Matt's Skills, in October 2026.\")",
+    "problem": "Slightly imprecise history: `pr` did not first appear in 1.3; it existed in the repo's `in-progress/` bucket and was graduated into Engineering (and so into the Claude Code plugin) in 1.3.0.",
+    "evidence": "CHANGELOG.md 1.3.0 (#1120): \"Graduate **`pr`** into the **Engineering** bucket, so it ships in the Claude Code plugin\"; aihero.dev v1.3 changelog: \"three skills graduate out of `in-progress/` into the Engineering bucket\"; GitHub commit a7d038f 2026-09-24 \"Graduate pr and retro to engineering\"; release v1.3.0 published 2026-10-04 (gh api releases).",
+    "fix": "Say it \"joined the shipped set in version 1.3 of Matt's Skills (October 2026)\" or \"graduated into the plugin in version 1.3\", rather than \"arrived\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/11-pr-and-ship.md:314 (Site story: results like \"vitest (24), eslint, tsc and next build pass\")",
+    "problem": "Text inside quotation marks is not what PR #9's body says; it drops the `--noEmit` flag and the code formatting.",
+    "evidence": "`gh pr view 9` body, Evidence section: \"vitest (24), eslint, `tsc --noEmit` and `next build` pass.\"",
+    "fix": "Either quote it verbatim (\"vitest (24), eslint, `tsc --noEmit` and `next build` pass\") or remove the quote marks and paraphrase (\"a list of passing checks: vitest, eslint, tsc, next build\")."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/11-pr-and-ship.md:236 (\"Users quoted in Matt's October 2026 docs have warned that a change hidden behind a feature flag...\")",
+    "problem": "Attribution is stronger than the source supports: the docs page quotes one user on emails, then adds the feature-flag point in Matt's own voice, not as a user quote.",
+    "evidence": "docs/engineering/pr.md and https://www.aihero.dev/skills-pr, \"Can I trust the agent's own door call?\": \"As one user put it, \\\"rolling back a commit won't unsend a batch of emails\\\", and a flagged rollout stays two-way only until the first write lands in the new format.\" Only the first clause is marked as a quote.",
+    "fix": "Write \"Matt's October 2026 docs also warn that a change hidden behind a feature flag...\" (or \"the docs warn\"), dropping \"Users quoted\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/11-pr-and-ship.md:235 (Discussion #835, \"(August 2026)\" ... \"Other users replied that ... `/pr` only writes the body\")",
+    "problem": "The thread opened in August 2026, but the reply that mentions `/pr` is from 6 October 2026 (after v1.3 shipped); dating the whole exchange August could imply `/pr` was being discussed before it existed in the plugin.",
+    "evidence": "gh api graphql discussion 835: createdAt 2026-08-11T17:27:50Z; comments by AlexLimaTKZ 2026-08-21 (\"One branch = one logical PR\"), sylvesterkaczmarek 2026-08-22 (\"/implement works on the branch you're already on\"), AlakhiarovSalekh 2026-10-06 (\"`/pr` only defines/formats the pull-request body. It does not push the branch or open the PR.\").",
+    "fix": "Say \"asked in August 2026 ... replies through October 2026 explained that...\" or move the date to the replies: \"(opened August 2026; the `/pr` reply is from October)\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/11-pr-and-ship.md:460 (sources: Fixing the PR Bottleneck, \"checked against an auto-translated transcript\")",
+    "problem": "The Lesson's Matt claims from this talk (doors at 17:04\u201318:10, Merge Danger at the bottom, the 60,000-email example, the closing rule at 22:09\u201322:15) are all correct, but the sources block admits they rest on a machine translation when an English transcript exists and confirms them.",
+    "evidence": "https://ai.engineer/talks/LlgiOCmFG_w-fixing-pr-bottleneck carries the English transcript: at 17:44 \"It's the glorious benefit of being a software engineer as opposed to a civil engineer ... If you get something wrong, that bridge is going down\"; \"a very simple change accidentally blasts out an email to 60,000 people ... that is a one-way door\"; 18:14 \"a nice little sort of summary right at the bottom of all of my PRs, which is the merge danger\"; 22:14 \"You really don't need to review every single two-way door. Every single one-way door you do.\" These match the Lesson's paraphrases at lines 228\u2013229, 362 and 422.",
+    "fix": "Add the ai.engineer talk page (English transcript) to the sources entry and replace \"checked against an auto-translated transcript\" with \"wording checked against the English transcript on ai.engineer\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/11-pr-and-ship.md:207 (\"only `/implement-spec` opens a PR by itself, and only as a draft\")",
+    "problem": "\"Only as a draft\" is true of the opening step but can read as if the PR stays a draft; the Skill marks it ready for review once the spec is done.",
+    "evidence": "implement-spec/SKILL.md step 3: \"open a draft PR after the first merge in step 5 ... marked as closing the spec and tickets\"; step 8: \"If a draft PR exists, mark it ready for review.\"",
+    "fix": "Add a clause: \"opens it as a draft, then marks it ready for review when every ticket is done\"."
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/11-pr-and-ship.md:166-171 (scene chat)",
+    "problem": "In the session Scene the agent only loads the Skill and reads the diff. Then it reports a before result (the new test gets a 500) and an after result (400, all 20 tests pass) without ever running anything. The caption at line 170 says the evidence comes \"from a real test run\", but no step shows that run. This models the exact failure Matt built Evidence to prevent: claiming a result because the agent read the code. It also conflicts with line 226 of the Lesson itself.",
+    "evidence": "pr/SKILL.md:160-164 says Evidence must be concrete and show the exact test that now fails and passes. In the v1.3 video (BsJGo1wFTvQ 6:01-6:22), Matt says asking for evidence often makes the agent run an extra test, and that without it agents just say it probably works because they read the code. Line 160 frames this as a short, separate session on an already-committed and reviewed branch, so the red run from TDD isn't obviously in context.",
+    "fix": "Add an agent line after line 167, for example: \"*Runs the new test against `main` (500, `.trim is not a function`), then on this branch (400), then the full suite (20 pass).*\" Then reword the caption at line 166 to \"\u2026loads it on its own, reads the diff, and runs the test before and after.\" The other option is to say the fix was built test-first earlier in this same session, so the red run is already there."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/11-pr-and-ship.md:207",
+    "problem": "\"only as a draft (a PR marked not ready for review)\" suggests the PR implement-spec opens stays a draft. In fact implement-spec opens it as a draft and then marks it ready for review once the build is done.",
+    "evidence": "implement-spec/SKILL.md:25 (step 3: open a draft PR after the first merge) and implement-spec/SKILL.md:38 (step 8: \"If a draft PR exists, mark it ready for review\").",
+    "fix": "Write: \"\u2026opens a PR by itself: a draft (a PR marked not ready for review) that it marks ready once the work is done, and only when your issue tracker \u2026 closes work through PRs or you ask.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/11-pr-and-ship.md:207",
+    "problem": "The Main flow sentence \"`/implement`, then `/code-review`, then `/pr`, then `/retro`\" presents `/pr` as an unconditional step. In ask-matt it applies only when the work goes up as a pull request.",
+    "evidence": "ask-matt/SKILL.md:32 (\"When the work goes up as a pull request, `/pr` shapes the body\"). docs/engineering/pr.md:74 (\"comes between review and retro when the build ships as a pull request\").",
+    "fix": "Add the condition: \"When the work ships as a PR, `/pr` comes between review and the retrospective: \u2026\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/11-pr-and-ship.md:93-102",
+    "problem": "The Summary menu stops at six views, and the text says \"all six would bury the point\". SKILL.md also allows showing the whole code block when most of it is new. A reader whose PR adds a new function may think a full block isn't allowed.",
+    "evidence": "pr/SKILL.md:143-150 (\"Show the whole block when most of it is new, when omitted context would hide ownership or order, or when the user needs a copyable target shape\"). The docs page counts six views (docs/engineering/pr.md:47), so the table matches the docs but leaves out this SKILL.md option.",
+    "fix": "After the table, add one clause: \"When most of the code is new, it can show the whole block instead.\" Keep \"six\" for the menu itself."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/11-pr-and-ship.md:326 (Cheat sheet)",
+    "problem": "The cheat-sheet door rule (\"One-way if it deletes, migrates destructively or sends anything out\") reads as a complete list. It is narrower than the Skill's definition, which also covers any hard-to-reverse decision, such as removing a public API.",
+    "evidence": "pr/SKILL.md:168 (\"Changes that involve destructive actions or hard-to-reverse decisions are one-way doors\"). docs/engineering/pr.md:23 lists a public API removal as a one-way door.",
+    "fix": "Write: \"One-way if it's destructive or hard to reverse: deletes data, migrates destructively, sends anything out, removes a public API\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/11-pr-and-ship.md:52-56 (scene flow)",
+    "problem": "The flow Scene opens the PR first (`at: pr`, \"pushes the branch and opens a pull request\") and only then writes the body (`at: body`). The chat Scene at lines 165-177 and the Try block do the opposite: the body is written first, then the agent pushes and opens the PR with it. A cold reader gets two different orders.",
+    "evidence": "Line 53 caption opens the PR before line 55 writes the body. Line 175 is \"push the branch and open the PR with this body\". docs/engineering/pr.md:35 says the agent uses this shape for the body when you ask it to open a PR.",
+    "fix": "Recaption line 53, for example: \"When you ask, the agent writes the body, pushes the branch and opens a pull request with it.\" Then let the `body` step explain that the pr Skill loaded by itself for that body. You could also hang the `body` side node off `branch` so it comes before `pr`."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/11-pr-and-ship.md:446 (Final test sequence-ship feedback), also line 39",
+    "problem": "The feedback says \"A preview is built from a PR's branch, so the branch and the PR come first.\" Vercel builds a preview whenever a non-production branch is pushed, even before any PR exists, so the PR does not have to come first. Line 39 (\"makes a preview for every PR\") is the same simplification.",
+    "evidence": "Vercel docs (framework environment variables, VERCEL_GIT_PULL_REQUEST_ID): the value is empty \"if a deployment is created on a branch prior to opening a pull request\". So previews exist for pushed branches without a PR.",
+    "fix": "Feedback: \"A preview is built from a pushed branch, so the branch has to exist first.\" Line 39: \"makes a preview for every pushed branch, so every PR has one\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/11-pr-and-ship.md:314 (site-story)",
+    "problem": "PR #9's Evidence is quoted inside quotation marks, but the wording isn't exact: the flag and the backticks are dropped.",
+    "evidence": "`gh pr view 9` Evidence line: \"vitest (24), eslint, `tsc --noEmit` and `next build` pass.\" The Lesson has \"vitest (24), eslint, tsc and next build pass\".",
+    "fix": "Quote it exactly (\"vitest (24), eslint, `tsc --noEmit` and `next build` pass\"), or drop the quotation marks and paraphrase."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

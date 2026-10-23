@@ -1,0 +1,16 @@
+{
+ "n": 1,
+ "slug": "how-agents-work",
+ "title": "How coding agents work",
+ "part": 1,
+ "old": null,
+ "img": [
+  "/photos/how-agents-work.jpg",
+  "Two robotic arms with grippers pick items out of trays on an automated workstation.",
+  "Franck V."
+ ],
+ "skills": [
+  "engineering/ask-matt"
+ ],
+ "extra": "Facts about Claude Code come from its official docs (see the research note sources; re-check anything uncertain at https://code.claude.com/docs/en/ via the web tools your CLAUDE.md routes to). Teach: model vs harness vs agent, the agent loop (tool call -> result -> next step), the tool families, permission modes (Manual/default, Accept edits, Plan, Auto, Bypass; Shift+Tab; new sessions start in auto mode as of Claude Code 2.1.309), plan mode and the approval menu, CLAUDE.md as steering (and Matt's \"keep it nearly empty\" view vs the docs' \"under 200 lines\"), checkpoints and Esc Esc / `/rewind` and what they can't undo. Matt planned in plan mode in Jan 2026 and stopped in April 2026 in favour of grilling: teach both. Site story: real material exists (the v1 build began in plan mode with multiple-choice questions and a plan file, then switched to auto mode and `/grilling`; the project CLAUDE.md is 17 lines written by `/setup-matt-pocock-skills`; this course rewrite itself was grilled in plan mode in one session, then split into two parallel sessions). No clock times."
+}

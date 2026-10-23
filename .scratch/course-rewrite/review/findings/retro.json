@@ -1,0 +1,206 @@
+{
+ "slug": "retro",
+ "lenses": {
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "checkpoint untraceable-candidate (lines 126-136), right-option feedback (d); and the Try-it checklist line 260",
+    "problem": "The checkpoint teaches an absolute rule, that every real candidate points at something that happened in the session. The Lesson's own Try-it expects a candidate that isn't a session moment (\"nothing runs its checks automatically\"). retro SKILL.md also lists findings that don't depend on the session: a repo with no guardrail \"is itself a finding\", and the Global AGENTS.md and no-ops categories fire on file size. A reader who learns the checkpoint rule would throw out the guardrail finding the Try-it says to expect.",
+    "evidence": "Checkpoint d feedback: \"Every real candidate points at something that happened.\" Line 260: \"It flagged that nothing runs its checks automatically: no pre-commit hook, no CI job.\" retro SKILL.md, Automated checks: \"A repo with no guardrail ... is itself a finding\"; _Use when_ \"... or the repo has no guardrail at all.\"",
+    "fix": "Change option d's feedback to: \"Right. A real candidate traces to a moment in the session or to a plain fact about the repo, like a missing guardrail. Generic advice that fits neither gets dropped.\" Change option a's feedback to: \"A ranking isn't evidence. A candidate you can't trace to the session or the repo is probably filler.\" Also change the body bullet at line 120 to match: \"Throw out any you can't link to a specific moment, or to a fact about the repo such as a missing guardrail\"."
+   },
+   {
+    "severity": "medium",
+    "where": "test scenario-which-skill (lines 329-339), feedback on option a (/retro)",
+    "problem": "The feedback overstates the rule. It says /retro's candidates \"must trace back to struggles in a session's record\", but SKILL.md's no-guardrail, Global AGENTS.md and no-ops categories don't need a struggle. The right answer still stands (with nothing gone wrong, the Lesson says to skip /retro), but the reason given is wrong. It also repeats the over-absolute rule from the checkpoint above.",
+    "evidence": "Option a feedback: \"Its candidates must trace back to struggles in a session's record, and there are none to trace here.\" Body line 119: \"After a smooth session, skip it: you'll mostly get rules nobody needed.\"",
+    "fix": "Change option a's feedback to: \"`/retro` looks back over a session. With nothing gone wrong, it has little to work from and mostly proposes rules nobody needed. To judge a document on its own, use the reference directly.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Final test vs goals (goals lines 14-17; tests lines 293-399)",
+    "problem": "Two goals aren't fully covered by the Final test. Goal 3 promises \"what earns a place in a steering file\", but only the globality Checkpoint tests that; predict-stale-init covers only the /init half. Goal 4 lists six ideas, and the Final test checks just two of them (context pointers in predict-weak-pointer, positive phrasing in spot-negation). The two loads, progressive disclosure, leading words and no-ops never appear in the Final test. Goal 2's \"a pointer for slow searching\" home is also never tested in a /retro situation.",
+    "evidence": "The 9 tests: repeat-mistake (check), style-drift (standards), cleared-session (timing), which-skill, negation, automated-retro, stale-init, weak-pointer, sequence. None asks which line earns a place in CLAUDE.md, and none covers progressive disclosure, the two loads or leading words.",
+    "fix": "Add a 10th test (allowed range 8-10), with the right answer in position a (a is currently used only once):\n```test scenario-earns-a-line\nYou're pruning a teammate's `CLAUDE.md`. Which line earns its place?\n- [x] \"Payments: read docs/payments.md before touching checkout code.\"\n  > Right. It's a navigation pointer with a clear trigger, the main thing a steering file is for.\n- [ ] \"This project is a Next.js app written in TypeScript with Tailwind.\"\n  > The config files already say so. A copy of something discoverable costs every session and goes stale.\n- [ ] \"Run `npm test` before every commit to run the whole test suite.\"\n  > That's mechanical: a pre-commit hook enforces it, and a sentence can't fail.\n- [ ] \"Always write well-tested, maintainable and readable code.\"\n  > A no-op. It doesn't change what the agent does by default.\n```\n(Check the lengths with lint: the right option is about 63 characters, the others 64-67.) Then either narrow goal 4 to \"...with `/writing-for-agents`: sharpen context pointers, cut no-ops and state the positive\", or swap one question for a progressive-disclosure item, for example: \"Your 600-line migration Skill covers Postgres, MySQL and SQLite, but each project uses one, and runs skip steps near the top. What does `/writing-for-agents` suggest?\" Right answer: \"Keep shared steps inline; move per-database notes to linked files.\" Distractors: bold every step; paste it all into `CLAUDE.md`; ask the agent to streamline the file to half its length."
+   },
+   {
+    "severity": "medium",
+    "where": "test spot-negation (lines 341-351)",
+    "problem": "This tests recall, not transfer. The prompt reuses the body's own example word for word (\"Don't write long comments\"), and the right option's feedback repeats the body's fix (\"Keep every comment to one line\"). The writing guide says to use a fresh situation, not the body's example.",
+    "evidence": "Body line 176: \"\\\"Don't write long comments\\\" puts long comments front and centre; \\\"Keep every comment to one line\\\" never mentions them.\" Test prompt: \"Dana added \\\"Don't write long comments.\\\" to `CLAUDE.md`.\"",
+    "fix": "Use a fresh case that is a judgement call, not something a lint rule could catch (otherwise \"make it a check\" becomes a second right answer): \"After the agent kept writing error messages full of developer jargon, Dana added \\\"Don't use technical jargon in error messages.\\\" to `CLAUDE.md`. Now the messages mention stack traces and status codes even more. Spot the mistake.\" Right option b: \"The ban names the unwanted behaviour instead of the wanted one.\" Feedback: \"Right. Negation keeps jargon in the agent's attention. 'Write every error message in words a Visitor would use' states the target instead.\" Keep options a, c and d as they are, with \"long comments\" in option a's feedback changed to \"jargon\"."
+   },
+   {
+    "severity": "medium",
+    "where": "test scenario-repeat-mistake (lines 293-303)",
+    "problem": "This also tests recall, not transfer. \"The wrong package manager\" is the body's own example of a mechanical slip three times over (Why it matters, the mechanical paragraph, and the flow Scene caption), so a reader can match the phrase without applying the mechanical-or-judgement test.",
+    "evidence": "Line 22: \"It runs `npm install` in a project that uses a different package manager.\" Line 55: \"...the wrong package manager.\" Scene caption, line 71: \"A fixed pattern, like the wrong package manager, gets a check that fails\".",
+    "fix": "Use a fresh mechanical slip from SKILL.md's \"banned API / import shape\" class: \"On a recipe site, the agent keeps importing dates from `moment`, a library the team removed months ago. The reviewer has caught it in three PRs running. You run `/retro`. Which proposal fits how it sorts problems?\" Options: a \"A new line in `CLAUDE.md`: 'Never import moment.'\"; b \"A rule in `CODING_STANDARDS.md` for the reviewer agent to enforce.\" (feedback: \"Standards are for judgement calls. A banned import is a fixed pattern a tool can catch.\"); c [x] \"A lint rule that fails whenever `moment` is imported.\" (feedback: \"Right. It's mechanical, so it gets a deterministic check that runs in a pre-commit hook or CI job.\"); d the memory-note option, unchanged. In d's feedback, also change \"so the mistake can't happen again\" to \"so the mistake gets caught next time\": a check catches a slip, it doesn't prevent it."
+   },
+   {
+    "severity": "medium",
+    "where": "Right-answer lengths across the Checkpoints and Final test",
+    "problem": "There's a reverse wording tell: in 6 of 13 questions the right answer is the shortest option, sometimes by a wide margin. A reader who guesses \"shortest\" scores well. spot-automated-retro is the worst case: 34 characters, with every other option 50-68, and it's the only abstract option.",
+    "evidence": "Option lengths (right answer marked X): reviewer-has-room [74, X49, 55, 58]; untraceable-candidate [64, 47, 51, X46]; no-op-test [X40, 51, 47, 56]; scenario-cleared-session [75, 64, 72, X55]; spot-automated-retro [64, 50, 68, X34]; predict-weak-pointer [59, 61, X53, 61].",
+    "fix": "Bring the right answers into the middle of the length range. spot-automated-retro d: \"He let a script accept every proposal, so no human judged them.\" no-op-test a: \"Delete the whole sentence: it doesn't change the default behaviour.\" untraceable-candidate d: \"Discard it: it doesn't trace to anything in the session or the repo.\" scenario-cleared-session d: \"Start `/retro` and name yesterday's session so it reads that log.\" (Keep the shortest option a distractor wherever possible.)"
+   },
+   {
+    "severity": "low",
+    "where": "test spot-automated-retro (lines 353-363), options a and b",
+    "problem": "Two of the three distractors aren't real misconceptions. Nobody believes /retro should run before a session, or only on a brand-new repo. With them in place, the question is effectively a two-way choice.",
+    "evidence": "a: \"The script should have run `/retro` before each session instead.\" b: \"`/retro` should only ever run on a brand-new repo.\"",
+    "fix": "Replace a with: \"He should have had the script also delete any check that fires on good code.\" Feedback: \"That's more automation on the same unjudged loop. `/retro` sees one session, so pruning needs a human.\" Replace b with: \"He should have limited `/retro` to `CODING_STANDARDS.md` rules, never checks.\" Feedback: \"Mechanical slips belong in checks. The problem was accepting everything without judging it.\" Keep c, and use d as rewritten in the length finding."
+   },
+   {
+    "severity": "low",
+    "where": "test predict-stale-init (lines 365-375), options a and d",
+    "problem": "These are weak distractors. \"The agent's explore step is broken and needs restarting\" describes nothing the Lesson teaches, and putting comments in renamed files to point at old names is not a belief a reader would hold.",
+    "evidence": "a: \"The agent's explore step is broken and needs restarting.\" d: \"The renamed files need a comment at the top pointing to their old names.\"",
+    "fix": "Replace a with: \"The agent forgot the rename because it remembers nothing between sessions.\" Feedback: \"It never knew about the rename. A file it reads every session still names the old paths and steers it wrong.\" Replace d with: \"`CLAUDE.md` is too short; it needs a full map of every file.\" Feedback: \"A fuller map just goes stale faster. Notes naming files rot on every rename.\""
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-style-drift (line 306)",
+    "problem": "\"Naming\" adds some doubt: naming conventions are often lintable (a camelCase rule, for example), so a careful reader could argue that part is mechanical. That would muddy a judgement-call question.",
+    "evidence": "Prompt: \"its layout and naming don't match the pages around it\".",
+    "fix": "Change \"layout and naming\" to \"layout and tone\", or to \"layout and the way its sections are ordered\", so the mismatch is clearly cross-file consistency."
+   },
+   {
+    "severity": "low",
+    "where": "test sequence-retro-timing (lines 389-399), option d",
+    "problem": "The Lesson teaches that /retro after /clear still works if you point it at the old log, so option d isn't strictly wrong: it's second-best. Its feedback rests on the bare default. A careful reader may hesitate.",
+    "evidence": "Option d: \"`/code-review` \u2192 `/pr` \u2192 `/clear` \u2192 `/retro`\". Line 118: \"If you've already cleared ... start fresh and point `/retro` at the old session's log.\"",
+    "fix": "Change the prompt to \"Which order gets the most out of `/retro` with the least effort?\" And change d's feedback to: \"Typed bare after `/clear`, `/retro` reviews the new, empty session. You'd have to dig up the old log; running it before clearing avoids that.\""
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint reviewer-has-room (line 82)",
+    "problem": "A real 900-line rule list would include mechanical rules, which by /retro's own reasoning do more good as checks. That makes option d partly right, and the question slightly ambiguous.",
+    "evidence": "Prompt: \"Your team keeps a 900-line list of coding rules.\" Option d feedback: \"Only mechanical rules become checks.\"",
+    "fix": "Change the prompt to: \"Your team keeps a 900-line list of judgement-call rules (naming, structure, matching nearby code). By `/retro`'s reasoning, where do those rules do the most good?\""
+   }
+  ],
+  "reader": [
+   {
+    "severity": "high",
+    "where": "Lines 57, 118, 124; Final test scenario-which-skill (line 333) and sequence-retro-timing (lines 391-398)",
+    "problem": "The Lesson always writes bare `/code-review` for Matt's reviewer and never mentions the name clash. A cold reader who types `/code-review` gets Claude Code's Built-in bug hunt, not Matt's Standards + Spec review that reads `CODING_STANDARDS.md`. Every sibling Lesson (Start here, Skills, TDD) warns about this, and Skills lists it as a Common mistake, so this Lesson both contradicts course canon and sends the reader to the wrong reviewer.",
+    "evidence": "Line 57: \"`CODING_STANDARDS.md`, which `/code-review` always reads when it exists.\" Line 118: \"it comes after `/code-review` and `/pr`\". Writing-guide canon: \"Claude Code has its own Built-in `/code-review`... Matt's Skill is always reachable as `/mattpocock-skills:code-review`.\" 03-skills.md:321: \"Typing `/code-review` and expecting Matt's review. Type `/mattpocock-skills:code-review`.\"",
+    "fix": "At the first use (line 57), write: \"The reviewer, like the one inside Matt's code-review Skill (type `/mattpocock-skills:code-review`, because Claude Code has a Built-in command called `/code-review` that does something else; see [Code review](/learn/code-review)), gets a diff...\". After that, use `/mattpocock-skills:code-review` in line 118 and in the sequence-retro-timing options, or say once \"below, `/code-review` means Matt's Skill\"."
+   },
+   {
+    "severity": "high",
+    "where": "Try it yourself, step 2 (line 218)",
+    "problem": "The reader is told to type a slash and the word retro to see if it's listed. If it is, nothing tells them what to do next. \"/retro\" is now sitting in the prompt box, and pressing Enter runs the retro on an empty session before the exercise starts. That adds noise to the session the step-6 retro is supposed to review.",
+    "evidence": "\"2. Type a slash and the word retro. If `retro` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again\". The step doesn't say what to do when `retro` is listed.",
+    "fix": "\"2. Type `/re` without pressing Enter, and look at the list that pops up. If `/retro` is in it, delete what you typed with Backspace and go on to step 3. If it isn't, type `/exit`, install Matt's Skills, then run `claude` again:\""
+   },
+   {
+    "severity": "high",
+    "where": "Try it yourself, step 5 (lines 240-244) and the prerequisite line 210",
+    "problem": "Step 5 needs Node.js, but the prerequisites only list Claude Code, which the native installer sets up without Node. On a machine without Node the agent can't run the test. The reader isn't warned, and \"Node\", \"test\" and \"test runner\" are never explained.",
+    "evidence": "Line 210: \"You need Claude Code installed and signed in\". Line 243: \"with a test that runs on Node's built-in test runner.\" The writing guide says Try blocks may assume only Claude Code, Matt's Skills and a terminal.",
+    "fix": "Line 210: \"You need Claude Code installed and signed in (see [Start here](/learn/start-here)) and Node.js, which runs JavaScript outside a browser (check with `node --version`; if it's missing, install it from nodejs.org). Allow 15 minutes.\" Step 5: \"Give it a small job: a function plus a test (a small program that checks the function gives the right answer).\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, It's working if (lines 256, 259, 261)",
+    "problem": "Three checklist items can fail even when everything worked. (1) At step 4 the folder holds only CLAUDE.md, so \"This project is written in JavaScript\" isn't discoverable yet, and the agent may well say so. Likewise \"See notes.md\" points to a file that doesn't exist, so the agent may flag that instead of the missing trigger. (2) \"each one points at a moment in this session\" contradicts the next item: the no-guardrail finding is about the repo, not a moment. (3) \"Nothing it proposed makes CLAUDE.md longer\" fails if /retro offers a sharpened navigation pointer, which the Skill explicitly allows in CLAUDE.md.",
+    "evidence": "retro SKILL.md: CLAUDE.md is \"usually only for navigation pointers\". Line 259: \"each one points at a moment in this session\". Line 260: \"It flagged that nothing runs its checks automatically\".",
+    "fix": "(1) \"...'This project is written in JavaScript' discoverable (or something the code will make obvious), 'Don't use var' a prohibition (or a job for a lint rule), and 'See notes.md' a weak pointer (it never says when to read it, and notes.md doesn't exist).\" (2) \"...and each one points at something that happened in this session or something true of this repo.\" (3) \"It didn't propose a new `CLAUDE.md` rule for a mistake a check could catch, and nothing changed until you chose.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself (missing step, compare 04-grilling.md step 3)",
+    "problem": "There is no plan-mode check, although the writing guide requires one and the pilot has one. In plan mode, step 3 (create CLAUDE.md) and step 5 (write the function) only produce a plan, and the rest of the exercise falls apart.",
+    "evidence": "Writing guide: \"how to check the mode ('if you see 'plan mode on', press Shift+Tab until it changes')\". The pilot's step 3 does exactly that. Lesson 17 has no equivalent.",
+    "fix": "Insert after step 2: \"Check that plan mode is off: if you see 'plan mode on' under the prompt box, press Shift+Tab until it changes. Any other mode is fine.\" Also move the stop instructions to the top of the block: \"To stop the agent at any point, press Esc, or choose No at a permission prompt.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, checklist line 258",
+    "problem": "\"/retro loaded /writing-for-agents before it started\" doesn't tell the novice what that looks like on screen, so they can't check it.",
+    "evidence": "\"- [ ] `/retro` loaded `/writing-for-agents` before it started.\"",
+    "fix": "\"Right after you sent `/retro`, a line showed it loading the writing-for-agents Skill, before it read the session.\" Add a fallback in the style of the pilot: \"If you see no such line, ask: 'Did you load the writing-for-agents skill?'\""
+   },
+   {
+    "severity": "medium",
+    "where": "Your part, first bullet (line 118); Final test scenario-cleared-session (line 325)",
+    "problem": "The Lesson says twice to \"point /retro at the old session's log\" but never shows how. A novice has no idea a session log is something you name in words after `/retro`. The Final test then grades exactly that move.",
+    "evidence": "Line 118: \"start fresh and point `/retro` at the old session's log.\" Line 39 only says \"name another and it searches the session logs\".",
+    "fix": "Add to line 118: \"To do that, type `/retro` followed by a description of the session, for example `/retro look at my previous session in this repo, where the agent couldn't find the config file`. It searches the logs under `~/.claude/projects/` for it.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 28 (first use), also lines 15, 16, 38, 50",
+    "problem": "\"Steering file(s)\" is a core term used five times before it's defined in the Steering files section (line 140). The reader meets it in the goals, in the story of why Matt built the Skill, in the four steps and in the table.",
+    "evidence": "Line 28: \"tidying steering files, adding lint rules, making files easier to find\". The definition only arrives at line 140: \"are steering files: their contents go into the context window of every session\".",
+    "fix": "Line 28: \"tidying steering files (files like `CLAUDE.md` that are loaded into every session to steer the agent), adding lint rules (automatic checks that flag code patterns), making files easier to find.\" Shorten line 140 accordingly."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 22 (\"The reviewer\"), and line 26 / table line 48 (AGENTS.md)",
+    "problem": "\"The reviewer\" appears in Why it matters with no explanation that it means a second agent that checks the code. It's explained only at line 57. AGENTS.md first appears in the table (line 48) and is explained only at line 140.",
+    "evidence": "Line 22: \"The reviewer misses a mistake it should have caught.\" Line 48: \"`CLAUDE.md` or `AGENTS.md` is large\".",
+    "fix": "Line 22: \"The reviewer (a second agent that checks the finished change) misses a mistake it should have caught.\" Line 48: \"`CLAUDE.md` or `AGENTS.md` (the same kind of file, read by other agents too) is large\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 22, 26, 53, 121 (npm/pnpm/package manager, commit, push, merge, git status, GitHub issue)",
+    "problem": "Git and package-manager vocabulary is used without explanation for a reader who only knows the terminal: \"package manager\", `npm install`, pnpm, \"every time you commit\", \"for every push\", \"blocks anyone's merges\", `git status`, \"One GitHub issue\".",
+    "evidence": "Line 22: \"It runs `npm install` in a project that uses a different package manager.\" Line 53: \"A pre-commit hook runs checks every time you commit; CI ... runs them on a server for every push.\" Line 121: \"before it blocks anyone's merges. One GitHub issue reports accepted changes left uncommitted, so check `git status` afterwards.\"",
+    "fix": "Line 22: \"It runs `npm install` (the command that downloads a project's libraries) in a project set up for pnpm, a different package manager.\" Line 53: \"...every time you commit (save a snapshot of your changes in Git); CI ... runs them on a server every time you push (upload commits to GitHub).\" Line 121: \"...before it blocks anyone's work. One bug report on Matt's repo says accepted changes were left unsaved in Git, so run `git status` afterwards to see what changed.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 118 (`/pr`, Main flow)",
+    "problem": "`/pr` is named as the step before /retro, with no gloss. The reader doesn't know what it does or what a PR (pull request) is, and the sequence-retro-timing test depends on it.",
+    "evidence": "\"it comes after `/code-review` and `/pr` (see [The main flow](/learn/main-flow))\"",
+    "fix": "\"it comes after the code review and `/pr`, the Skill that writes the description for a pull request (the request to merge your branch; see [PR + ship](/learn/pr-and-ship))\"."
+   },
+   {
+    "severity": "low",
+    "where": "Table line 49 and line 108 (tool call, tokens)",
+    "problem": "\"A tool call was expensive\" comes before \"token\" is defined (line 57), and \"tool call\" is never defined.",
+    "evidence": "\"| A tool call was expensive for what it returned | Streamline or replace the tool (tool economy) |\"",
+    "fix": "\"| One of the agent's actions (a search, a file read, a command it ran) used far more of its working memory than it was worth | Streamline or replace the tool (tool economy) |\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 153 vs the site-story box (line 275)",
+    "problem": "Repetition: both say the site's CLAUDE.md is 17 lines, almost all pointers, mostly written by /setup-matt-pocock-skills. The body paragraph also adds unexplained jargon (\"triage labels\", \"domain docs\", Next.js).",
+    "evidence": "Line 153: \"Its 17 lines were mostly written by `/setup-matt-pocock-skills`...\". Line 275: \"The project's `CLAUDE.md` is 17 lines, almost all pointers, most of them written by `/setup-matt-pocock-skills`.\"",
+    "fix": "Cut line 153 to one sentence: \"This site's `CLAUDE.md` has that shape: 17 lines of short pointers to fuller docs, and nothing that describes the code.\" Keep the details in the Site story."
+   },
+   {
+    "severity": "low",
+    "where": "Line 28 vs line 95 (dates)",
+    "problem": "Line 28 says /retro joined in September 2026. Line 95 says Matt \"launched the Skill in October 2026\". A cold reader may read these as contradictory.",
+    "evidence": "\"joined his main set in version 1.3 (September 2026)\" / \"from the video where he launched the Skill in October 2026\" (release 2026-09-29, video 2026-10-05).",
+    "fix": "Line 95: \"here is Matt's own, from the video announcing it in October 2026, a week after the release.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 175 (leading words)",
+    "problem": "The example leading words are meant to be familiar to the model, but the reader doesn't know them, so the examples don't land.",
+    "evidence": "\"a *tight* feedback loop, a test that goes *red*, a *tracer bullet*\"",
+    "fix": "\"a *tight* feedback loop (fast and repeatable), a test that goes *red* (fails), a *tracer bullet* (a thin first version that runs end to end)\"."
+   },
+   {
+    "severity": "low",
+    "where": "Line 144 (\"The start of the window is fixed\")",
+    "problem": "\"flex with the task\" and \"every request\" are vague for a novice.",
+    "evidence": "\"Exploring, building and testing all flex with the task. What's loaded at the start, including `CLAUDE.md`, doesn't, and it costs tokens on every request.\"",
+    "fix": "\"How much room exploring, building and testing take changes from task to task. What's loaded at the start, including `CLAUDE.md`, is the same every time, and it's paid for on every message the agent processes.\""
+   },
+   {
+    "severity": "low",
+    "where": "Checkpoint no-op-test prompt (line 181)",
+    "problem": "The prompt gives away the answer: it describes running the no-op test and its result, which the guide forbids (\"Don't restate the defining phrase of the right answer in the prompt\").",
+    "evidence": "\"You run the Skill with and without the line, and the agent behaves the same both times.\"",
+    "fix": "\"A Skill you're writing contains the line 'Be careful and think about edge cases.' The agent already checks edge cases without being told. What does `/writing-for-agents` say to do?\""
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

@@ -1,0 +1,16 @@
+{
+ "n": 11,
+ "slug": "pr-and-ship",
+ "title": "PR + ship",
+ "part": 2,
+ "old": "08-pr-and-ship.md",
+ "img": [
+  "/photos/pr-and-ship.jpg",
+  "An aerial view of a loaded container ship guided out of port by two red tugboats.",
+  "william william"
+ ],
+ "skills": [
+  "engineering/pr"
+ ],
+ "extra": "Teach `/pr` (model-invoked; Summary visual, Evidence before/after, Merge Danger: door + blast radius; it only writes the body) and shipping on this site (branch → PR → Vercel preview with its own Neon branch → test → squash merge → production). Be careful: PR #9's body does not match the /pr template; don't claim /pr wrote it."
+}

@@ -1,0 +1,16 @@
+{
+ "n": 10,
+ "slug": "code-review",
+ "title": "Code review",
+ "part": 2,
+ "old": "07-code-review.md",
+ "img": [
+  "/photos/code-review.jpg",
+  "A woman leans over a desk to review work on a laptop with a seated colleague.",
+  "Vitaly Gariev"
+ ],
+ "skills": [
+  "engineering/code-review"
+ ],
+ "extra": "Teach the fixed point, the two axes (Standards with the Fowler smell baseline, Spec), parallel subagents, the report shape, the Built-in `/code-review` name clash and `/mattpocock-skills:code-review`, commit before reviewing."
+}

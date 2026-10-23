@@ -1,0 +1,16 @@
+{
+ "n": 8,
+ "slug": "tdd",
+ "title": "TDD",
+ "part": 2,
+ "old": "06-tdd.md",
+ "img": [
+  "/photos/tdd.jpg",
+  "A scientist in a white lab coat works at a lab bench full of instruments and cables.",
+  "ThisisEngineering"
+ ],
+ "skills": [
+  "engineering/tdd"
+ ],
+ "extra": "Teach seams first, red → green one test at a time, no refactor step (refactoring happens in review), good tests vs the three anti-patterns, mocking only at boundaries."
+}

@@ -1,0 +1,17 @@
+{
+ "n": 16,
+ "slug": "architecture",
+ "title": "Architecture",
+ "part": 4,
+ "old": null,
+ "img": [
+  "/photos/architecture.jpg",
+  "A white cable-stayed bridge pylon with fanned steel cables against a deep blue sky.",
+  "Daniele Bissoli"
+ ],
+ "skills": [
+  "engineering/codebase-design",
+  "engineering/improve-codebase-architecture"
+ ],
+ "extra": "Teach the codebase-design vocabulary (module, interface, depth, seam, adapter, leverage, locality), the deletion test, one adapter vs two, that codebase-design is a reference not a process, and the `/improve-codebase-architecture` survey (hot spots, HTML report in a temp folder, badges, grilling on one candidate, never changes code). Site story: real (after v1 the author typed `/mattpocock-skills:codebase-design`; the agent judged Lessons and Comments deep, the route a thin adapter, `lessonsFrom(dir)` a real seam with two adapters, no new seam for the database, and recommended changing nothing; PR #7 moved input checks into the comments module, a deepening move). `/improve-codebase-architecture` itself was never run here; say so."
+}

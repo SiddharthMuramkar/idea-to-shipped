@@ -1,0 +1,18 @@
+architecture: quiz reader
+code-review: acc-skills acc-sources quiz reader
+context-window: acc-skills acc-sources quiz quiz reader reader
+diagnosing-bugs: acc-skills acc-sources quiz reader
+domain-modeling: acc-skills acc-sources quiz reader
+grilling: acc-skills acc-sources quiz reader
+how-agents-work: acc-skills acc-sources quiz reader reader
+implement: acc-skills acc-sources quiz reader
+main-flow: acc-skills acc-sources quiz reader
+pr-and-ship: acc-skills acc-sources quiz reader
+prototype: acc-skills acc-sources quiz reader
+retro: quiz reader
+skills: acc-skills acc-sources quiz quiz reader reader
+spec-and-issues: acc-skills acc-sources quiz reader
+start-here: acc-skills acc-sources quiz quiz reader reader
+tdd: acc-skills acc-sources quiz reader
+triage: acc-skills acc-sources quiz reader
+wizard: acc-skills acc-sources quiz reader

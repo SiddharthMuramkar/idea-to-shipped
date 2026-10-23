@@ -1,0 +1,17 @@
+{
+ "n": 6,
+ "slug": "prototype",
+ "title": "Prototype",
+ "part": 2,
+ "old": "05-prototype.md",
+ "img": [
+  "/photos/prototype.jpg",
+  "A hand with a pen points at hand-drawn mobile app wireframes spread across a table.",
+  "Amélie Mourichon"
+ ],
+ "skills": [
+  "engineering/prototype",
+  "productivity/handoff"
+ ],
+ "extra": "Teach the logic branch (one HTML file) and the UI branch (variants behind ?variant=, switcher bar), the six rules, capturing on a prototype/<name> branch, and `/handoff` out and back. Mention `/mattpocock-skills:prototype` if the short name fails."
+}

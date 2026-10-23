@@ -1,0 +1,413 @@
+{
+ "slug": "code-review",
+ "lenses": {
+  "reader": [
+   {
+    "severity": "medium",
+    "where": "Try it yourself, between steps 1 and 3 (lines 268-284)",
+    "problem": "There is no plan-mode check. The writing guide makes it a required Try step, and the pilot (grilling) has it. Step 3 asks the agent to create files, make a branch and commit. In plan mode the agent only reads and proposes, so a reader whose Claude Code opens in plan mode gets stuck and has no idea why.",
+    "evidence": "writing-guide.md, 'Try blocks start from zero': 'how to check the mode (\"if you see 'plan mode on', press Shift+Tab until it changes\")'. 04-grilling.md Try step 3 has this line; 10-code-review.md has nothing like it.",
+    "fix": "Add as a new step 3, before the prompt: \"Check that plan mode is off: if you see 'plan mode on' under the prompt box, press Shift+Tab until it changes. Any other mode is fine.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, steps 3-5 (lines 280-296)",
+    "problem": "The exercise builds the code and reviews it in the same session. The Lesson's own rule (line 217, 'Review from a clean session') and the sequence-review-ticket answer both say not to do that. The writing guide says worked examples must follow the Lesson's advice, so a careful reader learns the wrong habit.",
+    "evidence": "Line 217: \"Review after `/clear` ... or in a new session.\" Writing guide: \"Worked examples must model the advice.\" Steps 3 to 5 run without a `/clear` in between.",
+    "fix": "Insert a step before the bad-fixed-point step: \"4. Type `/clear`. It empties the conversation, so the review starts clean, just as it would after a real build. Your files and commits stay.\" Renumber the steps after it."
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, steps 4-5 and the 'It's working if' items 1-2 (lines 286-305)",
+    "problem": "Steps 4 and 5 never say what the reader will see. A newcomer can't tick 'stopped before starting any sub-agents' or 'started two sub-agents together' without knowing what a sub-agent looks like on screen. Step 4 also doesn't say what to answer if the agent offers to use `main` instead of `nope`.",
+    "evidence": "Step 4 is just \"Try a bad fixed point first:\" and the prompt. The checklist assumes the reader can spot sub-agent starts.",
+    "fix": "After step 4's prompt add: \"It should reply that `nope` isn't a commit or branch it can find, and stop. No helper agents appear. If it offers to use `main` instead, say no.\" After step 5's prompt add: \"Before the report you'll see two helper-agent entries start together, one for Standards and one for Spec. That's the two sub-agents.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Scene 'Reviewing this site's first build' (lines 187-192) vs the Site story (line 320)",
+    "problem": "The Scene says it is a replay of the real first review and shows the author typing a fixed point ('Review since 4f849b9.'). The Site story says the author typed the name with nothing after it, and the agent used a starting point it had suggested earlier. A reader who reads both sees a contradiction about what really happened, and also wonders whether the Skill asks for a fixed point (line 41) or picks one.",
+    "evidence": "Line 187: \"Here's a replay of the first review of this site ... The findings are real\". Line 192: \"you: `/mattpocock-skills:code-review` Review since 4f849b9.\" Line 320: \"I typed `/mattpocock-skills:code-review` with nothing after it. The agent had suggested a starting point earlier ... so it used that\".",
+    "fix": "Line 187: \"Here's a condensed replay of the first review of this site. The findings are real. The fixed point is typed up front here, the way you should do it; the Site story below says what I actually typed.\" Line 191 caption: \"You type the Skill's full name and a fixed point: the site's first commit.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 11, 48-51 (promise line, axes table, the sentence under it)",
+    "problem": "'repo' (line 11, line 48) and 'ticket' (line 48 table) are used before they are defined. They are only defined in the sentence after the table (line 51), so a cold reader meets the table before learning the words in it.",
+    "evidence": "Line 48: \"Your repo's documented rules ... The spec or ticket the work came from\". Line 51: \"A repo is a project folder tracked with Git; a ticket is one small, buildable piece of a spec.\"",
+    "fix": "Move line 51 into the 'Three words first' list (line 35 becomes 'A few words first'): \"- A **repo** is a project folder tracked with Git.\" Then put this just before the table: \"A ticket is one small, buildable piece of a spec.\" Delete line 51."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 48 (axes table) and flow Scene caption line 66",
+    "problem": "'code smells' and 'the twelve-smell baseline' appear in the table and the Scene before 'code smell' is defined at line 90.",
+    "evidence": "Line 48: \"plus a baseline of code smells\". Line 66: \"then adds the twelve-smell baseline.\" The definition only comes at line 90: \"A code smell is a surface sign that the design might be off.\"",
+    "fix": "Table cell: \"Your repo's documented rules, plus a fixed list of code smells (warning signs in code, explained below)\". Caption line 66: \"It gathers every file that says how code should be written, then adds a fixed list of twelve code smells.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Flow Scene node line 60 and caption line 68; definition at line 151",
+    "problem": "'sub-agents' is used in the Scene's node label (and in Checkpoint feedback) long before it is defined at line 151.",
+    "evidence": "Line 60: \"node: agents | Two sub-agents, in parallel\". Line 151: \"The two reviews run as **sub-agents**: helper agents, each with its own fresh context window.\"",
+    "fix": "Change the caption at line 68 to: \"It starts two sub-agents (helper agents, each with a fresh context window) at the same time: a Standards reviewer and a Spec reviewer.\" Leave line 151 as the full explanation."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 22 ('The tests pass') and line 24",
+    "problem": "'tests' is never explained, yet the Lesson's central point ('Passing tests isn't the same as correct') depends on it. A reader who only knows the terminal has no idea what an automated test is.",
+    "evidence": "Line 22: \"The tests pass.\" Line 24: \"19 passing tests ... tests only check what someone thought to check.\"",
+    "fix": "Line 22: \"The tests (small programs that run your code and check it gives the expected result) pass.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Scene line 198 and Site story line 322",
+    "problem": "A string of undefined web jargon: 'endpoint', 'checking the request's shape', 'route handlers contain no validation', and 'issue 05'. The Lesson calls these 'tickets', and never says an issue is the same thing.",
+    "evidence": "Line 198: \"the endpoint checking the request's shape, when issue 05 says route handlers contain no validation.\" Line 322: \"the endpoint checking the request's shape when issue 05 said endpoints contain no validation\". The source (.scratch/lesson-site/issues/05-comments-api.md:12) says: \"Route Handlers contain no validation or SQL. That logic lives in the comments module.\"",
+    "fix": "Line 198: \"...and the endpoint (the code that receives each new comment) checking the comment itself, when ticket 05 says that checking belongs in the comments module.\" Line 322: \"the endpoint (the code that receives each comment) checking the comment itself, when ticket 05 said that belongs in the comments module\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 211 ('Commit first')",
+    "problem": "The reader is told to commit but never told how. A newcomer doesn't know a commit can be asked for in plain words or done with git.",
+    "evidence": "\"If you just asked the agent for changes, commit them, review, then fix in a new commit.\"",
+    "fix": "\"If you just asked the agent for changes, commit them: tell it \\\"commit these changes\\\", or run `git add -A && git commit -m \\\"what changed\\\"` yourself. Then review, then fix in a new commit.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 251 (first use of 'pull-request'), also lines 326 and 345",
+    "problem": "'pull request' / 'PR' / 'PR body' is never defined, though the Site story and the Cheat sheet both rely on it.",
+    "evidence": "Line 251: \"In his September 2026 talk on the pull-request bottleneck\". Line 345: \"`/pr` writes the PR body\".",
+    "fix": "Line 251: \"...his September 2026 talk on the pull-request bottleneck (a pull request, or PR, is a proposed set of changes that gets reviewed before it joins the main branch)\". Line 345: \"`/pr` writes the PR's description\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 253",
+    "problem": "'Sonnet' and 'Opus' appear with no explanation that they are Claude models of different strength.",
+    "evidence": "\"He builds with Sonnet and reviews with Opus, because review is where he needs the smarts.\"",
+    "fix": "\"He builds with Sonnet and reviews with Opus (two Claude models; Opus is the stronger, Sonnet the cheaper and faster), because review is where he needs the smarts.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 213 (first use of 'plugin') and Try step 2",
+    "problem": "'plugin' is never defined, but the name-clash explanation turns on 'installed as a plugin', and the install command uses it.",
+    "evidence": "\"With Matt's Skills installed as a plugin, the bare `/code-review` can land on the Built-in\".",
+    "fix": "\"With Matt's Skills installed as a plugin (a bundle that adds all of them at once, the usual install), the bare `/code-review` can land on the Built-in\"."
+   },
+   {
+    "severity": "low",
+    "where": "Lines 213, 226, 237-238, 341, 369-370, 389, 400 ('the Built-in' used as a noun)",
+    "problem": "The GLOSSARY term is 'Built-in command'. The Lesson often shortens it to the bare noun 'the Built-in', which a newcomer may read as 'the Built-in what?' and which drifts from the glossary.",
+    "evidence": "Line 341: \"That was the Built-in `/code-review`\" is fine, but line 213 has \"can land on the Built-in\" and \"the Built-in answered\", and line 238 has \"can reach the Built-in bug hunt\".",
+    "fix": "Use 'the Built-in review' or 'the Built-in command' wherever 'the Built-in' stands alone, e.g. line 213: \"...can land on the Built-in review ... No Standards and Spec sections means the Built-in review answered.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 39 ('a tag'), line 88 ('Next.js'), line 90 ('Martin Fowler', 'Refactoring')",
+    "problem": "These terms are used without the one-clause gloss the writing guide asks for.",
+    "evidence": "\"a commit's ID like `4f849b9`, a tag, or `HEAD~5`\"; \"points agents at the Next.js docs\"; \"chapter 3 of Martin Fowler's book *Refactoring*\".",
+    "fix": "\"a tag (a name pinned to one commit, like `v1.0`)\"; \"the Next.js docs (Next.js is the web framework this site is built with)\"; \"chapter 3 of *Refactoring*, a classic book by the software author Martin Fowler (refactoring means restructuring code without changing what it does)\"."
+   },
+   {
+    "severity": "low",
+    "where": "Line 100",
+    "problem": "The example label 'possible Feature Envy' names a smell the reader hasn't been shown. It isn't among the four listed just above it.",
+    "evidence": "Line 100: \"written as \\\"possible Feature Envy\\\"\". The list at lines 92-95 shows Duplicated Code, Mysterious Name, Shotgun Surgery and Middle Man.",
+    "fix": "\"written as \\\"possible Duplicated Code\\\", never a hard violation.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 102 ('type checker'), line 213/226 ('unchecked empty values', 'off-by-one errors'), line 155 ('the model', '150k')",
+    "problem": "These are small unexplained terms for a reader who knows only the terminal.",
+    "evidence": "\"such as a linter ... or the type checker\"; \"empty values, races, off-by-one errors\"; \"Matt's rule of thumb is about 150k tokens on today's best models\".",
+    "fix": "\"or the type checker (a tool that catches a value of the wrong kind, like a number where text was expected)\"; \"off-by-one errors (counting one too many or too few)\"; \"the part of the context window where the AI model still thinks clearly: roughly the first 150,000 tokens on today's best models, by Matt's rule of thumb\"."
+   },
+   {
+    "severity": "low",
+    "where": "Line 24 ('`500` error', 'comment box')",
+    "problem": "'500' is given only as a crash code, and 'the comment box' assumes the reader knows the site has one.",
+    "evidence": "\"The comment box shipped with 19 passing tests. Then a review found that sending a number as a comment crashed the server with a `500` error\".",
+    "fix": "\"The comment box under each Lesson, where Visitors leave notes, shipped with 19 passing tests. Then a review found that sending a number as a comment crashed the server with a `500` error (the web's code for 'something broke on our side')...\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 251 ('the tidy-up step of test-first coding'), line 255 ('Cursor'), line 260 ('namespaced')",
+    "problem": "Each needs a short gloss for a cold reader.",
+    "evidence": "\"as if the tidy-up step of test-first coding got its own context window\"; \"Trying Cursor's strict review Skill\"; \"he switched to the full namespaced names\".",
+    "fix": "\"as if the tidy-up step of test-first coding (write a failing test, make it pass, then tidy the code) got its own context window\"; \"Trying a strict review Skill from Cursor (another AI coding editor)\"; \"he switched to the full names with the `mattpocock-skills:` prefix\"."
+   },
+   {
+    "severity": "low",
+    "where": "Site story lines 324-326 ('API', '`curl`', 'red test')",
+    "problem": "These terms are unexplained inside the Site story.",
+    "evidence": "\"crashed the API with a `500` ... We confirmed it on the live site with `curl`\"; \"the red test failed with `.trim is not a function`\".",
+    "fix": "\"crashed the comments API (the part of the server that saves and lists comments) with a `500` ... confirmed it on the live site with `curl`, a terminal tool that sends web requests\"; \"the first, failing test (the 'red' step) broke with `.trim is not a function`\"."
+   },
+   {
+    "severity": "low",
+    "where": "Site story line 330",
+    "problem": "'One fix-up agent fixed all 13 findings, counting three from an earlier review' is hard to parse: is it 13 plus 3, or 13 that include 3?",
+    "evidence": "\"One fix-up agent fixed all 13 findings, counting three from an earlier review.\"",
+    "fix": "\"One fix-up agent fixed all 13 findings, three of them left over from an earlier review.\" (Check the split against the session log before using it.)"
+   },
+   {
+    "severity": "low",
+    "where": "Try step 2 and step 6 (lines 274, 300)",
+    "problem": "After typing '/mattpocock' to check the list, the reader isn't told to clear it, so the step 3 prompt could get appended to it. The only 'how to stop' line comes in the last step, when it is needed from step 3 on.",
+    "evidence": "Step 2: \"Type a slash and the word mattpocock. If ... isn't in the list ...\". Step 6: \"To stop the agent at any point, press Esc.\"",
+    "fix": "End step 2 with: \"If it is there, delete what you typed with Backspace.\" Move \"To stop the agent at any point, press Esc.\" into step 1."
+   },
+   {
+    "severity": "low",
+    "where": "Final test sequence-review-ticket prompt (line 434)",
+    "problem": "'building a ticket by hand' is ambiguous. It could mean the human wrote the code, which would change the same-session reasoning in the feedback.",
+    "evidence": "\"You've just finished building a ticket by hand in a long session.\"",
+    "fix": "\"You've just finished building a ticket with the agent in one long session, without `/implement`.\" Rewording is allowed since the id and option order stay the same."
+   },
+   {
+    "severity": "low",
+    "where": "Common mistakes line 317",
+    "problem": "'Everything from Your part:' reads like a broken phrase. It points at a section heading without saying so.",
+    "evidence": "\"- **Everything from Your part:** reviewing uncommitted work, no fixed point, ...\"",
+    "fix": "\"- **Skipping the habits under 'Your part':** reviewing uncommitted work, no fixed point, reviewing in the session that wrote the code, and looping until it comes back clean.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 207 and line 171 (repetition); word count 2,839",
+    "problem": "The prose is at 2,839 words against a 3,000 cap and a 2,800 target, so the glosses above need room. Line 207 repeats what the Scene's last caption and line 53 already say. Line 171's second sentence repeats line 53.",
+    "evidence": "Line 207: \"The worst issue on each axis was named separately ... so neither could hide the other.\" Line 171: \"Naming one would be exactly the re-ranking the separation exists to stop.\"",
+    "fix": "Delete line 207 entirely, and cut line 171's second sentence so it reads: \"==There is no overall winner.== The Skill reports; it doesn't edit your code.\" Use the words saved for the definitions added above."
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "high",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:433-443 (test sequence-review-ticket)",
+    "problem": "The right answer contradicts the Lesson's own rule for choosing a fixed point. The prompt is about one ticket, yet the keyed answer reviews 'since main'. Line 215 says that for one ticket the fixed point is the commit just before the work started. A careful reader who applies the body could reject every option. 'By hand' is also ambiguous: it could mean the reader typed the code, in which case the session agent didn't write it.",
+    "evidence": "Prompt: \"You've just finished building a ticket by hand in a long session.\" Keyed option c: \"Commit \u2192 `/clear` \u2192 review since `main` \u2192 fix, commit\". Body line 215: \"For a whole branch, it's usually `main`. For one ticket, it's the commit just before the work started.\"",
+    "fix": "Change only the prompt so `main` is the correct fixed point, and keep the options as they are: \"You've just finished a small feature on its own branch off `main`, built with the agent in one long session (no `/implement`). Which order gives the most trustworthy review?\" Option c's feedback still holds."
+   },
+   {
+    "severity": "medium",
+    "where": "10-code-review.md:445-455 (test scenario-no-spec), with 235-245 (checkpoint which-review-answered) and 106-116 (checkpoint smells-with-no-docs)",
+    "problem": "Goal 3 promises 'sort Spec findings', but no Final test question asks the reader to sort a finding. The 'looks implemented, but wrong' category isn't tested anywhere in the Lesson. Meanwhile scenario-no-spec checks a fact that two Checkpoints already give away. which-review-answered option b's feedback states the answer outright, and smells-with-no-docs option b's feedback says the same. Its option d (Standards findings copied into Spec) is a strawman.",
+    "evidence": "which-review-answered option b feedback: \"With no spec, it says 'no spec available' and still reports Standards.\" smells-with-no-docs option b feedback: \"Only the Spec axis can skip, and only when there's no spec.\" The only Spec-sorting question is checkpoint colour-picker-extra (scope creep).",
+    "fix": "Replace scenario-no-spec with a new id that tests sorting a Spec finding in a fresh setting (positions after this change: a=2, b=2, c=3, d=3):\n```test predict-departures-order\nA train-times app's spec says \"departures are listed soonest first\". The diff adds sorting by departure time, but the latest trains come out on top. Nothing else changed. Where should this finding land?\n- [ ] Spec: a missing or partial requirement.\n  > Sorting by departure time is there in full. It runs the wrong way, which is a different kind of finding.\n- [ ] Spec: scope creep beyond the request.\n  > Nothing was added that the spec didn't ask for. Scope creep is behaviour nobody requested.\n- [ ] Standards: a hard violation of a rule.\n  > No documented coding rule is broken. Whether behaviour matches a spec line is the Spec axis's question.\n- [x] Spec: looks implemented, but wrong.\n  > Right. The feature exists but doesn't do what the spec line says, so the reviewer quotes \"soonest first\" beside the reversed order.\n```\nIf you keep scenario-no-spec instead, change which-review-answered option b's feedback to \"A missing spec only empties the Spec section. Matt's Skill never turns into a bug hunt.\" and change its option d to: \"- [ ] A Spec section judged against your `GLOSSARY.md` and ADRs instead.\" with feedback \"  > Those are sources for the Standards axis. With no spec, the Spec section just says so.\""
+   },
+   {
+    "severity": "medium",
+    "where": "10-code-review.md:381-382 (test scenario-fixed-point, option d feedback) vs Site story line 320",
+    "problem": "Option d's feedback says the Skill never picks a fixed point on its own. The Lesson's own Site story shows it doing exactly that: run with no argument, it used a starting point mentioned earlier in the session. A reader who remembers the Site story will doubt the feedback, or the story.",
+    "evidence": "Feedback: \"It doesn't choose: with no fixed point, it asks you.\" Site story: \"I typed `/mattpocock-skills:code-review` with nothing after it. The agent had suggested a starting point earlier, `4f849b9` ... so it used that\".",
+    "fix": "Rewrite option d's feedback: \"  > It won't pick for you: with no fixed point it asks, or falls back on one already mentioned in the conversation, as in the Site story. Naming `main` yourself is the sure way.\""
+   },
+   {
+    "severity": "medium",
+    "where": "10-code-review.md:457-467 (test why-two-reviewers)",
+    "problem": "The question is recall, not transfer: it asks the reader to repeat the body's reasons. Two distractors are strawmen that announce they're wrong: \"that's the whole point\" and \"One agent can't read both\". Option d repeats the no-ranking idea that checkpoint worst-per-axis already tests.",
+    "evidence": "Option a: \"Two agents finish in half the time; that's the whole point.\" Option b: \"One agent can't read both a spec and a standards file.\" The right answer echoes the body's line 153 (\"Neither sees the other's reasoning, so one axis can't colour the other\").",
+    "fix": "Replace it with a transfer question (the id can stay):\n```test why-two-reviewers\nA teammate suggests a cheaper version of the review: one fresh sub-agent that checks both the repo's rules and the spec in a single pass. What would that most likely cost?\n- [ ] Nothing: one fresh agent is as independent as two.\n  > It's fresh from the build, but not from itself. What it concludes on one axis sits in its context while it judges the other.\n- [ ] The smell baseline, which only a Standards sub-agent can hold.\n  > The main agent pastes the baseline into whatever brief it writes. Losing it isn't the risk.\n- [x] Independence: a verdict on one axis can sway the other.\n  > Right. Two separate contexts mean neither reviewer sees the other's reasoning, so a clean Standards pass can't soften a Spec gap, or the reverse.\n- [ ] Ticket lookup, since sub-agents can't reach an issue tracker.\n  > The main agent finds the spec and passes it in. Where the spec comes from doesn't change with the number of reviewers.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "10-code-review.md:361-371 (test scenario-bug-hunt)",
+    "problem": "The prompt nearly copies the body table's Built-in row (empty values, races, off-by-one), so the reader can match words instead of judging the situation. It's also a wording tell: every wrong option carries a 'since\u2026'/'to\u2026' reason and the bare right option is the shortest.",
+    "evidence": "Prompt: \"unchecked empty values, two requests racing each other, off-by-one errors\". Body line 226: \"You want bugs hunted: empty values, races, off-by-one errors | Claude Code's Built-in `/code-review`\". Option lengths [73, 50, 53, 38]: the right option d is the shortest.",
+    "fix": "Prompt: \"Your checkout change follows the house rules and does what its ticket asked. Before merging, you want to know whether a customer who double-clicks Pay could be charged twice, or whether an empty basket crashes the page. What do you reach for?\" Change option d to \"- [x] Claude Code's Built-in `/code-review`, at a high effort level.\" and keep its feedback."
+   },
+   {
+    "severity": "medium",
+    "where": "10-code-review.md:349-359 (test scenario-wrong-feature) vs 74-84 (checkpoint axis-library-renewal)",
+    "problem": "The Final test question mirrors the Checkpoint: same 'which axis passes' shape, and the same 'One blended verdict' distractor with nearly the same feedback. Its prompt also repeats the body's defining phrase from line 53 ('follows every rule'). Option c ('Standards fails\u2026') is ruled out by the prompt itself. Also, 'Standards passes' isn't certain: the prompt rules out documented-rule breaches but says nothing about the smell baseline.",
+    "evidence": "Checkpoint option d: \"One blended verdict: mostly fine, with some style notes.\" Test option d: \"One blended verdict: roughly half right overall.\" Test prompt: \"It follows every documented rule in the repo\". Body: \"Code that follows every rule but builds the wrong feature passes Standards and fails Spec.\"",
+    "fix": "Prompt: \"A bakery site's ticket says \\\"customers can pre-order a cake for pickup\\\". The agent built a polished delivery-scheduling flow instead, with no way to choose pickup. The Standards reviewer cites no rule and no smell. How should the report read?\" Replace option c with a real misconception: \"- [ ] Spec passes: customers can still pre-order a cake.\" with feedback \"  > The ticket's line says pickup. Pre-ordering for delivery doesn't meet it, and delivery itself wasn't asked for.\" Replace option d with: \"- [ ] Standards fails too, because the wrong feature is badly built.\" with feedback \"  > The reviewer found nothing wrong with how it's built. Building the wrong thing is a Spec failure; the axes are judged separately.\""
+   },
+   {
+    "severity": "medium",
+    "where": "10-code-review.md Checkpoints axis-library-renewal (80), smells-with-no-docs (108), colour-picker-extra (141), worst-per-axis (181)",
+    "problem": "In 4 of the 5 Checkpoints the right option is the shortest, and it's usually the only one without a 'because/since' clause. A reader can learn to pick the short, unhedged option. The lint only rules out 'longest'.",
+    "evidence": "Option lengths with the right one in brackets: axis-library-renewal [58,53,(32),56]; smells-with-no-docs [(39),56,45,52]; colour-picker-extra [48,(27),37,51]; worst-per-axis [74,72,52,(49)].",
+    "fix": "Bring the right options up to the distractors' length. axis-library-renewal c: \"Standards flags it as judgement calls; Spec passes.\" (also more precise, since both are smells). smells-with-no-docs a: \"The twelve-smell baseline, each one a judgement call.\" colour-picker-extra b: \"Under Spec, as scope creep, with the spec quoted.\" worst-per-axis: trim a to \"Sub-agents can't read each other's reports to compare.\" and b to \"Spec findings always outrank Standards ones.\", and change d to \"Ranking across the axes would let one bury the other.\""
+   },
+   {
+    "severity": "low",
+    "where": "10-code-review.md:417-418 (test spot-hard-smell, option d)",
+    "problem": "The distractor is trivia: it tests whether the reader memorised the list of twelve smells, which the writing guide rules out.",
+    "evidence": "\"- [ ] Middle Man isn't one of the twelve baseline smells.\"",
+    "fix": "Replace it with a real misconception: \"- [ ] Nothing: an ADR records a decision; it isn't a coding standard.\" with feedback \"  > An ADR that says how code here should be built is a documented standard, so the Standards reviewer reads it, and a documented standard overrides the baseline.\""
+   },
+   {
+    "severity": "low",
+    "where": "10-code-review.md:385-395 (test scenario-new-findings)",
+    "problem": "Option d ('Delete the smell baseline') is a strawman: the reader has no way to delete it. The prompt also labels the findings 'judgement calls', which hands over the key idea behind option c.",
+    "evidence": "Prompt: \"it reports four new judgement calls, all smells, none citing a documented rule\". Option d: \"Delete the smell baseline so the noise stops.\"",
+    "fix": "Prompt: \"You fixed every finding from a review and ran it again. This time it reports four new findings, each naming a possible smell, none citing a rule from your docs. What now?\" Option d: \"- [ ] Treat them as hard violations and fix all four before merging.\" with feedback \"  > Smells are never hard violations. With no documented rule behind them, they're judgement calls to weigh.\" Option c's feedback: \"  > Right. Check each citation, act on the ones that hold up, and stop. Fixes are new code, so another run will always find something.\""
+   },
+   {
+    "severity": "low",
+    "where": "10-code-review.md:425-426 (test spot-same-session, option b)",
+    "problem": "The distractor is weak: no one thinks you review before building. A real misconception would be that compacting the session makes the same agent a fair reviewer.",
+    "evidence": "\"- [ ] He should have reviewed before building anything.\"",
+    "fix": "Option b: \"- [ ] He should have run `/compact` first to free up room.\" with feedback \"  > A summary keeps the same agent, still primed by its own choices. The reviewer needs to be one that didn't write the code.\""
+   },
+   {
+    "severity": "low",
+    "where": "10-code-review.md goals line 17 vs Final test",
+    "problem": "Goal 4 has two parts: 'where a review fits in your work' and 'when a different tool is the better reach'. Only the second is tested, and only once (scenario-bug-hunt). No question asks where the review sits in the Main flow (after `/implement`, before `/pr` and `/retro`) or when to reach for `/improve-codebase-architecture` instead.",
+    "evidence": "The Final test's only tool-choice question is scenario-bug-hunt. sequence-review-ticket tests the order within one review, not its place in the Main flow.",
+    "fix": "Either narrow the goal to \"You'll be able to say when a review is the right tool, and when a different one is the better reach.\", or change one bug-hunt distractor to `/improve-codebase-architecture` with feedback \"  > That surveys a whole codebase that has drifted. You have one diff to check.\""
+   },
+   {
+    "severity": "low",
+    "where": "10-code-review.md test ids scenario-wrong-feature (349), scenario-no-spec (445)",
+    "problem": "The contract describes the scenario kind as 'which Skill would you reach for\u2026', but these two ask the reader to predict the report's content. The id prefix misstates the kind, and ids are permanent once published.",
+    "evidence": "\"How should the report read?\" / \"What should the report contain?\"",
+    "fix": "Before publishing, rename scenario-wrong-feature to predict-wrong-feature. scenario-no-spec is replaced in the medium finding above. That still leaves 3 scenario- ids (bug-hunt, fixed-point, new-findings), 3 spot- and 1 sequence-, which meets the contract."
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "medium",
+    "where": "content/lessons/10-code-review.md line 213 (\"Type the full name\" paragraph); echoed at line 15 (goals) and the checkpoint at line 236",
+    "problem": "The Built-in `/code-review` is described as \"a Built-in command (it comes with Claude Code itself; it isn't a Skill)\". Claude Code's own docs classify it as a *bundled skill* (with the alias `/review`), not a built-in command. After the Skills Lesson has taught that a Claude Code skill is a SKILL.md folder, telling the reader \"it isn't a Skill\" is wrong in Claude Code's terms and only true in the course glossary's narrower sense (Skill = one of Matt's).",
+    "evidence": "https://code.claude.com/docs/en/slash-commands, \"Resolve skills that share a name\": \"Any of those locations and a bundled skill: Your skill replaces the bundled command... A project `code-review` skill replaces `/code-review`, and the bundled alias `/review` never runs your skill\" (a separate row covers built-in commands such as `/usage`). https://code.claude.com/docs/en/best-practices: \"run the bundled `/code-review` skill, which reviews the current diff for bugs in a fresh subagent\". https://code.claude.com/docs/en/whats-new/2026-w32: \"`/review` is now an alias of `/code-review`\".",
+    "fix": "Reword to something like: \"Claude Code ships its own `/code-review` (also reachable as `/review`): a skill bundled with Claude Code, which this course files under Built-in commands because it isn't one of Matt's Skills.\" Keep the rest of the paragraph; optionally note the docs rule that a plugin skill's bare name only works when no other command already uses it, which is why `/code-review` reaches the bundled one."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/10-code-review.md line 480 (sources) and line 260 (body)",
+    "problem": "The 36-vs-18 figures are attributed to GitHub Discussion #1136 dated 2026-09-28. Discussion #1136's own text and comment only say the review \"was the built-in one twice as often as the plugin's\"; the exact counts (173 sessions, 36 built-in, 18 plugin) appear in Warshoow's comment on Discussion #1091, dated 2026-09-29. A reader following the cited link will not find the numbers the Lesson quotes.",
+    "evidence": "https://github.com/mattpocock/skills/discussions/1136 (comment by Warshoow 2026-09-29): \"Across the 173 sessions on my machine, `/tdd` never ran once, and the review was the built-in one twice as often as the plugin's... (details in #1091)\". https://github.com/mattpocock/skills/discussions/1091 (comment by Warshoow 2026-09-29T09:00:37Z): \"173 in total... The bare `code-review` resolved to the built-in review in 36 sessions; the plugin's `mattpocock-skills:code-review` ran in 18.\"",
+    "fix": "Cite the #1091 comment for the numbers, e.g. add to the sources list: \"[implement loses two of its five beats on unattended runs](https://github.com/mattpocock/skills/discussions/1091), Warshoow's comment, 2026-09-29 (173 sessions, 36 built-in vs 18 plugin runs)\", and keep #1136 for the afk.sh loop itself. The body sentence (\"in September 2026\") stays correct."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/10-code-review.md line 476 (sources)",
+    "problem": "The video is listed under the invented title \"AI Engineer workshop\". The writing guide asks for the video's title, URL and publish date; the real title is \"Full Walkthrough: Workflow for AI Coding \u2014 Matt Pocock\" (AI Engineer channel). The body's \"April 2026 workshop\" wording is fine; only the source item misnames it.",
+    "evidence": "YouTube page https://www.youtube.com/watch?v=-QFHIoCo-Ko: title \"Full Walkthrough: Workflow for AI Coding \u2014 Matt Pocock\", published 2026-04-24. Transcript metadata in /Users/siddharth/Developer/idea-to-shipped-handoff/transcripts/-QFHIoCo-Ko.json carries the same title. Writing guide (.scratch/course-rewrite/writing-guide.md line 95): \"Videos: title, URL, publish date, and the timestamps you used.\"",
+    "fix": "Replace \"[AI Engineer workshop](...)\" with \"[Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock at AI Engineer, 2026-04-24 (...)\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/10-code-review.md line 478 (sources)",
+    "problem": "The source reads \"Matt Pocock, AI Hero, 2026-09-25\", which presents AI Hero as the publisher. The video is on the AI Engineer channel (recorded at AI Engineer Paris 2026); \"AIHero\" in the title is Matt's affiliation. Date and timestamps are correct.",
+    "evidence": "YouTube page https://www.youtube.com/watch?v=LlgiOCmFG_w: channel \"AI Engineer\", \"Sep 25, 2026\", description: \"In this talk from AI Engineer Paris 2026... Recorded at AI Engineer Paris 2026 in the Coding Agents & Software Factories track.\"",
+    "fix": "Write \"Matt Pocock, AI Engineer Paris 2026 (AI Engineer channel), 2026-09-25, auto-translated captions\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/10-code-review.md lines 100 and 127 (also repeated at 240, 316, 448)",
+    "problem": "Two different phrases are quoted verbatim from the same source (code-review SKILL.md): \"possible Feature Envy\" and \"no spec available\". The writing guide allows at most one direct quote per source. Both are short labels, so the risk is small, but it is a rule the verifier lens is asked to check.",
+    "evidence": ".scratch/course-rewrite/writing-guide.md line 99: \"At most one direct quote per source, under 15 words, in quotation marks with attribution.\" SKILL.md lines 41 and 32 contain the two phrases.",
+    "fix": "Keep \"no spec available\" (it is the literal report text the reader must recognise) and drop the quote marks around possible Feature Envy, e.g. \"written as a labelled possibility such as possible Feature Envy\", or render it as inline code."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/10-code-review.md line 24",
+    "problem": "\"the `400` \\\"invalid request\\\" reply promised in the spec\" puts quote marks around words the spec does not contain, so it reads as a quotation from the spec. The spec's wording is \"`400` + `{ error }` if invalid\".",
+    "evidence": "git show 8e2ff32:.scratch/lesson-site/spec.md line 34: \"| `POST` | `/api/comments` ... | `400` + `{ error }` if invalid or the slug is unknown |\". The Scene at line 200 quotes the spec correctly.",
+    "fix": "Drop the quote marks: \"instead of the `400` reply (the code for an invalid request) that the spec promised\"."
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:221 (also the callout at 231-233 and line 260)",
+    "problem": "The Lesson says plainly that `/implement` and `/implement-spec` call Matt's review. Both actually call the bare name `code-review` through the Skill tool. With the plugin installed, that bare name is the one that can resolve to Claude Code's Built-in. So the review that closes the Main flow can quietly be the bug hunt, and the reader is never told to check. The same applies to the line 221 claim that plain words ('review this branch since main') start Matt's Skill: the Built-in is model-invocable too.",
+    "evidence": "implement/SKILL.md:15 says `Call the Skill tool with \"code-review\"`. implement-spec/SKILL.md:36 says the same. Claude Code's Skill list holds both `code-review` (the Built-in) and `mattpocock-skills:code-review`. The research note (research/code-review.md:68) records open issue #1215: '/implement and /implement-spec call the bare name, which can run the built-in'. The Lesson's own line 260 says the Built-in answered 36 times against 18 runs of Matt's in an `/implement` loop. The callout at 231-233 warns only about commit timing.",
+    "fix": "Hedge line 221 ('call it by its bare name, so they can get the Built-in instead'). Add one sentence to the callout: if the review inside `/implement` has no Standards and Spec sections, the Built-in answered, so run `/mattpocock-skills:code-review` yourself from a clean session."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:280-295 (Try it yourself, steps 3-5)",
+    "problem": "The exercise has the agent write the spec and the code in step 3, then runs both reviews in steps 4-5 in that same session. The Lesson's own advice says the opposite: 'Review from a clean session' (line 217), Common mistakes ('reviewing in the session that wrote the code', line 317), spot-same-session, and sequence-review-ticket, whose right answer is Commit \u2192 `/clear` \u2192 review. The writing guide requires worked examples to model the advice.",
+    "evidence": "Line 217: 'Review after `/clear` ... or in a new session.' Line 440: the right answer puts `/clear` before the review. writing-guide.md:114: 'Worked examples must model the advice.' docs/engineering/code-review.md:65 says to prefer a fresh session.",
+    "fix": "Add a step between 3 and 4: 'Type `/clear` so the review starts without the build's assumptions (your commits stay).' Then run steps 4-5 as written."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:213",
+    "problem": "The Lesson says Claude Code's `/code-review` 'isn't a Skill'. Claude Code ships it as a bundled skill, Matt's docs call it one of 'Claude Code's built-in skills', and it fits the Lesson's own definition at line 31 (the agent loads it by name or by description). A reader who checks Claude Code's Skill list will find it there.",
+    "evidence": "In the site's own session log (8230810b\u2026jsonl, entry 2548), `/code-review max` launched as `<forked-skill-launch>{\"skillName\":\"code-review\"\u2026}`. docs/engineering/code-review.md:57 says 'remove Claude Code's built-in skills entirely'. GLOSSARY.md:16 defines Skill as 'One of Matt Pocock's Claude Code skills', which is the sense the Lesson means.",
+    "fix": "Say 'it comes with Claude Code itself; it isn't one of Matt's Skills'. That matches GLOSSARY and stays true."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:213 and sources line 471",
+    "problem": "The docs page is cited for the name clash, but on plugin installs it says the opposite of the Lesson. The docs say the Built-in becomes hard to reach at the bare name. The Lesson says the bare name can land on the Built-in. The Lesson's version is backed by the author's own run and Discussion #1136, but the citation points readers at a source that contradicts it.",
+    "evidence": "docs/engineering/code-review.md:54: 'Plugin marketplace. Every skill gets a `mattpocock-skills:` prefix, and the built-in becomes hard to reach at the unqualified name.' Session log 8230810b entry 2548: with the plugin installed, a bare `/code-review max` ran the Built-in.",
+    "fix": "Back the 'can land on the Built-in' claim with the Site story and Discussion #1136 in the sources line. Either note that Matt's docs describe the plugin case differently, or drop the name-clash tag from the docs-page citation."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:102 and checkpoint feedback line 113",
+    "problem": "'Both axes also skip anything your tooling already enforces' goes further than SKILL.md. The Skill gives the tooling-skip rule only to the Standards axis; the Spec brief has no such line. Only the docs page says both axes.",
+    "evidence": "SKILL.md:41 ('Like any standard here, skip anything tooling already enforces', under the Standards baseline). SKILL.md:66 (Standards brief: 'Skip anything tooling enforces'). SKILL.md:72 (Spec brief: no such instruction). docs/engineering/code-review.md:46 ('Both axes skip...').",
+    "fix": "Say 'The Standards reviewer also skips anything your tooling already enforces'. Reword the line 113 feedback to match ('the Standards axis skips anything tooling already enforces')."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:159-169",
+    "problem": "'The report then follows a fixed shape' presents the sub-lists inside each section as fixed. The Skill fixes only the two headings and the closing one-line summary; each section is the sub-agent's report, passed on 'verbatim or lightly cleaned'. The block also says judgement calls have 'code quoted', but only smells must quote the hunk. A documented-rule finding cites the file and the rule.",
+    "evidence": "SKILL.md:78 ('Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned'). SKILL.md:80 (one-line summary). SKILL.md:66 ('cite the standard (file + the rule)' vs 'name it and quote the hunk'). The real report (session log 8230810b entry 2882) used its own sub-structure ('Judgement calls against your own documents', 'Code smells').",
+    "fix": "Say 'The report always has this outline (the wording inside each section varies)'. Change the Standards line to 'judgement calls (a rule cited, or a smell named with the code quoted)'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:187, 192 and Site story line 320",
+    "problem": "Line 187 calls the Scene a 'replay of the first review' where only 'the wording is condensed', but the user line was changed. The author typed the bare name with no fixed point, and the agent used its own earlier suggestion without asking, which goes against the Skill's 'ask for it' step. A reader can take the Scene's prompt as what was typed, and line 41 ('it asks rather than guessing') sits uneasily next to the Site story.",
+    "evidence": "Session log 8230810b entry 2781: 'You didn't give a starting point, so I'm using the one I suggested: `4f849b9`'. SKILL.md:19: 'If they didn't specify one, ask for it.' Lesson line 320 describes the real event.",
+    "fix": "In line 187, add that your first line shows how you'd type it today. In the Site story, add a short clause such as 'the Skill should have asked; the agent skipped that because it had suggested one earlier'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:196",
+    "problem": "The Scene says 'no `CODING_STANDARDS.md`, so the four ADRs, `GLOSSARY.md` and `AGENTS.md`'. The 'so' makes the other documents sound like a fallback. The Skill gathers every standards file whether or not `CODING_STANDARDS.md` exists. The real run also read CLAUDE.md and docs/agents/domain.md.",
+    "evidence": "SKILL.md:36 ('Search the repo for every file that documents how code should be written. When `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it must be on the list'). Session log 8230810b entry 2800: the Standards brief lists CLAUDE.md, AGENTS.md, GLOSSARY.md, docs/agents/domain.md and docs/adr/0001-0004.",
+    "fix": "'Standards: CLAUDE.md, AGENTS.md, GLOSSARY.md and the four ADRs (no `CODING_STANDARDS.md` here), plus the smell baseline.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:475 (sources) and 254",
+    "problem": "The source note calls the smell baseline 'the Fowler fallback', and line 254 ('had no standards documents, so it leaned on the Fowler smells') reads the same way. In 1.3.1 the baseline is always on, as the Lesson's own line 90 says correctly. Matt's spoken description in the video is the older framing.",
+    "evidence": "SKILL.md:38 ('always carries the smell baseline ... applies even when a repo documents nothing'). CHANGELOG.md:225 ('an always-on Fowler smell baseline'). The M6mYodf0dJM.en.json transcript at 15:37-15:40 ('if it doesn't detect any, then it uses some classic ones').",
+    "fix": "Change the source label to 'two axes and the Fowler smells 15:12-15:46'. In line 254, say 'with no standards documents, only the Fowler smells had anything to check'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:345 (Cheat sheet)",
+    "problem": "'`/retro` turns misses into standards or checks' overstates it. `/retro` suggests candidates to the user; it doesn't add rules or build checks by itself. Line 104 correctly says 'proposes'.",
+    "evidence": "retro/SKILL.md:7 ('You are suggesting improvements'). retro/SKILL.md:25 ('Present these candidates to the user, in order of severity').",
+    "fix": "'`/retro` proposes new standards or checks from what the review missed.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:298 (Try it, after step 5)",
+    "problem": "The note on skipping `/setup-matt-pocock-skills` comes after step 5, but the Skill raises that suggestion at the start of every run. A reader in a fresh folder will see it at step 4 (the `nope` run) first, with no guidance yet.",
+    "evidence": "SKILL.md:13 ('The issue tracker should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`'), which comes before step 1 'Pin the fixed point'.",
+    "fix": "Move the note to just before step 4, or say 'at either step'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:391-392 (scenario-new-findings) vs 219 and 344",
+    "problem": "The Lesson gives three different rules for which findings to act on. Line 219 says check each citation and act on the ones that hold up. The Cheat sheet (344) says 'Fix what has a real citation'. The test's right answer says 'fix any you agree with'. The docs' rule is to act on the ones with a cited rule behind them.",
+    "evidence": "docs/engineering/code-review.md:77 ('Act on the ones with a cited rule behind them, then stop').",
+    "fix": "Reword the right option and its feedback to the Lesson's own rule, e.g. 'Check each one's quoted code, fix those that hold up, then stop.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:135",
+    "problem": "The Lesson says to write a spec with `/to-spec` and `/to-tickets` 'for anything bigger than a small change'. ask-matt's fork is whether the build is multi-session. A single-session change that isn't trivial goes straight to `/implement`.",
+    "evidence": "ask-matt/SKILL.md:24-28 ('Branch: is this a multi-session build? Yes \u2192 /to-spec ... No \u2192 /implement right here'). writing-guide.md:82 canon: 'small: /implement here; multi-session: /to-spec \u2192 /to-tickets'.",
+    "fix": "'...for anything that will take more than one session'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/10-code-review.md:39-41",
+    "problem": "The Lesson says the Skill reviews 'the diff between your fixed point and HEAD'. Strictly, the three-dot diff measures from where your branch split off (the merge-base). So if `main` has moved on since you branched, its new commits don't show up. scenario-fixed-point's feedback relies on this behaviour without the Lesson explaining it.",
+    "evidence": "SKILL.md:21 ('`git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base)'). docs/engineering/code-review.md:81.",
+    "fix": "Add one clause at line 41: 'strictly, from where your branch split off the fixed point, so later commits on `main` don't show up'."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

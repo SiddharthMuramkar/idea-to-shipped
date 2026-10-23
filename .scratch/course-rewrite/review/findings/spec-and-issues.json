@@ -1,0 +1,294 @@
+{
+ "slug": "spec-and-issues",
+ "lenses": {
+  "reader": [
+   {
+    "severity": "high",
+    "where": "Try it yourself, steps 3-8 (no line covers permission prompts)",
+    "problem": "The exercise never says what to do when Claude Code asks permission to create or edit a file, and every step after setup depends on the agent writing files: docs/agents/*.md, CLAUDE.md, GLOSSARY.md, spec.md and the ticket files. Step 3 has the reader press Shift+Tab to leave plan mode, which can land in Manual mode, where every file write asks first. The pilot Try in Grilling trains the opposite habit with \"If it asks permission to create or edit a file, choose No\". A reader who carries that habit over refuses the writes, and setup, the spec and the tickets never reach disk.",
+    "evidence": "Grilling Try step 8: \"If it asks permission to create or edit a file, choose No\". In this Lesson's Try: step 3 is \"press Shift+Tab until it changes\", step 4 runs setup (which writes files), steps 6 and 7 publish the spec and tickets. No step mentions permission prompts.",
+    "fix": "Add to step 3: \"From here on the agent needs to write files. If it asks permission to create or edit a file inside todo-practice, choose Yes. If it asks to run anything else you don't understand, choose No.\" Keep the Esc line in step 8 for stopping a build."
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 8",
+    "problem": "\"Read the spec and ticket files in the `.scratch` folder\" can't be done as written by a reader who knows only a terminal. The folder name starts with a dot, so Finder and `ls` hide it by default, the feature subfolder's name isn't known in advance, and nothing says how to open a file. The line \"Don't `/clear` before this point\" also comes after all the work that needed the window.",
+    "evidence": "Line 247: \"Read the spec and ticket files in the `.scratch` folder. Don't `/clear` before this point.\" The local tracker writes `.scratch/<feature-slug>/spec.md`, where the agent picks the slug.",
+    "fix": "Replace step 8 with: \"Ask the agent: 'List every file you wrote under .scratch and show me spec.md.' (Or open a second terminal window, `cd todo-practice`, and run `ls -R .scratch` then `cat .scratch/*/spec.md`. The dot at the start of the name hides the folder in Finder.) If it offers to start building, say no, or press Esc to stop it. Type `/exit` when you're done.\" Then put the clearing rule into step 5: \"Do steps 5 to 7 in this one conversation. Don't type `/clear` until the end.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, steps 5 and 6",
+    "problem": "The steps assume the reader knows how grilling works (\"rounds\", \"recommendations\", \"the summary\") and how to judge a seam, and this Lesson explains neither. For a one-page to-do app the reader can't tell whether a proposed seam is right, so \"answer before typing anything else\" gives them no answer to type. Also, saying only \"let's wrap up\" may not produce the summary that step 6 tells them to confirm.",
+    "evidence": "Line 239: \"Accept recommendations unless you disagree, and say \\\"let's wrap up\\\" after two or three rounds\". Line 245: \"When it shows you the seams, answer before typing anything else.\"",
+    "fix": "Step 5: \"The agent asks a few numbered questions at a time, each with a recommended answer. Reply 'yes' to accept one, or give your own answer. After two or three rounds, type: 'Let's wrap up. Summarise what we decided and what's out of scope.'\" Step 6: \"Confirm the summary, then type `/to-spec`. When it stops to propose seams, reply before typing anything else, for example: 'Yes, that matches. One seam is enough.' If it proposes several, ask whether one would do.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 22 (\"being grilled\"), line 62 (files Scene caption), line 147, table line 179, Try step 5",
+    "problem": "`/grill-with-docs` and grilling are never explained in prose. The opening only says \"being grilled by Claude Code\". `/grill-with-docs` first appears in a Scene caption, then in the table and the Try, without saying what it is or that it's the grilling Skill that also records terms in the glossary. The glossary itself is used in that caption (line 62) before line 76 defines it.",
+    "evidence": "Line 62: \"`/grill-with-docs` writes the words you agree on into the glossary as you go.\" Line 147: \"Grilling (see [Grilling](/learn/grilling)) is done\".",
+    "fix": "At line 22: \"Say you've just spent forty minutes being grilled: interviewed by Claude Code (\u2026), one decision at a time, using Matt's `/grill-with-docs` Skill (see [Grilling](/learn/grilling) and [Domain modeling](/learn/domain-modeling)).\" Move the glossary definition earlier, or change the caption to \"`/grill-with-docs` writes the words you agree on into `GLOSSARY.md`, the project's word list, as you go.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 35 (first use, in Checkpoint feedback), lines 171, 180, 188, 208",
+    "problem": "`/implement` is never defined, yet it is the alternative in goal 1, in the table, in the Cheat sheet and in two Final test questions. A cold reader doesn't know it is the Skill that builds the change in the current session.",
+    "evidence": "Line 35: \"It is: `/implement` builds straight from the conversation when the work fits in one session.\" That is the only description, and it sits inside a Checkpoint answer. Line 171 defines `/implement-spec` but not `/implement`.",
+    "fix": "At line 26 or line 171, add: \"`/implement` (Matt's Skill that builds one change in the current session, writing tests and reviewing as it goes; see [Implement](/learn/implement))\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 81 (first use of \"tests\" and \"module\"), lines 86 and 154",
+    "problem": "The seam definition rests on two terms a reader who has never coded with an agent may not know: automated tests and modules (plus \"public functions\"). Without them, the seam check, which the Lesson calls the one moment you're needed, is opaque.",
+    "evidence": "Line 81: \"A seam is a place where tests can check the feature from the outside, such as a module's public functions.\"",
+    "fix": "\"A seam is a place where tests (small programs that check the code does what it should) can check the feature from the outside, such as the functions a module (a self-contained chunk of code) offers to the rest of the program.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 184 (\"If you near it\"), Final test spot-cleared-before-tickets feedback, line 354",
+    "problem": "\"Near the Smart zone\" is wrong. Line 24 defines the Smart zone as the part where the model reasons well, so you're already inside it and what you near is its end. The wording tells a novice the opposite of what's meant.",
+    "evidence": "Line 184: \"The one exception is the Smart zone. If you near it before `/to-tickets`, `/compact`\u2026\" Line 354: \"Compacting is for a session nearing the Smart zone.\"",
+    "fix": "Line 184: \"The one exception: if the session nears the end of the Smart zone before `/to-tickets`, `/compact` at the nearest phase boundary\u2026\" Line 354: \"Compacting is for a session nearing the end of the Smart zone.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 88",
+    "problem": "The warning about the spec's `ready-for-agent` label is opaque to a novice. Nothing so far explains \"an agent left to pick up ready issues on its own\", and \"tell them to skip it\" gives no wording, so the reader can't act on it.",
+    "evidence": "\"yet an agent left to pick up ready issues on its own may try to build the whole spec at once. If you ever run agents that way, tell them to skip it.\"",
+    "fix": "\"If you later set an agent to work unattended through every file marked `ready-for-agent`, it may treat the spec as one giant ticket. Tell it to build the ticket files, not spec.md.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 46 (Git, GitHub, GitLab, markdown), lines 46-121 (issue vs ticket)",
+    "problem": "Git and markdown are used without explanation, and GitHub and GitLab are given only as tracker names. \"Issue\" and \"ticket\" are used interchangeably (\"issue tracker\", \"ready issues\", \"one issue per ticket\") and the Lesson never says how they relate.",
+    "evidence": "Line 46: \"A repo (a project folder tracked with Git)\u2026 GitHub, GitLab, markdown files inside the repo\". Line 121: \"On a real tracker like GitHub it makes one issue per ticket\".",
+    "fix": "\"A repo (a project folder whose history is saved by Git, the standard version-control tool)\u2026 GitHub or GitLab (websites that host repos and keep a list of issues for each), plain-text markdown (.md) files inside the repo\u2026 A tracker calls each task an issue; a ticket is an issue that `/to-tickets` wrote.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Heading \"## The idea: a destination and a route\" (line 44)",
+    "problem": "The heading doesn't match the section. The destination-and-route idea is in \"Why it matters\" (line 26). This section covers tracker setup, the local file layout and user-invoked Skills, so a reader who scans headings is misled.",
+    "evidence": "Line 26 has \"Matt calls the spec the destination and the tickets the route.\" Lines 46-55 cover setup, `.scratch` layout and user-invoked.",
+    "fix": "Rename it \"## Before you start: where tickets live\", or move the destination/route paragraph (line 26) and the big-idea callout to the top of this section."
+   },
+   {
+    "severity": "low",
+    "where": "Line 188",
+    "problem": "\"Update its `Status:` line yourself\" doesn't tell the reader what value to write.",
+    "evidence": "\"`/implement` doesn't reliably mark a ticket done, so update its `Status:` line yourself.\" The site's own tickets use `**Status:** resolved`.",
+    "fix": "\"\u2026so change its `Status:` line yourself, for example to `resolved`, as this site does.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 125 (refactor), line 86 (interfaces, prototype), line 115 (Kent Beck), line 209 (PRD), line 24 (model), line 108 (table)",
+    "problem": "Several smaller terms are used without a defining clause.",
+    "evidence": "\"A wide refactor is one mechanical change\"; \"a trimmed prototype snippet\"; \"In Kent Beck's words\"; \"write-a-PRD and PRD-to-issues\"; \"where the model still reasons sharply\".",
+    "fix": "\"A refactor (reshaping code without changing what it does) is wide when\u2026\"; \"a trimmed snippet from a prototype (a quick throwaway version built to test an idea; see [Prototype](/learn/prototype))\"; \"Kent Beck, a well-known software author\"; \"write-a-PRD (PRD: product requirements document, the old name for a spec)\"; \"the model (the AI behind the agent)\"; \"the comments table (where the database stores comments)\"."
+   },
+   {
+    "severity": "low",
+    "where": "Line 53 (`ready-for-agent`), goal 2 and line 82 (\"publish\")",
+    "problem": "`ready-for-agent` appears in the file layout before line 82 explains it. \"Publish\" can sound to a novice like putting something online, when on the local tracker it only means writing a file.",
+    "evidence": "Line 53: \"A `Status:` line near the top of each file, such as `ready-for-agent`.\"",
+    "fix": "Line 53: \"\u2026such as `ready-for-agent` (ready for an agent to build, no more sorting needed).\" At first use of publish: \"publish it (save it to your tracker; on the local tracker that just means writing a file)\"."
+   },
+   {
+    "severity": "low",
+    "where": "Common mistakes, \"Acceptance criteria that can't fail\" (line 266)",
+    "problem": "This bullet introduces advice the body never teaches, so it reads as new content in a recap list.",
+    "evidence": "The body only defines acceptance criteria (line 121); nothing discusses criteria that can't fail.",
+    "fix": "Either add one sentence at line 121 (\"Each criterion should be something that could visibly fail: 'a reload keeps the list', not 'works well'.\") or cut the bullet."
+   },
+   {
+    "severity": "low",
+    "where": "Line 119 (\"quizzing you\")",
+    "problem": "On a site with Checkpoints and a Final test, \"quizzing\" brushes against the rule against bare \"quiz\", and a reader may connect it with the page's own questions.",
+    "evidence": "\"This review step (the Skill calls it quizzing you) repeats until you approve.\"",
+    "fix": "\"This review step (the Skill's own heading is 'Quiz the user') repeats until you approve.\" Or drop the parenthesis."
+   },
+   {
+    "severity": "low",
+    "where": "Site story, line 271 (\"slugs\")",
+    "problem": "The GLOSSARY term is Slug, capitalised.",
+    "evidence": "\"length limits on comments, rejecting unknown slugs, and deploying the empty app early\"",
+    "fix": "\"rejecting unknown Slugs\"."
+   },
+   {
+    "severity": "low",
+    "where": "Line 24, and line 277 (\"It asked for a reason.\")",
+    "problem": "Two awkward sentences. \"builds the second half getting sloppier\" reads badly, and \"It asked for a reason\" is ambiguous: it could mean the agent asked the author for a reason.",
+    "evidence": "\"Push on, and the agent builds the second half getting sloppier as it goes.\" / \"It asked for a reason.\"",
+    "fix": "\"Push on, and the agent gets sloppier as it builds the second half.\" / \"It stopped for a reason.\""
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:412 (sources block, to-tickets docs item)",
+    "problem": "The to-tickets docs page is cited with a read date only, while the to-spec item carries its updated date. Both pages carry the same updatedAt, so the omission is inconsistent with the writing guide's 'updated date if shown' rule.",
+    "evidence": "Fetch of https://www.aihero.dev/skills-to-tickets on 2026-10-23 shows front matter `updatedAt: \"2026-08-24T09:14:47.195Z\"`, identical to https://www.aihero.dev/skills-to-spec, which the Lesson cites as 'updated 2026-08-24'.",
+    "fix": "Change the item to: [The /to-tickets Skill](https://www.aihero.dev/skills-to-tickets), AI Hero docs, updated 2026-08-24, read 2026-10-23."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:410 (sources block, CHANGELOG item)",
+    "problem": "The 1.1.0 summary says 'to-issues merged into to-tickets'; the CHANGELOG records two Skills, to-plan and to-issues, merged into to-tickets. Not wrong, but incomplete as a summary of the cited entry.",
+    "evidence": "/Users/siddharth/Developer/idea-to-shipped-work/state/skills/CHANGELOG.md:241 (#464): 'to-plan and to-issues are merged into one to-tickets skill, and to-issues is deleted.'",
+    "fix": "Write '1.1.0: to-prd renamed to-spec, to-plan and to-issues merged into to-tickets'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:46",
+    "problem": "States that setup 'points to it from CLAUDE.md' as if CLAUDE.md were the only place. The Skill edits whichever of CLAUDE.md / AGENTS.md exists and asks only when neither does (the Try block at line 238 gets this right).",
+    "evidence": "/Users/siddharth/Developer/idea-to-shipped-work/state/skills/skills/engineering/setup-matt-pocock-skills/SKILL.md, step 4 'Pick the file to edit': 'If CLAUDE.md exists, edit it. Else if AGENTS.md exists, edit it. If neither exists, ask the user which one to create.'",
+    "fix": "Add a clause: 'and points to it from `CLAUDE.md` (or `AGENTS.md`, whichever the repo already has)'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:24",
+    "problem": "'the next session starts knowing nothing' slightly overstates it for a cold reader: a fresh session still reads CLAUDE.md, GLOSSARY.md and the ADRs (line 46 of the same Lesson says CLAUDE.md is read at the start of every session). What it has lost is the conversation.",
+    "evidence": "Lesson line 46: 'the file of standing instructions the agent reads at the start of every session'; to-spec docs (https://www.aihero.dev/skills-to-spec): the spec exists 'so a fresh session can pick up the work without you explaining it again' from files, not from the thread.",
+    "fix": "Say 'and the next session starts knowing nothing of the conversation' (or 'remembers none of it')."
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "content/lessons/07-spec-and-issues.md lines 369-379, test spot-horizontal",
+    "problem": "The prompt gives the answer away. It says nobody saw anything work until ticket 03 landed, and the right option (b) says the same thing back. The question also nearly duplicates the Checkpoint first-tracer-bullet, which uses the same three layer options (every table, every API route, every screen).",
+    "evidence": "Prompt: \"A week later, nobody had seen anything work until ticket 03 landed.\" Option b: \"Each ticket was one layer, so nothing worked until the last landed.\" Checkpoint distractors: \"Create every database table\u2026\", \"Write the API routes\u2026\", \"Build all the page layouts\u2026\".",
+    "fix": "Remove the outcome sentence and state the edges, so the 'edges' distractor has something to act on:\n```test spot-horizontal\nLee approved this breakdown for a booking site: 01 every database table, 02 every API route, 03 every screen, each blocked by the one before. Spot the mistake.\n- [ ] Too few tickets: it should have been twelve smaller ones.\n  > More layer tickets would make it worse. The problem is the direction of the cut.\n- [x] Each ticket is one layer, so nothing can be tried until 03 lands.\n  > Right. Horizontal slices push all feedback to the end. A tracer bullet runs through every layer and can be tried on its own.\n- [ ] The tickets needed file paths and line numbers so agents could find the code.\n  > Tickets avoid file paths because they go stale. The cut was the problem.\n- [ ] 03 should be blocked by nothing, so the screens can start at once.\n  > Screens with nothing behind them still can't be tried. Changing the edges doesn't fix a cut by layer.\n```\n(Right answer is 66 chars; option c, at 77, stays the longest. Rewrite the Checkpoint as in the first-tracer-bullet finding so the two stop mirroring each other.)"
+   },
+   {
+    "severity": "medium",
+    "where": "lines 133-143, checkpoint first-tracer-bullet",
+    "problem": "There is a wording tell. The right answer is the only option written as something a user can do (\"A cook saves\u2026\"); the other three are build tasks (\"Create\u2026\", \"Build\u2026\", \"Write\u2026\"). It also echoes the body's own example (\"\u2026and still see it after a reload\"), so the reader can match the pattern without understanding it. It also reuses the Final test's three layers (see spot-horizontal).",
+    "evidence": "a \"A cook saves one recipe and sees it after a reload.\" against b \"Create every database table\u2026\", c \"Build all the page layouts\u2026\", d \"Write the API routes\u2026\". The body, line 108, says \"a Visitor can post a Comment and still see it after a reload.\"",
+    "fix": "Write every option as an outcome and stop echoing \"after a reload\":\n```checkpoint first-tracer-bullet\n`/to-tickets` is drafting tickets for a recipe site. Which proposed first ticket is a tracer bullet?\n- [x] A cook adds one recipe and finds it in their list the next day.\n  > Right. It runs through storage, the API and the page at once, and you can try it the moment it lands.\n- [ ] A cook can browse every page of the finished design, filled with sample recipes.\n  > Screens with nothing behind them. It's a horizontal slice, just from the top instead of the bottom.\n- [ ] Recipes, ratings and comments can all be stored, ready for the pages to use.\n  > That's the storage layer for three features. A cook can't see anything until other tickets add the API and the pages.\n- [ ] Other code can fetch recipes, ratings and comments through the API.\n  > The middle layer only, for three features at once. Thin and complete beats wide and partial.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "lines 393-403, test why-destination-route",
+    "problem": "This question tests recall, not transfer. The right answer restates the body's defining sentence (destination and route, record of why), it checks none of the four goals, and its `why-` id does not add to the scenario, spot or sequence mix. Meanwhile, goal 4's 'clearing too early' trap has no question about the one allowed exception (`/compact` near the Smart zone), and only two of the four `scenario-` questions actually ask which Skill or command to reach for.",
+    "evidence": "Body line 26: \"Matt calls the spec the destination and the tickets the route. The spec stays as the record of why\". Option a: \"The spec records where you're going; tickets are the steps there.\" ask-matt SKILL.md line 40: \"If a session approaches it before `/to-tickets`, don't push on degraded; `/compact` at the nearest phase boundary\".",
+    "fix": "Replace it with a transfer scenario. Ids become permanent only once published, and this rewrite isn't live yet:\n```test scenario-near-smart-zone\nGrilling a podcast-site feature ran long. It's settled and needs several sessions to build, and you're close to the edge of the Smart zone. You haven't typed `/to-spec` yet. What next?\n- [ ] `/clear`, then `/to-spec` in the fresh, empty session.\n  > Clearing empties the conversation `/to-spec` writes from. Every decision you just made would be gone.\n- [ ] Push on: type `/to-spec` and `/to-tickets` straight away, before the room runs out.\n  > Near the edge of the Smart zone the agent reasons less sharply, so the spec and tickets come out sloppier. Don't push on degraded.\n- [x] `/compact` now, at the end of grilling, then type `/to-spec`.\n  > Right. `/compact` keeps a summary of the decisions and frees room. Do it at a phase boundary, like the end of grilling.\n- [ ] Skip the spec and `/implement` the whole feature in this session.\n  > It needs several sessions, and this one is nearly full. That's exactly when a spec and tickets earn their keep.\n```\n(Right answer is 61 chars; option b, at about 82, is the longest. Test answer positions become c a d b a c b d c.)"
+   },
+   {
+    "severity": "medium",
+    "where": "lines 357-367, test spot-seam-skip",
+    "problem": "Two distractors repeat one misconception: (a) 'should have typed /clear between them' and (d) 'should only ever run in a new session'. Option b is a straw man that no reader would pick ('seams only matter to experts'). The right answer also states as fact what happens next ('the spec went in with the agent's guess'). That happened in the author's own session, but the Skill doesn't guarantee it. The mistake itself is leaving the question unanswered.",
+    "evidence": "a \"Sam should have typed `/clear` between the two Skills.\"; d \"`/to-tickets` should only ever run in a new session.\"; b \"Nothing: the seam question is optional, and seams only matter to experts.\"",
+    "fix": "```test spot-seam-skip\nWhile `/to-spec` was waiting for an answer about which seams to test at, Sam typed `/to-tickets` to keep things moving. Spot the mistake.\n- [ ] Sam should have typed `/clear` between the two Skills.\n  > Clearing before `/to-tickets` breaks the one-window rule. The problem was the unanswered question.\n- [ ] Nothing: the agent's own guess at the seams is usually good enough.\n  > Seams decide where `/tdd` writes tests and what `/code-review` checks against. They're yours to agree, not the agent's to guess.\n- [x] Sam never agreed the seams, so the agent had to guess them.\n  > Right. The seam check is the one moment `/to-spec` waits for you. Answer it before typing the next Skill.\n- [ ] Seams belong in the tickets, so Sam can agree them when `/to-tickets` asks.\n  > `/to-tickets` never asks about seams, and its templates have no field for them. The spec is where they get agreed.\n```\n(Accurate per to-tickets SKILL.md: the quiz step asks about granularity, edges and merge/split only, and the local template has no seam field. Right answer is 58 chars; d is the longest.)"
+   },
+   {
+    "severity": "medium",
+    "where": "lines 309-319, test scenario-wide-rename",
+    "problem": "The premise contradicts the right answer. The prompt says any single edit breaks everything, yet the right answer begins with an edit (expand) that breaks nothing. The right option also names the technique ('Expand\u2013contract'), so a reader can pick it by recognising the label rather than the method.",
+    "evidence": "Prompt: \"Any single edit breaks everything that still uses the old name.\" Option a: \"Expand\u2013contract: add the new name, migrate in batches, delete the old.\"",
+    "fix": "Prompt: \"Your team has to rename a field used in about 3,000 places across the code. Renaming it anywhere breaks every caller that still uses the old name. How should the tickets be shaped?\" Option a: \"Add the new name beside the old, migrate in batches, then delete the old.\" Feedback a: \"Right. That's expand\u2013contract. Each batch keeps the checks green because the old name still works, and the last ticket deletes it once nothing uses it.\" (Option d, at 85 chars, stays the longest.)"
+   },
+   {
+    "severity": "medium",
+    "where": "lines 333-343, test scenario-too-many-tickets",
+    "problem": "This is recall, not transfer. The prompt copies the Common mistakes bullet word for word (\"Twelve tickets for a three-line change\"), and the right answer copies that bullet's fix (\"Merge them\u2026 or skip tickets\").",
+    "evidence": "Line 265: \"**Twelve tickets for a three-line change.** Merge them at the review step, or skip tickets entirely.\" Prompt: \"a numbered breakdown of twelve tickets for what is really a three-line change\".",
+    "fix": "Use a fresh situation: \"For a 'copy link' button on a blog, a change that would fit in this session, `/to-tickets` shows a breakdown of nine tickets: one for the icon, one for the click handler, one for the 'Copied!' message, and so on. What's your best move?\" Keep the options and feedback as they are (right answer b is 60 chars; c, at 68, is the longest)."
+   },
+   {
+    "severity": "low",
+    "where": "lines 345-355, test spot-cleared-before-tickets, feedback on option a",
+    "problem": "The feedback on the right answer gives a reason that doesn't fit the scenario. Ana passed a file path on the local tracker, so the point about a real tracker cutting a big spec short doesn't apply to her. The reader may come away thinking that is why her move was wrong.",
+    "evidence": "Prompt: \"`/to-tickets` with the spec's path\"; feedback: \"on a real tracker a big spec can come back cut short.\"",
+    "fix": "Feedback a: \"Right. The spec file survives, but the reasoning behind it doesn't, and the tickets come out better with that reasoning still in view. Clear after `/to-tickets`.\""
+   },
+   {
+    "severity": "low",
+    "where": "lines 32-42, checkpoint why-write-it-down",
+    "problem": "The feedback on option a opens with an ambiguous \"It is:\" (it is what?). Options c and d are straw men that no reader would pick, so the question really has two options.",
+    "evidence": "a feedback: \"It is: `/implement` builds straight from the conversation\u2026\"; c \"The tracker deletes old conversations\u2026\"; d \"Every session after the first one uses a weaker model.\"",
+    "fix": "a feedback: \"It is allowed. `/implement` builds straight from the conversation when the work fits in one session.\" Replace d with a real misconception: \"- [ ] It can: `/to-tickets` copies the whole conversation into each ticket.\" with feedback \"  > Tickets hold what to build, what blocks it and acceptance criteria, not the conversation. A new session starts with an empty window.\""
+   },
+   {
+    "severity": "low",
+    "where": "lines 321-331, test scenario-two-agents, option a",
+    "problem": "Distractor a ('since 04 is the biggest') is not a real misconception: nothing in the scenario says 04 is big. The common real error is reading 'blocked by' backwards.",
+    "evidence": "a \"02 and 04, since 04 is the biggest.\" / \"Size doesn't matter; only blockers do.\"",
+    "fix": "\"- [ ] Only 04, since 02 and 03 both point to it.\" with feedback \"  > That reads the edges backwards. 04 is blocked by 02 and 03, so it starts last. 02 and 03 wait only on 01, which is done.\""
+   },
+   {
+    "severity": "low",
+    "where": "Final test as a whole, against goal 4 (the triage trap)",
+    "problem": "Goal 4 lists 'triaging these tickets', but in the Final test it shows up only as one distractor (option c of scenario-too-many-tickets). The direct question about it is the Checkpoint triage-these, which doesn't count toward passing. Coverage is thin, though not missing.",
+    "evidence": "Goal: \"avoid the common traps: clearing too early, triaging these tickets, too many tickets\u2026\"; the only Final test mention is scenario-too-many-tickets c: \"Approve them, then run `/triage` afterwards\u2026\".",
+    "fix": "Acceptable as it stands. To strengthen it without duplicating the Checkpoint, keep option c in scenario-too-many-tickets and make its feedback teach the rule explicitly: \"  > `/to-tickets` output is agent-ready by construction; `/triage` is only for issues you didn't create, like bug reports.\""
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:29",
+    "problem": "The Lesson's big-idea callout says \"Neither Skill decides anything. They write down what you already decided.\" That holds for `/to-spec`'s prose, but not for `/to-tickets`. That Skill drafts a breakdown the grilling never covered: the slices, their blocking edges and the prefactoring order. You decide on it for the first time at the quiz step. `/to-spec` also proposes seams, and they can be new ones. The callout also clashes with the Lesson's own line 171, which says you were needed at the seam check and the review step.",
+    "evidence": "skills/engineering/to-tickets/SKILL.md:23 \"Look for opportunities to prefactor\", :25-38 \"Draft vertical slices \u2026 Give each ticket its blocking edges\", :42-56 \"Quiz the user \u2026 Iterate until the user approves\". to-spec/SKILL.md:15 \"If new seams are needed, propose them\". The \"does not \u2026 decide anything\" wording appears only on docs/engineering/to-spec.md:28, about the spec. Nothing like it is said of to-tickets.",
+    "fix": "Narrow it, for example: \"Neither Skill makes your decisions. `/to-spec` writes down what you already decided; `/to-tickets` proposes how to cut it, and you approve the cut. Both leave the result in a shape a fresh session can pick up.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:175",
+    "problem": "The Lesson says that once grilling is done, the Main flow \"asks one question: is this a multi-session build?\" In ask-matt, two branches follow grilling. Step 2 asks whether every question can be settled in conversation (the prototype detour). Step 3 is the multi-session fork.",
+    "evidence": "skills/engineering/ask-matt/SKILL.md:20 \"2. **Branch: can you settle every question in conversation?**\" and :24 \"3. **Branch: is this a multi-session build?**\"",
+    "fix": "Write \"\u2026Matt's Main flow then asks: is this a multi-session build?\" or \"\u2026its second fork asks\u2026\", so it doesn't claim this is the only question."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:316",
+    "problem": "The feedback for the single-pass rename option says the edit is \"far beyond one fresh session\". The Skill never gives session size as the reason. Its reason is that a single edit breaks every call site, so nothing can land green until it is all done. A mechanical rename might fit one session, so the first half of the feedback teaches a reason the source doesn't give.",
+    "evidence": "skills/engineering/to-tickets/SKILL.md:40 \"a single edit breaks thousands of call sites at once and no vertical slice can land green \u2026 keeping CI green batch to batch because the old form still exists\"",
+    "fix": "Change it to something like: \"Every caller breaks the moment the old name goes, so nothing passes until the whole rename lands, and there's no green point to check along the way.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:324",
+    "problem": "The feedback for option A (\"02 and 04\") says \"04 still waits for 03.\" Ticket 04 is blocked by both 02 and 03, and neither is done yet (02 is only being started). The reason given is incomplete.",
+    "evidence": "Lesson line 322: \"04 is blocked by 02 and 03\". Line 328 gives the full reason correctly: \"04 needs both 02 and 03 finished.\"",
+    "fix": "Change it to \"04 waits for both 02 and 03, and neither is done yet. Size doesn't matter; only blockers do.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:59-61",
+    "problem": "In the files Scene, setup creates only `docs/agents/issue-tracker.md` (and edits CLAUDE.md). Setup actually always writes `docs/agents/domain.md` as well. It also writes `docs/agents/triage-labels.md` whenever `triage` is installed, which it is with the plugin. A reader who does the Try-it will see three files and a different picture. The Scene is labelled illustrative, but its comment presents this as what setup records.",
+    "evidence": "skills/engineering/setup-matt-pocock-skills/SKILL.md:68 \"The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)\" and :106-112. This repo's docs/agents/ has domain.md, issue-tracker.md and triage-labels.md.",
+    "fix": "Add `+ docs/agents/domain.md` and `+ docs/agents/triage-labels.md` under the setup comment. Or reword the comment to \"setup records where tickets live (among other files)\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:121",
+    "problem": "On a real tracker the Lesson says `/to-tickets` \"uses the tracker's own blocking links and files each ticket under the spec's issue\", with no conditions. In the Skill both are conditional. Tickets become sub-issues only when the source was an existing issue; a plan held only in the conversation has no parent. Native links are used only where the tracker has them; otherwise \"Blocked by\" goes in the issue text.",
+    "evidence": "skills/engineering/to-tickets/SKILL.md:63 \"Use the platform's native blocking relationship where it has one; otherwise set each ticket's \\\"Blocked by\\\" \u2026 If the source was an existing issue, make each ticket its sub-issue\"",
+    "fix": "Change it to: \"\u2026uses the tracker's own blocking links where it has them and, when it starts from the spec's issue, files each ticket under it.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:154-156",
+    "problem": "The worked example doesn't follow the Lesson's own seam advice. `/to-spec` proposes two seams, one of them new, and the user says \"Yes, both\" without asking whether one would do. The Lesson teaches that the Skill proposes as few as possible, one is ideal, and the cheat sheet says \"fewer is better\" (line 287). The writing guide asks worked examples to model the advice.",
+    "evidence": "to-spec/SKILL.md:15 \"Existing seams should be preferred to new ones \u2026 the ideal number is one.\" writing-guide.md:114 \"Worked examples must model the advice.\"",
+    "fix": "Have the agent give a one-line reason the new attempts module is needed (for example, \"scoring has no home yet\"). Or have the user ask \"could the attempts module alone do?\" before agreeing."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:26",
+    "problem": "The gloss defines Skills as \"short instruction files the agent loads when you type their name\". That's true of user-invoked Skills only. The course canon says model-invoked Skills (11 of the 27, including tdd and code-review, which this Lesson names) can also be loaded by the agent on its own.",
+    "evidence": "writing-guide.md:73 \"Model-invoked Skills (11, you or the agent)\" and :74. Pilot 04-grilling.md:89 \"Others, model-invoked Skills, can also be picked up by the agent on its own\".",
+    "fix": "Change it to \"short instruction files the agent loads when you type their name, or, for some, when a task fits\". Or say \"\u2026loads on demand\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/07-spec-and-issues.md:35",
+    "problem": "The feedback opens \"It is:\", answering \"The agent isn't allowed to write any code\u2026\". A beginner may not see that \"It is\" means \"it is allowed\". The point is correct but unclear.",
+    "evidence": "Line 34 \"The agent isn't allowed to write any code until a spec file exists.\" Line 35 \"It is: `/implement` builds straight from the conversation when the work fits in one session.\"",
+    "fix": "Change it to \"No such rule: `/implement` builds straight from the conversation when the work fits in one session.\""
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}
