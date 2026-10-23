@@ -78,3 +78,8 @@ Don't run `npm test` (it hits the shared Neon `test` branch, and PR A's suite em
 1. Start here's Final test (5–6 questions) is exempt from the kind mix. Every other Lesson needs at least 3 `scenario-`, 2 `spot-` and 1 `sequence-` test ids. The main flow may have 8–15 questions; every other Lesson has 8–10.
 2. Backticked `/name` allowlist: every 1.3.1 Skill, including the misc ones (`git-guardrails-claude-code`, `setup-pre-commit`, `migrate-to-shoehorn`, `scaffold-exercises`), plus these Built-in commands: `/clear` `/compact` `/context` `/model` `/effort` `/fast` `/rewind` `/init` `/help` `/config` `/permissions` `/plan` `/resume` `/agents` `/mcp` `/hooks` `/memory` `/cost` `/usage` `/status` `/doctor` `/login` `/logout` `/plugin` `/skills` `/ultrareview` `/review` `/add-dir` `/exit` `/export` `/terminal-setup` `/vim`. Ask the engine session before using any other. Paths like `/learn/x` aren't checked; only single-segment names are.
 3. `/learn/<slug>` links must point at Slugs that exist on this branch.
+
+## v1.3 (2026-10-23)
+
+1. Namespaced Skills are allowed: `/mattpocock-skills:<name>` for any 1.3.1 Skill name (the namespace must be exactly `mattpocock-skills`). A backticked name followed by arguments, like `/code-review max`, isn't checked.
+2. Added Built-in commands: `/btw` `/reload-skills` `/reload-plugins` `/workflows` `/autocompact`.
