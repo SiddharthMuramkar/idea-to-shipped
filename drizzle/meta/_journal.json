@@ -8,6 +8,13 @@
       "when": 1792571491110,
       "tag": "0000_create_comments",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792725396124,
+      "tag": "0001_create_quiz_answers",
+      "breakpoints": true
     }
   ]
 }

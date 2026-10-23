@@ -2,6 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { comments } from "@/db/schema";
 import { lessons } from "@/lessons/lessons";
+import type { Result } from "@/result";
 import { MAX_BODY, MAX_NAME } from "./limits";
 
 export type Comment = { id: number; name: string; body: string; createdAt: string };
@@ -17,7 +18,7 @@ function toComment(row: Row): Comment {
   };
 }
 
-export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
+export type { Result } from "@/result";
 
 const UNKNOWN_LESSON = { ok: false, error: "Unknown lesson." } as const;
 

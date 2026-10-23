@@ -1,7 +1,8 @@
 import { loadEnvConfig } from "@next/env";
 
-// Tests empty the comments table, so they must only ever talk to the Neon
-// `test` branch. Take DATABASE_URL from .env.test.local, never from anywhere else.
+// Tests empty the comments, answers and test_attempts tables, so they must
+// only ever talk to the Neon `test` branch. Take DATABASE_URL from
+// .env.test.local, never from anywhere else.
 const { loadedEnvFiles } = loadEnvConfig(process.cwd(), false);
 const testUrl = loadedEnvFiles.find((f) => f.path === ".env.test.local")?.env
   .DATABASE_URL;
