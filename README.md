@@ -247,13 +247,13 @@ imageCredit: Vitaly Gariev
 
 Any other key is an error, and so is a slug or `order` that another Lesson already uses. The page title and position come from the header, not the filename.
 
-**The body is Markdown.** `## ` headings split it into Sections, and `==key phrase==` highlights a phrase. The special parts of a Lesson are fenced code blocks whose first word names the kind:
+**The body is Markdown.** `## ` headings split it into Sections, and `==key phrase==` highlights a phrase. The special parts of a Lesson are fenced code blocks whose first word names the kind. They must sit at the top level, at the start of a line: one inside a list, a `> ` quote or another block is an error.
 
 | Block | What it makes |
 |---|---|
 | `goals` | The 3–4 things a Visitor will be able to do, before the first `##` |
-| `scene chat` / `terminal` / `flow` / `files` / `meter` | A Scene that builds step by step as you scroll, at most one per Section |
-| `checkpoint <id>` | One question with instant feedback. It never counts towards passing |
+| `scene chat` / `terminal` / `flow` / `files` / `meter` | A Scene that builds step by step as you scroll, at most one per Section (never in the intro) |
+| `checkpoint <id>` | One question with instant feedback. It never counts towards passing. Its prompt is one paragraph; orderings go in the options |
 | `test <id>` | One Final test question. They sit together at the end, and 80% passes |
 | `callout tip` / `watch-out` / `big-idea` | A highlighted box |
 | `try` | A "Your turn" exercise, with copy buttons on its code |

@@ -55,7 +55,7 @@ function estimateWords(body: string): number {
       .join(" ")
       .replace(/<[^>]+>/g, " ")
       .replace(/\]\([^)]*\)/g, "] ")
-      .replace(/\[[ x]\]/g, " "),
+      .replace(/\[[ xX]\]/g, " "),
   );
 }
 
@@ -79,8 +79,14 @@ function parsePart(file: string, value: string | undefined): Part | null {
   return { number, title: PARTS[number] };
 }
 
+// Editors on Windows save "\r\n" line endings and sometimes a byte-order mark
+// at the very start. Neither is visible, so both are dropped before parsing.
+function normalize(raw: string): string {
+  return raw.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+}
+
 function parseLesson(file: string, raw: string): ParsedLesson {
-  const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  const match = normalize(raw).match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!match) throw new Error(`${file}: missing the --- header`);
   const fields: Record<string, string> = {};
   for (const line of match[1].split("\n")) {
@@ -90,6 +96,7 @@ function parseLesson(file: string, raw: string): ParsedLesson {
     if (i === -1 || !KNOWN_KEYS.has(key)) {
       throw new Error(`${file}: unknown header key "${i === -1 ? line.trim() : key}"`);
     }
+    if (key in fields) throw new Error(`${file}: header key "${key}" is set twice`);
     fields[key] = line.slice(i + 1).trim();
   }
   for (const key of REQUIRED) {

@@ -22,3 +22,19 @@ two letters from "try"
 ```
 no language at all
 ```
+
+```TS
+upper case still counts
+```
+
+```tree
+src/
+```
+
+```rs
+fn main() {}
+```
+
+```output
+what a command printed
+```

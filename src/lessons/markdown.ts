@@ -2,7 +2,9 @@ import { Marked, type Token, type TokenizerAndRendererExtension } from "marked";
 
 // ==key phrase== becomes <mark>key phrase</mark>. The == has to touch a
 // non-space character on the inside, so "a == b" and "===" stay as typed.
-const MARK = /^==([^\s=](?:[\s\S]*?[^\s])?)==(?!=)/;
+// The inner group is lazy (??), so "==8== of ==10==" is two highlights, not
+// one running from the first == to the last.
+const MARK = /^==([^\s=](?:[\s\S]*?[^\s])??)==(?!=)/;
 
 const mark: TokenizerAndRendererExtension = {
   name: "mark",
@@ -33,14 +35,10 @@ export function lex(src: string): Token[] {
   return md.lexer(src);
 }
 
-// Renders block tokens taken from lex(), such as a run of paragraphs.
+// Renders block tokens taken from lex(): a run of paragraphs, or a whole
+// callout, try, Site story or sources body.
 export function renderTokens(tokens: Token[]): string {
   return md.parser(tokens);
-}
-
-// Renders a whole Markdown body: callouts, Site stories, sources.
-export function renderBlock(src: string): string {
-  return md.parse(src, { async: false });
 }
 
 // Renders one line of Markdown without a wrapping <p>: prompts, captions.

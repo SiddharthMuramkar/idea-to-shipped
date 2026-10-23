@@ -21,9 +21,10 @@ type SceneKind = Scene["kind"];
 
 type Fail = (problem: string) => Error;
 
-// Reads "0" to "100" as a whole number, or null for anything else.
+// Reads a percentage from 0 to 100, such as "40" or "62.5", or null for
+// anything else.
 function percent(value: string): number | null {
-  if (!/^\d{1,3}$/.test(value)) return null;
+  if (!/^\d{1,3}(?:\.\d+)?$/.test(value)) return null;
   const n = Number(value);
   return n <= 100 ? n : null;
 }
@@ -121,10 +122,12 @@ export function parseScene(file: string, type: string | undefined, body: string)
         itemKeys: [],
         setting: setting(),
         describe: "terminal line",
-        // "$ command" is typed in; every other line is what it prints.
+        // "$ command" is typed in; every other line is what it prints. Output
+        // that starts with "#" (a shell comment) is written "\#", since a
+        // plain "# " line starts the next step. The backslash isn't shown.
         item(line) {
           const command = /^\$(?: (.*))?$/.exec(line);
-          if (!command) return { type: "output" as const, text: line };
+          if (!command) return { type: "output" as const, text: line.replace(/^\\#/, "#") };
           if (!command[1]?.trim()) throw fail('"$" needs a command after it');
           return { type: "command" as const, text: command[1].trim() };
         },
@@ -143,6 +146,10 @@ export function parseScene(file: string, type: string | undefined, body: string)
               throw fail(`"node: ${value}" should read "node: <id> | <label>" or "node: <id> | <label> | side"`);
             }
             if (nodes.some((node) => node.id === id)) throw fail(`node "${id}" is declared twice`);
+            // A side node is drawn beside the main node before it.
+            if (side === "side" && !nodes.some((node) => !node.side)) {
+              throw fail(`"node: ${value}": a side node needs a main node declared before it`);
+            }
             nodes.push({ id, label, side: side === "side" });
           },
         }),
@@ -176,12 +183,13 @@ export function parseScene(file: string, type: string | undefined, body: string)
     case "meter": {
       const steps = parseSteps(lines, fail, {
         itemKeys: ["fill"],
-        // zone: <0-100>, where the meter turns to the warning colour.
+        // zone: <0-100>, with or without a "%": where the meter turns to the
+        // warning colour.
         setting: setting({
           zone(value) {
             if (zone !== null) throw fail('"zone" is set twice');
-            zone = percent(value);
-            if (zone === null) throw fail(`"zone: ${value}" needs a whole number from 0 to 100`);
+            zone = percent(value.replace(/%$/, ""));
+            if (zone === null) throw fail(`"zone: ${value}" needs a number from 0 to 100`);
           },
         }),
         describe: 'meter line ("fill: <0-100>% | label")',
@@ -189,7 +197,7 @@ export function parseScene(file: string, type: string | undefined, body: string)
           const match = /^fill:\s*(\S+?)%\s*\|\s*(.+)$/.exec(line);
           if (!match) return null;
           const fill = percent(match[1]);
-          if (fill === null) throw fail(`"${line.trim()}": the fill must be a whole number from 0 to 100`);
+          if (fill === null) throw fail(`"${line.trim()}": the fill must be a number from 0 to 100`);
           return { fill, label: match[2].trim() };
         },
       });

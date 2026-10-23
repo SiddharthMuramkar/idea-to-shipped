@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
+import { bodyText, lessonNumberMentions, partsGoingBackwards, unknownSlashNames } from "./course-lint";
 import { countWords, lessons, type Block, type Lesson, type LessonSummary } from "./lessons";
 
 // The content lint: the real course in content/lessons, checked against the
@@ -30,6 +31,7 @@ const PENDING_REWRITE = new Set([
 // they must never disappear, and each of them tells its Site story.
 const LEGACY_SLUGS = [
   "start-here",
+  "grilling",
   "domain-modeling",
   "spec-and-issues",
   "wizard",
@@ -41,23 +43,6 @@ const LEGACY_SLUGS = [
   "models-effort-ultracode",
   "main-flow",
 ];
-
-// Every `/name` a Lesson may show in backticks: the mattpocock-skills 1.3.1
-// Skills, then Claude Code's Built-in commands. Catches stale names like /to-prd.
-const KNOWN_COMMANDS = new Set([
-  // Skills
-  "ask-matt", "grill-with-docs", "implement", "implement-spec", "improve-codebase-architecture",
-  "retro", "setup-matt-pocock-skills", "to-spec", "to-tickets", "triage", "wayfinder",
-  "code-review", "codebase-design", "diagnosing-bugs", "domain-modeling", "pr", "prototype",
-  "research", "tdd", "wizard", "grill-me", "handoff", "teach", "to-questionnaire", "wait-what",
-  "grilling", "writing-for-agents", "git-guardrails-claude-code", "setup-pre-commit",
-  "migrate-to-shoehorn", "scaffold-exercises",
-  // Built-in commands
-  "clear", "compact", "context", "model", "effort", "fast", "rewind", "init", "help", "config",
-  "permissions", "plan", "resume", "agents", "mcp", "hooks", "memory", "cost", "usage", "status",
-  "doctor", "login", "logout", "plugin", "skills", "ultrareview", "review", "add-dir", "exit",
-  "export", "terminal-setup", "vim",
-]);
 
 // Final test size by slug; every other Lesson has 8 to 10 questions.
 const FINAL_TEST_SIZE: Record<string, [number, number]> = {
@@ -81,14 +66,6 @@ function allBlocks(lesson: Lesson): Block[] {
 
 function blocksOf<T extends Block["type"]>(lesson: Lesson, type: T) {
   return allBlocks(lesson).filter((block): block is Extract<Block, { type: T }> => block.type === type);
-}
-
-// Every string in the parsed Lesson: its HTML, captions, prompts and options.
-function allText(value: unknown): string {
-  if (typeof value === "string") return value;
-  if (Array.isArray(value)) return value.map(allText).join("\n");
-  if (value && typeof value === "object") return Object.values(value).map(allText).join("\n");
-  return "";
 }
 
 async function load(slug: string): Promise<Lesson> {
@@ -139,11 +116,7 @@ describe("the course", () => {
   test("once every Lesson has a Part, Parts never go backwards as order goes up", async () => {
     const all = await lessons.listLessons();
     if (all.some((lesson) => lesson.part === null)) return;
-    const backwards = all
-      .slice(1)
-      .filter((lesson, i) => lesson.part!.number < all[i].part!.number)
-      .map((lesson, i) => `${lesson.slug} (Part ${lesson.part!.number}) comes after ${all[i].slug}`);
-    expect(backwards).toEqual([]);
+    expect(partsGoingBackwards(all)).toEqual([]);
   });
 
   test("every Lesson's photo exists under public/", async () => {
@@ -164,9 +137,9 @@ describe.each(rewritten)("Lesson $slug", ({ slug }) => {
     expect((await load(slug)).part).not.toBeNull();
   });
 
-  test("opens with one goals block of 3 or 4 goals", async () => {
+  test("opens with exactly one goals block of 3 or 4 goals", async () => {
     const goals = blocksOf(await load(slug), "goals");
-    expect(goals).toHaveLength(1);
+    expect(goals, "exactly one goals block").toHaveLength(1);
     expect(goals[0].itemsHtml.length).toBeGreaterThanOrEqual(3);
     expect(goals[0].itemsHtml.length).toBeLessThanOrEqual(4);
   });
@@ -207,9 +180,9 @@ describe.each(rewritten)("Lesson $slug", ({ slug }) => {
     });
   }
 
-  test("lists at least 3 sources, each with a link", async () => {
+  test("has exactly one sources block, listing at least 3 sources, each with a link", async () => {
     const sources = blocksOf(await load(slug), "sources");
-    expect(sources, "one sources block").toHaveLength(1);
+    expect(sources, "exactly one sources block").toHaveLength(1);
     const items = sources[0].html.match(/<li>[\s\S]*?<\/li>/g) ?? [];
     expect(items.length).toBeGreaterThanOrEqual(3);
     expect(items.filter((item) => !item.includes("<a href="))).toEqual([]);
@@ -221,18 +194,17 @@ describe.each(rewritten)("Lesson $slug", ({ slug }) => {
     expect(words, `${words} words, want ${min} to ${max}`).toSatisfy((n: number) => inRange(n, [min, max]));
   });
 
-  test('never says "Lesson <number>" (numbers change when Lessons move)', async () => {
-    expect(allText(await load(slug)).match(/Lesson \d+/g) ?? []).toEqual([]);
+  test('never says "Lesson <number>" in its body (numbers change when Lessons move)', async () => {
+    expect(lessonNumberMentions(await load(slug))).toEqual([]);
   });
 
   test("links only to Lessons that exist", async () => {
     const slugs = new Set(summaries.map((lesson) => lesson.slug));
-    const targets = [...allText(await load(slug)).matchAll(/href="\/learn\/([^"#?/]+)/g)].map((m) => m[1]);
+    const targets = [...bodyText(await load(slug)).matchAll(/href="\/learn\/([^"#?/]+)/g)].map((m) => m[1]);
     expect(targets.filter((target) => !slugs.has(target))).toEqual([]);
   });
 
   test("names only real Skills and Built-in commands in backticks", async () => {
-    const names = [...allText(await load(slug)).matchAll(/<code>\/([a-z][a-z0-9-]*)<\/code>/g)].map((m) => m[1]);
-    expect(names.filter((name) => !KNOWN_COMMANDS.has(name)).map((name) => `/${name}`)).toEqual([]);
+    expect(unknownSlashNames(bodyText(await load(slug)))).toEqual([]);
   });
 });

@@ -20,11 +20,15 @@ export type Question = {
 
 type DraftOption = { text: string; correct: boolean; feedback: string[] };
 
+// A prompt line that Markdown would read as a block of its own: a bullet
+// ("- ", "* ", "+ "), a numbered item ("1. "), a quote ("> ") or a code fence.
+const BLOCK_LINE = /^(?:[-*+] |\d+[.)] |>|```|~~~)/;
+
 // A question block reads:
-//   The prompt, on one or more lines.
-//   - [ ] A wrong option
+//   The prompt: one paragraph of inline text, on one or more lines.
+//   - [ ] A wrong option            (options start at the beginning of the line)
 //     > Feedback shown when it's picked (one or more "> " lines).
-//   - [x] The right option
+//   - [x] The right option          ("[X]" works too)
 //     > Feedback.
 export function parseQuestion(
   file: string,
@@ -44,15 +48,23 @@ export function parseQuestion(
   const drafts: DraftOption[] = [];
   for (const line of body.split("\n")) {
     if (line.trim() === "") continue;
-    const option = /^- \[( |x)\] (.*)$/.exec(line);
+    const option = /^- \[([ xX])\] (.*)$/.exec(line);
     const feedback = /^\s*> ?(.*)$/.exec(line);
     if (option) {
       if (option[2].trim() === "") throw fail(`option ${OPTION_IDS[drafts.length] ?? "?"} is empty`);
-      drafts.push({ text: option[2].trim(), correct: option[1] === "x", feedback: [] });
+      drafts.push({ text: option[2].trim(), correct: option[1] !== " ", feedback: [] });
+    } else if (/^\s+- \[/.test(line)) {
+      // An indented option would otherwise be read as part of the prompt.
+      throw fail(`"${line.trimEnd()}": options must start at the beginning of the line ("- [ ]" / "- [x]")`);
     } else if (line.startsWith("- [")) {
       throw fail(`"${line.trim()}": options start with "- [ ] " or "- [x] "`);
+    } else if (drafts.length === 0 && BLOCK_LINE.test(line.trimStart())) {
+      // The prompt renders as one line of inline text, so a list, quote or
+      // code block in it would be flattened into a run-on sentence.
+      throw fail(
+        `"${line.trim()}": prompts are one paragraph of inline text; put orderings inside the options`,
+      );
     } else if (feedback) {
-      if (drafts.length === 0) throw fail(`"${line.trim()}": feedback comes after an option`);
       drafts[drafts.length - 1].feedback.push(feedback[1].trim());
     } else if (drafts.length > 0) {
       throw fail(`"${line.trim()}": after the options, every line is an option or "> " feedback`);

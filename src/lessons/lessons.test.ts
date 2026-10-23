@@ -1,3 +1,5 @@
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
 import { countWords, lessonsFrom } from "./lessons";
@@ -106,7 +108,7 @@ describe("getLesson", () => {
     ]);
   });
 
-  test("==key phrase== becomes a <mark>, but == with spaces inside, or ===, stays as typed", async () => {
+  test("==key phrase== becomes a <mark>, each pair its own, but == with spaces inside, or ===, stays as typed", async () => {
     const lesson = await lessonsFrom(path.join(fixtures, "mark")).getLesson("mark");
     expect(lesson?.intro).toEqual([
       {
@@ -117,6 +119,7 @@ describe("getLesson", () => {
           "<p>== spaced == stays too.</p>",
           "<p>Nested: <mark><strong>bold</strong> idea</mark> works.</p>",
           "<p>Code: <code>x ==y== z</code> stays code.</p>",
+          "<p>Score <mark>8</mark> of <mark>10</mark>, then <mark>a=b</mark> too.</p>",
           "",
         ].join("\n"),
       },
@@ -249,31 +252,96 @@ describe("Checkpoints and the Final test", () => {
       "split",
       'split.md: test "second": test blocks must sit together (only blank lines between them) to form one Final test',
     ],
+    ["extra-argument", "extra", 'extra.md: checkpoint "my-id": unexpected "extra"'],
+    [
+      "test-in-intro",
+      "early-test",
+      'early-test.md: test "scenario-a": the Final test goes in a Section (after a ## heading), not in the intro',
+    ],
+    [
+      "indented-option",
+      "indented",
+      'indented.md: checkpoint "pick-one": "  - [x] A": options must start at the beginning of the line ("- [ ]" / "- [x]")',
+    ],
+    ...(
+      [
+        ["list-in-prompt", "ordering", 'test "sequence-steps": "1. Grill"'],
+        ["bullet-in-prompt", "bullets", 'checkpoint "pick-one": "* the database"'],
+        ["quote-in-prompt", "quoted", 'checkpoint "pick-one": "> Q1 Who is it for?"'],
+        ["fence-in-prompt", "fenced", 'checkpoint "pick-one": "```sh"'],
+      ] as const
+    ).map(([folder, slug, where]) => [
+      folder,
+      slug,
+      `${slug}.md: ${where}: prompts are one paragraph of inline text; put orderings inside the options`,
+    ]),
   ])("a broken question in %s fails, naming the file, the block and its id", async (folder, slug, message) => {
     const broken = lessonsFrom(path.join(fixtures, folder));
     await expect(broken.getLesson(slug)).rejects.toThrow(message);
+  });
+
+  test("an uppercase [X] marks the right option too", async () => {
+    const questions = await lessonsFrom(path.join(fixtures, "uppercase-answer")).getQuestions("shout");
+    expect(questions?.map(({ id, answer }) => ({ id, answer }))).toEqual([{ id: "pick-one", answer: "b" }]);
   });
 });
 
 describe("block kinds", () => {
   test.each([
-    ["kind-typo", "typo", 'typo.md: "checkpiont" is not a block kind. Did you mean "checkpoint"?'],
-    ["scene-typo", "scnee", 'scnee.md: "scnee" is not a block kind. Did you mean "scene"?'],
+    ["kind-typo", "typo", 'typo.md: "checkpiont" is not a block kind: did you mean "checkpoint"?'],
+    ["scene-typo", "scnee", 'scnee.md: "scnee" is not a block kind: did you mean "scene"?'],
+    [
+      "near-miss-in-list",
+      "typo-listed",
+      'typo-listed.md: "checkpiont" is not a block kind: did you mean "checkpoint"?',
+    ],
   ])("a misspelt kind in %s is an error that suggests the right one", async (folder, slug, message) => {
     const broken = lessonsFrom(path.join(fixtures, folder));
     await expect(broken.getLesson(slug)).rejects.toThrow(message);
   });
 
   test.each([
+    ["tip", "callout tip"],
+    ["watch-out", "callout watch-out"],
+    ["big-idea", "callout big-idea"],
+    ["chat", "scene chat"],
+    ["terminal", "scene terminal"],
+    ["flow", "scene flow"],
+    ["files", "scene files"],
+    ["meter", "scene meter"],
+    ["story", "site-story"],
+    ["quiz", "checkpoint <id>"],
+    ["question", "checkpoint <id>"],
+  ])('a fence opened with just "%s" is an error that names the block it belongs to', async (word, suggestion) => {
+    const broken = lessonsFrom(path.join(fixtures, "kind-hints"));
+    await expect(broken.getLesson(`hint-${word}`)).rejects.toThrow(
+      `hint-${word}.md: "${word}" is not a block kind: did you mean "${suggestion}"?`,
+    );
+  });
+
+  test.each([
+    ["typed-in-list", "listed", "checkpoint", "a list"],
+    ["typed-in-blockquote", "boxed", "callout", "a blockquote"],
+    ["typed-in-try", "nested-try", "checkpoint", "a try block"],
+    ["typed-in-callout", "nested-callout", "scene", "a callout block"],
+  ])("a typed block nested in %s is an error: typed blocks sit at the top level", async (folder, slug, kind, where) => {
+    const broken = lessonsFrom(path.join(fixtures, folder));
+    await expect(broken.getLesson(slug)).rejects.toThrow(
+      `${slug}.md: typed blocks must sit at the top level (found \`${kind}\` inside ${where})`,
+    );
+  });
+
+  test.each([
     ["late-goals", "late", "late.md: goals: goals go before the first ## heading"],
     ["goals-not-a-list", "prose-goals", "prose-goals.md: goals: write the goals as a Markdown list"],
+    ["nested-goals", "nested", "nested.md: goals: goals items can't contain nested lists"],
     ["bad-callout-tone", "loud", 'loud.md: callout: the tone must be tip, watch-out or big-idea (got "shout")'],
   ])("a misused block in %s is an error", async (folder, slug, message) => {
     const broken = lessonsFrom(path.join(fixtures, folder));
     await expect(broken.getLesson(slug)).rejects.toThrow(message);
   });
 
-  test("code fences in real languages stay code, even when they look like a kind", async () => {
+  test("code fences in real languages stay code, in any case, even when they look like a kind", async () => {
     const lesson = await lessonsFrom(path.join(fixtures, "code-languages")).getLesson("code");
     expect(lesson?.intro).toEqual([
       {
@@ -286,6 +354,14 @@ describe("block kinds", () => {
           '<pre><code class="language-txt">two letters from &quot;try&quot;',
           "</code></pre>",
           "<pre><code>no language at all",
+          "</code></pre>",
+          '<pre><code class="language-TS">upper case still counts',
+          "</code></pre>",
+          '<pre><code class="language-tree">src/',
+          "</code></pre>",
+          '<pre><code class="language-rs">fn main() {}',
+          "</code></pre>",
+          '<pre><code class="language-output">what a command printed',
           "</code></pre>",
           "",
         ].join("\n"),
@@ -535,9 +611,65 @@ describe("Scenes", () => {
       "video",
       'video.md: scene: the type must be chat, terminal, flow, files or meter (got "video")',
     ],
+    ["extra-scene-argument", "wordy", 'wordy.md: scene chat: unexpected "bubbles"'],
+    [
+      "scene-in-intro",
+      "opening",
+      "opening.md: scene chat: Scenes go in a Section (after a ## heading), not in the intro",
+    ],
+    [
+      "side-node-first",
+      "sideways",
+      'sideways.md: scene flow: "node: small | Small job | side": a side node needs a main node declared before it',
+    ],
   ])("a broken Scene in %s fails, naming the file and the Scene", async (folder, slug, message) => {
     const broken = lessonsFrom(path.join(fixtures, folder));
     await expect(broken.getLesson(slug)).rejects.toThrow(message);
+  });
+
+  test("a meter's zone may end in %, and its fills may be decimals", async () => {
+    const lesson = await lessonsFrom(path.join(fixtures, "meter-values")).getLesson("gauge");
+    expect(lesson?.sections[0].blocks).toEqual([
+      {
+        type: "scene",
+        scene: {
+          kind: "meter",
+          title: null,
+          zone: 40,
+          steps: [
+            { captionHtml: "Halfway and a bit.", items: [{ fill: 62.5, label: "After grilling" }] },
+            { captionHtml: "Full.", items: [{ fill: 100, label: "After implementing" }] },
+          ],
+        },
+      },
+    ]);
+  });
+
+  test('a terminal line written "\\# …" is output that starts with "#", while "# …" still starts a step', async () => {
+    const lesson = await lessonsFrom(path.join(fixtures, "terminal-comments")).getLesson("shell");
+    expect(lesson?.sections[0].blocks).toEqual([
+      {
+        type: "scene",
+        scene: {
+          kind: "terminal",
+          title: null,
+          steps: [
+            {
+              captionHtml: "Copy the example env file.",
+              items: [
+                { type: "command", text: "cat .env.example" },
+                { type: "output", text: "# DATABASE_URL is your Neon connection string" },
+                { type: "output", text: "DATABASE_URL=postgres://..." },
+              ],
+            },
+            {
+              captionHtml: "A plain &quot;# &quot; line still starts the next step.",
+              items: [{ type: "command", text: "npm test" }],
+            },
+          ],
+        },
+      },
+    ]);
   });
 });
 
@@ -561,6 +693,54 @@ describe("lessonExists", () => {
   });
 });
 
+describe("the authoring guide", () => {
+  test("its complete example parses, with every block kind and every Scene kind", async () => {
+    const guide = await readFile(path.join(process.cwd(), "docs/authoring-lessons.md"), "utf8");
+    const example = /^``````markdown\n([\s\S]*?)\n``````$/m.exec(guide)?.[1];
+    expect(example, "the six-backtick example block").toBeDefined();
+    const dir = await mkdtemp(path.join(tmpdir(), "lesson-guide-"));
+    try {
+      await writeFile(path.join(dir, "20-grilling-an-idea.md"), example!);
+      const lesson = await lessonsFrom(dir).getLesson("grilling-an-idea");
+      const blocks = [lesson!.intro, ...lesson!.sections.map((section) => section.blocks)].flat();
+      const kinds = new Set(blocks.map((block) => (block.type === "scene" ? `scene ${block.scene.kind}` : block.type)));
+      expect([...kinds].sort()).toEqual([
+        "callout",
+        "checkpoint",
+        "finalTest",
+        "goals",
+        "prose",
+        "scene chat",
+        "scene files",
+        "scene flow",
+        "scene meter",
+        "scene terminal",
+        "siteStory",
+        "sources",
+        "try",
+      ]);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("file encoding", () => {
+  test("a Lesson saved with Windows line endings and a byte-order mark parses like any other", async () => {
+    // Written at run time, so git's line-ending settings can't quietly undo it.
+    const dir = await mkdtemp(path.join(tmpdir(), "lesson-crlf-"));
+    try {
+      const plain = await readFile(path.join(fixtures, "full", "01-full.md"), "utf8");
+      await writeFile(path.join(dir, "01-full.md"), "\uFEFF" + plain.replaceAll("\n", "\r\n"));
+      const windows = lessonsFrom(dir);
+      expect(await windows.listLessons()).toEqual(await lessonsFrom(path.join(fixtures, "full")).listLessons());
+      expect(await windows.getLesson("full")).toEqual(await lessonsFrom(path.join(fixtures, "full")).getLesson("full"));
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("broken Lesson files", () => {
   test("a Lesson without a title fails loudly, naming the file", async () => {
     const broken = lessonsFrom(path.join(fixtures, "missing-title"));
@@ -578,6 +758,7 @@ describe("broken Lesson files", () => {
 
   test.each([
     ["unknown-header-key", 'colour.md: unknown header key "colour"'],
+    ["duplicate-header-key", 'retitled.md: header key "title" is set twice'],
     ["bad-part", 'five.md: part must be 1, 2, 3 or 4 (got "5")'],
     ["bad-order", 'two.md: order must be a whole number (got "two")'],
     ["duplicate-slug", '01-twin.md and 02-twin-again.md: both use slug "twin"'],

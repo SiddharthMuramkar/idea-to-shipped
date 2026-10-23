@@ -16,3 +16,5 @@ Maths: a == b and c === d stay as they are.
 Nested: ==**bold** idea== works.
 
 Code: `x ==y== z` stays code.
+
+Score ==8== of ==10==, then ==a=b== too.

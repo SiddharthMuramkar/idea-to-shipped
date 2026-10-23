@@ -1,10 +1,21 @@
 # Writing a Lesson
 
-This guide is for anyone writing a Lesson for Idea to Shipped, including agents. It's the **authoring contract, v1.1**: the exact rules the Lessons module (`src/lessons/`) follows when it reads a Lesson file, plus the course lint that holds every Lesson to the same bar.
+This guide is for anyone writing a Lesson for Idea to Shipped, including agents. It's the **authoring contract, v1.4**: the exact rules the Lessons module (`src/lessons/`) follows when it reads a Lesson file, plus the course lint that holds every Lesson to the same bar.
 
 You don't need to know React, Next.js or the database to write a Lesson. You need Markdown, this guide, and one command: `npm run test:content`.
 
 > **Why this file isn't in `content/lessons/`:** every `.md` file in that folder is read as a Lesson, so a guide there would break the build.
+
+**New in v1.4.** Each rule is explained where it belongs below.
+
+- **Typed blocks sit at the top level.** A ` ```checkpoint ` (or any other kind) inside a list, a `> ` quote or another block is now an error instead of silently showing as code ([section 4](#4-typed-blocks)).
+- **Question prompts are one paragraph of inline text.** A prompt line that starts like a list, a quote or a code block is an error. Put orderings inside the options. Options must start at the beginning of the line, and `[X]` works as well as `[x]`.
+- **Placement:** Scenes and the Final test go in a Section, never in the intro. A flow `side` node needs a main node before it.
+- **Terminal Scenes:** write `\# ` for output that starts with `# `, such as a shell comment.
+- **Meter Scenes:** `zone: 40` and `zone: 40%` both work, and fills can be decimals (`fill: 62.5% | …`).
+- **Fewer false alarms:** code languages are matched in any case (` ```TS `) from a much longer list, and bare words like ` ```tip ` or ` ```chat ` now say which block you meant.
+- **Smaller fixes:** goals can't hold nested lists, a header key written twice is an error, Windows line endings are fine, and `==8== of ==10==` gives two highlights.
+- **Course lint:** more Built-in commands are known, a Skill's full name (`/mattpocock-skills:grilling`) is checked, and "Lesson <number>" is looked for only in the Lesson's own body.
 
 Use the words in [`GLOSSARY.md`](../GLOSSARY.md) exactly: Lesson, Part, Skill, Scene, Checkpoint, Final test, Site story, Visitor. In anything a Visitor reads, write "Final test" in full, never just "Test" or "quiz".
 
@@ -20,7 +31,7 @@ Use the words in [`GLOSSARY.md`](../GLOSSARY.md) exactly: Lesson, Part, Skill, S
 
 - **Where:** `content/lessons/`.
 - **Name:** `NN-<slug>.md`, where `NN` is the Lesson's `order` padded to two digits and `<slug>` is its slug. For example, `04-grilling.md` has `order: 4` and `slug: grilling`.
-- **Format:** UTF-8 text with plain `\n` line endings.
+- **Format:** UTF-8 text. Windows line endings (`\r\n`) and a byte-order mark at the start are fine: both are removed before the file is read.
 
 ## 2. The header
 
@@ -51,6 +62,8 @@ imageCredit: Vitaly Gariev
 **Rules:**
 
 - **Any other key is an error.** A typo like `tilte:` fails the build instead of being silently ignored.
+- **Each key appears once.** Writing a key twice (two `title:` lines, say) is an error, so you never have to guess which one wins.
+- **Values are plain text.** `title: The **big** idea` shows the asterisks.
 - **No two Lessons may share a `slug` or an `order`.** The error names both files.
 - **The page title and position come from the header, not the filename.**
 - **Never change a published slug.** Comments and Answers point at a Lesson by its slug, so renaming it cuts the Lesson off from them ([ADR 0004](adr/0004-comments-reference-lessons-by-permanent-slug.md)). A Lesson's title, `order` and `part` can change freely.
@@ -68,14 +81,14 @@ After the header comes ordinary Markdown: paragraphs, lists, tables, links, **bo
 - **Don't use a `# ` heading in the body.** The title is the page's only top heading, so a `# ` heading is an error.
 - Use `### ` for smaller headings inside a Section.
 
-**Highlights:** wrap a key phrase in double equals signs, `==like this==`, and it becomes a highlighted phrase that sweeps in as the reader reaches it. The `==` must touch the words on the inside, so `a == b` and `===` stay plain text. Use one or two per Section at most.
+**Highlights:** wrap a key phrase in double equals signs, `==like this==`, and it becomes a highlighted phrase that sweeps in as the reader reaches it. The `==` must touch the words on the inside, so `a == b` and `===` stay plain text. Each pair is its own highlight: `Score ==8== of ==10==` highlights the 8 and the 10, not everything between them. Inside backticks, `==` is never a highlight. Use one or two per Section at most.
 
 **Links between Lessons:**
 
 - Link by title, with the Lesson's URL: `[Grilling](/learn/grilling)`. Every `/learn/<slug>` link must point at a Lesson that exists.
-- **Never refer to a Lesson by its number** ("Lesson 3", "see Lesson 10"). Numbers change when Lessons are reordered, so any "Lesson" followed by a number is an error.
+- **Never refer to a Lesson by its number** ("Lesson 3", "see Lesson 10"). Numbers change when Lessons are reordered, so any "Lesson" followed by a number in the body (the intro and the Sections) is an error.
 
-**Skill and command names:** write them in backticks with their slash, like `/grilling` or `/clear`. Every backticked single-word slash name must be a real Skill or Built-in command. The full list is under [The course lint](#6-the-course-lint). This catches renamed Skills such as `/to-prd`, which is `/to-spec` now. Paths like `/learn/grilling` or `/api/comments` aren't checked by this rule.
+**Skill and command names:** write them in backticks with their slash, like `/grilling` or `/clear`. A Skill can also be written by its full name, with the plugin in front: `/mattpocock-skills:grilling`. Every backticked slash name must be a real Skill or Built-in command, and a full name must start with `mattpocock-skills:` and end with one of its Skills. The full list is under [The course lint](#6-the-course-lint). This catches renamed Skills such as `/to-prd`, which is `/to-spec` now. Paths like `/learn/grilling` or `/api/comments` have a second `/`, so this rule skips them.
 
 ## 4. Typed blocks
 
@@ -90,9 +103,9 @@ Special parts of a Lesson (goals, Scenes, questions, callouts and so on) are wri
 | Block | First line | What it makes | Where |
 |---|---|---|---|
 | goals | ` ```goals ` | The "By the end of this Lesson you can" card | Intro only |
-| scene | ` ```scene chat ` (or `terminal`, `flow`, `files`, `meter`) | A Scene that builds step by step as the reader scrolls | At most one per Section |
-| checkpoint | ` ```checkpoint <id> ` | One question with instant feedback. Never counts towards passing | Anywhere in a Section |
-| test | ` ```test <id> ` | One Final test question. All of them together form the Final test | One unbroken run |
+| scene | ` ```scene chat ` (or `terminal`, `flow`, `files`, `meter`) | A Scene that builds step by step as the reader scrolls | In a Section, at most one per Section. Never in the intro |
+| checkpoint | ` ```checkpoint <id> ` | One question with instant feedback. Never counts towards passing | Anywhere, usually right after the idea it checks |
+| test | ` ```test <id> ` | One Final test question. All of them together form the Final test | One unbroken run in a Section. Never in the intro |
 | callout | ` ```callout tip ` (or `watch-out`, `big-idea`) | A highlighted box | Anywhere |
 | try | ` ```try ` | A "Your turn" exercise, with copy buttons on its code | Anywhere |
 | site-story | ` ```site-story ` | The "How I used it building this site" box | Anywhere, usually near the end |
@@ -100,9 +113,39 @@ Special parts of a Lesson (goals, Scenes, questions, callouts and so on) are wri
 
 **Rules for every block:**
 
-- **The kind comes first,** then its argument if it has one, separated by a space.
-- **Ordinary code blocks stay code.** A fence with no first word, or with a real language (` ```ts `, ` ```bash `, ` ```text `), is shown as code, exactly as today.
-- **A near-miss is an error.** If the first word is close to a kind but not quite (`checkpiont`, `scnee`, `tset`), the build fails with "did you mean …?". These languages are exempt even though some look close: `ts`, `tsx`, `js`, `jsx`, `json`, `sh`, `bash`, `zsh`, `shell`, `text`, `txt`, `sql`, `diff`, `css`, `html`, `md`, `markdown`, `yaml`, `yml`, `env`, `ini`, `toml`, `mjs`, `cjs`, `py`, `python`, `console`. If a real language gets flagged, use a bare fence instead.
+- **The kind comes first,** then its argument if it has one, separated by a space. Nothing else goes on that line: ` ```checkpoint my-id extra ` is an error (`checkpoint "my-id": unexpected "extra"`).
+- **Typed blocks sit at the top level.** Start the fence at the very beginning of a line, outside any list, any `> ` quote and any other block. The page can only build a block it finds at the top level, so a typed fence anywhere else is an error rather than a block that quietly shows up as code:
+
+  ````markdown
+  1. Read the round.
+
+     ```checkpoint pick-one
+     …
+     ```
+  ````
+
+  fails with ``typed blocks must sit at the top level (found `checkpoint` inside a list)``. Close the list first, then start the block on its own. The same goes for a typed fence inside a `try`, `site-story`, `callout` or `sources` body: ordinary code blocks are fine there, typed ones aren't.
+- **Ordinary code blocks stay code.** A fence with no first word, or with a real language, is shown as code, exactly as today. Languages are matched in any case, so ` ```TS ` and ` ```Dockerfile ` are fine.
+- **A near-miss is an error.** If the first word is close to a kind but not quite (`checkpiont`, `scnee`, `tset`, `Goals`), the build fails with "did you mean …?".
+- **A bare word gets a hint.** Some words name part of a block rather than the block itself, so they fail with the block you probably meant:
+
+  | You wrote | The error says |
+  |---|---|
+  | ` ```tip `, ` ```watch-out `, ` ```big-idea ` | did you mean "callout tip"? (with your word) |
+  | ` ```chat `, ` ```terminal `, ` ```flow `, ` ```files `, ` ```meter ` | did you mean "scene chat"? (with your word) |
+  | ` ```story ` | did you mean "site-story"? |
+  | ` ```quiz `, ` ```question ` | did you mean "checkpoint <id>"? |
+
+- **Real languages are never near-misses,** even the short ones that look close to a kind (`text` is one letter from `test`; `ts`, `r` and `tree` are two from `try`). The full list, in any case:
+  - **Web and JavaScript:** `ts` `tsx` `js` `jsx` `mjs` `cjs` `json` `jsonc` `json5` `html` `css` `less` `scss` `sass` `vue` `svelte` `astro` `graphql` `gql` `http` `xml` `svg` `jest` `vitest`
+  - **Shells:** `sh` `bash` `zsh` `shell` `console` `ps1` `powershell` `bat` `cmd`
+  - **Plain text and output:** `text` `txt` `plaintext` `plain` `output` `log` `none` `tree` `diff`
+  - **Docs and data:** `md` `markdown` `tex` `latex` `csv` `tsv` `yaml` `yml` `toml` `ini` `env` `properties` `gitignore`
+  - **Databases:** `sql` `pgsql` `postgres` `psql` `prisma`
+  - **Other languages:** `py` `python` `rust` `rs` `rb` `ruby` `r` `go` `java` `kotlin` `kt` `swift` `c` `cpp` `h` `cs` `csharp` `php` `lua` `dart` `scala` `elixir` `ex` `exs` `hs` `haskell` `erl`
+  - **Build and infrastructure:** `dockerfile` `docker` `makefile` `make` `tf` `hcl` `nginx`
+
+  If a real language you need still gets flagged, use `text` or a bare fence, or add it to `LANGUAGES` in `src/lessons/blocks.ts` and to this list in the same change.
 - **Nesting code:** if a block contains a code block of its own (common in `try` and `site-story`), open and close the outer block with **four** backticks, and keep the inner one at three:
 
 `````markdown
@@ -126,7 +169,8 @@ Type this:
 ```
 ````
 
-- A Markdown list of **3–4 items**. Each item is inline Markdown, so `code` and **bold** work.
+- A Markdown list of **3–4 items**. Each item is one line of inline Markdown, so `code` and **bold** work.
+- **No nested lists.** Each goal shows as a single line, so a sub-list under a goal is an error ("goals items can't contain nested lists"). Fold the detail into the goal's sentence.
 - Write each goal as something the reader will be able to *do*, starting with a verb ("Start…", "Spot…", "Choose…").
 - **It must come before the first `## ` heading.** A goals block anywhere else is an error.
 - When a Visitor passes the Final test, each goal gets ticked off.
@@ -141,14 +185,17 @@ A Scene is a small picture on the stage beside the text (or pinned above it on a
 
 **Rules:**
 
+- **Scenes go in a Section, after a `## ` heading.** The intro is a single column of text with no stage beside it, so a Scene there is an error.
 - **Blank lines are ignored.** Use them freely for readability.
 - **Write a `title`.** It's optional, but the stage shows it as the Scene's heading, so it's worth having.
+- **Markdown or plain text?** Captions and chat messages are inline Markdown, so **bold**, `code` and links work. Everything else in a Scene is **plain text** and shows exactly as typed, asterisks and backticks included: the `title`, flow node labels, file paths, meter labels and terminal lines.
 - **These are errors:**
-  - an unknown setting
+  - an unknown setting, `title` or `zone` written twice, or two flow nodes with the same id
   - an item line that doesn't fit the kind's grammar
   - an item before the first `# ` caption
   - a Scene with no steps at all
   - a second Scene in the same Section
+  - a Scene in the intro
 - **Keep it short.** Aim for 3–6 steps, and say in each caption what just changed.
 
 #### chat
@@ -182,10 +229,14 @@ Commands and what they print.
 
 | Line | Meaning |
 |---|---|
+| `# caption` | Starts the next step (as in every Scene) |
 | `$ command` | A command, typed out on screen |
+| `\# text` | Output that starts with `#`. The backslash isn't shown |
 | any other non-empty line | Output |
 
-Terminal text is plain text, not Markdown: what you write is exactly what shows.
+Terminal text is plain text, not Markdown: what you write is exactly what shows. Spaces at the start of a line are kept.
+
+**Output that starts with `#`.** A line starting with `# ` always starts a new step, even in a terminal. To show output that begins with `# `, such as a comment in a config file, put a backslash in front: `\# DATABASE_URL is your Neon connection string` shows as `# DATABASE_URL is your Neon connection string`. A `#` with no space after it (`#!/bin/sh`) is already plain output.
 
 ````markdown
 ```scene terminal
@@ -209,8 +260,10 @@ A map of steps, with the reader's position lit up.
 | Line | Kind | Meaning |
 |---|---|---|
 | `node: <id> \| <label>` | setting | A step on the main path. `<id>` is a short name like `spec`; `<label>` is what shows. |
-| `node: <id> \| <label> \| side` | setting | A side step (a fork), drawn to the right of the node declared just before it. |
+| `node: <id> \| <label> \| side` | setting | A side step (a fork), drawn to the right of the node declared just before it. A main node must come before it, so a side node first in the list is an error. |
 | `at: <id>` | item | The reader is now at this node. It must be a declared node. |
+
+Labels are plain text: write `Grill it`, not `**Grill** it`.
 
 ````markdown
 ```scene flow
@@ -264,8 +317,8 @@ A gauge that fills up, usually the context window.
 
 | Line | Kind | Meaning |
 |---|---|---|
-| `zone: <0-100>` | setting | Where the Smart zone ends, as a percentage. Optional. |
-| `fill: <0-100>% \| <label>` | item | Fill the gauge to this percentage, with this label underneath. |
+| `zone: <0-100>` | setting | Where the Smart zone ends, as a percentage. Optional. `zone: 40` and `zone: 40%` mean the same. |
+| `fill: <0-100>% \| <label>` | item | Fill the gauge to this percentage, with this plain-text label underneath. The `%` is required, and decimals work: `fill: 62.5% \| After grilling`. |
 
 ````markdown
 ```scene meter
@@ -303,9 +356,32 @@ What's the best reply?
 
 **The grammar, in order:**
 
-1. **The prompt:** one or more lines of inline Markdown, joined with a space. It can't be empty.
-2. **3 or 4 options,** each starting `- [ ] ` (wrong) or `- [x] ` (right). **Exactly one** is `[x]`.
+1. **The prompt:** one paragraph of inline Markdown (**bold**, `code` and links work). It can run over several lines; they're joined with a space. It can't be empty.
+2. **3 or 4 options,** each starting `- [ ] ` (wrong) or `- [x] ` (right) **at the very beginning of the line**. **Exactly one** is right. `[X]` works as well as `[x]`.
 3. **Feedback under every option:** one or more lines starting with `> ` (indenting them is fine and reads better). Say *why* that option is right or wrong. Readers see the feedback for whatever they picked, so a wrong option's feedback is where most of the teaching happens.
+
+**The prompt is one paragraph, never a list.** It shows as a single run of text, so a list, a quote or a code block in it would be flattened into one long sentence. A prompt line that starts like one of these is an error ("prompts are one paragraph of inline text; put orderings inside the options"):
+
+- a bullet: `- `, `* ` or `+ `
+- a number: `1. ` (or `1) `)
+- a quote: `> `
+- a code fence: ` ``` ` or `~~~`
+
+For a "which order is right?" question, put each ordering in an option instead:
+
+````markdown
+```test sequence-main-flow
+Which order is right for a feature too big for one session?
+- [ ] Spec, grill, implement, review.
+  > You can't write a spec before you've made the decisions in it.
+- [x] Grill, spec, implement, review.
+  > Yes. Decisions first, then the spec, then code, then a review.
+- [ ] Grill, implement, spec, review.
+  > The spec is what the implementation follows, so it comes first.
+```
+````
+
+To quote a short transcript, keep it inline: `The agent says "Q1 Who is it for?" and you reply "skip it".`
 
 **These are errors:**
 
@@ -313,6 +389,9 @@ What's the best reply?
 - fewer than 3 or more than 4 options
 - an option with no `> ` feedback under it
 - an empty prompt
+- a prompt line that starts like a list, a quote or a code block
+- an indented option (`  - [x] …`): options must start at the beginning of the line
+- anything after the id on the first line (`checkpoint my-id extra`)
 
 **Question ids:**
 
@@ -344,7 +423,7 @@ What's the best reply?
 #### The Final test
 
 - **Every `test` fence in a Lesson together forms its Final test.** They must sit in one unbroken run, with only blank lines between them. Anything else between two `test` fences (a paragraph, a heading, another block) is an error.
-- **Put them under their own `## Final test` heading,** near the end.
+- **Put them under their own `## Final test` heading,** near the end. A `test` fence in the intro, before the first `## `, is an error.
 - **A Visitor passes with 80% or more.** Their latest Attempt counts.
 - **Size:** `start-here` has 5–6 questions, `main-flow` 8–15, and every other Lesson 8–10.
 - **The mix,** by id prefix (every Lesson except `start-here`):
@@ -429,11 +508,21 @@ Error messages always name the file, the block kind and the id when there is one
 grilling.md: checkpoint "who-owns-details": needs exactly one [x] option
 ```
 
-Find the block, fix it, and run the command again.
+Find the block, fix it, and run the command again. Some messages you might meet, and the fix:
+
+| The message says | What to do |
+|---|---|
+| `"checkpiont" is not a block kind: did you mean "checkpoint"?` | Fix the spelling of the kind. |
+| `"tip" is not a block kind: did you mean "callout tip"?` | Write the kind first, then its argument. |
+| ``typed blocks must sit at the top level (found `checkpoint` inside a list)`` | Move the fence out of the list, quote or block it's in, to the start of a line. |
+| `checkpoint "my-id": prompts are one paragraph of inline text; …` | Turn the list in the prompt into options, or write it as a sentence. |
+| `checkpoint "my-id": "  - [x] A": options must start at the beginning of the line …` | Remove the spaces in front of the option. |
+| `scene chat: Scenes go in a Section (after a ## heading), not in the intro` | Move the Scene below the first `## ` heading. |
+| `header key "title" is set twice` | Delete one of the two lines. |
 
 ## 6. The course lint
 
-`src/lessons/course.test.ts` holds every Lesson to the course's quality bar. Run it with:
+`src/lessons/course.test.ts` holds every Lesson to the course's quality bar, with a few of its rules (and the lists of known slash names) in `src/lessons/course-lint.ts`. Run it with:
 
 ```bash
 npm run test:content
@@ -457,21 +546,27 @@ It needs no database and no `.env` file, so it runs anywhere, in a fresh clone, 
 | Rule | Limit |
 |---|---|
 | `part` | present, 1–4 |
-| `goals` | one block, 3–4 items |
+| `goals` | exactly one block, 3–4 items |
 | Scenes | at least 1 |
 | Checkpoints | 3–5 |
 | Final test size | `start-here` 5–6, `main-flow` 8–15, every other Lesson 8–10 |
 | Final test mix (not `start-here`) | at least 3 `scenario-`, 2 `spot-` and 1 `sequence-` ids |
 | `site-story` | required for the 12 original slugs, optional for new ones |
-| `sources` | at least 3 list items, each with a link |
+| `sources` | exactly one block, at least 3 list items, each with a link |
 | Word count | 1,800–3,000 (`start-here`: 900–1,400) |
-| "Lesson" + number | never in the body |
+| "Lesson" + number | never in the body (the intro and the Sections; the header isn't checked) |
 | `/learn/<slug>` links | every one points at an existing Lesson |
-| Backticked `/names` | every one is a known Skill or Built-in command |
+| Backticked `/names` | every one is a known Skill or Built-in command; a full name is `/mattpocock-skills:<Skill>` |
 
-**What counts as a word:** the plain words of the prose, plus the bodies of `callout`, `try` and `site-story` blocks. Headings, code blocks, and the goals, Scenes, questions and sources don't count. The range keeps a Lesson deep enough to teach and short enough to finish in one sitting (about 8–14 minutes).
+**What counts as a word:** the plain words of the prose, plus the bodies of `callout`, `try` and `site-story` blocks. These don't count:
 
-**Known slash names.** A backticked `/name` must be one of these.
+- headings
+- code: code blocks **and inline `code`**, so a sentence like "Run `npm run test:content` now" counts 2 words, not 3
+- the goals, Scenes, questions and sources
+
+The range keeps a Lesson deep enough to teach and short enough to finish in one sitting (about 8–14 minutes). Inline code is left out on purpose, the same as code blocks: the range measures explanation, not commands and file names. (The "N min" reading time on the page is a rougher count that does include code.)
+
+**Known slash names.** A backticked `/name` must be one of these. A Skill (but not a Built-in command) may also be written with its plugin in front, as in `/mattpocock-skills:grilling`; any other `/plugin:name` is an error.
 
 The Skills (mattpocock-skills 1.3.1):
 
@@ -479,9 +574,9 @@ The Skills (mattpocock-skills 1.3.1):
 
 The Built-in commands:
 
-`/clear` `/compact` `/context` `/model` `/effort` `/fast` `/rewind` `/init` `/help` `/config` `/permissions` `/plan` `/resume` `/agents` `/mcp` `/hooks` `/memory` `/cost` `/usage` `/status` `/doctor` `/login` `/logout` `/plugin` `/skills` `/ultrareview` `/review` `/add-dir` `/exit` `/export` `/terminal-setup` `/vim`
+`/clear` `/compact` `/context` `/model` `/effort` `/fast` `/rewind` `/init` `/help` `/config` `/permissions` `/plan` `/resume` `/agents` `/mcp` `/hooks` `/memory` `/cost` `/usage` `/status` `/doctor` `/login` `/logout` `/plugin` `/skills` `/ultrareview` `/review` `/add-dir` `/exit` `/export` `/terminal-setup` `/vim` `/btw` `/reload-skills` `/reload-plugins` `/workflows` `/autocompact` `/simplify` `/security-review` `/loop` `/schedule` `/statusline`
 
-If you need a name that isn't here, check it's real first, then add it to the list in `course.test.ts` and to this guide in the same change.
+If you need a name that isn't here, check it's real first, then add it to `SKILLS` or `BUILT_IN_COMMANDS` in `src/lessons/course-lint.ts` and to this guide in the same change.
 
 ## A complete example
 
@@ -715,7 +810,8 @@ Which order is right for a feature too big for one session?
 
 - **Header.** `order: 20` and `part: 4` are placeholders. Use the next free `order`, name the file to match (`20-grilling-an-idea.md`), and pick the Part the Lesson really belongs to. The slug must be new, and it's permanent from the moment it's published.
 - **Intro.** The `goals` block and the opening paragraphs sit before the first `## `. The `==unmade decision==` highlight sweeps in as the reader reaches it, and the link uses `/learn/<slug>`, never a Lesson number.
-- **One Scene per Section.** This example has five Sections with one Scene each, one of every kind. A real Lesson usually has 1–3 Scenes, and many Sections have none. A Section without a Scene shows its big number on the stage instead.
+- **One Scene per Section, and none in the intro.** This example has five Sections with one Scene each, one of every kind. A real Lesson usually has 1–3 Scenes, and many Sections have none. A Section without a Scene shows its big number on the stage instead.
+- **Every typed block starts at the beginning of a line,** never inside a list or a `> ` quote.
 - **Checkpoints** sit right after the idea they check. This example has 3, the minimum.
 - **Callouts:** one `tip`, one `watch-out` and one `big-idea`.
 - **`try` and `site-story`** each contain a code block, so they open and close with four backticks.
