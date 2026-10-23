@@ -18,8 +18,28 @@
   --on-dark: #ffffff;
   --on-dark-muted: #b9c2dc;
   --error: #b00020;
+  /* Right answers and added files. At least 4.5:1 on white and on --bg-soft. */
+  --good: #0f7a3d;
+  --good-soft: #e4f3ea;
+  /* Tints for cards and states. Amber is only ever a background behind ink
+     text, never text on white. */
+  --blue-soft: #edf1fd;
+  --amber-soft: #fff3d4;
+  --warm: #faf6ee;
+  --line-strong: #c4cad8;
+  /* Links on navy: light enough for 4.5:1. */
+  --link-on-dark: #a9bcff;
+  /* Code on navy, the Site story's label, and the terminal Scene's window. */
+  --code-on-dark: #e3e8f8;
+  --warm-label: #7a5000;
+  --term-bg: #0b1230;
+  --term-bar: #141d45;
+  --term-text: #d6ddf5;
+  --term-output: #aab4d4;
+  --term-dot-red: #ff6b5f;
+  --term-dot-green: #3fbf6f;
 
-  /* Type. Inter for reading, Inter Tight for the large, light headings. */
+  /* Type. Inter for reading, Inter Tight for the bold headings. */
   --font-body: var(--font-inter), system-ui, sans-serif;
   --font-heading: var(--font-display), var(--font-inter), system-ui, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, monospace;
@@ -41,11 +61,16 @@
   --gutter: clamp(1rem, 4vw, 2.5rem);
   --page-max: 1240px;
   --read-max: 720px;
+  /* A Lesson page is wider, to fit a stage beside the text. */
+  --lesson-max: 1440px;
+  --text-col: 44rem;
 
   /* Shape. Photos and cards stay square; buttons are pills. */
   --radius-pill: 999px;
   --shadow-soft: 0 6px 24px rgb(10 20 51 / 0.1), 0 1px 2px rgb(10 20 51 / 0.06);
   --header-h: 4.5rem;
+  /* The Lesson section bar's height, under the header (ticket 04 sets it). */
+  --lesson-bar-h: 0rem;
 }
 
 @media (max-width: 560px) {
@@ -79,14 +104,16 @@ body {
   color: var(--ink);
 }
 
+/* Bold type, site-wide: headings at 750–800, tightly tracked. Weight never
+   animates (it changes text width, so it would shift the layout). */
 h1,
 h2,
 h3 {
   font-family: var(--font-heading);
-  font-weight: 300;
+  font-weight: 800;
   color: var(--ink);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
@@ -102,8 +129,13 @@ h2 {
 
 h3 {
   font-size: var(--text-lg);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+strong,
+b {
+  font-weight: 700;
 }
 
 a {
@@ -163,7 +195,7 @@ button {
   font: inherit;
 }
 
-input,
+input:where(:not([type="radio"], [type="checkbox"])),
 textarea {
   width: 100%;
   border: 1px solid var(--line);
@@ -240,6 +272,19 @@ button:hover,
 
 .muted {
   color: var(--muted);
+}
+
+/* Read by screen readers, never seen. */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Small uppercase label above a heading, e.g. "Lesson 3". */
@@ -393,10 +438,22 @@ button:hover,
 .lesson-card-title {
   font-family: var(--font-heading);
   font-size: var(--display-3);
-  font-weight: 300;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
   text-wrap: balance;
+}
+
+/* The "passed" tick's place in the photo's corner, always kept so the card
+   never shifts when it's filled. Empty, it shows nothing. */
+.lesson-card-tick {
+  position: absolute;
+  top: var(--space-s);
+  right: var(--space-s);
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  pointer-events: none;
 }
 
 .lesson-card:hover .lesson-card-title {
@@ -774,6 +831,39 @@ html:not([data-header]):has([data-hero]) .site-header {
   }
 }
 
+/* Once every Lesson has a Part, the grid splits under a heading per Part. */
+.part-group {
+  margin-top: var(--space-2xl);
+}
+
+.part-group:first-of-type {
+  margin-top: var(--space-xl);
+}
+
+.part-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2xs) var(--space-s);
+  margin: 0;
+  padding-bottom: var(--space-s);
+  border-bottom: 2px solid var(--ink);
+  font-size: var(--display-3);
+}
+
+.part-number {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.part-group .lesson-grid {
+  margin-top: var(--space-l);
+}
+
 @media (max-width: 640px) {
   .lesson-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -801,13 +891,30 @@ html:not([data-header]):has([data-hero]) .site-header {
   color: var(--amber);
   font-family: var(--font-heading);
   font-size: var(--display-2);
-  font-weight: 300;
+  font-weight: 800;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
 .flow-step h3 {
   margin: var(--space-m) 0 var(--space-xs);
+}
+
+/* A step whose Lesson exists links to it. */
+.flow-step-link {
+  text-decoration: underline;
+  text-decoration-color: rgb(255 176 32 / 0.55);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.flow-step-link:hover {
+  text-decoration-color: var(--amber);
+}
+
+.flow-step-link::after {
+  content: " →";
+  content: " →" / "";
 }
 
 .flow-step p {
@@ -865,10 +972,22 @@ html:not([data-header]):has([data-hero]) .site-header {
   }
 }
 
-/* Lesson page: the photo band, then content on the left and the Discussion
-   panel on the right. */
+/* ==========================================================================
+   Lesson page, top to bottom: the photo band, the intro (goals and opening
+   prose), one block per Section (text beside a stage from 1080px), the
+   Final test band, the sources, the Discussion band and Previous/Next.
+   The base style of everything here is its final state: the scroll engine
+   (ticket 04) and the questions (ticket 05) only ever start from an earlier
+   state and come back to this.
+   ========================================================================== */
+
 .lesson-hero {
   min-height: clamp(24rem, 64vh, 40rem);
+}
+
+/* The title lines up with the text column below it. */
+.lesson-hero .photo-band-inner {
+  max-width: calc(var(--text-col) + 2 * var(--gutter));
 }
 
 .lesson-hero h1 {
@@ -876,25 +995,370 @@ html:not([data-header]):has([data-hero]) .site-header {
   margin: var(--space-s) 0 var(--space-m);
 }
 
-.lesson-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: var(--space-xl);
-  max-width: var(--page-max);
-  margin: 0 auto;
-  padding: var(--space-xl) var(--gutter) var(--space-2xl);
+/* "Part 2 · The main flow" in amber, then "Lesson 1 · 12 min read". */
+.lesson-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs) var(--space-l);
+  margin: 0;
 }
 
+.lesson-eyebrow span + span {
+  color: var(--on-dark);
+}
+
+/* The wrapper for everything under the photo band. Ticket 04 changes
+   --lesson-bg with the Section in view (its tone). It clips sideways
+   overflow without becoming a scroll container (overflow: clip, never
+   hidden), so sticky stages and view() timelines inside still work. */
+.lesson {
+  --lesson-bg: var(--bg);
+  /* Where a pinned stage sits: under the header and the section bar. */
+  --stage-top: calc(var(--header-h) + var(--lesson-bar-h) + var(--space-l));
+  background: var(--lesson-bg);
+  overflow-x: clip;
+}
+
+/* Every part of the page is one column at text width, centred. From 1080px
+   they widen to the Lesson's full width and keep their text in the left
+   column, so every left edge lines up. */
+.lesson-intro,
+.lesson-section,
+.lesson-after,
+.final-test-inner,
+.discussion,
+.prev-next {
+  width: 100%;
+  max-width: calc(var(--text-col) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* The intro: the opening line reads as a lead, then the goals card. */
+.lesson-intro {
+  display: grid;
+  gap: var(--space-xl);
+  padding-block: var(--space-2xl) var(--space-m);
+}
+
+.lesson-intro > .prose {
+  font-size: var(--text-lg);
+  color: var(--ink);
+}
+
+/* One Section. Each block is a grid item, spaced by the grid's gap. */
+.lesson-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  row-gap: var(--space-l);
+  padding-block: var(--space-xl);
+}
+
+/* The Section heading: its number ("02") on a short rule, then the title. */
+.section-title {
+  margin: 0;
+  font-size: var(--display-2);
+}
+
+.section-num {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-s);
+  color: var(--blue);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+.section-num::after {
+  content: "";
+  width: 2.5rem;
+  height: 2px;
+  background: currentColor;
+}
+
+/* Stages. On phones a Section without a Scene has no stage: its numeral is
+   hidden, and a big-idea callout simply sits in the text. */
+.stage--numeral,
+.stage-numeral {
+  display: none;
+}
+
+/* A Scene: its stage, then its captions. Until the stepper runs (ticket 04)
+   the Scene shows its final state, every item at once, so its stage takes
+   its full height and scrolls with the page: a pinned, fixed-height stage
+   would only ever show the start of the picture.
+
+   With the stepper on, the stage pins under the header across its own
+   captions only, then scrolls away with them. At min(34svh, 18rem) it leaves
+   at least 55% of a phone's screen for text. */
+.scene-run {
+  display: grid;
+  row-gap: var(--space-m);
+}
+
+.scene-run > .stage--scene:has([data-stepper="on"]) {
+  position: sticky;
+  top: calc(var(--header-h) + var(--lesson-bar-h));
+  z-index: 2;
+  height: min(34svh, 18rem);
+  margin-inline: calc(-1 * var(--gutter));
+  padding: var(--space-xs) var(--gutter);
+  background: var(--lesson-bg);
+}
+
+/* The captions: a numbered card per step. */
+.scene-steps {
+  display: grid;
+  gap: var(--space-m);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scene-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-s);
+  align-items: start;
+  padding: var(--space-m) var(--space-l) var(--space-m) var(--space-m);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--blue);
+  box-shadow: var(--shadow-soft);
+}
+
+.scene-step-num {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: 0.05rem;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--on-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.scene-step p {
+  margin: 0;
+  color: var(--ink);
+}
+
+/* From 1080px: text on the left, the stage on the right. Every text block is
+   a grid item in column 1, one row each (--rows counts them; the Scene's
+   wrapper steps aside so its captions are one of them). The stage spans all
+   of those rows plus a last flexible row, which grows only if the stage is
+   taller than the text. It's sticky within that area, so it pins while its
+   own Section scrolls by and the next Section pushes it away. */
+@media (min-width: 1080px) {
+  .lesson-hero .photo-band-inner {
+    max-width: var(--lesson-max);
+  }
+
+  /* The header widens with the Lesson, so the brand lines up with the
+     title. A visited Lesson that Next keeps mounted but hidden carries an
+     inline display: none, so it never widens another page's header. */
+  html:has(.lesson:not([style*="display"])) .site-header-inner {
+    max-width: var(--lesson-max);
+  }
+
+  .lesson-intro,
+  .lesson-section,
+  .lesson-after,
+  .final-test-inner,
+  .discussion,
+  .prev-next {
+    max-width: var(--lesson-max);
+  }
+
+  .lesson-intro > *,
+  .lesson-after > *,
+  .final-test-inner > *,
+  .discussion > * {
+    max-width: var(--text-col);
+  }
+
+  .lesson-section {
+    grid-template-columns: minmax(0, var(--text-col)) minmax(20rem, 1fr);
+    grid-template-rows: repeat(var(--rows), auto) 1fr;
+    column-gap: clamp(2.5rem, 5vw, var(--space-2xl));
+    padding-block: var(--space-2xl);
+  }
+
+  .lesson-section > *,
+  .scene-run > * {
+    grid-column: 1;
+  }
+
+  .scene-run {
+    display: contents;
+  }
+
+  .lesson-section .stage {
+    position: sticky;
+    top: var(--stage-top);
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: start;
+  }
+
+  .stage--numeral,
+  .stage--idea,
+  .stage-numeral {
+    display: block;
+  }
+
+  /* Beside its captions, a Scene's stage pins only once the stepper runs;
+     until then it sits at the top of its Section at full height. */
+  .scene-run > .stage--scene {
+    position: static;
+  }
+
+  .scene-run > .stage--scene:has([data-stepper="on"]) {
+    position: sticky;
+    z-index: auto;
+    height: min(calc(100svh - var(--stage-top) - var(--space-l)), 50rem);
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+
+  /* A Section with no Scene: its number, huge and in outline. */
+  .stage-numeral {
+    color: transparent;
+    font-family: var(--font-heading);
+    font-size: clamp(8rem, 13vw, 15rem);
+    font-weight: 800;
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    font-variant-numeric: tabular-nums;
+    -webkit-text-stroke: 2px var(--line-strong);
+    user-select: none;
+  }
+
+  .stage--idea .callout {
+    margin-top: var(--space-xl);
+  }
+
+  /* Captions get room to breathe beside the stage. */
+  .scene-steps {
+    gap: var(--space-xl);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Prose: the running text of a Lesson, and the text inside its boxes.
+   -------------------------------------------------------------------------- */
 .prose {
   overflow-wrap: anywhere;
-}
-.prose h2 {
-  font-size: var(--display-3);
-  margin: var(--space-xl) 0 var(--space-s);
 }
 
 .prose > :first-child {
   margin-top: 0;
+}
+
+.prose > :last-child {
+  margin-bottom: 0;
+}
+
+.prose :is(p, ul, ol, blockquote, pre, table) {
+  margin: 0 0 1.1em;
+}
+
+.prose h3 {
+  margin: 1.6em 0 0.5em;
+  font-size: 1.35rem;
+}
+
+.prose :is(ul, ol) {
+  padding-left: 1.4em;
+}
+
+.prose li {
+  margin: 0.35em 0;
+  padding-left: 0.2em;
+}
+
+.prose li > :is(ul, ol) {
+  margin: 0.35em 0 0;
+}
+
+.prose li::marker {
+  color: var(--blue);
+}
+
+.prose ol > li::marker {
+  font-weight: 700;
+}
+
+/* A checklist ("- [ ] …"): an empty square instead of a bullet. */
+.prose li:has(> .task-box) {
+  list-style: none;
+}
+
+.prose li > .task-box {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 1rem;
+  height: 1rem;
+  margin: 0 0.6em 0 -1.5em;
+  vertical-align: -0.12em;
+  border: 2px solid var(--blue);
+  background: var(--bg);
+}
+
+.prose li > .task-box[data-checked] {
+  background: var(--blue);
+}
+
+.prose blockquote {
+  margin-left: 0;
+  padding: 0.15em 0 0.15em 1.2em;
+  border-left: 4px solid var(--amber);
+  color: var(--ink);
+  font-size: 1.08rem;
+}
+
+.prose strong {
+  color: var(--ink);
+}
+
+.prose a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.prose a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ==key phrase==: a marker-pen stroke behind ink text. Ticket 04 sweeps it
+   in by growing the background's width from 0 to 100%. */
+.prose mark,
+.scene-step mark {
+  padding: 0 0.12em;
+  margin: 0 -0.04em;
+  color: var(--ink);
+  background-color: transparent;
+  background-image: linear-gradient(
+    100deg,
+    rgb(255 176 32 / 0.15) 0,
+    rgb(255 176 32 / 0.55) 0.4em,
+    rgb(255 176 32 / 0.45) calc(100% - 0.4em),
+    rgb(255 176 32 / 0.2) 100%
+  );
+  background-repeat: no-repeat;
+  background-position: 0 70%;
+  background-size: 100% 72%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* A wide table scrolls on its own instead of pushing the page sideways, so
@@ -903,64 +1367,1158 @@ html:not([data-header]):has([data-hero]) .site-header {
   display: block;
   max-width: 100%;
   overflow-x: auto;
+  font-size: 0.93rem;
 }
 
 .prose :is(th, td) {
   overflow-wrap: normal;
 }
 
-/* Previous/Next: two photo cards side by side, Next always on the right. */
+.prose th {
+  background: rgb(13 21 38 / 0.05);
+  color: var(--ink);
+}
+
+.prose tr:nth-child(even) td {
+  background: rgb(13 21 38 / 0.02);
+}
+
+/* Code in a Lesson: navy panels with an amber edge, and a soft blue tint for
+   code inside a sentence. Both read on the paper and soft tones alike. */
+.lesson pre {
+  padding: var(--space-m) var(--space-l);
+  background: var(--navy);
+  border-left: 3px solid var(--amber);
+  color: var(--code-on-dark);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.lesson pre code {
+  font-size: inherit;
+}
+
+.lesson :not(pre) > code {
+  padding: 0.08em 0.3em;
+  background: rgb(30 63 204 / 0.08);
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------------------
+   Boxes: goals, callouts, "Your turn", the Site story and sources. Each
+   keeps its own surface, so it reads the same on any tone.
+   -------------------------------------------------------------------------- */
+
+/* The label at the top of a box: an icon and a word, never colour alone. */
+.block-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 var(--space-xs);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.icon {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* Goals: "By the end of this Lesson", with an empty circle per goal that
+   ticket 05 ticks once the Final test is passed. */
+.goals {
+  padding: var(--space-l) var(--space-l) var(--space-l);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
+  box-shadow: var(--shadow-soft);
+}
+
+.goals .block-label {
+  color: var(--blue);
+}
+
+.goals-title {
+  margin: 0 0 var(--space-m);
+  font-size: var(--display-3);
+}
+
+.goals-list {
+  display: grid;
+  gap: var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.goal {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: var(--space-s);
+  align-items: start;
+  color: var(--ink);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.goal-mark {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.05rem;
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+.goal-tick {
+  stroke: var(--good);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* Callouts. */
+.callout {
+  padding: var(--space-m) var(--space-l) var(--space-l);
+}
+
+.callout--tip {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+}
+
+.callout--tip .block-label {
+  color: var(--blue);
+}
+
+.callout--watch-out {
+  background: var(--amber-soft);
+  border-left: 4px solid var(--amber);
+  color: var(--ink);
+}
+
+.callout--watch-out .block-label {
+  color: var(--ink);
+}
+
+.callout--big-idea {
+  padding: var(--space-l) var(--space-xl) var(--space-xl);
+  background: var(--navy);
+  color: var(--on-dark);
+}
+
+.callout--big-idea .block-label {
+  color: var(--amber);
+}
+
+.callout--big-idea .callout-body {
+  font-family: var(--font-heading);
+  font-size: var(--display-3);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.callout--big-idea :is(strong, em) {
+  color: var(--amber);
+}
+
+.callout--big-idea a {
+  color: var(--link-on-dark);
+}
+
+.callout--big-idea :not(pre) > code {
+  background: var(--navy-raised);
+  color: var(--on-dark);
+}
+
+/* "Your turn": a dashed blue box; each code block gets a Copy button. */
+.try {
+  padding: var(--space-l);
+  background: var(--bg);
+  border: 2px dashed var(--blue);
+}
+
+.try .block-label {
+  color: var(--blue);
+}
+
+/* The HTML between code blocks keeps its own spacing, as if unwrapped. */
+.html-part {
+  display: contents;
+}
+
+.code-block {
+  position: relative;
+  margin: 0 0 1.1em;
+}
+
+/* Commands to copy wrap instead of scrolling, so no line ever runs under
+   the Copy button. */
+.code-block pre {
+  margin: 0;
+  padding-right: 6.5rem;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.try-body > :last-child,
+.try-body > :last-child > :last-child {
+  margin-bottom: 0;
+}
+
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  gap: 0.35em;
+  padding: 0.35em 0.8em;
+  border-color: rgb(255 255 255 / 0.3);
+  background: var(--navy-raised);
+  color: var(--on-dark);
+  font-size: 0.78rem;
+}
+
+.copy-button:hover {
+  border-color: var(--on-dark);
+  background: var(--on-dark);
+  color: var(--ink);
+}
+
+.copy-button[data-status="copied"] {
+  border-color: var(--good);
+  background: var(--good);
+  color: var(--on-dark);
+}
+
+.copy-button .icon {
+  width: 1em;
+  height: 1em;
+}
+
+/* The Site story: the author's own experience, set apart from the teaching
+   on a warm card with an amber rule. */
+.site-story {
+  padding: var(--space-l) var(--space-l) var(--space-l) var(--space-xl);
+  background: var(--warm);
+  border-left: 4px solid var(--amber);
+}
+
+.site-story .block-label {
+  color: var(--warm-label);
+}
+
+.site-story-body {
+  color: var(--text);
+}
+
+.site-story pre {
+  white-space: pre-wrap;
+}
+
+.site-story :is(th, td) {
+  background: var(--bg);
+}
+
+/* Sources: a compact list in small type. No motion. */
+.sources {
+  padding-top: var(--space-m);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.sources .block-label {
+  color: var(--muted);
+}
+
+.sources-list :is(ul, ol) {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.1em;
+}
+
+.sources-list p {
+  margin: 0;
+}
+
+.lesson-after {
+  padding-block: var(--space-xl) var(--space-2xl);
+}
+
+/* --------------------------------------------------------------------------
+   Scenes: a figure on the stage with its title bar, then a frame. Without
+   the stepper every item shows (the final state) and the frame grows to fit
+   them. Once the stepper pins the stage at a fixed height, a frame that
+   overflows scrolls, until ticket 04 shifts the content instead.
+   -------------------------------------------------------------------------- */
+.scene {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+  overflow: clip;
+}
+
+.scene-title {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.scene-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-m);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* chat: your messages on the right in blue, the agent's on the left. */
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chat-msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  max-width: 92%;
+}
+
+.chat-msg--you {
+  flex-direction: row-reverse;
+  align-self: flex-end;
+}
+
+.chat-msg[data-first]:not(:first-child) {
+  margin-top: 0.35rem;
+}
+
+.chat-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.chat-msg--agent .chat-avatar {
+  background: var(--navy);
+  color: var(--amber);
+}
+
+.chat-msg--you .chat-avatar {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.chat-avatar .icon {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+/* Only the first message of a run shows who's talking. */
+.chat-msg:not([data-first]) .chat-avatar {
+  visibility: hidden;
+}
+
+.chat-bubble {
+  margin: 0;
+  padding: 0.55rem 0.85rem;
+  border-radius: 1.1rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.chat-msg--agent .chat-bubble {
+  background: var(--bg-soft);
+  border-bottom-left-radius: 0.3rem;
+  color: var(--ink);
+}
+
+.chat-msg--you .chat-bubble {
+  background: var(--blue);
+  border-bottom-right-radius: 0.3rem;
+  color: var(--on-dark);
+}
+
+.chat-msg--you .chat-bubble :not(pre) > code {
+  background: rgb(255 255 255 / 0.18);
+  color: var(--on-dark);
+}
+
+.chat-msg--you .chat-bubble strong {
+  color: inherit;
+}
+
+/* The newest message wears a 2px blue ring. */
+.chat-msg[data-new] .chat-bubble {
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--blue);
+}
+
+/* terminal: a navy window, commands after an amber prompt, output below. */
+.scene--terminal {
+  background: var(--term-bg);
+  border-color: var(--term-bg);
+  color: var(--term-text);
+}
+
+.scene--terminal .scene-title {
+  background: var(--term-bar);
+  border-bottom-color: rgb(255 255 255 / 0.08);
+  color: var(--on-dark-muted);
+}
+
+.scene-dots {
+  display: inline-flex;
+  gap: 0.35rem;
+  margin-right: 0.25rem;
+}
+
+.scene-dots span {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--term-dot-red);
+}
+
+.scene-dots span:nth-child(2) {
+  background: var(--amber);
+}
+
+.scene-dots span:nth-child(3) {
+  background: var(--term-dot-green);
+}
+
+.scene--terminal .scene-frame {
+  padding: var(--space-m) var(--space-l);
+}
+
+.term-screen {
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.term-line {
+  display: block;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.term-cmd {
+  display: flex;
+  gap: 0.7ch;
+  color: var(--on-dark);
+  font-weight: 600;
+}
+
+.term-cmd:not(:first-child) {
+  margin-top: 0.75rem;
+}
+
+.term-prompt {
+  flex: none;
+  color: var(--amber);
+}
+
+.term-line :is(kbd, samp),
+samp.term-line {
+  font: inherit;
+}
+
+.term-out {
+  color: var(--term-output);
+}
+
+/* A block cursor after the newest command. It doesn't blink. */
+.term-cursor {
+  display: none;
+  flex: none;
+  align-self: center;
+  width: 0.55em;
+  height: 1.15em;
+  background: var(--amber);
+}
+
+.term-cmd[data-cursor] .term-cursor {
+  display: inline-block;
+}
+
+/* flow: nodes stacked top to bottom, joined by edges. A side node hangs to
+   the right of the node before it, on a dashed branch. Reached nodes are
+   ticked, the current one is solid blue, the rest are outlines. */
+/* Centred with auto margins, which only take up spare room: when the
+   picture is taller than its frame it overflows downwards, where the frame
+   can scroll to it, never off the top. */
+.scene--flow .scene-frame,
+.scene--meter .scene-frame {
+  display: grid;
+}
+
+.flow-map {
+  width: 100%;
+  max-width: 24rem;
+  margin: auto;
+  padding: 0;
+  list-style: none;
+}
+
+.flow-map--branched {
+  max-width: 36rem;
+}
+
+.flow-stop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.flow-map--branched .flow-stop {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-areas:
+    "edge ."
+    "node side";
+  column-gap: 1.5rem;
+}
+
+.flow-map--branched .flow-stop > .flow-edge {
+  grid-area: edge;
+}
+
+.flow-map--branched .flow-stop > .flow-node {
+  grid-area: node;
+}
+
+.flow-sides {
+  display: grid;
+  grid-area: side;
+  align-self: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow-side {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  align-items: center;
+  margin-left: -1.5rem;
+}
+
+.flow-edge {
+  display: block;
+  justify-self: center;
+  width: 12px;
+  height: 1.5rem;
+}
+
+.flow-edge--side {
+  justify-self: stretch;
+  width: auto;
+  height: 12px;
+}
+
+.flow-edge svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.flow-edge line {
+  stroke: var(--line-strong);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.flow-edge[data-drawn] line {
+  stroke: var(--blue);
+}
+
+/* The branch is dashed (its dashes are in path lengths: pathLength="1"). */
+.flow-edge--side line {
+  stroke-dasharray: 0.14 0.1;
+}
+
+.flow-node {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--bg);
+  border: 2px solid var(--line-strong);
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.flow-node--side {
+  border-style: dashed;
+  font-size: 0.84rem;
+}
+
+.flow-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 2px solid var(--line-strong);
+  border-radius: 50%;
+}
+
+.flow-mark .icon {
+  width: 0.8rem;
+  height: 0.8rem;
+  stroke-width: 3;
+  opacity: 0;
+}
+
+.flow-node[data-state="done"] {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+  color: var(--ink);
+}
+
+.flow-node[data-state="done"] .flow-mark {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--on-dark);
+}
+
+.flow-node[data-state="done"] .flow-mark .icon {
+  opacity: 1;
+}
+
+.flow-node[data-state="current"] {
+  background: var(--blue);
+  border-color: var(--blue);
+  box-shadow: 0 10px 28px rgb(30 63 204 / 0.32);
+  color: var(--on-dark);
+  transform: scale(1.04);
+}
+
+.flow-node[data-state="current"] .flow-mark {
+  border-color: var(--on-dark);
+  background: radial-gradient(circle, var(--on-dark) 0 32%, transparent 36%);
+}
+
+/* files: a tree of rows; green for added, amber behind ink for changed. */
+.file-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: 0.84rem;
+}
+
+.file-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
+}
+
+.file-row[data-change="added"] {
+  border-left-color: var(--good);
+}
+
+.file-row[data-change="changed"] {
+  background: var(--amber-soft);
+  border-left-color: var(--amber);
+}
+
+.file-icon {
+  color: var(--muted);
+}
+
+.file-path {
+  overflow-wrap: anywhere;
+}
+
+.file-dir {
+  color: var(--muted);
+}
+
+.file-name {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.file-badge {
+  padding: 0.12rem 0.45rem;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.file-badge--added {
+  background: var(--good-soft);
+  color: var(--good);
+}
+
+.file-badge--changed {
+  background: var(--amber);
+  color: var(--ink);
+}
+
+.file-row[data-change="added"] .file-badge--changed,
+.file-row[data-change="changed"] .file-badge--added {
+  display: none;
+}
+
+/* meter: a horizontal gauge. Earlier readings leave a notch; past the zone
+   marker the fill turns amber and a "Dumb zone" tag appears. */
+.meter {
+  display: grid;
+  gap: var(--space-l);
+  margin-block: auto;
+}
+
+.meter-track {
+  position: relative;
+  padding-top: 1.6rem;
+}
+
+.meter-region {
+  position: absolute;
+  top: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.meter-region--smart {
+  left: 0;
+  width: calc(var(--zone) * 100%);
+  color: var(--good);
+}
+
+.meter-region--dumb {
+  display: none;
+  left: calc(var(--zone) * 100% + 0.5rem);
+  padding: 0.1rem 0.4rem;
+  background: var(--amber);
+  color: var(--ink);
+}
+
+.scene[data-zone="dumb"] .meter-region--dumb {
+  display: block;
+}
+
+.meter-gauge {
+  position: relative;
+  height: 2.75rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--line-strong);
+  overflow: clip;
+}
+
+.meter-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--blue);
+  transform: scaleX(var(--fill));
+  transform-origin: left center;
+}
+
+.scene[data-zone="dumb"] .meter-fill {
+  background: var(--amber);
+}
+
+.meter-notch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--at) * 100%);
+  width: 2px;
+  margin-left: -1px;
+  background: rgb(13 21 38 / 0.35);
+}
+
+.meter-notch[data-current] {
+  display: none;
+}
+
+.meter-zone {
+  position: absolute;
+  top: 1.2rem;
+  bottom: -0.4rem;
+  left: calc(var(--zone) * 100%);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ink);
+}
+
+.meter-readings {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.meter-reading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.meter-value {
+  min-width: 3.2ch;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.meter-reading[data-current] {
+  margin-top: 0.35rem;
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.meter-reading[data-current] .meter-value {
+  font-family: var(--font-heading);
+  font-size: var(--display-3);
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Questions: Checkpoints in the text column and the Final test's cards.
+   Each is a fieldset of native radios styled as cards. Ticket 05 adds the
+   checked, right/wrong and crowd states.
+   -------------------------------------------------------------------------- */
+.question {
+  padding: var(--space-l);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
+  box-shadow: var(--shadow-soft);
+  color: var(--text);
+}
+
+.question-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 var(--space-s);
+  color: var(--blue);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.question-count {
+  color: var(--muted);
+}
+
+.question-fields {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Floated so a long prompt wraps like any paragraph in every browser. */
+.question-prompt {
+  float: left;
+  width: 100%;
+  margin: 0 0 var(--space-m);
+  padding: 0;
+  color: var(--ink);
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 750;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+
+.question-number {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--blue);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.options {
+  display: grid;
+  clear: both;
+  gap: var(--space-xs);
+}
+
+.option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-s);
+  align-items: start;
+  padding: 0.8rem 1rem;
+  background: var(--bg);
+  border: 1.5px solid var(--line-strong);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.option:hover {
+  border-color: var(--blue);
+}
+
+.option:has(:checked) {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+  box-shadow: inset 0 0 0 1px var(--blue);
+}
+
+/* The ring goes on the whole card, not the small circle. */
+.option:has(:focus-visible) {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.option input[type="radio"] {
+  appearance: none;
+  display: grid;
+  place-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.15rem 0 0;
+  border: 2px solid var(--muted);
+  border-radius: 50%;
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.option input[type="radio"]::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--blue);
+  transform: scale(0);
+  transition: transform 0.15s;
+}
+
+.option input[type="radio"]:checked {
+  border-color: var(--blue);
+}
+
+.option input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+.option input[type="radio"]:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.option-text {
+  line-height: 1.5;
+}
+
+/* Forced-colour modes (Windows High Contrast) replace backgrounds, which
+   would hide the dot and the picked card's tint: keep the dot, and outline
+   the picked card. */
+@media (forced-colors: active) {
+  .option input[type="radio"]::before {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+
+  .option:has(:checked) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
+
+.question-answer {
+  margin-top: var(--space-m);
+  padding-top: var(--space-s);
+  border-top: 1px solid var(--line);
+}
+
+.question-answer summary {
+  color: var(--blue);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.question-answer p {
+  margin: var(--space-s) 0;
+}
+
+.question-answer-list {
+  display: grid;
+  gap: var(--space-xs);
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: 0.95rem;
+}
+
+.question-answer-option {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.question-answer-list li[data-correct] .question-answer-option {
+  color: var(--good);
+}
+
+/* --------------------------------------------------------------------------
+   The Final test: a navy band of its own, with light question cards. Its
+   text stays in the left column, like the rest of the Lesson.
+   -------------------------------------------------------------------------- */
+.final-test {
+  margin-top: var(--space-xl);
+  padding-block: var(--space-2xl);
+  background: var(--navy);
+  color: var(--on-dark-muted);
+}
+
+.final-test-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-l);
+}
+
+.final-test-head h2 {
+  margin: 0;
+  color: var(--on-dark);
+  font-size: var(--display-2);
+}
+
+.final-test-head .eyebrow {
+  margin: 0 0 var(--space-xs);
+  color: var(--amber);
+}
+
+.final-test-lead {
+  max-width: 34rem;
+  margin: var(--space-s) 0 0;
+  color: var(--on-dark);
+  font-size: var(--text-lg);
+}
+
+.final-test-main > :not(.final-test-questions) {
+  margin-bottom: var(--space-l);
+}
+
+/* Blocks written before the questions: plain prose turns light on navy,
+   while boxes keep their own light surface and dark text. */
+.final-test-main > .prose,
+.final-test-main > .prose :is(strong, blockquote, h3) {
+  color: var(--on-dark);
+}
+
+.final-test-main > .prose a {
+  color: var(--link-on-dark);
+}
+
+.final-test-main > :is(.callout--tip, .callout--watch-out, .try, .site-story) {
+  color: var(--text);
+}
+
+.final-test-questions {
+  display: grid;
+  gap: var(--space-l);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* --------------------------------------------------------------------------
+   Discussion: a full-width band after the Final test. Not sticky.
+   -------------------------------------------------------------------------- */
+.discussion-band {
+  padding-block: var(--space-2xl);
+  background: var(--bg-soft);
+  border-top: 1px solid var(--line);
+}
+
+.discussion h2 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--display-3);
+}
+
+/* Previous/Next: two photo cards side by side at text width, Next always on
+   the right. One per row on phones. */
 .prev-next {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-l);
-  margin: var(--space-2xl) 0 var(--space-xl);
-  padding-top: var(--space-xl);
-  border-top: 1px solid var(--line);
+  padding-block: var(--space-2xl);
 }
 
 .prev-next .next {
   grid-column: 2;
 }
 
+@media (min-width: 1080px) {
+  .prev-next {
+    grid-template-columns: repeat(2, minmax(0, calc((var(--text-col) - var(--space-l)) / 2)));
+  }
+}
+
 @media (max-width: 640px) {
   .prev-next {
     grid-template-columns: minmax(0, 1fr);
   }
+
   .prev-next .next {
     grid-column: auto;
   }
 }
 
-.discussion {
-  position: sticky;
-  top: calc(var(--header-h) + var(--space-l));
-  align-self: start;
-  background: var(--bg-soft);
-  border-top: 3px solid var(--blue);
-  padding: var(--space-l);
-  max-height: calc(100vh - var(--header-h) - 2 * var(--space-l));
-  overflow-y: auto;
-}
-
-.discussion h3 {
-  margin: 0 0 var(--space-xs);
-  font-family: var(--font-heading);
-  font-size: var(--display-3);
-  font-weight: 300;
-}
-
-@media (max-width: 860px) {
-  .lesson-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .discussion {
-    position: static;
-    max-height: none;
-  }
-}
-
-/* Discussion panel: comment form and list. */
+/* Discussion: comment form and list. */
 .comment-form {
   display: grid;
   gap: 0.6rem;

@@ -10,7 +10,8 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-// The large, light headings.
+// The headings: bold (750–800) and tightly spaced. It's a variable font, so
+// every weight in between is available without loading more files.
 const display = Inter_Tight({
   variable: "--font-display",
   subsets: ["latin"],

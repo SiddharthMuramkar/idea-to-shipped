@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import type { Comment } from "@/comments/comments";
 import { MAX_BODY, MAX_NAME } from "@/comments/limits";
 
-// The sticky Discussion panel: lists a Lesson's Comments and posts new ones
-// through the comments API.
+// The Discussion band at the end of a Lesson, after the Final test: lists
+// the Lesson's Comments and posts new ones through the comments API.
 export function Discussion({ lesson }: { lesson: string }) {
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -46,8 +46,8 @@ export function Discussion({ lesson }: { lesson: string }) {
   }
 
   return (
-    <aside className="discussion" data-reveal>
-      <h3>Discussion{comments ? ` · ${comments.length}` : ""}</h3>
+    <section className="discussion" aria-label="Discussion" data-reveal>
+      <h2>Discussion{comments ? ` · ${comments.length}` : ""}</h2>
 
       <form className="comment-form" onSubmit={submit}>
         <input
@@ -86,6 +86,6 @@ export function Discussion({ lesson }: { lesson: string }) {
           </li>
         ))}
       </ul>
-    </aside>
+    </section>
   );
 }

@@ -4,7 +4,7 @@ import { homePhotos } from "@/app/home-photos";
 import { LessonCard } from "@/app/lesson-card";
 import { PhotoBand, PhotoCredit } from "@/app/photo-band";
 import { Reveal } from "@/app/reveal";
-import { lessons } from "@/lessons/lessons";
+import { courseHasParts, lessons, type LessonSummary, type Part } from "@/lessons/lessons";
 
 async function loadLessons() {
   "use cache";
@@ -14,44 +14,79 @@ async function loadLessons() {
 // The Lesson grid: three cards to a row, then two, then one on phones.
 const CARD_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px";
 
+// The Lessons under a heading per Part, in course order. Null until every
+// Lesson has a Part, and until then the grid stays flat.
+function byPart(all: LessonSummary[]): { part: Part; lessons: LessonSummary[] }[] | null {
+  if (!courseHasParts(all)) return null;
+  const groups: { part: Part; lessons: LessonSummary[] }[] = [];
+  for (const lesson of all) {
+    const part = lesson.part!;
+    const group = groups.find((g) => g.part.number === part.number);
+    if (group) group.lessons.push(lesson);
+    else groups.push({ part, lessons: [lesson] });
+  }
+  return groups.sort((a, b) => a.part.number - b.part.number);
+}
+
 // The Main flow, step by step, as the dark band teases it. The Main flow
-// Lesson tells the whole story, forks included.
+// Lesson tells the whole story, forks included. Each step links to the
+// Lesson that teaches it, once that Lesson exists.
 const FLOW_STEPS = [
   {
     skills: ["/grill-with-docs"],
+    slug: "grilling",
     title: "Grill the idea",
     text: "Claude questions you until the plan is clear, and writes down the words you agree on.",
   },
   {
     skills: ["/to-spec"],
+    slug: "spec-and-issues",
     title: "Write the spec",
     text: "One document says what to build, for whom, and what's out of scope.",
   },
   {
     skills: ["/to-tickets"],
+    slug: "spec-and-issues",
     title: "Cut it into tickets",
     text: "The spec becomes small tickets, each one a single session of work.",
   },
   {
     skills: ["/implement", "/implement-spec"],
+    slug: "implement",
     title: "Build and review",
     text: "Drive one ticket at a time, or let it run through all of them.",
   },
   {
     skills: ["/pr"],
+    slug: "pr-and-ship",
     title: "Open the pull request",
     text: "The agent writes the description when the work goes up for review.",
   },
   {
     skills: ["/retro"],
+    slug: "retro",
     title: "Look back",
     text: "Go over the session and improve your setup, so the next build starts better.",
   },
 ];
 
+function LessonGrid({ lessons: list }: { lessons: LessonSummary[] }) {
+  return (
+    <ol className="lesson-grid" data-reveal-children>
+      {list.map((l) => (
+        <li key={l.slug}>
+          <LessonCard lesson={l} sizes={CARD_SIZES} />
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 export default async function Home() {
   const all = await loadLessons();
   const first = all[0];
+  const parts = byPart(all);
+  const slugs = new Set(all.map((l) => l.slug));
   const { hero, intro, cta } = homePhotos;
 
   return (
@@ -113,13 +148,23 @@ export default async function Home() {
           {all.length} Lessons, read in order. Each one ends with what really
           happened.
         </p>
-        <ol className="lesson-grid" data-reveal-children>
-          {all.map((l) => (
-            <li key={l.slug}>
-              <LessonCard lesson={l} sizes={CARD_SIZES} />
-            </li>
-          ))}
-        </ol>
+        {parts ? (
+          parts.map(({ part, lessons: inPart }) => (
+            <section
+              key={part.number}
+              className="part-group"
+              aria-labelledby={`part-${part.number}`}
+              data-reveal-children
+            >
+              <h3 id={`part-${part.number}`} className="part-heading">
+                <span className="part-number">Part {part.number}</span> {part.title}
+              </h3>
+              <LessonGrid lessons={inPart} />
+            </section>
+          ))
+        ) : (
+          <LessonGrid lessons={all} />
+        )}
       </section>
 
       <section id="flow" className="band-dark">
@@ -134,7 +179,15 @@ export default async function Home() {
             {FLOW_STEPS.map((step, i) => (
               <li key={step.title} className="flow-step">
                 <span className="flow-step-number">{i + 1}</span>
-                <h3>{step.title}</h3>
+                <h3>
+                  {slugs.has(step.slug) ? (
+                    <Link href={`/learn/${step.slug}`} className="flow-step-link">
+                      {step.title}
+                    </Link>
+                  ) : (
+                    step.title
+                  )}
+                </h3>
                 <p className="flow-step-skills">
                   {step.skills.map((c, j) => (
                     <span key={c}>
