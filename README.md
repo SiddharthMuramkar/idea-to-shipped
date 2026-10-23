@@ -2,7 +2,7 @@
 
 # Idea to Shipped
 
-**A small course on Matt Pocock's Claude Code skills and agentic coding, written as a journal of building this site.**
+**A from-zero course on Matt Pocock's Claude Code Skills that uses the building of this site as its worked example.**
 
 [![Live site](https://img.shields.io/badge/live-idea--to--shipped.vercel.app-1E3FCC?style=flat-square&logo=vercel&logoColor=white)](https://idea-to-shipped.vercel.app)
 ![Status](https://img.shields.io/badge/status-v1%20shipped-1E3FCC?style=flat-square)
@@ -28,11 +28,13 @@
 
 ## About
 
-Each Lesson covers one Skill: what it is, when to use it, what I typed, and what happened. Each one was written right after the step of building this site that used it, so the course is a record of the site being built.
+Twenty Lessons in four Parts teach Matt Pocock's Skills from zero, for someone who has never coded with an agent. Each Lesson explains the idea behind one Skill (or one foundation, like the context window), walks through a real session step by step, shows how Matt and other developers use it day to day, gives you a prompt to try yourself, and checks what you understood.
+
+The building of this site is the worked example. Each Lesson has a short "How I used it building this site" box with the prompts I actually typed and what happened, mistakes included.
 
 You can leave a Comment on any Lesson in the Discussion panel beside it. You don't need an account.
 
-This is my first full-stack app that actually made it to production. Everything from the first idea to the deploy was done with the skills the course teaches.
+This is my first full-stack app that actually made it to production. Everything from the first idea to the deploy was done with the Skills the course teaches.
 
 ## The Lessons
 
@@ -78,7 +80,12 @@ This is my first full-stack app that actually made it to production. Everything 
 
 ## Features
 
-- **Lessons are Markdown files.** They live in `content/lessons/` and are built into static pages at deploy time.
+- **Lessons are Markdown files.** They live in `content/lessons/`, use a few typed blocks (goals, Scenes, Checkpoints, the Final test, the Site story, sources), and are built into static pages at deploy time.
+- **Scenes that build as you scroll.** Chat, terminal, flow, files and meter Scenes add one step at a time as you read.
+- **Checkpoints with instant feedback.** Answer a question mid-Lesson, see why each option is right or wrong, and see how other readers answered.
+- **A Final test for every Lesson.** 80% to pass, and you can retry.
+- **Progress without accounts.** Lesson cards show a tick when you've passed, remembered with an anonymous cookie.
+- **Reduced motion and no JavaScript are fine.** Motion switches off when you ask for less, and every word is readable without scripts.
 - **Comments on every Lesson.** Newest first, with an optional name. They're stored in Postgres.
 - **A real REST API.** You can `curl` it, read it, and follow one request through every layer.
 - **One database branch per environment.** Local, test, every PR preview and production each get their own Neon branch, so test data never reaches production.
