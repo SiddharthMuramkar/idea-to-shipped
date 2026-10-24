@@ -2,7 +2,44 @@
 
 Start here if you're picking up the course PR ("PR B") on a new machine. Everything you need is on GitHub. Branch `course-20-lessons` is `main` plus this folder.
 
-## Progress on 2026-10-24 (read this first)
+## Paused mid-revision on 2026-10-24 (read this first)
+
+The user paused the work to carry on from another machine. Everything is pushed: pull `course-20-lessons`.
+
+**Done and pushed:**
+- **0c47797, step 5:** two lint rules, test-first. The right answer is never longer than every wrong option, counting the text a reader sees (a tie passes), and no option says "all of the above" or "none of the above". They live in `src/lessons/course-lint.ts` with unit tests, run on Checkpoints and the Final test, and are listed in the authoring guide's lint table.
+- **4137eaf:** all 75 `mattpocock/skills` links pinned from `main` to 49dd158 (all 42 linked paths exist there; the 3 links to this repo stay on `main`), and every `a && b` chain split into one command per line.
+- **3376e95:** the revision workflow's output for all 20 Lessons, plus its records.
+- **37d7a19, step 6:** `PENDING_REWRITE` and its two guard tests are deleted, so every per-Lesson rule runs on all 20. It isn't the last commit, as the plan said, because all 20 already pass the full bar.
+
+**State:** `npm run test:content` passes 410 of 410, and the draft lint prints no `ERROR` on any of the 20. `grilling`'s question ids, option order and `[x]` positions match `main`.
+
+**The revision workflow.** Its script is `tools/revision-workflow.js` and its input `tools/revision-workflow-args.json`. Per Lesson it runs: Review (only lenses that never ran) → Revise → Check (independent accuracy, reader and quiz checkers that try to break the revision) → Fix, for up to 3 check rounds, then two course-wide critics. It was stopped part-way. Each Lesson's full record is in `review/run-2026-10-24/<slug>.json`: `review` (new first-review findings), `revise` (summary, fixed, deferred, declined, words), and `rounds.r1`, `rounds.r2` (each with `checks` per lens and the `fix` that followed).
+
+| Lessons | Reached | Left to do |
+|---|---|---|
+| start-here, skills, grilling, tdd, implement, code-review, pr-and-ship, wizard | check round 2 (no highs; 3 to 11 mediums each, **not fixed yet**) | fix round 2's mediums, then check round 3 |
+| triage | check round 2 for accuracy and quiz (no highs) | reader round 2, fix, check round 3 |
+| how-agents-work, context-window, domain-modeling, prototype, spec-and-issues, main-flow, diagnosing-bugs | check round 1 and its fix | check round 2, fix, check round 3 |
+| architecture, retro, wayfinder, models-effort-ultracode | first review (7, 1, 5 and 7 highs) and revise | **never independently checked:** check round 1, fix, and so on |
+
+The course-wide pass (a consistency critic and a coverage-and-links critic, then per-Lesson fixes) never ran.
+
+**How to carry on.** A workflow run can only resume in the session that started it, so restart from the saved records:
+1. Install the plugin first (`claude plugin install mattpocock-skills@claude-plugins-official`): the agents read the 1.3.1 Skills from `~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/`.
+2. Set `REPO` at the top of `revision-workflow.js` to the new clone's path.
+3. Change the pipeline to skip Review and Revise, start each Lesson at the round in the table, and seed `declined` from the saved `revise.declined` and `rounds.*.fix.declined`, so the checkers don't re-raise what a fixer already rejected. For the 8 Lessons whose round 2 is done, start with a fix of the saved round 2 highs and mediums.
+4. Keep the course-wide pass at the end.
+5. Tell agents to put scratch files in their scratchpad, never `content/lessons/`. The grilling agent left a `04-grilling.md.ids` there; it was removed, not committed.
+
+**Watch the word cap:** several Lessons sit near 3,000 words (implement 2,902, retro 2,911, diagnosing-bugs 2,932), so fixes there must cut as much as they add.
+
+**Then the rest of the plan:**
+- Log the deferred mediums and the lows in each Part's ticket under `## Comments`, from `revise.deferred` and the last round's findings. Not done yet.
+- Step 7: commit per Part as the fixes land, with a two-axis `mattpocock-skills:code-review` per Part. The Lessons are already in one commit, so review each Part against main with a path filter, as in `git diff main...HEAD -- content/lessons/00-* content/lessons/01-* content/lessons/02-* content/lessons/03-*`. Standards: the writing guide, `docs/authoring-lessons.md` and `GLOSSARY.md`. Spec: `spec.md` plus the Part's ticket.
+- Step 8: the full gate, the PR body with `mattpocock-skills:pr`, then `gh pr create`. Don't merge: the user checks the Vercel preview first.
+
+## Progress on 2026-10-24, first session
 
 Picked up on the new Mac. Steps 1 and 2 of the plan below are done and pushed.
 
