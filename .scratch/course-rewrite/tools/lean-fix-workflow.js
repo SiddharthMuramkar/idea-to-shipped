@@ -37,33 +37,6 @@ Severity scale, shared by every reviewer, checker and fixer:
 - medium: a term a cold reader meets before it's explained; a claim the cited source doesn't clearly support; a weak distractor or a wording tell; a goal that no Final test question checks; a Checkpoint far from the section it checks; a contradiction with another Lesson or with the course facts.
 - low: wording, rhythm, polish.`
 
-const LENS = {
-  reader: `Lens "reader": you are a Visitor who has never used a coding agent and barely uses Git or a terminal, on Windows (PowerShell 5.1) or macOS. Read the Lesson top to bottom as that person. Find: terms used before they are explained (each needs a clause at first use, even if an earlier Lesson defines it: Claude Code, agent, Skill, token, session, repo, spec, ticket, context window, any mode); steps you could not follow; a Try it exercise that would not work from zero (assume only Claude Code installed, the plugin installed, a terminal); contradictions inside the Lesson; repetition that wastes the word budget; Checkpoints that are not right after the section they check; Scenes that disagree with the prose.`,
-  quiz: `Lens "quiz": check every Checkpoint and Final test question. For each: is there exactly one defensible right answer, using only what the Lesson teaches? Could a sharp reader argue for a distractor? Is a distractor obviously silly, or about a retired Skill the Lesson never mentions? Wording tells: does the right option echo the prompt or the Lesson's defining phrase; do the wrong options share a phrasing the right one lacks; is the right one the longest, the most hedged or the most specific? Does it test transfer (a fresh situation) rather than recall of the body's own sentence? Does every goal get at least one Final test question? Does a Checkpoint duplicate a Final test question? Are right answers spread across a/b/c/d? Does each option's feedback say why? Is the mix right (3+ scenario-, 2+ spot-, 1+ sequence- ids, except start-here), and does every spot- question really contain one mistake to spot? Check answer keys that depend on Skill behaviour against the 1.3.1 SKILL.md files.`,
-  accuracy: `Lens "accuracy": check every factual claim. First and most, every claim about a Skill (what it does, asks, writes, which files it reads or creates, when it stops, who can start it, which Skills it calls, its name), every Scene, every Try it step and every answer key that depends on Skill behaviour, against the installed 1.3.1 SKILL.md and sibling files; quote path:line as evidence. Then: Claude Code facts against the course facts list in the writing guide (and the official docs if a claim goes beyond it); what Matt said or did against the transcripts (path above) or the cited text source; the Site story against the repo (git log, gh pr view, git show d21fc2c:...), flagging anything only a session log could back; quotes (verbatim where checkable, under 15 words, one per source); copied SKILL.md sentences of 15+ words.`,
-}
-
-const FINDINGS = {
-  type: 'object',
-  properties: {
-    findings: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          severity: { type: 'string', enum: ['high', 'medium', 'low'] },
-          where: { type: 'string' },
-          problem: { type: 'string' },
-          evidence: { type: 'string' },
-          fix: { type: 'string' },
-        },
-        required: ['severity', 'where', 'problem', 'evidence', 'fix'],
-      },
-    },
-  },
-  required: ['findings'],
-}
-
 const DECLINED = {
   type: 'array',
   items: {
@@ -114,21 +87,6 @@ function seedPath(l) {
 
 function history(l, applied, declined) {
   return `This Lesson's history from before a pause is in ${seedPath(l)} (read it with jq or cat): \`applied\` lists the fixes made in earlier check rounds and \`declined\` lists issues a reviser or fixer rejected, each with the reason (either may be empty).${applied.length ? ` Applied in this run so far: ${JSON.stringify(applied)}` : ''}${declined.length ? ` Declined in this run so far: ${JSON.stringify(declined)}` : ''}`
-}
-
-function checkPrompt(l, lens, round, applied, declined) {
-  return `${COMMON}
-
-Independent check of the Lesson \`${l.slug}\`, content/lessons/${l.file} (Part ${l.part}), which has been revised${round > 1 ? ' and fixed after earlier check rounds' : ''}. This is check round ${round}. Your job is to break it: assume the reviser missed things, and find what is still wrong through your lens. Don't edit any file; read-only commands only.
-
-${LENS[lens]}
-
-Read: the Lesson; the writing guide's "Facts the whole course agrees on" and "Questions" (.scratch/course-rewrite/writing-guide.md); GLOSSARY.md; the brief .scratch/course-rewrite/review/briefs/${l.slug}.json; and the 1.3.1 SKILL.md files the Lesson relies on.${l.old ? ` The Site story's main material is the old journal Lesson: git show d21fc2c:content/lessons/${l.old}` : ''}
-
-${history(l, applied, declined)}
-Check that earlier fixes held and broke nothing nearby, then look for anything still wrong. Don't re-raise a declined issue unless the reason is wrong; if it is, say why in evidence.
-
-Report each problem with severity (scale above), where (the section heading, a short quote, and the line number), problem, evidence (a SKILL.md path:line, a URL with what it says, a transcript file and timestamp, a git or gh command and its output, or the Lesson's text) and fix (concrete replacement text). Report only what you can evidence. Every high and medium; at most 5 lows, the ones that matter most. An empty list is a fine answer.`
 }
 
 function fixPrompt(l, round, issues, fromSeed, applied, declined) {

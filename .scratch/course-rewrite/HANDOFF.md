@@ -2,7 +2,20 @@
 
 Start here if you're picking up the course PR ("PR B") on a new machine. Everything you need is on GitHub. Branch `course-20-lessons` is `main` plus this folder.
 
-## Paused again on 2026-10-24, second session (read this first)
+## Finished on 2026-10-24, third session (read this first)
+
+The revision is done and the PR is open against `main`: **the user checks the Vercel preview, then squash-merges.** Nothing else is pending for this PR.
+
+The user was near their usage limit, so this session ran a **lean finish** of the plan below instead of the full one (about 36 agents instead of over 100):
+- **Fixes:** `tools/lean-fix-workflow.js` (from `resume-workflow.js`) gave each Lesson with `pending` issues one seeded fixer: 15 Lessons, 123 applied, 6 declined. Output: `review/run-2026-10-24b/lean-fix.json`. Triage also kept 6 fixes from an earlier lean run on this account, which hadn't fetched 7d20d5c (795722d). That run's other edits duplicated 7d20d5c and were dropped; they sit only on the local branch `lean-finish-backup` on the Muramkar Mac, which is safe to delete.
+- **Skipped:** further check rounds (round 3 for most Lessons; round 2 for retro, wayfinder and models-effort-ultracode), and the three course-wide critics as a separate pass.
+- **Review:** `tools/part-review-workflow.js` ran the two `code-review` axes per Part, with the critics' quote, Site story and cross-Lesson checks folded into Standards. It found 0 high, 20 medium and 46 low (`review/run-2026-10-24b/part-review.json`). 8 mediums were fixed in the main session: `/clear` before the full-name review in implement and main-flow, one consistent PR #9 Site story, prototype's Smart zone limit scoped to before `/to-tickets`, grilling's two published options back to their shipped meaning, context-window's AFK question, `/model default`. The non-Lesson diff was reviewed in the main session (clean).
+- **Logged:** tickets 03–06 are resolved, with every declined item, open medium and low listed per Lesson under `## Comments`. Ticket 07 is updated.
+- **Gate:** `tsc`, eslint, `npm run test:content` (410), `npm test` (423) and `npm run build` pass, and all 20 `/learn/<slug>` pages return 200 from `next start`. No screenshots were taken: the page code is unchanged and the preview shows the rest.
+
+**Worth a follow-up PR** (from the logged mediums): cross-links to the Lessons each one builds on (all four Spec reviews flagged gaps), architecture's "seam" next to TDD's, context-window's `continue-first` Checkpoint repeating `spot-compact-before-qa`, and main-flow restaging two Part 2 questions.
+
+## Paused again on 2026-10-24, second session
 
 The user ran out of weekly usage and stopped the run so another Claude Code account can finish it. Everything is pushed to `course-20-lessons`. **No PR is open yet.** The goal is unchanged: finish the revision, run the reviews, open the PR against `main`, and the user squash-merges after checking the Vercel preview.
 
