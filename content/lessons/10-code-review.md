@@ -26,9 +26,9 @@ That's what happened on this site. When the comment box under each Lesson went l
 Code review means reading changed code critically before you trust it. Two things make it hard with an agent:
 
 - **You didn't write the code**, so you don't know where its weak spots are, and reading every line yourself defeats the point of an agent.
-- **The agent that wrote it is a poor judge of it.** It made every decision in that code, so it tends to approve them. And its context window (its working memory for the conversation, measured in tokens, the small chunks of text AI usage is counted in) holds the whole build, so it reasons less sharply.
+- **The agent that wrote it is a poor judge of it.** It made every decision in that code, so it tends to approve them. And its context window (its working memory for the conversation, measured in tokens, the small chunks of text AI usage is counted in; see [The context window](/learn/context-window)) holds the whole build, so it reasons less sharply.
 
-Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, calls automated code review one of the most impactful ways to raise the quality of agent-written code. A Skill is a short instruction file the agent loads when you type its name, or when a task matches its description. His `code-review` Skill hands the job to fresh reviewers, each with a narrow brief.
+Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, calls automated code review one of the most impactful ways to raise the quality of agent-written code. A Skill is a short instruction file the agent loads when you type its name, or when a task matches its description (see [Skills](/learn/skills)). His `code-review` Skill hands the job to fresh reviewers, each with a narrow brief.
 
 ## The idea: a fixed point and two axes
 

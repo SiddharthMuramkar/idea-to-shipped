@@ -33,7 +33,7 @@ The ==Main flow== fixes all three. It's the path most work takes through the Ski
 
 Before the first run in a repo (a project folder tracked with Git, the tool that records every change), type `/setup-matt-pocock-skills` once. It records where tickets and docs live and which labels to use ([Skills](/learn/skills) covers it). Then:
 
-1. **`/grill-with-docs`.** The agent interviews you until the idea is sharp, writing the project's terms into `GLOSSARY.md` as you go. No repo under you, like a talk or a plan? Use `/grill-me`, which saves nothing. Both run the same interview, `/grilling`. See [Grilling](/learn/grilling) and [Domain modeling](/learn/domain-modeling).
+1. **`/grill-with-docs`.** The agent interviews you until the idea is sharp, writing the project's terms into `GLOSSARY.md` as you go. No project folder under you, like a talk or a plan? Use `/grill-me`, which saves nothing. Both run the same interview, `/grilling`. See [Grilling](/learn/grilling) and [Domain modeling](/learn/domain-modeling).
 2. **Fork A: can talking settle every question?** Some questions need a runnable answer: a state model (how a booking moves from held to paid), a tricky rule, a screen you have to see. Those take the prototype detour: type `/handoff`, which writes a summary file, and copy the path it shows. In a second terminal window, `cd` into the project and start `claude`, so the grilling stays open in the first. Type `/prototype` and paste the path. Once that's answered, `/handoff` back what you learned and ask the first window to read the new file. See [Prototype](/learn/prototype).
 3. **Fork B: is this a multi-session build?**
    - **No:** type `/implement` right here, in the same conversation.
@@ -56,7 +56,7 @@ node: spec | Yes: /to-spec, then /to-tickets
 node: build | /implement per ticket, or /implement-spec
 node: pr | /pr writes the PR body
 node: retro | /retro, before you clear
-# Every idea starts with an interview. In a repo, that's `/grill-with-docs`, after a one-time `/setup-matt-pocock-skills`.
+# Every idea starts with an interview. In a project folder, that's `/grill-with-docs`, after a one-time `/setup-matt-pocock-skills`.
 at: grill
 # Fork A: a question talking can't settle takes a detour through a throwaway prototype, then comes back.
 at: proto
@@ -88,7 +88,7 @@ You've grilled a feature for a recipe site: tags, filters, a new database table 
 
 ## Context hygiene: one window, then fresh ones
 
-Everything in a session lives in the agent's ==context window==: its working memory, measured in tokens (small chunks of text, roughly three-quarters of a word each). As the window fills, the model reasons less sharply. Matt calls the part where it still thinks clearly the Smart zone, and what lies past it the dumb zone. Matt's router Skill, `/ask-matt` (it tells you which Skill to type next; more below), puts the line at about 150k tokens on today's best models, as a rule of thumb. It's a limit on quality, not size: a session can be past its best with most of a million-token window still free. Type `/context` to see how full yours is ([The context window](/learn/context-window) has the detail).
+Everything in a session lives in the agent's ==context window==: its working memory, measured in tokens (small chunks of text). As the window fills, the agent reasons less sharply. Matt calls the part where it still thinks clearly the Smart zone, and what lies past it the dumb zone. Matt's router Skill, `/ask-matt` (it tells you which Skill to type next; more below), puts the line at about 150k tokens on today's best models, as a rule of thumb. It's a limit on quality, not size: a session can be past its best with most of a million-token window still free. Type `/context` to see how full yours is ([The context window](/learn/context-window) has the detail).
 
 The Main flow spends that budget in a set rhythm:
 
@@ -337,8 +337,8 @@ Grilling, spec and tickets stayed in one session, with no `/clear`, as the rule 
 |---|---|
 | A new repo | `/setup-matt-pocock-skills`, once |
 | Not sure what's next | `/ask-matt` |
-| An idea, in a repo | `/grill-with-docs` |
-| An idea, no repo | `/grill-me` |
+| An idea, in a project folder | `/grill-with-docs` |
+| An idea, no project folder | `/grill-me` |
 | A question you need to see | `/handoff`, `/prototype`, `/handoff` back |
 | It fits this session | `/implement`, right here |
 | Multi-session | `/to-spec`, then `/to-tickets`, same window |
@@ -390,28 +390,16 @@ Your spec has nine tickets, some blocking others. It's Friday evening, you want 
   > Tickets are sized to one session each on purpose. Merging them undoes that.
 ```
 
-```test sequence-multi-session
-In a repo, you're planning a feature that will take several sessions. Which order runs the Main flow correctly?
-- [ ] `/to-spec` → `/grill-with-docs` → `/to-tickets` → `/implement` per ticket → `/retro`
-  > `/to-spec` writes up a grilled conversation. Before the grilling, there's nothing to write up.
-- [ ] `/grill-with-docs` → `/to-tickets` → `/to-spec` → `/implement` per ticket → `/retro`
-  > In the Main flow, tickets are cut from the spec, so the spec has to come first.
-- [x] `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` per ticket → `/retro`
-  > Right. Interview, spec and tickets in one window; then a fresh session per ticket; then look back on a session from the build.
-- [ ] `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/retro` → `/implement` per ticket
+```test sequence-map-with-detour
+You're planning a feature for a garden-planner site that will take several sessions to build, and one question can only be settled by a screen you can see. Which order walks the Main flow? ("Detour" means `/handoff` out, `/prototype`, `/handoff` back.)
+- [ ] Detour → `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` per ticket → `/retro`
+  > The detour answers a question the grilling raised. Before the interview, there's no question to take it.
+- [ ] `/grill-with-docs` → detour → `/implement` right here → `/retro`
+  > That's Fork B's short road, for work that fits one session. This build takes several, so it needs a spec and tickets.
+- [x] `/grill-with-docs` → detour → `/to-spec` → `/to-tickets` → `/implement` per ticket → `/retro`
+  > Right. Fork A leaves the grilling and comes back to it; Fork B says several sessions, so spec and tickets; `/retro` looks back on the build.
+- [ ] `/grill-with-docs` → detour → `/to-spec` → `/to-tickets` → `/retro` → `/implement` per ticket
   > `/retro` looks back on a build. Run before the build, it has nothing to review.
-```
-
-```test scenario-near-smart-zone
-You're grilling a big feature for a gym's booking site. You've just finished the last of the membership questions and are about to start on payments. `/context` shows about 140k tokens, and you haven't run `/to-spec` yet. What now?
-- [ ] Push on: payments needs the membership answers word for word.
-  > That's the usual case for continuing, but not this near the end of the Smart zone. The rest of the grilling and the spec would come from a duller model.
-- [x] `/compact` at this break, telling it payments is next.
-  > Right. Finishing memberships is a Phase boundary, and the context is still needed, so compact with an instruction ("next we grill payments") and keep going.
-- [ ] `/clear`, then start the grilling again from the top.
-  > That throws away every decision so far. `/clear` is only for context you'll never need again.
-- [ ] `/to-tickets` now, before the window gets any fuller.
-  > The payments decisions don't exist yet, and in the Main flow the tickets come after `/to-spec`.
 ```
 
 ```test scenario-side-task

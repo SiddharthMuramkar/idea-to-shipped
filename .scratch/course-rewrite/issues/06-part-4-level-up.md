@@ -29,10 +29,10 @@ Every Lesson here passes the draft lint and `npm run test:content`. The revision
 - low (quiz, r1) Final test spot-all-speculative right option: The right option repeats the body's sentence ("it found nothing worth doing"), so it's a wording tell; the other options don't use that phrasing.
 - low (quiz, r1) Checkpoint reference-not-driver right option: The option says the Skill has "no steps", but the body says the agent in issue #449 "reached for the design-it-twice steps".
 - low (quiz, r1) Checkpoint shallow-library: The feedback's own definition cuts against it.
-- medium (review, standards) architecture: This contradicts another Lesson.
+- [x] medium (review, standards) architecture: This contradicts another Lesson. **Fixed** in 880d137: the seam bullet adds that callers and tests cross the same seam, the place TDD's tests plug in, and the one-adapter rule adds that it's about adding a swap point, not where tests go (codebase-design 1.3.1 lines 62–65). Declined part: "(the place its tests go through)" in the Site story. Why: the next words already say "tested through its public functions".
 - low (review, standards) architecture lines 106: The same term is spelled two ways within Part 4, and the glosses differ too ("a fresh memory" vs "its own fresh context window").
 - low (review, standards) architecture: Possible Mysterious Name or Divergent Change (judgement call).
-- medium (review, spec) architecture: Architecture links only to Start here, Diagnosing bugs, Wayfinder and The main flow.
+- [x] medium (review, spec) architecture: Architecture links only to Start here, Diagnosing bugs, Wayfinder and The main flow. **Fixed** in 880d137: links to TDD (the seam bullet, before the first `/tdd`), Domain modeling (GLOSSARY.md and ADRs), Grilling (survey step 6) and The context window (One candidate per session). 2,847 → 2,887 words with the seam sentences.
 - low (review, spec) architecture: Matt's router names `/grill-with-docs` as where a survey's idea joins the Main flow, and The main flow Lesson teaches that rule.
 - low (review, spec) .scratch/course-rewrite/review/run-2026-10-24b/{architecture: The ticket's first acceptance item requires each Lesson to pass the three lenses.
 
@@ -93,7 +93,7 @@ Every Lesson here passes the draft lint and `npm run test:content`. The revision
 - low (quiz, r1) Checkpoint ultracode-one-task: The feedback understates what typing a level does.
 - low (quiz, r1) goals: No Final test question checks the first part of this goal, setting effort with `/effort`: typing a level versus pressing `s` in the slider, or `/effort auto`.
 - low (quiz, r1) Checkpoint ultracode-one-task option b feedback: The Checkpoint still gives away the Final test answer.
-- medium (review, standards) models-effort-ultracode: The Checkpoint and the Final test question are mirror images of the same choice: keyword for one task versus `/effort ultracode` for the session.
+- [x] medium (review, standards) models-effort-ultracode: The Checkpoint and the Final test question are mirror images of the same choice: keyword for one task versus `/effort ultracode` for the session. **Fixed** in 880d137: ultracode-one-task is replaced by a new id, stop-whole-run (select the run in `/workflows`, then `x`), checked against the workflows docs' key table on 2026-10-24. scenario-migration-day stays.
 - low (review, standards) models-effort-ultracode: No Final test question checks the first clause, setting effort with `/effort`: typing a level saves it, while `s` in the slider is session-only.
 - low (review, spec) models-effort-ultracode: The ticket asks for model, effort and ultracode facts that are dated.
 - low (review, spec) models-effort-ultracode: `/code-review` is the only one of the Lesson's commands it calls a Built-in command (line 201).
