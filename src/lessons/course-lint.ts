@@ -1,4 +1,5 @@
-import type { Lesson, LessonSummary } from "./lessons";
+import type { Lesson, LessonSummary, Question } from "./lessons";
+import { htmlToText } from "./markdown";
 
 // Rules from the content lint (course.test.ts) that need their own tests: a
 // lint rule that never fires on the real course would otherwise go unchecked.
@@ -71,4 +72,33 @@ export function bodyText(lesson: Pick<Lesson, "intro" | "sections">): string {
 // move, so the body names Lessons by title and links to /learn/<slug>.
 export function lessonNumberMentions(lesson: Pick<Lesson, "intro" | "sections">): string[] {
   return bodyText(lesson).match(/Lesson \d+/g) ?? [];
+}
+
+// Questions whose right answer is longer than every wrong one, as "id: the
+// right answer (b) has 61 characters, the longest wrong one 48". A guesser
+// who always picks the longest option would get these right. Length is the
+// text a reader sees; a tie gives nothing away, so it passes.
+export function longestRightAnswers(questions: Question[]): string[] {
+  const length = (html: string) => htmlToText(html).trim().length;
+  return questions.flatMap((question) => {
+    const right = question.options.find((option) => option.id === question.answer);
+    if (!right) return [];
+    const longestWrong = Math.max(
+      ...question.options.filter((option) => option !== right).map((option) => length(option.html)),
+    );
+    if (length(right.html) <= longestWrong) return [];
+    return [
+      `${question.id}: the right answer (${right.id}) has ${length(right.html)} characters, the longest wrong one ${longestWrong}`,
+    ];
+  });
+}
+
+// Every "all of the above" or "none of the above" option, as "id (c)". Such
+// an option tests ruling things out, not understanding.
+export function allOrNoneOfTheAbove(questions: Question[]): string[] {
+  return questions.flatMap((question) =>
+    question.options
+      .filter((option) => /\b(all|none) of the above\b/i.test(htmlToText(option.html)))
+      .map((option) => `${question.id} (${option.id})`),
+  );
 }

@@ -414,7 +414,7 @@ To quote a short transcript, keep it inline: `The agent says "Q1 Who is it for?"
 
 - Test whether the reader can *use* the idea in a new situation, not whether they remember a sentence.
 - Make every wrong option tempting, something a beginner might really believe.
-- Avoid "all of the above", trick wording, and a right answer that gives itself away by being the longest.
+- Avoid "all of the above", trick wording, and a right answer that gives itself away by being the longest. The course lint rejects the first and the last.
 - Spread the `[x]` across positions over the Lesson.
 
 #### Checkpoints
@@ -554,6 +554,8 @@ It needs no database and no `.env` file, so it runs anywhere, in a fresh clone, 
 | Checkpoints | 3–5 |
 | Final test size | `start-here` 5–6, `main-flow` 8–15, every other Lesson 8–10 |
 | Final test mix (not `start-here`) | at least 3 `scenario-`, 2 `spot-` and 1 `sequence-` ids |
+| Right answers | never longer than every wrong option, counting the characters a reader sees (a tie is fine), in Checkpoints and the Final test |
+| "All of the above" | never an option, and neither is "none of the above" |
 | `site-story` | required for the 12 original slugs, optional for new ones |
 | `sources` | exactly one block, at least 3 list items, each with a link |
 | Word count | 1,800–3,000 (`start-here`: 900–1,400) |

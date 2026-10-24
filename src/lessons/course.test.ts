@@ -2,7 +2,14 @@ import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
-import { bodyText, lessonNumberMentions, partsGoingBackwards, unknownSlashNames } from "./course-lint";
+import {
+  allOrNoneOfTheAbove,
+  bodyText,
+  lessonNumberMentions,
+  longestRightAnswers,
+  partsGoingBackwards,
+  unknownSlashNames,
+} from "./course-lint";
 import { allBlocks, countWords, courseHasParts, lessons, type Block, type Lesson, type LessonSummary } from "./lessons";
 
 // The content lint: the real course in content/lessons, checked against the
@@ -192,6 +199,14 @@ describe.each(rewritten)("Lesson $slug", ({ slug }) => {
       expect(blocksOf(await load(slug), "siteStory").length).toBeGreaterThanOrEqual(1);
     });
   }
+
+  test("never makes the right answer the longest option (Checkpoints and Final test)", async () => {
+    expect(longestRightAnswers((await lessons.getQuestions(slug)) ?? [])).toEqual([]);
+  });
+
+  test('has no "all of the above" or "none of the above" options', async () => {
+    expect(allOrNoneOfTheAbove((await lessons.getQuestions(slug)) ?? [])).toEqual([]);
+  });
 
   test("has exactly one sources block, listing at least 3 sources, each with a link", async () => {
     const sources = blocksOf(await load(slug), "sources");
