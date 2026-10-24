@@ -11,7 +11,7 @@ imageCredit: Ruben Aster
 Everything to know before your first Lesson: what this course teaches, what to install, and how to read a page here.
 
 ```goals
-- You'll be able to say what this course teaches and which of its four Parts to turn to for a given problem.
+- You'll be able to say which of the course's four Parts to turn to for a given problem.
 - You'll be able to set up Claude Code with the native installer, an eligible plan, a terminal and git, and know when you'd need Node.js.
 - You'll be able to use a Lesson's Checkpoints as you read, and its dated sources to spot a renamed Skill.
 - You'll be able to start `/teach` in a folder of its own to learn a side topic over several sessions.
@@ -164,14 +164,14 @@ So **run it in an empty folder of its own**, never in your project. To carry on 
 In his June 2026 video, Matt learns to solve a Rubik's Cube with it, opening a session by saying where he's stuck. There's no level check, so say what you already know in your first message, and check lessons against the source it recommends.
 
 ```checkpoint teach-next-session
-Last week you ran `/teach` in `~/learn-git` and finished a lesson on commits. Today you open a fresh session. How do you carry on?
-- [ ] In `~/learn-git`, paste last week's lesson so it remembers you.
+Last week you ran `/teach` in `~/learn-chess` and finished a lesson on how the knight moves. Today you open a fresh session. How do you carry on?
+- [ ] In `~/learn-chess`, paste last week's lesson so it remembers you.
   > Pasting doesn't start `/teach`: only typing its name does. And its files already hold what you've learned.
 - [ ] Start from scratch, because `/clear` erased everything it knew.
   > `/clear` empties the conversation, not the folder. The mission, lessons and learning records are still there.
 - [ ] Make a new empty folder, since each session needs a fresh workspace.
   > The opposite: one workspace per topic, reused every session. A new folder starts from zero, with no mission or records.
-- [x] In `~/learn-git`, type `/teach`, as its files hold your progress.
+- [x] In `~/learn-chess`, type `/teach`, as its files hold your progress.
   > Right. It reads its own files, sees what you've learned and plans the next lesson. Tell it where you're stuck, as Matt does.
 ```
 

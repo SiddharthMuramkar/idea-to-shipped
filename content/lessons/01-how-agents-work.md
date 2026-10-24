@@ -85,7 +85,7 @@ Claude Code's docs group its built-in tools into five families:
 | Web | `WebSearch`, `WebFetch` | Search the web, read a page |
 | Code intelligence | Added by a plugin (an add-on you install) | Type errors, jump to a definition |
 
-On top sit orchestration tools, such as `Agent`, which starts a sub-agent (a helper agent with its own fresh context window that does one job and reports back a summary). MCP servers (plug-ins that connect the agent to outside systems) add tools of their own, and Skills add instructions; see [Skills](/learn/skills).
+On top sit orchestration tools, such as `Agent`, which starts a sub-agent (a helper agent with its own fresh context window that does one job and reports back a summary). MCP servers (connectors that link the agent to outside systems) add tools of their own, and Skills add instructions; see [Skills](/learn/skills).
 
 The tools differ in whether they ask first. In Manual mode (the setting where it asks before most actions; more on modes below), reading and searching inside your project folder never asks. Editing a file asks. Shell commands ask, apart from a built-in list of read-only ones. The split is deliberate: a read can't hurt you, but a shell tool (`Bash`, or `PowerShell` on Windows) can do anything you can.
 
