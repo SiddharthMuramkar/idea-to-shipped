@@ -348,8 +348,8 @@ Halfway through grilling a recipe site, a question comes up that matters to you:
   > You'd be agreeing to something you can't evaluate, which is the passive trap.
 - [ ] Ask the agent to decide it for you as a detail.
   > It matters to you, and how a page feels to use is a product decision, not a small detail.
-- [ ] Leave it open for now and let `/to-spec` settle the layout later.
-  > `/to-spec` doesn't interview you; it writes up what's already decided. This question needs something you can look at.
+- [ ] Ask the agent for a fuller written description of each layout, then choose.
+  > More words won't help: you've read two descriptions already. This question needs something you can look at.
 - [x] Detour through `/prototype`, then bring the answer back.
   > Right. Questions you need to see are ungrillable. Build a quick throwaway version, look at it, then answer.
 ```
@@ -404,8 +404,8 @@ Priya grilled a big feature for 45 minutes, typed `/clear` to free up space, the
   > `/to-spec` writes from the grilled conversation. Run first, it would have no decisions to write from.
 - [x] `/clear` emptied out the decisions `/to-spec` writes from.
   > Right. The conversation is the record of the grilling, and `/clear` emptied it out of the session. Run `/to-spec` in the same conversation. (`/resume` can reopen the old one, so the decisions aren't gone for good.)
-- [ ] Forty-five minutes of answers was too much for `/to-spec` to fit in one spec.
-  > Length wasn't the problem: `/clear` had already emptied the conversation, so none of those answers reached `/to-spec`.
+- [ ] Forty-five minutes was too short to settle a feature this big.
+  > Forty-five minutes is plenty. The decisions existed; then `/clear` emptied them out of the conversation.
 - [ ] Splitting the questions into rounds scattered her answers.
   > Rounds follow the design tree, and all her answers sat in one conversation until `/clear` emptied it.
 ```

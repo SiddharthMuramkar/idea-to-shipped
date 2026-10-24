@@ -42,7 +42,7 @@ Before the first run in a repo (a project folder tracked with Git, the tool that
 
 Three Skills run inside step 3 without you typing them. `/implement` is told to build test-first with `/tdd` (a failing check first, then the code that passes it; see [TDD](/learn/tdd)) where it can, at agreed seams (the places in the code tests check from). `/to-spec` checks them with you. On the short road no spec has, so answer when `/tdd` asks which seams to test; agreed nowhere, `/implement` may just write the code. It closes with `/code-review`, a two-part review against your coding standards and the spec ([Code review](/learn/code-review)). `/implement-spec` has each subagent drive `/tdd`, then runs one review over the integration branch. When the work goes up as a pull request (a PR: a proposed change that's reviewed before it joins the main code), the agent reaches for `/pr` to write the description ([PR + ship](/learn/pr-and-ship)).
 
-As of October 2026, the review can misfire: run before the work is committed (saved in Git), or reach Claude Code's own `/code-review`; if no Standards and Spec sections come back, let `/implement` commit, then type `/mattpocock-skills:code-review` ([Implement](/learn/implement)). One developer's September logs (below) showed `/tdd` never loading, before an October fix told `/implement` to load it. If no failing test comes first anyway, ask for "the tdd Skill" in plain words: the agent can start that one itself.
+As of October 2026, the review can misfire: run before the work is committed (saved in Git), or reach Claude Code's own `/code-review`; if no Standards and Spec sections come back, let `/implement` commit, `/clear`, then type `/mattpocock-skills:code-review` ([Implement](/learn/implement)). One developer's September logs (below) showed `/tdd` never loading, before an October fix told `/implement` to load it. If no failing test comes first anyway, ask for "the tdd Skill" in plain words: the agent can start that one itself.
 
 Fork B ==isn't about how important the work is==; it's about whether the build fits in the room this session has left: the agent's working memory (its context window), which fills as you work.
 
@@ -317,7 +317,7 @@ Grilling, spec and tickets stayed in one session, with no `/clear`, as the rule 
 
 **I skipped a question.** `/to-spec` stopped to ask me to check one design choice. I typed `/to-tickets` instead of answering, so the spec went out with the agent's best guess. My rule now: answer the open question before typing the next Skill.
 
-**The build ran itself.** Tickets 03 and 04 ran in parallel, and the only merge conflict was in the photo-credits file. The review found about 15 problems, like the home page calling Skills "commands". One fix-up agent fixed them, and `/pr` wrote the description, calling the change a two-way door: content and styling only, easy to revert.
+**The build ran itself.** Tickets 03 and 04 ran in parallel, and the only merge conflict was in the photo-credits file. The review found about 15 problems, like the home page calling Skills "commands". One fix-up agent fixed them, and my journal says `/pr` wrote the description, calling the change a two-way door: content and styling only, easy to revert.
 
 **Before that PR, I'd built the site's first version, one Lesson per step. What I typed then, and what I'd type today:**
 

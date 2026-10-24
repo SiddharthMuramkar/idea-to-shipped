@@ -115,14 +115,14 @@ agent: Full suite passes. Loading **code-review**. Which fixed point should I re
 you: main
 # The review reads only what's been committed since the fixed point. This new branch has no commits yet, so it finds nothing. Then it commits and stops. The ticket stays open.
 agent: The diff since `main` is empty, so there's nothing to review. Committed to `ticket-05-comments-api`. The ticket file is unchanged.
-# Now the commit exists, so you run the review yourself by its full name. Its two axes run in fresh sub-agents, away from this session's crowded context window. The ticket's "Done when" checklist includes a hand check with `curl`, a terminal program that calls a web address.
+# Now the commit exists. You type `/clear` first, so the agent briefing the reviewers isn't the one that built the code, then run the review yourself by its full name. The ticket's "Done when" checklist includes a hand check with `curl`, a terminal program that calls a web address.
 you: `/mattpocock-skills:code-review main`
 agent: Standards: nothing to fix. Spec: every "Done when" item is met except the `curl` check, which needs you.
 ```
 
-Four moments needed you: confirming the seams, naming the fixed point, rerunning the review after the commit, and the `curl` check.
+Four moments needed you: confirming the seams, naming the fixed point, clearing and rerunning the review after the commit, and the `curl` check.
 
-That empty review is a known rough edge, still open on GitHub in October 2026. So is another: the Skill calls code-review by its short name, which can reach Claude Code's Built-in command `/code-review` (a bug hunt where you pick how hard it looks). The last step above cures both: after the commit, type the Skill's full name, `/mattpocock-skills:code-review`: the plugin's name (the bundle Matt's Skills were installed as), a colon, then the Skill's.
+That empty review is a known rough edge, still open on GitHub in October 2026. So is another: the Skill calls code-review by its short name, which can reach Claude Code's Built-in command `/code-review` (a bug hunt where you pick how hard it looks). The last step above cures both: after the commit and a `/clear`, type the Skill's full name, `/mattpocock-skills:code-review`: the plugin's name (the bundle Matt's Skills were installed as), a colon, then the Skill's.
 
 ## Building a whole spec: `/implement-spec`
 
@@ -214,7 +214,7 @@ You've written a shell script that runs `/implement` on every ready ticket, each
 
 - **Small job, same window.** In his July 2026 walkthrough, after grilling a small cleanup, he said he'd usually just type `/implement` there and let it run. He put his own Smart zone at about 140k tokens then, leaving roughly 100k of room for the job (10:08–11:03).
 - **One ticket at a time.** In the same video he cleared the context before implementing and said he usually clears between every ticket (13:53–14:41). There, `/implement` ran code-review's two axes in sub-agents, then committed (14:50–16:23).
-- **Review in a fresh context.** In his April 2026 workshop he explained that an implementer finishes deep in its window, so a review in the same session happens in the dumb zone (1:05:28–1:06:24), which code-review's fresh sub-agents avoid. He builds with Sonnet, a cheaper Claude model, and reviews with Opus, a stronger one (1:32:33; see [Models, effort & ultracode](/learn/models-effort-ultracode)).
+- **Review in a fresh context.** In his April 2026 workshop he explained that an implementer finishes deep in its window, so a review in the same session happens in the dumb zone (1:05:28–1:06:24), so review after a `/clear`. He builds with Sonnet, a cheaper Claude model, and reviews with Opus, a stronger one (1:32:33; see [Models, effort & ultracode](/learn/models-effort-ultracode)).
 - **`/implement-spec` where there's no script.** In October 2026 he said he reaches for `/implement-spec` more than he expected in repos without a tuned script, calling it a basic version to build your own on (4:23–4:54).
 
 **Other developers:**
@@ -261,7 +261,7 @@ Create a git branch called try-implement and switch to it.
 ```
 
 6. Answer as it goes. Seams: reply "yes" (your message named them). A fixed point: "main". Where the spec is: "It's my /implement message." Told to run `/setup-matt-pocock-skills`: "There's no tracker; the plan is in my message. Carry on." A permission prompt to edit a file, run tests or commit: choose Yes. Press Esc to stop it at any point.
-7. If no review with Standards and Spec sections appeared, type `/mattpocock-skills:code-review main` to review everything since `main`.
+7. If no review with Standards and Spec sections appeared, type `/clear`, then `/mattpocock-skills:code-review main` to review everything since `main`.
 8. Type: "Show me the commits on main and on try-implement." Then type `/exit`.
 
 **It's working if:**
@@ -294,7 +294,7 @@ I built this site's redesign (a new Lesson, a photo for every Lesson, scroll mot
 
 **One collision, at merge time.** Tickets 03 and 04 both added photo credits to `unsplash.ts`. Before reporting done, 03 merged in the integration branch, which already held 04, and kept both sides of the conflict. Worktrees didn't prevent it; they moved it to the end.
 
-**The review.** Mid-build I asked whether to run the code review now or after. An early review still ran while 05 was building. After the build, the review found about 15 problems, like the home page calling Skills "commands"; one fix-up builder fixed them all. The pull request was opened only after the fix-up, never as the draft the Skill's steps open after the first merge, and `/pr` wrote its description.
+**The review.** Mid-build I asked whether to run the code review now or after. An early review still ran while 05 was building. After the build, the review found about 15 problems, like the home page calling Skills "commands"; one fix-up builder fixed them all. The pull request was opened only after the fix-up, never as the draft the Skill's steps open after the first merge, and my journal says `/pr` wrote its description.
 ```
 
 ## Cheat sheet
@@ -304,7 +304,7 @@ I built this site's redesign (a new Lesson, a photo for every Lesson, scroll mot
 | Small job, plan in the conversation | `/implement` + "the plan is in this conversation" |
 | Tickets, by hand | Branch → `/implement` one ticket → close it → `/clear` → next |
 | Whole spec, parallel harness | `/clear`, then `/implement-spec` + the spec's path |
-| No Standards and Spec review appeared | After the run's commit, `/mattpocock-skills:code-review main` |
+| No Standards and Spec review appeared | After the run's commit, `/clear`, then `/mattpocock-skills:code-review main` |
 | Going AFK | Sandbox, one pass by hand first, end on a branch |
 
 ## Final test

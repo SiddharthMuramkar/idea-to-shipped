@@ -188,7 +188,7 @@ You re-explain nothing, and the planning thread stays small. It's the first fork
 4. A subagent (a helper agent with its own fresh window), if the job can run unattended.
 5. Otherwise `/compact`, a Built-in command that replaces the conversation with a summary you can steer.
 
-One limit sits over step 1: near the edge of the Smart zone, don't carry on, whatever the next step wants. Go on down the list; for planning you still need, that usually means `/compact`. The detour lands on step 3: the prototype is a side task forked off mid-grilling. Going from planning straight to building, in the same place, with room left? Carry on: the build wants your reasoning word for word.
+One limit sits over step 1 while you're still planning: near the Smart zone's edge before `/to-tickets`, don't carry on, whatever the next step wants. Go on down the list; for planning you still need, that usually means `/compact`. The detour lands on step 3: the prototype is a side task forked off mid-grilling. Going from planning straight to building, in the same place, with room left? Carry on: the build wants your reasoning word for word.
 
 ```checkpoint compact-or-handoff
 Your UI variants are built, and you're about to start a round of feedback on them in the same folder. The session is near the edge of the Smart zone, and the next round needs the design decisions so far, though a summary of them would do. Which move fits?
