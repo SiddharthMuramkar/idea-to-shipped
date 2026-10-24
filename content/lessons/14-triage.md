@@ -90,9 +90,9 @@ On a book-swap site's tracker, one issue carries `bug`, `ready-for-human` and `n
 
 Triage is for work ==you didn't create==: bug reports, feature requests, anything that arrives raw from someone else. Matt runs it on every open-source repo he maintains (0:33). On GitHub or GitLab it can also cover external pull requests (a PR is a proposed change to the code, waiting to be merged) if you switch that on in `docs/agents/issue-tracker.md`; it's off by default. It then treats each PR as an issue with code attached.
 
-It is **not** for your own plans. When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) goes `/grill-with-docs` (the agent interviews you about your idea) → `/to-spec` → `/to-tickets`. A spec is a written description of what to build and why; tickets are small tasks cut from it, each buildable in one session (one Claude Code conversation). `/to-tickets` marks its tickets `ready-for-agent` unless you tell it otherwise, so triaging them only redoes finished work. See [Spec + tickets](/learn/spec-and-issues).
+It's **not** for your own plans. When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) goes `/grill-with-docs` (the agent interviews you about your idea), then `/to-spec` → `/to-tickets` if it's too big for one session (one Claude Code conversation). A spec is a written description of what to build and why; tickets are small tasks cut from it, each buildable in one session. `/to-tickets` marks its tickets `ready-for-agent` by default, so triaging them only redoes finished work. See [Spec + tickets](/learn/spec-and-issues).
 
-So there are two lanes, yours and other people's, and they ==meet at the same label==. Both end as an issue marked `ready-for-agent`, which `/implement` (Matt's Skill that builds from a ticket) or an AFK runner (a script that hands each ticket to an agent, unattended) picks up the same way. See [Implement](/learn/implement) and [The main flow](/learn/main-flow).
+So there are two lanes, yours and other people's. When yours ends in tickets, they ==meet at the same label==: `ready-for-agent`, which `/implement` (Matt's Skill that builds from a ticket) or an AFK runner (a script that hands each ticket to an agent) picks up the same way. See [Implement](/learn/implement) and [The main flow](/learn/main-flow).
 
 | What you have | Reach for |
 |---|---|
@@ -107,7 +107,7 @@ So there are two lanes, yours and other people's, and they ==meet at the same la
 Twelve new bug reports land in your tracker overnight. In the morning you type "lots of new issues, can you triage them?" with no slash anywhere. What happens?
 - [ ] The agent loads `/triage`, because your words match its description.
   > Only model-invoked Skills can be started by plain words. `/triage` is user-invoked.
-- [x] Nothing loads `/triage`. You have to type it yourself.
+- [x] Nothing loads `/triage` until you type it at the start of a message.
   > Right. Type `/triage` at the start of your message, then say what you want in plain words.
 - [ ] `/triage` loads, but only after you approve a permission prompt.
   > There's no prompt to approve. Plain words never load a user-invoked Skill, so type `/triage` yourself.
@@ -311,7 +311,7 @@ Don't triage or fix anything.
 /triage Show me anything that needs my attention.
 ```
 
-8. Type "Let's look at 01. Don't fix anything." When it recommends and waits, say go ahead, and answer any questions as the project's owner. At a permission prompt, choose Yes to run `count.sh` or to write to the three issue files or `.out-of-scope/`. Choose No to anything else, such as changing `count.sh`; if it's already changing it, press Esc. Then do 02: let it post Triage Notes, but don't answer them (you aren't the reporter). Then do 03: say you won't build it, because the README says the tool never changes files.
+8. Type "Let's look at 01. Don't fix anything." When it recommends and waits, say go ahead, and answer any questions as the project's owner. At a permission prompt, choose Yes unless it wants to change `count.sh`. If it does, or starts changing it anyway, press Esc and type "Don't fix it; carry on with the triage." Then do 02: let it post Triage Notes, but don't answer them (you aren't the reporter). Then do 03: say you won't build it, because the README says the tool never changes files.
 9. To see what it wrote, ask "Show me 01-wrong-count.md": its notes are at the bottom, under `## Comments`. Type `/exit` when you're done.
 
 **It's working if:**
@@ -356,7 +356,7 @@ Not used on this site yet. Every ticket here came from my own planning, never fr
 
 ```test scenario-which-to-triage
 Your tracker holds six new items for a climbing gym's booking page: four tickets `/to-tickets` cut from a plan you grilled yourself, plus a bug report and a feature idea a member emailed in, which you pasted in as issues. Which go through `/triage`?
-- [x] Only the two pasted ones, because someone else sent them.
+- [x] Only the two pasted ones, because they came from someone else.
   > Right. Triage is the lane for work other people send in. Your own tickets are already `ready-for-agent`.
 - [ ] All six: nothing should reach an agent without a triage pass.
   > Both lanes end at `ready-for-agent`. Your tickets got there through the Main flow, so triaging them would only redo the work.
@@ -366,24 +366,24 @@ Your tracker holds six new items for a climbing gym's booking page: four tickets
   > Triage handles bugs and enhancements alike. What matters is who created the work, not its category.
 ```
 
-```test scenario-rejected-bug
-On a bus-timetable site, a reporter says the page layout breaks. Triage confirms it happens only when one ad-blocking browser extension rewrites the page, and you decide not to fix it. What does triage do?
-- [ ] Writes `.out-of-scope/ad-blocker-layout.md`, links it from a comment, then closes.
-  > That folder is for rejected enhancements. A rejected bug gets an explanation, not a file.
-- [x] Closes it as `wontfix` with a polite comment explaining why.
-  > Right. A rejected bug is explained and closed; nothing goes into `.out-of-scope/`.
-- [ ] Marks it `ready-for-human`, since only a person can install the extension.
-  > You've decided not to fix it, so nobody needs to build or test anything.
-- [ ] Marks it `needs-info` and asks the reporter to uninstall the extension.
-  > Triage already confirmed the cause and you've made the call. Close it and say why.
+```test scenario-which-out-of-scope
+Four requests on a bus-timetable site end up closed or set aside this week. Which one gets a file in `.out-of-scope/`?
+- [ ] A bug report about a layout glitch that only one ad-blocker causes, which you won't fix.
+  > A rejected bug gets a polite explanation and is closed. The folder is only for rejected enhancements.
+- [x] A request for live bus positions, ruled out because the site only shows timetables.
+  > Right. It's a rejected enhancement with a lasting reason, so it gets one file for the idea, and later requests join its Prior requests.
+- [ ] A request to download timetables as a PDF, which the Download button already does.
+  > Already built: close it with a pointer to the button. Recording a built feature as rejected would mislead later duplicate checks.
+- [ ] A request for a route planner you'd like but have no time for yet.
+  > That's a delay, not a rejection. "No time yet" isn't a lasting reason, so nothing goes in the folder.
 ```
 
 ```test scenario-quick-override
 Yesterday you reproduced the bug in issue #31 yourself, and the reporter answered your last question in the issue's comments. You're sure it's ready for an agent. What's the fastest correct move?
 - [ ] Write "please move #31 to ready-for-agent" in plain words and wait for triage to start.
   > Plain words can't start a user-invoked Skill. Type `/triage` first.
-- [x] `/triage Move #31 to ready-for-agent.`
-  > Right. Triage trusts you, says what it will change, applies it without grilling, and asks whether you want a brief.
+- [x] `/triage Move #31 to ready-for-agent.`, then say yes to a brief.
+  > Right. Triage trusts you, says what it will change and applies it without grilling. Say yes to the brief: an AFK agent builds from it.
 - [ ] `/triage Let's look at #31` and let it run every step again.
   > That works, but it re-reads, re-checks and re-recommends what you already know. The quick override skips all that.
 - [ ] Wait for the reporter to add the label to the issue themselves.
@@ -391,7 +391,7 @@ Yesterday you reproduced the bug in issue #31 yourself, and the reporter answere
 ```
 
 ```test scenario-already-built
-On a recipe site, someone asks for a printable version of each recipe. Triage's already-built check finds a working Print button on every recipe page. What's the right outcome?
+On a recipe site, someone asks for a printable version of each recipe. Searching the code, triage finds a working Print button on every recipe page. What's the right outcome?
 - [ ] `wontfix`, with a new `.out-of-scope/printable-recipes.md` file.
   > That folder is for rejected requests. Recording a built feature there would make future checks call it rejected.
 - [ ] `ready-for-human`, so a person can check the Print button works.
@@ -399,7 +399,7 @@ On a recipe site, someone asks for a printable version of each recipe. Triage's 
 - [x] `wontfix`, with a closing comment that points to the Print button.
   > Right. Already built means closing with a pointer, and nothing goes into `.out-of-scope/`.
 - [ ] `needs-info`, asking the reporter why they want a feature that already exists.
-  > The already-built check answered the question. Point them to the button and close.
+  > Triage's search already answered the question. Point them to the button and close.
 ```
 
 ```test scenario-needs-human
@@ -416,7 +416,7 @@ Which of these reports should end up `ready-for-human` rather than `ready-for-ag
 
 ```test spot-brief-paths
 One line of a triage brief for a to-do app reads: "Open src/lib/tasks.ts and change line 88 so the due date uses the user's time zone." Spot the mistake.
-- [x] It names a file and a line number that will go stale.
+- [x] It points to a file and a line number, and both will soon go stale.
   > Right. Briefs should be durable: describe the behaviour and name types or functions, never paths or lines.
 - [ ] It should spell out the code to write, so the agent can't get it wrong.
   > That adds procedure. Briefs describe behaviour and let the agent choose how.
@@ -434,7 +434,7 @@ Sam typed `/triage Move #12 to ready-for-agent` on a bug report and had it write
   > An AFK agent works with nobody to ask. The check belongs in triage, before the label goes on.
 - [ ] Sam should have had triage grill him before writing the brief.
   > Grilling fleshes out a fuzzy request. It can't tell you whether a bug is real; reproducing it can.
-- [x] Sam should have had the bug reproduced before any brief.
+- [x] Sam should have had triage check the bug was real before the brief.
   > Right. The normal flow reproduces a bug before any brief; a quick override skips that, so use it only on a claim you've already checked.
 ```
 
@@ -468,7 +468,7 @@ On a bakery's tracker, issue #9 carries `bug` and `needs-info`. The customer rep
   > New details still have to be evaluated, and the claim verified, before anything is agent-ready.
 - [ ] `bug`, `needs-info` and `needs-triage`, until you've read the reply.
   > Two states at once is the clash triage flags. An issue carries exactly one state.
-- [x] `bug` and `needs-triage`, to be evaluated again.
+- [x] `bug` and `needs-triage`, so you can evaluate it again with the reply.
   > Right. The category stays; the one state goes back to `needs-triage` for another look.
 - [ ] `needs-triage` alone, since the category is decided again from scratch.
   > Every triaged issue keeps exactly one category alongside its one state.
