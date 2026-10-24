@@ -26,7 +26,7 @@ Some reports are real bugs, some can't be reproduced, some ask for things you ru
 Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, built `/triage` for exactly this. A Skill is a short instruction file the agent loads when you type its name, like `/triage`, or, for some Skills, when your request matches what the Skill is for; [Skills](/learn/skills) covers the details. In his May 2026 video on triage, he notes that most Skill setups suit a solo developer: once other people file ideas, someone must decide if each is worth building, really a bug, and reproducible (0:00–0:31). Triage hands that legwork to the agent while every call stays yours: ==it recommends, then waits==.
 
 ```callout big-idea
-Triage itself writes no code. Every item ends with a brief (for an agent, or for a person), specific questions for the reporter, or a closed issue with the reason on record.
+Triage itself writes no code. Every item ends with a brief (written instructions to build from, for an agent or a person), specific questions for the reporter, or a closed issue with the reason on record.
 ```
 
 ## The idea: two roles and a small state machine
@@ -46,9 +46,9 @@ A label is a tag on an issue, like `bug`. Triage treats labels as **roles**, and
 
 Matt calls an agent working unattended an AFK agent: away from keyboard, perhaps overnight, with nobody to ask. So anything marked `ready-for-agent` must be safe to build without a single question.
 
-An issue can't be "ready for a human" and "not evaluated yet" at once, so the rule is ==exactly one category and one state==. If triage finds two state labels on one issue, it flags the clash and asks you before doing anything else. That rule is what makes this a state machine: a fixed set of states, and fixed moves between them.
+An issue can't be "ready for a human" and "not evaluated yet" at once, so the rule is ==exactly one category and one state==. If triage finds two state labels on one issue, it flags the clash and asks you before doing anything else. That makes it a state machine: one state at a time, with fixed moves between them.
 
-- A new, unlabelled issue normally goes to `needs-triage` first, and from there to one of the other four. A quick first pass can stop at `needs-triage`; a full look at one issue can make both moves at once, as in the session below.
+- A new, unlabelled issue normally goes to `needs-triage` first, and from there to one of the other four. A quick first pass can stop at `needs-triage`; a full look at one issue can make both moves at once, as in the session (one Claude Code conversation) below.
 - When the reporter answers, a `needs-info` issue goes back to `needs-triage` for another look. The Skill doesn't watch for replies: your next triage run lists the reply, and the issue moves back when you look at it.
 - You can override any move. If one looks unusual, triage flags it and asks first.
 
@@ -90,7 +90,7 @@ On a book-swap site's tracker, one issue carries `bug`, `ready-for-human` and `n
 
 Triage is for work ==you didn't create==: bug reports, feature requests, anything that arrives raw from someone else. Matt runs it on every open-source repo he maintains (0:33). On GitHub or GitLab it can also cover external pull requests (a PR is a proposed change to the code, waiting to be merged) if you switch that on in `docs/agents/issue-tracker.md`; it's off by default. It then treats each PR as an issue with code attached.
 
-It's **not** for your own plans. When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) goes `/grill-with-docs` (the agent interviews you about your idea), then `/to-spec` → `/to-tickets` if it's too big for one session (one Claude Code conversation). A spec is a written description of what to build and why; tickets are small tasks cut from it, each buildable in one session. `/to-tickets` marks its tickets `ready-for-agent` by default, so triaging them only redoes finished work. See [Spec + tickets](/learn/spec-and-issues).
+It's **not** for your own plans. When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) goes `/grill-with-docs` (the agent interviews you about your idea), then `/to-spec` → `/to-tickets` if it's too big for one session. A spec is a written description of what to build and why; tickets are small tasks cut from it, each buildable in one session. `/to-tickets` marks its tickets `ready-for-agent` by default, so triaging them only redoes finished work. See [Spec + tickets](/learn/spec-and-issues).
 
 So there are two lanes, yours and other people's. When yours ends in tickets, they ==meet at the same label==: `ready-for-agent`, which `/implement` (Matt's Skill that builds from a ticket) or an AFK runner (a script that hands each ticket to an agent) picks up the same way. See [Implement](/learn/implement) and [The main flow](/learn/main-flow).
 
@@ -109,15 +109,15 @@ Twelve new bug reports land in your tracker overnight. In the morning you type "
   > Only model-invoked Skills can be started by plain words. `/triage` is user-invoked.
 - [x] Nothing loads `/triage` until you type it at the start of a message.
   > Right. Type `/triage` at the start of your message, then say what you want in plain words.
-- [ ] `/triage` loads, but only after you approve a permission prompt.
-  > There's no prompt to approve. Plain words never load a user-invoked Skill, so type `/triage` yourself.
+- [ ] `/triage` loads, but Claude Code asks your permission first.
+  > There's nothing to approve. Plain words never load a user-invoked Skill, so type `/triage` yourself.
 - [ ] `/setup-matt-pocock-skills` runs first and then hands over to `/triage`.
   > Setup is user-invoked too, and no Skill can start a user-invoked one.
 ```
 
 ## A session, step by step
 
-Type `/triage` and say what you want; later messages in the same session carry on with it. You can ask what needs attention, look at one issue, move one yourself, or ask what agents can pick up. Examples below use `#42`, meaning issue number 42; on a local tracker, give the file's number instead, like 01.
+Triage carries on through later messages in the same session. You can ask what needs attention, look at one issue, move one yourself, or ask what agents can pick up. Examples below use `#42`, meaning issue number 42; on a local tracker, give the file's number instead, like 01.
 
 **`/triage Show me anything that needs my attention`** lists three buckets, oldest first, with a count and a one-line summary per item: unlabelled issues (never triaged), `needs-triage` (evaluation in progress), and `needs-info` issues where the reporter has replied since the last triage notes. Then you pick one.
 
@@ -150,7 +150,7 @@ you: Post it.
 agent: Added under `## Comments`, starting with the AI-triage disclaimer. The file now records **bug** as its category and `Status: needs-info`.
 ```
 
-**Quick override.** When you already know the answer, say so: `/triage Move #42 to ready-for-agent.` Triage trusts you and applies the state directly, with no grilling, after telling you what it will change (labels, any comment, closing). It doesn't reproduce anything first, so use it on claims you've already checked. For `ready-for-agent`, it asks whether you want a brief written.
+**Quick override.** When you already know the answer, say so: `/triage Move #42 to ready-for-agent.` Triage trusts you and applies the state directly, with no grilling, after telling you what it will change. It doesn't reproduce anything first, so use it on claims you've already checked. For `ready-for-agent`, it asks whether you want a brief written.
 
 ```checkpoint vague-report-question
 A report on a recipe app says only "search is broken". Triage can't reproduce it and picks `needs-info`. Which question belongs in its Triage Notes?
@@ -173,7 +173,7 @@ When an issue moves to `ready-for-agent`, triage posts an **agent brief**, a str
 - **Acceptance criteria you can check:** the tests of "done", each one checkable on its own, so the agent knows when it's finished.
 - **An out-of-scope list,** so the agent doesn't gold-plate (add extras nobody asked for) or wander into neighbouring features.
 
-Here's the Skill's template filled in for a quirk this site's notes record. The ticket that built Lesson pages accepted, for v1, that an unknown address like `/learn/nope` showed the not-found page but answered with status 200 (the web's code for "OK") instead of 404 ("not found"). If a Visitor reported it, triage reproduced it, and you decided to fix it, the brief might read:
+Here's the Skill's template filled in for a quirk this site's notes record. The ticket that built Lesson pages accepted, for the first version, that an address ending in an unknown Slug (a Lesson's one-word name), like `/learn/nope`, showed the not-found page but answered with status 200 (the web's code for "OK") instead of 404 ("not found"). If a Visitor reported it, triage reproduced it, and you decided to fix it, the brief might read:
 
 ```md
 > *This was generated by AI during triage.*
@@ -270,8 +270,8 @@ A book-club site has `.out-of-scope/member-profiles.md`. A new request asks for 
 **Other developers:**
 
 - A developer whose non-technical team feeds user feedback into GitHub reported in August 2026 (issue #863) that the team finds the `needs-info` comments long and draining. A question costs the agent nothing to write and a person real time to answer, so keep them few and short.
-- afk.sh, a community project from September 2026, runs `/implement` overnight on each ticket triage labelled `ready-for-agent`, one fresh session per ticket. Its author's last run finished ten tickets in 62 minutes.
-- Matt's docs tell of a bulk pass over many issues. The agent judged them all from the quick listing meant for picking one, which in that setup left out comments, so three issues whose comments already said "already fixed, recommend closing" got fresh briefs.
+- afk.sh, a community project from September 2026, runs `/implement` overnight on each ticket triage labelled `ready-for-agent`, one fresh session per ticket.
+- In a bulk pass Matt's docs describe, the agent judged many issues from the quick listing meant for picking one, which in that setup left out comments, so three issues whose comments already said "already fixed, recommend closing" got fresh briefs.
 
 ## Try it yourself
 
@@ -311,7 +311,7 @@ Don't triage or fix anything.
 /triage Show me anything that needs my attention.
 ```
 
-8. Type "Let's look at 01. Don't fix anything." When it recommends and waits, say go ahead, and answer any questions as the project's owner. At a permission prompt, choose Yes unless it wants to change `count.sh`. If it does, or starts changing it anyway, press Esc and type "Don't fix it; carry on with the triage." Then do 02: let it post Triage Notes, but don't answer them (you aren't the reporter). Then do 03: say you won't build it, because the README says the tool never changes files.
+8. Type "Let's look at 01. Don't fix anything." When it recommends and waits, say go ahead, and answer any questions as the project's owner. At a permission prompt (Claude Code asking before it acts), choose Yes unless it wants to change `count.sh`. If it does, or starts changing it anyway, press Esc and type "Don't fix it; carry on with the triage." Then do 02: let it post Triage Notes, but don't answer them (you aren't the reporter). Then do 03: say you won't build it, because the README says the tool never changes files.
 9. To see what it wrote, ask "Show me 01-wrong-count.md": its notes are at the bottom, under `## Comments`. Type `/exit` when you're done.
 
 **It's working if:**
@@ -335,7 +335,7 @@ Don't triage or fix anything.
 - **Expecting a root cause.** Verification is shallow on purpose: is it real, and roughly where? For a stubborn bug, use `/diagnosing-bugs`.
 
 ```site-story
-Not used on this site yet. Every ticket here came from my own planning, never from someone else's report: the v1 tickets started as `ready-for-agent`, apart from one `ready-for-human` step only I could do (connecting GitHub, Vercel and Neon). The repo is ready, with the five default labels in `docs/agents/triage-labels.md`; a Visitor's bug report would be the first thing to triage.
+Not used on this site yet. Every ticket here came from my own planning, never from someone else's report: the first version's tickets started as `ready-for-agent`, apart from one `ready-for-human` step only I could do (connecting GitHub, Vercel and Neon). The repo is ready, with the five default labels in `docs/agents/triage-labels.md`; a Visitor's bug report would be the first thing to triage.
 ```
 
 ## Cheat sheet

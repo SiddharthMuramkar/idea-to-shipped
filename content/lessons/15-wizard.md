@@ -30,14 +30,14 @@ The agent's old answer to that wall was a numbered list in the chat: "1. Go to t
 Matt Pocock, a developer and teacher, publishes a popular set of Skills for Claude Code. A Skill is a short instruction file the agent loads when you type its name or when a task matches its description ([Skills](/learn/skills) covers them). His answer to this wall is `/wizard`: when a job needs a human, the agent writes ==a script that guides you through it== instead of a list.
 
 ```callout big-idea
-The agent writes the wizard; you run it. Keys you type into the script go straight to a private file on your machine (`.env`) or to GitHub, never through the model.
+The agent writes the wizard; you run it. Keys you type into the script go straight to a private file on your machine (`.env`) or to GitHub (the website that keeps your code online), never through the model.
 ```
 
 ## The idea: you're the hands, the script is the guide
 
 A wizard is a bash script: a file of terminal commands that runs top to bottom (bash is a terminal language built into every Mac and Linux machine). It walks you through a manual job in **stages**, one focused task each. A stage clears the screen, shows "Stage 2/4", opens the right web page in your browser (or prints the link if it can't), tells you exactly what to click and copy, then waits for you to paste, saves the value and moves on. At the end it shows a summary of what it wrote and anything you still have to do by hand.
 
-It's built for four kinds of job: provisioning infrastructure (creating servers, databases and other cloud services); credentials and CI secrets (CI, short for continuous integration, means servers that run your tests every time you push, or send, new changes to GitHub, the website that keeps your code online); clicking through an unfamiliar third-party dashboard; and a one-off migration or cutover (moving a project from one setup to another, once).
+It's built for four kinds of job: provisioning infrastructure (creating servers, databases and other cloud services); credentials and CI secrets (CI, short for continuous integration, means servers that run your tests every time you push, or send, new changes to GitHub); clicking through an unfamiliar third-party dashboard; and a one-off migration or cutover (moving a project from one setup to another, once).
 
 Most values land in one of two places. **`.env`** is a private settings file in your project folder that your code reads values from. **GitHub secrets and variables** are values stored in your project's settings on GitHub, where CI can read them: secrets stay hidden, variables are visible.
 
@@ -45,7 +45,7 @@ Every wizard starts as a copy of the same file, `template.sh`, which ships with 
 
 **Who starts it.** Wizard is a model-invoked Skill: you can start it by typing `/wizard`, or the agent can pick it up by itself. Since version 1.2 (August 2026), an agent that hits a credentials wall mid-build offers you a wizard instead of a numbered list. Plain words can be enough: "help me set up the database".
 
-**What it's not for.** The Skill's own description rules out steps the agent can perform itself. If you're already signed in to a command-line tool that can create the thing (GitHub's `gh`, say), the agent runs it with your login and creates it itself. ==If the agent can do it, the agent should do it==; a wizard is only for the logins, clicks and approvals that genuinely need you.
+**What it's not for.** The Skill's description rules out steps the agent can perform itself. If you're signed in to a command-line tool (a program you run from the terminal) that can create the thing, like GitHub's `gh`, the agent runs it with your login. ==If the agent can do it, the agent should do it==; a wizard is only for the logins, clicks and approvals that need you.
 
 ```checkpoint which-belongs-in-wizard
 You're adding email alerts to a site. Four jobs are on the list. Which one belongs in a wizard stage?
@@ -111,10 +111,10 @@ Scoping gives every captured value a destination. A **secret** must stay private
 
 The template writes `.env` carefully: it replaces an old line rather than adding a duplicate, and creates the file so only your user account can read it. It writes GitHub secrets and variables with `gh`, GitHub's command-line tool. If `gh` isn't installed or signed in, the stage doesn't crash: it warns you, and the closing summary lists what to set by hand.
 
-**Why your secrets stay out of the model.** The wizard is a plain program in your terminal, and the model isn't connected to it. A key you type into a hidden prompt goes from your keyboard into `.env` or GitHub, and the conversation never sees it. That covers only values typed into the running script: ==a key you paste into the chat is in the model's context== like any other text. While scoping, describe values ("the secret key from the dashboard"); never paste them.
+**Why your secrets stay out of the model.** A key you type into a hidden prompt goes from your keyboard into `.env` or GitHub, and the conversation never sees it. That covers only values typed into the running script: ==a key you paste into the chat is in the model's context== like any other text. While scoping, describe values ("the secret key from the dashboard"); never paste them.
 
 ```callout tip
-Claude Code can open `.env` like any project file. To have the agent confirm a value landed, ask it to test the value (with a connection check, say) without opening the file or printing it.
+Scoping reads your `.env` files, and Claude Code can open them like any project file. Once real keys are saved, ask the agent to look only at the names in `.env`, and to confirm a value landed by testing it (a connection check, say) without printing it.
 ```
 
 ```checkpoint public-ci-value
@@ -204,7 +204,7 @@ Your wizard moves each customer's files to a new storage service, one batch per 
 
 ## Where it fits
 
-`/wizard` isn't a fixed step in Matt's Main flow (the path most work takes, from idea to shipped; see [The main flow](/learn/main-flow)). It's a standalone for whenever a manual step shows up, before, during or long after a build. It pairs with `/implement` (the Skill that builds a planned change; see [Implement](/learn/implement)) when a new feature needs credentials. Its nearest neighbour, `/setup-matt-pocock-skills`, sets up the Skills themselves in a repo; a wizard sets up everything else.
+`/wizard` isn't a fixed step in Matt's Main flow (the path most work takes, from idea to shipped; see [The main flow](/learn/main-flow)). It's a standalone for whenever a manual step shows up, before, during or long after a build. It pairs with `/implement` (the Skill that builds a planned change; see [Implement](/learn/implement)) when a feature needs credentials. Its nearest neighbour, `/setup-matt-pocock-skills`, sets up the Skills in a repo; a wizard covers your part of other setups.
 
 Don't use a wizard to decide *what* to build. That's `/grill-with-docs`, where the agent interviews you until the plan is clear ([Domain modeling](/learn/domain-modeling)), then `/to-spec`, which writes it down as a spec (a written plan).
 
@@ -298,7 +298,7 @@ The ticket (a written-up task) was "Connect GitHub, Vercel and Neon": logins and
 1. Connect Neon to Vercel, with clicks in the browser.
 2. Download my laptop's database password. No clicks: the script did it.
 3. Paste my test database's password, with hidden typing.
-4. Merge PR #1, my first pull request (a proposed change you review before it joins the main code). Merging it set off the first production deploy (the build of the live site).
+4. Merge PR #1, my first pull request (a proposed change you review before it joins the main code).
 
 **My first run failed, harmlessly.** I ran it inside the Claude chat with `!`, which can't press Enter, so it raced through every question. Then I ran it in my code editor's own terminal.
 
@@ -306,7 +306,7 @@ The ticket (a written-up task) was "Connect GitHub, Vercel and Neon": logins and
 
 **Reality changed the plan.** The Neon–Vercel connection named my laptop's database branch `vercel-dev`, not `dev`, so PR #1 updated the site's spec to match.
 
-**It was never committed.** The ticket was done once the agent could reach both databases from my laptop. The script was a one-time tool, so it never entered the repo's history.
+**It was never committed.** The ticket was done when the live site showed the placeholder page and the agent could reach both databases from my laptop. The script was a one-time tool, so it never entered the repo's history.
 ```
 
 ## Cheat sheet
@@ -356,8 +356,8 @@ Matt's Skills are already set up in your app's repo, but you haven't decided whe
   > Right. Deciding what to build is a grilling job. A wizard comes later, if a manual step turns up.
 - [ ] `/implement`, building a version with each provider.
   > Building before deciding wastes the work you throw away. Agree on what to build first.
-- [ ] `/setup-matt-pocock-skills`, which configures your outside services.
-  > It configures Matt's Skills in your repo, not payment providers or other services.
+- [ ] `/to-spec`, so the agent writes up the payment plan you'll follow.
+  > A spec writes down a plan you've already agreed, and nothing's decided yet. Grill first; `/to-spec` comes after.
 ```
 
 ```test scenario-local-and-ci
@@ -414,8 +414,8 @@ While writing a wizard for a maps service, the agent wants to reject any key sho
   > It can. Stage code can check a value before writing it, as this site's wizard did.
 - [ ] Nothing: in the library, every stage gets the check for free.
   > The library is identical in every wizard by design, so job-specific rules don't go there. Put the check in the stage that asks for the key.
-- [ ] Fine, if the agent makes the same edit in every other wizard.
-  > Then every wizard needs hand edits to stay identical. Keep the library as shipped; a check for this one job goes in its stage.
+- [ ] The agent's `bash -n` check should test the key's length instead.
+  > `bash -n` only checks the script's syntax before anyone runs it, and never sees your key. The key check runs in its stage, below the marker.
 - [x] The check belongs below the marker, in that key's stage.
   > Right. The library above the `STAGES` marker stays identical in every wizard; anything specific to this job goes in its stages.
 ```
@@ -456,5 +456,5 @@ Stage 3 of your 4-stage wizard opens a page that doesn't match its clicks. Stage
 - [Issue #954: PowerShell instead of bash on Windows](https://github.com/mattpocock/skills/issues/954), opened 2026-08-25, closed as not planned 2026-10-07 (maintainer: bash by design; ask for PowerShell in CLAUDE.md or edit your copy of the template).
 - [Issue #1295: template.sh prompt hits SC1087](https://github.com/mattpocock/skills/issues/1295), opened 2026-10-18, open when read 2026-10-24 (shellcheck flags one library line, plus notes for helpers a wizard doesn't call).
 - [Issue #963: open_url fails to open a browser on Windows Git Bash](https://github.com/mattpocock/skills/issues/963), opened 2026-08-26, open when read 2026-10-24 (a false "couldn't open a browser" warning).
-- This site: `.scratch/lesson-site/issues/02-accounts-and-environments.md`, the old journal Lesson `content/lessons/04-wizard.md` at commit d21fc2c, and [PR #1](https://github.com/SiddharthMuramkar/idea-to-shipped/pull/1) (commit c226730, 2026-10-21: `vercel-dev` in the spec and ADR 0002; the first production deploy).
+- This site: `.scratch/lesson-site/issues/02-accounts-and-environments.md`, the old journal Lesson `content/lessons/04-wizard.md` at commit d21fc2c, and [PR #1](https://github.com/SiddharthMuramkar/idea-to-shipped/pull/1) (commit c226730, 2026-10-21: `vercel-dev` in the spec and ADR 0002).
 ```

@@ -13,7 +13,7 @@ When something breaks, make the agent prove it can see the bug before it's allow
 ```goals
 - You'll be able to explain why an agent that guesses at a bug's cause wastes your time, and what makes a feedback loop tight.
 - You'll be able to put the Skill's six phases in order and say what has to be true before each next one starts.
-- You'll be able to steer a `/diagnosing-bugs` session: give the exact symptom, ask up front for any pause you want, and hand over steps only you can do.
+- You'll be able to steer a `/diagnosing-bugs` session: give the exact symptom, and hand over steps only you can do.
 - You'll be able to decide when to reach for `/diagnosing-bugs` instead of `/triage` or a plain question, and what to type once the fix is in.
 ```
 
@@ -21,15 +21,15 @@ When something breaks, make the agent prove it can see the bug before it's allow
 
 You tell Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal) that a comment from a Visitor (anyone reading this site) wouldn't post. It opens the comments code, spots something suspicious, changes it, runs the tests (small programs that check the code works), sees them pass and reports: fixed. Was it? The tests passed before the change too. Nothing ever showed the bug happening, so nothing can show it's gone.
 
-That's the default: given a bug report, a coding agent reads code and guesses, and sounds certain. Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, sums up the problem with a line his README (the front page of his Skills' repository, the online project folder that holds them) borrows from *The Pragmatic Programmer*: "The rate of feedback is your speed limit." In an April 2026 talk he added that agents have feedback (type checks, tests, a browser) but, unlike a veteran developer, do far too much before checking.
+That's the default: given a bug report, a coding agent reads code and guesses, and sounds certain. Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, sums up the problem with a line his README (the front page of his Skills' repository: the project folder holding them, shared online) borrows from *The Pragmatic Programmer*: "The rate of feedback is your speed limit." In an April 2026 talk he added that agents have feedback (type checks, tests, a browser) but, unlike a veteran developer, do far too much before checking.
 
-A Skill is a short instruction file the agent loads when you type its name, or when a task matches its description. ([Skills](/learn/skills) covers installing Matt's.) `/diagnosing-bugs` packages the veteran's habit: ==no theory until something goes red==. It's for the hard bugs: one that resists a first look, comes and goes, or crept in between two versions that worked. It's slow on purpose.
+A Skill is a short instruction file the agent loads when you type its name, or when a task matches its description. ([Skills](/learn/skills) covers installing Matt's.) `/diagnosing-bugs` packages the veteran's habit: ==no theory until something goes red== (red means failing, as test tools colour it; green means passing). It's for the hard bugs: one that resists a first look, comes and goes, or crept in between two versions that worked. It's slow on purpose.
 
 It's a model-invoked Skill. Besides typing `/diagnosing-bugs` yourself, the agent can start it on its own when you say "diagnose" or "debug this", or report that something is broken, throwing an error, failing or slow. It needs no setup.
 
 ## The idea: a loop that goes red
 
-A ==feedback loop== is a command that runs the code where the bug lives and gives a pass-or-fail verdict. Developers call a failing result red and a passing one green, after the colours test tools print. Building one is the Skill's whole first step, and everything later just uses it. Its SKILL.md (the instruction file) puts it bluntly: "Build the right feedback loop, and the bug is 90% fixed."
+A ==feedback loop== is a command that runs the code where the bug lives and gives a pass-or-fail verdict. Building one is the Skill's whole first step, and everything later just uses it. Its SKILL.md (the instruction file) puts it bluntly: "Build the right feedback loop, and the bug is 90% fixed."
 
 A loop only counts when it's **tight**, which means four things:
 
@@ -106,7 +106,7 @@ at: clean
 
 1. **Build a feedback loop.** Gate: one command, already run and shown, that's red on your symptom.
 2. **Reproduce and minimise.** It confirms the loop shows the failure *you* described, not one nearby (wrong bug, wrong fix), on repeated runs, and records the exact symptom. Then it cuts inputs, settings, data and steps one at a time, rerunning after each cut. Gate: ==every remaining piece is load-bearing==, so removing any one turns the loop green. A small repro leaves fewer suspects, and it becomes the regression test later.
-3. **Hypothesise.** Three to five ranked guesses at the cause, before testing any; a single guess tends to lock onto the first plausible idea. Each must be falsifiable (able to be proved wrong) by stating a prediction: a change that should make the bug vanish, or one that should make it worse, if the guess is right. A guess with no prediction is a vibe: sharpen it or drop it. It shows you the list before testing, the one point where the Skill invites your input, but it doesn't wait: if you're AFK (away from the keyboard), it carries on with its own ranking.
+3. **Hypothesise.** Three to five ranked guesses at the cause, before testing any; a single guess tends to lock onto the first plausible idea. Each must be falsifiable (able to be proved wrong) by stating a prediction: a change that should make the bug vanish, or one that should make it worse, if the guess is right. A guess with no prediction is a vibe: sharpen it or drop it. It shows you the list before testing, the one point in a normal run where it invites your input, but it never waits: it carries on with its own ranking.
 4. **Instrument.** Probes (small, temporary ways to watch the code run) each test one prediction, changing one thing at a time. A debugger (a tool that pauses running code so you can look inside) comes first, then targeted logs where the hypotheses disagree, never logging everything and searching the pile. Every debug log gets a unique tag like `[DEBUG-a4f2]`, so one search finds them all at cleanup. For something slow, it measures a baseline first, then narrows down.
 5. **Fix and regression test.** A regression test fails if this bug ever comes back. It's written before the fix, but only at a correct seam: one where a test recreates the bug the way it really happens. If the only seam is too shallow (a test calling the code from one place when the bug needs two at once, say), a test there gives false confidence, so ==a missing seam is itself the finding==, and the agent records it. Otherwise: turn the minimised repro into a failing test, watch it fail, fix, watch it pass, rerun the original loop. If it forced a failure by editing code or test data, it first checks that the edit really landed.
 6. **Cleanup.** Before declaring done: the original repro no longer reproduces; the regression test passes, or the missing seam is written down; a search for `[DEBUG-` finds nothing; throwaway code is gone; and the commit message (the note saved with a change) says which hypothesis was right.
@@ -136,7 +136,7 @@ agent: Loop: `bash repro.sh` posts a comment with that name to the dev server. O
 # Phase 2: it confirms the failure, then shrinks it until every piece matters.
 agent: Minimised: any page, a one-letter comment and a name of 26 🌸 still go red. 25 🌸 go green, and so do 26 plain letters. The count and the emoji both matter.
 # Phase 3: ranked hypotheses, each with a prediction. It shows you the list, then carries on without waiting.
-agent: 1. The length check counts each emoji as two. *Prediction:* counting characters instead makes 26 🌸 pass. 2. Invisible characters get added on the way in. *Prediction:* stripping them on arrival makes it pass. 3. The check measures screen width, where an emoji takes two columns. *Prediction:* 26 "漢" (also two columns wide) get refused too. Testing in this order; say if you want to re-rank.
+agent: 1. The length check counts each emoji as two. *Prediction:* counting characters instead makes 26 🌸 pass. 2. Invisible characters get added on the way in. *Prediction:* stripping them on arrival makes it pass. 3. The check measures display width, where an emoji takes the space of two letters. *Prediction:* other wide characters make it worse: 26 "漢" (also two letters wide) get refused too. Testing in this order; say if you want to re-rank.
 # Phase 4: one tagged probe per prediction. Then it pauses before the fix, as you asked.
 agent: `[DEBUG-7c1e] length=52 characters=26`: the name arrives intact, with nothing to strip (rules out 2). 26 "漢" post fine (rules out 3). JavaScript's `.length` counts each 🌸 as two, so the check compares 52 with 50 (confirms 1). Shall I fix it?
 # Phase 5: a regression test at the API (the address the comment box sends to), red before the fix, green after.
@@ -166,7 +166,7 @@ Diagnosing "gift cards are charged twice", the agent shows four ranked hypothese
 - **Hand over what only you know,** as soon as the list appears. Re-rank it in one line: "we changed #3 yesterday" or "I've ruled out #1".
 - **Ask for the pauses you want, up front:** "stop after the hypotheses" or "show me the root cause before you fix it". It has no pause of its own before the fix, and the repro and probes still come first.
 - **Keep secrets out of what you paste.** The Skill redacts what it shows; what you paste is yours to strip.
-- **Do the human-only steps through its script.** If a person must sign in, click or read a screen, the agent fills in its template, `hitl-loop.template.sh`: a bash script (a file of terminal commands) of steps ("Sign in, then press Enter") and questions ("Did the error appear? y/n") whose answers come back as `KEY=VALUE` lines. Signing in stays a step, never a captured answer, since answers are shown to the agent. The agent runs it while you answer, but Claude Code's chat can't press Enter for a script. If the prompts race past or it quits, run it yourself in a second terminal window (on Windows, Git Bash from the Start menu: PowerShell can't run bash scripts). Type `bash`, a space and the script path the agent gives you, then paste the `KEY=VALUE` lines back.
+- **Do the human-only steps through its script.** If a person must sign in, click or read a screen, the agent fills in its template, `hitl-loop.template.sh`: a bash script (a file of terminal commands) of steps ("Sign in, then press Enter") and questions ("Did the error appear? y/n") whose answers come back as `KEY=VALUE` lines. Signing in stays a step, never a captured answer, since answers are shown to the agent. If the agent runs it, it stops at the first prompt: nobody can type into the agent's terminal. So ask for the script's full path and run it yourself in a second terminal window (on Windows, Git Bash from the Start menu: PowerShell can't run bash scripts): type `bash`, a space and that path, then paste the `KEY=VALUE` lines back.
 
 | Your situation | Reach for |
 |---|---|
@@ -179,15 +179,15 @@ Diagnosing "gift cards are charged twice", the agent shows four ranked hypothese
 | A quick question you want answered now | Ask, and say you want a plain answer, not a diagnosis |
 
 ```checkpoint pause-first
-You want to agree with the root cause before the agent starts fixing the bug. How do you get that pause?
+You want to approve the agent's diagnosis before it starts fixing the bug. How do you get that pause?
 - [ ] Nothing to do: it always waits for approval before the fix.
   > It doesn't. Only the hypothesis list is shown to you, and even that doesn't block.
-- [x] Ask when you start: "show me the root cause first".
+- [x] Say so when you start: "check with me before fixing".
   > Right. The Skill has no pause before the fix, so say you want one when you invoke it.
 - [ ] Choose No at its first permission prompt for an edit.
-  > New sessions start in auto mode, so there may be no prompt at all. And its first edits are for the loop and probes, not the fix: saying No there stalls the diagnosis.
+  > New sessions start in auto mode, where the agent stops asking for each step, so there may be no prompt at all. And its first edits are for the loop and probes, not the fix: saying No there stalls the diagnosis.
 - [ ] Watch closely and press Esc, which stops it, when the fix starts.
-  > By then it's already fixing, and you never got to agree with the cause.
+  > By then it's already fixing, and you never got to approve the diagnosis.
 ```
 
 ## After the fix
@@ -318,7 +318,7 @@ The lesson I took: look at the evidence (the logs, the actual database rows) bef
 A stranger opens an issue on your open-source project: "Export is broken, please fix." There are no steps and no error text, and you haven't confirmed it. Which Skill do you start with?
 - [ ] `/diagnosing-bugs`, so the agent builds a loop right away
   > It needs a symptom it can make go red. A vague, unconfirmed report from someone else should be checked and written up first.
-- [x] `/triage`, to check it's real and get it written up
+- [x] `/triage`, to label it and choose its next step
   > Right. Raw reports from other people go through `/triage` first; it does a light version of reproducing and confirming.
 - [ ] `/tdd`, to write tests for the export feature first
   > `/tdd` builds planned behaviour test-first. You don't yet know what's wrong, or whether anything is.
@@ -327,7 +327,7 @@ A stranger opens an issue on your open-source project: "Export is broken, please
 ```
 
 ```test scenario-quick-question
-You ask: "Why might a row of buttons overflow on small screens?" You want a quick explanation, but the agent starts setting up a reproduction harness. What's your best move?
+You ask: "Why might a row of buttons overflow on small screens?" You'd like a two-line answer, but the agent starts setting up a reproduction harness. What's your best move?
 - [ ] Let it carry on; the loop will make the answer more accurate.
   > For a general question with no specific bug, a full diagnosis is slow overhead. The Skill is built for hard, specific defects.
 - [ ] Type `/clear`, then ask the same question again.
