@@ -152,7 +152,7 @@ Your part: name the question, react, ask for a mix, say when it's done, and ask 
 
 ## The detour: /handoff out and back
 
-A prototype can be hungry. Tokens are the small chunks of text AI usage is measured in, and everything in a session lives in the agent's context window, its working memory. As it fills, the model reasons less sharply; Matt calls the clear-thinking part the Smart zone, about 150k tokens as a rule of thumb. In his May 2026 handoff video, one prototype session alone reached about 169k. Pour that into your planning session and you push it out of the Smart zone just when the interview needs it sharp.
+A prototype can be hungry. Tokens are the small chunks of text AI usage is measured in, and everything in a session lives in the agent's context window, its working memory. As it fills, the agent reasons less sharply; Matt calls the clear-thinking part the Smart zone, about 150k tokens as a rule of thumb. In his May 2026 handoff video, one prototype session alone reached about 169k. Pour that into your planning session and you push it out of the Smart zone just when the interview needs it sharp.
 
 Inside a project, Matt plans with `/grill-with-docs`: the same interview, plus a glossary of the project's words ([Domain modeling](/learn/domain-modeling)). When a question there needs a prototype, he takes a detour, bridged by `/handoff`. That Skill writes a summary of the conversation to a markdown file (plain text with light formatting) in your computer's temp folder, not the project. The file names the Skills the next agent should load, points at existing files instead of copying them, and leaves out secrets. `/handoff` is ==user-invoked==: the agent never starts it, so you type it, followed by what the next session is for. The fresh session is just `claude` in a second terminal window, asked to read the file at that path.
 
@@ -197,7 +197,7 @@ Your UI variants are built, and you're about to start a round of feedback on the
 - [ ] `/clear`, then describe the variants to the agent all over again.
   > Clearing throws away the design decisions the next round needs.
 - [ ] Keep going as you are; the window holds 1M tokens, so there's plenty of room.
-  > The limit that matters is quality, not size. Near the edge of the Smart zone, the model reasons less sharply even with most of the window free.
+  > The limit that matters is quality, not size. Near the edge of the Smart zone, the agent reasons less sharply even with most of the window free.
 - [x] `/compact` with a note saying more QA (testing by hand) is coming.
   > Right. Near the edge you don't push on; nothing is disposable, nothing travels, and you're staying in the loop. That's where the checklist lands, and it's what Matt did before a feedback round in his July 2026 video.
 ```
@@ -209,7 +209,7 @@ Your UI variants are built, and you're about to start a round of feedback on the
 - **He reacts, then mixes.** In his July 2026 video, flipping through three search-bar variants, he liked A's search box and C's layout, and got a D combining them (4:01–7:36).
 - **He compacts when nothing travels**: at about 100k tokens, staying put, with more QA to come (5:46–6:08).
 - **He hands the winner to an agent that builds it unattended**, plugging it in and removing the prototype code, with the branch as reference (8:03–8:39).
-- **Not just screens.** The rules behind the screens get logic prototypes too; the Skill then said to build a terminal app (8:53–9:50).
+- **Not just screens.** The rules behind the screens get logic prototypes too; before 1.2.0, the Skill built a terminal app (8:53–9:50).
 - **The round trip.** In May 2026, at question 13 of a grilling session, he handed off to prototype the hard parts, handed the lessons back, then finished grilling and wrote the spec and tickets (7:20–9:13).
 - **Sometimes he skips it.** In March 2026 he chose code over prototyping a few UI versions, then found in QA that a prototype phase could have caught the problem (18:56–19:37, 38:31–39:02).
 
@@ -248,11 +248,11 @@ claude plugin install mattpocock-skills@claude-plugins-official
 ```
 
 5. Its reply names the HTML file, in your book-loans folder. Double-click it in File Explorer or Finder, or ask the agent to open it.
-6. Run every walkthrough tab, then try to break the rules with free play: renew three times, renew an overdue book. If something surprises you, ask for a new button or scenario.
-7. Capture it (a DECISION.md file stands in for the ticket):
+6. Run every walkthrough tab, then try to break the rules with free play: renew three times, renew an overdue book. If something surprises you, ask for a new button or scenario. Ask whether the rules block touches the page.
+7. Capture it (`loans.js` stands in for real code, `DECISION.md` for the ticket):
 
 ```text
-We're done. Commit the prototype to a new prototype/book-loans branch that is never merged. Then switch back to main, write DECISION.md with the question, the verdict, what the prototype settled and a pointer to that branch, and commit it.
+We're done. Commit the prototype to a new prototype/book-loans branch that is never merged. Then switch back to main, copy the rules block into a new loans.js, write DECISION.md with the question, the verdict, what the prototype settled and a pointer to that branch, and commit both.
 ```
 
 8. Type `/exit`, then run `git branch` and `ls` in the same terminal.
@@ -263,19 +263,19 @@ We're done. Commit the prototype to a new prototype/book-loans branch that is ne
 - [ ] It opened by double-click: no install, no server.
 - [ ] A labelled state panel, not raw data, changes after every click.
 - [ ] There are free-play buttons and walkthrough tabs, and one tab tries something that should be impossible.
-- [ ] Asked whether the rules part of the file touches the page or its buttons, the agent says no.
+- [ ] The agent said the rules block doesn't touch the page.
 - [ ] A click surprised you, or you convinced yourself nothing would.
-- [ ] `git branch` lists `prototype/book-loans` and `* main`, and `ls` shows `DECISION.md` but no HTML file.
+- [ ] `git branch` lists `prototype/book-loans` and `* main`; `ls` shows `DECISION.md` and `loans.js` but no HTML file.
 
-**Stretch: the round trip.** Do this instead of steps 4 to 6. In the first window, paste the step 4 prompt without `/prototype`, add "Grill me on this, and don't build anything yet", and answer a question or two. Then type `/handoff prototype these loan rules in a fresh session and report back`, and copy the file path it shows (if none, ask where it saved the file). In a second terminal window, run `cd book-loans`, then `claude`, then type `Read`, the path and `and continue` (Yes if it asks to read the file). Do steps 5 and 6 there, then type `/handoff back to the first session: the verdict and anything non-obvious`. In the first window, type `Read` and the new path, then do steps 7 and 8 there. It's working if each file is short, points at files rather than copying them, and the first lists the prototype Skill under suggested Skills.
+**Stretch: the round trip.** Do this instead of steps 4 to 6. In the first window, paste the step 4 prompt without `/prototype`, add "Grill me on this, and don't build anything yet", and answer a question or two. Then type `/handoff prototype these loan rules in a fresh session and report back`, and copy the file path it shows (if none, ask where it saved the file). In a second terminal window, run `cd book-loans`, then `claude`, then type `Read`, the path and `and continue` (Yes if it asks to read the file). Do steps 5 and 6 there, then type `/handoff back to the first session: the verdict and anything non-obvious`. In the first window, type `Read` and the new path, then do steps 7 and 8 there. It's working if both files are short, the first suggests the prototype Skill, and the second points at the HTML file.
 ````
 
 ## Common mistakes
 
 - **Prototyping what talking can settle**, like a web address or a button label.
 - **Variants that differ only in colour**, or judged on an empty page when a real one exists.
-- **Hardening the prototype** with tests, the real database or extra features for later.
-- **Merging it into main**, or deleting it. Rewrite the winner; park the rest on `prototype/<name>`.
+- **Hardening the prototype** with tests, the real database or features for later.
+- **Merging it into main**, or deleting it. `main` gets the decision; `prototype/<name>` gets the whole prototype.
 - **Recording a winner but not what it settled.**
 - **Prototyping inside a long planning session,** or using `/handoff` when nothing has to travel.
 
@@ -284,13 +284,13 @@ I used it once, after the site's hosting and database setup merged and before th
 
 **It named the question first:** "What should a lesson page with its comment box look like?" With no page to host variants, it used the last-resort shape: a throwaway route, `/prototype/lesson`, started by one command, `npm run proto`.
 
-**It built three layouts** from my grilling Lesson's real text and fake comments held in memory: **A, "Document"**, one column with comments at the end; **B, "Outline sidebar"**, sections listed on the left; **C, "Side-by-side discussion"**, the Lesson on the left and a sticky discussion panel on the right.
+**It built three layouts** from my grilling Lesson's real text and fake comments held in memory: **A, "Document"**, one column with comments at the end; **B, "Outline sidebar"**, sections listed on the left; **C, "Side-by-side discussion"**, the Lesson on the left and an always-visible discussion panel on the right.
 
 **I picked C.** Comments stay visible while you read, so it feels like a Lesson *with* a discussion, not one with a comment box bolted on. Deciding by seeing took minutes; deciding by imagining can take a day.
 
-**The capture.** One commit on `prototype/lesson-page`, "Prototype: three lesson page layouts (throwaway, never merge)", pushed and never merged. The verdict went onto issue 03 (the ticket for the Lesson pages) and issue 06 (the comment box), each pointing at the branch; the issue 03 note also names the file and the piece of page code, `VariantC`. Between them they recorded what C settled, not just the letter: the royal-blue title band, the sticky panel, one column on narrow screens, the panel's form and its newest-first list. Then the real page was built properly: the code that loads the Lessons got its tests written first, and the Discussion panel was checked by eye, as we'd agreed, with tests only on the comments code underneath.
+**The capture.** One commit on `prototype/lesson-page`, "Prototype: three lesson page layouts (throwaway, never merge)", on GitHub, never merged. The verdict went onto issue 03 (the ticket for the Lesson pages) and issue 06 (the comment box), each pointing at the branch; the issue 03 note also names the file and the piece of page code, `VariantC`. Between them they recorded what C settled, not just the letter: the royal-blue title band, the always-visible panel, one column on narrow screens, the panel's form and its newest-first list. Then the real page was built properly: the code that loads the Lessons got its tests written first, and the Discussion panel was checked by eye, as we'd agreed, with tests only on the comments code underneath.
 
-**What I'd do differently.** My record of everything I typed for the build has no `/handoff` in it. Today I'd take Matt's detour: prototype in a fresh session, and hand back only the answer. And I'd keep the branch: it has since been deleted, so the pointers on issues 03 and 06 lead nowhere, and the commit survives only by its id, `8cdcfa1`.
+**What I'd do differently.** None of the "What I typed" notes in my build journal mentions `/handoff`. Today I'd take Matt's detour: prototype in a fresh session, and hand back only the answer. And I'd keep the branch: it has since been deleted, so the pointers on issues 03 and 06 lead nowhere, and the commit survives only by its id, `8cdcfa1`.
 ```
 
 ## Cheat sheet
@@ -310,13 +310,13 @@ I used it once, after the site's hosting and database setup merged and before th
 
 ```test scenario-logic-question
 Your question is "if a parcel is marked lost, then turns up, then is refused at the door, who gets refunded?" You type `/prototype` with it. What should you expect it to build?
-- [ ] Three layouts of the parcel-tracking page, switched by `?variant=` and a bar at the bottom.
+- [ ] Three layouts of the tracking page, flipped with `?variant=` and a bar.
   > That's the UI path, for how a screen should look. This question is about rules and state.
 - [ ] A small terminal app you run from the command line to step through the parcel rules.
   > That's what the logic path built before 1.2.0. It now builds one HTML file anyone can open.
 - [x] One HTML file with a state panel, free-play buttons and walkthrough tabs.
   > Right. A logic question gets a single double-click page that pushes the rules through tricky cases.
-- [ ] A real parcel-status feature wired to the database, with tests, so the answer can be trusted.
+- [ ] A real parcel-status feature with tests and the real database.
   > Tests and a real database are exactly what a prototype skips. They come when the answer is built for real.
 ```
 
@@ -348,8 +348,8 @@ Your tickets for a recipe site are written. While you're building the first one,
 You detoured out of a planning session to prototype a pet-sitting app's booking rules. The prototype session has settled the question, and the planning session is still open in another window. What do you bring back?
 - [ ] The whole prototype conversation, pasted into the planning session so nothing is lost.
   > That pours the prototype's tokens into the very window the detour was protecting.
-- [x] A second `/handoff` file, told to carry only the verdict and what you learned.
-  > Right. The planning session reads one short file with just the answer, and carries on grilling.
+- [x] A `/handoff` from the prototype session: the verdict and what surprised you.
+  > Right. Written where the prototype ran, it carries just the answer, so the planning session reads one short file and carries on grilling.
 - [ ] Nothing: the planning session can read the prototype's files on disk when it needs them.
   > The files show what was built, not what you decided or learned. Hand the answer back on purpose.
 - [ ] A `/compact` run in the planning session, so it has room for the prototype's results.
@@ -357,15 +357,15 @@ You detoured out of a planning session to prototype a pet-sitting app's booking 
 ```
 
 ```test spot-colour-variants
-Sam asked for UI variants of a recipe page. All three are the same grid of recipe cards: one blue, one green, one with rounded corners. Spot the mistake.
-- [ ] There were too few variants for one of them to come out different.
-  > More copies of the same grid are still the same grid. The number isn't the problem; structure is.
-- [x] All three share one layout and differ only in styling.
-  > Right. Variants must disagree about layout, hierarchy or the main control. Ask for one redone without a card grid.
-- [ ] The variants weren't tested before Sam looked at them.
-  > Prototypes skip tests, so that isn't missing. These fail for another reason: they don't really differ.
-- [ ] The variants weren't put on a separate new route of their own.
-  > Where they live isn't the problem. Three restyled grids answer nothing wherever they sit.
+Sam asked for UI variants of his site's existing recipe page. The agent built three on that page's real route, picked by `?variant=`, with no tests: three grids of recipe cards, one blue, one green, one with rounded corners. Spot the mistake.
+- [ ] They sit on the page's real route instead of a new prototype route of their own.
+  > The real page is the preferred home: its data and header show problems an empty route hides.
+- [x] Under the colours and corners, all three are the same layout.
+  > Right. Variants must disagree about layout, hierarchy or the main control. Ask for two of them redone, each without a card grid.
+- [ ] None of the three had tests written before Sam saw them.
+  > Prototypes skip tests on purpose. That rule is being followed; it isn't the mistake.
+- [ ] Three is too few; the Skill should have built five for more range.
+  > Three is the default. Five copies of one grid would still be one grid.
 ```
 
 ```test spot-merged-prototype
@@ -377,7 +377,7 @@ Ana's UI prototype is done and variant B won. She merged the prototype branch in
 - [ ] She should have merged only B's files, leaving the other variants and the switcher on the branch.
   > Closer, but B itself was written under prototype rules: no tests, minimal error handling. It gets rewritten, not merged.
 - [x] She should have rewritten B properly instead of merging prototype code.
-  > Right. Prototype code skips tests and error handling. Rewrite the winner into the real code, and park the rest on a never-merged branch.
+  > Right. Prototype code skips tests and error handling. Rewrite B into the real code, and park the whole prototype, B included, on a never-merged branch.
 ```
 
 ```test spot-handoff-misuse
@@ -400,18 +400,18 @@ You're in a repo, planning a feature, and one question needs a big UI prototype.
   > There's nothing to hand off before the interview starts, and the answer never comes back.
 - [x] `/grill-with-docs` → `/handoff` → `/prototype` (fresh session) → `/handoff` back → more grilling → `/to-spec`
   > Right. Grill until you hit the question, fork the prototype off as a side task, bring only the answer back, finish grilling, then write the spec.
-- [ ] `/grill-with-docs` → finish grilling → `/to-spec` → `/to-tickets` → `/handoff` → `/prototype` in a fresh session
-  > The spec and tickets would be written before the open question was answered.
+- [ ] `/grill-with-docs` → `/to-spec` → `/handoff` → `/prototype` (fresh session) → `/handoff` back → then `/to-tickets`
+  > The spec gets written while the question is still open, so the prototype's answer arrives too late to shape it. The spec comes once every question is settled.
 ```
 
 ```test why-no-tests
 A friend building a logic prototype wants to add tests "to be safe". What's the strongest reply?
 - [ ] "Good idea: tests make the verdict trustworthy enough to merge the prototype."
   > The prototype never merges, tested or not. The answer moves into the real code, which gets its own tests.
-- [x] "Skip them. Tests belong with the real code the rules move into."
+- [x] "Skip them. Tests belong with the real code the rules move into, not here."
   > Right. A prototype exists to learn one thing fast. Tests belong with the real code, once the rules have moved there.
-- [ ] "Add some for the walkthrough tabs, since other people will click those."
-  > The tabs are part of the throwaway page. Testing them tells you nothing about whether the rules are right.
+- [ ] "Skip them: the prototype gets deleted once it answers, so tests go too."
+  > Skipping is right, but not for that reason: the prototype is parked on a branch, not deleted. Tests are skipped because a prototype exists to learn one thing fast, and the rules get tested once they're in the real code.
 - [ ] "Write them for the rules block only, since that's the part you keep."
   > The rules block is kept, but its tests come in the real code, after it moves. Inside the prototype, tests slow down the one thing it's for.
 ```
@@ -424,7 +424,7 @@ A team prototyped a checkout form and wrote "Going with C" on the ticket. Weeks 
   > More rounds don't help if what they settle never reaches the ticket.
 - [ ] They should have put the verdict in a commit message instead of the ticket.
   > A commit message is a fine home for the verdict, but it would still only say C. Where it was written wasn't the gap.
-- [x] They should have recorded C's details on the ticket, not just its letter.
+- [x] They should have listed every decision made inside C on the ticket as well.
   > Right. Write down the question and the details C settled (field order, help text), with a pointer to the `prototype/<name>` branch.
 ```
 

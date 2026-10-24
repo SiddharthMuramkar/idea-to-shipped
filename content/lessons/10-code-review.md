@@ -26,7 +26,7 @@ That's what happened on this site. When the comment box under each Lesson went l
 Code review means reading changed code critically before you trust it. Two things make it hard with an agent:
 
 - **You didn't write the code**, so you don't know where its weak spots are, and reading every line yourself defeats the point of an agent.
-- **The agent that wrote it is a poor judge of it.** It made every decision in that code, so it tends to approve them. And its context window (its working memory for the conversation, measured in tokens, the small chunks of text AI usage is counted in) is full of the build, so it reasons less sharply.
+- **The agent that wrote it is a poor judge of it.** It made every decision in that code, so it tends to approve them. And its context window (its working memory for the conversation, measured in tokens, the small chunks of text AI usage is counted in) holds the whole build, so it reasons less sharply.
 
 Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, calls automated code review one of the most impactful ways to raise the quality of agent-written code. A Skill is a short instruction file the agent loads when you type its name, or when a task matches its description. His `code-review` Skill hands the job to fresh reviewers, each with a narrow brief.
 
@@ -49,7 +49,7 @@ Then it asks two separate questions about that diff. Matt calls them axes. One c
 | Checks against | Your repo's documented rules, plus a fixed list of code smells (warning signs, explained below) | The spec or ticket the work came from |
 | Every finding cites | The file and rule, or the named smell plus the code | The line of the spec |
 
-Why two? Because ==a change can pass one axis and fail the other==. Code that obeys every rule but builds the wrong feature passes Standards and fails Spec. Code that does just what the ticket asked, in a style the project's rules forbid, does the reverse. A single blended score would let the passing half hide the failing half. So the report never merges the two and never re-ranks findings across them.
+Why two? Because ==a change can pass one axis and fail the other==. Code that obeys every rule but builds the wrong feature passes Standards and fails Spec. Code that does just what the ticket asked, in a style the project's rules forbid, does the reverse. A single blended score would let the passing half hide the failing half.
 
 ```scene flow
 title: What happens when you start a review
@@ -84,7 +84,7 @@ A library app's ticket asked for "members can renew a loan once". The diff renew
 
 ## The Standards axis: your rules, then the smells
 
-Before it starts the reviewers, the Skill searches the repo for every file that says how code here should be written, and hands that list to the Standards reviewer. If a `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it's always on the list. This site has neither. Its rules live in ADRs (short decision records in `docs/adr/`), the glossary in `GLOSSARY.md`, `CLAUDE.md` (the instructions Claude Code loads into every session) and `AGENTS.md`, which both point agents at the docs for Next.js, the web framework this site uses.
+Before it starts the reviewers, the Skill searches the repo for every file that says how code here should be written, and hands that list to the Standards reviewer. If a `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it's always on the list. This site has neither. Its rules live in ADRs (short decision records in `docs/adr/`) and the glossary in `GLOSSARY.md`, plus `CLAUDE.md` (the instructions Claude Code loads into every conversation) and `AGENTS.md`, which both point agents at the docs for Next.js, the web framework this site uses.
 
 On top of whatever the repo documents, the reviewer always carries a **smell baseline**: twelve code smells from chapter 3 of *Refactoring*, Martin Fowler's classic book on restructuring code. A code smell is a hint that the design might be off, not a bug. A few of the twelve:
 
@@ -98,7 +98,7 @@ Each smell comes with its fix: extract the shared code, rename it, gather what c
 1. **The repo overrides.** If your documented standards endorse something a smell would flag, the smell is dropped.
 2. **A smell is always a judgement call**, written as a possibility (possible Duplicated Code, say), ==never a hard violation==. Breaking a documented rule can be a hard violation; a smell can't.
 
-The Standards reviewer also skips anything your tooling already enforces, such as a linter (a program that flags common mistakes automatically) or the type checker (which catches values of the wrong kind).
+The Standards reviewer also skips anything your tooling already enforces, such as a linter (a program that flags common mistakes automatically).
 
 Matt's advice is to keep your rules in `CODING_STANDARDS.md`, which only the reviewer reads, so they don't weigh down the agent doing the building. Over time, `/retro` ([Retro](/learn/retro)) proposes new rules when a review misses a kind of mistake, or automatic checks for purely mechanical ones.
 
@@ -246,7 +246,7 @@ With Matt's plugin installed, you type `/code-review` and get back a list of pla
 **Matt Pocock:**
 
 - **Make it work, then make it good.** In his September 2026 talk on the pull-request bottleneck (a pull request, or PR, is a proposed change that's reviewed before it joins the main branch), he split the job in two: implementing makes code work, review makes it good.
-- **Grow your own standards.** In the same talk he advised building your own standards with your team, not leaning on generic third-party review bots. He'd also like reviewers to commit their fixes, not just comment; the 1.3.1 Skill only reports.
+- **Grow your own standards.** In the same talk he advised building your own standards with your team, not leaning on generic third-party review bots.
 - **Review where it's smart.** At an April 2026 workshop he explained that an agent reviewing at the end of its own long build session works in the dumb zone, past the Smart zone, so clear first. He builds with Sonnet and reviews with Opus (two Claude models; Opus is the stronger), because review is where he needs the smarts. ([Models, effort & ultracode](/learn/models-effort-ultracode) covers switching.)
 - **At the end of every ticket.** In his July 2026 walkthrough, `/implement` ran the review by itself when a ticket was done. He clears between tickets, then runs one final review against the spec.
 
@@ -290,7 +290,7 @@ Create .scratch/reading-time/spec.md with three requirements for a readingTime(t
 /mattpocock-skills:code-review Review since nope.
 ```
 
-7. Now the real review. Watch for two sub-agents starting together. If more than two start, press Esc and rerun it: that's a known bug, not your mistake.
+7. Now the real review. Two sub-agent rows, one per axis, should appear together in the panel below the prompt box. They run in the background: wait for the report, even if the prompt comes back first. If more rows keep appearing, press Ctrl+X then Ctrl+K, and again within 3 seconds, to stop them all: that's a known bug, not your mistake. Then type `/clear` and rerun this step.
 
 ```text
 /mattpocock-skills:code-review Review since main. The spec is .scratch/reading-time/spec.md.
@@ -424,7 +424,7 @@ After a three-hour build, Raj types: "Review your work against the spec." The ag
 - [ ] He should have asked for the Built-in `/code-review`.
   > That's a bug hunt. It doesn't check the work against the spec, so it wouldn't flag a missing requirement.
 - [x] He should have had a different agent do the review.
-  > Right. It was biased toward its own choices and deep in a full context window. Use `/mattpocock-skills:code-review` from a clean session, so fresh sub-agents do the reviewing.
+  > Right. It was biased toward its own choices, and three hours in it was likely past the Smart zone. Use `/mattpocock-skills:code-review` from a clean session, so neither the reviewers nor the agent briefing them built the code.
 ```
 
 ```test sequence-review-ticket
@@ -473,7 +473,7 @@ A teammate suggests a cheaper version of the review: one fresh sub-agent that ch
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (clearing between tickets and a final review 14:39–14:50; review inside `/implement` 14:55–15:12; why the writing agent is a poor reviewer 15:46–16:21).
 - [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock at AI Engineer, 2026-04-24 (reviewing in the Smart zone 1:04:59–1:06:24; standards go to the reviewer, Sonnet implements, Opus reviews 1:32:23–1:32:44).
 - [Can Cursor's HARDCORE Review Skill Stop The Slop?](https://www.youtube.com/watch?v=mh5XZ-L5SFQ), Matt Pocock, 2026-05-28 (impact of automated review 0:00–0:06).
-- [Fixing the PR Bottleneck](https://www.youtube.com/watch?v=LlgiOCmFG_w), Matt Pocock, AI Engineer Paris 2026 (AI Engineer channel), 2026-09-25, auto-translated captions (keep standards out of the implementer 11:35–13:28; make it work, then make it good 13:37–14:00; `CODING_STANDARDS.md` 14:04–14:20; build your own reviewer 14:31–15:19; reviewers should commit fixes 15:20–16:03).
+- [Fixing the PR Bottleneck](https://www.youtube.com/watch?v=LlgiOCmFG_w), Matt Pocock, AI Engineer Paris 2026 (AI Engineer channel), 2026-09-25, auto-translated captions (keep standards out of the implementer 11:35–13:28; make it work, then make it good 13:37–14:00; `CODING_STANDARDS.md` 14:04–14:20; build your own reviewer 14:31–15:19).
 - [An honest review of Matt Pocock's Skills framework](https://blog.scottlogic.com/2026/10/19/an-honest-review-of-matt-pococks-skills.html), Colin Eberhardt, Scott Logic, 2026-10-19.
 - [implement loses two of its five beats on unattended runs](https://github.com/mattpocock/skills/discussions/1091), GitHub Discussion #1091, Warshoow's comment of 2026-09-29 (173 sessions: the bare name reached the Built-in review in 36, Matt's Skill ran in 18), with the loop itself in [afk.sh](https://github.com/mattpocock/skills/discussions/1136), Discussion #1136, 2026-09-28.
 - [Fix code review findings (PR #7)](https://github.com/SiddharthMuramkar/idea-to-shipped/pull/7), this site's repo, 2026-10-21 (the Site story's fixes).

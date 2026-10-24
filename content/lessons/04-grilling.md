@@ -51,7 +51,7 @@ The agent can't sensibly ask about login providers until it knows there's a logi
 ➡️ Yes: no editing or deleting in v1.
 ```
 
-Questions are worded so that a plain **"yes" accepts the recommendation**. That lets you answer a round of five in one short line. Your answers then settle some branches, the frontier moves outward, and the next round asks what those answers unlocked. The agent picks each round by judgement, so once in a while one of your answers changes another question from the same round. If you spot that, say so, and it reopens that branch next round.
+Questions are worded so that a plain **"yes" accepts the recommendation**. That lets you answer a round of five in one short line. Each answer settles a branch, and whatever it unlocks joins the next round. The agent picks each round by judgement, so once in a while one of your answers changes another question from the same round. If you spot that, say so, and it reopens that branch next round.
 
 Two rules keep the interview honest:
 
@@ -258,7 +258,7 @@ claude plugin install mattpocock-skills@claude-plugins-official
 - [ ] You answered a whole round in one short reply.
 - [ ] Replying "yes" accepted the ➡️ recommendation.
 - [ ] Round 2 asked things round 1 couldn't have, because they build on your answers.
-- [ ] No question in a round needed another question in the same round answered first.
+- [ ] Questions in one round didn't hang off each other, or you said so when one did.
 - [ ] It ended by asking you to confirm, not by writing code or files.
 - [ ] You can explain every decision, including what's out of scope, to someone who wasn't there.
 
@@ -348,8 +348,8 @@ Halfway through grilling a recipe site, a question comes up that matters to you:
   > You'd be agreeing to something you can't evaluate, which is the passive trap.
 - [ ] Ask the agent to decide it for you as a detail.
   > It matters to you, and how a page feels to use is a product decision, not a small detail.
-- [ ] Keep describing both layouts in more detail until one of them feels right.
-  > Talking harder won't help. This question needs something you can look at.
+- [ ] Leave it open for now and let `/to-spec` settle the layout later.
+  > `/to-spec` doesn't interview you; it writes up what's already decided. This question needs something you can look at.
 - [x] Detour through `/prototype`, then bring the answer back.
   > Right. Questions you need to see are ungrillable. Build a quick throwaway version, look at it, then answer.
 ```
@@ -357,7 +357,7 @@ Halfway through grilling a recipe site, a question comes up that matters to you:
 ```test scenario-overwhelmed
 Grilling a running club's website, round 1 brings nine questions at once and you lose track halfway. You want smaller rounds in every grilling session from now on, not just this one. What do you do?
 - [ ] Ask it to cap the whole session at ten questions in total.
-  > A cap would leave branches of the tree unvisited, which defeats the purpose.
+  > A total cap doesn't make rounds smaller: round 1 could still bring nine at once.
 - [x] Tell it in `CLAUDE.md` to ask one question at a time.
   > Right. `CLAUDE.md` is read at the start of every session, and the line "When grilling, ask one question at a time." in your global one is the documented opt-out.
 - [ ] Turn on plan mode so the agent slows down.
@@ -404,8 +404,8 @@ Priya grilled a big feature for 45 minutes, typed `/clear` to free up space, the
   > `/to-spec` writes from the grilled conversation. Run first, it would have no decisions to write from.
 - [x] `/clear` emptied out the decisions `/to-spec` writes from.
   > Right. The conversation is the record of the grilling, and `/clear` emptied it out of the session. Run `/to-spec` in the same conversation. (`/resume` can reopen the old one, so the decisions aren't gone for good.)
-- [ ] The grilling session was too short to be useful.
-  > Forty-five minutes is plenty. The decisions existed; then `/clear` emptied them out of the conversation.
+- [ ] Forty-five minutes of answers was too much for `/to-spec` to fit in one spec.
+  > Length wasn't the problem: `/clear` had already emptied the conversation, so none of those answers reached `/to-spec`.
 - [ ] Splitting the questions into rounds scattered her answers.
   > Rounds follow the design tree, and all her answers sat in one conversation until `/clear` emptied it.
 ```

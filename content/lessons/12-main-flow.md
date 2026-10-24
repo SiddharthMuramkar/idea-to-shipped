@@ -19,7 +19,7 @@ One map for the whole course: which Skill to type next, from a rough idea to mer
 
 ## Why it matters
 
-Claude Code is Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal. Matt Pocock, a developer and teacher, publishes a popular set of Skills for it. A Skill is a short instruction file the agent loads when you type its name, like `/to-spec`, or when a task matches its description. His plugin (one package that installs them all) ships 27, and in his July 2026 walkthrough he says people ask him all the time what order to use them in.
+Claude Code is Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal. Matt Pocock, a developer and teacher, publishes a popular set of Skills for it. A Skill is a short instruction file the agent loads when you type its name, like `/to-spec`, or when a task matches its description. His plugin (one package that installs them all) ships 27, and in his July 2026 walkthrough he says people constantly ask what order to use them in.
 
 Three ways to go wrong with good Skills:
 
@@ -34,15 +34,15 @@ The ==Main flow== fixes all three. It's the path most work takes through the Ski
 Before the first run in a repo (a project folder tracked with Git, the tool that records every change), type `/setup-matt-pocock-skills` once. It records where tickets and docs live and which labels to use ([Skills](/learn/skills) covers it). Then:
 
 1. **`/grill-with-docs`.** The agent interviews you until the idea is sharp, writing the project's terms into `GLOSSARY.md` as you go. No repo under you, like a talk or a plan? Use `/grill-me`, which saves nothing. Both run the same interview, `/grilling`. See [Grilling](/learn/grilling) and [Domain modeling](/learn/domain-modeling).
-2. **Fork A: can talking settle every question?** Some questions need a runnable answer: a state model (how a booking moves from held to paid), a tricky rule, a screen you have to see. Those take the prototype detour: `/handoff` out (it writes a summary file), start `claude` in a second terminal window so the grilling stays open in the first, give it the file's path and type `/prototype`. Once that's answered, `/handoff` back what you learned and ask the first window to read the new file. See [Prototype](/learn/prototype).
+2. **Fork A: can talking settle every question?** Some questions need a runnable answer: a state model (how a booking moves from held to paid), a tricky rule, a screen you have to see. Those take the prototype detour: type `/handoff`, which writes a summary file, and copy the path it shows. In a second terminal window, `cd` into the project and start `claude`, so the grilling stays open in the first. Type `/prototype` and paste the path. Once that's answered, `/handoff` back what you learned and ask the first window to read the new file. See [Prototype](/learn/prototype).
 3. **Fork B: is this a multi-session build?**
    - **No:** type `/implement` right here, in the same conversation.
    - **Yes:** type `/to-spec` to turn the conversation into a spec, then `/to-tickets` to cut it into tickets that each fit one session, each naming the tickets that block it ([Spec + tickets](/learn/spec-and-issues)). Then either `/implement` one ticket at a time, with a `/clear` between tickets, or `/implement-spec`, which hands the whole spec to subagents (helper agents, each with its own fresh memory) that build every unblocked ticket in parallel on one integration branch (a single shared line of work in Git). See [Implement](/learn/implement).
 4. **`/retro`.** After the build, especially a messy one, it reviews the session and proposes fixes to the agent's environment, such as automated checks or coding standards, rather than to your code. See [Retro](/learn/retro).
 
-Three Skills run inside step 3 without you typing them. `/implement` is told to build test-first with `/tdd` (a failing check first, then the code that passes it; see [TDD](/learn/tdd)) where it can, at agreed seams (the places in the code tests check from). `/to-spec` checks them with you. On the short road no spec has done that, so name them as you type `/implement`, or it may just write the code. It closes with `/code-review`, a two-part review against your coding standards and the spec ([Code review](/learn/code-review)). `/implement-spec` has each subagent drive `/tdd`, then runs one review over the integration branch. When the work goes up as a pull request (a PR: a proposed change that's reviewed before it joins the main code), the agent reaches for `/pr` to write the description ([PR + ship](/learn/pr-and-ship)).
+Three Skills run inside step 3 without you typing them. `/implement` is told to build test-first with `/tdd` (a failing check first, then the code that passes it; see [TDD](/learn/tdd)) where it can, at agreed seams (the places in the code tests check from). `/to-spec` checks them with you. On the short road no spec has, so answer when `/tdd` asks which seams to test; agreed nowhere, `/implement` may just write the code. It closes with `/code-review`, a two-part review against your coding standards and the spec ([Code review](/learn/code-review)). `/implement-spec` has each subagent drive `/tdd`, then runs one review over the integration branch. When the work goes up as a pull request (a PR: a proposed change that's reviewed before it joins the main code), the agent reaches for `/pr` to write the description ([PR + ship](/learn/pr-and-ship)).
 
-In October 2026 these inner calls could also misfire: the review could run before the work was committed (saved in Git) or reach Claude Code's own `/code-review`, and one developer's logs (below) showed `/tdd` never loading. If no failing test comes before the code, ask for "the tdd Skill" in plain words: the agent can start that one itself. If no Standards and Spec sections come back, let `/implement` commit, then type `/mattpocock-skills:code-review` ([Implement](/learn/implement)).
+As of October 2026, the review can misfire: run before the work is committed (saved in Git), or reach Claude Code's own `/code-review`; if no Standards and Spec sections come back, let `/implement` commit, then type `/mattpocock-skills:code-review` ([Implement](/learn/implement)). One developer's September logs (below) showed `/tdd` never loading, before an October fix told `/implement` to load it. If no failing test comes first anyway, ask for "the tdd Skill" in plain words: the agent can start that one itself.
 
 Fork B ==isn't about how important the work is==; it's about whether the build fits in the room this session has left: the agent's working memory (its context window), which fills as you work.
 
@@ -93,7 +93,7 @@ Everything in a session lives in the agent's ==context window==: its working mem
 The Main flow spends that budget in a set rhythm:
 
 - **Grill, spec and tickets share one unbroken window.** Don't `/clear` or `/compact` (which swaps the history for a summary) until after `/to-tickets`. `/to-spec` doesn't interview you again. It writes from the conversation, so it needs the reasoning behind each answer, not just the answers.
-- **Each ticket's `/implement` starts fresh.** Once the tickets exist, everything that matters is written down, so the last ticket's context is disposable. `/clear` (a Built-in command, part of Claude Code rather than a Skill) empties the conversation. `/resume` can still reopen the old one, as its own session.
+- **Each ticket's `/implement` starts fresh.** Once the tickets exist, everything that matters is written down, so the last ticket's context is disposable. `/clear` empties the conversation; `/resume` can still reopen the old one, as its own session.
 - **`/retro` runs in the session it reviews, before you clear.** In a ticket-by-ticket build, that's a messy ticket's session. Already cleared? Type `/retro` with the session you mean, such as "yesterday's ticket 3": it searches the logs Claude Code keeps on your computer.
 - **If grilling nears the end of the Smart zone before `/to-tickets`,** don't push on half-asleep. Type `/compact` at the nearest Phase boundary (a natural break between chunks of work, covered below), then carry on.
 
@@ -117,13 +117,13 @@ fill: 7% | Ticket 2 built and reviewed
 ```
 
 ```checkpoint next-ticket
-`/implement` has just built and committed (saved in Git) ticket 2 of 6 for your recipe site. It was a big one: `/context` shows about 115k tokens. What's the best next move?
-- [x] `/clear`, then `/implement` ticket 3 from its file.
-  > Right. Ticket 3 works from its own file, so ticket 2's context is disposable, and a fresh window starts it in the Smart zone.
-- [ ] `/compact`, so ticket 3 can build on ticket 2's details.
-  > Ticket 3 works from its own file, and ticket 2's work is in the commit. A summary adds noise without adding anything it needs.
-- [ ] Type `/implement` for ticket 3 in the same session.
-  > Ticket 3 would start at 115k and end past the Smart zone, and it doesn't need ticket 2's conversation anyway. Clear between tickets.
+`/implement` has just built and committed ticket 2 of 6 for your recipe site, at about 115k tokens. Ticket 3 is blocked by ticket 2: it adds filters on top of the tags ticket 2 built. What's the best next move?
+- [x] `/clear`, then `/implement` ticket 3 from its own file.
+  > Right. Ticket 3 needs ticket 2's code, and that's in the commit. Its file says what to build, so the conversation is disposable, and a fresh window starts it in the Smart zone.
+- [ ] `/compact`, so ticket 3 keeps a summary of how the tags work.
+  > The tags are in the committed code, where ticket 3 can read them. A summary of the conversation adds noise, not anything it needs.
+- [ ] Carry on in this session, since ticket 3 builds on ticket 2's work.
+  > Building on ticket 2's work means building on its code, which is committed. At 115k, ticket 3 would also end past the Smart zone.
 - [ ] `/handoff`, then start ticket 3 in a new session.
   > Nothing is travelling to a new tool, folder or colleague, so there's nothing for a handoff file to carry.
 ```
@@ -132,10 +132,10 @@ fill: 7% | Ticket 2 built and reviewed
 
 Matt splits a session into ==Phases==: chunks of work like the grilling, the implementation or the QA (checking that the built thing works). A Phase ends when you think "OK, we're done with that", and the line is fuzzy on purpose: in a long grilling, finishing one whole topic can count. The gap between two Phases is the only place to decide about the context. Mid-Phase, the work in hand has two moves: carry on, or hand what's left to subagents; compacting there makes the agent lose the thread.
 
-At a boundary, ask these in order. The first yes wins.
+At a boundary, ask these five questions in order. The first yes wins.
 
-1. **Can you continue?** Yes if the next Phase needs this one word for word (grilling, then implementing a small change, is the standard case), or if the Smart zone has room for it. It costs nothing, so rule it out first. One limit comes from `/ask-matt`'s context rule, not the tree: near the Smart zone's end before `/to-tickets`, don't push on, even if the next Phase needs this one.
-2. **Is everything here disposable?** Then `/clear`. It's the cheapest move. Getting it wrong is one-way, though: clear a conversation you still needed and the *why* behind your decisions is gone.
+1. **Can you continue?** Yes if the next Phase needs this one word for word (grilling, then implementing a small change, is the standard case), or if the Smart zone has room for it. It costs nothing, so rule it out first. One limit comes from `/ask-matt`'s context rule, not the five questions: near the Smart zone's end before `/to-tickets`, don't push on, even if the next Phase needs this one.
+2. **Is everything here disposable?** Then `/clear`. It's the cheapest move. Getting it wrong is one-way, though: clear a conversation you still needed and the *why* behind your decisions is gone from the session you carry on in.
 3. **Does something need to travel?** `/handoff` is only for a new harness (the program around the model: moving from Claude Code to OpenAI's Codex, say), a new folder or repo, a colleague, or a side task you fork off mid-Phase, like the prototype detour. What it buys is portability.
 4. **Can it run AFK?** AFK means away from keyboard: a job tight enough to run with no steering, like an automated review. Ask in plain words ("use a subagent to review today's changes") and leave this session alone.
 5. **Otherwise, `/compact`,** with an instruction about what's next, such as "next we QA the tag filters". It's the default, but not the first reach.
@@ -168,7 +168,7 @@ Three rules follow:
 - **User-invoked Skills can call model-invoked ones, never each other.** That's why `/implement` can run `/tdd` and `/code-review` for you, but can't start `/retro`.
 - **Built-in commands aren't Skills.** `/clear`, `/compact`, `/context` and `/resume` come with Claude Code. Two names clash. Claude Code has its own Built-in `/code-review`, a bug hunt; to be sure of Matt's version, type `/mattpocock-skills:code-review`. A hidden Built-in also takes the name `/prototype`, and `/mattpocock-skills:prototype` always works.
 
-One quirk: some harnesses hide user-invoked Skills from the agent, so it may say `/to-spec` isn't installed. It is. Type it anyway.
+One quirk: Claude Code hides user-invoked Skills from the agent, so it may say `/to-spec` isn't installed. It is. Type it anyway.
 
 ```checkpoint chain-rule
 `/triage`, which sorts incoming bug reports, has just written a brief an agent could build from. You expected it to go straight on and start `/implement`, but it stops. Why?
@@ -239,7 +239,7 @@ In October 2026 he called looping tickets by hand the most annoying way to work.
 **Other developers:**
 
 - Colin Eberhardt of Scott Logic rebuilt a real app with the flow in October 2026. `/ask-matt` sent him to `/grill-with-docs`, then came an 80-line spec, eight tickets and `/implement`. His caveats: tailor the Skills to your project, and don't hand your judgement to the agent, or the steps turn into ritual.
-- A developer who scripted the loop, one fresh session per ticket, checked 173 session transcripts in September 2026. `/tdd` had never run, and `/implement`'s own review call reached Claude Code's Built-in twice as often as Matt's. Their fix: the script's prompt now names each Skill in full, like `mattpocock-skills:tdd`.
+- A developer who scripted the loop, one fresh session per ticket, checked 173 session transcripts in September 2026. `/tdd` had never run, and `/implement`'s own review call reached Claude Code's Built-in twice as often as Matt's. Their next prompt named each Skill in full, like `mattpocock-skills:tdd`, still untested when they posted.
 
 ## Try it yourself
 
@@ -296,9 +296,7 @@ If it says some Skills aren't installed, that's the quirk from "Who can type wha
 
 ## Common mistakes
 
-- **Clearing before `/to-tickets`.** The spec and tickets lose the reasoning they're built from.
-- **Taking the long road for a short job.** If it fits this session, `/implement` here.
-- **Waiting at a junction, or asking in plain words.** Type the next Skill's name yourself.
+- **The three wrong turns from "Why it matters":** clearing before `/to-tickets`, the long road for a short job, and waiting at a junction or asking in plain words.
 - **Typing the next Skill while the agent is still asking you something.** Answer first (the Site story shows why).
 - **Reaching for `/compact` first or mid-Phase, or using `/handoff` as the general way to change sessions.** Walk the five questions, at the boundary.
 - **Triaging your own tickets, or running a big `/wayfinder` map straight into `/implement`.**
@@ -357,7 +355,7 @@ Grilling, spec and tickets stayed in one session, with no `/clear`, as the rule 
 ## Final test
 
 ```test scenario-fits-one-session
-On a book-club site, you've just grilled a small change: show each member's join date on their profile. The session has used about 30k tokens. What do you type next?
+On a bakery's ordering site, you've just grilled a small change: let customers add a delivery note to an order. The session has used about 45k tokens. What do you type next?
 - [ ] `/to-spec`, then `/to-tickets`, so the change is written down.
   > That's the long road, worth its cost only when the build spans sessions. This one fits the room you have.
 - [x] `/implement`, in this same conversation, while it's fresh.
@@ -408,7 +406,7 @@ In a repo, you're planning a feature that will take several sessions. Which orde
 You're grilling a big feature for a gym's booking site. You've just finished the last of the membership questions and are about to start on payments. `/context` shows about 140k tokens, and you haven't run `/to-spec` yet. What now?
 - [ ] Push on: payments needs the membership answers word for word.
   > That's the usual case for continuing, but not this near the end of the Smart zone. The rest of the grilling and the spec would come from a duller model.
-- [x] `/compact` here, saying what comes next, then carry on.
+- [x] `/compact` at this break, telling it payments is next.
   > Right. Finishing memberships is a Phase boundary, and the context is still needed, so compact with an instruction ("next we grill payments") and keep going.
 - [ ] `/clear`, then start the grilling again from the top.
   > That throws away every decision so far. `/clear` is only for context you'll never need again.
@@ -429,7 +427,7 @@ Midway through grilling a new feature for a book-club site, you notice the passw
 ```
 
 ```test sequence-boundary-questions
-You've just finished QA on your recipe site's tag filters and stop to decide what to do with the session. In what order does Matt's tree have you consider the options?
+You've just finished QA on your recipe site's tag filters and stop to decide what to do with the session. In what order do Matt's five questions have you consider the options?
 - [ ] `/compact` → `/clear` → `/handoff` → subagent → continue
   > `/compact` is the default, but it sits last: everything above it is cheaper or more precise.
 - [ ] Continue → `/handoff` → `/clear` → subagent → `/compact`
@@ -465,7 +463,7 @@ Grilling is done. Instead of typing a Skill's name, you write: "great, now write
 ```
 
 ```test scenario-agent-may-start
-While `/implement` builds a ticket on your book-club site, it needs a key from the payment provider's website, behind your login, saved into the project's `.env` file. Which Skill might the agent start on its own?
+While `/implement` builds a ticket on your book-club site, it needs a key from the payment provider's website, behind your login, saved into the project's private settings file. Which Skill might the agent start on its own?
 - [ ] `/handoff`
   > User-invoked: only you can start it, and nothing here needs to travel.
 - [x] `/wizard`
@@ -525,13 +523,13 @@ No feature is planned this week, and lately one change to a recipe rule means ed
 ```
 
 ```test scenario-unsteered-check
-You've just finished building your recipe site's tag filters. `/context` shows about 135k tokens, and you'll want this conversation afterwards to write up the PR. Before that, you want every page's links checked and a list of any that are broken. What fits?
+You've just finished building your recipe site's tag filters. `/context` shows about 145k tokens, and you'll want this conversation afterwards to write up the PR. Before that, you want all 300 pages' links checked and a list of any that are broken. What fits?
 - [ ] Continue: ask for the link check right here, in this session.
-  > The check doesn't need this conversation, and at 135k there's little Smart zone left for it.
+  > The check doesn't need this conversation, and 300 pages of results would push this window past the Smart zone, just before the PR write-up that needs it.
 - [ ] `/clear`, then ask for the check in the empty session.
   > You still need this conversation for the PR, so it isn't disposable.
 - [ ] `/compact`, then run the check in the summarised session.
-  > `/compact` is where the tree lands only when nothing above it fits. A job that needs no steering fits question 4.
+  > `/compact` comes last, for when nothing above it fits. A job that needs no steering is caught first, by the AFK question.
 - [x] Give the check to a subagent; this window stays as it is.
   > Right. It's tightly scoped and needs no steering, so it can run AFK in its own window and report back.
 ```

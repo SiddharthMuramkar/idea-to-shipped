@@ -21,9 +21,9 @@ When a build is too big for one sitting with your coding agent, write what you a
 
 Say you've just spent forty minutes being grilled by Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal), which interviewed you round after round about a new feature for this site. The feature puts Checkpoints and a Final test under every Lesson and saves each Visitor's Answers (a Visitor is anyone reading the site). Every decision is settled, and it all lives in one place: the conversation.
 
-That conversation is a session, and all of it sits in the agent's context window: its working memory, measured in tokens (small chunks of text). Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, calls the part where the model (the AI behind the agent) still reasons sharply the Smart zone: about 150k tokens on today's best models, as a rule of thumb. Type `/context`, a Built-in command (one that comes with Claude Code itself), to see how full yours is. A feature this size won't fit in the room you have left. Push on, and the agent gets sloppier as it builds the second half. Clear the window instead with `/clear`, another Built-in command, and the agent starts again with none of the conversation.
+That conversation is a session, and all of it sits in the agent's context window: its working memory, measured in tokens (small chunks of text). Matt Pocock, a developer and teacher, publishes a popular set of Skills for Claude Code: short instruction files the agent loads when you type their name, or, for some, when a task fits (see [Skills](/learn/skills)). He calls the part where the model (the AI behind the agent) still reasons sharply the Smart zone: about 150k tokens on today's best models, as a rule of thumb. Type `/context`, a Built-in command (one that comes with Claude Code itself), to see how full yours is. A feature this size won't fit in the room you have left. Push on, and the agent gets sloppier as it builds the second half. Clear the window instead with `/clear`, another Built-in command, and the agent starts again with none of the conversation.
 
-So the decisions must land in files a fresh session can read. Matt's Skills (short instruction files the agent loads when you type their name, or, for some, when a task fits; see [Skills](/learn/skills)) do that in two steps: `/to-spec` writes the spec (what to build and why), then `/to-tickets` cuts it into tickets, each sized for one fresh session. They pick up where his grilling Skill, `/grill-with-docs`, left off. If the work fits the room you have left, skip both and type `/implement`, the Skill that builds the agreed change right there.
+So the decisions must land in files a fresh session can read. His Skills do that in two steps: `/to-spec` writes the spec (what to build and why), then `/to-tickets` cuts it into tickets, each sized for one fresh session. They pick up where his grilling Skill, `/grill-with-docs`, left off. If the work fits the room you have left, skip both and type `/implement`, the Skill that builds the agreed change right there.
 
 ```checkpoint why-write-it-down
 You've grilled a recipe-site feature that will take about three sessions to build. Why can't the second session simply carry on from the conversation?
@@ -31,8 +31,8 @@ You've grilled a recipe-site feature that will take about three sessions to buil
   > No such rule: `/implement` builds straight from the conversation when the work fits in one session.
 - [x] A new session starts without it, so write the decisions down.
   > Right. A fresh session has seen none of the conversation. The spec and tickets carry your decisions across.
-- [ ] `/clear` deletes the old conversation for good.
-  > It doesn't: `/resume`, another Built-in command, can reopen it, but that brings back the same crowded window. A fresh session starts without it, so the decisions need to be in files.
+- [ ] Every session shares one context window, so the spec is only for teammates.
+  > Each session gets its own context window, and a fresh one has seen none of the conversation. The decisions need to be in files.
 - [ ] It can: `/to-tickets` copies the whole conversation into each ticket.
   > Tickets hold what to build, what blocks it and acceptance criteria, not the conversation. A new session still starts without it.
 ```
@@ -95,8 +95,8 @@ The spec is written mostly for agents, but do read the seams and Out of Scope: a
 `/to-spec` has written the spec for a book-club site. Under Implementation Decisions it says "Reviews are limited to 300 words." Nobody mentioned a limit while grilling, and nothing in the code, `GLOSSARY.md` or the ADRs sets one. What is this line?
 - [ ] A normal detail: filling gaps with sensible defaults is the Skill's job.
   > No. `/to-spec` records decisions; it doesn't make new ones. A gap it filled is a guess with your name on it.
-- [ ] Proof the grilling went well, because the spec is so thorough.
-  > Thoroughness isn't the goal. Every line should be something you decided.
+- [ ] A guess you can leave: the spec is mostly for agents, not for you.
+  > Mostly for agents, but every line should still be your decision, and the tickets get cut from this one.
 - [x] Something it invented: settle it with a decision, then fix the spec.
   > Right. If the spec says something you never said, it's a defect. Decide it or strike it before the tickets are cut from it.
 - [ ] A sign to `/clear` and run `/to-spec` again from scratch.
@@ -120,7 +120,7 @@ The Skill drafts tickets by four rules:
 
 Each ticket also lists its **blocking edges**: the tickets that must finish before it can start. The **frontier** is every ticket whose blockers are all done: the ones ready to build now, possibly by several agents at once.
 
-Before publishing, it shows you a numbered breakdown (title, what blocks it, what it delivers) and asks: is the size right, are the edges real, should anything merge or split? This review step repeats until you approve. ==Ask of every ticket: what can I demo when this is done?== If a ticket has nothing to show, it's a horizontal slice.
+Before publishing, it shows you a numbered breakdown (title, what blocks it, what it delivers) and asks: is the size right, are the edges real, should anything merge or split? This review step repeats until you approve. ==Ask of every ticket: what can I demo when this is done?== If nothing, and it isn't prefactoring, it's a horizontal slice.
 
 Then it publishes. Locally that's one file per ticket, numbered blockers first, each with **What to build** (the behaviour from the user's side), **Blocked by** (or "None (can start immediately)"), `Status: ready-for-agent` and acceptance criteria: checks that prove it's done. The template doesn't make sure each one can fail, so read them: a criterion that's already true before any work starts proves nothing. On a real tracker like GitHub, each ticket becomes an issue, with the tracker's own blocking links where it has them, filed under the spec's issue if it started from one. It never edits the spec.
 
@@ -273,7 +273,7 @@ claude plugin install mattpocock-skills@claude-plugins-official
 
 **For the redesign, I used the real Skills:** grilling, then `/to-spec`, then `/to-tickets`, then `/implement-spec`, with no `/clear` in between. The spec followed the template, with 35 user stories and one seam, the Lessons module. Five tickets came out, two of which could run side by side, and ticket 02 carried the seam into the build: "Build the Lessons module change with `/tdd`."
 
-**My slip.** `/to-spec` stopped to ask me to check one design choice (the seam check is the one place that Skill stops). I typed `/to-tickets` instead of answering, so the spec got written with the agent's best guess.
+**My slip.** `/to-spec` stopped to ask me to check one design choice. I typed `/to-tickets` instead of answering, so the spec got written with the agent's best guess.
 
 `/implement-spec` then built the tickets with helper agents, each in its own worktree (a separate checkout of the repo), and every ticket ended with a build note and `Status: resolved`. What I'd do differently: answer the open question before typing the next Skill. It stopped for a reason.
 ```
@@ -319,7 +319,7 @@ Your team has to rename a field used in about 3,000 places, far more than one se
 ```
 
 ```test scenario-two-agents
-Your tickets: 01 is blocked by nothing; 02 is blocked by 01; 03 is blocked by 01; 04 is blocked by 02 and 03. Ticket 01 is done and you have two agents free. Which tickets can they start?
+Your tickets: 01 is blocked by nothing; 02 is blocked by 01; 03 is blocked by 01; 04 is blocked by 02 and 03. Ticket 01 is done and you have three agents free. Which tickets can they start?
 - [ ] Only 04, since 02 and 03 both point to it.
   > That reads the edges backwards. 04 is blocked by 02 and 03, so it starts last. 02 and 03 wait only on 01, which is done.
 - [ ] Only 02, because tickets go strictly in number order.
@@ -327,7 +327,7 @@ Your tickets: 01 is blocked by nothing; 02 is blocked by 01; 03 is blocked by 01
 - [ ] 02, 03 and 04, since 01 was the first ticket.
   > 04 needs both 02 and 03 finished. It isn't on the frontier yet.
 - [x] 02 and 03, since each one's only blocker is done.
-  > Right. The frontier is every ticket whose blockers are all done. Both depend only on 01; 04 waits for both of them.
+  > Right. The frontier is every ticket whose blockers are all done. Both depend only on 01; 04 waits for both of them, so the third agent waits too.
 ```
 
 ```test scenario-too-many-tickets
@@ -338,8 +338,8 @@ A blog's sharing feature needs several sessions. `/to-tickets` shows its breakdo
   > Right. The review step is where you fix the size. One button is one demoable slice, and every extra ticket costs a fresh session's start-up.
 - [ ] Approve them, then run `/triage` afterwards to merge the small ones.
   > `/to-tickets` output is agent-ready from the start; `/triage` is only for issues you didn't create, like bug reports. It doesn't reshape tickets.
-- [ ] Type `/clear` and run `/to-tickets` again.
-  > Clearing empties the conversation the tickets are cut from, and the next draft may be no better. Push back in the review instead.
+- [ ] Merge the whole sharing feature into one ticket instead.
+  > Too far the other way: the feature needs several sessions, so one ticket won't fit in a fresh context window. Merge just the button.
 ```
 
 ```test spot-cleared-before-tickets
@@ -347,7 +347,7 @@ Ana finished grilling and typed `/to-spec`. Then she typed `/clear` "to start th
 - [x] `/clear` came too early: grill, spec and tickets belong in one window.
   > Right. The spec file survives, but the reasoning behind it doesn't, and the tickets come out better with that reasoning still in view. Clear after `/to-tickets`.
 - [ ] `/to-tickets` can't read a spec from a file path, only from the conversation.
-  > It can: give it a path or an issue number and it fetches it. The problem is what clearing threw away.
+  > It can: give it a path or an issue number and it fetches it. The problem is that clearing emptied the reasoning from the window.
 - [ ] She should have typed `/to-tickets` before `/to-spec`.
   > Tickets are cut from the spec, so the spec comes first.
 - [ ] She should have run `/compact` after the grilling as well.
@@ -356,8 +356,8 @@ Ana finished grilling and typed `/to-spec`. Then she typed `/clear` "to start th
 
 ```test spot-seam-skip
 Sam ran `/to-spec` for a shop's refunds feature. It explored the code and ended its message: "I'd test at the existing orders module and a new refunds module. Does that match what you expect?" Sam typed `/to-tickets` to keep things moving. Spot the mistake.
-- [ ] Sam should have typed `/clear` between the two Skills.
-  > Clearing before `/to-tickets` breaks the one-window rule. The problem was the unanswered question.
+- [ ] The agent broke its rules: `/to-spec` isn't supposed to ask anything.
+  > It asks no new round of questions, but it does stop once, to check the seams. That question was Sam's to answer.
 - [ ] Nothing: the agent's own guess at the seams is usually good enough.
   > Seams decide where `/tdd` writes tests and what Matt's `code-review` Skill checks against. They're yours to agree, not the agent's to guess.
 - [x] Sam never agreed the seams, so the agent had to guess them.
@@ -376,6 +376,18 @@ Lee approved this breakdown for a booking site: 01 every database table, 02 ever
   > Tickets avoid file paths because they go stale. The cut was the problem.
 - [ ] 03 should be blocked by nothing, so the screens can start at once.
   > Screens with nothing behind them still can't be tried. Changing the edges doesn't fix a cut by layer.
+```
+
+```test scenario-what-to-triage
+Your tracker holds two new issues: a bug report a stranger filed this morning, and ticket 03, which `/to-tickets` wrote from your spec yesterday. Which should go through `/triage`?
+- [x] Only the stranger's bug report.
+  > Right. Triage sorts issues you didn't create. Ticket 03 came from your own spec and is ready for an agent.
+- [ ] Only ticket 03, because it's the one an agent will build.
+  > Ticket 03 is agent-ready already: `/to-tickets` wrote `Status: ready-for-agent` into it.
+- [ ] Both, so every issue is checked before an agent builds it.
+  > Triage is for issues you didn't create. Ticket 03 came from your own grilling and spec.
+- [ ] Neither: an agent can build a bug report straight from the tracker.
+  > A raw report has no category or status yet. `/triage` sorts it and writes an agent-ready brief first.
 ```
 
 ```test sequence-multi-session
@@ -399,7 +411,7 @@ Grilling a podcast-site feature ran long. It's settled and needs several session
 - [x] `/compact` now, at the end of grilling, then type `/to-spec`.
   > Right. `/compact` keeps a summary of the decisions and frees room. Do it at a phase boundary, like the end of grilling.
 - [ ] Skip the spec and `/implement` the whole feature in this session.
-  > It needs several sessions, and this one is nearly full. That's exactly when a spec and tickets earn their keep.
+  > It needs several sessions, and this one is already near the end of the Smart zone. That's exactly when a spec and tickets earn their keep.
 ```
 
 ```sources

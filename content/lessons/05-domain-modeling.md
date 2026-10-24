@@ -19,7 +19,7 @@ Settle your project's words once, while the agent grills you, and keep them in a
 
 ## Why it matters
 
-Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal) starts every session knowing nothing about your project. A session is one conversation, from starting `claude` until you clear it or quit. What you explained yesterday is gone today, unless it's in a file the agent reads.
+Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal) starts every session blank. A session is one conversation, from starting `claude` until you clear it or quit. What you explained yesterday is gone today, unless it's in a file the agent reads.
 
 That bites hardest with words. Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code (short instruction files the agent loads when you type their name, or, for some, when a task fits), hit it while planning a feature for his course-making app. To him, a "standalone video" obviously meant one not attached to any lesson or course. The agent had to ask or dig through the code, and its replies kept re-describing things that already had names. When they did land on a good word, it lived only in that conversation.
 
@@ -146,8 +146,8 @@ If a decision is overturned later, write a new ADR and mark the old one "superse
 Which of these decisions, made while grilling a school's homework app, should the agent offer to record as an ADR?
 - [ ] Use one charting library rather than another for the progress graphs.
   > Either would do, and swapping later is cheap, so it fails "hard to reverse".
-- [ ] Make the submit button green, to match the school's colours.
-  > Easy to change, and nobody will wonder why. Missing even one test means no ADR.
+- [ ] List homework oldest first, unlike most apps, so overdue work stays on top.
+  > Surprising, perhaps, but it's cheap to flip back, so it fails "hard to reverse". Missing even one test means no ADR.
 - [x] Keep marks in the council's system, not the app's database, to skip a data audit.
   > Right. Moving the data later is costly, a reader would expect the app's own database, and you gave up simplicity for a lighter legal load. All three tests pass.
 - [ ] Store homework as rows in the same database that every other part of the app uses.
@@ -201,14 +201,14 @@ The agent proposes; you decide.
 - **Read the glossary now and then.** An unreviewed, agent-written glossary fills with confident claims that later sessions trust. If it bloats, type `/grill-with-docs make my GLOSSARY.md more concise and remove any implementation details from it`. Split it only once it's lean.
 - **Existing project, no docs?** Type `/grill-with-docs help me document my repo`, and expect a long interview.
 - **Check both halves loaded.** Questions without ❓ numbers and ➡️ recommendations mean grilling didn't load. Good rounds whose settled words never reach `GLOSSARY.md` mean domain modeling didn't. Ask "Which Skills did you load?", or type `/domain-modeling` yourself.
-- **Know when to skip it.** No repo: `/grill-me`, the same interview with no files. An effort too big to plan in one sitting starts with `/wayfinder` (Part 4).
+- **Know when to skip it.** No project folder: `/grill-me`, the same interview with no files. An effort too big to plan in one sitting starts with `/wayfinder` (Part 4).
 - **Finish like any grilling.** Small change: `/implement` (Matt's Skill that builds it) right there. Multi-session build: `/to-spec`, check the spec against your answers, then `/to-tickets`, all in one conversation (see [Spec + tickets](/learn/spec-and-issues)).
 
 ## When a reply loses you
 
 Even with a glossary, some replies lose you: invented jargon, a pile of acronyms, a conclusion whose premise you never saw. `/wait-what` is a tiny, user-invoked Skill for that moment. Its one paragraph opens "Wait, I don't understand where you've got to here." It then asks the agent to re-pitch (explain again) with a little context, in ASD-STE100 Simplified Technical English (a controlled English from aircraft maintenance manuals: short sentences, one meaning per word), using your `GLOSSARY.md` words.
 
-==The first word, "Wait", does the work.== "Be concise" is about the output, and the model obeys by cutting words, which loses you further. "Wait" is about *your* state, so it asks for both at once: fewer words *and* the step you missed. It re-pitches "that" (whatever lost you), and the agent decides how far back to go. Without a glossary it still works, minus the shared words.
+==The first word, "Wait", does the work.== "Be concise" is about the output, and the agent obeys by cutting words, which loses you further. "Wait" is about *your* state, so it asks for both at once: fewer words *and* the step you missed. It re-pitches "that" (whatever lost you), and the agent decides how far back to go. Without a glossary it still works, minus the shared words.
 
 Matt added it in version 1.2.0 (August 2026) to fight verbose replies. His changelog calls it a one-reply repair; the real cure is shared words, settled upfront with `/grill-with-docs`.
 
@@ -226,9 +226,9 @@ You type `/wait-what` after a reply full of jargon. What should the re-pitch loo
 
 ## How Matt and others use it
 
-**Matt Pocock** makes `/grill-with-docs` the first step of his Main flow (the path most work takes, from idea to shipped) whenever there's a repo.
+**Matt Pocock** makes `/grill-with-docs` the first step of his Main flow (the path most work takes, from idea to shipped) whenever he's in a project folder (his Skills say working directory).
 
-- **A codebase means the docs version.** His rule in the May 2026 video introducing it: codebase, `/grill-with-docs`; no codebase, `/grill-me`. He'd pick the docs version even for a brand-new project, since that's when shared words get set.
+- **A codebase (a project's code) means the docs version.** His rule in the May 2026 video introducing it: codebase, `/grill-with-docs`; no codebase, `/grill-me`. He'd pick the docs version even for a brand-new project, since that's when shared words get set.
 - **Language first.** In that demo, the agent's first move was to flag a tension with an existing glossary entry, and a naming question then decided whether standalone videos got their own section of his app. He still asked it to save near the end, though the Skill says to write as you go: peek at the file mid-session.
 - **One glossary, one plain name.** In his July 2026 walkthrough he picked a single glossary, saying it suits about 99% of people. In October 2026 he renamed `CONTEXT.md` to `GLOSSARY.md`: "context" felt vague, and the file had become just a glossary.
 
@@ -242,12 +242,11 @@ You type `/wait-what` after a reply full of jargon. What should the re-pitch loo
 ````try
 You need Claude Code installed and signed in (see [Start here](/learn/start-here)).
 
-1. Make an empty folder, turn it into a Git repo and start Claude Code in it. If it asks whether you trust this folder, choose Yes. This practice repo skips `/setup-matt-pocock-skills`, because `/grill-with-docs` doesn't need what it records; in a real repo, run it once first (see [Skills](/learn/skills)).
+1. Make an empty folder and start Claude Code in it. If it asks whether you trust this folder, choose Yes. This practice folder skips `/setup-matt-pocock-skills`, because `/grill-with-docs` doesn't need what it records; in a real repo, run it once first (see [Skills](/learn/skills)).
 
 ```sh
 mkdir book-club-docs
 cd book-club-docs
-git init
 claude
 ```
 
@@ -265,7 +264,7 @@ claude plugin install mattpocock-skills@claude-plugins-official
 ```
 
 5. Answer each round by number in one reply, like "1 yes, 2 no: call them Members". When it asks what to call something, pick one word. If it asks permission to create or edit `GLOSSARY.md` or a file in `docs/adr/`, choose Yes; for any other file, No.
-6. Once the agent says it added a term to `GLOSSARY.md`, peek at the file (a leading `!` runs a shell command):
+6. Once the agent says it added a term to `GLOSSARY.md`, peek at the file (a leading `!` runs a terminal command):
 
 ```text
 !cat GLOSSARY.md
@@ -324,8 +323,8 @@ Today I'd type `/grill-with-docs` once, so the terms get written during the inte
 | Moment | What to do |
 |---|---|
 | A new repo | `/setup-matt-pocock-skills`, once |
-| Start a change in a repo | `/grill-with-docs <your rough idea>` |
-| No repo | `/grill-me` instead |
+| Start a change | `/grill-with-docs <your rough idea>` |
+| No project folder | `/grill-me` instead |
 | A word clashes or is fuzzy | Pick one; the rest go under `_Avoid_` |
 | A glossary entry | Bold term, what it *is*, an `_Avoid_:` line, nothing else |
 | An ADR? | Only if hard to reverse **and** surprising without context **and** a real trade-off |
@@ -376,7 +375,7 @@ You join a three-year-old repo with no `GLOSSARY.md` and no ADRs. People use "ti
 - [ ] Ask the agent to read the code and write the whole glossary in one go.
   > That skips the interview. An agent-written glossary nobody reviewed fills with confident claims that later sessions trust.
 - [ ] Run `/setup-matt-pocock-skills`, which generates the glossary from your code.
-  > Setup only records where the domain docs live. The glossary itself is built term by term.
+  > Setup records where the glossary will live, plus your issue tracker and labels, but it writes no glossary. That's built term by term.
 - [ ] Create a `GLOSSARY-MAP.md` with one area per folder, then fill each one in.
   > Splitting comes last, and only for very large repos. Most need a single glossary.
 - [x] Type `/grill-with-docs` and have it interview you about the existing code.
@@ -397,7 +396,7 @@ Here's a new entry in a recipe site's glossary: **Recipe**: A dish's ingredients
 
 ```test spot-adr-pile
 Dana's first `/grill-with-docs` session on a habit tracker left 14 ADRs, including "Use a 12-hour clock", "Round the button corners" and "Show streaks on the home page". Spot the mistake.
-- [x] Most of those fail the three tests, so they shouldn't be ADRs.
+- [x] Decisions like these fail the three tests, so they aren't ADRs.
   > Right. Each could be undone tomorrow, and nobody would wonder why. An ADR needs all three tests at once.
 - [ ] They should all be merged into one big decisions file.
   > ADRs are one decision per numbered file. The problem is that these aren't ADR material at all.
@@ -411,8 +410,8 @@ Dana's first `/grill-with-docs` session on a habit tracker left 14 ADRs, includi
 Omar finishes `/grill-with-docs` for a multi-session feature. `GLOSSARY.md` gained six terms and there's one new ADR, so he decides everything's saved, types `/clear`, and runs `/to-spec` the next morning. The spec misses the 30-day refund window he agreed. Spot the mistake.
 - [ ] He should have asked the agent to write an ADR about the 30-day refund window.
   > A refund window is easy to change, so it fails the ADR tests. It belonged in the conversation, then the spec.
-- [ ] `/to-spec` should have run before `/grill-with-docs`.
-  > `/to-spec` writes from a grilled conversation. Run first, it has nothing to write from.
+- [ ] He should have run `/compact` instead, which keeps every decision.
+  > `/compact` swaps the conversation for a summary, which can drop details like this one. Keep the full conversation until `/to-spec` and `/to-tickets` have run.
 - [x] The docs hold only terms and rare decisions; `/clear` left the rest behind.
   > Right. Most decisions live only in the conversation `/to-spec` writes from. Keep it until `/to-spec` and `/to-tickets` have run.
 - [ ] The glossary should have recorded the 30-day refund window as a term.
@@ -435,8 +434,8 @@ You run `/grill-with-docs` in a brand-new repo with no docs. You settle a first 
 A team picks Tailwind (a styling library) for a new app. Swapping it out later would mean restyling every page, and they did weigh two other options. It came with the starter template they built the app from, and nearly every app built from that template uses it. Should the agent offer an ADR?
 - [ ] Yes: being hard to reverse is enough on its own.
   > All three tests must pass, not just one.
-- [ ] No: a styling library is always easy to swap out.
-  > Here swapping it is costly, so it passes "hard to reverse". A different test fails.
+- [ ] No: only databases and hosting earn ADRs, never a library.
+  > A library can qualify when swapping it is costly, as here. A different test fails.
 - [ ] Yes, and add Tailwind to `GLOSSARY.md`.
   > Tailwind is a general tool, not a word from the project's problem, so it isn't a glossary term either.
 - [x] No: it fails "surprising without context".
@@ -452,7 +451,7 @@ A teammate asks: "The agent can read our code, so why keep a glossary at all?" W
 - [ ] It lets the agent skip grilling next time, because the answers are already written down.
   > Words aren't decisions. Each new change still needs its own interview.
 - [ ] It gives the agent a memory of every past conversation.
-  > The agent has no memory between sessions. It knows only what's in the files it reads, and the glossary holds words, not conversations.
+  > Only files carry anything from one session to the next, and the glossary holds words, not past conversations.
 ```
 
 ```sources

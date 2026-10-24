@@ -36,7 +36,7 @@ Shipping is mostly vocabulary, so here are the words first.
 - **Merging** folds the branch into `main`. **Squash and merge** turns all of the branch's commits into one tidy commit on `main`.
 - **Production** is the real site that Visitors (the people reading it) use.
 
-On this site, two services make PRs safe to try. Vercel, which builds and hosts the site, builds a **preview** of every branch you push, so every PR has one: a full, temporary copy of the website at its own address. Neon, which hosts the database, gives each preview its own **database branch**, a separate copy of the database. Every build also runs any **migration** (a script that changes the database's structure, like adding a table) against its own database. So a preview tries a migration on its copy, and only the merge runs it on the real one.
+On this site, two services make PRs safe to try. Vercel, the site's host, builds a **preview** of every pushed branch: a full, temporary copy of the website at its own address. Neon, the database's host, gives each preview its own **database branch**: a throwaway copy, never merged back, so test data stays off the real site. Every build also runs any **migration** (a script that changes the database's structure, like adding a table) against its own database. So a preview tries a migration on its copy, and only the merge runs it on the real one.
 
 ```scene flow
 title: How a change ships on this site
@@ -74,7 +74,7 @@ A recipe site is set up like this one. You open a PR's preview and add a test re
   > Not with this setup. Each preview gets its own database branch, so the real site never sees it.
 - [x] Only in the preview's own database branch.
   > Right. The preview is a separate copy, so testing there can't touch production.
-- [ ] Nowhere, because previews are read-only.
+- [ ] Nowhere. Previews are read-only.
   > Previews are full working sites. You can post, click and break things, which is the whole point.
 - [ ] In production, but only after you squash and merge.
   > Merging ships the code and its migrations, not the recipes you added while testing.
@@ -157,27 +157,25 @@ A PR changes how a nightly script picks which old Comments to archive. There's n
 
 ## A session, step by step
 
-Here's that bug fix again as a short session (one Claude Code conversation). Earlier in this same session the agent built the fix test-first: it wrote the new test, watched it fail, then made it pass. The fix is committed on its own branch, and it has been reviewed.
+Here's that bug fix again as a short session (one Claude Code conversation). The fix and its new test are committed on their own branch. You've just reviewed them in a clean session, as [Code review](/learn/code-review) advises, so this session never saw the new test fail.
 
 ```scene chat
 title: Writing the body for a bug fix on this site (illustrative)
 # You ask for a body, and nothing else.
 you: Write the PR body for this branch against main. Show it to me here; don't push or open anything.
-# Writing a PR body is what the `pr` Skill describes, so the agent loads it on its own. Evidence needs a real run, so it tests again instead of trusting the code it read.
-agent: *Loads the `pr` Skill, reads the diff between this branch and `main`, then reruns the tests on this branch: 20 of 20 pass.*
+# Writing a PR body is what the `pr` Skill describes, so the agent loads it on its own. Evidence needs a real before and after, so it runs the new test on both versions instead of trusting the code it read.
+agent: *Loads the `pr` Skill, reads the diff between this branch and `main`, then runs the new test against `main`'s code (a 500) and on this branch: 20 of 20 pass.*
 # The body starts at the Summary: one small visual and a sentence, no intro.
 agent: **Summary:** a shaped diff of the comments module, with one new line: *if body or name is not text → 400*.
-# Evidence is a before and an after: the failing run from earlier in the session, then the run it just did.
+# Evidence is a before and an after: the new test on `main`'s code, then on this branch.
 agent: **Evidence:** before the fix, the new test got a 500 (`.trim is not a function`). Now it gets a 400, and all 20 tests pass.
 # Merge Danger names the door and the blast radius.
 agent: **Merge Danger:** two-way door, because there's no schema or data change and a revert undoes it. Blast radius: small.
-# You skim the diff yourself, because the agent that wrote the code also made the door call: a small change, no migration, nothing deleted or sent. The two-way call holds.
+# You skim the diff yourself rather than take the agent's door call on trust: a small change, no migration, nothing deleted or sent. The two-way call holds.
 you: The door call holds. Push the branch and open the PR with this body.
 # Only now does anything leave your laptop. The PR opens, and Vercel starts building its preview.
 agent: Pushed the branch and opened the PR with `gh pr create` (`gh` is GitHub's command-line tool).
 ```
-
-Notice two things. Nobody typed `/pr`: asking for a PR body was enough. And nothing left the laptop until the last message asked for it.
 
 ```checkpoint body-only
 On a book-club site, you type `/pr` on a finished, reviewed branch and press Enter. When it's done, what has the Skill given you?
@@ -197,7 +195,7 @@ On a book-club site, you type `/pr` on a finished, reviewed branch and press Ent
 
 - **Read Merge Danger first,** then Evidence, then Summary. The door call tells you how carefully to read the rest.
 - **Doubt the comfortable call most.** "Two-way, small blast radius" comes from the same agent that wrote the code, so it's marking its own homework. Whether a change can be undone often isn't visible in the diff at all. Reverting code doesn't bring back deleted rows, and as one user put it in Matt's docs, "rolling back a commit won't unsend a batch of emails."
-- **Give the agent what it needs to judge.** Put the ticket (one small task from a plan) or the spec (the written description of what to build) in front of it, not just the diff. List the changes your repo always treats as one-way (migrations, anything that sends messages out, anything that deletes) in `CLAUDE.md`, a file of standing instructions the agent reads at the start of every session.
+- **Give the agent what it needs to judge.** Show it the ticket (one small task from a plan) or the spec (the written description of what to build), not only the diff. Name your repo's one-way changes (migrations, anything that sends messages out, anything that deletes) in `CLAUDE.md`, a file of standing instructions the agent reads at the start of every session.
 - **Start on a branch.** `/implement` commits to whatever branch you're on. Ask for a new branch before you build, or the work lands on `main`.
 - **Review before the body.** Run Matt's review Skill by its full name, `/mattpocock-skills:code-review`, so the body describes a diff that's already been checked. The short name `/code-review` can reach Claude Code's own Built-in review, a bug hunt; if the reply lacks Matt's two sections, Standards and Spec, that's what answered. `/implement` calls the review by its short name too, so run the full name yourself afterwards (see [Code review](/learn/code-review)).
 - **Ask for a rewrite after big changes.** The body is written once. If the PR changes a lot under review, ask the agent to write it again.
@@ -211,7 +209,7 @@ On your project, the agent keeps calling database migrations "two-way: just reve
 - [ ] Correct it again each time, since door calls are judgements it makes fresh.
   > The correction disappears with the session. Write the rule where every session will read it.
 - [x] Write in `CLAUDE.md` that migrations are always one-way doors.
-  > Right. List the changes your repo always treats as one-way where the agent reads them before it makes the call.
+  > Right. Every session reads `CLAUDE.md` at the start, so the next door call begins from your rule.
 - [ ] Stop the agent using `/pr` on PRs that change the database.
   > Those are the PRs where the door call matters most. Fix the call; don't drop it.
 - [ ] Run a code review on every PR that changes the database.
@@ -226,7 +224,7 @@ On your project, the agent keeps calling database migrations "two-way: just reve
 - **Evidence buys verification.** In the same video he explained that asking for evidence often makes the agent run an extra test or take a screenshot. Without it, agents happily say a change probably works because they've read the code.
 - **His own example,** in that video, merged two near-identical algorithms. The body showed the files removed and added, the call structure, a before and after on a real record, and Merge Danger: two-way, small blast radius.
 - **Merge Danger goes last, but gets read early.** He puts it at the bottom and expects it to be the first or second thing a reviewer looks at.
-- **Review the irreversible.** In his "Fixing the PR Bottleneck" talk (25 September 2026), he said most PRs are two-way doors, software's big advantage over civil engineering, where a bad bridge can't be reverted. But a tiny change that accidentally emails 60,000 people is one-way. A small two-way door only needs a light review; every one-way door needs a real one.
+- **Review the irreversible.** In his "Fixing the PR Bottleneck" talk (25 September 2026), he said most PRs are two-way doors, software's big advantage over civil engineering, where a bad bridge can't be reverted. But a tiny change that accidentally emails 60,000 people is one-way. He closed with the rule: not every two-way door needs review, but every one-way door does.
 - **Flags don't settle it.** His October 2026 docs warn that a change hidden behind a feature flag (a switch that turns new code on or off without a new release) stays reversible only until it first saves data in the new shape.
 - **PRs that close issues.** In a May 2026 video he said he usually has the agent open a PR that references the issue (the ticket on GitHub), so merging closes it.
 
@@ -260,7 +258,7 @@ claude plugin install mattpocock-skills@claude-plugins-official
 Create a tiny project in a language already installed here: one function that returns a comment's display name, with one passing test. Commit it to main.
 ```
 
-4. Make a change on a branch. Watching the new test fail first is what gives the body a real "before".
+4. Make a change on a branch. Watching the new test fail first is what gives the body a real "before". If the agent proposes a seam (the boundary a test checks the code at) and waits, reply: "Yes, test the display-name function itself."
 
 ```text
 Make a branch called anonymous-name. First write a test that an empty or blank name shows as "Anonymous", and run it so we see it fail. Then change the function so it passes, and commit to that branch.
@@ -337,7 +335,7 @@ You've reviewed a branch and you're about to type "open a PR for this". Do you n
   > The agent can always write a body. The question is its shape, and `/pr` supplies that without you typing it.
 - [ ] Yes, because only typing `/pr` makes the agent push the branch and open the PR.
   > `/pr` never pushes or opens anything; it only shapes the body. The agent opens the PR with `gh` because you asked.
-- [ ] No, because `/implement` already wrote the body when it committed.
+- [ ] No. `/implement` already wrote the body when it committed.
   > `/implement` ends by committing to the current branch. It doesn't write a PR body.
 ```
 
@@ -359,7 +357,7 @@ A PR changes the wording on one button. The agent wrote both the code and the bo
   > Equal care for everything means too little care for the PRs that can't be undone. Spend it where reversal is hard.
 - [x] A quick skim that checks the door call holds.
   > Right. A small two-way door gets a light look, not a slow read. The skim is still how you check the call, since the agent that wrote the code made it.
-- [ ] None: a two-way door can be merged unread.
+- [ ] None: the agent's door call already settles it.
   > The call comes from the agent that wrote the code. A quick look is how you catch a "two-way" that isn't.
 - [ ] Ask the agent if it's sure, and merge if it says yes.
   > That has the agent grade its own call a second time. Your quick skim is the independent check.
@@ -369,8 +367,8 @@ A PR changes the wording on one button. The agent wrote both the code and the bo
 Reviewers asked for big changes, and you've pushed three more commits to the PR. The body still describes the first version. What do you do?
 - [ ] Leave it: reviewers can follow the new commits in the diff.
   > The new commits may change what the Summary shows and whether the Merge Danger call still holds. Ask for a new body.
-- [ ] Close the PR and open a new one so `/pr` runs again.
-  > No need for a new PR. Asking for a fresh body is enough.
+- [ ] Type `/pr` again: it rewrites the body and puts it on the PR.
+  > It rewrites the body, but `/pr` only writes. Putting the new body on the PR is a step you ask the agent for.
 - [ ] Add a comment on the PR saying the body is out of date.
   > The body is what reviewers read first. Fix it rather than flag it.
 - [x] Ask the agent to rewrite the body and update the PR.
@@ -379,11 +377,11 @@ Reviewers asked for big changes, and you've pushed three more commits to the PR.
 
 ```test scenario-repo-template
 Your team's repo already has a PR template (`.github/pull_request_template.md`), and you want agent-written bodies to respect it. What do you do?
-- [ ] Nothing: `/pr` finds the repo's template and fills it in.
+- [ ] Let `/pr` find the repo's template and fill it in.
   > `/pr` has its own template and doesn't look for yours. Left alone, the agent has two competing instructions.
 - [ ] Copy the repo's template into `GLOSSARY.md`, since `/pr` reads that file.
   > `/pr` borrows your project's words from the glossary, not a layout. Say how the two templates combine in `CLAUDE.md`.
-- [x] Say in `CLAUDE.md` how the two templates combine.
+- [x] Say in `CLAUDE.md` how they combine, since every session reads it.
   > Right. For example: fill in the repo's template, with Summary, Evidence and Merge Danger under it.
 - [ ] Type `/pr` yourself, so it reads the repo's template.
   > Typing the name loads the same Skill, which still doesn't look for your template.
@@ -415,7 +413,7 @@ Jo's Summary is four paragraphs walking through every file the agent touched, in
 
 ```test spot-text-door
 A two-line PR on a dentist's booking site turns on a text-message reminder to every patient the night before their visit. Its Merge Danger says: "Door: two-way, we can revert the commit." Spot the mistake.
-- [x] Texts already sent stay sent after a revert.
+- [x] The door is one-way, since texts can't be unsent.
   > Right. Anything sent out into the world is a one-way door, however small the diff. Read this one slowly.
 - [ ] Nothing: a revert switches the reminders off again.
   > It stops future texts. The ones already sent can't be pulled back, and that's what makes the door one-way.
@@ -429,7 +427,7 @@ A two-line PR on a dentist's booking site turns on a text-message reminder to ev
 On a recipe site set up like this one, a PR's migration renames the `ingredients` table. Sam clicks Squash and merge, then opens the preview to check the rename worked. Spot the mistake.
 - [ ] Nothing: a revert undoes a migration like any other change.
   > Reverting the code doesn't undo what a migration did to the database. That's what can make it a one-way door.
-- [x] The merge already ran the migration on the real database.
+- [x] The merge migrated the real database, so the check came too late.
   > Right. Merging deploys production, and that build migrates the real database. Check the preview first, while a mistake only hits its copy.
 - [ ] The preview already migrated the real database, so merging first changed nothing.
   > Each preview migrates its own database branch. Only the merge's production build touches the real one, which is why you test the preview first.
