@@ -180,16 +180,16 @@ you: `/workflows`
 agent: Checked 20 Lesson files, and a second agent confirmed each finding. 2 broken links, listed below with line numbers. No files changed.
 ```
 
-```checkpoint ultracode-one-task
-You want one audit of every API route (the server code that answers requests) to run as a workflow, without changing anything else about the session. What do you do?
-- [ ] Type `/effort xhigh` first.
-  > Effort is how much work each turn gets. It doesn't create workflows, and it stays raised for the rest of the session.
-- [ ] Type `/effort ultracode` first.
-  > That works, but it changes the session: Claude keeps planning workflows for later tasks until you turn it off.
-- [x] Put the word `ultracode` in your request.
-  > Right. The keyword opts one task in and leaves your settings alone.
-- [ ] Restart Claude Code with `claude --effort ultracode`.
-  > That turns ultracode on for the whole session, and sets effort to `xhigh` too.
+```checkpoint stop-whole-run
+You started a workflow with the `ultracode` keyword to audit every Lesson file. In `/workflows`, its token count keeps climbing, and you want the whole run stopped now. What do you do?
+- [ ] Select the agent using the most tokens and press `x`.
+  > That stops one agent. The rest of the run keeps going.
+- [ ] Type `/effort ultracode off`.
+  > The keyword opted in this one task, so there's no session setting to turn off, and the run is already going.
+- [x] Select the run itself and press `x`.
+  > Right. `x` stops whatever is selected, so select the run, not one agent, and it all stops.
+- [ ] Type `/effort low`, so its agents use fewer tokens.
+  > Effort sets how much work each turn gets. It doesn't stop a run that's already going.
 ```
 
 ## Fast mode, and a review called "ultra"
