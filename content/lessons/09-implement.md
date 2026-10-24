@@ -19,13 +19,13 @@ Once the plan is agreed, hand the building to a Skill that tests, reviews and sa
 
 ## Why it matters
 
-Claude Code is Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal. Matt Pocock, a developer and teacher, publishes a popular set of Skills for it. A Skill is a short instruction file the agent loads when you type its name, like `/implement`, or when a task matches its description. ([Start here](/learn/start-here) covers installing them.)
+Claude Code is Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal. Matt Pocock, a developer and teacher, publishes a popular set of Skills for it. A Skill is a short instruction file the agent loads when you type its name, like `/implement`, or when a task matches its description (see [Skills](/learn/skills); [Start here](/learn/start-here) covers installing them).
 
 Say the agent has just grilled you about a comment box for this site (asked question after question until the plan was settled; see [Grilling](/learn/grilling)), and you agreed: anonymous comments, an optional name, newest first. Type "OK, build it" and three things go wrong:
 
 - **The plan gets reopened.** A fresh agent told "build this" often redesigns as it goes, deciding names should be required after all.
 - **Nobody checks the work.** It may write tests (small programs that run your code and check its answers) afterwards, or none, and never review the result.
-- **The session loses its sharpness.** Everything in a session (one Claude Code conversation) lives in the agent's context window, its working memory, measured in tokens (small chunks of text). As it fills, the model reasons less sharply. Matt calls the part where it still thinks clearly the Smart zone: about 150k tokens on today's best models, as a rule of thumb. Build a big feature in one go and you finish far past it, in what he calls the dumb zone.
+- **The session loses its sharpness.** Everything in a session (one Claude Code conversation) lives in the agent's context window, its working memory, measured in tokens (small chunks of text; see [The context window](/learn/context-window)). As it fills, the agent reasons less sharply. Matt calls the part where it still thinks clearly the Smart zone: about 150k tokens on today's best models, as a rule of thumb. Build a big feature in one go and you finish far past it, in what he calls the dumb zone.
 
 Matt's answer is two Skills that build work that has ==already been decided==. `/implement` builds one piece: tests first, checks along the way, a fresh review, then a commit (a saved snapshot of your changes in Git, the tool that tracks every version of a project). `/implement-spec` builds a whole spec (a written description of what to build and why) split into tickets (small tasks that each fit one session), giving each ticket its own helper agent.
 
@@ -33,7 +33,7 @@ Matt's answer is two Skills that build work that has ==already been decided==. `
 
 `/implement` takes a ticket, a spec, or a plan you just agreed in the conversation, and turns it into a commit. It ==never reopens the plan==: no interview, no clarifying round, no alternative approach.
 
-It's a **user-invoked Skill**: only you can start it, by typing its name at the start of your message. The agent won't reach for it, and no other Skill can call it. So when `/to-tickets` (the Skill that splits a spec into tickets) finishes, nothing starts building by itself: typing `/implement` is your move.
+It's a **user-invoked Skill**: only you can start it, by typing its name at the start of your message. The agent won't reach for it, and no other Skill can call it. So when `/to-tickets` (which splits a spec into tickets) finishes, nothing starts building by itself: typing `/implement` is your move.
 
 One run goes in this order:
 
@@ -190,7 +190,7 @@ Matt's split, from his April 2026 workshop: implementation can be AFK, but "plan
 
 In his October 2026 video he named three ways to loop over tickets:
 
-1. **The manual loop.** You're the loop: implement ticket 1, clear, implement ticket 2. Fine for a few tickets, but he calls it not really workable, and not much fun.
+1. **The manual loop.** You're the loop: implement ticket 1, clear, implement ticket 2. Fine for a few tickets, but he calls it not really workable.
 2. **A deterministic loop.** A script runs the implementer on each ticket: his Sandcastle tool, or a shell script. He recommends it for most people: once set up, it runs the same way every time and it's cheap, because no human or agent runs the loop. But tuning one takes patience, so he puts it out of range for beginners.
 3. **The agent loop**, `/implement-spec`: "an agent does the babysitting instead of a human." He calls it worse than a script, because it isn't deterministic, but a good first step into AFK work. Its docs add that it needs no infrastructure and you can watch and steer it.
 
@@ -309,16 +309,16 @@ I built this site's redesign (a new Lesson, a photo for every Lesson, scroll mot
 
 ## Final test
 
-```test scenario-plan-in-chat
-You've just grilled a small change to a recipe site: a "print this recipe" button. Nothing was written to a file, and the session has plenty of room left. What do you type?
-- [ ] `/to-spec`, then `/to-tickets`, then `/implement` per ticket
-  > That road is for multi-session builds. For a change this small it's overhead.
-- [ ] `/clear`, then `/implement` with a fresh description of the button
-  > Clearing throws away the decisions you just made in this conversation.
-- [x] `/implement`, adding that the plan is in this conversation
-  > Right. Build it here, and say where the plan lives so the Skill doesn't go looking for a spec file.
-- [ ] `/implement-spec`, so sub-agents build it in parallel
-  > `/implement-spec` needs a spec split into tickets with blocking edges. There's no graph here.
+```test scenario-spec-hunt
+You grilled a small dark-mode toggle for a running club's site, then typed just `/implement`. Nothing was written to a file, and now the agent is searching the repo for a spec that doesn't exist. What did your message leave out?
+- [ ] The spec's path: run `/to-spec` first, then pass it.
+  > For a change this small, a spec is overhead. The plan already exists; the agent just doesn't know where it is.
+- [ ] A request to grill again, so the plan is fresh.
+  > `/implement` never reopens the plan, and this one is already made. The agent only needs to know where it lives.
+- [x] That the plan is in this conversation, not a file.
+  > Right. The Skill's text talks about "the spec or tickets", so one sentence saying where the plan lives stops the hunt.
+- [ ] The words "use `/implement-spec`", so helpers find it.
+  > `/implement-spec` needs a spec split into tickets with blocking edges. There's nothing on disk for it either.
 ```
 
 ```test predict-frontier
