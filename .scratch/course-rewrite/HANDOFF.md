@@ -2,6 +2,19 @@
 
 Start here if you're picking up the course PR ("PR B") on a new machine. Everything you need is on GitHub. Branch `course-20-lessons` is `main` plus this folder.
 
+## Progress on 2026-10-24 (read this first)
+
+Picked up on the new Mac. Steps 1 and 2 of the plan below are done and pushed.
+
+- **Step 1** (2cde45c): merged `origin/claude/course-rewrite-439267`. `04-grilling.md` is main's text with `order: 4`, and `01-grilling.md` is gone. In `README.md` the badge, About and Lesson table come from the course, but **Features stays main's**: the course's Features describe grading, the 80% pass mark, the progress cookie and Scenes that step, and none of those are built. Revisit Features when tickets 02, 04 and 05 ship.
+- **Step 2** (0ecacb3): restored the 19 drafts from `wip/pr-b-2026-10-23`, then put main's grilling back, because the restore had overwritten it. All 20 Lessons have a unique `order` and a `part`, and the draft lint prints no `ERROR` lines.
+- `npm run test:content`: 235 of 236 pass. The one failure is the `PENDING_REWRITE` guard, which is expected until step 6 deletes the list.
+- **Step 3 is answered:** Site stories cite only facts the repo holds (commits, PRs, files). Rewrite or cut any claim that only a session log could back up, in `how-agents-work`, `context-window` and `skills`, and anywhere else one turns up.
+- **How to run step 4:** the user chose one workflow over all 20 Lessons, replacing the "no big agent fan-outs" rule under "How the user works". Each Lesson's agent edits only its own file, and independent checkers try to break each revision. Lessons that were never reviewed get the review lenses first. Still commit and push per Part (step 7).
+- **Checking against v1.3.1:** the installed plugin's SKILL.md files are in `~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/`, the same content as commit `49dd158`.
+- **Transcripts:** the machine-translated video transcripts aren't on this Mac. Paraphrase anything taken from videos LlgiOCmFG_w, gaDdrDdczO4 and M6mYodf0dJM unless a text source backs the exact words.
+- **Env and links on this Mac:** `.env.local` came from `vercel env pull` (Neon `vercel-dev`). `.env.test.local` holds only `DATABASE_URL` for the Neon `test` branch. `neon link` pins `vercel-dev` in `.neon` and was run with `--no-env-pull`, so it never overwrites `.env.local`. All of these are git-ignored.
+
 ## Where things stand
 
 - **`main` (7934668)** is live at https://idea-to-shipped.vercel.app. It has the first Lesson engine release (PR #10): the typed-block parser, the new Lesson page and the rewritten `grilling` Lesson. The other 11 Lessons are the old journal Lessons, listed in `PENDING_REWRITE` in `src/lessons/course.test.ts`.
