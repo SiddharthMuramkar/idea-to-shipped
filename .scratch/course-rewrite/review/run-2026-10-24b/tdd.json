@@ -1,0 +1,302 @@
+{
+  "slug": "tdd",
+  "next": {
+    "round": 3,
+    "step": "fix",
+    "why": "fix round 2 and check round 3 done; fix round 3 never started"
+  },
+  "applied": [
+    "r1: medium accuracy, Seams section: the old line said you type /tdd and give 'a quick yes'. It now says you agree the seams while /to-spec writes the spec, and that /implement (with a clause saying what it is) later calls tdd at those seams, so there's little left to confirm. This matches to-spec SKILL.md step 2, implement SKILL.md:11 and docs/engineering/tdd.md:35, and agrees with scenario-tickets.",
+    "r1: medium reader, terminal Scene first caption: 'seam' and 'route' are now explained where they first appear: 'You and the agent have already agreed where the test plugs in (a seam; more on those below): the comments route, the code that runs when a new Comment arrives.'",
+    "r1: medium reader, Good tests section: 2000 and 2001 are now called inputs, and the expected values are now 201 and 400, all from the spec. I checked this against src/app/api/comments/route.test.ts:39-43. The code comment now reads '// Tautological: restates the code's own constant, so it passes whatever the API does'.",
+    "r1: medium reader, implementation-coupled tell: now 'it breaks when you restructure the code, though nothing a user sees has changed' (SKILL.md:30 says refactor). I removed the 'breaks when someone renames the constant' clause from the tautological bullet, so the two tells no longer overlap.",
+    "r1: medium reader, When to reach for it: 'the Skill decides where seams go' became 'the Skill has rules for where tests go, but none for whether a change is worth testing at all'. That no longer contradicts 'you pick the seam', and the wording is my own rather than the docs' sentence. gh confirms #746 is CLOSED, NOT_PLANNED.",
+    "r1: medium reader, /grill-with-docs: the table row now explains it with 'where the agent questions you until the plan is settled'. The scenario-tickets stem now reads 'You've settled a feature with `/grill-with-docs`, written a spec...' instead of 'grilled a feature'.",
+    "r1: medium reader, Try it step 2: both branches now clear the box first. The found branch says 'delete what you typed and go on to step 3'; the not-found branch says 'delete it, type `/exit`, run this in your terminal to install Matt's Skills, then run `claude` again:', the same pattern the pilot grilling Lesson uses.",
+    "r1: medium quiz, Checkpoint and Final test duplicating each other: the Checkpoint now asks which fake breaks the rule. It offers the SMS service, the payment service, the random generator and the right answer 'The app's pricing module that sets the fee.' I dropped 'own' from the right option so it doesn't give itself away, and gave it a new id, which-fake-is-wrong, because it now asks something new. In scenario-clock, option c is now 'The database, so the test needn't set up a real one.' with feedback that time, not the database, is what makes 31 days hard. I made it slightly longer than the suggested text so the right answer, d, stays shorter than at least one wrong option.",
+    "r1: medium quiz, skipped-seam: replaced the options as suggested. The right answer is 'Getting your OK on which boundary to test.', still in position a. The 'list up front leads to a batch' feedback is gone, so the Checkpoint no longer contradicts Try it step 5. The id is unchanged.",
+    "r1: medium quiz, rename-breaks-test: the stem now ends 'What's the right verdict on this test?'. Options a and b are now 'A good catch: update it to count calls to both new helpers.' and 'Too broad: replace it with one test per helper.', each with feedback. Options c and d are unchanged, and so is the id.",
+    "r1: medium quiz, spot-tautological: option a is now 'It calls the real `shippingCost` instead of a mock.' and option d is now 'It should test every parcel weight, not just this one.', each with feedback. The right answer, c, is unchanged and shorter than option d by both measures.",
+    "r2: medium quiz, skipped-seam Checkpoint: replaced distractors b and c with real loop steps the stem shows the agent already took: 'Writing the test before any of the code.' and 'Seeing the new test fail before any code.'. Each has feedback saying it did that. Kept a (right) and d. Lengths are a 42, b 40, c 41, d 44, so the right answer is not the longest. Same id, same meaning.",
+    "r2: medium quiz, scenario-tickets: the right option 'which calls `tdd` at the agreed seams' repeated the body's phrase, so it is now the neutral '`/implement`, naming the ticket'. implement SKILL.md: 'If the user passes a ticket reference, fetch it'. Kept its feedback. It is now the shortest option by both measures.",
+    "r2: medium quiz, scenario-clock: the stem now says the app stamps a task with the current time when you tick it off, so planting an old finish date through a fake database (or through no fake) is no longer a second defensible answer. Option c's feedback now reads: 'A real test database is preferred, and faking it doesn't help: the app takes the finish time from the clock, so the clock is what the test must control.' Options, positions and id are unchanged.",
+    "r2: medium reader, existing vs new seam: Seams paragraph now reads 'prefer existing seams (ones tests already use), the highest you can, ideally one'. The chat Scene labels now read '(existing seam: the API tests use it)' and '(new seam: no tests there yet)'. That removes the clash with the table, where postComment already exists. It matches to-spec SKILL.md step 2 and tdd SKILL.md's 'the public boundary you test at'. To stay word-neutral I cut 'all', 'pick', 'one' and 'just' from the same paragraph.",
+    "r2: medium reader, When to reach for it table: the /grill-with-docs row now ends 'then `/implement` (small) or `/to-spec` (multi-session)'. This matches the course Main flow fact and the grilling Lesson (small: /implement here; multi-session: /to-spec). It added 3 words, so I cut 'at all' from the fifth-row paragraph and 'also' from the model-invoked sentence. The net change is 0."
+  ],
+  "declined": [
+    {
+      "problem": "quiz low 7: in scenario-clock, replace 'wait 31 days' with 'Nothing: use the real clock and today's date'.",
+      "reason": "The suggested replacement would create a second defensible answer: a test can use the real clock and simply create a task whose finished date is 31 days in the past, without faking anything. I kept the original option. It is a weak distractor but unambiguous, and Matt uses the same 'don't literally wait' framing for fake clocks (3MP8D-mdheA 4:28-4:38)."
+    }
+  ],
+  "pending": [
+    {
+      "severity": "medium",
+      "where": "Seams: agree where tests go first, \"prefer existing seams (ones tests already use), the highest you can, ideally one\" (line 92), and the chat Scene in A session, step by step, \"(existing seam: the API tests use it)\" / \"**2. The comments module's `postComment`** (new seam: no tests there yet)\" (line 115)",
+      "problem": "The round-2 fix explains \"existing seam\" as \"ones tests already use\" and calls `postComment` a \"new seam\" because it has no tests. That is not what to-spec means. In to-spec, a new seam is one you have to create: it says to propose new seams \"at the highest point you can\". By that reading `postComment`, an exported function that already exists, is an existing seam. The spec-and-issues Lesson uses the to-spec sense: its Scene calls the attempts module \"new\" because nothing does that job yet. A reader of both Lessons gets two meanings of \"new seam\", and line 92 credits to-spec with a definition it doesn't give.",
+      "evidence": "to-spec/SKILL.md:15: \"Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can.\" codebase-design/SKILL.md:22 defines a seam as \"the location at which a module's interface lives\", and :65 says \"Don't introduce a seam unless something actually varies across it\", so a new seam is one you introduce. content/lessons/07-spec-and-issues.md:156: \"a new **attempts module** for saving and scoring Answers, since nothing does that yet\". content/lessons/09-implement.md:41 gives \"the comments module's \\\"save\\\" and \\\"list\\\" functions\" as an example seam. src/comments/comments.ts:30 exports postComment today.",
+      "fix": "Line 92: \"...has the same instinct: prefer seams that already exist over new ones, the highest you can, ideally one.\" Line 115: \"**1. The `POST /api/comments` route** (the API tests already use it): catches what a Visitor gets back; misses how the comment box shows it. **2. The comments module's `postComment`**, one layer down (no tests there yet): catches the rule and the save; misses status codes and what a Visitor sees.\" Both seams then exist, the higher one wins, and nothing clashes with the table at line 90 or with the spec-and-issues Lesson.",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "How Matt and others use it, Other developers, \"but the generated tests mostly checked their own mocks\" (line 224)",
+      "problem": "The Lesson stretches the source's claim to cover all the tests. Eberhardt's complaint is about one group of tests: CRUD tests repeated for every entity over about 15 lines of shared storage-adapter code, each using a fake Supabase back-end. He says those do more to check their mocks than the code. He calls the functional slices reasonable. The thing faked was also an outside service, a system boundary, which this Lesson says may be faked. So the lesson to draw is that a boundary fake can hide what it leaves out, not that the generated tests were mostly bad.",
+      "evidence": "https://blog.scottlogic.com/2026/10/19/an-honest-review-of-matt-pococks-skills.html (2026-10-19), Implementation section. It says the client is a small generic adapter shared by all entity storage, that the agent wrote CRUD tests for every entity against it, and that those tests check the mocks they built more than the code. It then says the functional slices \"all seemed quite reasonable\". Lesson line 169: \"Outside services, like payments or email\" may be faked. Line 174: \"Even at a boundary, a fake hides what it leaves out\".",
+      "fix": "\"In October 2026, Colin Eberhardt of the consultancy Scott Logic rebuilt an app with Matt's Skills. `/implement` ran red-green TDD and the reviews caught real bugs. But the storage tests it wrote, one set per kind of record over the same few lines of shared code, checked their fake back-end more than the code.\"",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, the 'It's working if' item \"Each failed first, or the agent said plainly that it passed straight away.\" (line 260), and the recovery paragraph (line 266)",
+      "problem": "The Lesson teaches that a test you have never seen fail proves nothing until you make it fail. The Try it then counts a test the agent only admits passed straight away as a success, and gives the reader no way to check it. Step 5's own cases make this close to certain: once code exists for \"201 words take 2\" (any round-up, or even `> 200 ? 2 : 1`), \"200 words take 1\" passes on its first run. So the one hands-on run a Visitor does ends by contradicting the Lesson's central rule, and the Lesson gives two messages about the same situation.",
+      "evidence": "Line 38: \"A test you've never seen fail might not be checking anything.\" Line 72 (green-first-run, the right answer's feedback): \"Say so honestly, then break the behaviour on purpose and confirm the test goes red.\" Line 272: \"Green on the first run proves nothing yet.\" Line 252 gives the cases in the order empty→1, 201→2, 200→1. Line 260 accepts \"the agent said plainly that it passed straight away\". In the seed, reviseFixed 'acc-skills medium 4' shows the case order and the 'said plainly' clause were added together in round 1. The round-2 low on the same gap was saved, not applied.",
+      "fix": "Line 260: \"- [ ] Tests appeared one at a time, and you saw each one fail: before its code, or with the code broken on purpose.\" Line 266, after the first sentence, add: \"If a test passes straight away, say: \\\"Break the code on purpose, show me that test fail, then put the code back.\\\"\" To pay for the words, cut Common mistakes bullet 2 (line 272, \"Trusting a test you never saw fail...\"). It repeats line 38 and the Checkpoint feedback, and the Try it now practises the point.",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "The idea: red, then green, one slice at a time, \"The Skill calls each test a **tracer bullet**\" (line 40); Good tests and the three bad ones, \"**Horizontal slicing.** Every test first, then all the code.\" (line 136); Why it matters, \"an agent working in layers ... the whole layer of tests below it\" (line 24)",
+      "problem": "The Lesson just before this one, Spec + tickets, defines a tracer bullet as a thin piece of a feature that runs through every layer, and a horizontal slice as one layer per ticket. This Lesson reuses both terms at a smaller scale: a tracer bullet is one test, and horizontal slicing is all the tests, then all the code. It never says it is the same idea shrunk to tests and code. A Visitor reading in order meets two definitions of each term. Line 24's \"the whole layer of tests below it\" is the one sentence that could link them, and it is left as jargon.",
+      "evidence": "content/lessons/07-spec-and-issues.md:110: a tracer bullet is \"a thin piece of a feature that runs through every layer at once (the database, the API..., the screen, and the tests)\". :112: \"The opposite is a horizontal slice: one layer per ticket.\" tdd SKILL.md:32 uses both terms at test scale (\"Work in vertical slices... each test a tracer bullet\"). Transcript -QFHIoCo-Ko.json 67:59-68:07: Matt says the agent cheats because it works in layers, the entire implementation and then the entire test layer just below it.",
+      "fix": "Line 24: \"...Matt described the habit: an agent builds in layers, the whole implementation first and then a whole layer of tests to match it, and tends to cheat at the tests.\" Line 40: \"Each cycle is a **vertical slice**: one behaviour, one test, one small piece of code. It's the tracer-bullet idea from [Spec + tickets](/learn/spec-and-issues), shrunk to a single test: the Skill calls each test a **tracer bullet**, which shows where your shots are landing, so the next cycle can respond to what it taught you.\" Line 136: \"**Horizontal slicing.** Every test first, then all the code: one layer at a time.\" (the rest of the bullet unchanged).",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Good tests and the three bad ones, Tautological bullet, \"Copied from a constant, ... the constant for X's post limit equals 280\" (line 135), with the code comment \"restates the code's own constant\" (line 141); Fake only at the edges, \"error cases that only showed up in production\" (line 174); How Matt and others use it, \"run the feedback loops (tests and type checks)\" (line 217)",
+      "problem": "Four developer terms that a cold Visitor can't decode, none explained anywhere in the Lesson. 'Constant' carries the definition of a tautological test (goal 3), and the code example never shows MAX_BODY being set, so the reader can't see what was copied. 'X', right after 'the constant for', reads like a placeholder variable unless you know Twitter's new name. 'Production' (the live app real people use) and 'type checks' are never explained.",
+      "evidence": "The Lesson text at lines 135, 141, 174 and 217. A grep of the Lesson finds no clause explaining any of the four. Writing guide, Voice: \"Explain every term at or before first use, in a clause\". The value the test copies is src/comments/limits.ts:3 `export const MAX_BODY = 2000;`, which the Lesson never shows.",
+      "fix": "Line 135: \"Copied from a constant (a value fixed by name in the code, like `MAX_BODY = 2000`), it checks a number, not a behaviour: Matt's example from the same talk was a test that the constant for the post limit on X (once Twitter) equals 280.\" Line 174: \"...while the real feature had error cases that only showed up in the live app, with real users.\" Line 217: \"...then run the feedback loops (the tests, and type checks: automatic checks that each value is the kind the code expects).\" To keep the word count near the 2,800 aim, trim line 209's \"which builds a ticket by calling `tdd` at the agreed seams\", which repeats line 92.",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Seams: agree where tests go first, Checkpoint skipped-seam, stem \"The agent's first reply is a new test file, already run and failing. What has it skipped?\" (line 95), options b \"Writing the test before any of the code.\" (line 98) and c \"Seeing the new test fail before any code.\" (line 100)",
+      "problem": "The round-2 fix replaced one weakness with another. Options b and c now restate facts the stem gives: a first reply that is a test file means test first, and \"already run and failing\" means it was seen red. A reader rules both out from the stem alone, with no Lesson knowledge. Option d (a passing test first) falls to the red-first rule taught at line 38. That leaves a, so the Checkpoint can be answered without knowing the seam rule it is meant to check. The right option's \"your OK\" also echoes the body's \"waits for your OK\" (line 83).",
+      "evidence": "Stem line 95: \"first reply is a new test file, already run and failing\". The b feedback (line 99) admits it: \"It did: its first reply was the test, before any code.\" So does c's (line 101): \"It did: the test has already run and failed.\" Line 38: \"A test you've never seen fail might not be checking anything.\" Line 83: \"waits for your OK\". Round 1 had the opposite problem (anti-steps), so the distractors need to be steps a beginner might think the Skill requires, which only the Lesson rules out.",
+      "fix": "Change the stem's last sentence to \"Which of the Skill's required steps has it skipped?\" Then use these options:\n- [x] Agreeing with you which boundary to test.\n  > Right. No test is written at a seam you haven't agreed. Press Esc and ask for its proposed seams, with what each catches and misses.\n- [ ] Planning the refactor that follows each green.\n  > This loop has no refactor step: tidying belongs to review. What it missed comes before any test.\n- [ ] Listing every edge case the tests will cover.\n  > The Skill doesn't aim at every edge case. Agreeing seams first is what puts the effort on the paths that matter.\n- [ ] Checking the runner with a test that passes.\n  > (keep the current feedback)\nVisible lengths: a 41, b 46, c 45, d 44. The id stays the same. To rule out b you need line 42, to rule out c line 83, and to rule out d line 38.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, scenario-tickets, option a \"`/implement`, naming the ticket\" (line 348) against b-d (lines 350, 352, 354)",
+      "problem": "The round-2 fix removed the echo of the body but added a shape tell. All three wrong options carry a purpose clause (\"for the tests, then ... for the code\", \"to set standards before coding\", \"to add the test cases\"). The right option has none. It is also the only option that repeats the stem's word \"ticket\" (\"to build the first ticket\"). A test-wise reader can pick the odd one out, the option that answers the stem's own words.",
+      "evidence": "Stem line 347: \"What do you type to build the first ticket?\" Line 348: \"`/implement`, naming the ticket\". Line 350: \"`/tdd` for the tests, then `/implement` for the code\". Line 352: \"`/mattpocock-skills:code-review`, to set standards before coding\". Line 354: \"`/to-spec` again, to add the test cases\". The writing guide's Questions section asks for \"no wording tells\". The answer key itself is correct: implement/SKILL.md:9 says \"If the user passes a ticket reference, fetch it\", and 09-implement.md:75 says \"`/implement` plus the ticket\".",
+      "fix": "Give all four options the same shape, each naming the ticket and carrying a purpose clause:\n- [x] `/implement`, to work through the ticket\n- [ ] `/tdd` for the ticket's tests, then `/implement` for its code\n- [ ] `/mattpocock-skills:code-review` on the ticket, to set standards first\n- [ ] `/to-spec` again, to add the ticket's test cases\nKeep all four feedback lines. Visible lengths: a 38, b 57, c 68, d 46, so the right answer isn't the longest.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, scenario-clock, option a \"The to-do module's own filter function.\" (line 324)",
+      "problem": "This distractor gives itself away. It says \"own\", the word the Lesson's never-fake column uses, and it proposes faking the very function the test checks. Its feedback says as much: \"the thing under test\". Option b (\"wait 31 days\") was already accepted as weak when the round-1 change was declined. So two of the three distractors cost nothing to rule out, and the question comes down to c against d. A plausible internal helper would test the same rule (never fake your own code) and make a reader think.",
+      "evidence": "Line 169: \"Never fake it | Your own modules\". Line 325: \"That's your code, the thing under test. Fake it and the test checks nothing.\" The declined item in the seed (scenario-clock b): \"It is a weak distractor but unambiguous\". Round 1 dropped \"own\" from which-fake-is-wrong because the word gives the answer away (seed applied item r1, which-fake-is-wrong). The round-2 stem fix held: c's feedback now matches the stem (lines 323, 329).",
+      "fix": "Replace option a with a tempting internal piece:\n- [ ] The function that works out each task's age.\n  > That's your own code, part of what's under test. Fake it and the test only checks the fake; control the clock it reads instead.\nVisible lengths: a 44, b 40, c 52, d 49, so d is still not the longest. Don't use \"helper\", which echoes \"Internal helpers\" in the never-fake column (line 170).",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, why-test-first, options a \"\\\"Fine, as long as every test passes at the end.\\\"\" (line 420), c \"\\\"Fine, if you ask it for twice as many tests.\\\"\" (line 424) and d \"\\\"Tests written afterwards never catch anything, so skip them entirely.\\\"\" (line 426)",
+      "problem": "Wording tell. Both a and c open with \"Fine,\", so they read as one concession to the friend, and the reader knows the Lesson disagrees with the friend. Option d uses absolutes (\"never ... entirely\"). Test-taking habits alone leave b, so the question doesn't check goal 1 (why test-first). This was saved as a low in round 2 but not applied or declined. On the shared scale, a wording tell is medium.",
+      "evidence": "Lines 420 and 424 both begin \"Fine,\". Line 426: \"never catch anything, so skip them entirely\". The writing guide's Questions section says \"no wording tells\". The seed's savedR2Lows entry for why-test-first raised the same pairing.",
+      "fix": "Remove the shared opening and keep all feedback lines:\n- [ ] \"It's the same if every test passes at the end.\"\n- [ ] \"Then just ask it for twice as many tests.\"\nVisible lengths: a 48, b 63, c 43, d 71, so b is still not the longest.",
+      "lens": "quiz"
+    }
+  ],
+  "rounds": {
+    "r2": {
+      "fix": {
+        "applied": [
+          "medium quiz, skipped-seam Checkpoint: replaced distractors b and c with real loop steps the stem shows the agent already took: 'Writing the test before any of the code.' and 'Seeing the new test fail before any code.'. Each has feedback saying it did that. Kept a (right) and d. Lengths are a 42, b 40, c 41, d 44, so the right answer is not the longest. Same id, same meaning.",
+          "medium quiz, scenario-tickets: the right option 'which calls `tdd` at the agreed seams' repeated the body's phrase, so it is now the neutral '`/implement`, naming the ticket'. implement SKILL.md: 'If the user passes a ticket reference, fetch it'. Kept its feedback. It is now the shortest option by both measures.",
+          "medium quiz, scenario-clock: the stem now says the app stamps a task with the current time when you tick it off, so planting an old finish date through a fake database (or through no fake) is no longer a second defensible answer. Option c's feedback now reads: 'A real test database is preferred, and faking it doesn't help: the app takes the finish time from the clock, so the clock is what the test must control.' Options, positions and id are unchanged.",
+          "medium reader, existing vs new seam: Seams paragraph now reads 'prefer existing seams (ones tests already use), the highest you can, ideally one'. The chat Scene labels now read '(existing seam: the API tests use it)' and '(new seam: no tests there yet)'. That removes the clash with the table, where postComment already exists. It matches to-spec SKILL.md step 2 and tdd SKILL.md's 'the public boundary you test at'. To stay word-neutral I cut 'all', 'pick', 'one' and 'just' from the same paragraph.",
+          "medium reader, When to reach for it table: the /grill-with-docs row now ends 'then `/implement` (small) or `/to-spec` (multi-session)'. This matches the course Main flow fact and the grilling Lesson (small: /implement here; multi-session: /to-spec). It added 3 words, so I cut 'at all' from the fifth-row paragraph and 'also' from the model-invoked sentence. The net change is 0."
+        ],
+        "declined": [],
+        "words": 2874,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    "r3": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "Seams: agree where tests go first, \"prefer existing seams (ones tests already use), the highest you can, ideally one\" (line 92), and the chat Scene in A session, step by step, \"(existing seam: the API tests use it)\" / \"**2. The comments module's `postComment`** (new seam: no tests there yet)\" (line 115)",
+            "problem": "The round-2 fix explains \"existing seam\" as \"ones tests already use\" and calls `postComment` a \"new seam\" because it has no tests. That is not what to-spec means. In to-spec, a new seam is one you have to create: it says to propose new seams \"at the highest point you can\". By that reading `postComment`, an exported function that already exists, is an existing seam. The spec-and-issues Lesson uses the to-spec sense: its Scene calls the attempts module \"new\" because nothing does that job yet. A reader of both Lessons gets two meanings of \"new seam\", and line 92 credits to-spec with a definition it doesn't give.",
+            "evidence": "to-spec/SKILL.md:15: \"Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can.\" codebase-design/SKILL.md:22 defines a seam as \"the location at which a module's interface lives\", and :65 says \"Don't introduce a seam unless something actually varies across it\", so a new seam is one you introduce. content/lessons/07-spec-and-issues.md:156: \"a new **attempts module** for saving and scoring Answers, since nothing does that yet\". content/lessons/09-implement.md:41 gives \"the comments module's \\\"save\\\" and \\\"list\\\" functions\" as an example seam. src/comments/comments.ts:30 exports postComment today.",
+            "fix": "Line 92: \"...has the same instinct: prefer seams that already exist over new ones, the highest you can, ideally one.\" Line 115: \"**1. The `POST /api/comments` route** (the API tests already use it): catches what a Visitor gets back; misses how the comment box shows it. **2. The comments module's `postComment`**, one layer down (no tests there yet): catches the rule and the save; misses status codes and what a Visitor sees.\" Both seams then exist, the higher one wins, and nothing clashes with the table at line 90 or with the spec-and-issues Lesson."
+          },
+          {
+            "severity": "medium",
+            "where": "How Matt and others use it, Other developers, \"but the generated tests mostly checked their own mocks\" (line 224)",
+            "problem": "The Lesson stretches the source's claim to cover all the tests. Eberhardt's complaint is about one group of tests: CRUD tests repeated for every entity over about 15 lines of shared storage-adapter code, each using a fake Supabase back-end. He says those do more to check their mocks than the code. He calls the functional slices reasonable. The thing faked was also an outside service, a system boundary, which this Lesson says may be faked. So the lesson to draw is that a boundary fake can hide what it leaves out, not that the generated tests were mostly bad.",
+            "evidence": "https://blog.scottlogic.com/2026/10/19/an-honest-review-of-matt-pococks-skills.html (2026-10-19), Implementation section. It says the client is a small generic adapter shared by all entity storage, that the agent wrote CRUD tests for every entity against it, and that those tests check the mocks they built more than the code. It then says the functional slices \"all seemed quite reasonable\". Lesson line 169: \"Outside services, like payments or email\" may be faked. Line 174: \"Even at a boundary, a fake hides what it leaves out\".",
+            "fix": "\"In October 2026, Colin Eberhardt of the consultancy Scott Logic rebuilt an app with Matt's Skills. `/implement` ran red-green TDD and the reviews caught real bugs. But the storage tests it wrote, one set per kind of record over the same few lines of shared code, checked their fake back-end more than the code.\""
+          },
+          {
+            "severity": "low",
+            "where": "Why it matters, \"A Skill is a short instruction file the agent loads when you type its name, like `/tdd`, or when your request matches its description.\" (line 24)",
+            "problem": "As written, this says any Skill can load when your request matches its description. Only model-invoked Skills can. Later the Lesson points readers to `/grill-with-docs`, `/to-spec`, `/implement` and `/implement-spec`, and all four are user-invoked, so plain words never start them. Two other Lessons already hedge this sentence with \"for some\".",
+            "evidence": "README.md:211 (1.3.1): User-invoked skills are \"reachable only when you type them\". skills/engineering/implement/SKILL.md:4 and to-spec/SKILL.md:4 set `disable-model-invocation: true`. writing-guide.md, Facts: \"Plain words can start a model-invoked Skill, never a user-invoked one.\" content/lessons/01-how-agents-work.md:26 reads \"or, for some, when a task matches its description\".",
+            "fix": "\"A Skill is a short instruction file the agent loads when you type its name, like `/tdd`, or, for some Skills, when your request matches its description.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, scenario-no-refactor, right-option feedback \"...and a separate review with a fresh context does it better.\" (line 339)",
+            "problem": "This says the review does the refactoring. Matt's code-review Skill only reports findings and edits nothing. The Lesson's own source note says \"reports, doesn't edit\", and line 42 and the cheat sheet say review \"flags\" what to tidy. The feedback contradicts both.",
+            "evidence": "code-review/SKILL.md:76-80: it presents the Standards and Spec reports and ends with a one-line summary, with no edit step. Lesson line 432 describes the source as \"(reports, doesn't edit)\". Line 42: \"flag what to fix\". Line 305: \"review flags what to tidy\".",
+            "fix": "\"Right. Version 1.1 dropped the refactor step: agents rarely did it with their own code still in context, and a separate review with a fresh context is better at spotting what to tidy.\""
+          },
+          {
+            "severity": "low",
+            "where": "How Matt and others use it, \"Their next prompt named it in full, `mattpocock-skills:tdd`, still untested when they posted.\" (line 223); sources entry for Discussion #1136 (line 442)",
+            "problem": "The cited source, Discussion #1136 and Warshoow's comment there, only says the prompt \"names the skills in full\". The exact name `mattpocock-skills:tdd` is in Warshoow's comment on Discussion #1091, which this Lesson doesn't cite. The Skills Lesson does cite #1091 for the same 173-session count.",
+            "evidence": "gh api graphql for discussion 1136: Warshoow's comment of 2026-09-29 says afk's prompt now names the skills in full and hasn't been seen on a real run yet. Discussion 1091: Warshoow's comment of 2026-09-29T09:00:37Z lists the prompt naming them in full as `mattpocock-skills:tdd` and `mattpocock-skills:code-review`. content/lessons/03-skills.md:498 cites #1091.",
+            "fix": "Add to sources: \"[implement loses two of its five beats on unattended runs](https://github.com/mattpocock/skills/discussions/1091), GitHub Discussion #1091 (Warshoow's comment of 2026-09-29: the 173 sessions and the full Skill names).\" Or drop the backticked name: \"Their next prompt named the Skills in full, still untested when they posted.\""
+          },
+          {
+            "severity": "low",
+            "where": "Good tests and the three bad ones, code comment \"// Behaviour at the seam, with the number taken from the spec\" (line 144)",
+            "problem": "The comment suggests the two tests differ in where their number comes from. They don't: the bad test's 2000 is also the spec's limit (1–2000). By the Skill's own rule, a known-good literal from the spec is a valid expected value. The bad test is bad because it checks a constant instead of behaviour, which line 141 already says. This was saved as a low in round 2 and is still unfixed.",
+            "evidence": "tdd/SKILL.md:31: \"Expected values must come from an independent source of truth: a known-good literal, a worked example, the spec.\" .scratch/lesson-site/spec.md:27: \"body (required, trimmed, 1–2000 characters)\". Lesson line 142: `expect(MAX_BODY).toBe(2000);`.",
+            "fix": "Line 144: \"// Behaviour at the seam: what a Visitor gets back for 2001 characters\"."
+          },
+          {
+            "severity": "low",
+            "where": "The idea: red, then green, one slice at a time, step 2 \"Nothing for the test after next, no extra features.\" (line 35)",
+            "problem": "\"The test after next\" means two tests ahead, so read literally it allows code for the very next test. The Skill rules out code for any future test. The phrase is borrowed from the docs page, but SKILL.md outranks the docs.",
+            "evidence": "tdd/SKILL.md:36: \"Write the failing test first, then only enough code to pass it. Don't anticipate future tests or add speculative features.\" The docs page (docs/engineering/tdd.md:31) uses \"the test after next\".",
+            "fix": "\"2. **Green.** Write only enough code to make that test pass. Nothing for later tests, no extra features.\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "Try it yourself, the 'It's working if' item \"Each failed first, or the agent said plainly that it passed straight away.\" (line 260), and the recovery paragraph (line 266)",
+            "problem": "The Lesson teaches that a test you have never seen fail proves nothing until you make it fail. The Try it then counts a test the agent only admits passed straight away as a success, and gives the reader no way to check it. Step 5's own cases make this close to certain: once code exists for \"201 words take 2\" (any round-up, or even `> 200 ? 2 : 1`), \"200 words take 1\" passes on its first run. So the one hands-on run a Visitor does ends by contradicting the Lesson's central rule, and the Lesson gives two messages about the same situation.",
+            "evidence": "Line 38: \"A test you've never seen fail might not be checking anything.\" Line 72 (green-first-run, the right answer's feedback): \"Say so honestly, then break the behaviour on purpose and confirm the test goes red.\" Line 272: \"Green on the first run proves nothing yet.\" Line 252 gives the cases in the order empty→1, 201→2, 200→1. Line 260 accepts \"the agent said plainly that it passed straight away\". In the seed, reviseFixed 'acc-skills medium 4' shows the case order and the 'said plainly' clause were added together in round 1. The round-2 low on the same gap was saved, not applied.",
+            "fix": "Line 260: \"- [ ] Tests appeared one at a time, and you saw each one fail: before its code, or with the code broken on purpose.\" Line 266, after the first sentence, add: \"If a test passes straight away, say: \\\"Break the code on purpose, show me that test fail, then put the code back.\\\"\" To pay for the words, cut Common mistakes bullet 2 (line 272, \"Trusting a test you never saw fail...\"). It repeats line 38 and the Checkpoint feedback, and the Try it now practises the point."
+          },
+          {
+            "severity": "medium",
+            "where": "The idea: red, then green, one slice at a time, \"The Skill calls each test a **tracer bullet**\" (line 40); Good tests and the three bad ones, \"**Horizontal slicing.** Every test first, then all the code.\" (line 136); Why it matters, \"an agent working in layers ... the whole layer of tests below it\" (line 24)",
+            "problem": "The Lesson just before this one, Spec + tickets, defines a tracer bullet as a thin piece of a feature that runs through every layer, and a horizontal slice as one layer per ticket. This Lesson reuses both terms at a smaller scale: a tracer bullet is one test, and horizontal slicing is all the tests, then all the code. It never says it is the same idea shrunk to tests and code. A Visitor reading in order meets two definitions of each term. Line 24's \"the whole layer of tests below it\" is the one sentence that could link them, and it is left as jargon.",
+            "evidence": "content/lessons/07-spec-and-issues.md:110: a tracer bullet is \"a thin piece of a feature that runs through every layer at once (the database, the API..., the screen, and the tests)\". :112: \"The opposite is a horizontal slice: one layer per ticket.\" tdd SKILL.md:32 uses both terms at test scale (\"Work in vertical slices... each test a tracer bullet\"). Transcript -QFHIoCo-Ko.json 67:59-68:07: Matt says the agent cheats because it works in layers, the entire implementation and then the entire test layer just below it.",
+            "fix": "Line 24: \"...Matt described the habit: an agent builds in layers, the whole implementation first and then a whole layer of tests to match it, and tends to cheat at the tests.\" Line 40: \"Each cycle is a **vertical slice**: one behaviour, one test, one small piece of code. It's the tracer-bullet idea from [Spec + tickets](/learn/spec-and-issues), shrunk to a single test: the Skill calls each test a **tracer bullet**, which shows where your shots are landing, so the next cycle can respond to what it taught you.\" Line 136: \"**Horizontal slicing.** Every test first, then all the code: one layer at a time.\" (the rest of the bullet unchanged)."
+          },
+          {
+            "severity": "medium",
+            "where": "Good tests and the three bad ones, Tautological bullet, \"Copied from a constant, ... the constant for X's post limit equals 280\" (line 135), with the code comment \"restates the code's own constant\" (line 141); Fake only at the edges, \"error cases that only showed up in production\" (line 174); How Matt and others use it, \"run the feedback loops (tests and type checks)\" (line 217)",
+            "problem": "Four developer terms that a cold Visitor can't decode, none explained anywhere in the Lesson. 'Constant' carries the definition of a tautological test (goal 3), and the code example never shows MAX_BODY being set, so the reader can't see what was copied. 'X', right after 'the constant for', reads like a placeholder variable unless you know Twitter's new name. 'Production' (the live app real people use) and 'type checks' are never explained.",
+            "evidence": "The Lesson text at lines 135, 141, 174 and 217. A grep of the Lesson finds no clause explaining any of the four. Writing guide, Voice: \"Explain every term at or before first use, in a clause\". The value the test copies is src/comments/limits.ts:3 `export const MAX_BODY = 2000;`, which the Lesson never shows.",
+            "fix": "Line 135: \"Copied from a constant (a value fixed by name in the code, like `MAX_BODY = 2000`), it checks a number, not a behaviour: Matt's example from the same talk was a test that the constant for the post limit on X (once Twitter) equals 280.\" Line 174: \"...while the real feature had error cases that only showed up in the live app, with real users.\" Line 217: \"...then run the feedback loops (the tests, and type checks: automatic checks that each value is the kind the code expects).\" To keep the word count near the 2,800 aim, trim line 209's \"which builds a ticket by calling `tdd` at the agreed seams\", which repeats line 92."
+          },
+          {
+            "severity": "low",
+            "where": "A session, step by step, prose \"uses words like Comment in test names\" (line 108) vs the chat Scene's test names \"a body containing a link is rejected with 400\" (line 119) and \"a name containing a link is rejected too\" (line 123)",
+            "problem": "The prose sets up the Scene by saying the agent uses glossary words like Comment in test names. Neither test name in the Scene contains 'Comment', so the worked example doesn't show what the sentence promises.",
+            "evidence": "tdd SKILL.md:10: read GLOSSARY.md \"so test names and interface vocabulary match the project's domain language\". GLOSSARY.md defines Comment. The site's real tests do this: src/app/api/comments/route.test.ts:24 \"a valid Comment is created and returned with 201\".",
+            "fix": "Line 119: \"agent: Test: \\\"a Comment whose body contains a link is rejected with 400\\\". Ran it: expected 400, got 201. That's red.\" Line 123: \"agent: Next: \\\"a Comment whose name contains a link is rejected too\\\". Ran it: ...\""
+          },
+          {
+            "severity": "low",
+            "where": "Why it matters, \"A Skill is a short instruction file the agent loads when you type its name, like `/tdd`, or when your request matches its description.\" (line 24)",
+            "problem": "As a general definition, this says any Skill can start when your request matches its description. That is true only of model-invoked Skills. The Lesson later sends the reader to `/grill-with-docs`, `/to-spec`, `/implement` and `/implement-spec`, all user-invoked, and never says plain words can't start them.",
+            "evidence": "Writing guide, Facts: \"Plain words can start a model-invoked Skill, never a user-invoked one.\" skills/engineering/README.md:7: user-invoked Skills are \"Reachable only when you type them\". content/lessons/01-how-agents-work.md:26 already hedges: \"or, for some, when a task matches its description\".",
+            "fix": "\"A Skill is a short instruction file the agent loads when you type its name, like `/tdd`, or, for some Skills, when your request matches its description.\""
+          },
+          {
+            "severity": "low",
+            "where": "Good tests and the three bad ones, code comment \"// Behaviour at the seam, with the number taken from the spec\" (line 144), read with the Tautological bullet \"The expected value comes from the code, not from an independent source like the spec\" (line 135)",
+            "problem": "A reader applying line 135's test (where does the expected value come from?) to `expect(MAX_BODY).toBe(2000)` finds that its 2000 is the limit you asked for in the opening story. The comment on the good test implies the bad test's number didn't come from the spec. That points the reader at the wrong difference. The bad test is bad because it checks a constant rather than behaviour, which line 141 already says.",
+            "evidence": "Line 22 asks for \"a 2,000-character limit\". .scratch/lesson-site/spec.md:27: \"body (required, trimmed, 1–2000 characters)\". tdd SKILL.md:31: expected values must come from \"a known-good literal, a worked example, the spec\".",
+            "fix": "Line 144: \"// Behaviour at the seam: what a Visitor gets back for 2001 characters\". Leave lines 135 and 141 as they are."
+          },
+          {
+            "severity": "low",
+            "where": "Fake only at the edges, \"one of its ADRs ... says the tests always talk to a real Postgres database\" (line 178), right after \"its tests use small folders of fake Lessons\" (line 176)",
+            "problem": "Two sentences apart, the Lesson says the Lessons-module tests use folders of fake Lessons, then that 'the tests always' talk to Postgres. A cold reader can't tell whether the Lessons tests hit a database too. The ADR is about tests that need the database.",
+            "evidence": "docs/adr/0003-tests-hit-real-postgres.md:3: the test suite \"talks to a real Postgres database on a dedicated Neon `test` branch\" and says don't replace these tests with mocks. src/lessons/lessons.test.ts:8 builds its subject with `lessonsFrom(path.join(fixtures, \"valid\"))` and touches no database.",
+            "fix": "\"This site goes further: one of its ADRs (architecture decision records: short notes on a hard-to-reverse choice) says tests that need the database use a real Postgres one, never a fake, in a copy kept only for tests.\""
+          },
+          {
+            "severity": "low",
+            "where": "Common mistakes, \"Pass the spec too if a slice depends on its neighbours.\" (line 273)",
+            "problem": "Line 40 defines a slice as one behaviour, one test and one small piece of code. Here 'slice' means a ticket, so 'a slice depends on its neighbours' misreads for a reader who learned the term in this Lesson.",
+            "evidence": "Line 40: \"Each cycle is a **vertical slice**: one behaviour, one test, one small piece of code.\" The bullet's own lead-in is about \"other tickets\".",
+            "fix": "\"**Expecting `tdd` to know about other tickets.** It sees the one you give it. Pass the spec too if a ticket depends on the others.\""
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Seams: agree where tests go first, Checkpoint skipped-seam, stem \"The agent's first reply is a new test file, already run and failing. What has it skipped?\" (line 95), options b \"Writing the test before any of the code.\" (line 98) and c \"Seeing the new test fail before any code.\" (line 100)",
+            "problem": "The round-2 fix replaced one weakness with another. Options b and c now restate facts the stem gives: a first reply that is a test file means test first, and \"already run and failing\" means it was seen red. A reader rules both out from the stem alone, with no Lesson knowledge. Option d (a passing test first) falls to the red-first rule taught at line 38. That leaves a, so the Checkpoint can be answered without knowing the seam rule it is meant to check. The right option's \"your OK\" also echoes the body's \"waits for your OK\" (line 83).",
+            "evidence": "Stem line 95: \"first reply is a new test file, already run and failing\". The b feedback (line 99) admits it: \"It did: its first reply was the test, before any code.\" So does c's (line 101): \"It did: the test has already run and failed.\" Line 38: \"A test you've never seen fail might not be checking anything.\" Line 83: \"waits for your OK\". Round 1 had the opposite problem (anti-steps), so the distractors need to be steps a beginner might think the Skill requires, which only the Lesson rules out.",
+            "fix": "Change the stem's last sentence to \"Which of the Skill's required steps has it skipped?\" Then use these options:\n- [x] Agreeing with you which boundary to test.\n  > Right. No test is written at a seam you haven't agreed. Press Esc and ask for its proposed seams, with what each catches and misses.\n- [ ] Planning the refactor that follows each green.\n  > This loop has no refactor step: tidying belongs to review. What it missed comes before any test.\n- [ ] Listing every edge case the tests will cover.\n  > The Skill doesn't aim at every edge case. Agreeing seams first is what puts the effort on the paths that matter.\n- [ ] Checking the runner with a test that passes.\n  > (keep the current feedback)\nVisible lengths: a 41, b 46, c 45, d 44. The id stays the same. To rule out b you need line 42, to rule out c line 83, and to rule out d line 38."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-tickets, option a \"`/implement`, naming the ticket\" (line 348) against b-d (lines 350, 352, 354)",
+            "problem": "The round-2 fix removed the echo of the body but added a shape tell. All three wrong options carry a purpose clause (\"for the tests, then ... for the code\", \"to set standards before coding\", \"to add the test cases\"). The right option has none. It is also the only option that repeats the stem's word \"ticket\" (\"to build the first ticket\"). A test-wise reader can pick the odd one out, the option that answers the stem's own words.",
+            "evidence": "Stem line 347: \"What do you type to build the first ticket?\" Line 348: \"`/implement`, naming the ticket\". Line 350: \"`/tdd` for the tests, then `/implement` for the code\". Line 352: \"`/mattpocock-skills:code-review`, to set standards before coding\". Line 354: \"`/to-spec` again, to add the test cases\". The writing guide's Questions section asks for \"no wording tells\". The answer key itself is correct: implement/SKILL.md:9 says \"If the user passes a ticket reference, fetch it\", and 09-implement.md:75 says \"`/implement` plus the ticket\".",
+            "fix": "Give all four options the same shape, each naming the ticket and carrying a purpose clause:\n- [x] `/implement`, to work through the ticket\n- [ ] `/tdd` for the ticket's tests, then `/implement` for its code\n- [ ] `/mattpocock-skills:code-review` on the ticket, to set standards first\n- [ ] `/to-spec` again, to add the ticket's test cases\nKeep all four feedback lines. Visible lengths: a 38, b 57, c 68, d 46, so the right answer isn't the longest."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-clock, option a \"The to-do module's own filter function.\" (line 324)",
+            "problem": "This distractor gives itself away. It says \"own\", the word the Lesson's never-fake column uses, and it proposes faking the very function the test checks. Its feedback says as much: \"the thing under test\". Option b (\"wait 31 days\") was already accepted as weak when the round-1 change was declined. So two of the three distractors cost nothing to rule out, and the question comes down to c against d. A plausible internal helper would test the same rule (never fake your own code) and make a reader think.",
+            "evidence": "Line 169: \"Never fake it | Your own modules\". Line 325: \"That's your code, the thing under test. Fake it and the test checks nothing.\" The declined item in the seed (scenario-clock b): \"It is a weak distractor but unambiguous\". Round 1 dropped \"own\" from which-fake-is-wrong because the word gives the answer away (seed applied item r1, which-fake-is-wrong). The round-2 stem fix held: c's feedback now matches the stem (lines 323, 329).",
+            "fix": "Replace option a with a tempting internal piece:\n- [ ] The function that works out each task's age.\n  > That's your own code, part of what's under test. Fake it and the test only checks the fake; control the clock it reads instead.\nVisible lengths: a 44, b 40, c 52, d 49, so d is still not the longest. Don't use \"helper\", which echoes \"Internal helpers\" in the never-fake column (line 170)."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, why-test-first, options a \"\\\"Fine, as long as every test passes at the end.\\\"\" (line 420), c \"\\\"Fine, if you ask it for twice as many tests.\\\"\" (line 424) and d \"\\\"Tests written afterwards never catch anything, so skip them entirely.\\\"\" (line 426)",
+            "problem": "Wording tell. Both a and c open with \"Fine,\", so they read as one concession to the friend, and the reader knows the Lesson disagrees with the friend. Option d uses absolutes (\"never ... entirely\"). Test-taking habits alone leave b, so the question doesn't check goal 1 (why test-first). This was saved as a low in round 2 but not applied or declined. On the shared scale, a wording tell is medium.",
+            "evidence": "Lines 420 and 424 both begin \"Fine,\". Line 426: \"never catch anything, so skip them entirely\". The writing guide's Questions section says \"no wording tells\". The seed's savedR2Lows entry for why-test-first raised the same pairing.",
+            "fix": "Remove the shared opening and keep all feedback lines:\n- [ ] \"It's the same if every test passes at the end.\"\n- [ ] \"Then just ask it for twice as many tests.\"\nVisible lengths: a 48, b 63, c 43, d 71, so b is still not the longest."
+          },
+          {
+            "severity": "low",
+            "where": "Final test, spot-batch, stem \"Asked to build a password-strength checker with `/tdd`, the agent creates a file of 15 tests ... Spot the mistake.\" (line 395) and option a \"Nothing: every test was seen red, then green.\" (line 396)",
+            "problem": "Two problems in one stem. First, \"Spot the mistake\" tells the reader there is one, so option a rules itself out, though its misconception (seeing every test go red makes a batch fine) is the most useful one here. Second, the stem never says a seam was agreed. Under the Lesson's \"firmest rule\" and the skipped-seam Checkpoint, an agent whose first act is a test file has also skipped the seam. A reader fresh from that Checkpoint sees a second mistake that no option names.",
+            "evidence": "Line 83: \"no test is written at a seam you haven't agreed\". Lines 95-97: a first reply that is a failing test file means it skipped \"Getting your OK on which boundary to test\". Line 397, the a feedback: \"Seeing red isn't enough on its own.\"",
+            "fix": "Stem: \"Asked to build a password-strength checker with `/tdd`, the agent agrees a seam with you, then creates a file of 15 tests and runs them: all 15 fail. Then it writes the whole checker, and all 15 pass. What, if anything, went wrong?\" Leave the options, feedback and id as they are."
+          },
+          {
+            "severity": "low",
+            "where": "Final test, spot-tautological, option b \"It makes more than one logical assertion.\" (line 374)",
+            "problem": "Weak distractor. The stem shows a single `expect(...)` line, so the code alone shows b is false. The round-2 reviewer saved this as a low, and it is still there.",
+            "evidence": "Line 371: `expect(shippingCost(parcel)).toBe(parcel.kg * RATE_PER_KG)`, one assertion. tdd/SKILL.md:31 says expected values must come from \"an independent source of truth\", and moving the formula elsewhere doesn't make it one. Don't use the saved round-2 fix (a snapshot): the Lesson never defines \"snapshot\".",
+            "fix": "- [ ] It should move the formula into a helper.\n  > A formula in a helper still restates the code. The expected value has to come from outside it, like a price list.\nVisible length 41. The right answer c (50) is still shorter than d (54)."
+          },
+          {
+            "severity": "low",
+            "where": "Final test, spot-side-channel, option c feedback \"\\\"yoga\\\" is an independent literal.\" (line 389)",
+            "problem": "The feedback answers a check the stem never describes. The test is said to check that a row exists, not that it holds \"yoga\". The feedback also never says what makes a test tautological, so a reader who picked c learns nothing about why. The round-2 reviewer saved this low, and it was not applied.",
+            "evidence": "Stem line 383: \"runs its own query on the bookings table to check a row exists\". tdd/SKILL.md:31: a tautological assertion \"recomputes the expected value the way the code does\".",
+            "fix": "  > Tautological means the expected value is worked out the way the code works it out. Checking that a booking row exists isn't that; the problem is the route the test takes to check it."
+          },
+          {
+            "severity": "low",
+            "where": "Fake only at the edges, Checkpoint which-fake-is-wrong, option d \"The random generator that picks each welcome code.\" (line 188)",
+            "problem": "The stem marks only the payment and SMS services as \"run by other companies\". Something that \"picks each welcome code\" then reads like the app's own logic. A sharp reader can argue d is also your own code, giving two answers that break the rule. What the Skill lets you fake is the source of randomness, not code that uses it.",
+            "evidence": "Line 181: \"both run by other companies\". mocking.md:7: \"Time/randomness\". mocking.md:12-14 says not to mock \"Your own classes/modules\" or \"Anything you control\".",
+            "fix": "- [ ] The random-number source behind each welcome code.\nKeep the feedback. Visible length 50, and the right answer c (43) is still the shortest."
+          },
+          {
+            "severity": "low",
+            "where": "Final test, scenario-no-refactor, right-option feedback \"a separate review with a fresh context does it better\" (line 339)",
+            "problem": "Here \"it\" means the refactoring, so the feedback says the review refactors. The Lesson elsewhere says the review flags what to tidy and doesn't edit. The answer is right, but the feedback teaches a slightly wrong picture of code-review.",
+            "evidence": "code-review/SKILL.md:3: \"Runs both reviews in parallel sub-agents and reports them side by side\". Lesson line 42: \"check the finished changes and flag what to fix\". Line 305: \"No refactor: review flags what to tidy\". Line 432 (sources): \"code-review SKILL.md (reports, doesn't edit)\".",
+            "fix": "  > Right. Version 1.1 dropped the refactor step: agents rarely did it with their own code still in context, and a separate review, with a fresh context, is better at spotting what to tidy."
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/tdd.json"
+}

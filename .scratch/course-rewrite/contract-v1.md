@@ -1,0 +1,115 @@
+# Authoring contract v1 (frozen)
+
+Sent by the engine session (PR A, branch `claude/lesson-content-scrolling-ux-2a9171`) on 2026-10-23. PR A's parser implements exactly this; any change arrives as a new message. Every Lesson file in `content/lessons/` follows it.
+
+## Header
+
+Between `---` lines, `key: value`, LF line endings. Keys: `title`, `slug`, `order`, `part`, `image`, `imageAlt`, `imageCredit`. Any other key is a BUILD ERROR. `part` is 1–4: 1 Foundations, 2 The main flow, 3 When things go wrong, 4 Level up.
+
+## Typed blocks
+
+Fenced code blocks whose info string is `<kind> [arg]`. Ordinary code fences keep working as code: use a real language (`ts`, `sh`, `text`, `md`…) or none. A block that contains a ``` fence must open and close with FOUR backticks.
+
+- ` ```goals `: a Markdown list of 3–4 "You'll be able to <verb>…" items. Only before the first `##`.
+- ` ```scene <chat|terminal|flow|files|meter> `: at most one per `##` section. Setting lines come first (`title: …`; flow also takes `node: <id> | <label> [| side]`; meter also takes `zone: <percent where the dumb zone starts>`). Then steps: a line `# <caption the reader sees>` starts a step, and the lines under it are what the picture ADDS at that step:
+  - chat: `you: …` / `agent: …` (inline Markdown is fine)
+  - terminal: `$ command` is a typed command; any other line is output
+  - flow: `at: <node id>` highlights that node
+  - files: `+ path` added / `~ path` changed
+  - meter: `fill: 62% | label`
+  Use 4–8 steps. Scenes must match how the Skill really behaves in 1.3.1; label invented sessions "illustrative" in the title.
+- ` ```checkpoint <id> `: ONE question (grammar below). It never counts toward passing. Place it right after the section it checks.
+- ` ```test <id> `: ONE question per fence. All test fences must be CONTIGUOUS, just before ` ```sources `; together they form the Final test. Pass mark: a score of at least 80% of the questions.
+- ` ```callout <tip|watch-out|big-idea> `: Markdown.
+- ` ```try `: a Markdown "Try it yourself" exercise; code inside gets a copy button. Include an "It's working if" checklist.
+- ` ```site-story `: Markdown, "How I used it building this site". REQUIRED for the 12 original Slugs. OPTIONAL for the 8 new Slugs: never invent a journal; omit it or say "Not used on this site yet".
+- ` ```sources `: a Markdown list of at least 3 items, each containing a link and a date. Cite a SKILL.md as a GitHub link to the file, then "Pinned to mattpocock-skills 1.3.1, read <date>".
+
+## Question grammar (checkpoint and test)
+
+````md
+```checkpoint who-owns-details
+The agent asks which CSS file layout you want. You don't care. Best reply?
+- [ ] Research it yourself first.
+  > Feedback explaining why this is wrong.
+- [x] "You decide, using best practice."
+  > Feedback explaining why this is right.
+- [ ] Skip grilling and start coding.
+  > Feedback.
+```
+````
+
+- The prompt comes first (inline Markdown, may span lines).
+- Then 3–4 options: `- [ ]` or `- [x]`, EXACTLY ONE `[x]`, and every option needs a `  > feedback` line under it.
+- Question ids: kebab-case `[a-z0-9-]{1,40}`, unique within the Lesson, PERMANENT once published (they key the database). Options are identified by POSITION (a, b, c, d): after publishing you may reword an option, but never reorder or remove options; changing the meaning means a new id. Spread the right answer across positions.
+
+## Inline
+
+`==key phrase==` (no spaces just inside the `==`) is a highlighted phrase that sweeps in on scroll. Use it sparingly: 1–3 per section.
+
+## Size and quality (enforced by `npm run test:content`, arriving with PR A)
+
+- Prose: 1,800–3,000 words (Start here 900–1,400).
+- Goals: 3–4.
+- At least 1 scene.
+- 3–5 Checkpoints.
+- A Final test of 8–10 questions (Start here 5–6, The main flow up to 15), of mixed kinds: at least 3 scenario ("which Skill would you reach for…"), at least 2 spot-the-mistake, at least 1 sequence. No trivia, no "all of the above", and the right answer must not be the longest option.
+- Never refer to "Lesson <number>" in the text (renumbering breaks it); link by title to `/learn/<slug>`.
+- Every backticked `/name` must be a real 1.3.1 Skill or a Built-in command.
+- Use GLOSSARY terms. New ones from PR A: Part, Checkpoint, Final test (reader-facing; never a bare "Test" or "quiz"), Scene, Site story, Answer, Attempt, User-invoked / Model-invoked Skill, Smart zone, and Phase redefined to Matt's meaning (a chunk of work inside a session; its boundaries are `/clear`, `/compact`, `/handoff`).
+
+## Pilot handoff
+
+1. Commit `grilling` FIRST as a standalone commit that only rewrites `content/lessons/01-grilling.md`: keep the filename and `order: 1`, add `part: 2`, and link ONLY to existing Slugs (the 8 new ones 404 in PR A).
+2. Send the SHA to the engine session, which cherry-picks it into PR A.
+3. Do the renumbering (`git mv` to `04-grilling.md`, `order: 4`, etc.) and the links to new Slugs in LATER commits. Don't edit the other 11 existing files' headers before the renumbering commit.
+
+## Tests
+
+Don't run `npm test` (it hits the shared Neon `test` branch, and PR A's suite empties tables). Once PR A's branch is pushed, merge it locally and run only `npm run test:content`.
+
+## v1.1 (2026-10-23): two clarifications, both lint rules
+
+1. **Word count**: plain words in prose (paragraphs, lists and tables between fences) plus the bodies of `callout`, `try` and `site-story`. Excluded: headings, code blocks (including code inside those blocks), `goals`, `scene`, `checkpoint`, `test` and `sources`. Range 1,800–3,000 (Start here 900–1,400).
+2. **Final test kinds** come from `test` id prefixes: at least 3 `scenario-…`, at least 2 `spot-…`, at least 1 `sequence-…`. Any other id is a free kind (e.g. `predict-…`, `why-…`). Checkpoint ids are unconstrained. Ids are permanent, so pick the prefix carefully.
+
+## v1.2 (2026-10-23)
+
+1. Start here's Final test (5–6 questions) is exempt from the kind mix. Every other Lesson needs at least 3 `scenario-`, 2 `spot-` and 1 `sequence-` test ids. The main flow may have 8–15 questions; every other Lesson has 8–10.
+2. Backticked `/name` allowlist: every 1.3.1 Skill, including the misc ones (`git-guardrails-claude-code`, `setup-pre-commit`, `migrate-to-shoehorn`, `scaffold-exercises`), plus these Built-in commands: `/clear` `/compact` `/context` `/model` `/effort` `/fast` `/rewind` `/init` `/help` `/config` `/permissions` `/plan` `/resume` `/agents` `/mcp` `/hooks` `/memory` `/cost` `/usage` `/status` `/doctor` `/login` `/logout` `/plugin` `/skills` `/ultrareview` `/review` `/add-dir` `/exit` `/export` `/terminal-setup` `/vim`. Ask the engine session before using any other. Paths like `/learn/x` aren't checked; only single-segment names are.
+3. `/learn/<slug>` links must point at Slugs that exist on this branch.
+
+## v1.3 (2026-10-23)
+
+1. Namespaced Skills are allowed: `/mattpocock-skills:<name>` for any 1.3.1 Skill name (the namespace must be exactly `mattpocock-skills`). A backticked name followed by arguments, like `/code-review max`, isn't checked.
+2. Added Built-in commands: `/btw` `/reload-skills` `/reload-plugins` `/workflows` `/autocompact`.
+
+## v1.4 (2026-10-23): settled by an adversarial review of the parser
+
+1. **Typed blocks only at the top level.** A typed fence inside a list item, a blockquote or another block's body (e.g. a `callout` inside a ````` ````try `````) is an ERROR. Ordinary code fences (`sh`, `text`, …) inside `try` are fine.
+2. **Question prompts are ONE paragraph of inline Markdown.** A prompt line starting with `- `, `* `, `1. `, `> ` or a fence is an error. Put orderings and transcript snippets inside the options (e.g. "grill → spec → tickets") or inline in backticks. Options start at column 0 (`- [ ]`; `[X]` also accepted).
+3. **Terminal Scenes:** `# ` at the start of a line always starts a step. Show an output line beginning with "# " as `\# …` (the backslash is dropped).
+4. **Plain text, no Markdown:** Scene `title:`, flow labels, meter labels, file paths. Captions (`# …`) and chat lines are inline Markdown.
+5. **Placement:** no Scene and no Final test in the intro (before the first `##`). A flow `side` node must come after at least one main node; it hangs off the main node declared just before it. In a files Scene, repeating `~ path` updates that row.
+6. **Word count:** inline `code` spans don't count (same as fenced code).
+7. **"Lesson <digit>"** is checked in the Lesson's own text only, including the Site story and source titles: write "it became the Main flow Lesson", not "it became Lesson 11".
+8. Write comparisons like `a == b` in backticks; bare `==x==` is a highlight.
+9. Code-fence languages: case-insensitive, broad allowlist (tree, rust, ruby, go, java, csv, xml, dockerfile, log, http, …). A bare word that looks like a block name (```` ```tip ````, ```` ```chat ````) is an error ("did you mean `callout tip` / `scene chat`?").
+10. `zone: 40` and `zone: 40%` both work; fills may be decimals. A duplicate header key is an error. Exactly one `goals` and one `sources` block. Every Lesson's photo must exist under `public/` in the same commit.
+11. Allowlist (v1.3 plus): `/mattpocock-skills:<skill>`, `/btw` `/reload-skills` `/reload-plugins` `/workflows` `/autocompact` `/simplify` `/security-review` `/loop` `/schedule` `/statusline`. A bare backticked `/learn` fails; write `/learn/` or a real link.
+
+## v1.5 (2026-10-23)
+
+1. **New Scene kind `photos`:** each step cross-fades to a photo. Exactly one `photo: <path> | <alt> | <credit>` line per step; the path starts with `/photos/` and the file must exist in `public/photos` (lint-enforced). Same placement rules as other Scenes. Reuse existing photos freely; new downloads need the user's OK and an entry in `src/app/credits/unsplash.ts`.
+
+````md
+```scene photos
+title: plain text title
+# Caption the reader sees (inline Markdown)
+photo: /photos/grilling.jpg | Alt text describing the photo | Photographer Name
+# Next caption
+photo: /photos/main-flow.jpg | Alt text | Photographer Name
+```
+````
+
+2. **`PENDING_REWRITE`:** in PR B's final commit, after PR A merges and main is synced, delete the `PENDING_REWRITE` set and its uses from `src/lessons/course.test.ts` (the second named exception to "don't touch src/**", alongside `unsplash.ts`). PR A adds a guard test that fails while a rewritten Lesson's slug is still in the set.

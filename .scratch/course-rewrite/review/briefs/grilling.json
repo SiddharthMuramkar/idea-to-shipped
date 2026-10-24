@@ -1,0 +1,18 @@
+{
+ "n": 4,
+ "slug": "grilling",
+ "title": "Grilling",
+ "part": 2,
+ "old": "01-grilling.md",
+ "img": [
+  "/photos/grilling.jpg",
+  "(copy from the 04-grilling.md header)",
+  "(copy from the 04-grilling.md header)"
+ ],
+ "skills": [
+  "productivity/grilling",
+  "productivity/grill-me",
+  "engineering/grill-with-docs"
+ ],
+ "extra": "The pilot and the exemplar for the other 19 Lessons. Question ids and option order are FROZEN (already shipped by the engine PR as content/lessons/01-grilling.md): rewording only; never add, remove or reorder questions or options, and never move the [x]."
+}

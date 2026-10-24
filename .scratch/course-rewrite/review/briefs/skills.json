@@ -1,0 +1,18 @@
+{
+ "n": 3,
+ "slug": "skills",
+ "title": "Skills",
+ "part": 1,
+ "old": null,
+ "img": [
+  "/photos/skills.jpg",
+  "Wrenches, pliers and screwdrivers hang in neat rows on a dark pegboard.",
+  "Anton Savinov"
+ ],
+ "skills": [
+  "engineering/setup-matt-pocock-skills",
+  "engineering/ask-matt",
+  "productivity/writing-for-agents"
+ ],
+ "extra": "Also read /Users/siddharth/Developer/idea-to-shipped-work/state/skills/README.md and the bucket READMEs under /Users/siddharth/Developer/idea-to-shipped-work/state/skills/skills/*/README.md. Teach: what a Skill is in Claude Code (a folder with SKILL.md, frontmatter, progressive disclosure, where Skills live, `disable-model-invocation`), user- vs model-invoked (list all 27 promoted Skills by bucket in a table), plugins and the install command (plugin vs `npx skills` route; never both), `/setup-matt-pocock-skills` (what it asks, what it writes), `/ask-matt` as the router, name clashes (`/mattpocock-skills:code-review`), and that misc and in-progress Skills are not in the plugin (mention misc names only). Site story: real (plugin installed at user scope; setup chose local markdown tracker, default labels, single-context docs, wrote the Agent skills block in CLAUDE.md; the author typed `/mattpocock-skills:code-review` to reach Matt's review; the plain-words \"grilling with docs\" slip)."
+}

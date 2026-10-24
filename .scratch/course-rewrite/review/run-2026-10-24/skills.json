@@ -1,0 +1,465 @@
+{
+ "slug": "skills",
+ "review": {},
+ "revise": {
+  "summary": "I revised /Users/Muramkar/code/idea-to-shipped/content/lessons/03-skills.md against the 1.3.1 SKILL.md files, the Claude Code docs (skills, discover-plugins and commands pages, fetched on 2026-10-24) and the repo. Both gates pass: the lint shows no ERROR lines at 2,797 words, and vitest ran 13 tests for \"Lesson skills\", all passing. Every high and medium finding is fixed, and so is every low.\n\n- **Accuracy:** the router Scene now reads to-spec, to-tickets and retro before it recommends skipping them, and it ends with `/retro`. The Lesson now gives the right reason the router never runs anything. Setup's domain docs step now says it only records the layout and doesn't create GLOSSARY.md or docs/adr/. The \"read-only\" wording now matches the Lee question. Typing a short name now says outright that you get Claude Code's /code-review. I also added the rule that a slash name later in your message only gives the agent permission to run a Skill.\n- **Final test and Checkpoints:** spot-asked-agent is replaced by spot-chained-skills, a new id that tests the rule that user-invoked Skills can't be chained. I added a 10th question, predict-setup-files, so goal 3 (\"say what it writes\") is checked. scenario-lost now uses a codebase-upkeep case, so it no longer repeats the router-stops premise. tracker-choice became tracker-other, a new id that tests the Other/Linear route. There are now 5 Checkpoints and 10 Final test questions, with right answers spread b c a d b / c a d b b d c d a c.\n- **Try it yourself:** it no longer uses a heredoc, which fails in PowerShell 5.1. The agent now writes the Skill file, then you restart Claude Code. The steps say what you see when the Skill loads, and the Esc/Yes/exit guidance comes before step 1.\n- **Reader glosses:** spec, triage labels, glossary, ADR, single-context, /clear, commit, turn, model, Node.js and gh are now each explained where they first appear.\n- **Site story:** rebuilt from repo facts only.\n  - The setup output and the Agent skills block are in first commit 4f849b9, with .scratch/lesson-site/.\n  - triage-labels.md being there shows the label question ran.\n  - The brief said the two review commands and the plain-words \"grilling with docs\" slip came from session logs. They are also in the journal Lessons at d21fc2c (07-code-review.md, 10-models-effort-ultracode.md, 11-main-flow.md), so I kept them with that wording.\n  - I cut the LOG-only \"122 Skills / 9.9k tokens\" line.\n  - I cut the \"user scope, never ran npx\" claim: no commit, PR or file in the repo backs it.\n- **Quotes:** I turned the March-video quote into a paraphrase, because no text source on this machine has the exact words. I cut the Reddit and multi-repo bullets to stay within the word budget.",
+  "fixed": [
+   "acc-skills high: router Scene now reads grill-with-docs, to-spec, to-tickets, implement and retro before it recommends skipping or describes them (ask-matt/SKILL.md:11)",
+   "acc-skills/acc-sources medium: 'as a user-invoked Skill, it can't' reworded: the router is built to recommend, and most of what it names are user-invoked Skills only you can start (SKILL-MECHANICS.md:22, invocation.md:8)",
+   "acc-skills/acc-sources medium+low: the router Scene now ends with /retro in the same session before you clear; 'Why it matters' range now ends with learning from the build (ask-matt/SKILL.md:34,38)",
+   "acc-skills medium: Try checklist now says issue-tracker.md 'says Local Markdown and puts issues under .scratch/' (the template uses .scratch/<feature-slug>/)",
+   "acc-skills medium: 'read-only' contradiction fixed: 'Treat its files as read-only: each update replaces them'; Lee's feedback says the edit took but the update brought fresh copies; Common mistakes and the scenario-write-own feedback reworded",
+   "acc-skills medium: user-invoked start rule softened: added that a slash name later in your message only gives the agent permission (docs 'Where you write the skill's name'); spot-asked-agent removed",
+   "acc-skills medium: Domain docs now says setup records the single-context layout and doesn't create GLOSSARY.md or docs/adr/; they appear when a Skill like /grill-with-docs settles a term (setup domain.md:11)",
+   "acc-skills low: July router advice now paraphrased as walking down the Main flow from the top in one unbroken window",
+   "acc-skills low: added re-running setup to refresh docs/agents after a big update (docs page, changeset)",
+   "acc-skills low: 'you may get Claude Code's' changed to 'you get Claude Code's', plus the agent's bare code-review call (docs: bare plugin name works unless another command already uses it)",
+   "acc-sources low: 173/36/18 figures now attributed to Discussion #1091 (Warshoow comment, 2026-09-29, checked via gh api); #1136 has its real title; the bullet now says it was /implement calling code-review by its short name",
+   "quiz medium: spot-asked-agent replaced by new spot-chained-skills (user-invoked chaining; goal 2 'predict')",
+   "quiz medium + reader medium: added Final test predict-setup-files (what setup writes, committed in the repo, linked from CLAUDE.md); the body now says the files are plain repo files you commit",
+   "quiz medium: scenario-lost moved to codebase upkeep (/improve-codebase-architecture), so it no longer shares the router-stops premise",
+   "quiz low: spot-edited-cache right-option feedback rewritten",
+   "quiz low: scenario-not-installed prompt names to-spec in plain words",
+   "quiz low: tracker-choice replaced by new id tracker-other (GitHub remote, team on Linear, so Other)",
+   "quiz low + reader low: why-light-context right option is now 'most cost nothing' (no number to memorise)",
+   "quiz low + reader medium: what-loads-early prompt says 'no extra settings' and option c feedback avoids terms not yet taught",
+   "quiz low: router-stops option d replaced with the 'waiting for go ahead' misconception",
+   "quiz low: sequence-new-repo uses 'start Claude Code in the project' instead of 'restart'",
+   "quiz low: spot-both-routes option d feedback no longer over-claims about the cache on disk",
+   "reader high: Try steps 5-6 and the checklist now describe the visible sign (a line naming repo-tour), give a fallback prompt, and say what changes after the flag",
+   "reader medium: permission/Esc/exit guidance moved before step 1",
+   "reader medium: spec glossed at first use",
+   "reader medium: issues/tickets, triage labels, glossary and ADRs glossed in the setup intro",
+   "reader medium: single-context named and explained in the Domain docs step",
+   "reader medium: /clear and Built-in command defined in 'Why it matters'",
+   "reader medium: 'known quirk' replaced by the real cause (setup partly checks the agent's Skill list, where user-invoked Skills never appear)",
+   "reader low: commit/Git glossed before the example; repo defined before the table",
+   "reader low: turn, model and context window glossed (goal 1 too)",
+   "reader low: Node.js/npx glossed",
+   "reader low: 'shadow' jargon removed",
+   "reader low: gh and effort levels glossed; 'on a branch' dropped (the fork gloss went with the cut Reddit bullet)",
+   "reader low: heredoc removed (also fails in PowerShell 5.1): the agent writes the SKILL.md from an exact text block; the step-6 request is in a text fence; the no-name: rule is shown",
+   "reader low: line about the agent's missing-Skill replies covers both answers and now uses plain words, to avoid the permission edge case",
+   "reader low: Site story '122 Skills / 9.9k tokens' cut (LOG-only)",
+   "reader low: flow Scene caption no longer uses site shorthand",
+   "reader low: Common mistakes and Cheat sheet repetitions merged",
+   "Task override: Site story rebuilt from repo facts (4f849b9 files, CLAUDE.md block, .scratch folders, d21fc2c journal Lessons); install-scope claim cut; March-video quote turned into a paraphrase; repo source links point at main"
+  ],
+  "deferred": [],
+  "lowsDeferred": 0,
+  "declined": [
+   {
+    "problem": "Lesson-specific note: the plain-words 'grilling with docs' slip and the author typing /mattpocock-skills:code-review were drafted from session logs and should be cut",
+    "reason": "The repo holds both, so I kept them, matched to the journal's wording. git show d21fc2c:content/lessons/11-main-flow.md:116 records the slip ('It ran /grilling and then /domain-modeling instead'). d21fc2c:content/lessons/07-code-review.md:28 records '/mattpocock-skills:code-review' with starting point 4f849b9. d21fc2c:content/lessons/10-models-effort-ultracode.md:58 records '/code-review max (the built-in bug hunt...)'. I dropped 'Later' because git log -S shows /code-review max was recorded first (8e2ff32)."
+   },
+   {
+    "problem": "acc-skills medium (plugin 'read-only'): remove the word 'read-only' everywhere",
+    "reason": "Partly applied. I kept 'Treat its files as read-only: each update replaces them', because Matt's own words call the plugin a 'managed, read-only bundle' (.agents/install-block.md, The two routes are exclusive) and say the plugin install is read-only (docs/engineering/ask-matt.md:73). The contradiction with the Lee question is resolved by the 'update replaces them' wording."
+   }
+  ],
+  "words": 2797,
+  "lintClean": true,
+  "testsPassed": true
+ },
+ "rounds": {
+  "r1": {
+   "checks": {
+    "quiz": [
+     {
+      "severity": "medium",
+      "where": "Final test, sequence-new-repo, line 449: \"You've just installed Claude Code and want to use Matt's Skills on a brand-new project.\"",
+      "problem": "The keyed order starts with the shell plugin install. The Lesson itself says the official marketplace is added the first time you start Claude Code, and the docs confirm it isn't registered on a machine where no interactive session has run yet. A careful reader who takes \"just installed\" to mean \"never started\" can argue the right answer fails at its first step, and every option installs before starting.",
+      "evidence": "Lesson line 129: \"`claude-plugins-official`, is added for you the first time you start Claude Code\". https://code.claude.com/docs/en/discover-plugins, Install from your shell: \"on a machine where no one has opened an interactive Claude Code session yet, the official marketplace isn't registered, so a script that installs from it runs `claude plugin marketplace add anthropics/claude-plugins-official` before the install.\" The Try it (line 260) avoids this by requiring Claude Code \"installed and signed in\".",
+      "fix": "Change the prompt to: \"Claude Code is installed and you've signed in once. You want to use Matt's Skills on a brand-new project. Which order is right?\" Keep the options and feedback as they are."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, spot-both-routes, lines 412-422: \"Sam's `/` menu lists grill-me twice, and the same goes for every one of Matt's Skills. Spot the mistake.\"",
+      "problem": "The prompt has no mistake to spot. It describes no action by Sam, only a symptom, so this is really a 'what caused this?' question. The prompt's own words, \"every one of Matt's Skills\", rule out distractors c (Built-in clash) and d (update kept the old copy); c's feedback even admits only a few names clash. The right answer just repeats the highlighted body line 139 (\"Install both and every Skill appears twice\") and Common mistakes line 332, so it tests recall, not transfer.",
+      "evidence": "Other Lessons' spot- questions describe what the person did, e.g. 00-start-here.md:289 lists Ana's numbered steps, and 04-grilling.md:402 lists Priya's actions. Lesson lines 139 and 332 state the answer word for word.",
+      "fix": "Replace with:\n```test spot-both-routes\nSam set up a new laptop: (1) ran `claude plugin install mattpocock-skills@claude-plugins-official`; (2) ran `npx skills@latest add mattpocock/skills` for his whole computer, so he'd have files he could edit; (3) started Claude Code in his repo and typed `/setup-matt-pocock-skills`; (4) typed `/grill-with-docs` to start his first feature. Spot the mistake.\n- [ ] Step 1, the plugin install\n  > The plugin is a complete route on its own, and it updates itself.\n- [x] Step 2, the npx install\n  > Right. The two routes are alternatives. With both, every Skill appears twice in his `/` menu. Pick one.\n- [ ] Step 3, running setup in the repo\n  > Setup belongs here: once per repo, before the engineering Skills.\n- [ ] Step 4, starting with `/grill-with-docs`\n  > In a repo, `/grill-with-docs` is the head of the Main flow.\n```"
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, spot-edited-cache, lines 438-445: right option \"Updates replace plugin files; the rule belongs in `CLAUDE.md`.\"",
+      "problem": "There's a wording tell. All three wrong options share a pattern the right one lacks: each starts with \"He should have...\" or \"He needed...\" and gives a single fix. The right option alone states a cause and then a fix, joined by a semicolon. It also echoes the body's defining phrase at line 135, \"each update replaces them\".",
+      "evidence": "Options: a \"He should have put the line in the Skill's description instead.\", b \"He should have re-run `/setup-matt-pocock-skills` afterwards.\", d \"He needed to install the plugin at project scope.\", c \"Updates replace plugin files; the rule belongs in `CLAUDE.md`.\". Lesson line 135: \"Treat its files as read-only: each update replaces them\".",
+      "fix": "Change option c to: \"- [x] He should have put the line in his own `CLAUDE.md`.\" (51 characters, not the longest; a is 63). Change its feedback to: \"  > Right. Plugin files aren't his: each update brings fresh copies, so the edit was lost. A line in his own `CLAUDE.md` survives every update.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, why-light-context, line 462: right option \"\\\"Unused Skills cost a description at most; most cost nothing.\\\"\"",
+      "problem": "The right option is the only hedged one (\"at most\", \"most\"). Every distractor is absolute (\"load in full\", \"never touch\", \"never starts\"). A test-wise reader can pick the hedged option without knowing how progressive disclosure works.",
+      "evidence": "Options b: \"They load in full, but a 1M-token window has room to spare.\"; c: \"Skills live on disk, so they never touch the context window.\"; d: \"Only Skills you type ever load; the agent never starts one by itself.\" The writing guide's Questions section and this review's lens both list 'the most hedged' as a tell.",
+      "fix": "Make the right option as flat as the distractors: \"- [x] \\\"Until one runs, a Skill adds a line; user-invoked ones add none.\\\"\" (about 66 characters, shorter than d at 71). Keep its feedback as it is."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, predict-setup-files, lines 472-482: \"A friend clones a repo where you ran `/setup-matt-pocock-skills` and committed the result... Where does her agent learn that tickets go under `.scratch/`?\"",
+      "problem": "The prompt's own facts rule out all three distractors without anything the Lesson teaches. \"Committed the result\" rules out d (answers last only for the session). \"Clones\" rules out b (your `~/.claude/` folder). Her fresh install rules out a (your plugin's settings). The right option is also the only one naming specific repo files, which makes it the most specific. It's also recall of line 168, \"commit them, and everyone who clones the repo gets the same setup\".",
+      "evidence": "Lesson line 168. Under the 1.3.1 Skill, to-tickets learns the tracker from the provided config or tells you to run setup: ~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/to-tickets/SKILL.md:11 \"The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.\"",
+      "fix": "Turn it into a transfer question where the commit is the missing piece:\n```test predict-setup-files\nA friend clones your repo, installs Matt's Skills and types `/to-tickets`. It tells her to run `/setup-matt-pocock-skills` first, though you ran it weeks ago and chose local markdown. What's the likeliest reason?\n- [ ] Setup saved its answers in your plugin's folder, not hers.\n  > Setup writes nothing into the plugin. Its answers are plain files in the repo.\n- [ ] Setup has to run once per computer, as well as once per repo.\n  > It runs once per repo. Its files travel with the repo to every clone.\n- [x] You never committed the files setup wrote into the repo.\n  > Right. `/to-tickets` finds the tracker through `docs/agents/` and the Agent skills block in `CLAUDE.md`. Uncommitted, those files stayed on your computer.\n- [ ] `/to-tickets` is user-invoked, so it can't read setup's files.\n  > Being user-invoked limits who can start a Skill, not which files it reads.\n```"
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-not-installed, line 389: \"you write \\\"ok, use to-spec to turn this into a spec\\\". The agent replies that it can't find a Skill called to-spec.\"",
+      "problem": "This is the body's own example: the same Skill and the same plain-words mention, followed by the same 'not installed' reply. A reader can answer by recognising the sentence instead of applying the rule. The writing guide asks for a fresh situation, not the body's example.",
+      "evidence": "Lesson line 113: \"Mention to-spec in plain words and it may say that Skill isn't installed, or that you must type it yourself. Either way, it's there. Type `/to-spec`.\" Writing guide, pilot lessons: \"Questions test transfer, not recognition. Use a fresh situation... not the body's own example sentence.\"",
+      "fix": "Swap in another user-invoked Skill. Prompt: \"You installed the plugin yesterday. Today, after a long build, you write \\\"ok, now run retro on this session\\\". The agent replies that it can't find a Skill called retro. Best move?\" Options: a \"Install the Skills again with npx so the agent can see them.\" (feedback: \"Now every Skill is installed twice, and `/retro` is still user-invoked, so the agent still can't see it.\"); b \"Ask the agent to install `/retro` for you.\"; c unchanged; d \"- [x] Type `/retro` yourself, at the start of a message.\" Keep the existing feedback for b, c and d. `/retro` is user-invoked, per skills/engineering/README.md."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-write-own, line 401: \"You keep pasting the same five rules for commit messages into every session.\"",
+      "problem": "The scenario reuses the body's worked example: a commit-message Skill whose description says \"Use when writing or amending a commit\" (lines 30-40). A reader can match the example instead of reasoning about where a personal, model-invoked Skill lives.",
+      "evidence": "Lesson lines 30-40: \"Here's a complete, working Skill for commit messages\" with `name: commit-style`, `description: House rules for commit messages. Use when writing or amending a commit.` Writing guide, pilot lessons: use a fresh situation, not the body's example.",
+      "fix": "Prompt: \"You keep pasting the same five rules for changelog entries into every session. You want the agent to follow them whenever it updates a changelog (the file listing what changed in each release), in every project, without you having to remember. What do you make?\" Keep options a to d. Change d's feedback to: \"Plugin files are replaced on every update. And `/pr` shapes the description of a pull request (a proposed change), not changelog entries.\""
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint tracker-other, line 190: \"your team tracks every task in Linear\"",
+      "problem": "Linear is one of the body's own examples for Other, at line 161 (\"describe Jira, Linear or anything else\") and line 249 (\"Jira, Linear and Beads\"). The question tests recognition of a listed name, not whether the reader sees that Other covers any unlisted tracker.",
+      "evidence": "Lesson lines 161 and 249.",
+      "fix": "Use a tracker the Lesson never names: \"...but your team tracks every task on a Trello board and nobody uses GitHub Issues.\" Make the right option \"Other, and describe how your team uses Trello.\""
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint router-stops, line 226: \"It answers that `/triage` fits, explains why, and then does nothing more.\"",
+      "problem": "The prompt already says the router stopped (\"does nothing more\"), and the right option repeats it (\"recommends and stops\"), echoing body line 205's \"...and stops\".",
+      "evidence": "Lesson line 205: \"Then it tells you what to type next, and where to clear the session or review the work, and stops.\"",
+      "fix": "Prompt: \"...It answers that `/triage` fits and explains why, but no sorting starts. What's going on?\" Right option: \"- [x] It only recommends; you type `/triage` yourself.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test, spot-chained-skills, line 425: \"Its body says: run `/to-spec`, then `/to-tickets`, then `/tdd` on each ticket... The agent reaches `/tdd` fine but never starts `/to-spec` or `/to-tickets`.\"",
+      "problem": "The scenario doesn't quite hold together. If `/to-tickets` never ran, there are no tickets for `/tdd` to work through, so a reader may stop on that instead of the invocation rule.",
+      "evidence": "Lesson line 425.",
+      "fix": "\"Its body says: run `/to-spec`, then build it with `/tdd`, then run `/retro`. He types its name. The agent builds with `/tdd` fine but never starts `/to-spec` or `/retro`. Spot the mistake.\" In d's feedback, change \"Kai has to type `/to-spec` and `/to-tickets` himself\" to \"Kai has to type `/to-spec` and `/retro` himself\"."
+     },
+     {
+      "severity": "low",
+      "where": "sources block, line 497: \"...GitHub Discussion #1136, 2026-09-28.- This site's repo: [CLAUDE.md](...)\"",
+      "problem": "This is outside the quiz lens. A missing line break merges two source items, so the repo source renders inside the GitHub Discussion item.",
+      "evidence": "Line 497 contains \"2026-09-28.- This site's repo:\" on one line. The diff shows it came from the reviser's rewrite of the Discussion item.",
+      "fix": "Split it into two lines: end the first with \"GitHub Discussion #1136, 2026-09-28.\" and start the next with \"- This site's repo: [CLAUDE.md](https://github.com/SiddharthMuramkar/idea-to-shipped/blob/main/CLAUDE.md) and ...\""
+     }
+    ],
+    "reader": [
+     {
+      "severity": "medium",
+      "where": "Lost? Ask the router, \"Before it describes a Skill or suggests skipping one, it reads that Skill's `SKILL.md`.\" (line 205), and the router Scene caption \"It reads every Skill it's about to recommend or skip\" (lines 213-214)",
+      "problem": "The Lesson presents the router's instruction as something it reliably does. Matt's own 1.3.1 docs list this as an open bug: the router often answers from its one-line summaries without opening the SKILL.md, and it has advised skipping /to-spec on that basis. A Visitor who trusts \"it reads the SKILL.md first\" will act on a skip recommendation without checking it. \"Know its limits\" (line 207) only says the SKILL.md wins when the two disagree, and a Visitor can't spot a disagreement without opening the file.",
+      "evidence": "~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/docs/engineering/ask-matt.md:61 says this is a real bug that is not fixed: the router answers from its own one-line summary of each skill, never opened to-spec/SKILL.md in a reported session, and verified only after the user pushed back. The same line advises asking it to open the SKILL.md first. The instruction itself is skills/engineering/ask-matt/SKILL.md:11, which is an instruction, not a guarantee.",
+      "fix": "Line 205: replace the sentence with \"Its instructions tell it to read a Skill's `SKILL.md` before describing it or suggesting you skip it, but Matt's docs list that as an open bug: it often answers from its own summaries. Before you act on what it says about a Skill, ask it to open that `SKILL.md`.\" Scene caption at line 213: \"# Its instructions say to read each Skill it will recommend or skip. Here it does.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Lost? Ask the router, \"Know its limits.\" (line 207), and Try it yourself steps 7-8, \"/ask-matt I want to add a README to this repo. What do I type next?\" / \"Read its answer, then type `/exit`.\" (lines 310-316)",
+      "problem": "The most common thing a first-time user of the router meets is not in the limits list or the Try it: the router often reports that the Skills it routes to aren't installed, because user-invoked Skills are missing from the agent's list. The Lesson has just told the reader that the router \"knows the others\" (line 203). So a Visitor in step 7 who hears \"grill-with-docs isn't installed\" has no guidance, and may reinstall or run npx, which the Lesson warns gives every Skill twice. Line 113 covers this for plain-words requests, but not for the router.",
+      "evidence": "1.3.1 docs/engineering/ask-matt.md:55-57, under \"It told me half the skills aren't installed.\": it is a known bug, not fixed. The harness leaves disable-model-invocation skills out of the agent's list, the agent reports them missing, and the page says this is the common case rather than an edge. The Lesson's line 203: \"one user-invoked Skill that knows the others\".",
+      "fix": "Add to \"Know its limits\" (line 207): \"It may also say that Skills it names aren't installed. User-invoked ones are missing from the agent's own list, so it thinks they're gone. They're there: type the name.\" Change step 8 (line 316) to: \"Read its answer. If it says a Skill isn't installed, ignore that; user-invoked Skills are hidden from it. Then type `/exit`.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Who can start a Skill, \"(A slash name later in your message only gives the agent permission to run it.)\" (line 102), against \"Only you can start it... If the agent tries to start one anyway, Claude Code blocks it.\" (line 100)",
+      "problem": "This is a contradiction inside the Lesson for a cold reader. Line 100 says only you can start a user-invoked Skill and Claude Code blocks the agent. Two sentences later, a mid-sentence slash name gives the agent \"permission to run it\". The reader can't tell whether \"ok, now /to-spec this\" runs the Skill or not. The router-stops feedback then says flatly that it \"can't start a user-invoked Skill\" (line 234). The docs say the mid-sentence name runs nothing directly; Claude may then run the Skill if your wording asks. The parenthetical gives neither half of that clearly.",
+      "evidence": "https://code.claude.com/docs/en/skills, \"Where you write the skill's name\": at the start of the message, Claude Code runs the skill directly. After plain text, nothing runs directly; the name counts as permission and Claude judges from the wording whether to run it. The same page's table says a disable-model-invocation skill can be invoked by Claude \"Not on its own\", and that if Claude tries anyway, Claude Code blocks the call.",
+      "fix": "Either cut the parenthetical (saves 14 words; the advice to type it at the start already covers it), or replace it with: \"(Later in a sentence, as in \"now /to-spec this\", the name runs nothing by itself. It only lets the agent start the Skill if your wording asks, so it may not happen. Put it first.)\" Then change line 100 to \"If the agent tries to start one without your say-so, Claude Code blocks it.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, sequence-new-repo, \"You've just installed Claude Code and want to use Matt's Skills on a brand-new project.\" (line 449)",
+      "problem": "The Lesson's own fact (line 129) is that the official marketplace is \"added for you the first time you start Claude Code\". A careful reader who takes \"just installed\" literally sees that every option starting with \"Install the plugin\" fails before Claude Code has ever run, including the keyed answer. No option starts Claude Code first. That gives a reader who applies the Lesson reason to doubt the right answer.",
+      "evidence": "Lesson line 129: \"Anthropic's official one, `claude-plugins-official`, is added for you the first time you start Claude Code\". https://code.claude.com/docs/en/discover-plugins, \"Install from your shell\": on a machine where no one has opened an interactive Claude Code session yet, the official marketplace isn't registered.",
+      "fix": "Change the stem to: \"Claude Code is installed and you've signed in once. You want to use Matt's Skills on a brand-new project. Which order is right?\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-write-own, \"You keep pasting the same five rules for commit messages into every session...\" (lines 400-401)",
+      "problem": "The question reuses the body's worked example. The idea section builds \"a complete, working Skill for commit messages\" (commit-style), with no disable-model-invocation and a description that triggers \"when writing or amending a commit\". So the question checks whether the reader recognises that example, not whether they can transfer the idea. This is the wording tell the writing guide warns against.",
+      "evidence": "Lesson lines 30-40 (commit-style SKILL.md, description \"Use when writing or amending a commit.\") against line 401 (\"whenever it writes a commit\"). .scratch/course-rewrite/writing-guide.md:118: \"Questions test transfer, not recognition. Use a fresh situation... not the body's own example sentence.\"",
+      "fix": "Stem: \"You keep pasting the same five rules for writing alt text (the description of an image for screen readers) into every session. You want the agent to follow them whenever it adds an image, in every project, without you having to remember. What do you make?\" Option d's feedback: \"Plugin files are replaced on every update. And `/pr` shapes the description of a pull request (a proposed change), not alt text.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Opening promise and goals, \"A Skill is a small instruction file your agent loads...\" (line 11), \"...run `/setup-matt-pocock-skills` once per repo...\" (line 16); defined only at \"A repo is a project folder tracked with Git.\" (line 54); \"Inside an installed plugin (see below)\" (line 60)",
+      "problem": "A cold reader meets terms before the clause that explains them. \"agent\" (lines 11, 14) gets no clause until Claude Code is called a coding agent at line 22. \"repo\" (line 16) isn't explained until line 54, about 40 lines later. \"plugin\" appears in the table at line 60 but is explained only at line 129.",
+      "evidence": "Lesson lines 11, 14, 16, 54, 60, 129. .scratch/course-rewrite/writing-guide.md:109: define Claude Code, agent, Skill, token, session, repo... at first use, in a clause, even if an earlier Lesson defines them.",
+      "fix": "Line 11: \"A Skill is a small instruction file your coding agent (an AI that reads and changes your project for you) loads only when it's needed.\" Line 16: \"...run `/setup-matt-pocock-skills` once per repo (a project folder tracked with Git), and say what it writes.\" Line 54: drop the now-duplicate definition (\"You can keep Skills in three places.\"). Line 60: \"Inside an installed plugin (a package of Skills; see below)\"."
+     },
+     {
+      "severity": "low",
+      "where": "Final test, sources block, \"...GitHub Discussion #1136, 2026-09-28.- This site's repo: ...\" (line 497)",
+      "problem": "The revision joined two source bullets onto one line, so the repo source renders inside the GitHub discussion bullet as a stray \"- This site's repo\". The lint still passes because it only counts links.",
+      "evidence": "git diff content/lessons/03-skills.md shows the added line ending \"#1136, 2026-09-28.- This site's repo: [CLAUDE.md](...)\". In HEAD the #1136 item ended its own line.",
+      "fix": "Put a line break before \"- This site's repo:\" so it is its own bullet."
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, step 2, \"If `setup-matt-pocock-skills` isn't in the list, type `/exit`, install the plugin, then run `claude` again:\" (lines 271-275)",
+      "problem": "The code block shows only the install line, so a reader copying the block never restarts Claude Code. Also, \"/setup\" is still in the input box, and typing /exit on top of it gives \"/setup/exit\".",
+      "evidence": "Lesson lines 271-275: the fenced block holds only `claude plugin install mattpocock-skills@claude-plugins-official`.",
+      "fix": "\"2. Type `/setup` and look at the list. If `setup-matt-pocock-skills` isn't there, delete what you typed, type `/exit`, and run these two lines:\" with a block of two lines, `claude plugin install mattpocock-skills@claude-plugins-official` and `claude`."
+     },
+     {
+      "severity": "low",
+      "where": "The idea, table row \"Personal | `~/.claude/skills/<name>/SKILL.md`\" (line 58); Cheat sheet (line 359)",
+      "problem": "A Visitor who barely uses a terminal, especially on Windows, doesn't know that `~` means the home folder, so they can't find where a personal Skill goes.",
+      "evidence": "Lesson lines 58, 123, 359, 404 use `~/.claude/...` and never explain `~`.",
+      "fix": "After the table (line 62), add: \"(`~` is your home folder: /Users/you on a Mac, C:\\Users\\you on Windows.)\""
+     },
+     {
+      "severity": "low",
+      "where": "Installing Matt's Skills, \"Matt used it in his July 2026 walkthrough, before the plugin existed: his whole computer, since he works solo, and project scope for teams, so everyone shares one set.\" (line 137)",
+      "problem": "The sentence after the colon has no verb, so a cold reader can't tell which scope Matt chose and which he recommended.",
+      "evidence": "Lesson line 137.",
+      "fix": "\"Matt used this route in his July 2026 walkthrough, before the plugin existed. He installed for his whole computer, since he works solo, and suggested project scope for teams so everyone shares one set.\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, intro, \"If Claude Code asks permission to create or change a file this exercise names, choose Yes.\" (line 260)",
+      "problem": "The Try it never tells the reader how to check the mode. A Visitor in plan mode sees setup show drafts but write nothing, and step 4 creates no Skill, with no hint why.",
+      "evidence": ".scratch/course-rewrite/writing-guide.md:117 (Try blocks should say how to check the mode: \"if you see 'plan mode on', press Shift+Tab until it changes\"); writing-guide.md:80 (plan mode only reads and proposes until you approve).",
+      "fix": "Append to line 260: \"If you see 'plan mode on' below the input box, press Shift+Tab until it changes: plan mode can't write files.\""
+     }
+    ],
+    "accuracy": [
+     {
+      "severity": "medium",
+      "where": "## When a short name is taken, line 239: \"Claude Code ships Built-in commands and Skills of its own, and a few share names with Matt's.\"",
+      "problem": "This calls Claude Code's own `/code-review` and its hidden `/prototype` \"Skills\". The Lesson itself (line 22), the GLOSSARY and the other Lessons all keep \"Skill\" for Matt's Skills and call Claude Code's own `/code-review` a Built-in command.",
+      "evidence": "Lesson line 22: \"A Built-in command comes with Claude Code itself; it isn't a Skill.\" GLOSSARY.md:19-21 defines Skill as \"One of Matt Pocock's Claude Code skills\", and GLOSSARY.md:35-37 defines Built-in command (\"A command that comes with Claude Code itself\", Avoid: Skill). The writing-guide course facts say \"Claude Code has its own Built-in `/code-review`\". content/lessons/10-code-review.md:210 says \"Claude Code has its own `/code-review`, a Built-in command (it ships with Claude Code itself, not with Matt's Skills)\". The same contradiction comes back in the Final test, spot-both-routes (line 418), which says \"A Claude Code Built-in shares each of those names.\"",
+      "fix": "Replace the sentence with: \"Claude Code ships Built-in commands of its own, and a few share names with Matt's Skills.\""
+     },
+     {
+      "severity": "medium",
+      "where": "site-story, line 345: \"Planning the redesign, I wrote \\\"you can start grilling with docs\\\" in plain words.\"",
+      "problem": "The repo doesn't support \"Planning the redesign\". The journal shows the prompt opened a session meant to create a PR teaching Matt's video, which became the Main flow Lesson. The redesign only joined the plan halfway through that grilling, so it wasn't being planned when the words were typed.",
+      "evidence": "`git show d21fc2c:content/lessons/11-main-flow.md` line 107: the prompt is \"I want to create a PR which teaches [Matt's video] … you can start grilling with docs\", and what came out was \"Lesson 11, a redesign in the style of GE's sites, photos, motion on scroll\". Line 120 of the same file: \"A new last Lesson, then a redesign I added halfway through, then a photo for every Lesson.\" PR #9 is titled \"The main flow Lesson + GE-style redesign\".",
+      "fix": "\"Planning the Main flow Lesson (the redesign joined that plan halfway through), I wrote \\\"you can start grilling with docs\\\" in plain words.\""
+     },
+     {
+      "severity": "low",
+      "where": "## Who can start a Skill, line 102: \"(A slash name later in your message only gives the agent permission to run it.)\"",
+      "problem": "This sits right after the rule about user-invoked Skills. It reads as if putting `/to-spec` mid-sentence lets the agent run it. For a user-invoked Skill, Claude Code blocks the agent's call anyway, so a mid-message slash name does nothing.",
+      "evidence": "https://code.claude.com/docs/en/skills: a name after plain text means \"Nothing runs directly. The name counts as your permission\". For `disable-model-invocation: true`, Claude can invoke it \"Not on its own\", and \"If Claude tries anyway, Claude Code blocks the call\".",
+      "fix": "\"(Later in a message, a slash name runs nothing by itself, and the agent can't start a user-invoked Skill even then.)\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, step 5 (line 296) against the checklist (line 322): \"Before the flag, a line naming repo-tour appeared after your plain question.\"",
+      "problem": "Step 5 allows that the first plain question may not load the Skill and offers a second wording. The checklist then requires the line after \"your plain question\", so a reader whose first try missed would think the exercise failed.",
+      "evidence": "Line 296: \"If no such line appears, ask once more: \\\"give me a tour of this repo\\\".\" Line 322: \"Before the flag, a line naming repo-tour appeared after your plain question.\"",
+      "fix": "Line 322: \"Before the flag, a line naming repo-tour appeared after one of your two plain questions.\""
+     },
+     {
+      "severity": "low",
+      "where": "sources block, line 497: \"…GitHub Discussion #1136, 2026-09-28.- This site's repo: [CLAUDE.md](…)\"",
+      "problem": "The revision dropped a line break, so the site's-repo source, which backs the Site story, renders inside the Discussion #1136 bullet instead of as its own item.",
+      "evidence": "Running `git diff content/lessons/03-skills.md` shows the added line `…GitHub Discussion #1136, 2026-09-28.- This site's repo: …` as a single line.",
+      "fix": "Put a newline before \"- This site's repo:\" so it starts its own list item."
+     },
+     {
+      "severity": "low",
+      "where": "## Installing Matt's Skills, line 141: \"Matt's misc folder (`/git-guardrails-claude-code`, `/setup-pre-commit`, `/migrate-to-shoehorn`, `/scaffold-exercises`)\"",
+      "problem": "Writing these as backticked slash names makes them look like things the reader can type, but they aren't installed. The brief says to mention misc Skills by name only, and the writing guide says to check every backticked /name against the 27-Skill lists.",
+      "evidence": "~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/misc/README.md:3: \"Tools I keep around but rarely use, not promoted in the plugin.\" .claude-plugin/plugin.json lists only the 27 engineering and productivity Skills. The writing guide's \"Before you hand back\" section says \"Check every backticked `/name` against the lists above.\"",
+      "fix": "\"Matt's misc folder (git-guardrails-claude-code, setup-pre-commit, migrate-to-shoehorn, scaffold-exercises) and his in-progress folder of beta Skills don't ship in it…\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test spot-chained-skills, line 425: \"run `/to-spec`, then `/to-tickets`, then `/tdd` on each ticket … The agent reaches `/tdd` fine\"",
+      "problem": "The premise contradicts itself. If `/to-spec` and `/to-tickets` never run, there are no tickets for `/tdd` to run on \"each\" of, so an alert reader may doubt the setup instead of spotting the intended mistake.",
+      "evidence": "Lesson line 425 as quoted. ~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/.agents/invocation.md:8: \"A user-invoked skill may invoke model-invoked skills, but it can never reach another user-invoked skill.\" The two blocked Skills are what produce the tickets.",
+      "fix": "\"Its body says: run `/to-spec`, then `/to-tickets`, then build with `/tdd`. He types its name. The agent can't start `/to-spec` or `/to-tickets`, but goes on to `/tdd` fine. Spot the mistake.\""
+     }
+    ]
+   },
+   "fix": {
+    "applied": [
+     "acc line 239 (Built-in vs Skill): changed it to 'Claude Code ships Built-in commands of its own, and a few share names with Matt's Skills.' The spot-both-routes option that called them 'a Claude Code Built-in' went out with that question's rewrite.",
+     "Site story 'Planning the redesign': changed to 'Asking for the PR that became the Main flow Lesson, I wrote ...'. This matches d21fc2c:content/lessons/11-main-flow.md:107 and :120, where the redesign joined halfway through.",
+     "Router reads SKILL.md (open bug): I cut the sentence at line 205 that said it always reads the SKILL.md first. 'Know its limits' now says its instructions tell it to read the SKILL.md, but Matt's docs list an open bug where it answers from its one-line summaries (docs/engineering/ask-matt.md:61). It also tells the reader to ask it to open that file before acting on its advice, for example a tip to skip /to-spec. The Scene caption now reads 'Its instructions say to read each Skill it will recommend or skip. Here it does.'",
+     "Router says Skills aren't installed: added to 'Know its limits' that with the full set this is the same blind spot as user-invoked Skills, so type the name (ask-matt.md:57). Try it step 8 now reads 'Read its answer. If it says a Skill isn't installed, ignore that: user-invoked Skills are hidden from it. Then type /exit.'",
+     "Mid-sentence slash name contradiction: cut the parenthetical about permission. Changed line 100 to 'If the agent tries to start one on its own, Claude Code blocks it.' This matches the docs table ('Not on its own') and the docs' 'If Claude tries anyway, Claude Code blocks the call'.",
+     "sequence-new-repo stem (the same issue was reported twice, once by the quiz lens and once by the reader lens): it now reads 'Claude Code is installed and you've signed in once. You want to use Matt's Skills on a brand-new project. Which order is right?' The options are unchanged.",
+     "scenario-write-own reused the body's commit example (reported by two checkers): I used the changelog version. The stem is about changelog entries ('the file listing what changed in each release'), and option d's feedback now ends 'not changelog entries'. I picked changelog over alt text because /pr stays a believable wrong option.",
+     "Cold-reader terms: line 11 now defines 'coding agent (an AI that reads and changes your project for you)'. The repo goal now has '(a project folder tracked with Git)'. I dropped the duplicate repo definition at line 54. The plugin row in the table now reads '(a package of Skills; see below)'.",
+     "spot-both-routes had no mistake to spot: I replaced it with Sam's four numbered steps and kept the id. Two changes from the checker's version. First, the stem starts with Sam already signed in to Claude Code, so step 1 works (the official marketplace is registered then). Second, step 2's reason is 'in case the plugin missed any Skills', not 'so he'd have files he could edit'. That reason would have made step 1 a defensible second answer, since npx is the right route if you want editable files. The right answer, 'Step 2, the npx install', is 23 characters, the shortest option.",
+     "spot-edited-cache wording tell: the right option is now 'He should have put the line in his own CLAUDE.md.' (51 raw / 49 visible, against 63 for option a). Its feedback now ends 'so the edit was lost. A line in his own CLAUDE.md survives every update.'",
+     "why-light-context hedged answer: the right option is now the flat '\"Until one runs, a Skill adds a line; user-invoked ones add none.\"' (66 characters, against 71 for option d). The feedback is unchanged.",
+     "predict-setup-files gave its answer away: I replaced it with the checker's version, a friend's /to-tickets telling her to run setup because you never committed the files it wrote. It asks something new, so it has a new id, why-clone-needs-setup. I changed option b's feedback to 'Once committed, its files reach every clone.' The question rests on to-tickets/SKILL.md:11.",
+     "scenario-not-installed reused the body's to-spec example: it now uses /retro ('ok, now run retro on this session'), which the engineering README lists as user-invoked. Options a, b and d and a's feedback now name /retro, and the id is kept.",
+     "Also fixed outside the issue list: in sources, the #1136 item and the 'This site's repo' item had run together on one line ('2026-09-28.- This site's repo'). They're now two list items."
+    ],
+    "declined": [],
+    "words": 2862,
+    "lintClean": true,
+    "testsPassed": true
+   }
+  },
+  "r2": {
+   "checks": {
+    "accuracy": [
+     {
+      "severity": "medium",
+      "where": "When a short name is taken: 'Type the short name and you get Claude Code's.' (line 239) and 'On the npx route the files are yours, so you can rename the folder and its name: line.' (line 241); same assumption in the Cheat sheet row 'Matt's code review' (line 356)",
+      "problem": "The section treats the clash as true on both install routes. Claude Code's docs say the opposite for the npx route. A Skill in ~/.claude/skills/ or .claude/skills/ (where npx puts Matt's files) replaces the bundled /code-review, and Claude Code's version stays reachable only as /review. An npx reader is therefore told the short name gets Claude Code's (false), told to rename to get past a clash they don't have, and given /mattpocock-skills:code-review, which doesn't exist without the plugin. The rename tip in Matt's note covers every harness (Copilot, Devin), not this Claude Code case.",
+      "evidence": "https://code.claude.com/docs/en/skills, 'Resolve skills that share a name' table: 'Any of those locations and a bundled skill | Your skill replaces the bundled command, but not its aliases. A project code-review skill replaces /code-review, and the bundled alias /review never runs your skill.' The same table gives plugins a separate row: 'Both load, because plugin skills are namespaced as /plugin-name:skill-name'. The page does not say how a plugin Skill and a bundled Skill with the same short name resolve. So the Lesson's plugin claim rests on #1091 ('bare /code-review resolves to Claude Code's built-in review') and on the author's d21fc2c:content/lessons/10-models-effort-ultracode.md:58. The rename advice comes from .out-of-scope/harness-name-collisions.md:7 and :18, which name 'Claude Code, Copilot, Devin and the rest'. The npx route installs into the .claude folder (July video M6mYodf0dJM.en.json 3:17 to 3:25).",
+      "fix": "Line 239: 'With the plugin, type the short name and you get Claude Code's.' Line 241: replace the last sentence with 'On the npx route there's no full name and no clash: a Skill in your own folders replaces Claude Code's `/code-review`, so the short name runs Matt's, and Claude Code's answers only to `/review`.' Cheat sheet: change the row label to 'Matt's code review (plugin)'."
+     },
+     {
+      "severity": "medium",
+      "where": "Try it yourself, closing note: 'That's harmless until you use `/triage`.' (line 327)",
+      "problem": "A missing triage-labels.md does not only affect /triage. /to-spec and /to-tickets both expect the triage label names, and both are told to send you to setup when those names are missing. Both also apply the ready-for-agent label. The local tracker template points at triage-labels.md for its Status strings too. A Visitor whose setup skipped the labels can later have /to-spec or /to-tickets tell them to run setup, which the Lesson promised wouldn't happen. The same narrowing shows at line 157, which glosses triage labels only as 'the tags /triage puts on incoming bug reports'.",
+      "evidence": "skills/engineering/to-spec/SKILL.md:9 and skills/engineering/to-tickets/SKILL.md:11: 'The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.' to-spec/SKILL.md:19 and to-tickets/SKILL.md:63 apply the `ready-for-agent` label. setup-matt-pocock-skills/issue-tracker-local.md:10: 'Status: line ... (see `triage-labels.md` for the role strings)'.",
+      "fix": "Replace the last sentence with: '`/to-spec` and `/to-tickets` look for the label names too, so if the file is missing, type `/setup-matt-pocock-skills triage is installed` to run setup again with the label question.'"
+     },
+     {
+      "severity": "medium",
+      "where": "Set up each repo once, chat Scene: 'agent: **Issue tracker.** With no remote, I'd suggest **local markdown**' (line 177)",
+      "problem": "In this Scene the Skill recommends local markdown because there's no remote. The 1.3.1 SKILL.md doesn't say that. It proposes GitHub or GitLab only when the remote points there. Otherwise it just offers the four options, and it calls GitHub the default. A Visitor who expects a local-markdown recommendation may see GitHub offered first, accept it in a word, and hit the Lesson's own Common mistake ('Choosing GitHub in a folder with no remote'). The Writing guide requires that a Scene match how the Skill behaves in 1.3.1.",
+      "evidence": "skills/engineering/setup-matt-pocock-skills/SKILL.md:11 'where issues live (GitHub by default; local markdown is also supported out of the box)'. SKILL.md:42 'Default posture: these skills were designed for GitHub. If a `git remote` points at GitHub, propose that. ... Otherwise (or if the user prefers), offer:' (the four options, with local markdown only described as 'good for solo projects or repos without a remote', :46). docs/engineering/setup-matt-pocock-skills.md:34 says it proposes 'the one matching your `git remote`'; nothing covers the no-remote case.",
+      "fix": "Caption (line 176): '# With no remote to match, it lists the options. GitHub is the default, so read before you accept.' Agent line: '**Issue tracker.** No remote, so nothing to match. GitHub (the default), GitLab, **local markdown** (issues as files under `.scratch/<feature>/`, good with no remote), or describe your own?'"
+     },
+     {
+      "severity": "low",
+      "where": "Installing Matt's Skills: 'Matt used it in his July 2026 walkthrough, before the plugin existed' (line 137)",
+      "problem": "The plugin already existed when the video was published (2026-07-16). The PR that ships it as a native Claude Code plugin merged on 2026-07-13. It wasn't released and listed in the official marketplace until 2026-08-05.",
+      "evidence": "gh pr view 536 --repo mattpocock/skills: '2026-07-13T13:36:01Z feat: ship the skill set as a native Claude Code plugin (v1.2)'. gh release view v1.2.0: '2026-08-05T12:37:40Z'. .agents/adr/0002-ship-as-a-claude-code-plugin.md 'Update, 2026-08-05': accepted into the official marketplace.",
+      "fix": "'Matt used it in his July 2026 walkthrough, before the plugin's August release:'"
+     },
+     {
+      "severity": "low",
+      "where": "Installing Matt's Skills: 'Each answers to its short name, like `/grill-me`, and its full name' (line 135)",
+      "problem": "'Each' is too broad. Two sections later the Lesson says that typing the short name /code-review gets Claude Code's version, and that /prototype can misbehave. A cold reader meets a rule here that the Lesson breaks later.",
+      "evidence": "Lesson lines 239 and 241. .out-of-scope/harness-name-collisions.md:3 lists `/prototype`, `/research`, `/code-review` as names a harness can take.",
+      "fix": "'Most answer to their short name, like `/grill-me`, and every one answers to its full name, `/mattpocock-skills:grill-me`.'"
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, It's working if: '`/ask-matt` named what to type next and stopped without touching any file.' (line 324)",
+      "problem": "The router Scene (lines 213 and 214) and 'Know its limits' tell the reader to expect it to open SKILL.md files. 'Without touching any file' can read as 'without opening any file', so a Visitor who sees it read files may think the check failed.",
+      "evidence": "Lesson line 214: 'Reading `grill-with-docs`, `to-spec`, ...'. skills/engineering/ask-matt/SKILL.md:11 'read that skill's SKILL.md'. docs/engineering/ask-matt.md:84 says any claim about another skill 'shows up in the trace as it reading that skill's `SKILL.md`'.",
+      "fix": "'`/ask-matt` named what to type next and stopped without changing any file.'"
+     },
+     {
+      "severity": "low",
+      "where": "Final test spot-chained-skills: 'run `/to-spec`, then `/to-tickets`, then `/tdd` on each ticket ... The agent reaches `/tdd` fine' (line 425)",
+      "problem": "The scenario contradicts itself. If /to-spec and /to-tickets never ran, there are no tickets for '/tdd on each ticket'. A careful reader may doubt the premise rather than spot the mistake.",
+      "evidence": "Stem text, line 425.",
+      "fix": "'Its body says: run `/to-spec`, then `/to-tickets`, then build with `/tdd`. He types its name. The agent builds with `/tdd` fine but never starts `/to-spec` or `/to-tickets`.'"
+     }
+    ],
+    "quiz": [
+     {
+      "severity": "medium",
+      "where": "Final test and Checkpoints: what-loads-early line 87 'Only its name and description.', scenario-lost line 370 'Type `/ask-matt` and describe the situation.', spot-both-routes line 416 'Step 2, the npx install'; by a hair also spot-chained-skills line 432 and why-clone-needs-setup line 478",
+      "problem": "Fixes made to stop the right answer being the longest have pushed it the other way: it is now often the shortest. In the Final test the right option is never the longest, and it is the shortest or tied-shortest in 6 of 10 questions. A test-wise reader who always picks the shortest option scores about 48% on the Final test, against 25% by chance. The tell is plainest in three questions, where the right answer is shorter than every distractor by 6 or more characters.",
+      "evidence": "Visible lengths from an awk pass over the file. what-loads-early: right 30 vs 56/39/36. scenario-lost: right 42 vs 65/50/61. spot-both-routes: right 23 vs 26/33/38. spot-chained-skills: right 56 vs 59/58/58. why-clone-needs-setup: right 56 vs 58/61/60. spot-edited-cache: right 49, tied shortest with d (49). sequence-new-repo: three-way tie at 106. Round 1's notes show the shortness was deliberate ('The right answer, Step 2, the npx install, is 23 characters, the shortest option'). Lint (lint-lesson.mjs:135-136) only checks for longest, so this passes.",
+      "fix": "Bring right answers back to the middle of the range. what-loads-early b: 'Only its name and its two-line description.' (43). scenario-lost c: 'Type `/ask-matt`, then describe the tidy-up in plain words.' (59). spot-both-routes c: 'Step 3, running setup' (21), so the right answer (23) is no longer the shortest. spot-chained-skills c: 'A personal Skill can't reach plugin Skills.' (43). why-clone-needs-setup a: 'Setup saved its answers in your plugin folder.' (46). Feedback can stay as it is. Re-run lint afterwards."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-review-clash, lines 376-386: right option '`/mattpocock-skills:code-review`'",
+      "problem": "This tests recall, not transfer, and its right option echoes the Lesson's defining phrase. The right answer is the exact string from goal 4 (line 17), the body (line 241), Common mistakes (line 333) and the Cheat sheet (line 356). It is also the only option with the plugin prefix, and the stem asks for 'Matt's review'. A reader who skimmed can match 'Matt' to 'mattpocock-skills' without understanding the name clash. The Lesson also teaches a case the Final test never checks: the agent calling a bare code-review itself (line 239, and the #1091 count at line 255).",
+      "evidence": "Stem: 'You've finished a feature and type `/code-review`... What do you type to get Matt's review?' Options: `/mattpocock-skills:code-review` (right), `/code-review max`, `/review`, `/ask-matt`. Body line 239: 'Even the agent, calling a bare `code-review` itself, can land on Claude Code's.' Line 255: 'His fix was to name Skills in full.' Lint (lint-lesson.mjs, backtick regex) rejects a backticked `/claude-plugins-official:...`, so a fix has to drop the slash.",
+      "fix": "Keep the id and test the agent-call case, with a namespaced distractor so the prefix stops giving the answer away:\n\n```test scenario-review-clash\nYour own Skill, ship-check, ends with the line \"Then run code-review on the changes.\" Twice now, the review that came back was one list of possible bugs, with no Standards or Spec section. What do you change in that line?\n- [ ] Add max after code-review, so the review runs harder.\n  > That still reaches Claude Code's own bug hunt, just at maximum effort.\n- [x] Use the full name, `mattpocock-skills:code-review`.\n  > Right. A bare code-review can land on Claude Code's own review, even when the agent makes the call. The full name always reaches Matt's.\n- [ ] Write `claude-plugins-official:code-review` instead.\n  > That's the marketplace's name, from the install line. A Skill's full name starts with its plugin's name, mattpocock-skills.\n- [ ] Give ship-check `disable-model-invocation: true`.\n  > The flag only stops the agent starting ship-check on its own. It doesn't change which review a call to code-review reaches.\n```\nLengths are 53/51/52/49, so the right answer is neither the longest nor the shortest."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-write-own, lines 400-410: options a, c and d",
+      "problem": "The distractors are weak. Option a is wrong on both counts at once: a project Skill, and the flag. Options c (docs/agents/ written by setup) and d (a line in the plugin's /pr) come from other topics and are ruled out by facts that other questions already test: setup doesn't take rules (why-clone, scenario-lost d), and plugin files get replaced (spot-edited-cache). A reader can drop c and d at a glance and drop a on either of its faults. So the question never makes the reader weigh location and invocation separately, which is the transfer goals 1 and 2 ask for.",
+      "evidence": "Option a feedback names two separate faults: 'That flag means only you can start it... And a project Skill reaches only one repo.' Option d feedback: 'Plugin files are replaced on every update. And `/pr` shapes the description of a pull request... not changelog entries.' Body line 58-59 (personal vs project reach) and lines 99-100 (model- vs user-invoked) are the two things the stem needs.",
+      "fix": "Use a 2x2 grid, so each distractor gets exactly one thing wrong:\n- [ ] A Skill in the project's `.claude/skills/` with a clear description.\n  > The agent would load it at the right moments, but only in this one repo.\n- [x] A Skill in `~/.claude/skills/` with a clear description.\n  > Right. A personal, model-invoked Skill reaches every project, and its description tells the agent when to load it.\n- [ ] A Skill in `~/.claude/skills/` with `disable-model-invocation: true`.\n  > It would reach every project, but that flag means only you can start it, so you'd still have to remember.\n- [ ] A line in the project's `CLAUDE.md`.\n  > That reaches only this repo, and it sits in the context window on every turn, needed or not.\nLengths are 68/56/69/36. The right answer stays at b."
+     },
+     {
+      "severity": "low",
+      "where": "Final test, why-light-context, line 462: '\"Until one runs, a Skill adds a line; user-invoked ones add none.\"'",
+      "problem": "The right option reads as contradicting itself: the first half says any Skill adds a line, and the second half says some add none. A careful reader may hesitate over the option that is meant to be the clean answer.",
+      "evidence": "Option text at line 462. Body line 48: only Skills 'the agent is allowed to start' get a listing line. Line 100: user-invoked descriptions are 'kept out of the agent's context'.",
+      "fix": "Replace with '\"Until it runs, a Skill costs a line at most, and often none.\"' (62 characters, against 61/62/71, so not the longest). The feedback can stay."
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint install-not-showing line 147 (option b), Final test spot-both-routes line 413 (step 2), sequence-new-repo line 454 (option c)",
+      "problem": "The 'never install both routes' fact is examined three times. The Checkpoint's option b has the same 'in case' reasoning as Sam's step 2 ('in case the plugin install quietly failed' and 'in case the plugin missed any Skills'), and its feedback ('Both routes together give you every Skill twice') gives away spot-both-routes. sequence-new-repo c then tests the same fact again. Meanwhile goal 3's 'say what it writes' only gets indirect coverage, through why-clone-needs-setup.",
+      "evidence": "Line 148 feedback: 'Both routes together give you every Skill twice.' Line 417 feedback: 'With both, every Skill appears twice in his `/` menu.' Line 455 feedback: 'Two routes give you every Skill twice. Pick one.'",
+      "fix": "Use sequence-new-repo option c to test where setup writes: 'Install the plugin → start Claude Code in your home folder → `/setup-matt-pocock-skills` → `/grill-with-docs`', with feedback '  > Setup configures the repo it runs in and writes its files there. Start Claude Code inside the project, once per repo.' At 109 characters it is a distractor and longer than the right answer (104)."
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint tracker-other, lines 191-192: option a 'Accept GitHub; the Skills were designed for it.'",
+      "problem": "The distractor's premise is Matt's own wording, but the feedback reads as if the premise were false. A reader who checks the setup Skill finds that 'these skills were designed for GitHub' and may decide option a was defensible.",
+      "evidence": "setup-matt-pocock-skills/SKILL.md:42: 'Default posture: these skills were designed for GitHub. If a `git remote` points at GitHub, propose that.' Current feedback: 'Setup recommends GitHub because of the remote, not because of where your team works.'",
+      "fix": "Change the feedback to '  > They were built with GitHub in mind, and setup proposes it because of your remote. But your team works in Linear, so tickets would land where nobody looks.'"
+     }
+    ],
+    "reader": [
+     {
+      "severity": "medium",
+      "where": "Installing Matt's Skills, line 135: \"Each answers to its short name, like `/grill-me`, and its full name, `/mattpocock-skills:grill-me`.\" (also line 97: \"You can start any of Matt's Skills by typing `/` and its name.\")",
+      "problem": "The Lesson contradicts itself. Line 135 says every Skill answers to its short name. Lines 239–241 then say the short name `/code-review` reaches Claude Code's review, and that `/prototype` can misbehave too. The table at line 108 lists `/code-review` and `/prototype` as names you can type, so a reader who stops at line 135 will type `/code-review` expecting Matt's review.",
+      "evidence": "Lesson line 239: \"Type the short name and you get Claude Code's.\" Line 241: \"if that short name misbehaves, type `/mattpocock-skills:prototype`\". https://code.claude.com/docs/en/skills says the bare name \"also invokes the skill unless another command already uses that name.\" .out-of-scope/harness-name-collisions.md:3 lists `/prototype`, `/research` and `/code-review` as names that clash.",
+      "fix": "Line 135: \"Most also answer to their short name, like `/grill-me`; a few share it with Claude Code's own commands (see When a short name is taken). The full name, `/mattpocock-skills:grill-me`, always works.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Site story, line 345: \"Asking for the PR that became the Main flow Lesson, I wrote ...\"",
+      "problem": "\"PR\" is never explained before this point. This is the round-1 rewrite of the Site story, so the fix itself added the undefined term. The first definition, \"a pull request (a proposed change)\", is in a Final test feedback line (409), which comes after the Site story. A Visitor new to Git can't read the sentence.",
+      "evidence": "grep finds no \"PR\" or \"pull request\" in the body before line 345. The only definition is at line 409: \"`/pr` shapes the description of a pull request (a proposed change)\". The repo backs the fact itself: git show d21fc2c:content/lessons/11-main-flow.md:107 says \"I want to create a PR which teaches ...\".",
+      "fix": "\"Asking for the pull request (a proposed change to the site's code) that became the Main flow Lesson, I wrote \\\"you can start grilling with docs\\\" in plain words.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Set up each repo once, line 168: \"commit them, and everyone who clones the repo gets the same setup\"; Final test why-clone-needs-setup, line 473: \"A friend clones your repo\"",
+      "problem": "\"Clone\" is never explained, but a Final test question rests on it. The right answer only works if you know a clone gets just the committed files. The Lesson explains \"commit\" (line 30) and \"Git remote\" (line 159), but not \"clone\". A reader who barely uses Git meets it cold twice.",
+      "evidence": "grep finds \"clones\" first at line 168 with no definition, then at 472–477 (question stem and feedback). Line 30 defines only \"a commit is a saved snapshot of your project in Git\".",
+      "fix": "Line 168: \"commit them, and everyone who clones the repo (downloads their own copy of it with Git) gets the same setup.\""
+     },
+     {
+      "severity": "medium",
+      "where": "The idea: a folder with one file, line 50: \"Matt's `tdd` Skill keeps its examples of good tests and its rules on mocking in two side files.\"",
+      "problem": "\"Mocking\" is jargon that a reader who has never used a coding agent won't know, and the Lesson never explains it. \"tdd\" is only half-explained, later, in a Scene caption (\"test-first\").",
+      "evidence": "grep finds \"mocking\" only at line 50. tdd/SKILL.md:16 says \"See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.\" So the fact is right, but the term is never explained.",
+      "fix": "\"Matt's `tdd` Skill (for building code test-first) keeps its examples of good tests in one side file, `tests.md`, and more advice in a second.\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, step 2, line 271: \"If `setup-matt-pocock-skills` isn't in the list, type `/exit`, install the plugin, then run `claude` again:\"",
+      "problem": "The code block after the colon holds only the install command, not `claude`, so a reader may not know where to restart. The reader has also just typed \"/setup\" in the prompt and has to delete it before `/exit` will work.",
+      "evidence": "Lines 271–275: the prose ends \"then run `claude` again:\", and the block holds only `claude plugin install mattpocock-skills@claude-plugins-official`.",
+      "fix": "\"2. Type a slash and the word setup. If `setup-matt-pocock-skills` isn't in the list, delete what you typed, type `/exit`, then run these two lines:\" Block: `claude plugin install mattpocock-skills@claude-plugins-official`, then `claude` on its own line."
+     },
+     {
+      "severity": "low",
+      "where": "The idea, table row at line 58: \"Personal | `~/.claude/skills/<name>/SKILL.md`\" (also cheat sheet line 359 and scenario-write-own line 404)",
+      "problem": "`~` is never explained. A Visitor on Windows or macOS who rarely uses a terminal won't know it means their home folder, so they couldn't make the personal Skill that scenario-write-own expects.",
+      "evidence": "grep finds no explanation of `~` anywhere in the Lesson. The right answer at line 404 is \"A Skill in `~/.claude/skills/` with a clear description.\"",
+      "fix": "After the table, at the start of line 62: \"`~` is your home folder (on Windows, `C:\\Users\\<you>`).\""
+     },
+     {
+      "severity": "low",
+      "where": "The idea, line 62: \"Claude Code notices when you edit a Skill, but if you create a Skills folder that didn't exist when the session started, type `/reload-skills`.\"",
+      "problem": "This implies that after one `/reload-skills`, later edits are picked up. The docs say a folder created mid-session isn't watched, so you have to reload again after each change. A reader who reloads instead of restarting at Try it step 4 would find step 6's `disable-model-invocation` edit has no effect, and the check at line 323 would fail.",
+      "evidence": "https://code.claude.com/docs/en/skills: \"Claude Code isn't watching that directory yet, so run `/reload-skills` again after each later change there.\"",
+      "fix": "\"... type `/reload-skills`, and again after each later change there until you restart Claude Code.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test spot-chained-skills, line 425: \"run `/to-spec`, then `/to-tickets`, then `/tdd` on each ticket. ... The agent reaches `/tdd` fine but never starts `/to-spec` or `/to-tickets`.\"",
+      "problem": "The story doesn't hold together. If `/to-tickets` never ran, there are no tickets to run `/tdd` on, so a careful reader may doubt the question instead of spotting the mistake.",
+      "evidence": "Lesson line 425, as quoted.",
+      "fix": "\"Its body says: run `/to-spec`, then `/to-tickets`, then `/tdd` to build the first slice. He types its name. The agent starts `/tdd` fine but never starts `/to-spec` or `/to-tickets`.\""
+     },
+     {
+      "severity": "low",
+      "where": "Lost? Ask the router, line 207: \"With the full set, if it says a Skill isn't installed, that's the blind spot above: type the name.\"",
+      "problem": "The Lesson makes the same point five times: line 113, here, Try it step 8 (316), Common mistakes (334) and the cheat sheet (357). The Lesson is at 2,862 words, above the guide's 2,800 target. This sentence is the easiest one to cut, because step 8 repeats it right where the reader needs it.",
+      "evidence": "Lint output: \"proseWords\":2862. The writing guide's word budget rule says to aim for 2,300–2,800 words and cut repetition.",
+      "fix": "Delete the last sentence of line 207, so the paragraph ends \"Installed on its own, it gives you a map of roads you don't have.\""
+     }
+    ]
+   }
+  }
+ }
+}

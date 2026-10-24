@@ -1,0 +1,249 @@
+{
+  "slug": "how-agents-work",
+  "next": {
+    "round": 3,
+    "step": "check",
+    "why": "check round 2 and its fix done"
+  },
+  "applied": [
+    "r1: accuracy MEDIUM + reader MEDIUM (Accept edits runs rm): changed the Accept edits row to 'common file commands inside the project, even `rm`' and added to the big-idea callout: 'In Accept edits even `rm` runs without asking, so commit before you loosen the mode.' (permission-modes docs: acceptEdits auto-approves mkdir, touch, rm, rmdir, mv, cp, sed)",
+    "r1: accuracy MEDIUM + reader MEDIUM (auto memory never mentioned): line 40 now says a session remembers nothing unless something was written to a file 'by you or by Claude Code in notes it keeps for itself'. Added a CLAUDE.md paragraph saying what auto memory is, that it loads each session, that Claude decides what to save (so rules you rely on go in CLAUDE.md), and that /memory shows its folder and on/off switch. The Cheat sheet row now reads 'See your instruction files and auto memory'.",
+    "r1: reader HIGH (plain No doesn't change course): line 120 now says a plain No (or Esc) stops the turn and waits for your next message; to redirect, move to No, press Tab, type a few words and press Enter. Added the permissions docs page to sources.",
+    "r1: reader HIGH (Try steps 3 and 6 dead-end): step 3 now says to move to No, press Tab, type `carry on without changing anything` and press Enter (a plain No would stop it). Step 6 says that if it asks to run a command before any edit, answer No the same way with `skip that, just make the first edit`, so step 7's Restore code still has an edit to revert.",
+    "r1: reader MEDIUM (Alt+M on Windows): the Shift+Tab sentence in Permission modes now says to press Alt+M on Windows if Shift+Tab changes nothing; Try step 2 adds 'Alt+M on some Windows setups'. The interactive-mode source notes it.",
+    "r1: reader MEDIUM (PowerShell on Windows): the Execution row is now '`Bash` (on Windows, usually `PowerShell`)', and line 90 says 'a shell tool (`Bash`, or `PowerShell` on Windows)'. The tools-reference source notes it.",
+    "r1: reader MEDIUM (plan-mode ladder vs Matt stopping): the ladder is now attributed to 'the same dictionary', with '(Matt himself now does the planning by grilling; see below.)'.",
+    "r1: reader MEDIUM (`!git status` used before it's explained): the terminal Scene's caption now explains that `!` lets you run a shell command yourself from Claude Code's prompt box and that `git status` lists the files changed since the last commit. Try step 7 drops its parenthetical.",
+    "r1: reader MEDIUM (git prerequisite): the Try intro now gives the `git --version` check, says a Mac offers to install git, and on Windows says to install Git for Windows from git-scm.com and open a new PowerShell window.",
+    "r1: quiz MEDIUM (scenario-unfamiliar-repo wrong mechanism): option c feedback now says edits inside the project skip the classifier entirely in auto mode, and that plan mode blocks edits outright. The Auto row now reads 'reads and edits in your project run straight away; ... the classifier, checks the rest' (docs decision order, step 2).",
+    "r1: quiz MEDIUM (fresh-session-edits feedback): the right option's feedback now says auto mode lets edits inside the project through without asking, and the classifier checks riskier actions such as shell commands.",
+    "r1: quiz MEDIUM (spot-no-tool-call gives the answer away): dropped 'without opening Ctrl+O' from the stem. Replaced option d with 'She should have switched to Accept edits, which shows each test result.' plus its feedback. Id kept, same meaning.",
+    "r1: quiz MEDIUM (same-model weak distractor, desktop-app dispute): the stem now says 'the claude.ai website'. Option a is now 'The website only answers questions; it can't run tools of any kind.' with web-search feedback. Option b and the right option's feedback were reworded. The body (line 33) now teaches that the claude.ai website has tools (web search, say) that can't touch your files, so option a is clearly wrong from the Lesson.",
+    "r1: quiz MEDIUM (predict-loop strawman and wording tell): option a is now 'Write a tool call that edits line 42, since the error names it.' Option c is now 'Ask you to paste `src/signup.ts` into the chat so it can see it.' with Read-tool feedback. The right option is now shorter than both by raw and rendered length.",
+    "r1: quiz MEDIUM (spot-bypass-laptop weak distractors and recall): the stem now uses `--dangerously-skip-permissions`, so the reader has to map the flag to Bypass. Option b is now 'Bypass still asks before shell commands...' and option c is now 'Auto mode would be just as risky...', each with new feedback. The feedback says 'ordinary shell commands run unasked' rather than 'asks before nothing', because the docs list a few actions no mode auto-approves.",
+    "r1: quiz MEDIUM (spot-rm-rewind impossible scenario): the stem now has the agent edit the README with its file tools before `rm -r drafts`, so Restore code appears in the menu (checkpointing docs). Option c is now 'He should have typed `/rewind`; Esc Esc only rewinds the conversation.' with its feedback.",
+    "r1: Word budget (to make room for the fixes above): cut the 'This Lesson covers...' roadmap sentence, the docs' three-stage loop sentence, the '(This course was checked on 2.1.309...)' aside, the 'explore, then plan, then code' sentence, and the 'Everything else from above' Common-mistakes bullet. Tightened the AI Coding Daily line to match the research note ('compared /grill-me with plan mode'). Changed 'What belongs in it?' to 'What belongs in `CLAUDE.md`?' so the question can't be read as being about auto memory. Updated the sources lines to match, restored the blank line before the site-story fence, and changed nothing else.",
+    "r2: reader MEDIUM (Try step 3, judging read-only commands): replaced the two sentences with one: 'If it asks to run a command or change anything, move to No, press Tab, type `carry on without changing anything` and press Enter (a plain No would stop it).' The Visitor no longer has to judge a shell command. Step 6 and the checklist still hold. Saves 10 words.",
+    "r2: reader MEDIUM (grilling used before it is explained, line 122): the aside is now '(Matt now plans by having the agent interview him; see below.)'. The term itself first appears where the Grilling paragraph explains it. To keep the fix word-neutral, 'loosens as trust grows' became 'loosens with trust'.",
+    "r2: reader MEDIUM (Site story names /setup-matt-pocock-skills without saying what it is): it now reads 'in the shape that Matt's repo-setup Skill, `/setup-matt-pocock-skills`, writes:', so a cold reader can tell it is a Skill that sets a repo up. I checked SKILL.md:3-4: it configures the repo and is user-invoked. To keep it word-neutral, '(the framework this site is built on)' became ', this site's framework'.",
+    "r2: reader MEDIUM (Claude Code is both 'an AI' and 'a harness'): line 22 now says 'Anthropic's coding agent: Claude, their AI, working in your terminal, reading ... running ... writing code'. In the harness bullet, 'Claude Code is a harness.' became 'Strictly, Claude Code is the harness; with Claude inside, it's a coding agent.' To make room I cut 'about the project' (forgetful colleague), 'more and more' became 'increasingly' (Hacker News line), 'so that' became 'so' (Common mistakes) and 'with the agent before it built' became 'before the agent built'. Net change: 0 words.",
+    "r2: quiz MEDIUM (spot-no-tool-call: the odd-one-out opener is a wording tell): the right option c is now 'She should have checked the transcript for an actual test run.', with the same opener as the wrong options and without 'tool call'. The body defines 'transcript' (Ctrl+O). Feedback unchanged. It is shorter than options a, b and d by both measures.",
+    "r2: quiz MEDIUM (scenario-style-tweaks stem repeats the table's 'review afterwards' and 'approving each edit'): the stem is now 'You're adjusting a site's spacing and fonts: dozens of small changes to its style files. You're tired of saying yes to each one, but you still want to be asked before it installs anything, runs a script or commits to git. Which mode?' Options and feedback unchanged. Id kept.",
+    "r2: quiz MEDIUM (claude-md-which-file: option c's feedback argued against something the option doesn't claim, and it overlapped the Final test's scenario-repeat-correction): option c is now 'An `AGENTS.md` file in the project folder.' with the feedback 'Like the project's `CLAUDE.md`, it's shared through git, so your teammates would get it too. And Claude Code reads it only when there's no `CLAUDE.md`.' That matches body line 196 and research note line 150. The right option d is still not the longest. Id kept.",
+    "r2: quiz MEDIUM (manual-runs-free: the right option lifted line 90's phrase): the right option a is now 'Searching every file in the project for the word `signup`.', shorter than option c by both measures. Feedback unchanged. Id kept.",
+    "r2: quiz MEDIUM (fresh-session-edits: option a's feedback contradicted spot-bypass-laptop): it now reads 'Bypass is never the built-in starting mode; you'd have to turn it on yourself.'"
+  ],
+  "declined": [
+    {
+      "problem": "reader LOW (Try step 3): suggested naming `ls`, `find` and `grep` as commands the agent might ask to run in Manual mode",
+      "reason": "Those are on Claude Code's built-in read-only list and never ask in Manual (permission-modes docs; the Lesson says the same), so the examples would contradict the body. I kept the guidance and dropped the examples."
+    },
+    {
+      "problem": "quiz MEDIUM (claude-md-line): suggested replacement Checkpoint about a rule lost after /compact, with 'One line in the project's CLAUDE.md' as the answer",
+      "reason": "That answer would duplicate the Final test question scenario-repeat-correction. I fixed the duplication another way: a Checkpoint on file scope (CLAUDE.local.md), whose chat option's feedback carries the /compact point."
+    },
+    {
+      "problem": "acc-sources LOW (Try checklist): suggested `git clean -fd` to remove new files",
+      "reason": "Too risky for a Visitor who barely knows git (it permanently deletes untracked files). The step now says to ask the agent to delete any file listed under Untracked files."
+    }
+  ],
+  "pending": [],
+  "rounds": {
+    "r2": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "low",
+            "where": "CLAUDE.md: standing instructions, \"Claude Code reads it only when there's no `CLAUDE.md`\" (line 196)",
+            "problem": "The rule is incomplete, and the gap bites a reader who follows this same section. A `CLAUDE.local.md` also stops Claude Code reading `AGENTS.md`. The next Checkpoint (claude-md-which-file) tells the reader to add a `CLAUDE.local.md`. In a repo that relies on `AGENTS.md`, doing that silently drops `AGENTS.md`, and the Lesson's wording suggests it wouldn't.",
+            "evidence": "https://code.claude.com/docs/en/memory, AGENTS.md table: Claude reads `AGENTS.md` only with \"no `CLAUDE.md` or `CLAUDE.local.md` in your working directory or above it\". The page also has a note: \"Because `CLAUDE.local.md` counts, adding one ... stops Claude from reading `AGENTS.md` for you.\" The same page's troubleshooting section repeats the rule. This repo isn't affected, because it has a CLAUDE.md that points to AGENTS.md (CLAUDE.md:17).",
+            "fix": "Replace the sentence with: \"`AGENTS.md` is the same idea under a name other agents read; Claude Code reads it only when there's no `CLAUDE.md` or `CLAUDE.local.md`.\" This drops \"too\", so the net change is +2 words."
+          },
+          {
+            "severity": "low",
+            "where": "Rewind: stepping back, terminal Scene caption, \"the `!` lets you run a shell command yourself\" (line 234); also Try it yourself step 7 (line 296)",
+            "problem": "This leaves out what shell mode does next. The command's output goes into the conversation and Claude replies to it on its own. So in the Scene, and in Try step 7, typing `!git status` also starts a reply from the agent. The Lesson presents it as a private check that the agent doesn't see.",
+            "evidence": "https://code.claude.com/docs/en/interactive-mode, \"Shell mode with ! prefix\": it \"Adds the command and its output to the conversation context\", and \"Claude responds to the command output automatically once it lands in the transcript\". The shortcut table also describes `!` as: \"Run a command directly, add its output to the session, and have Claude respond to it\".",
+            "fix": "In the line-234 caption, replace \"In Claude Code's prompt box you type `!git status`: the `!` lets you run a shell command yourself, and `git status` lists the files changed since the last commit.\" with \"In the prompt box you type `!git status`: the `!` runs a shell command yourself (the agent sees the output and replies), and `git status` lists the files changed since the last commit.\" This is about +3 words net. Step 7 needs no change."
+          },
+          {
+            "severity": "low",
+            "where": "Permission modes, \"(In the desktop app, use the mode selector next to the send button.)\" (line 108)",
+            "problem": "The current docs put the desktop app's mode selector somewhere else. A reader looking next to the send button won't find it there.",
+            "evidence": "https://code.claude.com/docs/en/permission-modes, Desktop tab: \"in the Code tab, use the mode selector in the row under the prompt box\". https://code.claude.com/docs/en/desktop, \"Choose a permission mode\": \"using the mode selector in the row under the prompt box\". Its CLI-equivalents table lists `--permission-mode` as \"Mode selector in the row under the prompt box\". The \"next to the send button\" wording comes from the research note's older reading (research/how-agents-work.md:109).",
+            "fix": "\"(In the desktop app, use the mode selector under the prompt box.)\" (-2 words)"
+          },
+          {
+            "severity": "low",
+            "where": "Permission modes, watch-out callout, \"runs every tool call without asking\" (line 125)",
+            "problem": "The claim is absolute, and the docs list exceptions. Round 1 already softened spot-bypass-laptop for exactly this reason (its feedback says \"ordinary shell commands run unasked\", not \"asks before nothing\"), but the callout still says every call.",
+            "evidence": "https://code.claude.com/docs/en/permission-modes, \"Actions no mode auto-approves\": \"Claude Code doesn't auto-approve the following in any mode, including `bypassPermissions`\". The list covers explicit ask rules, AskUserQuestion, and recognized `rm`/`rmdir` critical-path removals. The bypass section also says \"The actions no mode auto-approves still prompt in this mode.\" The seed's applied list (r1, spot-bypass-laptop) records the same reasoning.",
+            "fix": "\"Bypass permissions (what the `--dangerously-skip-permissions` option turns on) runs almost every tool call without asking.\" (+1 word)"
+          },
+          {
+            "severity": "low",
+            "where": "Tools: what the agent can reach, \"reading and searching inside your project folder never asks\" (line 90); Checkpoint manual-runs-free, right option's feedback, \"Reads and searches inside the project never ask\" (line 97)",
+            "problem": "\"Never\" overclaims for searches. On macOS, Linux and WSL, searches go through `find` and `grep` in Bash (the Lesson's own Search row says so). Some of those commands do prompt in Manual mode. Try step 3 and its checklist already hedge (\"most of its reads and searches\", \"If it asks to run a command that only reads or searches\"), so the body and the answer key disagree with the exercise.",
+            "evidence": "https://code.claude.com/docs/en/permissions, Read-only commands: commands with write- or exec-capable flags, \"such as `find`, `sort`, `sed`, and `git`, prompt when an unquoted glob is present\", and commands it \"can't fully parse\" also prompt. https://code.claude.com/docs/en/tools-reference, Glob tool behavior: on macOS, Linux and WSL, Claude \"searches with `find` and `grep` through the Bash tool instead\".",
+            "fix": "Line 90: \"In Manual mode (...), reading inside your project folder never asks, and most searches don't either.\" Line 97 feedback: \"Right. Reads inside the project never ask: they can't change anything.\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "Try it yourself, step 3: \"If it asks to run a command that only reads or searches, choose Yes.\" (line 282)",
+            "problem": "The step asks a Visitor who barely uses a terminal to decide whether a shell command only reads or searches. They can't make that call from a Bash or PowerShell prompt. The step also seems to contradict the body: line 90 says reading and searching never ask in Manual mode, yet here a read-or-search command does ask. Any command that asks is by definition outside Claude Code's built-in read-only list, so the reader is being asked to judge a command that Claude Code itself declined to wave through. This is not the declined r1 item, which suggested adding `ls`/`find`/`grep` as examples. This finding removes the judgement instead.",
+            "evidence": "Lesson line 90: \"reading and searching inside your project folder never asks ... Shell commands ask, apart from a built-in list of read-only ones.\" Line 282 then tells the reader to approve a command \"that only reads or searches\". https://code.claude.com/docs/en/permission-modes says that in Manual (`default`) only reads run without asking and commands outside the built-in read-only set prompt. Step 3's own goal is \"Watch the loop without changing anything\", and the agent can still finish the task with its Read/Grep/Glob tools.",
+            "fix": "Replace the two sentences in step 3 with this one: \"If it asks to run a command or change anything, move to No, press Tab, type `carry on without changing anything` and press Enter (a plain No would stop it).\" This saves about 12 words. Step 6's \"answer No as in step 3\" and the checklist line \"most of its reads and searches ran without asking you\" still hold."
+          },
+          {
+            "severity": "medium",
+            "where": "Permission modes: \"(Matt himself now does the planning by grilling; see below.)\" (line 122)",
+            "problem": "The r1 fix for the plan-mode ladder introduced \"grilling\" here, 48 lines before the Lesson says what grilling is (lines 170 and 172). Before that, the only trace of it is the bare Skill name `/grill-me` at line 26, with no word on what it does. A cold reader meets a central course term with no clause attached.",
+            "evidence": "grep of the Lesson: first use of \"grilling\" is line 122. It is first explained at line 170 (\"by being interviewed with his grilling Skills\") and line 172 (\"grill first: let the agent interview you until the decisions are made\"). The applied list includes the r1 item that added this parenthesis.",
+            "fix": "Line 122: \"(Matt himself now plans by having the agent interview him, which he calls grilling; see below.)\" This adds about 6 words; see the word-budget low for where to cut."
+          },
+          {
+            "severity": "medium",
+            "where": "Site story: \"in the shape `/setup-matt-pocock-skills` writes\" (line 317)",
+            "problem": "The Site story names `/setup-matt-pocock-skills` without saying what it is. Nowhere else in the Lesson body is it mentioned; it appears only in the sources. A cold reader can't tell whether it is a Skill, a Built-in command or a script, or why it writes into `CLAUDE.md`.",
+            "evidence": "grep of the Lesson: `setup-matt-pocock-skills` appears only at line 317 and in the sources (lines 469-470). /Users/siddharth/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/setup-matt-pocock-skills/SKILL.md:3 says it configures the repo (issue tracker, triage labels, domain doc layout) and is run once before the other engineering Skills. Line 4 is `disable-model-invocation: true`, so it is user-invoked.",
+            "fix": "Line 317: \"Most of it is the \\\"Agent skills\\\" block in the shape written by `/setup-matt-pocock-skills`, the Skill that sets a repo up for Matt's other Skills: where the issue tracker lives ...\" This adds about 11 words."
+          },
+          {
+            "severity": "medium",
+            "where": "Why it matters: \"Claude Code is Anthropic's coding agent: an AI that works in your terminal\" (line 22), against The idea: \"Claude Code is a harness.\" (line 33)",
+            "problem": "The Lesson's first definition makes Claude Code \"an AI\" and \"a coding agent\". Ten lines later it teaches that the AI is the model (Claude), that Claude Code is the harness around it, and that the agent is the two together. Goal 1 asks the reader to explain exactly this split, but the Lesson gives Claude Code two incompatible roles and never reconciles them. A reader asked \"is Claude Code the agent or the harness?\" can quote the Lesson for either answer.",
+            "evidence": "Line 22: \"Claude Code is Anthropic's coding agent: an AI that works in your terminal\". Line 32: \"The model is the AI itself (Claude).\" Line 33: \"Claude Code is a harness.\" Line 34: \"The agent is the two together\". Checkpoint same-model feedback, line 73: \"Same model, different harness.\" Goal, line 14: explain how a model, a harness and the loop between them turn one sentence into finished work.",
+            "fix": "Line 33: replace \"Claude Code is a harness.\" with \"Strictly, Claude Code is the harness; with Claude inside, it's the coding agent.\" This adds about 9 words. Optionally, on line 22 change \"an AI that works in your terminal, reads ... writes code\" to \"Claude, Anthropic's AI, working in your terminal, reading your project's files, running commands and writing code\", which costs no words."
+          },
+          {
+            "severity": "low",
+            "where": "Whole Lesson: word budget (lint proseWords 2,975 of 3,000); How Matt and others use it, \"Grilling in auto mode, July 2026.\" (line 261)",
+            "problem": "The Lesson is 25 words under the lint cap, so the medium fixes above (about +14 net) leave almost no margin. Any further addition would fail lint, which counts as high. The Lesson says one point three times: Matt grills with plan mode off, in auto mode, at line 170 (\"with plan mode off\"), line 261 (the July bullet) and line 266 (plan mode versus grilling). The `rm`-in-Accept-edits point is also said twice, in the table (line 113) and the callout (line 253).",
+            "evidence": "`node .scratch/course-rewrite/tools/lint-lesson.mjs content/lessons/01-how-agents-work.md` printed proseWords 2975. section-words.mjs: Permission modes 463, The idea 362, Try 361. The writing guide (line 122) asks for 2,300-2,800 with margin.",
+            "fix": "Cut the July bullet on line 261, about 19 words. Line 170 already says he grills with plan mode off, and the M6mYodf0dJM source stays cited for it. That leaves room for the medium fixes."
+          },
+          {
+            "severity": "low",
+            "where": "Permission modes: \"from auto, the first press goes to Manual, then Accept edits, then Plan, then the optional modes.\" (line 118)",
+            "problem": "A reader who has just left auto mode isn't told how to get back to it. \"The optional modes\" is never explained, and nothing says auto is one of them, even though the same paragraph presents auto as the normal starting mode.",
+            "evidence": "https://code.claude.com/docs/en/interactive-mode, Shift+Tab row: it cycles default, acceptEdits, plan, \"and, when available, bypassPermissions and then auto\". permission-modes docs: the status bar goes \"auto mode on\" → \"manual mode on\" → \"accept edits on\" → \"plan mode on\" → \"back to auto mode on\".",
+            "fix": "Line 118: \"...then Accept edits, then Plan, then back to auto.\" Cheat sheet, line 328: \"(from auto: Manual → Accept edits → Plan → auto)\"."
+          },
+          {
+            "severity": "low",
+            "where": "CLAUDE.md table: \"`CLAUDE.local.md` | Just you, in this project; keep it out of git\" (line 194)",
+            "problem": "The Lesson says to keep the file out of git but not how. The Checkpoint's right answer (line 216) depends on it being kept out of git. A Visitor who creates the file and commits everything would share it with teammates, which is the very outcome the Checkpoint teaches against.",
+            "evidence": "https://code.claude.com/docs/en/memory: Local instructions `./CLAUDE.local.md`, \"Personal project-specific preferences; add to `.gitignore`\", and \"Add `CLAUDE.local.md` to your `.gitignore` so it isn't committed.\"",
+            "fix": "Line 194: \"Just you, in this project; list it in `.gitignore` (git's skip list) so it isn't shared\"."
+          },
+          {
+            "severity": "low",
+            "where": "Rewind Scene: \"Summarize from here / Summarize up to here / Never mind\" (lines 244-246), against the prose \"restore the code and the conversation, only the conversation, or only the code\" (line 221)",
+            "problem": "The Scene shows six menu items, and the reader will meet the same six in Try step 7. The prose explains only three of them. A cold reader can't tell whether a Summarize option also undoes edits.",
+            "evidence": "https://code.claude.com/docs/en/checkpointing lists the six actions. Summarize compresses the conversation, and summarizing \"doesn't change files on disk\".",
+            "fix": "Caption at line 240: \"# Then you choose what to restore. The Summarize options only shrink the chat; they never touch files.\""
+          },
+          {
+            "severity": "low",
+            "where": "Tools: \"MCP servers (plug-ins that connect the agent to outside systems)\" (line 88)",
+            "problem": "Two lines earlier the Lesson defines a plugin as \"an add-on you install\" (line 86). The Skills Lesson then defines a plugin as a package of Skills. Calling MCP servers \"plug-ins\" here blurs the two, and a reader may later take Matt's Skills plugin for an MCP server.",
+            "evidence": "content/lessons/03-skills.md:129: \"A plugin is a package that bundles Skills (and other add-ons) into one install.\" Lesson line 86: \"Added by a plugin (an add-on you install)\".",
+            "fix": "Line 88: \"MCP servers (connectors to outside systems, such as GitHub) add tools of their own\"."
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Final test, spot-no-tool-call, options a/b/d \"She should have used plan mode…\" (line 354), \"She should have asked again…\" (line 356), \"She should have switched to Accept edits…\" (line 360) against right option c \"She took the reply's word without checking for a test-run tool call.\" (line 358)",
+            "problem": "Wording tell, created by the round-1 fix. All three wrong options open with \"She should have\", and the right one is the only option that doesn't. It is also the only one that uses the Lesson's key phrase \"tool call\" (line 40: \"if no tool call happened, nothing happened\"). A guesser who picks the odd one out gets it right without knowing the content. Before r1, option d began \"Nothing: …\", so only two wrong options shared the opener. The r1 replacement d made it three.",
+            "evidence": "Lesson lines 354, 356, 358 and 360. Seed `applied`, r1 quiz MEDIUM (spot-no-tool-call): \"Replaced option d with 'She should have switched to Accept edits, which shows each test result.'\"",
+            "fix": "Give the right option the same opener and drop the echoed phrase. Line 358: \"She should have checked the transcript for an actual test run.\" At 62 characters it stays shorter than a (77), b (74) and d (71), so the length lint still passes. Keep its feedback as it is."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-style-tweaks, stem \"you'll review every change with `git diff` … afterwards. You're tired of approving each edit\" (line 377)",
+            "problem": "The stem repeats the Lesson's defining text for the right answer. The table's \"Use it for\" cell for Accept edits reads \"Iterating on code you'll review afterwards\" (line 113), and \"approving each edit\" points straight at the option name \"Accept edits\". So the question can be answered by matching words to the table, without understanding what each mode lets through. The r1 quiz check raised this as a low. It appears in neither `applied` nor `declined`, and it is still there.",
+            "evidence": "Lesson line 113: \"Iterating on code you'll review afterwards\". Line 377: \"you'll review every change with `git diff` … afterwards. You're tired of approving each edit\". The writing guide, Questions/pilot lessons, says: \"Don't restate the defining phrase of the right answer in the prompt.\"",
+            "fix": "Stem: \"You're adjusting a site's spacing and fonts: dozens of small changes to its style files. You're tired of saying yes to each one, but you still want to be asked before it installs anything, runs a script or commits to git. Which mode?\" The options and feedback stay as they are."
+          },
+          {
+            "severity": "medium",
+            "where": "Checkpoint claude-md-which-file, option c \"Your first message in each session in this repo.\" and its feedback \"Chat doesn't carry over: every session starts blank…\" (lines 213-214); Final test scenario-repeat-correction option a \"Keep telling it at the start of each session in this project.\" and its feedback \"It works, but…\" (lines 390-391)",
+            "problem": "The feedback argues against something the option doesn't claim. The option already repeats the line in every session, so \"chat doesn't carry over\" is no reason against it. Without a real reason, a sharp reader can argue that c meets every condition in the stem: it applies only in this repo, and teammates never see it. The same misconception then comes back as a Final test distractor, where the feedback says the approach \"works\". That contradicts the Checkpoint, and it puts a near-duplicate question between a Checkpoint and the Final test.",
+            "evidence": "Lesson line 214: \"Chat doesn't carry over: every session starts blank, and even within one, `/compact` can boil it away.\" Line 391: \"It works, but you'd have to remember every time.\" Writing guide: \"no Checkpoint duplicates a Final test question.\"",
+            "fix": "Replace Checkpoint option c with a misconception taught in the same section (line 196): \"- [ ] An `AGENTS.md` file in the project folder.\" and \"  > That's a shared project file like `CLAUDE.md`, so your teammates would get it too, and Claude Code skips it when a `CLAUDE.md` exists.\" At 40 rendered characters, the right option d (38) is still not the longest."
+          },
+          {
+            "severity": "medium",
+            "where": "Checkpoint manual-runs-free, right option a \"Reading a file inside your project folder.\" (line 96)",
+            "problem": "The right option lifts the body's defining phrase word for word: line 90 says \"reading and searching inside your project folder never asks\". None of the wrong options echo any wording. So the Checkpoint tests whether you recognise a sentence, not whether you can apply the rule. Common sense (\"reading can't hurt\") also gets you there, with the phrase match as a backup.",
+            "evidence": "Lesson line 90 against line 96. Writing guide: \"Questions test transfer, not recognition. Use a fresh situation…\"",
+            "fix": "Line 96: \"- [x] Searching every file in the project for the word `signup`.\" (56 characters, shorter than c at 67). It tests that searches, not only reads, run free, without repeating line 90's phrase. Keep the feedback \"Right. Reads and searches inside the project never ask: they can't change anything.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Checkpoint fresh-session-edits, option a feedback \"Bypass is never the starting mode; you have to turn it on.\" (line 131)",
+            "problem": "The feedback contradicts the Lesson's own Final test. In spot-bypass-laptop, Jo \"now starts Claude Code with `--dangerously-skip-permissions`\" (line 413), and the callout says that option turns Bypass on (line 125). Her sessions do start in Bypass. What's true is that Bypass is never the built-in starting mode. The r1 quiz check raised this as a low. It appears in neither `applied` nor `declined`, and it is unchanged.",
+            "evidence": "Lesson line 131 against lines 125 and 413. https://code.claude.com/docs/en/permission-modes, \"Which mode a session starts in\": the built-in start is `auto` (v2.1.283+) or `default`, never `bypassPermissions`. A launch option sets the mode for that session.",
+            "fix": "Line 131: \"  > Bypass is never the built-in starting mode; you'd have to turn it on yourself.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, sequence-plan-approve, option b feedback \"A new session starts in auto mode, so describing the change first starts the work straight away.\" (line 453)",
+            "problem": "The stem (line 449) says nothing about a new session or auto mode. The order is wrong in any mode, so the feedback rests on an assumption the question never states. The r1 quiz check raised this as a low; it is still unfixed and was not declined.",
+            "evidence": "Lesson line 449, stem: \"You want the agent to plan a change, then let you review each edit as it builds.\" It names no mode and no session.",
+            "fix": "Line 453: \"  > Once you send the description, it starts work in whatever mode you're in. Switch to plan mode before you describe the change.\""
+          },
+          {
+            "severity": "low",
+            "where": "All ten Final test blocks (lines 340-458) and the five Checkpoints",
+            "problem": "The answer key runs in a strict cycle. The Final test goes b, c, a, d, b, c, a, d, b, c, and the Checkpoints go d, a, b, c, d. A Visitor retaking the Final test, or anyone who spots the cycle, can predict the answers. The r1 quiz check raised this; it was neither applied nor declined.",
+            "evidence": "Right options: predict-loop b (line 344), spot-no-tool-call c (358), scenario-unfamiliar-repo a (366), scenario-style-tweaks d (384), scenario-repeat-correction b (392), scenario-undo-whole-request c (406), spot-bypass-laptop a (414), spot-rm-rewind d (432), spot-init-dump b (440), sequence-plan-approve c (454).",
+            "fix": "Reorder options (with their feedback) so the run isn't periodic. For example: spot-no-tool-call d (swap c and d), scenario-style-tweaks c (swap Manual and Accept edits), scenario-repeat-correction a (swap a and b), scenario-undo-whole-request d (swap c and d), spot-bypass-laptop c (swap a and c), spot-rm-rewind b (swap b and d), spot-init-dump d (swap b and d), sequence-plan-approve a (swap a and c). That gives b d a c a d c b d a, with 2-3 right answers per letter."
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint fresh-session-edits, option d \"It's in plan mode, which writes files as it works out the plan.\" and its feedback \"Plan mode blocks edits to your files until you approve a plan.\" (lines 136-137)",
+            "problem": "Half of this distractor is what the body teaches. Line 142 says plan mode \"writes a plan to a file (under `~/.claude/plans/`)\". A careful reader can stop on d, and the feedback doesn't explain why the plan file is a different thing from the script.",
+            "evidence": "Lesson line 142, and https://code.claude.com/docs/en/permission-modes: \"Claude reads files, runs shell commands to explore, and writes a plan, but does not edit your source.\"",
+            "fix": "Line 137: \"  > Plan mode does write its plan to a file, but under `~/.claude/plans/`, not in your project. It won't create your script until you approve a plan.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, spot-bypass-laptop, options b, c and d (lines 416, 418, 420) against right option a (line 414)",
+            "problem": "The three wrong options share one sentence pattern, \"<claim>, so <consequence>\": \"…, so it cuts only the edit prompts\", \"…, so which mode she picked doesn't matter\", \"…, so she should have written more of them\". The right option is the only one built as \"X is for A, not B\", which makes it the odd one out. The pattern came from the r1 replacements of b and c.",
+            "evidence": "Lesson lines 414, 416, 418 and 420.",
+            "fix": "Break the pattern in two of the wrong options. b: \"Bypass still asks before shell commands; it only skips the edit prompts.\" d: \"She needed more deny rules, because Bypass ignores the ones she has.\" Keep the existing feedback. Right a (69) stays shorter than b (72) and c (74)."
+          },
+          {
+            "severity": "low",
+            "where": "Final test, spot-rm-rewind, right option d \"Rewind can't restore files only a shell command changed.\" (line 432)",
+            "problem": "The right option rewords the body's bullet (line 225: \"files changed only by shell commands\"). It is also the only option stated as a general rule. The others describe what Sam did or timing. Matching the phrase picks it without applying the rule to Sam's case.",
+            "evidence": "Lesson line 225 against line 432.",
+            "fix": "Line 432: \"- [x] Rewind never saw the folder go: `rm` ran in the shell.\" (55 characters, still shorter than a and c). Keep the feedback."
+          }
+        ]
+      },
+      "fix": {
+        "applied": [
+          "reader MEDIUM (Try step 3, judging read-only commands): replaced the two sentences with one: 'If it asks to run a command or change anything, move to No, press Tab, type `carry on without changing anything` and press Enter (a plain No would stop it).' The Visitor no longer has to judge a shell command. Step 6 and the checklist still hold. Saves 10 words.",
+          "reader MEDIUM (grilling used before it is explained, line 122): the aside is now '(Matt now plans by having the agent interview him; see below.)'. The term itself first appears where the Grilling paragraph explains it. To keep the fix word-neutral, 'loosens as trust grows' became 'loosens with trust'.",
+          "reader MEDIUM (Site story names /setup-matt-pocock-skills without saying what it is): it now reads 'in the shape that Matt's repo-setup Skill, `/setup-matt-pocock-skills`, writes:', so a cold reader can tell it is a Skill that sets a repo up. I checked SKILL.md:3-4: it configures the repo and is user-invoked. To keep it word-neutral, '(the framework this site is built on)' became ', this site's framework'.",
+          "reader MEDIUM (Claude Code is both 'an AI' and 'a harness'): line 22 now says 'Anthropic's coding agent: Claude, their AI, working in your terminal, reading ... running ... writing code'. In the harness bullet, 'Claude Code is a harness.' became 'Strictly, Claude Code is the harness; with Claude inside, it's a coding agent.' To make room I cut 'about the project' (forgetful colleague), 'more and more' became 'increasingly' (Hacker News line), 'so that' became 'so' (Common mistakes) and 'with the agent before it built' became 'before the agent built'. Net change: 0 words.",
+          "quiz MEDIUM (spot-no-tool-call: the odd-one-out opener is a wording tell): the right option c is now 'She should have checked the transcript for an actual test run.', with the same opener as the wrong options and without 'tool call'. The body defines 'transcript' (Ctrl+O). Feedback unchanged. It is shorter than options a, b and d by both measures.",
+          "quiz MEDIUM (scenario-style-tweaks stem repeats the table's 'review afterwards' and 'approving each edit'): the stem is now 'You're adjusting a site's spacing and fonts: dozens of small changes to its style files. You're tired of saying yes to each one, but you still want to be asked before it installs anything, runs a script or commits to git. Which mode?' Options and feedback unchanged. Id kept.",
+          "quiz MEDIUM (claude-md-which-file: option c's feedback argued against something the option doesn't claim, and it overlapped the Final test's scenario-repeat-correction): option c is now 'An `AGENTS.md` file in the project folder.' with the feedback 'Like the project's `CLAUDE.md`, it's shared through git, so your teammates would get it too. And Claude Code reads it only when there's no `CLAUDE.md`.' That matches body line 196 and research note line 150. The right option d is still not the longest. Id kept.",
+          "quiz MEDIUM (manual-runs-free: the right option lifted line 90's phrase): the right option a is now 'Searching every file in the project for the word `signup`.', shorter than option c by both measures. Feedback unchanged. Id kept.",
+          "quiz MEDIUM (fresh-session-edits: option a's feedback contradicted spot-bypass-laptop): it now reads 'Bypass is never the built-in starting mode; you'd have to turn it on yourself.'"
+        ],
+        "declined": [],
+        "words": 2965,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/how-agents-work.json"
+}

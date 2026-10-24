@@ -1,6 +1,12 @@
 import { describe, expect, test } from "vitest";
-import { lessonNumberMentions, partsGoingBackwards, unknownSlashNames } from "./course-lint";
-import { PARTS, type Lesson, type LessonSummary } from "./lessons";
+import {
+  allOrNoneOfTheAbove,
+  lessonNumberMentions,
+  longestRightAnswers,
+  partsGoingBackwards,
+  unknownSlashNames,
+} from "./course-lint";
+import { PARTS, type Lesson, type LessonSummary, type Question } from "./lessons";
 
 function summary(number: number, slug: string, part: 1 | 2 | 3 | 4 | null): LessonSummary {
   return {
@@ -13,6 +19,16 @@ function summary(number: number, slug: string, part: 1 | 2 | 3 | 4 | null): Less
     part: part === null ? null : { number: part, title: PARTS[part] },
     minutes: 1,
   };
+}
+
+// A question with these option HTMLs; the one at `answer` is right.
+function question(id: string, optionsHtml: string[], answer: number): Question {
+  const options = optionsHtml.map((html, i) => ({
+    id: (["a", "b", "c", "d"] as const)[i],
+    html,
+    feedbackHtml: "Because.",
+  }));
+  return { id, kind: "test", promptHtml: "Which one?", options, answer: options[answer].id };
 }
 
 describe("partsGoingBackwards", () => {
@@ -105,5 +121,44 @@ describe("lessonNumberMentions", () => {
       next: { ...summary(4, "tdd", 2), title: "Lesson 4: TDD" },
     };
     expect(lessonNumberMentions(lesson)).toEqual(["Lesson 2", "Lesson 10"]);
+  });
+});
+
+describe("longestRightAnswers", () => {
+  test("names each question whose right answer is longer than every other option, with the lengths", () => {
+    const questions = [
+      question("spot-long", ["Run it twice.", "Clear the window, then run it again.", "Stop."], 1),
+      question("scenario-fine", ["Clear the window first.", "Run it.", "Stop."], 2),
+    ];
+    expect(longestRightAnswers(questions)).toEqual([
+      "spot-long: the right answer (b) has 36 characters, the longest wrong one 13",
+    ]);
+  });
+
+  test("measures the text a reader sees, so tags and entities don't count", () => {
+    const questions = [
+      question("why-tags", ["<code>/clear</code> it", "Use /compact", "Rest &amp; retry"], 0),
+    ];
+    expect(longestRightAnswers(questions)).toEqual([]);
+  });
+
+  test("lets the right answer tie with the longest wrong one", () => {
+    expect(longestRightAnswers([question("tie", ["Ask first.", "Run tests.", "Stop."], 0)])).toEqual([]);
+  });
+});
+
+describe("allOrNoneOfTheAbove", () => {
+  test('names each "all of the above" or "none of the above" option, in any case', () => {
+    const questions = [
+      question("why-all", ["Grill first.", "Write a spec.", "All of the above."], 2),
+      question("why-none", ["None of the above", "Clear it.", "Compact it."], 1),
+      question("why-fine", ["Grill first.", "Write a spec.", "Clear it."], 0),
+    ];
+    expect(allOrNoneOfTheAbove(questions)).toEqual(["why-all (c)", "why-none (a)"]);
+  });
+
+  test('ignores "above" in other phrases', () => {
+    const questions = [question("why-above", ["The step above.", "Both steps.", "Neither."], 0)];
+    expect(allOrNoneOfTheAbove(questions)).toEqual([]);
   });
 });

@@ -1,0 +1,17 @@
+{
+ "n": 0,
+ "slug": "start-here",
+ "title": "Start here",
+ "part": 1,
+ "old": "00-start-here.md",
+ "img": [
+  "/photos/start-here.jpg",
+  "A wooden desk with a brass lamp beside an open balcony door overlooking the sea at dawn.",
+  "Ruben Aster"
+ ],
+ "skills": [
+  "productivity/teach",
+  "engineering/ask-matt"
+ ],
+ "extra": "SPECIAL RULES: prose 900–1,400 words; Final test 5–6 questions, exempt from the kind mix; 3–5 Checkpoints still required; at least 1 Scene. Cover: what the course is and who it is for (someone who has never coded with an agent), what you need (Claude Code via the native installer, an eligible paid plan, a terminal, git; Node only optional), how to read a Lesson on this site (Scenes that move as you scroll, Checkpoints that never count, the Final test with an 80% pass mark and retries, the Site story box, sources), the 4 Parts with links to every Lesson by title, and a short tip on `/teach` (Matt's Skill for learning any topic in its own folder). Keep the author's old whole-build table in the site-story box."
+}

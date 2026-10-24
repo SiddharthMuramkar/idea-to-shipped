@@ -1,0 +1,17 @@
+{
+ "n": 2,
+ "slug": "context-window",
+ "title": "The context window",
+ "part": 1,
+ "old": null,
+ "img": [
+  "/photos/context-window.jpg",
+  "Snow-capped mountains under low cloud, seen through a dark three-pane window.",
+  "Daniel Seßler"
+ ],
+ "skills": [
+  "productivity/handoff",
+  "engineering/ask-matt"
+ ],
+ "extra": "Also read /Users/siddharth/Developer/idea-to-shipped-work/state/skills/skills/engineering/ask-matt/PHASE-BOUNDARIES.md. Teach: tokens, what fills the window, `/context`, the Smart zone (~150k rule of thumb; quality not window size; 1M windows), `/clear` vs `/compact` vs auto-compact (and idle compaction), `/btw`, subagents as context isolation, Matt's phase-boundary order (continue, `/clear`, `/handoff`, subagent, `/compact`), and the `/handoff` Skill (user-invoked; four reasons to use it). A `meter` Scene fits here (zone: about where the Smart zone ends on the meter you draw). Site story: real material (the v1 build ran as one unbroken session that ended around 380k tokens; `/context` mid-build showed about 205k of 1M with a breakdown; the Main flow session was idle-compacted from about 247k to 31k tokens after `/to-tickets`; `/clear` was used between unrelated tasks before the build; never a manual `/compact` or `/handoff`). No clock times."
+}

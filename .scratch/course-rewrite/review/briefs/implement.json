@@ -1,0 +1,17 @@
+{
+ "n": 9,
+ "slug": "implement",
+ "title": "Implement",
+ "part": 2,
+ "old": null,
+ "img": [
+  "/photos/implement.jpg",
+  "A construction worker in a hard hat stands on a timber wall frame against a blue sky.",
+  "Josh Olalde"
+ ],
+ "skills": [
+  "engineering/implement",
+  "engineering/implement-spec"
+ ],
+ "extra": "Teach `/implement` (one run, drives tdd and code-review, commits to the current branch) and `/implement-spec` (task graph, frontier, integration branch, subagents in worktrees, one review at the end), human-in-the-loop vs AFK, Matt's three ways to loop over tickets. Site story: real (PR #9 used `/implement-spec` with 5 tickets; 03 and 04 ran in parallel; one merge conflict in the shared credits file `unsplash.ts`; an early review ran while ticket 05 was still building; the author typed the next Skill before answering an open question). Check details with `gh pr view 9` and .scratch/main-flow-and-redesign/."
+}

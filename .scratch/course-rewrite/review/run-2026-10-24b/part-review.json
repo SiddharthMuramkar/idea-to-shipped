@@ -1,0 +1,720 @@
+{
+  "reviews": [
+    {
+      "part": 1,
+      "axis": "standards",
+      "summary": "11 findings (3 medium, 8 low). The worst: in context-window, the Checkpoint continue-first and the Final test question spot-compact-before-qa test the same rule (the next Phase fits, so carry on) with the same three distractors, so the Final test checks recognition instead of transfer. Lint passes on all four Lessons. Every Site story claim and every direct quote checked out against the repo, the transcripts or the cited page. All the /learn links point at the right Lessons, and no Lesson contradicts the course facts.",
+      "findings": [
+        {
+          "slug": "context-window",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "context-window, \"At a Phase boundary: Matt's order\", Checkpoint continue-first (lines 179-189), against Final test spot-compact-before-qa (lines 420-430)",
+          "problem": "The Checkpoint and the Final test question test the same idea: at a boundary, question 1 says yes, so carry on. They also share three of their four options: compact, clear and handoff are wrong, and carry on is right. A reader who did the Checkpoint can answer the Final test by spotting the pattern. This breaks the writing guide's \"Don't reuse a Checkpoint as a Final test question\" and the pilot rule that \"no Checkpoint duplicates a Final test question\".",
+          "evidence": "Checkpoint (line 180): \"You've finished grilling a small change ... at about 35k tokens. Next you'll build it ... What does Matt's tree say?\" Options: \"`/compact`, since it's the default\" / \"`/clear`, since the decisions are made\" / \"`/handoff`, so the build starts from a clean brief\" / [x] \"Carry on, since the build needs the grilling\". Final test (line 421): \"Ana finishes building a search box at 60k tokens. Next she'll check it by hand ... She types `/compact` first\". Options: \"`/clear` instead\" / \"compacted mid-build\" / \"`/handoff` instead\" / [x] \"carry on in this session\". Writing guide, Questions section, and \"Lessons from the pilot review\".",
+          "fix": "Make the Checkpoint test the other rule in its section, the one no Final test question checks: don't decide mid-Phase. For example: \"Halfway through building, `/context` shows 110k and the build isn't finished. What now?\" Right answer: keep going, or hand the rest to subagents, and decide at the boundary. Wrong answers: `/compact` now, `/clear` now, `/handoff` now. Keep spot-compact-before-qa as the Final test check of question 1.",
+          "id": "cw-checkpoint-duplicates-final-test"
+        },
+        {
+          "slug": "context-window",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "context-window, \"`/handoff`: when the work has to travel\", Checkpoint handoff-reason option d (lines 237-238), against Final test scenario-afk-review (lines 384-394)",
+          "problem": "A Checkpoint distractor gives the Final test's scenario and its answer. Option d of handoff-reason is \"diff reviewed while you step away\", and its feedback says it goes to a subagent. scenario-afk-review then asks about a diff review while you're at lunch, and the answer is a subagent. The body (line 153: \"Automated review of the diff ... is the usual case\") and Scene step 3 (line 171) already use review as their example, so the Final test checks recognition, not transfer. This breaks the writing guide's rules \"Questions test transfer, not recognition\" and no Checkpoint duplicating a Final test question. scenario-afk-review came from the stopped round-2 fixer, and no check round ever looked at it (context-window.json: next = round 2 fix, stopped).",
+          "evidence": "Line 237: \"- [ ] You want the diff reviewed while you step away.\" Line 238: \"> A tightly scoped job that needs no steering goes to a subagent.\" Line 385: \"the diff should be checked against the spec, and you'll be at lunch while that runs. Which move does Matt's tree pick?\" Line 392: \"[x] A subagent, which reports back when done.\"",
+          "fix": "Change option d of handoff-reason to a case that isn't a handoff and doesn't involve a subagent, for example \"The next task is an unrelated bug in another part of the site\", with feedback saying `/clear` is cheaper. Alternatively, give scenario-afk-review an AFK task that isn't a review, such as translating 30 error messages using an existing glossary while you're at lunch, so the reader has to apply question 4 to a new kind of job.",
+          "id": "cw-checkpoint-pre-answers-afk-review"
+        },
+        {
+          "slug": "context-window",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "context-window, \"The idea: tokens and the window\" table (line 55); \"The Smart zone\" (line 81); Checkpoint quality-not-size feedback (line 111); \"`/handoff`\" file bullets (line 199); \"How Matt and others use it\" (line 252)",
+          "problem": "A cold reader meets several terms before this Lesson explains them, or without it ever explaining them. \"compacting\" appears in the /context table about 70 lines before /compact is introduced (line 122). \"turn\" is never defined here, although how-agents-work and skills both define it, and Thariq's line depends on its technical meaning. \"commits\" and \"decision records\" are never glossed in this Lesson. The writing guide says to explain every term at or before first use, and that every Lesson must stand alone.",
+          "evidence": "Line 55: \"| Autocompact buffer (kept free for compacting) | 33k |\". Line 81: \"the agent forgets an instruction from many turns ago\". Line 252: \"treats every finished turn as a decision point\". Line 199: \"points to specs, plans, decision records, tickets, commits and diffs by path or link\". The only explanations come later (line 122, /compact) or not at all.",
+          "fix": "Gloss each term where it first appears. Line 55: \"(kept free so Claude Code can compact, or summarise, the conversation; see below)\". Line 81: \"many turns (a message and everything the agent does in reply) ago\". Line 199: \"decision records (notes on why a hard-to-undo choice was made), commits (saved snapshots of the code in Git)\".",
+          "id": "cw-terms-before-explained"
+        },
+        {
+          "slug": "how-agents-work",
+          "kind": "smell",
+          "severity": "low",
+          "where": "how-agents-work Site story (line 319) and context-window Site story (line 314)",
+          "problem": "Possible Duplicated Code. Two Lessons in the same Part tell the same Site story: the author committed HANDOFF.md before moving the course to a new Mac, and the next machine picked up from it. Someone reading Part 1 in order meets the same anecdote twice.",
+          "evidence": "how-agents-work line 319: \"Before I moved the course to a new Mac, I committed `HANDOFF.md`: where the drafts are, the plan, and how I work.\" context-window line 314: \"When the course work moved to a new computer, its handoff was a file committed to the repo, `.scratch/course-rewrite/HANDOFF.md`: where the branch and drafts are, the plan, and how I like to work.\"",
+          "fix": "Keep it in context-window, where it's compared with a /handoff file. In how-agents-work, end the Site story after the engine-contract sentence, which already makes the blank-session point.",
+          "id": "dup-handoff-md-site-story"
+        },
+        {
+          "slug": "start-here",
+          "kind": "smell",
+          "severity": "low",
+          "where": "start-here, \"What this course is\" (line 26), and skills, \"How Matt and others use it\" (line 254)",
+          "problem": "Possible Duplicated Code. Both Lessons summarise Colin Eberhardt's verdict in nearly the same words: sound practices, but you still need your judgement.",
+          "evidence": "start-here line 26: \"Colin Eberhardt of Scott Logic found their practices sound but said they don't remove the need for your judgement.\" skills line 254: \"His verdict: sound practices and refreshingly small Skills, but you still tailor them and bring your own judgement.\" (Both paraphrases are supported by the blog post.)",
+          "fix": "In skills, keep only what's new there (he began with `/ask-matt`, which sent him to `/grill-with-docs`, and found the Skills refreshingly small), and drop the judgement half that start-here already makes.",
+          "id": "dup-scott-logic-verdict"
+        },
+        {
+          "slug": "start-here",
+          "kind": "smell",
+          "severity": "low",
+          "where": "start-here line 26; how-agents-work lines 26 and 40; skills line 22; context-window line 32",
+          "problem": "Possible Duplicated Code. All four Lessons in Part 1 open with Matt's \"agents have no memory\" framing, and how-agents-work uses it twice, three paragraphs apart. Each Lesson has to introduce Matt to stand alone, but it doesn't need this anecdote.",
+          "evidence": "start-here 26: \"the weird thing about these engineers is they have no memory.\" how-agents-work 26: \"describes agents as decent engineers with one big flaw: no memory\". how-agents-work 40: \"Matt pictured a colleague who forgets everything each time they commit\". skills 22: \"a fleet of decent engineers with no memory\". context-window 32: \"the man in *Memento*\".",
+          "fix": "Keep the quote in start-here and the forgetful-colleague image in how-agents-work (line 40). Cut the 'no memory' clause from how-agents-work line 26, and in skills, say the session starts from nothing without retelling Matt's engineers line.",
+          "id": "dup-no-memory-framing"
+        },
+        {
+          "slug": "skills",
+          "kind": "smell",
+          "severity": "low",
+          "where": "skills, Final test ids spot-edited-cache (line 437) and scenario-lost (line 365)",
+          "problem": "Possible Mysterious Name. \"cache\" never appears in the Lesson, which says \"the plugin's copy\" and \"plugin files\". \"lost\" doesn't say what the question checks. Ids become permanent once published, and they key the database. This branch hasn't merged, so renaming is still free.",
+          "evidence": "Line 437: \"```test spot-edited-cache\" (the question is about editing the plugin's SKILL.md). Line 365: \"```test scenario-lost\" (the question is about finding a Skill whose name you forgot, using /ask-matt).",
+          "fix": "Rename them before publishing, for example spot-edited-plugin-file and scenario-forgot-skill-name.",
+          "id": "mysterious-question-ids"
+        },
+        {
+          "slug": "how-agents-work",
+          "kind": "standard",
+          "severity": "low",
+          "where": "how-agents-work lines 88, 260 and 471; context-window line 459 (sources), against the context-window body (lines 16, 128, 146 and 153) and GLOSSARY.md (Phase)",
+          "problem": "Part 1 spells the term two ways. how-agents-work uses \"sub-agent\". context-window's body uses \"subagent\", as GLOSSARY's Phase entry and the Claude Code docs do, but its own sources line says \"sub-agent\".",
+          "evidence": "how-agents-work 88: \"which starts a sub-agent (a helper agent with its own fresh context window\". context-window 128: \"A subagent is a helper agent with its own fresh context window.\" GLOSSARY Phase: \"pass the next task to a subagent\".",
+          "fix": "Use \"subagent\" everywhere in Part 1, to match GLOSSARY.md.",
+          "id": "subagent-spelling"
+        },
+        {
+          "slug": "how-agents-work",
+          "kind": "standard",
+          "severity": "low",
+          "where": "how-agents-work (2,965 prose words), context-window (2,943) and skills (2,847), as measured by lint-lesson.mjs",
+          "problem": "The writing guide says to aim for 2,300–2,800 words, below the 3,000 lint cap, to leave margin. All three Lessons are over the aim, and how-agents-work is 35 words from the cap. Fixers in this run already declined lows because of the word budget, so future fixes are boxed in.",
+          "evidence": "lint-lesson.mjs output: how-agents-work proseWords 2965, context-window 2943, skills 2847. Writing guide: \"aim for 2,300–2,800 words (lint range 1,800–3,000) to leave margin\". skills.json declined: \"The Lesson is near the 2,850-word ceiling\".",
+          "fix": "Trim about 150 words from how-agents-work and context-window. Merging the duplicated Site-story and no-memory passages above saves some of it, and so does shortening how-agents-work's \"How Matt and others use it\" bullets, which repeat points from the plan-mode section.",
+          "id": "word-budget-margin"
+        },
+        {
+          "slug": "skills",
+          "kind": "standard",
+          "severity": "low",
+          "where": "skills, \"The idea: a folder with one file\" (line 52)",
+          "problem": "\"that video\" refers back to the March 2026 video mentioned in the previous section (line 22), about 30 lines earlier. A reader won't know which video is meant.",
+          "evidence": "Line 52: \"in that video, Matt stressed that a Skill needn't be long to make a difference.\" The only earlier video mention is line 22: \"described agents in a March 2026 video\".",
+          "fix": "Write \"in his March 2026 video, Matt stressed...\".",
+          "id": "skills-that-video-antecedent"
+        },
+        {
+          "slug": "how-agents-work",
+          "kind": "standard",
+          "severity": "low",
+          "where": "how-agents-work, sources (line 479)",
+          "problem": "The writing guide says video sources need the title, URL, publish date and the timestamps used. The AI Coding Daily video has no timestamps, though line 266 cites it for a specific comparison. Every other video source in Part 1 has timestamps.",
+          "evidence": "Line 479: \"[I Tried \\\"grill-me\\\" Skill for Plan Mode. Wow.](https://www.youtube.com/watch?v=rLNLa2dcjG8), AI Coding Daily, 2026-04-12.\" Writing guide, Sources: \"Videos: title, URL, publish date, and the timestamps you used.\"",
+          "fix": "Add the timestamp range where the video compares /grill-me with plan mode, or write \"(whole video)\" if the comparison runs throughout.",
+          "id": "haw-video-source-no-timestamps"
+        }
+      ]
+    },
+    {
+      "part": 1,
+      "axis": "spec",
+      "summary": "Part 1 spec review found 4 issues: 1 medium and 3 low. The worst is the medium: no Lesson that builds on How coding agents work links to it, and its Try block assumes Claude Code is installed without linking Start here (user story 24). Every other spec, ticket and brief requirement checked is covered. The pieces the briefs asked for but the Lessons dropped (session-log Site story facts, the 80% pass mark, Scenes that move as you scroll) were dropped on purpose and are recorded, so they aren't raised.",
+      "findings": [
+        {
+          "slug": "how-agents-work",
+          "kind": "missing",
+          "severity": "medium",
+          "where": "how-agents-work, ## Try it yourself, line 271: \"You need Claude Code installed and signed in, plus git.\" context-window, ## The idea: tokens and the window, line 37: \"your `CLAUDE.md`, a file of standing instructions for the project\" (and CLAUDE.md, subagents and auto memory at lines 124 and 128). skills, ## Why it matters, line 24: \"Or you could put everything in `CLAUDE.md`, a file of standing instructions...\"",
+          "problem": "How coding agents work teaches sessions, tools, sub-agents, Built-in commands, auto memory and the three CLAUDE.md files. The context window and Skills both build on these, but neither links back to it. How coding agents work builds on Start here, yet its Try block assumes Claude Code is installed and gives no link to where installing is taught. The other two Part 1 Try blocks do give that link.",
+          "evidence": "Spec, User Stories 24: \"As a Visitor, I want each Lesson to cross-link the Lessons it builds on, so that I can go back when something is unfamiliar.\" Links found by grep: 01-how-agents-work.md links only context-window, skills and grilling. 02-context-window.md links main-flow, prototype, skills and start-here. 03-skills.md links context-window, main-flow, retro and start-here. Only 00-start-here.md and 17-retro.md in the whole course link /learn/how-agents-work. 02-context-window.md:259 and 03-skills.md:260 both add \"(see [Start here](/learn/start-here))\" to the same \"installed and signed in\" line; 01-how-agents-work.md:271 doesn't.",
+          "fix": "how-agents-work line 271: \"You need Claude Code installed and signed in (see [Start here](/learn/start-here)), plus git.\" context-window line 37: \"- your `CLAUDE.md`, a file of standing instructions for the project (see [How coding agents work](/learn/how-agents-work))\". skills line 24: \"...a file of standing instructions the agent reads at the start of every session ([How coding agents work](/learn/how-agents-work) covers it).\" Each adds about 3–6 words, and all three stay under the 3,000 cap (they're at 2,965, 2,943 and 2,847 now).",
+          "id": "how-agents-work-not-linked"
+        },
+        {
+          "slug": "start-here",
+          "kind": "scope-creep",
+          "severity": "low",
+          "where": "start-here: goal 4 (line 17); \"## Learn anything with `/teach`\" (lines 139–176, with the files Scene and the teach-next-session Checkpoint); Try step 5 (lines 206–219); test scenario-teach-folder (line 310)",
+          "problem": "The spec, the ticket and the brief all ask for a tip. The Lesson instead makes /teach one of its four goals, with its own section, Scene, Checkpoint, Final test question and Try step. That takes about 14% of a Lesson sitting at 1,395 of its 1,400 words, while the fix records declined cold-reader lows only because of that cap.",
+          "evidence": "Spec user story 26: \"I want a tip about `/teach` in Start here\". Ticket 03: \"`start-here` (with a `/teach` tip)\". The start-here brief: \"a short tip on `/teach`\". section-words.mjs: \"194 ## Learn anything with `/teach`\" out of 1395. Declined in run-2026-10-24b/start-here.json: \"Part 1 bullet should gloss 'working memory' as the context window (+3 prose words)\" and \"Try step 5 gaps (the trust prompt again, when to /exit, explaining ls and ~) ... It would break the 1,400-word cap.\"",
+          "fix": "Cut the section to a tip of about 60–80 words: what /teach does, run it in an empty folder of its own, type /teach again to carry on. Keep either the files Scene or the Checkpoint, not both. Spend the roughly 100 freed words on the declined reader fixes: gloss \"working memory\" as the context window in the Part 1 bullet, and add the trust prompt and what `~` means to Try step 5. If the tip no longer teaches enough to answer scenario-teach-folder, drop goal 4 and that question. 3 goals and 5 questions are still within Start here's limits.",
+          "id": "teach-tip-became-section"
+        },
+        {
+          "slug": "start-here",
+          "kind": "missing",
+          "severity": "low",
+          "where": "start-here, section headings: What this course is (20), What you need (30), How to read a Lesson (69), The four Parts (91), Learn anything with /teach (139), Try it yourself (178), Cheat sheet (250), Final test (260)",
+          "problem": "Start here has no \"Common mistakes\" section and no \"How Matt and others use it\" section. Nothing in the spec or the contract exempts it from those two parts of the Lesson shape.",
+          "evidence": "Spec, Solution: \"Every Lesson follows one shape ... 6. How Matt and others use it day to day, cited. ... 8. Common mistakes.\" The contract exempts Start here only on word count (\"Start here 900–1,400\") and on the Final test (v1.2: \"5–6 questions ... exempt from the kind mix\").",
+          "fix": "Either add a three-bullet \"## Common mistakes\": checking `claude --version` in the window you installed from, installing Node.js first, and running `/teach` inside your project. Pay for it with the /teach trim above. Or write into the start-here brief and the spec that Start here is exempt from shape items 3, 6 and 8, so later reviews don't raise it again.",
+          "id": "start-here-shape-gaps"
+        },
+        {
+          "slug": "how-agents-work",
+          "kind": "scope-creep",
+          "severity": "low",
+          "where": "how-agents-work, site-story, line 319: \"Before I moved the course to a new Mac, I committed `HANDOFF.md`: where the drafts are, the plan, and how I work. The work on the new machine picked up from that file.\"",
+          "problem": "This Site story retells the HANDOFF.md move to a new machine. The context window Lesson, which owns /handoff, tells the same story in its own Site story. The how-agents-work brief didn't ask for it.",
+          "evidence": "In the writing guide's course table, context-window teaches \"... phase boundaries, `/handoff`\". 02-context-window.md:314: \"**A handoff, but not the Skill.** When the course work moved to a new computer, its handoff was a file committed to the repo, `.scratch/course-rewrite/HANDOFF.md`...\". The how-agents-work brief's Site story list has the 17-line CLAUDE.md and the course rewrite \"grilled in plan mode in one session, then split into two parallel sessions\", but no HANDOFF.md.",
+          "fix": "Cut the last two sentences of how-agents-work's site-story (about 30 words) and end it on the contract file (\"...so the engine session wrote its rules down in a contract file, and every Lesson follows it.\"). That also gives the Lesson back some room under the 3,000 cap (it's at 2,965).",
+          "id": "handoff-md-story-twice"
+        }
+      ]
+    },
+    {
+      "part": 2,
+      "axis": "standards",
+      "findings": [
+        {
+          "slug": "implement",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "implement: 'A session, step by step' Scene caption line 118 ('Its two axes run in fresh sub-agents, away from this session's crowded context window'); 'How Matt and others use it' line 217 ('which code-review's fresh sub-agents avoid'); Try step 7 line 264; Cheat sheet line 307. main-flow: 'The map, in order' line 45 ('let `/implement` commit, then type `/mattpocock-skills:code-review`').",
+          "problem": "Implement and The main flow tell you to run the full-name review in the same session that did the building, and say the fresh sub-agents make that safe. Code review teaches the opposite: the sub-agents start fresh anyway, but the agent writing their briefs and passing on their reports still carries the build's assumptions, so you review from a clean session. Its Final test marks reviewing in the build session as the mistake. A reader of all three Lessons gets two rules, and the Implement Scene (a worked example) shows the practice Code review warns against. This came from a round-1 implement fix ('which code-review's fresh sub-agents avoid'). Code review's reasoning was corrected after that, so the fix is now out of date. It was never declined.",
+          "evidence": "10-code-review.md:214: 'The sub-agents start fresh anyway, but the agent you're talking to writes their briefs and passes on their reports. If it did the building, it brings the build's assumptions. Review after `/clear`'. 10-code-review.md:229 (callout): 'Run `/mattpocock-skills:code-review` yourself afterwards, from a clean session.' 10-code-review.md:436-439 (sequence-review-ticket: the key has `/clear` before the review; option d's feedback says 'Reviewing in the long build session keeps its assumptions in the room'). 1.3.1 docs/engineering/code-review.md:65: 'The independent version is to invoke `/code-review` yourself from a clean session.' writing-guide.md: 'Worked examples must model the advice.' The prior fix is in review/run-2026-10-24/implement.json.",
+          "fix": "implement line 217: replace 'which code-review's fresh sub-agents avoid' with 'so he clears first' (−1 word; the Lesson is at 2,980). Scene: add `you: /clear` before line 119, with the caption 'Now the commit exists. Clear first, so the agent briefing the reviewers didn't build the code, then run the review by its full name.' (captions don't count toward words). Cheat sheet line 307: 'After the run's commit, `/clear`, then `/mattpocock-skills:code-review main`'. Try step 7: add '(in a real project, after `/clear`)'. main-flow line 45: 'let `/implement` commit, `/clear`, then type `/mattpocock-skills:code-review`'.",
+          "id": "review-in-build-session"
+        },
+        {
+          "slug": "prototype",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "prototype, 'The detour: /handoff out and back', line 191: 'One limit sits over step 1: near the edge of the Smart zone, don't carry on, whatever the next step wants.'",
+          "problem": "Prototype drops the scope from ask-matt's context rule and makes it an absolute override of Continue. ask-matt applies it only before `/to-tickets` (the one-window planning stretch), and The main flow states it that way, keeping grilling → implementing a small change as the standard Continue case. Take grilling a small change near the Smart zone edge: Prototype says don't continue, while The main flow says continue (the next Phase needs this one word for word). The source Prototype cites doesn't support the unscoped version.",
+          "evidence": "ask-matt/SKILL.md:40: 'If a session approaches it before `/to-tickets`, don't push on degraded; `/compact` at the nearest phase boundary'. PHASE-BOUNDARIES.md:21: Continue is yes if 'the next phase needs this phase as a primary source, or you have enough smart zone left'. 12-main-flow.md:137: 'One limit comes from `/ask-matt`'s context rule, not the five questions: near the Smart zone's end before `/to-tickets`, don't push on'. Prototype's sources line 434 cites ask-matt for 'the Smart zone limit'. The fixer's note (run-2026-10-24b/prototype.json, applied r1) claims it 'matches ... ask-matt SKILL.md:40', but it leaves out that line's 'before /to-tickets'.",
+          "fix": "Line 191: 'One limit sits over step 1 while you're still planning: near the edge of the Smart zone before `/to-tickets`, don't carry on, whatever the next step wants. Go on down the list; for planning you still need, that usually means `/compact`.' (+5 words, 2,970 → 2,975). Checkpoint compact-or-handoff stays right, because its stem says a summary would do, so step 1 already fails.",
+          "id": "prototype-smart-zone-limit-unscoped"
+        },
+        {
+          "slug": "pr-and-ship",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "pr-and-ship Site story line 311 ('The PRs don't show whether the agent loaded `/pr` for #9.') against implement Site story line 297 ('and `/pr` wrote its description') and main-flow Site story line 320 ('`/pr` wrote the description, calling the change a two-way door').",
+          "problem": "Three Site stories in the same Part tell different stories about PR #9's body. PR + ship says the body 'slipped back' to a non-/pr shape and that nothing shows whether /pr loaded. Implement and The main flow say flatly that /pr wrote it. This is a re-raise. The pr-and-ship fixer declined it only because of file scope ('Other agents own those files ... Pass the suggested rewording of those two lines to their fixers'), not because it was wrong, and neither 09-implement.md nor 12-main-flow.md was changed afterwards.",
+          "evidence": "`gh pr view 9` body headings: 'What changes', 'Evidence', 'How to check it', 'Door'. There is no Summary, no Merge Danger and no blast radius, which matches pr-and-ship's description. `git show d21fc2c:content/lessons/11-main-flow.md`: 'One fix-up agent fixed them all, then /pr wrote the pull request.' So the repo journal credits /pr, and pr-and-ship's hedge reads as doubting it. The decline is in review/run-2026-10-24b/pr-and-ship.json (declined items 3 and 4).",
+          "fix": "One edit settles it. pr-and-ship line 311: replace 'The PRs don't show whether the agent loaded `/pr` for #9.' with 'My journal says `/pr` wrote it, so even with the Skill loaded the shape can slip: read the body against the template.' Implement and The main flow can then stay as they are.",
+          "id": "pr9-body-credit-contradiction"
+        },
+        {
+          "slug": "implement",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "implement, 'Why it matters', line 28: 'As it fills, the model reasons less sharply.' main-flow, 'Context hygiene', line 91: 'As the window fills, the model reasons less sharply.'",
+          "problem": "A cold reader meets 'the model' with no explanation. Both Lessons otherwise talk about 'the agent'. Their only other uses are inside another gloss ('a harness (the program around the model...)', implement:166, main-flow:139), so nothing ever says the model is the AI behind the agent. Earlier rounds treated the same gap as a reader medium and fixed it in prototype and domain-modeling, and grilling, spec-and-issues and code-review all gloss the word.",
+          "evidence": "grep: implement uses 'the model' first at line 28, then line 166, never defined. main-flow at line 91, then line 139, never defined. Compare 04-grilling.md:186 'the model (the AI inside Claude Code that does the thinking...)', 07-spec-and-issues.md:24 'the model (the AI behind the agent)', 10-code-review.md:154. writing-guide.md (Voice): 'Explain every term at or before first use, in a clause'.",
+          "fix": "implement line 28 and main-flow line 91: change 'the model reasons less sharply' to 'the agent reasons less sharply' (0 words, as in the prototype fix), or gloss it as 'the model (the AI behind the agent)'.",
+          "id": "model-undefined-implement-main-flow"
+        },
+        {
+          "slug": "main-flow",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "main-flow, 'The map, in order', line 34 (repo = 'a project folder tracked with Git') and line 36 ('No repo under you, like a talk or a plan? Use `/grill-me`'); Cheat sheet lines 340-341 ('An idea, in a repo' / 'An idea, no repo').",
+          "problem": "The main flow defines repo as a Git-tracked folder, then makes 'repo' the test for choosing `/grill-me` over `/grill-with-docs`. A reader with a project folder that isn't under Git is told to use `/grill-me`. The Grilling Lesson says use `/grill-with-docs` in any project folder, and domain-modeling was corrected to match in this run. The main flow is now the one Lesson in the Part that gives the Git-based rule.",
+          "evidence": "ask-matt/SKILL.md:19: 'Start here whenever you are working in a working directory ... (No working directory? Use `/grill-me` instead'. 04-grilling.md:107-108: 'No project folder, or not code at all | `/grill-me`' / 'In a project folder ... | `/grill-with-docs`'. 05-domain-modeling.md:204 now says 'No project folder: `/grill-me`' (lean fix of the pending medium in run-2026-10-24b/domain-modeling.json, which cited commit 7934668's note that the split is 'a working directory (a project folder), not a folder tracked with Git').",
+          "fix": "Line 36: 'No project folder under you, like a talk or a plan? Use `/grill-me`, which saves nothing.' Cheat sheet: 'An idea, in a project folder' / 'An idea, no project folder'. (+3 words, 2,972 → 2,975.)",
+          "id": "main-flow-repo-vs-project-folder"
+        },
+        {
+          "slug": "spec-and-issues",
+          "kind": "smell",
+          "severity": "medium",
+          "where": "spec-and-issues Final test scenario-fits-one-session (lines 297-307) and implement Final test scenario-plan-in-chat (lines 312-322); also main-flow scenario-fits-one-session (lines 357-367).",
+          "problem": "Possible Duplicated Code. Two adjacent Lessons ask the same Final test question: a grilled 'print this recipe' button for a recipe site, room left. Both have the same key ('/implement' in this conversation) and two identical distractors ('/to-spec, then /to-tickets', '/clear, then /implement'). The main flow asks it a third time with a bakery. By Implement, a reader answers from memory, not by applying the idea.",
+          "evidence": "07-spec-and-issues.md:298: 'You've grilled a \"print this recipe\" button for a recipe site.' 09-implement.md:313: 'You've just grilled a small change to a recipe site: a \"print this recipe\" button.' Shared distractors at 07:299/301 and 09:314/316. writing-guide.md (Pilot review): 'Questions test transfer, not recognition. Use a fresh situation'. Precedent: the round-2 quiz lens rated main-flow restaging the context-window Lesson's questions as medium (run-2026-10-24b/main-flow.json).",
+          "fix": "Implement is unpublished, so change scenario-plan-in-chat to test its own point, the plan-in-chat quirk. Stem: 'You grilled a small dark-mode toggle for a running club's site, and typed `/implement`. The agent starts searching the repo for a spec file that doesn't exist. What should your message have said?' Key: 'That the plan is in this conversation, not a file.' Distractors: 'A spec path, after running /to-spec first'; 'Nothing: it finds the plan once the search fails'; 'Ask for /implement-spec instead'.",
+          "id": "duplicate-print-recipe-question"
+        },
+        {
+          "slug": "main-flow",
+          "kind": "smell",
+          "severity": "medium",
+          "where": "main-flow Final test sequence-multi-session (lines 393-403) against grilling sequence-multi-session (lines 413-423); main-flow scenario-near-smart-zone (lines 405-415) against spec-and-issues scenario-near-smart-zone (lines 405-415).",
+          "problem": "Possible Duplicated Code. The main flow restages two Part 2 questions almost beat for beat. Its sequence-multi-session has the same stem as grilling's ('In a repo, you're planning a feature that will take several sessions') and two of its three distractors are the same (spec before grill, tickets before spec). spec-and-issues uses that stem a third time. Its scenario-near-smart-zone has the same id, the same situation (grilling ran long, near the Smart zone, no /to-spec yet) and the same key (/compact at the break) as spec-and-issues'. These test recall, not the capstone's own material.",
+          "evidence": "04-grilling.md:414 vs 12-main-flow.md:394 (stems). 04:415/417 vs 12:395/397 (spec-before-grill and tickets-before-spec distractors). 07-spec-and-issues.md:406-411 vs 12-main-flow.md:406-410 (/compact at a phase boundary is the key in both). Grilling's ids are published on origin/main, so only the main-flow copies can change. writing-guide.md: 'Questions test transfer, not recognition.'",
+          "fix": "main-flow (unpublished): rewrite sequence-multi-session to test where /clear and /retro go across the whole flow. Key: 'grill → spec → tickets → /clear → /implement 01 → /retro → /clear → /implement 02'. Distractors: /clear before /to-spec; /retro after the /clear; /compact between tickets. Drop main-flow's scenario-near-smart-zone: goal 2 stays covered by sequence-boundary-questions, scenario-side-task and scenario-unsteered-check, and the Final test stays at 14 of the 8-15 allowed.",
+          "id": "duplicate-sequence-and-smart-zone-questions"
+        },
+        {
+          "slug": "spec-and-issues",
+          "kind": "smell",
+          "severity": "low",
+          "where": "Site stories: spec-and-issues line 276, implement line 289, main-flow line 318 (the '/to-spec stopped to ask me to check one design choice. I typed /to-tickets instead' slip); implement 297, main-flow 320, code-review 329, domain-modeling 314 ('about 15 problems, like the home page calling Skills \"commands\"'); grilling 302 and main-flow 316 (the plain-words 'grilling with docs' slip). Community: the 173-session anecdote in tdd 223, implement 223, code-review 256, main-flow 45 and 242.",
+          "problem": "Possible Duplicated Code. The same anecdotes are retold almost word for word in three or four Lessons, using words in Lessons that sit at 2,900-2,980 of the 3,000 cap. The 173-session developer is also 'His loop' in code-review:256 but 'their machine' / 'Their next prompt' everywhere else.",
+          "evidence": "07:276 'stopped to ask me to check one design choice. I typed `/to-tickets` instead of answering'; 09:289 'stopped to ask me to check a design choice, and I typed `/to-tickets` instead of answering'; 12:318 'stopped to ask me to check one design choice. I typed `/to-tickets` instead of answering'. 10:256 'His loop now types the full names' vs 09:223 'on their machine' and 12:242 'Their next prompt'.",
+          "fix": "Keep each anecdote in full in its home Lesson (the slip in spec-and-issues, the review count in code-review, the plain-words slip in grilling, the 173 sessions in implement), and cut the others to one line with a link. Make the code-review pronoun 'Their loop'.",
+          "id": "duplicated-anecdotes"
+        },
+        {
+          "slug": "spec-and-issues",
+          "kind": "smell",
+          "severity": "low",
+          "where": "spec-and-issues Final test `test scenario-two-agents`, line 321, whose stem now says 'Ticket 01 is done and you have three agents free.' (line 322)",
+          "problem": "Possible Mysterious Name. The lean fix changed the stem from two free agents to three, which removed a counting tell, but the id still says 'two-agents', so it no longer names what the question holds. Ids become permanent once published, and spec-and-issues isn't published yet (origin/main still has the old journal with no questions), so now is the last cheap moment to rename it.",
+          "evidence": "`git show origin/main:content/lessons/03-spec-and-issues.md | grep -c test` → 0. Stem at line 322. docs/authoring-lessons.md: ids are 'PERMANENT once published'.",
+          "fix": "Rename to `test scenario-ready-frontier` (or `scenario-free-agents`) before PR B merges.",
+          "id": "scenario-two-agents-id"
+        },
+        {
+          "slug": "prototype",
+          "kind": "smell",
+          "severity": "low",
+          "where": "prototype, '## The detour: /handoff out and back', lines 183-191 (the five-step 'Matt's ordered checklist for a phase boundary')",
+          "problem": "Possible Divergent Change / Duplicated Code. The section teaches the prototype detour and also gives a second full tutorial on the five Phase-boundary questions. The main flow ('Phase boundaries: five choices, in order', lines 131-143) and The context window ('At a Phase boundary: Matt's order') already teach that list. The duplicate also drifted, as the Smart-zone finding above shows.",
+          "evidence": "06-prototype.md:185-189 vs 12-main-flow.md:137-141: the same five steps in the same order. Prototype is at 2,970 words.",
+          "fix": "Keep only the rule the detour needs ('`/handoff` only when something must travel ... the prototype is a side task forked off mid-grilling') and the one-line Carry-on contrast, and link the full list to [The main flow](/learn/main-flow). That frees about 90 words.",
+          "id": "prototype-detour-two-jobs"
+        },
+        {
+          "slug": "prototype",
+          "kind": "standard",
+          "severity": "low",
+          "where": "prototype line 183 ('a phase boundary'); spec-and-issues line 186 ('the nearest phase boundary') and line 412 ('at a phase boundary')",
+          "problem": "GLOSSARY.md defines **Phase** as a course term, and the main flow writes it with a capital throughout ('Phase boundary', 'mid-Phase'). Two Part 2 Lessons write it in lower case in their own prose.",
+          "evidence": "GLOSSARY.md '**Phase**: A chunk of work inside one agent session'. docs/authoring-lessons.md: 'Use the words in GLOSSARY.md exactly'. 12-main-flow.md:15, 98, 133, 137 use 'Phase'.",
+          "fix": "Write 'Phase boundary' at 06:183, 07:186 and 07:412. Agent dialogue in Scenes can stay as it is.",
+          "id": "phase-capitalisation"
+        },
+        {
+          "slug": "grilling",
+          "kind": "standard",
+          "severity": "low",
+          "where": "grilling line 58, implement (13 uses, e.g. lines 44, 129), code-review (14 uses, e.g. line 150) write 'sub-agent'; prototype line 188 and main-flow (16 uses, e.g. line 40) write 'subagent'.",
+          "problem": "The Part spells one term two ways, Lesson to Lesson. GLOSSARY.md's Phase entry spells it 'subagent'.",
+          "evidence": "GLOSSARY.md Phase: 'pass the next task to a subagent'. Counts from grep -o -i 'sub-\\?agents\\?' over the nine files.",
+          "fix": "Use 'subagent' in grilling, implement and code-review, to match the glossary and the main flow.",
+          "id": "subagent-spelling"
+        },
+        {
+          "slug": "main-flow",
+          "kind": "standard",
+          "severity": "low",
+          "where": "main-flow, 'The map, in order', line 43: 'On the short road no spec has, so answer when `/tdd` asks which seams to test'",
+          "problem": "The clause 'no spec has' drops its verb, so a cold reader stalls on the sentence that tells them what to do about seams on the short road.",
+          "evidence": "Line 43 as quoted. The sentence before it, '`/to-spec` checks them with you.', is what 'has' is meant to refer back to.",
+          "fix": "'On the short road there's no spec to have checked them, so answer when `/tdd` asks which seams to test; agreed nowhere, `/implement` may just write the code.' (+4 words.)",
+          "id": "main-flow-short-road-sentence"
+        }
+      ],
+      "summary": "13 findings (7 medium, 6 low). Worst: Implement and The main flow tell you to run the full-name review in the session that did the building, and say the fresh sub-agents make that safe, but Code review (and Matt's docs) say to review from a clean session and its Final test marks the build-session review as the mistake. No highs: all 9 Lessons pass the local lint, and every quote and Site story claim I checked is backed by a transcript, the repo or a PR."
+    },
+    {
+      "part": 2,
+      "axis": "spec",
+      "summary": "8 findings (4 medium, 4 low). The worst is in grilling: two Final test options that were already published got new meanings but kept their frozen ids, so Answers already stored under option c now point at different text. The other mediums: Implement and The main flow tell readers to review in the build session, which Code review says not to do; Implement and The main flow say /pr wrote PR #9's body, which the brief forbids and PR + ship hedges; and most Part 2 Lessons never link the Part 1 Lessons they build on. All 9 files pass the local lint, the brief items for every Lesson are present, and every goal has at least one Final test question.",
+      "findings": [
+        {
+          "slug": "grilling",
+          "kind": "wrong",
+          "severity": "medium",
+          "where": "grilling, Final test: scenario-ungrillable option c (content/lessons/04-grilling.md:351) and spot-cleared-early option c (:407)",
+          "problem": "Two options that were already published were swapped for different misconceptions, but they kept the same frozen question ids and the same position (c). Answers already stored for option c, and the crowd stats built from them, now point at text the Visitor never chose. The spot-cleared-early option now says the opposite of what it used to.",
+          "evidence": "Grilling is live on main (7934668, \"Grilling rewritten (#10)\"). Shipped option c in scenario-ungrillable: \"Keep describing both layouts in more detail until one of them feels right.\" It now reads: \"Leave it open for now and let `/to-spec` settle the layout later.\" Shipped option c in spot-cleared-early: \"The grilling session was too short to be useful.\" It now reads: \"Forty-five minutes of answers was too much for `/to-spec` to fit in one spec.\" The changes came in 3376e95 and e2139e6. e2139e6's message checked only \"question ids, option order and [x] positions\". Contract v1: \"after publishing you may reword an option, but never reorder or remove options; changing the meaning means a new id.\" briefs/grilling.json: \"rewording only; never add, remove or reorder questions or options\". Ticket 02: \"Question ids and option order are frozen from here.\" GLOSSARY, Answer: \"Crowd stats count only each Visitor's first Answer to a question.\"",
+          "fix": "Give both options their published meaning back, reworded to deal with the quiz checker's concern. scenario-ungrillable c: \"Ask the agent for a fuller written description of each layout, then choose.\" (still 'describe it more'). spot-cleared-early c: \"Forty-five minutes was too short to settle a feature this big.\" (still 'too short'), with feedback saying the decisions were made and /clear emptied them. If the new distractors are really wanted, they need new question ids, which the contract requires.",
+          "id": "grilling-frozen-options-changed-meaning"
+        },
+        {
+          "slug": "implement",
+          "kind": "wrong",
+          "severity": "medium",
+          "where": "implement, 'A session, step by step' Scene caption (09-implement.md:118-119), the line after it (:125), 'How Matt and others use it' (:217), Try step 7 (:264), Cheat sheet (:307); main-flow, 'The map, in order' (12-main-flow.md:45)",
+          "problem": "Implement and The main flow tell the reader to run `/mattpocock-skills:code-review` straight after /implement's commit, in the same build session, and say the fresh sub-agents are enough. Code review says the opposite: the agent that did the building writes the reviewers' briefs, so clear first. Both cite the same moment in Matt's April workshop. A reader following Implement does exactly what Code review's Final test marks wrong.",
+          "evidence": "Implement :118: \"Now the commit exists, so you run the review yourself by its full name. Its two axes run in fresh sub-agents, away from this session's crowded context window.\" Implement :217: \"...a review in the same session happens in the dumb zone, which code-review's fresh sub-agents avoid.\" Implement cheat sheet: \"After the run's commit, `/mattpocock-skills:code-review main`\". Main flow :45: \"let `/implement` commit, then type `/mattpocock-skills:code-review`\". Code review :214: \"Review from a clean session... If it did the building, it brings the build's assumptions. Review after `/clear`\". Code review :229: \"Run `/mattpocock-skills:code-review` yourself afterwards, from a clean session.\" Code review :250: \"...works in the dumb zone... so clear first.\" Code review's sequence-review-ticket says reviewing in the long build session \"keeps its assumptions in the room\". Ticket 04: \"The capstone matches the other Lessons on every fork and context rule\". Spec, Testing Decisions: \"no contradictions between Lessons\".",
+          "fix": "Put `/clear` in front of the full-name review in Implement's Scene caption, at :125, in Try step 7 and in the cheat sheet (\"After the run's commit, `/clear`, then `/mattpocock-skills:code-review main`\"), and in main-flow :45 (\"let `/implement` commit, `/clear`, then type ...\"). Reword implement :217 to \"so clear before you review\". Inline code doesn't count toward the word budget, so this costs only a word or two in Lessons already near 3,000 words.",
+          "id": "review-same-session-vs-clean-session"
+        },
+        {
+          "slug": "implement",
+          "kind": "wrong",
+          "severity": "medium",
+          "where": "implement Site story (09-implement.md:297); main-flow Site story (12-main-flow.md:320)",
+          "problem": "Both Site stories say flatly that `/pr` wrote PR #9's body. PR #9's body doesn't follow the /pr template. The brief said not to make this claim, and PR + ship says the evidence can't settle it, so the Lessons contradict each other.",
+          "evidence": "Implement :297: \"...and `/pr` wrote its description.\" Main flow :320: \"`/pr` wrote the description, calling the change a two-way door\". briefs/pr-and-ship.json: \"Be careful: PR #9's body does not match the /pr template; don't claim /pr wrote it.\" `gh pr view 9`: the headings are \"What changes\", \"Evidence\", \"How to check it\" and \"Door\", with no Summary visual, no Before/After and no Blast Radius. PR + ship :311: \"The PRs don't show whether the agent loaded `/pr` for #9.\" PR + ship's fixer declined to fix this only because these lines were outside its one file (\"Pass the suggested rewording of those two lines to their fixers\"), so the reason doesn't touch the substance. e2139e6 didn't change implement at all. The only support is the old journal line (d21fc2c 11-main-flow.md:126), which the PR itself contradicts. Spec: Site story \"Nothing is invented.\"",
+          "fix": "Implement :297: \"...and the agent wrote its description, which doesn't follow the `/pr` template (see [PR + ship](/learn/pr-and-ship)).\" Main flow :320: \"One fix-up agent fixed them, and the agent wrote the description, calling the change a two-way door: content and styling only, easy to revert.\" The word count stays about the same.",
+          "id": "pr-wrote-pr9-claim"
+        },
+        {
+          "slug": "grilling",
+          "kind": "missing",
+          "severity": "medium",
+          "where": "grilling (04-grilling.md:96, 110, 186, 190); domain-modeling :55, :204; prototype :155; spec-and-issues :24, :184; implement :28, :36; code-review :29",
+          "problem": "Part 2 Lessons teach the Smart zone, /clear, /compact and user-invoked vs model-invoked Skills, but only The main flow links The context window, and Grilling, TDD, Implement and Code review never link Skills. Grilling links no Part 1 Lesson at all. The pilot's links to new Slugs were promised for a later commit and never added. Two Lessons write \"(Part 4)\" where they should link a title.",
+          "evidence": "Spec, user story 24: \"I want each Lesson to cross-link the Lessons it builds on, so that I can go back when something is unfamiliar.\" Spec, Further Notes: \"The renumbering and links to new Slugs come in later commits.\" Grep of /learn/ links: grilling links only domain-modeling, prototype, spec-and-issues, main-flow and models-effort-ultracode. It mentions `/implement` (:190), `/wayfinder` (:110), the Smart zone and `/context` (:186) and user-invoked Skills (:96) without linking them. /learn/context-window appears only in main-flow. domain-modeling :204 and spec-and-issues :184 say \"`/wayfinder` (Part 4)\". Writing guide: \"Link to another Lesson by its title\".",
+          "fix": "Turn words already in the text into links, which adds no words. Grilling: link \"context window\" at :186 to The context window, \"user-invoked Skills\" at :96 to Skills, `/implement` at :190 to Implement, and `/wayfinder` at :110 to Wayfinder. Replace \"(Part 4)\" with \"([Wayfinder](/learn/wayfinder))\" at domain-modeling :204 and spec-and-issues :184. Link the first mention of the Smart zone or context window to The context window in domain-modeling, prototype, spec-and-issues, implement and code-review.",
+          "id": "part2-missing-backlinks"
+        },
+        {
+          "slug": "prototype",
+          "kind": "scope-creep",
+          "severity": "low",
+          "where": "prototype, 'The detour: /handoff out and back', the five-step list and limit (06-prototype.md:183-191), Checkpoint compact-or-handoff (:193-203), Final test spot-handoff-misuse (:383-393)",
+          "problem": "Prototype teaches the whole five-question Phase-boundary tree a third time, and spends a Checkpoint and a Final test question on it, without linking the Lesson that owns it. Prototype is at 2,970 of 3,000 words.",
+          "evidence": "Writing guide course table: context-window teaches \"phase boundaries, `/handoff`\". Prototype teaches \"`/prototype` (logic and UI branches), `/handoff` out and back\". Context window's goal 2 is already \"say when `/handoff` is the right move\". The main flow's brief owns \"phase boundaries\" for the capstone. Prototype has no /learn/context-window link.",
+          "fix": "Replace the numbered list at :183-191 with one sentence and a link: \"`/handoff` buys a file that travels (another folder, tool or colleague, or a side task forked off mid-work); for every other boundary see [The context window](/learn/context-window).\" Keep either spot-handoff-misuse or the Checkpoint, not both. That frees about 120 words.",
+          "id": "prototype-reteaches-phase-tree"
+        },
+        {
+          "slug": "tdd",
+          "kind": "missing",
+          "severity": "low",
+          "where": "tdd, 'Common mistakes' (08-tdd.md:269-272)",
+          "problem": "This is the only Part 2 Common mistakes list with no line pointing back to the mistakes the body teaches. It has two bullets and leaves out green-first tests, batched tests, faking your own modules and tautological expected values.",
+          "evidence": "Spec, shape item 8: \"Common mistakes.\" Writing guide: \"Common mistakes shouldn't restate a whole earlier section; point back to it in one line.\" The other eight Part 2 Lessons each end their list with a point-back bullet (e.g. code-review :316, main-flow :299).",
+          "fix": "Add one bullet: \"**The rest are above:** a test green on its first run, a batch of tests before any code, fakes of your own modules, expected values copied from the code.\" That's about 25 words, and TDD is at 2,866.",
+          "id": "tdd-common-mistakes-thin"
+        },
+        {
+          "slug": "spec-and-issues",
+          "kind": "wrong",
+          "severity": "low",
+          "where": "spec-and-issues, 'The idea: a destination and a route' (07-spec-and-issues.md:48)",
+          "problem": "The parenthetical suggests setup writes its pointer to AGENTS.md whenever the repo has that file. Setup uses AGENTS.md only when there is no CLAUDE.md, and asks you which file to create if neither exists.",
+          "evidence": "Lesson: \"points to it from `CLAUDE.md`... (or from `AGENTS.md`, if the repo already has that).\" setup-matt-pocock-skills SKILL.md step 4: \"If `CLAUDE.md` exists, edit it. Else if `AGENTS.md` exists, edit it. If neither exists, ask the user which one to create\".",
+          "fix": "\"(or from `AGENTS.md` if that's the only one the repo has; with neither, it asks which to create)\".",
+          "id": "setup-agents-md-rule"
+        },
+        {
+          "slug": "spec-and-issues",
+          "kind": "missing",
+          "severity": "low",
+          "where": "spec-and-issues, Checkpoint first-tracer-bullet (07-spec-and-issues.md:135), which comes after '### The exception: wide refactors' (:127-133)",
+          "problem": "The tracer-bullet Checkpoint comes after the expand–contract subsection, so the last thing the reader saw before it is a different idea.",
+          "evidence": "Spec, shape item 11: \"3–5 Checkpoints placed right after the sections they check.\" Writing guide: \"Place each Checkpoint right after the section it checks.\"",
+          "fix": "Move the first-tracer-bullet fence to just before \"### The exception: wide refactors\", straight after the publishing paragraph at :125.",
+          "id": "tracer-checkpoint-after-refactor"
+        }
+      ]
+    },
+    {
+      "part": 3,
+      "axis": "standards",
+      "summary": "I found 9 findings in Part 3: 1 medium and 8 low. The worst is the medium: in diagnosing-bugs, the pause-first Checkpoint uses \"permission prompt\" with no gloss, which is the same cold-reader gap the triage fixer closed in the who-starts-triage Checkpoint. Everything else I checked holds up. The local lint passes on all three Lessons. Every quote is under 15 words and matches its source (README, SKILL.md, AI Hero docs, the triage video transcript, Eberhardt's blog). The longest run copied from any SKILL.md is 11 words. Every Site story claim matches the repo (old Lessons at d21fc2c, ticket 02's and 03's first Status lines, PR #1 and PR #2 bodies, the wizard script never committed). Every /learn link points at the right Lesson. Skills links are pinned, apart from one URL in a Try prompt. Commands are one per line. No Lesson contradicts the course facts or another Lesson in this Part.",
+      "findings": [
+        {
+          "slug": "diagnosing-bugs",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "content/lessons/13-diagnosing-bugs.md, Steering it, and when to reach for it, Checkpoint pause-first option c, line 187: \"Choose No at its first permission prompt for an edit.\"",
+          "problem": "A cold reader meets 'permission prompt' here with no explanation. It is the term's only use in this Lesson. Try step 1 (line 221) describes the prompt in plain words, but only 34 lines later. The writing guide says every Lesson must stand alone and every term needs a clause at first use. The triage Lesson had this exact gap: its fixer reworded the Checkpoint option and glossed the term in Try step 8. So the two Lessons in this Part now handle it differently.",
+          "evidence": "grep -n 'permission prompt' 13-diagnosing-bugs.md finds only line 187. writing-guide.md:109: 'Every Lesson must stand alone for a cold reader... any mode you mention at first use, in a clause'. lean-fix.json, triage: \"'permission prompt' never explained: in the who-starts-triage Checkpoint, option c now avoids the term\"; 14-triage.md:314 now reads 'At a permission prompt (Claude Code asking before it acts)'.",
+          "fix": "Line 187: '- [ ] Choose No when it first asks permission to edit a file.' At 55 characters, option b (53) is still not the longest. The feedback can stay as it is.",
+          "id": "permission-prompt-unglossed"
+        },
+        {
+          "slug": "diagnosing-bugs",
+          "kind": "standard",
+          "severity": "low",
+          "where": "All three Lessons: 13-diagnosing-bugs.md (2,977 prose words), 14-triage.md (2,908), 15-wizard.md (2,914), measured with .scratch/course-rewrite/tools/lint-lesson.mjs",
+          "problem": "All three Lessons are past the writing guide's word aim, and diagnosing-bugs is 23 words under the lint's hard ceiling. Any future fix that adds a clause will break the lint.",
+          "evidence": "writing-guide.md:122: 'Word budget: aim for 2,300–2,800 words (lint range 1,800–3,000) to leave margin'. Lint output: proseWords 2977 / 2908 / 2914.",
+          "fix": "Trim each Lesson to 2,800 words or fewer. In diagnosing-bugs, moving out or cutting the Try block's Bonus (lines 263–278, about 170 words) does most of it (see try-bonus-two-jobs). In triage, the bulk-pass bullet (line 274) repeats Common mistakes (line 333) and spot-bulk-listing, so cut it to one line. In wizard, tighten 'Where it fits' (line 207) by about 40 words and trim the 'Running it' bullets.",
+          "id": "word-budget-over-aim"
+        },
+        {
+          "slug": "diagnosing-bugs",
+          "kind": "standard",
+          "severity": "low",
+          "where": "13-diagnosing-bugs.md, Try it yourself, step 2, line 229 ('If not, type `/exit`'), and 14-triage.md, Try it yourself, step 2, line 289 (same wording)",
+          "problem": "Both steps have the reader type a slash and a word to check the menu. If the Skill is missing, they say to type `/exit` without first deleting what is already in the box, so a literal reader ends up sending '/diagnosing/exit'. The Wizard Lesson's version of the same step was fixed to say 'delete it' first, so the three Lessons in this Part now give different instructions.",
+          "evidence": "15-wizard.md:238: 'If not, delete it, type `/exit`, press Enter, install Matt's Skills'. 13-diagnosing-bugs.md:229 and 14-triage.md:289 tell you to delete only on the success branch.",
+          "fix": "In both Lessons, change the failure branch to: 'If not, delete it, type `/exit` and press Enter, install Matt's Skills, then run `claude` again:'.",
+          "id": "try-step2-delete-before-exit"
+        },
+        {
+          "slug": "wizard",
+          "kind": "standard",
+          "severity": "low",
+          "where": "15-wizard.md, Try it yourself, step 4 prompt, line 249: '1. Open https://github.com/mattpocock/skills and ask me how many stars it shows'",
+          "problem": "This is the only github.com/mattpocock/skills link in Part 3 that isn't pinned to commit 49dd158. The review decision says all such links are pinned.",
+          "evidence": "grep for github.com/mattpocock/skills links without 49dd158 (issues and discussions excluded) finds only 15-wizard.md:249. Decision: 'github.com/mattpocock/skills links pinned to commit 49dd158d1076134a641b33efb035946536778336'.",
+          "fix": "Use https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33efb035946536778336. That page shows the same star count in the repo header, so the exercise still works.",
+          "id": "unpinned-skills-repo-link"
+        },
+        {
+          "slug": "diagnosing-bugs",
+          "kind": "standard",
+          "severity": "low",
+          "where": "13-diagnosing-bugs.md, Why it matters, line 22: 'a comment from a Visitor (anyone reading this site) wouldn't post'; Site story, line 296: 'A comment from a preview copy of the site seemed to appear on the real one'",
+          "problem": "Both sentences mean this site's Comments, but they use the lower-case word. The authoring docs say to use GLOSSARY terms exactly. The triage Lesson keeps 'Comments' for Visitors' notes on Lessons and 'comments' for issue comments, so the two Lessons in this Part disagree.",
+          "evidence": "GLOSSARY.md: 'Comment: A note a Visitor leaves on one Lesson.' docs/authoring-lessons.md: 'Use the words in GLOSSARY.md exactly'. 14-triage.md:22: 'Visitors ... leave Comments beside each Lesson ... separate from the Visitors' Comments on Lessons.'",
+          "fix": "Line 22: 'a Comment from a Visitor (anyone reading this site) wouldn't post'. Line 296: 'A Comment from a preview copy of the site seemed to appear on the real one'.",
+          "id": "comment-glossary-casing"
+        },
+        {
+          "slug": "diagnosing-bugs",
+          "kind": "standard",
+          "severity": "low",
+          "where": "13-diagnosing-bugs.md: 'v1' at lines 263, 288 (twice) and 294, and 'The AI Hero docs page' at line 213. 15-wizard.md, How Matt and others use it: '(issue #1310, October 2026, open)' at line 222, and 'issue #954 ... The maintainer suggested' at line 223",
+          "problem": "A cold reader meets these terms with no explanation. The triage fixer replaced 'v1' with 'the first version' for the same reason, but diagnosing-bugs still says 'v1'. 'AI Hero' is never introduced as Matt's site. The Wizard Lesson never says what a GitHub issue or a maintainer is, though both other Lessons in this Part do.",
+          "evidence": "writing-guide.md:36: 'Explain every term at or before first use, in a clause'. lean-fix.json, triage: \"The Site story now says 'the first version's tickets' instead of 'the v1 tickets'\". 14-triage.md:41 explains 'maintainer'; 13-diagnosing-bugs.md:211 explains 'issue tracker'.",
+          "fix": "diagnosing-bugs: change 'v1' to 'the first version' (line 263: 'accepted for the first version'; line 288: 'while building the first version of this site; it didn't need the full Skill'; line 294: 'accepted it for the first version'), and line 213: 'Matt's AI Hero docs page'. wizard line 222: '(issue #1310, a bug report on his GitHub page, October 2026, open)'; line 223: 'The maintainer (the person who runs the project) suggested'.",
+          "id": "unglossed-minor-terms"
+        },
+        {
+          "slug": "diagnosing-bugs",
+          "kind": "smell",
+          "severity": "low",
+          "where": "13-diagnosing-bugs.md, Try it yourself, lines 263–278: '**Bonus: a real report from this site.** ... With Git and Node.js 24 (the version its README asks for), run these one at a time'",
+          "problem": "A judgement call (possible Divergent Change). The try block holds a second, separate exercise after its own 'It's working if' checklist, with a second working-if line at 278. That exercise needs more than the writing guide allows a Try to assume: Git, Node.js 24, npm install and possibly the database settings in the README. It gives no install pointer for Node.js. It also takes about 170 words from a Lesson that is 23 words under the lint ceiling.",
+          "evidence": "writing-guide.md:50: 'Assume only: Claude Code installed, Matt's Skills installed, a terminal. Give the install command where needed.' The Lesson's own lines 252 and 278 hold two 'It's working if' checklists. Lint: proseWords 2977.",
+          "fix": "Either drop the Bonus, since the /learn/nope quirk already appears in the Site story row at line 294, or shorten it to one sentence pointing at the ticket with a link to Node.js's download page. That keeps the try block to one exercise and one checklist and frees most of the word margin.",
+          "id": "try-bonus-two-jobs"
+        },
+        {
+          "slug": "wizard",
+          "kind": "smell",
+          "severity": "low",
+          "where": "13-diagnosing-bugs.md, Site story table row 1, line 292 ('My setup wizard ... raced through every question | I'd run it from the Claude chat with `!`'); 15-wizard.md lines 156 ('as this site's author found out'), 303 ('My first run failed, harmlessly. I ran it inside the Claude chat with `!`...') and 390 ('That's how this site's author first ran his.')",
+          "problem": "A judgement call (possible Duplicated Code). The same story of running the setup wizard from the chat with `!` is told four times across two Lessons in this Part. In diagnosing-bugs it is a wizard story rather than a debugging one, and it is the row least tied to the Skill being taught.",
+          "evidence": "Quoted lines above. Both Lessons draw it from the same old journal text (d21fc2c: 04-wizard.md item 4 and 09-diagnosing-bugs.md table row 1).",
+          "fix": "In diagnosing-bugs, drop row 1 of the Site story table, or swap it for a row pointing to the Wizard Lesson ('see [Wizard](/learn/wizard)'). Keep the full story in the Wizard Lesson's Site story, and keep its one-clause references at lines 156 and 390.",
+          "id": "bang-anecdote-duplicated"
+        },
+        {
+          "slug": "wizard",
+          "kind": "smell",
+          "severity": "low",
+          "where": "15-wizard.md, Checkpoint which-belongs-in-wizard, option a and its feedback, lines 52–53 ('Creating the alerts database with a command-line tool you're signed in to.' / 'The agent can run that tool with your login, so it creates the database itself'); Final test scenario-agent-can-do, lines 339–342",
+          "problem": "A judgement call (possible Duplicated Code). The Final test question repeats the Checkpoint's distractor a in new clothes: a tool you're signed in to can create the thing, so the agent should do it and drop the stage. A reader who saw the Checkpoint's feedback can answer the Final test question from recall rather than by applying the rule to a new case.",
+          "evidence": "writing-guide.md:118–119: 'Questions test transfer, not recognition' and 'no Checkpoint duplicates a Final test question'. The two stems share the same discriminating fact: 'a command-line tool you're signed in to' (line 52) and 'a hosting company's command-line tool ... The agent used it this morning' (line 340).",
+          "fix": "Replace Checkpoint option a with a different agent-doable job that uses no signed-in tool, such as 'Adding the new key's name to `.env.example`.' with feedback 'Editing project files is the agent's job.' Leave scenario-agent-can-do as the only question built on a signed-in tool. The Checkpoint id can stay, because the meaning is unchanged.",
+          "id": "checkpoint-overlaps-final-test"
+        }
+      ]
+    },
+    {
+      "part": 3,
+      "axis": "spec",
+      "findings": [
+        {
+          "slug": "diagnosing-bugs",
+          "kind": "missing",
+          "severity": "low",
+          "where": "diagnosing-bugs, How Matt and others use it, line 206: \"First he checked his context (the agent's working memory for the conversation, measured in tokens\" (and line 209 `/compact`, line 188 \"auto mode\"); triage, A session, step by step, step 1, line 126: \"with help from `GLOSSARY.md` (the project's word list) and ADRs\" and step 4, line 129: \"using the grilling and domain-modeling Skills\"; wizard, Why it matters, line 28: \"Everything you paste joins the model's context\"",
+          "problem": "All three Lessons use ideas that another Lesson owns, but never link to it. diagnosing-bugs talks about context, tokens, `/compact` and auto mode, yet links neither The context window nor How coding agents work. triage relies on GLOSSARY.md, ADRs and the domain-modeling Skill but links only Grilling, not Domain modeling. wizard's main safety argument rests on the model's context, with no link to The context window. Each term gets a short clause, so a cold reader can follow, but there's no way back to the Lesson that teaches it properly.",
+          "evidence": "Spec user story 24: \"As a Visitor, I want each Lesson to cross-link the Lessons it builds on, so that I can go back when something is unfamiliar.\" The `/learn/` links in the three files point only to architecture, diagnosing-bugs, domain-modeling (from wizard only), grilling, implement, main-flow, prototype, retro, skills, spec-and-issues, start-here, tdd and triage. None points to context-window or how-agents-work, and triage has no domain-modeling link.",
+          "fix": "Add one link inside the existing clause, each time without adding words to prose. diagnosing-bugs line 206: \"...measured in tokens: small chunks of text; see [The context window](/learn/context-window))\". diagnosing-bugs line 208 or the pause-first feedback: link auto mode to [How coding agents work](/learn/how-agents-work). triage line 129: \"...writes settled terms into `GLOSSARY.md` as you go. See [Grilling](/learn/grilling) and [Domain modeling](/learn/domain-modeling).\" wizard line 28: \"...joins the model's context ([The context window](/learn/context-window) covers it)\".",
+          "id": "missing-cross-links-part3"
+        },
+        {
+          "slug": "triage",
+          "kind": "missing",
+          "severity": "low",
+          "where": "triage, Try it yourself, step 6, line 307: \"Type `/clear`. It empties the conversation but keeps the files, so the agent meets the reports cold.\"",
+          "problem": "This is the only place triage uses `/clear`, and it never says it's a Built-in command rather than a Skill. Every other slash name in the Lesson is a Skill (`/triage`, `/setup-matt-pocock-skills`, `/to-tickets`, `/grill-with-docs`, `/implement`), so a cold reader will take `/clear` for one more Skill. diagnosing-bugs gets this right at line 197: \"`/clear`, the Built-in command (one that comes with Claude Code)\".",
+          "evidence": "Spec user story 23: \"As a Visitor, I want Built-in commands kept separate from Skills, so that the vocabulary isn't confusing.\" Writing guide facts: \"Both are Built-in commands, not Skills.\"",
+          "fix": "Line 307: \"Type `/clear`, a Built-in command (one that comes with Claude Code, not a Skill). It empties the conversation but keeps the files, so the agent meets the reports cold.\"",
+          "id": "triage-clear-not-labelled-builtin"
+        },
+        {
+          "slug": "triage",
+          "kind": "scope-creep",
+          "severity": "low",
+          "where": "triage, site-story block, line 338: \"Not used on this site yet. Every ticket here came from my own planning, never from someone else's report: the first version's tickets started as `ready-for-agent`, apart from one `ready-for-human` step only I could do (connecting GitHub, Vercel and Neon). The repo is ready, with the five default labels in `docs/agents/triage-labels.md`; a Visitor's bug report would be the first thing to triage.\"",
+          "problem": "The brief asks for one honest line, but the box runs to three sentences (about 65 words) and adds a history of the first version's ticket statuses. Those claims hold: `git show 4f849b9` has 01 and 03–06 as `Status: ready-for-agent` and 02 as `ready-for-human`. Still, it's more than asked for in a box that's meant to say the Skill wasn't used.",
+          "evidence": "Brief triage.json: \"Site story: not used on this site yet; say so in one honest line (the repo is set up for it via docs/agents/triage-labels.md; incoming Visitor reports would be the trigger).\" Writing guide: \"New Slugs: include a box only with real material; otherwise omit it or write \\\"Not used on this site yet\\\" plus one honest line.\"",
+          "fix": "Trim to: \"Not used on this site yet. Every ticket here came from my own planning, but the repo is set up for triage (the five default labels are in `docs/agents/triage-labels.md`), and a Visitor's bug report would be the first thing to triage.\"",
+          "id": "triage-site-story-length"
+        },
+        {
+          "slug": "triage",
+          "kind": "wrong",
+          "severity": "low",
+          "where": "triage, A session, step by step, line 132: \"the questions must be specific enough to answer, never \\\"please provide more info\\\". ==Every comment or issue triage posts starts with a disclaimer== line, `> *This was generated by AI during triage.*`\"",
+          "problem": "Line 132 quotes triage SKILL.md twice: the stock phrase \"please provide more info\", and the disclaimer line, which the Lesson repeats at line 179. The disclaimer has to be quoted, since it's the literal text the Skill posts and the reader needs to recognise it. That makes the four-word phrase a second quotation from the same source. It's far too short to raise a real copyright concern, but it breaks the spec's one-quote-per-source rule, and paraphrasing it costs nothing.",
+          "evidence": "Spec, Implementation Decisions, Copyright: \"Lessons are in my own words, with quotes under 15 words and at most one per source.\" triage SKILL.md: \"Questions must be specific and actionable, not \\\"please provide more info\\\".\" and the disclaimer block \"> *This was generated by AI during triage.*\".",
+          "fix": "Line 132: \"...and the questions must be specific enough to answer, never a vague request for more information.\" Keep the disclaimer quote as the one quotation from triage SKILL.md.",
+          "id": "triage-two-quotes-one-source"
+        }
+      ],
+      "summary": "I found 4 issues, all low. The worst: the three Part 3 Lessons don't link the Lessons they build on (user story 24). diagnosing-bugs uses context, tokens, `/compact` and auto mode without linking The context window or How coding agents work. triage uses GLOSSARY.md and ADRs without linking Domain modeling. wizard's secrets argument rests on the model's context with no context-window link. The other three: triage never says `/clear` is a Built-in command (user story 23); triage's Site story runs to three sentences where the brief asks for one line; and triage quotes its SKILL.md twice. Everything else in the spec, the ticket and the briefs is covered, and covered correctly. All three files pass the lint. Every brief item appears and matches its 1.3.1 SKILL.md. The Site story claims match the repo (the first-version ticket statuses, the PR #1 / `vercel-dev` commit, the wizard script never committed). The triage photo is 2400px and credited. Renames keep their history. User-/model-invoked labels and the Lesson-to-Skill ownership match the writing guide. I found no scope creep beyond the Site story length."
+    },
+    {
+      "part": 4,
+      "axis": "standards",
+      "summary": "10 findings (2 medium, 8 low). The worst: the architecture Lesson's \"seam\" plus its one-adapter rule clashes with the \"seam\" readers learned in TDD (agree a seam for every test, even a one-adapter one like readingTime), and nothing reconciles the two. Lint is clean on all four Lessons. Every checked quote and Site story claim matched its source: PR #7, the d21fc2c journals, the first spec, CLAUDE.md, no CI, the issue-tracker template, and transcripts 3MP8D-mdheA, v4F1gFy-hqg, BsJGo1wFTvQ, 9tmsq-Gvx6g, -QFHIoCo-Ko, F3lL98Pj90o, UzMNBN6xLLA, s5T5oQJcJ6U and LlgiOCmFG_w (ar, paraphrase only), plus the AI Hero /retro quote. Every /learn link points at the Lesson that covers its topic. All mattpocock/skills blob links are pinned to 49dd158. There is no &&, no scene photos and no \"Lesson <n>\".",
+      "findings": [
+        {
+          "slug": "architecture",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "architecture, \"The words\" line 36 (\"A **seam** ... is a place where you can change behaviour without editing the code there\") and \"Two tests for any design\" line 61 (\"Don't cut a seam until something actually varies across it\"); Site story line 248 ('calls the Lessons module \"the one seam\"')",
+          "problem": "This contradicts another Lesson. TDD (and diagnosing-bugs, main-flow) teach that a seam is the place you test at, and that every test needs an agreed seam, even one with a single adapter. The architecture Lesson redefines it as a swap point and says a one-adapter seam is hypothetical and shouldn't be cut. A reader who did TDD's Try (\"test through readingTime itself\") now reads that as a seam not to cut, and nothing in the architecture Lesson reconciles the two. The Lesson also mixes the meanings itself: its flow Scene treats lessonsFrom(dir) as the seam, separate from the Lessons module, while its Site story calls the module 'the one seam'.",
+          "evidence": "08-tdd.md:81 \"The Skill calls the place you test at a **seam**: the public boundary where you can watch behaviour from outside\"; 08-tdd.md:83 \"no test is written at a seam you haven't agreed\"; 08-tdd.md:252 \"test through readingTime itself\"; 13-diagnosing-bugs.md:47 \"a seam: a place where a test can plug in and drive the real code\"; 12-main-flow.md:43 \"agreed seams (the places in the code tests check from)\". codebase-design SKILL.md:64 reconciles them (\"Callers and tests cross the same seam\"), and :65 limits the adapter rule to introducing a seam. Architecture flow Scene lines 73-75 list 'lessons | Lessons module' and 'seam | lessonsFrom(dir)' as separate nodes.",
+          "fix": "Add one sentence after line 36: \"Callers and tests cross the same seam, the module's interface, which is why [TDD](/learn/tdd) calls the place a test plugs in a seam. The two-adapter rule below is about adding a new swap point, like a fake database, not about where tests go.\" In the Site story, add \"(the place its tests go through)\" after \"the one seam\".",
+          "id": "seam-meaning-clashes-with-tdd"
+        },
+        {
+          "slug": "models-effort-ultracode",
+          "kind": "standard",
+          "severity": "medium",
+          "where": "models-effort-ultracode, Checkpoint ultracode-one-task (lines 183-193) vs Final test scenario-migration-day (lines 341-351)",
+          "problem": "The Checkpoint and the Final test question are mirror images of the same choice: keyword for one task versus `/effort ultracode` for the session. Their option sets are near-identical. The Checkpoint's feedback on option b states the Final test's answer in full, and migration-day's option b is the Checkpoint's right answer. A reader passes migration-day by recalling the Checkpoint, not by transfer. The r1 quiz check raised this as a low, and it was never fixed or declined.",
+          "evidence": "Line 188, Checkpoint option b feedback: \"That works, but it changes the session: Claude keeps planning workflows for later tasks until you turn it off.\" Line 349, migration-day right answer: \"Type `/effort ultracode`.\" Line 345, migration-day option b: \"Start the first prompt with `ultracode`.\" with \"The keyword opts in that one task.\" writing-guide.md:60 \"Don't reuse a Checkpoint as a Final test question\"; :119 \"no Checkpoint duplicates a Final test question\".",
+          "fix": "Keep migration-day. Replace the Checkpoint with a new id on a facet no Final test question covers, for example: \"A workflow's token count is climbing. In `/workflows`, what do you select before pressing x?\" (right: the run itself, not one agent; line 167). Another option: what ultracode skips in auto mode (the first-workflow approval and the Large workflow warning).",
+          "id": "ultracode-checkpoint-duplicates-test"
+        },
+        {
+          "slug": "retro",
+          "kind": "standard",
+          "severity": "low",
+          "where": "all four Lessons: retro 2,899 words, architecture 2,847, wayfinder 2,839, models-effort-ultracode 2,823 (local lint-lesson.mjs counts)",
+          "problem": "All four Lessons are within the lint's 3,000-word limit but above the writing guide's 2,300–2,800 aim, which exists to leave margin. Retro has 101 words of headroom left.",
+          "evidence": "writing-guide.md:122 \"Word budget: aim for 2,300–2,800 words (lint range 1,800–3,000) to leave margin\".",
+          "fix": "Trim each to 2,800 or fewer. Retro is easiest: cut Common mistakes bullets that restate sections, such as \"Running `/init`\" and \"Typing plain `/code-review`\", and the second Other developers bullet.",
+          "id": "word-budget-over-aim"
+        },
+        {
+          "slug": "models-effort-ultracode",
+          "kind": "standard",
+          "severity": "low",
+          "where": "models-effort-ultracode, goals line 15: \"You'll be able to set effort with `/effort`, say what it changes, ...\"",
+          "problem": "No Final test question checks the first clause, setting effort with `/effort`: typing a level saves it, while `s` in the slider is session-only. `/effort` appears in the Final test only as distractors in an ultracode question. The r1 quiz check raised this, and it was neither applied nor declined.",
+          "evidence": "Final test ids: scenario-grill-then-build, scenario-outage-hunt, scenario-skipped-tests, scenario-migration-day, scenario-live-debug, scenario-worth-paying, spot-max-everywhere, spot-ultracode-left-on, sequence-reading-a-miss, predict-session-only. writing-guide.md:44 says goals are \"each checkable by the Final test\".",
+          "fix": "Trim the goal to \"say what effort changes, and tell from a bad result whether to raise effort, pick a bigger model or fix the task\", or add an `/effort low` versus `s` case to predict-session-only's scenario.",
+          "id": "effort-goal-part-untested"
+        },
+        {
+          "slug": "wayfinder",
+          "kind": "standard",
+          "severity": "low",
+          "where": "wayfinder, Try it yourself, step 8 (line 295): \"Optional: once any research agent has reported back, ... Type `/exit` when you're done.\"",
+          "problem": "The only `/exit` is inside an optional step. A reader who skips step 8 is never told how to leave the session.",
+          "evidence": "writing-guide.md:117: Try blocks cover \"how to stop it (Esc, or choose No at a permission prompt) and /exit\".",
+          "fix": "Move \"Type `/exit` when you're done.\" into a separate step 9, outside the optional step.",
+          "id": "wayfinder-exit-in-optional-step"
+        },
+        {
+          "slug": "architecture",
+          "kind": "standard",
+          "severity": "low",
+          "where": "architecture lines 106, 132 and models-effort-ultracode line 160 (\"sub-agents\") vs wayfinder lines 86, 117 (\"subagent\")",
+          "problem": "The same term is spelled two ways within Part 4, and the glosses differ too (\"a fresh memory\" vs \"its own fresh context window\").",
+          "evidence": "GLOSSARY.md Phase: \"pass the next task to a subagent\"; 12-main-flow.md:40 \"subagents (helper agents, each with its own fresh memory)\".",
+          "fix": "Use \"subagent\", as the GLOSSARY and main-flow do, in architecture and models-effort-ultracode.",
+          "id": "subagent-spelling-split"
+        },
+        {
+          "slug": "wayfinder",
+          "kind": "standard",
+          "severity": "low",
+          "where": "wayfinder, Why it matters line 26 (\"the permanent name its comments point at\"), map block line 54 (\"Translating Visitors' comments.\"), chat Scene lines 128 and 133",
+          "problem": "This site's Comments appear in lowercase, while the GLOSSARY term is capitalised and the other Part 4 Lessons capitalise it (\"posts a Comment\", \"every Comment\").",
+          "evidence": "GLOSSARY.md: \"**Comment**: A note a Visitor leaves on one Lesson.\" docs/authoring-lessons.md:22: \"Use the words in GLOSSARY.md exactly\". architecture:78 and models:366 use \"Comment\".",
+          "fix": "Capitalise all four: \"its Comments point at\", \"Translating Visitors' Comments\", \"Should Visitors' Comments stay untranslated?\", \"translating Comments\".",
+          "id": "wayfinder-comment-term-case"
+        },
+        {
+          "slug": "retro",
+          "kind": "smell",
+          "severity": "low",
+          "where": "retro, Site story line 274: \"The project's `CLAUDE.md` is 17 lines, almost all pointers, mostly an \\\"Agent skills\\\" block in the shape that `/setup-matt-pocock-skills` ... writes.\"",
+          "problem": "Possible Duplicated Code (judgement call). This retells the CLAUDE.md fact already in How coding agents work's Site story, almost word for word. Only the no-CI half is new to retro.",
+          "evidence": "01-how-agents-work.md:317: \"This site's `CLAUDE.md` is 17 lines ... Most of it is the \\\"Agent skills\\\" block in the shape that Matt's repo-setup Skill, `/setup-matt-pocock-skills`, writes\".",
+          "fix": "Lead with the retro-specific fact (lint and test scripts that no hook or CI job runs, a finding in itself), and shorten the CLAUDE.md part to \"a `CLAUDE.md` that's almost all pointers ([How coding agents work](/learn/how-agents-work))\".",
+          "id": "retro-site-story-duplicates-part-1"
+        },
+        {
+          "slug": "retro",
+          "kind": "smell",
+          "severity": "low",
+          "where": "retro, Final test scenario-cleared-session (lines 315-325): \"You typed `/clear` at the end and moved on. Today you want to learn from it.\"",
+          "problem": "Possible Duplicated Code (judgement call). The main-flow Final test asks the same question with the same answer: bare `/retro` after `/clear` reviews the empty session, so name the old one. A reader who took main-flow answers by recall. Retro's sequence-retro-timing option d tests the same point again.",
+          "evidence": "12-main-flow.md:441-451, spot-retro-next-day: \"Dana ... typed `/clear`. Next morning ... typed `/retro` with no other instructions\"; its right answer: \"She ran it on an empty session, not the one she cleared.\"",
+          "fix": "Give scenario-cleared-session a facet main-flow doesn't test. For example, which description best helps `/retro` find the session (\"my session yesterday in this repo where the agent couldn't find the config file\"), or that it searches the logs under `~/.claude/projects/`.",
+          "id": "retro-cleared-question-duplicates-main-flow"
+        },
+        {
+          "slug": "architecture",
+          "kind": "smell",
+          "severity": "low",
+          "where": "architecture, \"## Two tests for any design\" (line 55), which also holds \"The other two principles shape what you build\" (lines 65-68) and the flow Scene \"Judging this site's code with the vocabulary\" (lines 70-90)",
+          "problem": "Possible Mysterious Name or Divergent Change (judgement call). The heading promises two tests, but the section also teaches the other two principles (interface as test surface; depth belongs to the interface) and gives a worked verdict on this site. A reader scanning the section bar won't find 'replace, don't layer' under this heading, though spot-layered-tests checks it.",
+          "evidence": "Line 57: \"The vocabulary comes with four principles. Two are tests you can run in your head.\" Line 65: \"The other two principles shape what you build:\".",
+          "fix": "Rename the heading to \"Four principles, two of them tests\", or move lines 65-68 into a short section of their own, such as \"Where tests go\".",
+          "id": "two-tests-heading-undersells"
+        }
+      ]
+    },
+    {
+      "part": 4,
+      "axis": "spec",
+      "summary": "6 Spec findings (2 medium, 4 low, no high). The worst: models-effort-ultracode leaves out the brief's `default` from its alias list, so the Lesson warns that `/model` saves your choice but never shows how to undo it with `/model default`. All four Lessons pass the lint (2,823–2,899 words, 4 goals, 4 Checkpoints, 10 Final test questions, right kind mix), every goal has at least one Final test question, every Skill is in the Lesson that owns it with the right user-invoked or model-invoked label, and I found no scope creep.",
+      "findings": [
+        {
+          "slug": "models-effort-ultracode",
+          "kind": "missing",
+          "severity": "medium",
+          "where": "models-effort-ultracode, \"Models: which brain answers\": alias table lines 41-48 and \"Switching\" line 52 (\"`/model` saves your choice as the default for new sessions\"); Common mistakes line 271",
+          "problem": "The brief asks for `default` along with the other aliases. The table lists haiku, sonnet, opus, fable, opusplan and best, and the body never mentions `default`. That leaves a practical gap. The Lesson warns twice (line 52, and Common mistakes line 271) that typing `/model haiku` saves Haiku as your default, but it never says how to get back. It does teach the matching undo for effort, `/effort auto` (lines 97 and 265). The reader learns to avoid the trap but not how to get out of it.",
+          "evidence": "Brief .scratch/course-rewrite/review/briefs/models-effort-ultracode.json: \"aliases (opus=Opus 5.5, sonnet=Sonnet 5.5, haiku=Haiku 5.5, fable=Fable 5.1, best, opusplan, default)\". The research note (models-effort-ultracode.md:34) has \"`default` | clears overrides\". The Claude Code docs (model-config, read 2026-10-24) describe `default` as a \"Special value that clears any model override and reverts to the runtime default for your account\". `grep -n 'default`' 19-models-effort-ultracode.md` finds no `/model default` anywhere.",
+          "fix": "Add a sentence after the Switching paragraph (line 52): \"To undo a saved pick, type `/model default`: it clears your choice and goes back to your account's default (Opus 5.5 on paid plans).\" Optionally add a Cheat sheet row: \"Undo a saved model | `/model default`\". Then the Common mistakes bullet at line 271 can end with \"...or `/model default` to undo it\".",
+          "id": "models-default-alias-missing"
+        },
+        {
+          "slug": "architecture",
+          "kind": "missing",
+          "severity": "medium",
+          "where": "architecture, \"Two Skills, two jobs\" line 108 (\"`/tdd` (Matt's Skill for building test-first) and `/improve-codebase-architecture` both lean on it\"), \"A survey, step by step\" lines 131 and 135 (\"it runs the grilling Skill: rounds of numbered questions with recommended answers\"; GLOSSARY.md and ADRs), \"Your part\" line 173 (\"fill the context window\")",
+          "problem": "Architecture links only to Start here, Diagnosing bugs, Wayfinder and The main flow. It builds on three earlier Lessons and links none of them. The survey's step 6 and the chat Scene rest on how grilling works (rounds, ❓/➡️, \"yes\" accepts), which the Grilling Lesson teaches. `/tdd` comes up six times and is tied to \"the interface is the test surface\", which the TDD Lesson teaches. `GLOSSARY.md`, ADRs and `/grill-with-docs` come from the Domain modeling Lesson. The context window comes from The context window. A Part 4 reader who has forgotten any of these has no way back.",
+          "evidence": "Spec user story 24: \"As a Visitor, I want each Lesson to cross-link the Lessons it builds on, so that I can go back when something is unfamiliar.\" `grep -o '(/learn/[a-z-]*)' 16-architecture.md` gives diagnosing-bugs, main-flow, start-here and wayfinder only. `/tdd` appears 6 times, `/grill-with-docs` 5 times, and \"grilling Skill\" at line 135, none of them linked.",
+          "fix": "Add links where each idea first appears. Line 108: \"`/tdd` (Matt's Skill for building test-first; see [TDD](/learn/tdd))\". Line 135: \"it runs the grilling Skill (see [Grilling](/learn/grilling))\". Line 131: \"`GLOSSARY.md` ... and the relevant ADRs (see [Domain modeling](/learn/domain-modeling))\". Line 173: \"fill the context window ([The context window](/learn/context-window))\". This adds only a few words.",
+          "id": "architecture-missing-cross-links"
+        },
+        {
+          "slug": "wayfinder",
+          "kind": "missing",
+          "severity": "low",
+          "where": "wayfinder line 85 (`prototype` row, \"The prototype Skill\"), line 84 (domain modeling, `GLOSSARY.md`), line 24 (\"Matt calls the part where it still thinks clearly the Smart zone\"); retro line 57 (\"one context window\"), line 106 Scene caption (\"`/compact` shrank the conversation\") and line 57 (\"Matt's code-review Skill always reads\" CODING_STANDARDS.md)",
+          "problem": "This is the same partial miss as Architecture, but milder. Wayfinder leans on prototype tickets, the domain-modeling Skill and the Smart zone, and links none of Prototype, Domain modeling or The context window. Retro relies on the context window, `/compact` and the code-review Skill's standards file. It links Skills (for the name clash) but not The context window or Code review.",
+          "evidence": "Spec user story 24 (quoted above). `grep -o '(/learn/[a-z-]*)'` gives wayfinder: grilling, implement, spec-and-issues, start-here. It gives retro: architecture, diagnosing-bugs, how-agents-work, main-flow, skills, start-here.",
+          "fix": "Wayfinder: link [Prototype](/learn/prototype) in the `prototype` row, [Domain modeling](/learn/domain-modeling) at its first GLOSSARY.md mention (line 45 or 84), and [The context window](/learn/context-window) after \"the Smart zone\" (line 24). Retro: link [The context window](/learn/context-window) at line 57 and [Code review](/learn/code-review) after \"Matt's code-review Skill\" (line 57).",
+          "id": "wayfinder-retro-missing-cross-links"
+        },
+        {
+          "slug": "architecture",
+          "kind": "wrong",
+          "severity": "low",
+          "where": "architecture, \"A survey, step by step\" line 137 (\"`/grill-with-docs` or `/to-spec`\"), chat Scene line 152 (\"take it into `/to-spec` when you're ready\"), Cheat sheet line 264 (\"`/to-spec` or `/grill-with-docs`\"), Final test spot-carried-on line 321 (right answer \"carry what was agreed into `/to-spec`\")",
+          "problem": "Matt's router names `/grill-with-docs` as where a survey's idea joins the Main flow, and The main flow Lesson teaches that rule. It also teaches its exception: \"straight to `/to-spec` if that grilling already settled it\". Architecture offers both with no rule for choosing, and its Scene, Cheat sheet order and Final test answer all lead with `/to-spec`. Each Lesson's Final test marks a different next Skill as right: main-flow's scenario-spare-afternoon marks `/grill-with-docs`, Architecture's spot-carried-on marks `/to-spec`. Neither is false, but a reader can't tell when to use which.",
+          "evidence": "ask-matt/SKILL.md:60: \"picking one _generates an idea_ you can take into the main flow at `/grill-with-docs`\". 12-main-flow.md:193: \"take it into the Main flow at `/grill-with-docs`, as `/ask-matt` says, or straight to `/to-spec` if that grilling already settled it\". 12-main-flow.md:517 marks \"`/improve-codebase-architecture`, then `/grill-with-docs`\" as right. Spec, Testing Decisions: \"A course-wide critic after all 20: ... no contradictions between Lessons.\"",
+          "fix": "Line 137: replace \"`/grill-with-docs` or `/to-spec` (which writes...)\" with \"`/grill-with-docs`, as `/ask-matt` routes it, or straight to `/to-spec` (which writes...) when the survey's grilling already settled every question\". Cheat sheet line 264 becomes \"`/grill-with-docs`, or `/to-spec` if the grilling settled it\". The Scene and spot-carried-on can stay as they are, since both show a grilling that settled things; adding \"settled\" to the spot-carried-on stem makes that explicit.",
+          "id": "architecture-handoff-point"
+        },
+        {
+          "slug": "models-effort-ultracode",
+          "kind": "missing",
+          "severity": "low",
+          "where": "models-effort-ultracode, alias table header line 41 (\"| Alias | Today it means | Reach for it when |\") and line 50 (\"Aliases move when new models ship\")",
+          "problem": "The ticket asks for model, effort and ultracode facts that are dated. The Sources block dates each docs read (2026-10-23, Claude Code 2.1.309), but the body says \"Today it means\" without saying when today was. The old Lesson stated \"checked on 2026-10-21. Settings change over time, so re-check the docs\", and that line was dropped. Someone reading after the next model release will take \"today\" literally.",
+          "evidence": "Ticket 06: \"- [ ] Model, effort and ultracode facts dated and sourced from Claude Code's docs\". Old Lesson (git show d21fc2c:content/lessons/10-models-effort-ultracode.md): \"checked on 2026-10-21. Settings change over time, so re-check the docs.\" Current line 41: \"Today it means\". Line 426 is the only place 2.1.309 appears.",
+          "fix": "Line 41: change the column header to \"In October 2026 (Claude Code 2.1.309)\", or add to line 50: \"These facts were checked against Claude Code's docs on 23 October 2026; aliases and defaults move, so check `/model` for today's list.\"",
+          "id": "models-facts-undated-in-body"
+        },
+        {
+          "slug": "models-effort-ultracode",
+          "kind": "missing",
+          "severity": "low",
+          "where": "models-effort-ultracode, \"Why it matters\" lines 26-33 (\"This Lesson teaches no Skill. It teaches the dials every Skill runs on:\" and the dial table with `/model`, `/effort`, `/fast`)",
+          "problem": "`/code-review` is the only one of the Lesson's commands it calls a Built-in command (line 201). `/model`, `/effort`, `/fast`, `/workflows`, `/config` and `/status` are never given the glossary term, although they look exactly like the Skill names typed everywhere else in the course. \"This Lesson teaches no Skill\" hints at the split but never names it.",
+          "evidence": "Spec user story 23: \"As a Visitor, I want Built-in commands kept separate from Skills, so that the vocabulary isn't confusing.\" The writing guide reserves \"command\" for Built-in commands. In 19-models-effort-ultracode.md, \"Built-in\" appears only at line 201 (`/code-review`) and line 280 (Site story).",
+          "fix": "Line 26: \"This Lesson teaches no Skill. It teaches the dials every Skill runs on, each set with a Built-in command (one that comes with Claude Code, not a Skill):\"",
+          "id": "models-builtins-unlabelled"
+        },
+        {
+          "slug": "architecture",
+          "kind": "missing",
+          "severity": "low",
+          "where": ".scratch/course-rewrite/review/run-2026-10-24b/{architecture,retro,wayfinder,models-effort-ultracode}.json, field `next`; ticket .scratch/course-rewrite/issues/06-part-4-level-up.md",
+          "problem": "The ticket's first acceptance item requires each Lesson to pass the three lenses. No Part 4 record shows a clean pass after the fixes. Retro, wayfinder and models-effort-ultracode all stop at next = round 2 check. For architecture, the round-1 fixer was stopped part-way, the 14 pending issues were applied later by the lean fix (commit 6cd3bbb), and no re-check was recorded. I spot-checked the current text and those 14 look fixed, but the ticket item is still unproven.",
+          "evidence": "Ticket 06: \"- [ ] Four Lessons in the contract format, each passing the three lenses\". retro/wayfinder/models-effort-ultracode .json: \"next\": {\"round\": 2, \"step\": \"check\"}. architecture.json: \"next\": {\"round\": 1, \"step\": \"fix\", \"why\": \"...its fixer was stopped mid-run\"}, with 14 pending. lean-fix.json lists architecture round 1 fixes applied.",
+          "fix": "Run the round-2 accuracy, reader and quiz checks on all four Lessons, or record that this Part review replaces them, before ticking ticket 06's first box.",
+          "id": "part4-lens-pass-unrecorded"
+        }
+      ]
+    }
+  ]
+}

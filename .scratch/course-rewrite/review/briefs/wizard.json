@@ -1,0 +1,16 @@
+{
+ "n": 15,
+ "slug": "wizard",
+ "title": "Wizard",
+ "part": 3,
+ "old": "04-wizard.md",
+ "img": [
+  "/photos/wizard.jpg",
+  "A man in a dark room carefully plugs a cable into a server rack.",
+  "ThisisEngineering"
+ ],
+ "skills": [
+  "engineering/wizard"
+ ],
+ "extra": "Teach what it generates (an interactive bash script from template.sh), the four steps, destinations (.env, secret, variable), secrets never reach the model, run it in a real terminal, ephemeral by default, and that the agent should do anything it can itself."
+}

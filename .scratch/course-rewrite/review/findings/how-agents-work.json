@@ -1,0 +1,308 @@
+{
+ "slug": "how-agents-work",
+ "lenses": {
+  "reader": [
+   {
+    "severity": "high",
+    "where": "Line 17 (goal 4), line 217 heading \"## Checkpoints: stepping back\", lines 219-228, callout line 251, Final test spot-rm-rewind (lines 429-434)",
+    "problem": "The Lesson uses \"checkpoint\" for Claude Code's rewind snapshots. On this site, Checkpoint is a GLOSSARY term: the question box that never counts. Start here has just taught the reader that \"Checkpoints never count towards passing\". Here a heading reads \"Checkpoints: stepping back\", a goal says \"say what a checkpoint can't undo\", and Final test options say \"Checkpoints are kept for a day\" and \"Checkpoints don't track shell commands\". A cold reader can't tell which meaning is meant, and the course breaks its own rule to use GLOSSARY terms exactly.",
+    "evidence": "GLOSSARY.md (latest, commit 8c224d2): \"**Checkpoint**: A single question inside a Lesson, placed right after the idea it checks.\" Lesson line 219: \"Before each prompt you send, Claude Code records a checkpoint\". 00-start-here.md line 73 defines Checkpoints as the site's questions.",
+    "fix": "Name Claude Code's feature once and call it something else everywhere after. Line 219: \"Before each prompt you send, Claude Code saves a snapshot of your code (its docs call these checkpoints; they have nothing to do with this site's Checkpoint questions).\" Heading: \"## Rewind: stepping back\". Goal 4: \"\u2026undo the agent's file edits with Esc Esc or `/rewind`, and say what rewind can't undo.\" Line 221: \"Rewind has hard limits. It doesn't undo:\". Line 228: \"==Rewind is not version control.==\" Callout: \"Permissions and rewind work as a pair.\" spot-rm-rewind option b: \"Snapshots are kept for a day, and he waited too long.\" Option d: \"Rewind doesn't track shell commands; only git or a backup can help.\" (Rewording options keeps their positions, so the ids stay valid.)"
+   },
+   {
+    "severity": "medium",
+    "where": "Scene chat \"Plan mode on this site\", last two steps (lines 165-167)",
+    "problem": "The permission prompt is drawn as an `agent:` line (\"I'd like to edit `src/lessons/lessons.ts`. Allow this edit?\"), so it looks like the model is asking. The Lesson's core idea is that the harness, Claude Code, checks the call and asks you, not the model. A reader building the model-versus-harness picture learns the wrong owner here.",
+    "evidence": "Line 36: \"Claude Code reads the call, checks it against your permission settings, runs it if allowed\". Line 56: \"Claude Code checks the call against your permission mode, asks you if it needs to\". Line 167: `agent: I'd like to edit src/lessons/lessons.ts. Allow this edit?`",
+    "fix": "Change the caption to \"# You pick 2. Plan mode ends. The model writes its first edit as a tool call, and Claude Code stops it for your approval.\" and the line to `agent: *Permission prompt from Claude Code:* edit `src/lessons/lessons.ts`? 1 Yes \u00b7 2 Yes, allow all edits this session \u00b7 3 No`."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 40 (\"each time they commit\"), line 84 (\"tests, git, a dev server\"), lines 193-194 (\"tracked with git\", \"shared through git\", \"keep it out of git\"), line 170 (\"test, commit, repeat\"); git is defined only at line 228",
+    "problem": "git and commit are used five times before the reader is told what they are. The reader knows only what a terminal is. \"Commit\" is never defined at all, and the Try exercise and Final test both rely on git.",
+    "evidence": "Line 228: \"Keep committing with git, the tool that records your project's history.\" That is the first and only definition, after the uses at lines 40, 84, 170 and 193.",
+    "fix": "Define both at first use, on line 40: \"\u2026a colleague who forgets everything about the project each time they commit (save a snapshot of the project's history with git, the tool most projects use to track every change).\" Then line 228 can say only \"Keep committing with git.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 40 (\"until you clear it or quit\"), line 265 (\"`/clear` and start again\"); Final test scenario-undo-edits option a",
+    "problem": "`/clear` is never explained in the body, yet a Final test option relies on knowing it empties the conversation and leaves files alone. Only that option's feedback explains it.",
+    "evidence": "Line 265: \"after two failed corrections, `/clear` and start again with a better prompt\". No definition anywhere before the Final test. Line 404 feedback: \"`/clear` empties the conversation and leaves the files as they are\".",
+    "fix": "Line 40: \"A session is one Claude Code conversation, from starting `claude` until you quit or type `/clear` (a Built-in command that empties the conversation but leaves your files alone; see [The context window](/learn/context-window)).\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 26 (Skills intro) through lines 120, 142, 188, 196 and 219, where `/permissions`, `/plan`, `/compact`, `/memory`, `/init` and `/rewind` first appear",
+    "problem": "The reader is never told that Claude Code has its own slash commands, typed in the prompt box, and that these are different from Skills. \"Built-in command\" first appears at line 188 with a capital B and no explanation. A novice told to \"type `/rewind`\" doesn't know where to type it, or whether it is a Skill.",
+    "evidence": "Line 26 explains only Skills (\"short instruction files the agent loads when you type their name, like `/grill-me`\"). Line 188: \"`/compact` (the Built-in command that shrinks\u2026)\" is the first and only time the term is introduced.",
+    "fix": "Add a sentence after the Skills clause on line 26: \"Claude Code also comes with Built-in commands of its own, like `/rewind` or `/memory`: you type them the same way, a slash and a name at the start of the prompt box (the line where you type your messages), but they're part of Claude Code, not Skills.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, steps 2, 3, 6 and 8 (lines 279-295)",
+    "problem": "Four steps can't be followed exactly as written. Step 2 says press Shift+Tab \"until it shows Manual\", but the label the research note gives is \"manual mode on\". Step 3 never says to press Enter. Step 6's edit prompt also offers \"allow all edits this session\", which would let the rest of the plan run without asking, and the step doesn't say which option to pick. Step 8: `/memory` opens a menu, and the step doesn't say to close it with Esc before typing `/exit`.",
+    "evidence": "Research note line 108: the status bar shows \"manual mode on\", \"accept edits on\", \"plan mode on\", \"auto mode on\". Line 153: `/memory` \"lists the memory files that load, opens them\". Step 6 as written: \"Approve its first file edit, then press Esc to stop it.\"",
+    "fix": "Step 2: \"Look under the prompt box. It probably says \\\"auto mode on\\\". Press Shift+Tab until it says \\\"manual mode on\\\".\" Step 3: \"Type the prompt below and press Enter. While it works, press Ctrl+O to see each tool call (Ctrl+O again to go back).\" Step 6: \"When it asks to edit a file, choose plain Yes (not the option that allows all edits for the session). Then press Esc to stop it. If it asks to run a command first, choose No.\" Step 8: \"Type `/memory` to see which `CLAUDE.md` files loaded. Press Esc to close that menu, then type `/exit`.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 22, 84, 86, 100, 113, 116, 120, 122, 125, 188, 213, 226 and test scenario-repeat-correction",
+    "problem": "Several terms are used without explanation for a reader who knows only the terminal. Core ones: \"test\" in \"the comments API test\" (line 22; also API), \"shell command\" (line 22) and the tool `Bash` (line 84), and \"Markdown file\" (line 188). Secondary ones: \"plugin\" (86), `npm install` and \"package\" (100), `mkdir` and `mv` (113), \"containers and virtual machines\" (116, explained only later in the callout), \"deny rules\" (120), \"sandbox\" (122), \"flag\" (125), `npm test` (213), \"a pushed commit, a deploy\" (226), and npm vs pnpm (scenario-repeat-correction).",
+    "evidence": "Line 22: \"say \\\"the comments API test is failing, fix it\\\"\u2026 a shell command\". Line 120: \"Deny rules block in every mode.\" (nothing else in the Lesson defines them). Line 188: \"a Markdown file you write\".",
+    "fix": "Add a clause at each first use. Line 22: \"\u2026say \\\"the comments API test (a small program that checks the comment feature still works) is failing, fix it\\\"\u2026 a shell command (a command typed in the terminal)\u2026\". Line 84 row: \"`Bash` | Runs any terminal command: tests, git, a dev server\". Line 188: \"a Markdown file (plain text with light formatting, like `#` for a heading) you write\". Line 120: \"\u2026add an allow rule with `/permissions` (a rule that lets one kind of call run without asking), say for your test script. A deny rule does the opposite and blocks a kind of call in every mode, even Bypass.\" Line 116: \"Isolated containers and virtual machines (sealed-off environments that can't reach your real files) only\". Line 122: \"\u2026Bypass only for unattended runs in a sandbox (an isolated container)\". Line 100: \"Running `npm install` to add a package (a library of someone else's code).\" Line 226: \"\u2026a pushed commit (one sent to GitHub), a deploy (a release to the live site)\u2026\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Scene chat (line 162) vs Scene terminal (lines 233-235)",
+    "problem": "The two Scenes tell one story (the same reading-time prompt) but disagree. The plan says \"One file changed, one test added\". The rewind Scene then shows two existing files modified, `lessons.ts` and `page.tsx`, and no test file. The terminal Scene also runs `$ git status` and then says \"Back in Claude Code\", which implies a second terminal the reader was never told to open.",
+    "evidence": "Line 162: \"One file changed, one test added.\" Lines 234-235: \"modified:   src/lessons/lessons.ts\" / \"modified:   src/app/learn/[slug]/page.tsx\". Line 236: \"Back in Claude Code, with the prompt box empty\u2026\".",
+    "fix": "Make the plan say \"Two files changed: count the words in `lessons.ts`, show the label in the Lesson page.\" (or make the rewind Scene show `src/lessons/lessons.ts` plus `+` a new test file). Show the shell commands as typed inside Claude Code: `$ !git status`, with the first caption \"# The agent has changed two files with its file tools. You type `!git status` to see them.\" and the second \"# With the prompt box empty, you press Esc twice\u2026\"."
+   },
+   {
+    "severity": "low",
+    "where": "Checkpoint plan-wrong-scope, option d (lines 182-183)",
+    "problem": "The distractor \"Press Esc twice to rewind to before the plan\" relies on rewind, which the Lesson doesn't teach until two sections later. A reader can't judge it yet.",
+    "evidence": "This Checkpoint sits in the plan mode section (line 174). Esc twice and rewind are first explained at line 219.",
+    "fix": "Replace option d with a misconception the reader can judge now: \"Press Esc to stop it, then retype the whole request in auto mode.\" Feedback: \"> You'd lose the plan and skip planning altogether. Stay in plan mode and correct the one wrong assumption.\""
+   },
+   {
+    "severity": "low",
+    "where": "## How Matt and others use it (lines 258-266)",
+    "problem": "Repetition. Most bullets restate earlier text instead of adding to it. Line 260 (WSL-only `CLAUDE.md`) repeats line 201. Line 259 (grilling with plan mode off) repeats line 170. Line 265 (explore, plan, then code) repeats line 150. Line 261 (reads free, irreversible actions gated) repeats lines 90 and 122.",
+    "evidence": "Line 201: \"His own file was one line saying he works on WSL\". Line 260: \"In February 2026 his only line was about WSL\". Line 150: \"The docs' suggested workflow for anything complex is explore, then plan, then code.\" Line 265: \"explore, plan, then code\".",
+    "fix": "Cut the WSL bullet (line 260) and the \"explore, plan, then code\" clause from line 265. Keep only what's new: the Explore sub-agent on Haiku (258), auto mode as \"kind of like the default mode\" (259), Esc / \"undo that\" / `/clear` after two failed corrections (265), and the Hacker News and AI Coding Daily comparison (266). Spend the freed words on the definitions above."
+   },
+   {
+    "severity": "low",
+    "where": "Line 33 (the harness bullet)",
+    "problem": "One sentence nests three definitions inside parentheses: context window, tokens, and a link. A first-time reader loses the thread of what a harness is.",
+    "evidence": "\"\u2026and the management of its context window (everything the model can see at once, measured in tokens, the small chunks of text AI usage is counted in; see [The context window](/learn/context-window)).\"",
+    "fix": "Split it: \"The harness is everything wrapped around the model that lets it act: the tools it can call, the system prompt (standing instructions sent with every request), the permission checks, and its context window. The context window is everything the model can see at once. It's measured in tokens, the small chunks of text AI usage is counted in; see [The context window](/learn/context-window).\""
+   },
+   {
+    "severity": "low",
+    "where": "Final test spot-no-tool-call prompt (line 354)",
+    "problem": "The prompt gives the answer away. \"its last tool call was an edit, with nothing after it\" already says no test-run call happened, so the reader matches words instead of applying the idea.",
+    "evidence": "Right answer: \"It never made the tool call, so nothing ran.\"",
+    "fix": "Prompt: \"Ana asks the agent to run her tests. It replies \\\"Done: all 42 tests pass.\\\" She opens Ctrl+O and scrolls through the turn: she sees file reads and one edit, and no test output anywhere. Spot the mistake.\""
+   },
+   {
+    "severity": "low",
+    "where": "Site story (lines 316-318)",
+    "problem": "Three things in the Site story aren't explained for a cold reader. \"I typed `/plan` to see the plan\" uses `/plan` on its own, but the body teaches it only as a prefix that starts plan mode. `/grilling` and `/setup-matt-pocock-skills` appear with no clause saying what they are. \"Issue tracker\" and \"decision records\" are undefined.",
+    "evidence": "Line 142: \"start a single message with `/plan`\". Line 316: \"I typed `/plan` to see the plan and where it was saved\".",
+    "fix": "\"I typed `/plan` on its own, which shows the current plan and where it's saved\u2026 then I typed `/grilling` (Matt's Skill that interviews you about a plan).\" And: \"`/setup-matt-pocock-skills` (Matt's one-time setup Skill) wrote most of it: where the issue tracker (the to-do list of planned work) lives\u2026\"."
+   },
+   {
+    "severity": "low",
+    "where": "Try checklist, line 303",
+    "problem": "`git restore .` has to be typed as `!git restore .` inside Claude Code, which the item doesn't say. It also doesn't remove brand-new files a shell command created, so the item's promise is incomplete.",
+    "evidence": "\"If something is still listed, a shell command made it, which rewind can't reach; `git restore .` puts changed files back.\"",
+    "fix": "\"\u2026a shell command made it, which rewind can't reach. Type `!git restore .` to put changed files back, and delete any new file it lists under \\\"Untracked files\\\".\""
+   },
+   {
+    "severity": "low",
+    "where": "Try step 3 (line 280) vs checklist item 1 (line 299)",
+    "problem": "In Manual mode the agent may run a shell command that isn't on the read-only list, such as a piped command. The reader then gets a prompt, though the checklist says step 3 runs without asking, and the step says nothing about what to do.",
+    "evidence": "Line 90: \"Shell commands ask, apart from a built-in list of read-only ones.\" Checklist: \"In step 3, it chained several reads and searches without asking you.\"",
+    "fix": "Add to step 3: \"If it asks to run a command that only looks (like `ls`, `find` or `grep`), choose Yes; if it asks to change anything, choose No.\" Change the checklist item to \"In step 3, it chained several reads and searches, and most or all ran without asking you.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 26 (Skill definition) and line 196 (AGENTS.md)",
+    "problem": "Two small inaccuracies. The Skill clause says the agent loads Skills \"when you type their name\", but many Skills can also be picked up by the agent on its own. \"`AGENTS.md` is the same idea\" doesn't say that Claude Code reads it only when there is no `CLAUDE.md`, so a reader could think both always load. The Site story then says the project's `CLAUDE.md` points at `AGENTS.md`.",
+    "evidence": "Writing guide: 11 model-invoked Skills (\"you or the agent\"). Research note line 150: \"AGENTS.md loads when there is no CLAUDE.md (the default setting).\"",
+    "fix": "Line 26: \"(short instruction files the agent loads when you type their name, like `/grill-me`, or, for some, when it decides they fit)\". Line 196: \"`AGENTS.md` is the same idea under a name other agents read too; Claude Code reads it when there's no `CLAUDE.md`, or when `CLAUDE.md` points to it.\""
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "high",
+    "where": "checkpoint same-model, option d (the right answer) and its feedback, lines 72-73",
+    "problem": "The right answer is factually wrong, and it contradicts the Lesson body. The body (line 33) calls the Claude.ai chat app a harness, and a harness is defined as including tools. Claude.ai does give the model tools (web search, code execution, file creation, connectors). What it lacks is tools that reach the files on your computer. A careful reader who remembers line 33 can rightly reject option d.",
+    "evidence": "Line 72: \"- [x] Claude Code gives the model tools; the chat app doesn't.\" Line 33: \"Claude Code is a harness. So is the Claude.ai chat app ... same brain, different hands.\" Line 69 (option b's feedback) already uses the narrower, correct claim: \"The chat app has no tool for editing your files at all.\"",
+    "fix": "Replace option d and its feedback (54 chars, so still not the longest option; position d is unchanged):\n- [x] Claude Code's harness has tools that reach your files.\n  > Right. Same model, different harness. The chat app's harness has tools too, but none that touch the files on your computer. Claude Code runs the tool calls the model writes against your project."
+   },
+   {
+    "severity": "medium",
+    "where": "test scenario-style-tweaks, prompt and option d's feedback, lines 378 and 386",
+    "problem": "By the Lesson's own table, the right answer doesn't meet the prompt's stated need. The prompt says you want to be asked before it runs \"any other command\". But Accept edits also runs simple file commands like `mkdir` and `mv` without asking (line 113), and option d's feedback says so too. So strictly, no option fits, and a careful reader is penalised for reading closely.",
+    "evidence": "Line 378: \"you still want to be asked before it runs any other command.\" Line 113: \"Reads, file edits, and simple file commands like `mkdir` and `mv`\". Line 386: \"File edits and simple file commands go through on their own; other shell commands still ask.\"",
+    "fix": "Replace the prompt with: \"You're adjusting a site's spacing and fonts, and you'll review every change with `git diff` (git's list of what changed) afterwards. You're tired of approving each edit, but you still want to be asked before it installs packages, runs scripts or touches git. Which mode?\" Keep the options and feedback as they are."
+   },
+   {
+    "severity": "medium",
+    "where": "test spot-no-tool-call, lines 353-363",
+    "problem": "The prompt gives the answer away: it states that the last tool call was an edit \"with nothing after it\", which is the defining fact of the right answer (the writing guide bans restating the defining phrase in the prompt). Options b and d are the same distractor reworded (\"the transcript missed it\"), and option a (plan mode) is irrelevant. So the question tests reading, not transfer. Calling it \"the mistake\" is also odd, because the agent's false claim isn't something the reader does.",
+    "evidence": "Line 354: \"Ctrl+O shows its last tool call was an edit, with nothing after it. Spot the mistake.\" Option b: \"The tests ran too fast for the transcript to record them.\" Option d: \"Claude Code ran the tests in the background without logging them.\"",
+    "fix": "Replace the block body (same id; the right answer stays at c, and at 57 chars it isn't the longest):\nAna asked the agent to fix a failing test and run the suite. It replied \"Done: all 42 tests pass\", and she merged without opening Ctrl+O. Spot the mistake.\n- [ ] She should have used plan mode, which runs the tests before any edit.\n  > Plan mode blocks edits until you approve a plan. It doesn't run anything for you.\n- [ ] She should have asked again; a second reply would include the output.\n  > Another reply is just more words. Only a tool call actually runs the tests.\n- [x] She trusted a reply with no test-run tool call behind it.\n  > Right. A tool call is text the harness must execute. Ctrl+O shows whether a test run happened. No call, no run, whatever the reply says.\n- [ ] Nothing: Claude Code runs the tests by itself after every edit.\n  > It doesn't, unless someone set that up. The harness runs only the calls the model writes."
+   },
+   {
+    "severity": "medium",
+    "where": "test scenario-undo-edits, lines 401-411",
+    "problem": "This is recall, not transfer. The prompt restates the terminal Scene's own caption (\"the conversation stays, so you can explain what you meant\", line 245) and the body's sentence at line 219, so the reader only has to match the phrase \"Restore code\". The question also has a wording slip: option c says \"pick that prompt\", but the stem never mentions a prompt, while option b says \"your earlier prompt\".",
+    "evidence": "Line 402: \"you want to keep the conversation so you can explain what you meant.\" Line 245: \"The files go back, and the conversation stays, so you can explain what you meant instead.\" Line 407: \"pick that prompt\".",
+    "fix": "Test the menu in a case the body doesn't model (same id; the right answer stays at c, 63 chars, not the longest):\nYou asked the agent to add a dark theme. Its file tools rewrote four stylesheets, and now you've decided the whole request was a mistake. You want the files and the chat both back as they were before you sent it. What do you do?\n- [ ] Type `/clear`, which empties the chat and undoes the session's edits.\n  > `/clear` empties the conversation but leaves all four edited files as they are.\n- [ ] Press Esc twice, pick that request, then choose Restore code.\n  > That puts the files back but keeps the chat, request and all.\n- [x] Esc Esc, pick that request, then Restore code and conversation.\n  > Right. Both go back to the checkpoint taken before you sent that request.\n- [ ] Type `/compact`, so the agent forgets the request and its edits.\n  > `/compact` summarises the conversation. It doesn't touch any files."
+   },
+   {
+    "severity": "medium",
+    "where": "checkpoint claude-md-line (lines 205-215) versus test spot-init-dump (lines 437-447)",
+    "problem": "The Checkpoint and the Final test question check the same principle (a line the agent can discover by reading the code doesn't belong in `CLAUDE.md`), and their feedback is nearly identical. The writing guide forbids a Checkpoint duplicating a Final test question. The CLAUDE.md section teaches a second idea that nothing tests: the project's `CLAUDE.md` is reloaded after `/compact`, so it outlasts rules given only in chat.",
+    "evidence": "claude-md-line, option a feedback: \"The agent sees that in seconds from the project's files. A line it can discover is a line you pay for in every session.\" spot-init-dump, option b feedback: \"Every line costs context in every session ... Keep what it can't discover.\" Line 188: \"the project's copy is reloaded after `/compact` ... so its lines outlast anything said only in chat.\"",
+    "fix": "Keep spot-init-dump in the Final test (it covers goal 3). Rewrite the Checkpoint (same id; the right answer stays at d, 38 chars):\nEarly in a long session you told the agent, in chat, never to edit files in `migrations/`. After a `/compact`, it edits one. Where should that rule have gone?\n- [ ] Repeat the rule in chat more firmly, in capital letters.\n  > It's still only in the conversation, and `/compact` boils that down to a summary. Details can drop out.\n- [ ] Run `/init` so the agent re-reads the whole project.\n  > `/init` writes a starter `CLAUDE.md` about the project. It doesn't bring back what you said in chat.\n- [ ] Avoid `/compact` in any session where you've given rules.\n  > Long sessions need compacting sooner or later. Put the rule somewhere compaction can't touch.\n- [x] One line in the project's `CLAUDE.md`.\n  > Right. The project's `CLAUDE.md` is reloaded from disk after `/compact`, so its rules outlast anything said only in chat."
+   },
+   {
+    "severity": "medium",
+    "where": "test predict-loop, lines 341-351",
+    "problem": "This is recall of the body, not transfer. The prompt is the body's own example with the noun swapped (\"the comments API test is failing, fix it\" becomes \"the signup page crashes on submit, fix it\"). The right answer paraphrases the loop definition at line 36 and the flow Scene, so it checks recognition of the definition rather than whether the reader can predict the loop's next step. The right answer is also only 3 characters shorter than the longest option.",
+    "evidence": "Line 345: \"It calls a tool, gets the result back, picks the next step, and repeats until it can answer.\" (92 chars) against option a at 95. Line 36: \"The model reads the result and decides the next step. That cycle is the agent loop\".",
+    "fix": "Make it a real prediction (same id; the right answer stays at b, 59 chars, not the longest):\nYou ask the agent to fix a crash on your signup page. In Ctrl+O you see its first tool call ran the tests, and the result shows an error at line 42 of `src/signup.ts`. What is the agent most likely to do next?\n- [ ] Write the fix straight away, since the error names the line.\n  > It hasn't seen that file's contents yet. The model knows only what tool results have brought in, so it reads first.\n- [x] Write another tool call, this time to read `src/signup.ts`.\n  > Right. Each result shapes the next call. The error points at a file, so the next trip round the loop reads it.\n- [ ] Wait while Claude Code runs every other tool, then read a summary.\n  > The harness runs only the calls the model writes, one round trip at a time.\n- [ ] Reply \"fixed\", because the tests have already run once.\n  > A reply ends the turn, and nothing has been changed or re-checked yet."
+   },
+   {
+    "severity": "low",
+    "where": "test sequence-plan-approve, options a and b, lines 451-454",
+    "problem": "Two of the three distractors aren't real misconceptions. Option a picks an approval answer before any plan exists, and option b approves before reading the plan; a reader rules both out without knowing anything about plan mode. Only option d (describe first in auto mode) reflects a real beginner mistake.",
+    "evidence": "Option a: \"Describe the change \u2192 pick \\\"Yes, manually approve edits\\\" \u2192 Shift+Tab into plan mode \u2192 read the plan\". Option b: \"Shift+Tab into plan mode \u2192 pick \\\"Yes, and use auto mode\\\" \u2192 read the plan \u2192 review each edit\".",
+    "fix": "Replace options a and b (89 and 94 chars; the right answer c at 94 ties, so lint passes):\n- [ ] Shift+Tab into plan mode \u2192 describe the change \u2192 read the plan \u2192 \"Yes, and use auto mode\"\n  > Auto mode lets it build without routine prompts. It won't stop for you to review each edit.\n- [ ] Describe the change \u2192 Shift+Tab into plan mode \u2192 read the plan \u2192 \"Yes, manually approve edits\"\n  > In auto mode, describing the change starts the work straight away. Switch to plan mode before you describe it."
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint plan-wrong-scope, option d's feedback, line 183",
+    "problem": "The feedback is inaccurate. Esc Esc can still rewind the conversation to before the planning prompt; there is something to rewind. The real reason it's the wrong choice is that it throws away the exploration when one sentence of correction would do.",
+    "evidence": "Line 183: \"Nothing has been built yet, so there's nothing to rewind. Correct the plan.\"",
+    "fix": "Replace it with: \"  > That throws away the exploration and the plan, and you'd start over. One sentence at the menu fixes the assumption.\""
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-repeat-correction, option d's feedback, line 398",
+    "problem": "The feedback states Matt's opinion as fact. The docs describe `/init` as writing a starter `CLAUDE.md`. That the file is \"long\" and \"mostly discoverable detail\" is Matt's argument, and the body presents it as one side of a disagreement (lines 198-201).",
+    "evidence": "Line 398: \"`/init` writes a long file of mostly discoverable detail. You need one line, not a dump.\"",
+    "fix": "Replace it with: \"  > `/init` writes a whole starter file about the project. You need one line for one repeated correction, not a new file.\""
+   },
+   {
+    "severity": "low",
+    "where": "test spot-bypass-laptop, option a and option d's feedback, lines 415-422",
+    "problem": "The right answer closely paraphrases the watch-out callout's last sentence (line 125), so it checks recall of that sentence. Option d's claim (Bypass lasts one session) may be true for the `--dangerously-skip-permissions` flag, which is passed per launch. Its feedback only says the duration isn't the problem, so a reader may wonder whether d is also a correct observation.",
+    "evidence": "Line 125: \"On your own laptop, auto mode or a few allow rules cut the prompts without removing the safety net.\" Option a: \"Bypass is for isolated containers; on her laptop, use auto or allow rules.\" Option d: \"Bypass only lasts for one session, so she'll have to switch it on again every day.\"",
+    "fix": "Replace option d with a real misconception (60 chars): \"- [ ] Deny rules switch off in Bypass, so she should add asks.\" with feedback \"  > Deny rules still block in every mode. The danger is everything else running with no check at all.\" Optionally reword option a to \"Bypass runs every call unchecked; that's for isolated containers.\" (65 chars, still shorter than option b) so it no longer echoes the callout."
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/01-how-agents-work.md:26",
+    "problem": "The Lesson defines a Skill only as an instruction file 'the agent loads when you type their name'. That leaves out the 11 model-invoked Skills, which the agent can also load by itself when a task matches their description. The definition is wrong for those Skills and contradicts the Lesson's own text: line 201 says Skills 'load only when needed' (the agent decides), and the Site story at line 316 types `/grilling`, which is a model-invoked Skill.",
+    "evidence": "skills/productivity/grilling/SKILL.md:1-4 has no `disable-model-invocation`, so grilling is model-invoked. grill-me/SKILL.md:4 has `disable-model-invocation: true`. The writing guide (writing-guide.md:72-74) lists 16 user-invoked and 11 model-invoked Skills and says plain words can start a model-invoked one. The pilot (04-grilling.md:24) defines a Skill as a file 'the agent loads when you type its name, like `/grill-me`, or when a task matches its description.' The engine GLOSSARY (branch claude/lesson-content-scrolling-ux-2a9171, GLOSSARY.md:19-29) says every Skill is user-invoked or model-invoked, and a model-invoked Skill is one 'the agent can start by itself'. In Never Run claude /init (9tmsq-Gvx6g 8:33-8:39), Matt says steering belongs in Skills 'that the LLM can discover'.",
+    "fix": "Match the pilot: \"...a popular set of Skills for Claude Code (short instruction files the agent loads when you type their name, like `/grill-me`, or, for some, when a task matches their description)...\""
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/01-how-agents-work.md:17, 217, 219, 221, 228, 251, 320, 429, 433",
+    "problem": "GLOSSARY clash. On this site, 'Checkpoint' is a fixed term for the practice questions inside a Lesson. This Lesson also uses 'checkpoint' for Claude Code's rewind save points: in a goal (line 17), a section heading ('## Checkpoints: stepping back'), the body, the callout and two Final test options. The Site story at line 320 then uses 'Checkpoints' in the GLOSSARY sense ('the engine for the Scenes, Checkpoints and Final tests'). So one Lesson uses the word in two senses, and the heading sits right among the practice-question boxes. The fixed rules say to use GLOSSARY terms exactly.",
+    "evidence": "Engine GLOSSARY.md:57-59 on branch claude/lesson-content-scrolling-ux-2a9171: 'Checkpoint: A single question inside a Lesson, placed right after the idea it checks.' contract-v1.md:59 lists Checkpoint as a reader-facing term. In the Lesson, line 217 is the heading '## Checkpoints: stepping back' and line 320 reads 'one building the engine for the Scenes, Checkpoints and Final tests'.",
+    "fix": "Keep Claude Code's word, since the docs use it, but separate the two senses. Rename the heading to '## Rewind: stepping back'. At first use (line 219), write: 'Before each prompt you send, Claude Code saves a restore point (its docs call these checkpoints; they're unrelated to the Checkpoint questions on this site)...'. In goal line 17 and the body, prefer 'rewind' or 'restore point' (e.g. 'say what rewind can't undo'), and use 'Claude Code's checkpoints' wherever the bare word would be ambiguous."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/01-how-agents-work.md:182-183 (checkpoint plan-wrong-scope, option d)",
+    "problem": "The feedback says 'Nothing has been built yet, so there's nothing to rewind.' That is inaccurate. When no files changed, the rewind menu still offers Restore conversation and the summarize options. Rewinding to before the planning prompt would really happen, and it would throw away the exploration and the plan. The right answer stands, but the stated reason is false.",
+    "evidence": "Checkpointing docs (https://code.claude.com/docs/en/checkpointing, read 2026-10-23): 'If no file edits were captured after that point, the menu offers only Restore conversation, the summarize options, and Never mind.' The Lesson's own terminal Scene (lines 239-244) lists Restore conversation as a separate option.",
+    "fix": "Replace the feedback with: \"> Rewinding would throw away the exploration and the plan along with the wrong assumption. One sentence under No, keep planning fixes it and keeps the rest.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/01-how-agents-work.md:318 and 469 (sources)",
+    "problem": "The Site story says `/setup-matt-pocock-skills` wrote most of `CLAUDE.md` (issue tracker, triage labels, glossary and ADR layout). The only Skill source cited for that is ask-matt SKILL.md, which says only that the Skill configures the tracker, labels and doc layout. It never says the Skill writes into CLAUDE.md. The Skill's own SKILL.md is the source that supports the claim.",
+    "evidence": "ask-matt/SKILL.md:97: 'run before your first engineering flow to configure the issue tracker, triage labels, and doc layout'. setup-matt-pocock-skills/SKILL.md:65-100 writes an '## Agent skills' block with '### Issue tracker', '### Triage labels' and '### Domain docs' into CLAUDE.md or AGENTS.md. The repo's CLAUDE.md:1-13 is exactly that block, and the file has 17 lines in total.",
+    "fix": "Add to sources: \"- [setup-matt-pocock-skills SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/SKILL.md) (the Agent skills block it writes into `CLAUDE.md`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.\" The ask-matt entry can stay for the Main flow context."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/01-how-agents-work.md:170",
+    "problem": "The Lesson says 'Two `CLAUDE.md` lines kept his plans short.' Only the first line was about keeping plans short. Matt says the second line, ending each plan with a list of unresolved questions, was there to nudge the agent into asking what it's unsure about.",
+    "evidence": "WNx-s-RxVxk 8:16-8:46 is the conciseness line ('Make the plan extremely concise...', which took plans 'from 2,000 words to 400'). At 8:46-8:59 Matt says the unresolved-questions line 'gives the agent an extra little nudge just to ask me anything that it's confused about'.",
+    "fix": "\"One `CLAUDE.md` line kept his plans short (make plans extremely concise), and a second ended each plan with a list of unresolved questions, a nudge to ask what it wasn't sure about.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/01-how-agents-work.md:320",
+    "problem": "'This course rewrite started the same way: I grilled the plan in plan mode' blurs the facts in the paragraph above it. In the first build, plan mode came first and grilling (`/grilling`) ran only after the session switched to auto mode (line 316). The rewrite was grilled inside plan mode, so it did not start 'the same way'. The wording also muddies the plan mode versus grilling contrast the Lesson teaches.",
+    "evidence": "Line 316: 'Then I approved the plan, the session switched to auto mode, and I typed `/grilling`.' The Lesson brief (workflow script, L entry for how-agents-work) says the rewrite 'was grilled in plan mode in one session'.",
+    "fix": "\"This course rewrite also started in plan mode: I grilled the plan there, in one session. Then I split the work...\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/01-how-agents-work.md:398 (test scenario-repeat-correction, option d feedback)",
+    "problem": "The feedback says '`/init` writes a long file of mostly discoverable detail' as if it were fact. The docs (and line 196 of this Lesson) describe `/init` as writing a starter file. 'Long' and 'mostly discoverable' are Matt's criticism, not documented behaviour.",
+    "evidence": "Line 196: '`/init` writes a starter file.' Research note how-agents-work.md:152: '`/init` generates a starter CLAUDE.md, or suggests improvements to an existing one' [memory docs]. Matt's criticism is in 9tmsq-Gvx6g 0:00-0:23.",
+    "fix": "\"> `/init` writes a starter file describing the codebase, most of which the agent can find for itself. You need one line, not a dump.\""
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "medium",
+    "where": "content/lessons/01-how-agents-work.md:320 (site-story, third paragraph: \"This course rewrite started the same way: I grilled the plan in plan mode, in one session.\")",
+    "problem": "The claim is not supported as written. 'Grilled' in this course means the grilling Skills (the Lesson itself contrasts grilling with plan mode at lines 170-173), but the course-rewrite session log shows plan mode with the agent's own multiple-choice questions and no grilling Skill, and the session was spun off from an earlier one, so 'in one session' is also unverified.",
+    "evidence": "~/.claude/projects/-Users-siddharth-Developer-trying--claude-worktrees-course-rewrite-439267/a540e6e3-0fdf-4ed0-8f06-0d4e6f6d94a8.jsonl: permissionMode plan at line 6, ExitPlanMode tool_use at lines 340-351, first auto-mode entry at line 500; in lines 1-340 there are 4 AskUserQuestion calls and zero Skill invocations of any /grill* Skill (grep '\"skill\":\"' and 'command-name>/grill' return nothing); the session's first user message begins 'Background (from the session that started this one)'. The first-build paragraph, by contrast, is confirmed: 8230810b...jsonl has plan at lines 3/7, '/plan' typed at line 81, ExitPlanMode at 71-111, auto from line 147, grilling-Skill attribution after that, 23 AskUserQuestion calls and the phrase 'smallest thing that works'.",
+    "fix": "Rewrite to what the log shows, e.g. 'This course rewrite also started in plan mode: the agent asked me a few rounds of multiple-choice questions, I approved the plan, and the session switched to auto mode. Then I split the work into two sessions\u2026'. Drop 'grilled' unless a /grill-* Skill was actually run, and drop 'in one session'."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/01-how-agents-work.md:17, 217-228, 251, 320 (heading \"Checkpoints: stepping back\" and the word checkpoint for Claude Code's rewind points)",
+    "problem": "'Checkpoint' is a reserved GLOSSARY/contract term for the inline quiz block that this very page contains; the Lesson uses the same word for Claude Code's rewind snapshots, and line 320 uses it in the quiz sense ('the engine for the Scenes, Checkpoints and Final tests') four paragraphs after the heading uses it in the rewind sense. A reader meets two meanings of a defined term on one page.",
+    "evidence": ".scratch/course-rewrite/contract-v1.md:59 ('Use GLOSSARY terms. New ones from PR A: Part, Checkpoint, Final test\u2026'); task rule 'GLOSSARY terms exactly (\u2026 Checkpoint \u2026)'; lesson lines 17, 217, 219, 221, 228, 251 (rewind sense) vs line 320 (quiz sense).",
+    "fix": "Call the Claude Code feature 'rewind' / 'rewind points' (or 'file snapshots') in headings, goals, cheat sheet and feedback lines, and say once that the docs call them checkpoints; keep capitalised 'Checkpoint' for the quiz blocks only."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/01-how-agents-work.md:115 (Auto row: \"a second model, the classifier, checks each action against your request\")",
+    "problem": "Overstates the classifier: the docs say it reviews most actions, not each one (reads and some other actions skip it).",
+    "evidence": "https://code.claude.com/docs/en/how-claude-code-works, 'Control what Claude can do': 'Auto: a classifier reviews most actions in the background and blocks the risky ones'; https://code.claude.com/docs/en/permission-modes: 'how the classifier evaluates actions lists which actions it reviews and which skip it' (read 2026-10-23).",
+    "fix": "Change 'checks each action' to 'checks most actions (shell commands, network requests and the like)'."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/01-how-agents-work.md:219 (\"Before each prompt you send, Claude Code records a checkpoint\")",
+    "problem": "Slightly inaccurate: a checkpoint is taken only for prompts that start a turn; a message queued while the agent is working gets no checkpoint of its own.",
+    "evidence": "https://code.claude.com/docs/en/checkpointing: 'checkpointing automatically captures the state of your code before each prompt you send that starts a turn' and the 'Messages sent mid-turn not checkpointed' section (read 2026-10-23).",
+    "fix": "'Before each prompt you send that starts a turn (a message queued while it works gets none of its own), Claude Code records a checkpoint\u2026'"
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/01-how-agents-work.md:142 (\"Plan mode does two things. It blocks edits to your files\")",
+    "problem": "Stated as absolute; the docs carve out interactive terminal sessions where bypass permissions is available, where the edit block is not enforced.",
+    "evidence": "https://code.claude.com/docs/en/permission-modes, 'Analyze before you edit with plan mode': 'Except in interactive terminal sessions with bypass permissions available, edits stay blocked until you approve the plan' (via Context7 /websites/code_claude, read 2026-10-23).",
+    "fix": "Add a short clause, e.g. 'It blocks edits to your files (unless Bypass permissions is available in the session)\u2026', or note the exception in the watch-out callout."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/01-how-agents-work.md:196 (\"`/memory` shows which files loaded\")",
+    "problem": "/memory lists CLAUDE.md locations across scopes, including entries for files that do not exist yet, so it does not strictly show 'which files loaded'.",
+    "evidence": "https://code.claude.com/docs/en/memory, 'View and edit with /memory': 'lists your CLAUDE.md, CLAUDE.local.md, and other memory file locations across user and project scopes, including user and project CLAUDE.md entries for files that don't exist yet' (read 2026-10-23).",
+    "fix": "'`/memory` lists the memory files for this project (existing ones and the places you could create one)'; the Try-block check at line 304 is fine as is because the project file exists."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/01-how-agents-work.md:303 (\"If something is still listed, a shell command made it\u2026 `git restore .` puts changed files back\")",
+    "problem": "`git restore .` only reverts tracked files; a new file created by a shell command stays listed as untracked, so the promised clean `git status` may not appear.",
+    "evidence": "git semantics: `git restore` restores tracked paths from the index/HEAD; untracked files need `git clean`. The illustrative plan at line 162 adds 'one test added', so a new file is a realistic outcome of the exercise.",
+    "fix": "'\u2026`git restore .` puts changed files back, and `git clean -fd` removes new ones (check `git status` first).' Or: 'ask the agent to undo it, or use git.'"
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/01-how-agents-work.md:201 (\"should delete any `CLAUDE.md` an agent wrote\")",
+    "problem": "Broader than the source: Matt's advice is to delete the file `/init` generates; neither the article nor the video says to delete any agent-written CLAUDE.md.",
+    "evidence": "https://www.aihero.dev/never-run-claude-init, 'The Bottom Line': 'You'll either burn tokens keeping it up to date, or you'll delete it. Just skip to deleting it.' (about the /init output); transcript 9tmsq-Gvx6g.json 7:15-9:23 discusses only the /init file and his one-line file.",
+    "fix": "'\u2026and should delete the file `/init` produces.'"
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/01-how-agents-work.md:478 (sources: AI Coding Daily video dated 2026-04-11)",
+    "problem": "The video's publish date resolves to 2026-04-12 in two independent fetches, not 2026-04-11.",
+    "evidence": "Parallel web_fetch of https://www.youtube.com/watch?v=rLNLa2dcjG8 returned publish_date 2026-04-12; parallel-cli extract of the same URL returned publish_date 2026-04-12 (both on 2026-10-23). Other video dates check out: WNx-s-RxVxk 15 Jan 2026 (podwise.ai episode page), 9tmsq-Gvx6g 2026-02-24 (search result publish date).",
+    "fix": "Change to 2026-04-12, or confirm on the YouTube page and keep whichever it shows."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

@@ -1,0 +1,14 @@
+{
+ "n": 19,
+ "slug": "models-effort-ultracode",
+ "title": "Models, effort & ultracode",
+ "part": 4,
+ "old": "10-models-effort-ultracode.md",
+ "img": [
+  "/photos/models-effort-ultracode.jpg",
+  "A black-and-white close-up of a jet engine's fan blades spiralling into the centre.",
+  "Joao"
+ ],
+ "skills": [],
+ "extra": "Facts from Claude Code docs (dated 2026-10-23, Claude Code 2.1.309): aliases (opus=Opus 5.5, sonnet=Sonnet 5.5, haiku=Haiku 5.5, fable=Fable 5.1, best, opusplan, default), `/model` saves your default, effort levels low..max and defaults (5.5 models default to medium), `/effort`, ultrathink, ultracode as a setting (not an effort level) that makes Claude orchestrate workflows (keyword, `/effort ultracode`, `/workflows`), fast mode (`/fast`, Opus only, turn on at the start), `/code-review ultra`. Matt: effort usually too high; he runs Opus 5.5 on medium. Anthropic: bigger model when it tried and failed, more effort when it skipped steps. Re-verify against https://code.claude.com/docs/en/model-config and /workflows and /fast-mode if anything is uncertain."
+}

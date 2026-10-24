@@ -1,0 +1,308 @@
+{
+ "slug": "start-here",
+ "lenses": {
+  "reader": [
+   {
+    "severity": "high",
+    "where": "Try it yourself, steps 2 and 5 (lines 192 and 206)",
+    "problem": "The Try commands are chained with `&&`. Windows PowerShell 5.1, which is the default on Windows 10 and 11, rejects `&&`. The Lesson tells Windows readers to use PowerShell (line 32), so step 2 fails on their first try.",
+    "evidence": "Line 192 is `mkdir agent-practice && cd agent-practice && git init && claude`, and line 206 is `mkdir ~/learn-git && cd ~/learn-git && claude`. The Claude Code Quickstart (read 2026-10-23) lists \"The token '&&' is not a valid statement separator\" as the error PowerShell gives. Line 32 says \"Terminal on a Mac, PowerShell on Windows\".",
+    "fix": "Put one command per line in both `sh` blocks. Step 2: `mkdir agent-practice` / `cd agent-practice` / `git init` / `claude`. Step 5: `claude plugin install mattpocock-skills@claude-plugins-official` / `mkdir ~/learn-git` / `cd ~/learn-git` / `claude`. Add to step 2: \"Run these one line at a time (press Enter after each).\" The Mac Scene can keep the chained line, since it is labelled Mac."
+   },
+   {
+    "severity": "medium",
+    "where": "What you need, Git bullet (line 35)",
+    "problem": "Readers on Windows and Linux are never told how to get git. Git for Windows is presented only as a way for Claude Code to use Bash, which nobody has explained. On native Windows there is no git without it, so `git --version` and `git init` in the Try fail.",
+    "evidence": "Line 35: \"On Windows, add Git for Windows so Claude Code can use Bash.\" Only Macs get install help, in the Scene caption: \"If it's missing, your Mac offers to install it.\"",
+    "fix": "\"**Git**, which saves snapshots of a project so you can compare and undo changes. Most of the course happens in a repo: a folder git tracks. A Mac offers to install git the first time you type `git`. On Windows, install Git for Windows (git-scm.com), which also lets Claude Code use Bash, a common Unix shell. On Linux, install git with your package manager.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, steps 3\u20135 (lines 195\u2013213)",
+    "problem": "The stop and safety instructions arrive too late, and permission prompts are never mentioned. The reader learns to press Esc in step 4, after the agent has already run. Nothing says what to do when the agent asks permission. That is likely in step 5, where `/teach` searches the web and writes files. The writing guide requires the Try to say how to stop the agent, including choosing No at a permission prompt.",
+    "evidence": "Line 201: \"4. Type `/exit` to quit. If the agent ever does something you didn't want, press Esc to stop it.\" The words \"permission\" and \"No\" appear nowhere in the Lesson. The writing guide says Try blocks must cover \"how to stop it (Esc, or choose No at a permission prompt)\".",
+    "fix": "Add to step 2: \"While it works: Esc stops it. If it asks permission to do something, choose Yes for reading or searching, and No for anything you didn't ask for.\" Reduce step 4 to \"Type `/exit` to quit.\""
+   },
+   {
+    "severity": "medium",
+    "where": "What you need (line 38) vs Try step 5 (line 202) and the /teach section (lines 138\u2013163)",
+    "problem": "Two things conflict. The Lesson says Matt's Skills are installed in another Lesson, but the Try installs them here. The `/teach` section also never says that `/teach` only exists once Matt's Skills are installed. A reader who goes straight from the tip to typing `/teach` gets nothing.",
+    "evidence": "Line 38: \"You'll install Matt's Skills in [Skills](/learn/skills).\" Line 202: \"Optional: install Matt's Skills and start a learning folder of its own.\" Line 140 introduces `/teach` with no prerequisite.",
+    "fix": "Line 38: \"[Skills](/learn/skills) explains installing Matt's Skills properly; the Try below gives the one-line install if you want `/teach` now.\" In the /teach section, after \"Matt has a Skill for it\", add \"(it needs Matt's Skills installed; see the Try below)\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Goals line 18, line 140, flow Scene caption line 114",
+    "problem": "\"Session\" is used before it is ever defined. The pilot review lists session among the terms every Lesson must define at first use.",
+    "evidence": "Goal: \"over several sessions\". Line 140: \"teaches one topic over several sessions\". Line 114: \"A build too big for one session\u2026\". The word is never explained anywhere in the Lesson.",
+    "fix": "At line 140: \"\u2026and it teaches one topic over several sessions (a session is one conversation with Claude Code, from typing `claude` until you quit or clear it).\" Alternatively, define it at line 53 or in the Try step that first starts `claude`."
+   },
+   {
+    "severity": "medium",
+    "where": "What you need, plan bullet (line 34); Final test scenario-free-plan (lines 276\u2013277)",
+    "problem": "\"Console account\" is never explained, so a newcomer can't tell what it is or where to get one. \"Pay-as-you-go\" also doesn't match the docs, which describe the Console as API access with pre-paid credits.",
+    "evidence": "Line 34: \"or a pay-as-you-go Console account\". The Quickstart (read 2026-10-23) says: \"Claude Console (API access with pre-paid credits)\". The right answer to the free-plan question repeats \"or a Console account\" without saying what it is.",
+    "fix": "\"\u2026or a Claude Console account (Anthropic's developer account, where you buy usage credits in advance).\" In the Final test feedback: \"\u2026or a Claude Console account with pre-paid credits.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Cheat sheet row 4 (line 251)",
+    "problem": "`/ask-matt` appears for the first time in the cheat sheet. \"Router Skill\" is jargon the body never explains. A cheat sheet should only recap what the Lesson taught.",
+    "evidence": "Line 251: \"| Find which Skill fits | `/ask-matt`, Matt's router Skill (see [Skills](/learn/skills)) |\". No other line mentions `/ask-matt`.",
+    "fix": "Either add one sentence after the Main flow Scene: \"Unsure which Skill fits? Matt's `/ask-matt` Skill asks about your situation and names the one to type ([Skills](/learn/skills) covers it).\" Or change the row to: \"`/ask-matt`: describe your situation and it names the Skill to type (see [Skills](/learn/skills))\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Terminal Scene last caption (line 53); Try step 2 (line 189)",
+    "problem": "The first-run description skips screens the reader will probably see. Before the browser opens, Claude Code's first-run setup usually asks the reader to pick a colour theme and a login method (Claude account or Console). A newcomer told \"a browser opens\" may stall at an unexpected menu. This is plausible but not checked against 2.1.309.",
+    "evidence": "Line 53: \"The first time, a browser opens so you can log in. Then it asks whether you trust this folder.\" The docs say only \"follow the prompts\".",
+    "fix": "Line 53: \"Start Claude Code. The first time, it asks you to pick a colour theme and how to log in (choose your Claude account), then opens a browser. Then it asks whether you trust this folder: choose Yes.\" Mirror this in Try step 2: \"Follow its first-run questions and log in when a browser opens.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try step 5 prompt (line 210) vs \"It's working if\" (line 219)",
+    "problem": "The checklist expects `/teach` to ask why the reader wants to learn. The prompt already gives a reason (\"for an agentic coding course\"). Per its SKILL.md, `/teach` questions the user only when the mission is unclear or `MISSION.md` is empty, so it may write the mission straight from the prompt. The reader would then think the exercise failed.",
+    "evidence": "teach SKILL.md: \"If the user is unclear about the mission, or the `MISSION.md` is not populated, your first job should be to question the user on why they want to learn this.\" The prompt reads \"/teach the git basics I need for an agentic coding course. I've never used git.\"",
+    "fix": "Change the prompt to `/teach git basics. I've never used git.` That keeps the prior-knowledge advice and leaves the reason for `/teach` to ask about. Or soften the check: \"`/teach` asks why you want to learn (or confirms the reason you gave) before it shows a lesson\u2026\""
+   },
+   {
+    "severity": "medium",
+    "where": "Goals, third item (line 16)",
+    "problem": "The goal promises that readers can read a Lesson's Scenes and sources, but no Final test question checks either. Only the Final test mechanics are tested, and the Site story only by a Checkpoint. The guide asks for every goal to be checkable by the Final test.",
+    "evidence": "Goal: \"read a Lesson here: its Scenes, Checkpoints, Site story box, Final test and sources\". The six test ids are scenario-where-to-start, scenario-free-plan, spot-unneeded-step, scenario-failed-final-test, scenario-teach-folder and predict-teach-first-move.",
+    "fix": "Narrow it: \"You'll be able to use a Lesson's Checkpoints and Final test, and tell its Site story from its teaching.\" Or replace one test question with a Site-story-versus-teaching scenario that differs from the Checkpoint."
+   },
+   {
+    "severity": "low",
+    "where": "Lines 33, 35, 36",
+    "problem": "Some terms are never explained for someone who only knows what a terminal is: WSL (line 33), Bash (line 35) and Node.js (line 36). The reader is never told what Node.js is.",
+    "evidence": "\"On a Mac, Linux or WSL\"; \"so Claude Code can use Bash\"; \"**Node.js is optional.**\"",
+    "fix": "\"On a Mac, Linux or WSL (Linux running inside Windows)\". Bash is covered by the Git fix above. \"**Node.js** (a tool for running JavaScript outside a browser) **is optional.**\""
+   },
+   {
+    "severity": "low",
+    "where": "How to read a Lesson (lines 73, 76, 77)",
+    "problem": "Some site terms appear with capitals but no definition: Visitors, Attempt, and \"pinned to mattpocock-skills 1.3.1\". The reader doesn't know that mattpocock-skills is the package name.",
+    "evidence": "\"how other Visitors answered\"; \"Your latest Attempt counts\"; \"Skill facts are pinned to mattpocock-skills 1.3.1\".",
+    "fix": "\"how other Visitors (readers of this site) answered\"; \"Your latest Attempt (one go at the whole Final test) counts\"; \"Skill facts match version 1.3.1 of Matt's Skills (the mattpocock-skills plugin)\"."
+   },
+   {
+    "severity": "low",
+    "where": "How to read a Lesson, Scenes bullet (line 72)",
+    "problem": "The list of Scene kinds leaves out `photos`, which contract v1.5 added. \"Context meter\" uses \"context\" before it is explained. On a phone, the stage sits above the captions, not beside them.",
+    "evidence": "\"Small pictures beside the text (a chat, a terminal, a flow, a file tree or a context meter)\". The engine spec says the stage is \"sticky at the top\" on narrow screens.",
+    "fix": "\"Small pictures beside the text (above it on a phone), such as a chat, a terminal, a flow chart, a file tree, a photo or a gauge of how full the agent's memory is, that build a step at a time as you scroll.\""
+   },
+   {
+    "severity": "low",
+    "where": "Main flow Scene captions (lines 112, 120, 122)",
+    "problem": "Some captions say slightly more than the sources support. \"Every change starts with an interview\" ignores the on-ramps (for example, `/diagnosing-bugs`). `/retro` suggests changes rather than making them (\"suggesting improvements\" in retro SKILL.md). A pull request goes live only once it is merged, and \"merge\" is never explained.",
+    "evidence": "\"Every change starts with an interview\u2026\"; \"A pull request (a proposed change, ready to merge) carries it to the live site\"; \"`/retro` looks back on the session and improves the agent's setup\".",
+    "fix": "\"Most changes start with an interview: \u2026\"; \"A pull request (a proposed change others can check before it's merged, or added, into the main code) is how it reaches the live site; `/pr` writes its description.\"; \"`/retro` looks back on the session and suggests changes to the agent's setup for next time.\""
+   },
+   {
+    "severity": "low",
+    "where": "Files Scene step 5 caption (line 153)",
+    "problem": "The caption overstates what learning records do. They record key insights that `/teach` uses to pick what to teach next. They don't guarantee it never repeats a topic.",
+    "evidence": "\"It records what you've shown you know, so it won't teach it twice.\" SKILL.md says learning records \"capture what the user has learned\" and are used \"to calculate the zone of proximal development\".",
+    "fix": "\"You do the practice and say it clicked. It writes down what you've learned, so the next lesson builds on it.\""
+   },
+   {
+    "severity": "low",
+    "where": "Try \"It's working if\" (line 219); Checkpoint command-not-found (line 58)",
+    "problem": "The checklist says `MISSION.md` appears but not how to look for it. The \"command not found\" wording only matches Mac and Linux; Windows says the name \"is not recognized\".",
+    "evidence": "\"`MISSION.md` appears in `~/learn-git`, not in `agent-practice`\". Prompt: get \"command not found\".",
+    "fix": "Checklist: \"\u2026after `/exit`, `ls` (or `dir` on Windows) in `~/learn-git` shows `MISSION.md`.\" Checkpoint: \"\u2026and get \\\"command not found\\\" (on Windows, \\\"not recognized\\\").\""
+   },
+   {
+    "severity": "low",
+    "where": "Site story (lines 223, 237)",
+    "problem": "For a cold reader, the Site story is full of unexplained jargon: Opus 5.5, default effort, Neon branches per environment, Drizzle, issues.",
+    "evidence": "\"Claude Code wrote the code on Opus 5.5 at the default effort\"; \"a Neon Postgres database with a separate branch for each environment, Drizzle to talk to it\".",
+    "fix": "\"\u2026on Opus 5.5 (the model) at the default effort (how hard it thinks)\u2026\"; \"a Neon Postgres database (with a separate copy for my laptop, tests and the live site), Drizzle to talk to it from code\u2026\"; \"6 issues (tickets, one per piece of work)\"."
+   },
+   {
+    "severity": "low",
+    "where": "What this course is, Skill definition (line 22); What you need, terminal bullet (line 32)",
+    "problem": "\"Its description\" assumes the reader knows that a Skill has a description. Linux users aren't told which terminal to use.",
+    "evidence": "\"or when a task matches its description\"; \"Terminal on a Mac, PowerShell on Windows.\"",
+    "fix": "\"\u2026or when your request matches what the Skill says it's for.\" Add \"or your distribution's terminal app on Linux\", and link the Claude Code terminal guide (code.claude.com/docs/en/terminal-guide) for first-timers."
+   },
+   {
+    "severity": "low",
+    "where": "Whole Lesson (word budget)",
+    "problem": "The lint counts 1,382 prose words against the 1,400 cap for this Lesson. The fixes above add words, so they need matching cuts.",
+    "evidence": "Lint output: proseWords 1382, goals 4, Scenes terminal/flow/files, 4 Checkpoints, 6 Final test questions, no ERROR lines.",
+    "fix": "Places to cut, roughly 60\u201390 words: line 24's second sentence (\"A little comfort typing commands helps\u2026\"); the last paragraph of the Site story, which repeats the Site-story-versus-teaching point already made in How to read and its Checkpoint; and line 163's \"His docs say most reported use is outside code\u2026\" sentence."
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "Final test (lines 254-326) vs goals (lines 13-18)",
+    "problem": "Two goals are only half covered by the Final test. Goal 1 says the reader can tell 'where each of its four Parts fits', but no Final test question asks which Part covers a situation. Only Checkpoint which-lesson-stubborn-bug does that, and Checkpoints don't count. Goal 3 lists Scenes, Checkpoints, the Site story box, the Final test and sources, but the Final test only checks the Final test and Checkpoint rules (scenario-failed-final-test). Meanwhile Goal 4 (/teach) gets two questions.",
+    "evidence": "Goal 1: 'where each of its four Parts fits'. Goal 3: 'its Scenes, Checkpoints, Site story box, Final test and sources'. Tests: scenario-where-to-start (who it's for / order), scenario-free-plan and spot-unneeded-step (setup), scenario-failed-final-test (reading a Lesson), scenario-teach-folder and predict-teach-first-move (both /teach). The Final test is already at the 6-question cap for Start here.",
+    "fix": "Swap two questions, keeping six. (1) Replace scenario-where-to-start with a Parts question (rewrite in the next finding). (2) Replace predict-teach-first-move, the weaker of the two /teach questions, with a sources and pinned-version question that transfers to a rename the body doesn't mention. New id, placed last:\n\n```test scenario-old-video-name\nYou follow a source link to an older Matt video. In it he types diagnose, but the Diagnosing bugs Lesson tells you to type `/diagnosing-bugs`. What do you type?\n- [ ] diagnose, since the video shows what Matt really uses.\n  > Matt renames Skills. The course follows the names in mattpocock-skills 1.3.1, the version you installed, and in 1.3.1 that Skill is `/diagnosing-bugs`.\n- [x] `/diagnosing-bugs`; the Lesson is pinned to 1.3.1.\n  > Right. Skill facts here are pinned to 1.3.1, and every source is dated, so an older video can show an older name. Matt renamed diagnose to `/diagnosing-bugs`.\n- [ ] Install an older version of the Skills to match the video.\n  > That would drop later fixes, and the course would no longer match what you run. Use the name the Lesson gives.\n- [ ] Wait for Matt to post an updated video first.\n  > No need. The Lesson already gives the current name, and the video's date tells you why the two differ.\n```\n\nCHANGELOG 1.3.1 confirms the rename: 'Rename the diagnose skill to diagnosing-bugs'. Leave diagnose unbackticked so the /name lint doesn't flag it."
+   },
+   {
+    "severity": "medium",
+    "where": "test scenario-where-to-start (lines 256-266)",
+    "problem": "The right answer can be guessed without the Lesson. The reader is already on Start here, so 'Here' is the obvious pick. The wording is also off: Start here is itself in Part 1, and the body says to read all four Parts in order, not just Part 1. The right option is also by far the shortest (27 characters against 46-48), which is a tell. And the question doesn't test where the Parts fit (goal 1).",
+    "evidence": "Right option: 'Here, then Part 1 in order.' Body line 95: 'Read them in order the first time, because each builds on the ones before.'",
+    "fix": "Replace it with a new id that tests where the Parts fit, in a situation the Checkpoint doesn't use (the Checkpoint already covers Part 3):\n\n```test scenario-which-part\nMonths after finishing the course, you want to add a whole members area to your site. It's so big you can't plan it in one sitting. Which Part do you go back to?\n- [ ] Part 1, Foundations\n  > Foundations covers how agents work, the context window and what a Skill is. That's background, not how to plan a huge job.\n- [ ] Part 2, The main flow\n  > The Main flow starts from work you can plan in one sitting. Work bigger than that needs a map first, and that's a Level up topic.\n- [ ] Part 3, When things go wrong\n  > Part 3 is for a stubborn bug, a pile of incoming requests or steps only a human can do. Nothing has gone wrong here.\n- [x] Part 4, Level up\n  > Right. Part 4 covers huge projects. Its Wayfinder Lesson maps work too big for one sitting before it joins the Main flow.\n```\n\nThe split between /grill-with-docs and /wayfinder ('can you plan it in one sitting') matches the writing guide's pilot lesson."
+   },
+   {
+    "severity": "medium",
+    "where": "test predict-teach-first-move (lines 316-326)",
+    "problem": "This tests recall, not transfer. The same fact appears three times just above it: the body ('First it asks why you want to learn'), the files Scene caption ('It asks why you want to learn, then writes your answer down as the mission') and the Try block's 'It's working if' line ('`/teach` asks why you want to learn before it shows a lesson'). It also duplicates goal coverage that scenario-teach-folder already gives.",
+    "evidence": "Lines 142, 146 and 219 all state the right answer almost word for word.",
+    "fix": "Replace it with scenario-old-video-name from the first finding. If you'd rather keep a /teach question, make it a transfer case the body doesn't spell out, for example: 'Three weeks into `/teach` on SQL, you realise you need it for a data job, not your hobby site. What should happen?' Right option: 'It updates `MISSION.md` after checking with you.' SKILL.md says missions may change: update MISSION.md, add a learning record and confirm with the user first. Note that the body doesn't currently teach this, so a line would have to be added there."
+   },
+   {
+    "severity": "medium",
+    "where": "checkpoint site-story-vs-teaching (lines 81-91)",
+    "problem": "Option b can't be true given the prompt, so it isn't a real misconception: the prompt has just said the two boxes disagree, and b claims they 'always agree'. The right option also repeats the prompt's wording ('as the teaching says'), which gives it away. Option d (locked behind a Final test) is a weak distractor.",
+    "evidence": "Prompt: 'The Site story box says ... `/grilling` ... The teaching above it says to start with `/grill-with-docs`'. Option b: 'Either one, because the two boxes always agree.' Right: '`/grill-with-docs`, as the teaching says.'",
+    "fix": "Keep the id and the right answer's position (c). Reword:\n- [ ] `/grilling`, because it's what really worked on this site.\n  > The Site story is one real run, mistakes and all. It records what happened, not what's recommended.\n- [ ] Either one; the story and the teaching are equally good advice.\n  > They aren't equal. The story can show a choice the author made before they knew better. The teaching is what to do now.\n- [x] `/grill-with-docs`, the current advice.\n  > Right. The teaching is the current advice. The story sits in its own box so you can tell what happened from what to do.\n- [ ] `/grilling`, since the Site story is newer than the teaching.\n  > The story is a record of the past build. The teaching is kept up to date with mattpocock-skills 1.3.1.\nCheck the lint's length rule: the right option (about 40 characters) is shorter than b and d."
+   },
+   {
+    "severity": "medium",
+    "where": "checkpoint which-lesson-stubborn-bug (lines 126-136)",
+    "problem": "A word in the prompt gives the answer away. The prompt says 'a bug' and the right option is the only one with 'bug' in its title (Diagnosing bugs), so a reader can match words without knowing what the Parts cover. 'The context window' is also a weak distractor.",
+    "evidence": "Prompt: 'your own project has a bug you can't explain'. Options: 'Diagnosing bugs' / 'Triage' / 'Retro' / 'The context window'.",
+    "fix": "Keep the id. Describe the symptom without the word 'bug', and swap the weak distractor for a closer one:\n'A few weeks in, the comment box on your own project saves some comments and silently drops others, and a first look shows no reason why. Which Lesson do you turn to?'\n- [x] Diagnosing bugs (feedback unchanged)\n- [ ] Triage (feedback unchanged)\n- [ ] Retro (feedback unchanged)\n- [ ] Code review\n  > Code review checks finished code against your coding standards and the spec. It doesn't hunt down why working code misbehaves.\nThe options are positional, so this is a meaning-preserving reword only for a, b and c. Option d changes meaning, which is fine before publishing. If the id has already been published, use a new id."
+   },
+   {
+    "severity": "medium",
+    "where": "test spot-unneeded-step (lines 280-290)",
+    "problem": "Step 1 is the only step that comes with a reason ('because she'd read that Claude Code runs on it'), and the reason is the very misconception the course corrects, so the answer stands out. The Node misconception is also tested twice elsewhere: as a distractor in Checkpoint command-not-found (a) and in scenario-free-plan (a). That's three hits on one idea.",
+    "evidence": "'(1) installed Node.js, because she'd read that Claude Code runs on it; (2) ran the native installer; ...'",
+    "fix": "Give every step a reason, so none stands out:\n'Ana set up for the course like this: (1) installed Node.js so Claude Code would have what it needs; (2) ran the native installer to get Claude Code; (3) opened a new terminal window so `claude --version` would work, and got a version number; (4) made an empty folder and ran `git init` so she'd have a practice repo, then started `claude` there. Spot the step she didn't need.'\nKeep the options and feedback. Then remove the Node distractor from scenario-free-plan (next finding)."
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-free-plan, option a (lines 270-271)",
+    "problem": "The Node.js distractor repeats a misconception that spot-unneeded-step tests directly, so this question is spending an option on ground already covered.",
+    "evidence": "'- [ ] Node.js, so Claude Code can run.'",
+    "fix": "Replace option a with a different real misconception about plans:\n- [ ] An Anthropic API key pasted into the installer.\n  > The installer doesn't take a key. You log in through the browser the first time you run `claude`, and the account needs a paid plan or a Console account.\nThe right answer stays at d. Check that d (34 characters) is still not the longest option. It isn't."
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-failed-final-test, option d feedback (line 301)",
+    "problem": "The feedback for d says 'no need' but misses the real lesson. Answers are saved under a random ID in a cookie with no account, so clearing cookies wipes every saved Answer and tick, not just this Attempt. That's the teaching point.",
+    "evidence": "'> No need. Retrying is allowed, and your latest Attempt decides whether the Lesson is passed.' Body line 79: 'Your answers are saved under a random ID in a cookie; there's no account.'",
+    "fix": "'  > That would backfire. Your answers live under a random ID in that cookie, so clearing it wipes every saved Answer and tick. Just retry: your latest Attempt counts.'"
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-teach-folder, option a feedback (lines 306-307)",
+    "problem": "The feedback is right, but it doesn't square with the body's line that people get the most from /teach 'in an unfamiliar codebase' (line 163). A careful reader may wonder why running it in a code folder is wrong. In the video, Matt resolves this: start the learner in their own workspace and point it at the codebase (s5T5oQJcJ6U 10:30-10:35).",
+    "evidence": "Body line 163: 'in code, people get the most from it in an unfamiliar codebase'. Option a feedback: 'It would turn your project folder into a teaching workspace, mixing lesson files in with your code.'",
+    "fix": "'  > It would turn your project folder into a teaching workspace, mixing lesson files in with your code. Even to learn a codebase, Matt starts in a separate workspace and points it at the code.'"
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint teach-next-session vs test scenario-teach-folder; checkpoint command-not-found vs test spot-unneeded-step",
+    "problem": "Some Checkpoints overlap with Final test questions. Checkpoint option c ('Run it from your project folder') tests the same rule as scenario-teach-folder's right answer (a folder of its own). Checkpoint command-not-found and spot-unneeded-step step 3 both rest on 'open a new terminal window'. Neither pair is the same question, but the Final test is partly re-asking what the Checkpoints just checked.",
+    "evidence": "Checkpoint teach-next-session option c: 'Run it from your project folder this time, so it can see more.' Test scenario-teach-folder option a: 'In `~/recipes`, so it can learn from your real code.'",
+    "fix": "In teach-next-session, replace option c with a misconception that doesn't overlap, keeping the right answer at d:\n- [ ] Make a new empty folder, since each session needs a fresh workspace.\n  > The opposite: one workspace per topic, reused every session. A new folder starts from zero with no mission or records.\nThe new-window overlap is acceptable once spot-unneeded-step gives every step a reason."
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:331 (sources, CHANGELOG item '(renamed Skills)') backing the claim at :77 ('an older video may say write-a-prd where this course says `/to-spec`')",
+    "problem": "The cited CHANGELOG does not record the write-a-prd rename. The claim itself is true, but a reader following the source will not find write-a-prd anywhere in it: the CHANGELOG starts at 1.0.0 (2026-06-17) and the write-a-prd -> to-prd rename happened two months earlier.",
+    "evidence": "grep -i 'write-a-prd\\|prd-to-issues' over the whole 1.3.1 plugin folder and over GitHub main's CHANGELOG.md returns nothing; CHANGELOG only has to-prd -> to-spec (#464 line 241, #734 line 208) and to-issues -> to-tickets (#464). mattpocock/skills commit 8868f54 (2026-04-17) 'Rename skills for clarity: update write-a-prd to to-prd and prd-to-issues to to-issues'; release v1.0.0 published 2026-06-17 (gh api releases). The March video's YouTube chapters show 'write-a-prd 3:55' and 'prd-to-issues 6:00'.",
+    "fix": "Keep the sentence at :77 but fix the attribution: change the CHANGELOG source note to '(to-prd -> to-spec, to-issues -> to-tickets)' and add the earlier step to the March video source, e.g. '(... old names write-a-prd 3:55 and prd-to-issues 6:00; renamed to to-prd/to-issues in commit 8868f54, 2026-04-17, then to to-spec/to-tickets in the CHANGELOG)'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:333 (sources) and :62 (checkpoint feedback 'the setup docs explain how to fix your PATH')",
+    "problem": "The source is titled 'Set up Claude Code' but the page at code.claude.com/docs/en/setup is titled 'Advanced setup'. Several install facts the Lesson teaches (installer shows no progress, open a new terminal, `claude --version`, command-not-found means PATH) live on the Quickstart page, and the PATH fix itself is on the Troubleshoot installation page, neither of which is cited.",
+    "evidence": "curl https://code.claude.com/docs/en/setup.md -> '# Advanced setup'. Context7 /websites/code_claude: quickstart says 'The install command shows no progress while it downloads... open a new terminal window and run claude --version... see Fix your PATH'; 'Fix your PATH' / 'Verify your PATH' is on https://code.claude.com/docs/en/troubleshoot-install. The setup page does hold the installer commands, 4 GB+ RAM, Git for Windows and the Authenticate section, so the link is on topic.",
+    "fix": "Retitle the item 'Advanced setup' and add '[Quickstart](https://code.claude.com/docs/en/quickstart)' (and optionally '[Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install)') to the same dated line. At :62 write 'the install troubleshooting docs explain how to fix your PATH'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:34 and :277 ('a pay-as-you-go Console account')",
+    "problem": "The docs describe a Console account as API access with pre-paid credits, not pay-as-you-go billing. A beginner may expect to be billed after use when they must buy credits first.",
+    "evidence": "code.claude.com/docs/en/quickstart (via Context7): 'Claude Console (API access with pre-paid credits)'; docs/en/setup 'Authenticate': 'Pro, Max, Team, Enterprise, or Console account. The free claude.ai plan does not include Claude Code access.'",
+    "fix": "Replace 'a pay-as-you-go Console account' with 'a Console account with pre-paid API credits' in both places."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:223 (site-story: 'installed on 2026-10-21')",
+    "problem": "The install date is sourced from ~/.claude/plugins/installed_plugins.json, a settings-type file the Site story rules exclude. The date is corroborated by the repo, so the fact is right; only the provenance is outside the allowed set.",
+    "evidence": "installed_plugins.json: installedAt 2026-10-21T05:18:20Z, version 1.3.1, gitCommitSha 49dd158; first repo commit 4f849b9 2026-10-21 13:09 +0530 and PR #1 merged 2026-10-21 (gh pr list). The d21fc2c journal does not mention the install date.",
+    "fix": "Acceptable to keep since the repo confirms the same day; if the coordinator wants strict provenance, write 'installed the day I started the build' and drop the explicit date."
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:104-124 (scene flow 'The Main flow, the heart of Part 2')",
+    "problem": "The Scene is titled as the Main flow, but it draws one straight line: grill \u2192 spec \u2192 build \u2192 review \u2192 pr \u2192 retro. It leaves out both of ask-matt's forks. The prototype detour (via /handoff) is missing. So is the small-build branch, where you skip the spec and run /implement right in the session. That makes 'Spec and tickets' look like a step every change goes through. The Prototype Lesson is listed in Part 2 (line 98) but has no node in the flow said to be the heart of Part 2. The Main flow Lesson's own Scene shows both forks, so the two Lessons draw different maps.",
+    "evidence": "ask-matt SKILL.md:20-23 (step 2, 'Branch: can you settle every question in conversation?' \u2192 /handoff, /prototype, /handoff back) and :24-28 (step 3, 'Branch: is this a multi-session build?' \u2026 'No \u2192 /implement right here, in the same context window'). The writing-guide Main flow canon (writing-guide.md:82) includes the detour and the small/multi-session fork. Compare 12-main-flow.md:49-56, which uses side nodes 'proto' (Detour) and 'here' (No: /implement right here). At 00-start-here.md:114 the spec caption hints at a condition ('A build too big for one session'), but the drawing never shows the other path.",
+    "fix": "Add the two side nodes that contract v1.4 rule 5 allows, e.g. `node: proto | Detour: prototype | side` after grill, and `node: here | Small: /implement right here | side` before spec. Give each a one-line caption. Or retitle the Scene to say it's the multi-session path and add one sentence pointing to [The main flow](/learn/main-flow) for the forks."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:109, 116-119 (flow nodes 'build' and 'review')",
+    "problem": "The Scene shows Code review as its own step after the build. Its caption gives the namespaced name, which suggests the reader types it next. In 1.3.1, /implement already calls the code-review Skill itself before it commits. /implement-spec runs one code-review over the integration branch. A beginner following this map would think they must type /mattpocock-skills:code-review after every /implement, which reviews the same code twice. The Main flow Lesson says the opposite: '`/tdd` and `/code-review` run inside'.",
+    "evidence": "implement/SKILL.md:15 'Once done, call the Skill tool with \"code-review\" to review the work.' ask-matt SKILL.md:30: '`/implement` runs both per ticket; `/implement-spec`'s implementers each drive `/tdd`, and it runs one `/code-review` over the integration branch. \u2026 **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.' 12-main-flow.md:67 and :166 ('That's why `/implement` can run `/tdd` and `/code-review` for you').",
+    "fix": "Fold review into the build caption, e.g. '`/implement` builds each piece, driving `/tdd`, then runs Matt's code-review Skill on the result.' Or keep the node but caption it: '/implement closes out by running Matt's code-review Skill for you (Standards + Spec). Type `/mattpocock-skills:code-review` yourself only to review a branch on its own, since Claude Code has its own `/code-review`.'"
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:122 (flow caption for 'retro'); also :133 (Checkpoint feedback)",
+    "problem": "The caption overstates what /retro does. It says /retro 'improves the agent's setup for next time', but the Skill only suggests changes, ranked by severity, and you decide which to make. The writing guide says not to overstate what a Skill does. The Checkpoint feedback at :133 ('to improve the agent's setup') is softer but leans the same way.",
+    "evidence": "retro/SKILL.md:7 'You are suggesting improvements to the coding agent's environment'. retro/SKILL.md:25 'Present these candidates to the user, in order of severity.' ask-matt SKILL.md:34 'it looks back over the session and suggests changes to the agent's environment, not the code'. CHANGELOG.md:27 'looks back at a coding session and suggests changes to the agent's environment'. writing-guide.md:112 'Don't over-claim what a Skill saves or does.' (The same wording is at 12-main-flow.md:71, though that Lesson's body at :41 correctly says 'suggests'.)",
+    "fix": "Reword to: '`/retro` looks back on the session and suggests changes to the agent's setup (checks, coding standards, pointers), most severe first. You pick which to make.' At :133, use 'suggests ways to improve the agent's setup'."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:105, 111, 122 vs :100",
+    "problem": "Retro is drawn as the last node of 'The Main flow, the heart of Part 2', which matches ask-matt step 4. But the Retro Lesson sits in Part 4 (line 100), and the Part 2 list (line 98) doesn't include it. A reader looking for the last Main flow step in Part 2 won't find it, and nothing explains the split.",
+    "evidence": "ask-matt SKILL.md:34 ('4. **`/retro`** closes the loop'); CHANGELOG.md:25 ('the last step of the main flow, after `code-review`'). 00-start-here.md:98 lists no Retro in Part 2, and :100 puts [Retro](/learn/retro) in Part 4.",
+    "fix": "Add a clause to the retro caption or to line 100, e.g. 'Retro is the Main flow's last step; it gets its own Lesson, [Retro](/learn/retro), in Part 4.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:22",
+    "problem": "The first definition of a Skill says the agent loads it 'when you type its name \u2026 or when a task matches its description', with no qualifier. In 1.3.1, 16 of the 27 Skills are user-invoked and never load because a task matches their description. That includes both Skills this Lesson names (/grill-me and /teach). A cold reader may expect the agent to start any Skill on its own. The same Lesson later says /teach is user-invoked (line 140), and that reads as a contradiction.",
+    "evidence": "README.md:211 ('**User-invoked** skills are reachable only when you type them \u2026 **Model-invoked** skills can be invoked by you _or_ reached for automatically'). teach/SKILL.md:4 and grill-me's frontmatter: 'disable-model-invocation: true'. Canon lists in writing-guide.md:72-73 (16 user-invoked, 11 model-invoked).",
+    "fix": "'\u2026the agent loads when you type its name, like `/grill-me`, or, for some Skills, when a task matches its description.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:153-154 (files Scene, learning-records step)",
+    "problem": "The caption 'You do the practice and say it clicked' suggests that saying it clicked is enough to create a learning record. In the Skill, a record needs evidence that you understood: getting the practice right, or telling it what you already know. Coverage or a feeling of fluency doesn't count.",
+    "evidence": "teach/LEARNING-RECORD-FORMAT.md:33 ('The user demonstrated genuine understanding \u2026 not just exposure, but evidence they can use the concept correctly') and :40 ('Material that was merely covered. Coverage is not learning. Wait for evidence.'). teach/SKILL.md:38-41 (fluency can give an illusory sense of mastery).",
+    "fix": "'# You get the practice right. It records what you've shown you know, so it won't teach it twice.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:142",
+    "problem": "'Questions that need real-world judgement get pointed to a community' leaves out a step. The Skill first tries to answer, then hands you on to a community. It also respects it if you say you don't want to join one.",
+    "evidence": "teach/SKILL.md:116 'your default posture should be to attempt to answer - but to ultimately delegate to a **community**'; :120 'If the user expresses a preference that they don't want to join a community, respect it.' docs/productivity/teach.md:46 'gets an attempted answer and then a pointer to a community'.",
+    "fix": "'Questions that need real-world judgement get an attempted answer, then a pointer to a community where you can test it.'"
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:77 with sources :331 and :335",
+    "problem": "The rename example 'an older video may say write-a-prd where this course says /to-spec' is attributed to the CHANGELOG ('renamed Skills'). The 1.3.1 CHANGELOG records only to-prd \u2192 to-spec and never mentions write-a-prd. The name write-a-prd comes from the March video at about 4:05, and the Lesson cites that video only for 0:00\u20130:49.",
+    "evidence": "CHANGELOG.md:241 ('**`to-prd` is renamed to `to-spec`**') and :208. A grep of CHANGELOG.md finds no 'write-a-prd'. EJyuu6zlQCg transcript [4:05] 'invoke my next skill, which is a write a PRD skill'. Sources line :335 cites only '0:00\u20130:49'.",
+    "fix": "Add '(write a PRD skill, 4:05)' to the March video's source entry. Or say 'to-prd' in the body, which is the name the CHANGELOG backs."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/00-start-here.md:24",
+    "problem": "'the `/teach` tip below covers any gaps' overstates it. /teach runs inside Claude Code, so it can't help a reader who can't yet get a terminal and `claude` working. The Skill's own docs also say its lessons must be checked against sources, which the Lesson itself says at line 163.",
+    "evidence": "teach/SKILL.md:8-12 (runs as a Skill in the current directory, so Claude Code must already be running). docs/productivity/teach.md:65 ('`teach` is not reliable enough to trust unchecked'). 00-start-here.md:163 ('check lessons against the source it recommends').",
+    "fix": "'\u2026and once Claude Code runs, the `/teach` tip below can help with any gaps.'"
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

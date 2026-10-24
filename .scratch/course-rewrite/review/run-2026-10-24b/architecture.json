@@ -1,0 +1,326 @@
+{
+  "slug": "architecture",
+  "next": {
+    "round": 1,
+    "step": "fix",
+    "why": "check round 1 done; its fixer was stopped mid-run (some edits may already be in the file)"
+  },
+  "applied": [],
+  "declined": [],
+  "pending": [
+    {
+      "severity": "medium",
+      "where": "Two tests for any design, line 63: \"only one thing fills that slot: the real Postgres database ... Even the tests use a real copy\" (with line 61 \"Two adapters, so the seam is real\" and the flow Scene caption at line 86 \"The database has one adapter, the real one\")",
+      "problem": "The Lesson counts adapters two different ways. For lessonsFrom(dir), the same file-reading code pointed at a different folder counts as a second adapter. For the database, the same Postgres code pointed at a different database branch counts as no second adapter. By the Skill's role-based definition, both slots are filled by several things, or neither has a second adapter. So \"only one thing fills that slot\" is not what the repo shows, and a reader who applies the rule as taught gets a different answer from the Lesson's.",
+      "evidence": "src/db/index.ts:5 `drizzle({ client: neon(process.env.DATABASE_URL!) })`. src/test/setup-env.ts:3-11 points DATABASE_URL at the Neon `test` branch for tests. docs/adr/0002-neon-branch-per-environment.md lists four branches: vercel-dev, test, one per PR preview, and main. So several real databases fill the slot through a setting. src/lessons/lessons.ts:166-170: every dir goes through the same readdir/readFile code, so only the input changes. codebase-design/SKILL.md:24: an adapter \"Describes role (what slot it fills), not substance\". DEEPENING.md:15 counts a filesystem as a local-substitutable dependency with an internal seam. The distinction the Lesson really needs is between a seam that already exists (lessonsFrom takes its folder as an input) and a new seam that would exist only so a fake could plug in, which ADR 0003 rules out.",
+      "fix": "Line 63 → \"The comments module talks to Postgres (the database software this site uses) directly. A setting points it at the live database or, in the tests, at a separate real copy, so the open question isn't which database but whether to add an interface a fake could plug into. An ADR (a short decision record kept in the repo, the project's folder with its history tracked by Git) keeps the tests on real Postgres, so that \"database seam\" would only ever have one adapter: plumbing with nothing to swap.\" Scene caption at line 86 → \"# A seam for swapping in a fake database would have one adapter, because ADR 0003 keeps the tests on real Postgres. One adapter is a hypothetical seam, so add nothing.\"",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Checkpoint reference-not-driver, right-answer feedback, line 121: \"The note should name a driver Skill, such as `/grill-with-docs`, and let it use the vocabulary.\"",
+      "problem": "This implies /grill-with-docs pulls in the /codebase-design vocabulary. In 1.3.1 it doesn't: it loads only grilling and domain-modeling. ask-matt names only /tdd and /improve-codebase-architecture as Skills that speak codebase-design. The agent may still load the model-invoked reference itself, but /grill-with-docs won't do it for you.",
+      "evidence": "engineering/grill-with-docs/SKILL.md:7: \"Call the Skill tool twice, for \"grilling\" and \"domain-modeling\".\" engineering/ask-matt/SKILL.md:67: \"`/tdd` and `/improve-codebase-architecture` both speak it.\" Running grep for \"codebase-design\" across the 1.3.1 skills/ folder finds it only in improve-codebase-architecture, tdd, ask-matt, the engineering README and in-progress/setup-ts-deep-modules.",
+      "fix": "Replace the feedback with: \"> Right. The note should name a driver Skill with steps and an end, such as `/grill-with-docs`, and say to use the `/codebase-design` words: the agent can load that reference itself.\"",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Two tests for any design, \"even with private internal seams its own tests use\", line 68",
+      "problem": "This contradicts the bullet just before it. Line 67 says tests go through the front door and that testing \"past it, poking at the parts inside\" means the module is the wrong shape. Line 68 then says the module's own tests use internal seams inside it. A cold reader can't square the two, and the spot-layered-tests feedback (line 336, \"Internal seams are allowed\") repeats the puzzle without solving it.",
+      "evidence": "Lesson lines 67-68. codebase-design SKILL.md:62 says internal seams are \"used by its own tests\". DEEPENING.md:15 shows what that means: the module is tested with a local stand-in running in the test suite, the seam is internal, and the tests still call the interface. DEEPENING.md:30 adds that internal seams are never exposed through the interface. The Lesson never says that tests using an internal seam still call the front door.",
+      "fix": "Replace line 68 with: \"**Depth belongs to the interface, not the implementation.** Inside, a deep module can be built from small parts. It can even have private internal seams, where its own tests plug in a stand-in (a test database, say) while still calling the front door. Callers never see them.\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "A survey, step by step, step 2, \"so its cards say 'the Comment module'\" and \"when the friction is real, and flags the clash on that card\", line 131 (and \"Each candidate card\", line 133)",
+      "problem": "Step 2 uses \"cards\" and \"friction\" before the reader knows what they are. The report and its cards first appear in step 4 (line 133), and friction is explained by examples only in step 3 (line 132). \"Candidate\", the Skill's key noun, is never explained in the body: step 4 just says \"Each candidate card\".",
+      "evidence": "Lesson line 131 uses cards and friction. Line 132 is the first place friction gets examples (\"noting friction, such as one idea spread across many small modules...\"). Line 133 is the first mention of the report, its cards and candidates. Line 26 only says it hands you \"places to improve\".",
+      "fix": "Line 131: \"...and the relevant ADRs, so its suggestions say 'the Comment module', not invented names. It only suggests something an ADR rules out when the problem is real enough to reopen that decision, and it flags the clash.\" Line 133: \"Each candidate (a place it suggests deepening) gets a card showing the files, the problem, ...\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "A survey, step by step, step 4, \"One self-contained web page goes to your computer's temp folder\", line 133",
+      "problem": "The Lesson contradicts itself. Step 4 calls the report self-contained. Try step 5 (line 217) then says you need an internet connection because the report loads its styles and some diagrams from the web. Line 235 tells you to \"rebuild the report with everything inside the one file\", which implies it wasn't inside one file to begin with. A cold reader takes \"self-contained\" to mean it works on its own.",
+      "evidence": "improve-codebase-architecture HTML-REPORT.md:3: \"Tailwind and Mermaid both come from CDNs\". SKILL.md:41: \"Tailwind via CDN ... Mermaid via CDN\". Lesson lines 133, 217 and 235.",
+      "fix": "Line 133: \"4. **Write a report.** One web page, a single HTML file, goes to your computer's temp folder (a place for throwaway files) as `architecture-review-<timestamp>.html`, so nothing lands in your project. It pulls its styles and some diagrams from the web, so it needs an internet connection.\" Step 5 can then just say \"Run the survey:\".",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Your part: the strategist, \"One candidate per session ... The rest become tickets.\", line 173",
+      "problem": "Read literally, this sets up the very mistake the Final test then marks wrong. Two bullets later (line 175) the Lesson says an all-`Speculative` report found nothing worth doing. spot-all-speculative (line 342) makes \"turns all four into tickets\" the error. A reader who obeys \"The rest become tickets\" would do what Ana did.",
+      "evidence": "Lesson lines 173, 175 and 342-350. AI Hero's /improve-codebase-architecture page says to turn the rest into tickets when a run returns twelve candidates. The same page says `Speculative` cards are \"Included for completeness. You can ignore most of these\", and that an all-`Speculative` report means \"the skill found nothing\".",
+      "fix": "Replace \"The rest become tickets.\" with \"The others worth doing (`Strong` or `Worth exploring`) can become tickets for later.\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, intro, \"plus Git (check with `git --version`)\", line 194",
+      "problem": "Step 1 depends on Git, but the course assumes only Claude Code, the plugin and a terminal. On native Windows, Claude Code installs without Git, so `git --version` can print \"not recognized\". The Lesson doesn't say what to do next, so a Visitor on PowerShell 5.1 is stuck at step 1. Other Lessons do say what to do.",
+      "evidence": "Claude Code setup docs (code.claude.com/docs/en/setup): on native Windows, Git for Windows is \"optional\", and without it Claude Code uses PowerShell. 01-how-agents-work.md:271: \"if it's missing, a Mac offers to install it; on Windows, install Git for Windows from git-scm.com, then open a new PowerShell window\". 02-context-window.md:259 also gives a fallback.",
+      "fix": "\"You need Claude Code installed and signed in (see [Start here](/learn/start-here)), plus Git. Type `git --version` to check. If it isn't found, a Mac offers to install it; on Windows, install Git for Windows from git-scm.com, then open a new terminal.\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, It's working if, \"The warm-up called the Lessons module deep, and said `lessonsFrom(dir)` is a real seam: the real `content/lessons` folder plus the tests' folders of fake Lessons.\", line 228",
+      "problem": "This check grades the model's opinion, not whether the exercise worked. The live site and the tests run exactly the same file-reading code and pass it only a different folder path. Under the vocabulary's definition of an adapter, \"one adapter (the file system), two folders\" is a defensible answer. A Visitor whose run says that would wrongly conclude they did something wrong.",
+      "evidence": "src/lessons/lessons.ts:166-170: every caller goes through the same `readdir`/`readFile` of `dir`. Callers are lessons.ts:214 (content/lessons) and lessons.test.ts:8 and others (__fixtures__ folders). codebase-design SKILL.md:24 defines an adapter as \"a concrete thing that satisfies an interface at a seam\". DEEPENING.md:29 says \"(typically production + test)\" without settling whether a different data folder counts as a second adapter.",
+      "fix": "\"- [ ] The warm-up gave a verdict in the Skill's words: whether the Lessons module is deep, and how many adapters `lessonsFrom(dir)` has. This Lesson counts two (the real `content/lessons` folder and the tests' folders of fake Lessons). If yours counts one, ask it why: weighing its reason is the point.\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Checkpoint real-seam (line 92-102), \"Tests plug in a fake sender; the live app uses the real one.\" (line 94) vs Final test spot-removed-seam, \"Two adapters filled it, so it was a real seam worth keeping.\" (line 311)",
+      "problem": "The Checkpoint and the Final test question that replaced spot-one-adapter test the same thing in the same setup: a third-party service (email provider, Stripe) with the real one live and a fake in the tests makes two adapters, so the seam is real. A reader who did the Checkpoint is recalling it in the Final test, not transferring. The writing guide says not to reuse a Checkpoint as a Final test question. The earlier fix that brought in spot-removed-seam created this overlap.",
+      "evidence": "Line 93-95: \"Your app sends email through one provider. Which fact would justify putting an `EmailSender` seam...? [x] Tests plug in a fake sender; the live app uses the real one.\" Line 306-312: \"The live app plugged Stripe ... into it, and the tests plugged in a fake ... [x] Two adapters filled it, so it was a real seam\". DEEPENING.md:29 \"at least two adapters are justified (typically production + test)\". writing-guide.md:60 \"Don't reuse a Checkpoint as a Final test question.\" Seed applied: \"spot-one-adapter ... replaced by spot-removed-seam (fresh PaymentGateway setting, a test fake counts as an adapter)\".",
+      "fix": "Keep spot-removed-seam and flip the Checkpoint to the one-adapter case, keeping the id:\n```checkpoint real-seam\nLee puts an `EmailSender` seam in front of the app's only email provider, \"in case we switch one day\". Nothing else plugs into it, not even in the tests. What does the one-adapter-or-two rule say?\n- [x] One adapter: a hypothetical seam, so hold off.\n  > Right. Nothing varies across it yet. Add it when a second adapter, such as a test fake, actually exists.\n- [ ] Keep it: switching providers one day will be easier with it in place.\n  > \"One day\" is still one adapter today. Add the seam when the second adapter really exists.\n- [ ] Keep it: the name `EmailSender` makes the code read more nicely.\n  > A good name helps, but it doesn't make a seam. Only a second adapter does.\n- [ ] Split the long email code into tidier files behind it.\n  > Seams are about what varies, not about length or file layout.\n```",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test sequence-survey (line 353-363), options b \"Explore every folder evenly → report → grill on its top pick\" (line 357) and d \"Write the report → refactor the `Strong` cards → grill on the rest\" (line 361)",
+      "problem": "An earlier fix did not hold. Only a (the wrong \"ask first\" option) and c (the right answer) have four steps; b and d have three. A test-wise reader can narrow it to the two more detailed options, and the right answer is among the most specific.",
+      "evidence": "Counting arrows: a = Ask → explore → report → grill (4); b = Explore → report → grill (3); c = Find hot spots → explore → report → grill (4); d = Write the report → refactor → grill (3). Seed applied list: \"low (quiz): sequence-survey options all have four steps\".",
+      "fix": "Give b and d four steps each, and let d share the right answer's opening so it can't be ruled out at a glance:\n- [ ] Explore every folder evenly → write the report → pick its top card → grill it\n  > It starts from the hot spots, and it grills only on the candidate you pick, not its own top card.\n- [ ] Find hot spots → write the report → refactor the `Strong` cards → grill the rest\n  > Building isn't one of its steps, and it grills only on the one candidate you pick.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test why-locality (line 377-387), \"Locality, which maintainers get\" / \"Leverage, which callers get\" (lines 379, 381)",
+      "problem": "The labels on the options give the answer away. The stem describes a maintainer's job (fixing a bug in one place), and the right option is the one labelled \"which maintainers get\", so a reader can match on the label without knowing what locality means. Options c and d aren't benefits of depth, so they don't fit the stem's \"Which benefit of depth is that?\". That leaves a two-way choice the label settles.",
+      "evidence": "Line 378 stem: \"fixing a rounding bug meant hunting through five files ... Which benefit of depth is that?\" Line 39: \"Callers get leverage ... Maintainers get locality\". Option c \"A real seam, since prices now pass through one spot\" and option d \"Depth in the implementation, since the module now holds more code\" name a seam and a property, not a benefit.",
+      "fix": "Drop the labels and widen the stem so every option fits it:\n```test why-locality\nBefore a deepening, fixing a rounding bug meant hunting through five files that each rounded prices their own way. Now there's one place to look and one place to change. Which word from the vocabulary names that gain?\n- [x] Locality\n  > Right. Change, bugs and checking now live in one place, so a fix there is a fix everywhere. It's what maintainers get.\n- [ ] Leverage\n  > Leverage is what callers get: more capability per thing they learn. This is about where a maintainer has to look and change.\n- [ ] A real seam, since prices now pass through one spot\n  > A seam is where adapters can be swapped. Nothing is being swapped here.\n- [ ] Depth in the implementation, since more code sits inside\n  > Depth is measured at the interface, not by how much code sits inside.\n```",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test predict-deletion (line 365-375), a \"It's a pass-through, so its code belongs inside each caller.\" (line 367) and d \"It should be split into four, one copy per caller.\" (line 373)",
+      "problem": "Options a and d are the same misconception (move the code into each caller), so a reader can rule both out together. That leaves b against c, and c (\"It's an adapter, so the deletion test doesn't apply\") is weak, so the question nearly answers itself.",
+      "evidence": "Line 368 feedback for a: \"the tax rules, discounts and rounding come back in four callers\". Line 374 feedback for d: \"Four copies of the tax rules means four places to fix every bug.\" Both make the same point about spreading the code to callers.",
+      "fix": "Replace d with a different misconception, mixing up callers and adapters:\n- [ ] It's a seam, since four callers plug into it.\n  > Callers use a module through its front door; adapters are what plug in at a seam. Nothing is swapped behind `priceFor`.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test spot-carried-on (line 317-327), stem \"The agent then starts editing five files ... What should Sam have done?\" (line 318) and d \"Commit the HTML report first, so the edits can point back to it.\" (line 325)",
+      "problem": "Three things are wrong. (1) Distractor d is weak: the Lesson says the report is a temp file outside the project, so it can't be committed, and nobody would pick d. (2) The tenses clash: the agent \"starts editing\" now, yet the stem asks what Sam \"should have done\", and option a \"Let it finish\" reads oddly against it. (3) The stem and the right option repeat the Common mistakes bullet a few lines above, so the question checks recall, not transfer.",
+      "evidence": "Line 133: \"goes to your computer's temp folder ... so nothing lands in your project\". Line 241: \"If the agent starts editing after you agree, press Esc. The Main flow builds the decision.\" Right option, line 321: \"Stop it, and take the decision into the Main flow.\"",
+      "fix": "```test spot-carried-on\nSam runs the survey and, after two rounds of grilling, agrees with the top candidate. The agent then starts editing five files in the same session. What should Sam do?\n- [ ] Let it finish, since agreeing with the candidate was approval to build.\n  > Agreeing settles a design, not a go-ahead to build. The survey should end with a decision, not a code change.\n- [x] Press Esc, and carry what was agreed into `/to-spec`.\n  > Right. The Skill's job ends at the decision; building isn't one of its steps. A spec, then tickets, builds it.\n- [ ] Ask it to do the other candidates too, while it has the report open.\n  > One candidate per session. Several at once fill the context window with reports, grilling and edits.\n- [ ] Let it finish on a new branch, so the main code stays safe.\n  > A branch keeps the edits apart, but they're still a build nobody planned. The building comes later, through a spec and tickets.\n```",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test spot-removed-seam (line 305-315), b \"It should have been renamed a boundary, since Stripe sits outside the app.\" (line 309)",
+      "problem": "This distractor is weak. The Lesson bans \"boundary\" outright, and the option blames a name when the question is about a deletion, so anyone who read the Lesson rules it out at once. The question is left with three real options.",
+      "evidence": "Line 41: \"The Skill bans looser words, \\\"component\\\", \\\"service\\\", \\\"API\\\" and \\\"boundary\\\"\". Feedback line 310: \"The vocabulary bans \\\"boundary\\\". The name was never the problem.\"",
+      "fix": "Use a right-verdict-wrong-reason distractor instead, so the reader has to know why the seam is real:\n- [ ] He was wrong only because outside services like Stripe always need a seam.\n  > Being outside the app isn't what makes a seam real. The two adapters, Stripe and the test fake, are.",
+      "lens": "quiz"
+    }
+  ],
+  "rounds": {
+    "r1": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "Two tests for any design, line 63: \"only one thing fills that slot: the real Postgres database ... Even the tests use a real copy\" (with line 61 \"Two adapters, so the seam is real\" and the flow Scene caption at line 86 \"The database has one adapter, the real one\")",
+            "problem": "The Lesson counts adapters two different ways. For lessonsFrom(dir), the same file-reading code pointed at a different folder counts as a second adapter. For the database, the same Postgres code pointed at a different database branch counts as no second adapter. By the Skill's role-based definition, both slots are filled by several things, or neither has a second adapter. So \"only one thing fills that slot\" is not what the repo shows, and a reader who applies the rule as taught gets a different answer from the Lesson's.",
+            "evidence": "src/db/index.ts:5 `drizzle({ client: neon(process.env.DATABASE_URL!) })`. src/test/setup-env.ts:3-11 points DATABASE_URL at the Neon `test` branch for tests. docs/adr/0002-neon-branch-per-environment.md lists four branches: vercel-dev, test, one per PR preview, and main. So several real databases fill the slot through a setting. src/lessons/lessons.ts:166-170: every dir goes through the same readdir/readFile code, so only the input changes. codebase-design/SKILL.md:24: an adapter \"Describes role (what slot it fills), not substance\". DEEPENING.md:15 counts a filesystem as a local-substitutable dependency with an internal seam. The distinction the Lesson really needs is between a seam that already exists (lessonsFrom takes its folder as an input) and a new seam that would exist only so a fake could plug in, which ADR 0003 rules out.",
+            "fix": "Line 63 → \"The comments module talks to Postgres (the database software this site uses) directly. A setting points it at the live database or, in the tests, at a separate real copy, so the open question isn't which database but whether to add an interface a fake could plug into. An ADR (a short decision record kept in the repo, the project's folder with its history tracked by Git) keeps the tests on real Postgres, so that \"database seam\" would only ever have one adapter: plumbing with nothing to swap.\" Scene caption at line 86 → \"# A seam for swapping in a fake database would have one adapter, because ADR 0003 keeps the tests on real Postgres. One adapter is a hypothetical seam, so add nothing.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Checkpoint reference-not-driver, right-answer feedback, line 121: \"The note should name a driver Skill, such as `/grill-with-docs`, and let it use the vocabulary.\"",
+            "problem": "This implies /grill-with-docs pulls in the /codebase-design vocabulary. In 1.3.1 it doesn't: it loads only grilling and domain-modeling. ask-matt names only /tdd and /improve-codebase-architecture as Skills that speak codebase-design. The agent may still load the model-invoked reference itself, but /grill-with-docs won't do it for you.",
+            "evidence": "engineering/grill-with-docs/SKILL.md:7: \"Call the Skill tool twice, for \"grilling\" and \"domain-modeling\".\" engineering/ask-matt/SKILL.md:67: \"`/tdd` and `/improve-codebase-architecture` both speak it.\" Running grep for \"codebase-design\" across the 1.3.1 skills/ folder finds it only in improve-codebase-architecture, tdd, ask-matt, the engineering README and in-progress/setup-ts-deep-modules.",
+            "fix": "Replace the feedback with: \"> Right. The note should name a driver Skill with steps and an end, such as `/grill-with-docs`, and say to use the `/codebase-design` words: the agent can load that reference itself.\""
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint reference-not-driver, stem, line 115: \"re-reads half the repo and designs interfaces nobody asked for\"",
+            "problem": "The note in the stem says to \"finish designing the payment module\", so designing interfaces is exactly what it asked for. The stem contradicts itself. In the real case (#449), Matt's reading was that the agent did what it was told; what went wrong was the improvised process (rival designs, re-exploring, no check-in), not that it designed at all.",
+            "evidence": "gh issue view 449 --repo mattpocock/skills: Matt's closing comment says the agent \"did what it was told\". The Observed behaviour list shows it re-explored code and designed interfaces with no check-in, reaching for DESIGN-IT-TWICE.md.",
+            "fix": "\"Next morning a fresh session reads it, re-reads half the repo and spins up several rival designs, without checking in. Why?\""
+          },
+          {
+            "severity": "low",
+            "where": "Two tests for any design, flow Scene caption, line 78: \"The comments route, the code that answers when someone posts a Comment\"",
+            "problem": "The route also answers the GET request that lists a Lesson's Comments, so the caption describes only half of what it does.",
+            "evidence": "src/app/api/comments/route.ts:5-11 (GET /api/comments?lesson=<slug> calls listComments) and :13-24 (POST). ADR 0001 names both endpoints.",
+            "fix": "\"# The comments route, the code that answers when the page lists or posts Comments, is a thin caller on purpose (ADR 0001): it only turns web requests into calls on the comments module.\""
+          },
+          {
+            "severity": "low",
+            "where": "The words, line 41: \"a design conversation gets much shorter when you and the agent mean exactly the same thing by \"seam\"\"",
+            "problem": "The Skill gives consistency as its reason, not shorter conversations. \"Much shorter\" is a claim no cited source makes.",
+            "evidence": "codebase-design/SKILL.md:12 gives consistent language as the reason for the banned-words rule. No source in the Lesson's sources list says anything about conversation length.",
+            "fix": "\"The Skill bans looser words, \"component\", \"service\", \"API\" and \"boundary\": the point is that you and the agent always mean exactly the same thing by \"seam\".\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "Two tests for any design, \"even with private internal seams its own tests use\", line 68",
+            "problem": "This contradicts the bullet just before it. Line 67 says tests go through the front door and that testing \"past it, poking at the parts inside\" means the module is the wrong shape. Line 68 then says the module's own tests use internal seams inside it. A cold reader can't square the two, and the spot-layered-tests feedback (line 336, \"Internal seams are allowed\") repeats the puzzle without solving it.",
+            "evidence": "Lesson lines 67-68. codebase-design SKILL.md:62 says internal seams are \"used by its own tests\". DEEPENING.md:15 shows what that means: the module is tested with a local stand-in running in the test suite, the seam is internal, and the tests still call the interface. DEEPENING.md:30 adds that internal seams are never exposed through the interface. The Lesson never says that tests using an internal seam still call the front door.",
+            "fix": "Replace line 68 with: \"**Depth belongs to the interface, not the implementation.** Inside, a deep module can be built from small parts. It can even have private internal seams, where its own tests plug in a stand-in (a test database, say) while still calling the front door. Callers never see them.\""
+          },
+          {
+            "severity": "medium",
+            "where": "A survey, step by step, step 2, \"so its cards say 'the Comment module'\" and \"when the friction is real, and flags the clash on that card\", line 131 (and \"Each candidate card\", line 133)",
+            "problem": "Step 2 uses \"cards\" and \"friction\" before the reader knows what they are. The report and its cards first appear in step 4 (line 133), and friction is explained by examples only in step 3 (line 132). \"Candidate\", the Skill's key noun, is never explained in the body: step 4 just says \"Each candidate card\".",
+            "evidence": "Lesson line 131 uses cards and friction. Line 132 is the first place friction gets examples (\"noting friction, such as one idea spread across many small modules...\"). Line 133 is the first mention of the report, its cards and candidates. Line 26 only says it hands you \"places to improve\".",
+            "fix": "Line 131: \"...and the relevant ADRs, so its suggestions say 'the Comment module', not invented names. It only suggests something an ADR rules out when the problem is real enough to reopen that decision, and it flags the clash.\" Line 133: \"Each candidate (a place it suggests deepening) gets a card showing the files, the problem, ...\""
+          },
+          {
+            "severity": "medium",
+            "where": "A survey, step by step, step 4, \"One self-contained web page goes to your computer's temp folder\", line 133",
+            "problem": "The Lesson contradicts itself. Step 4 calls the report self-contained. Try step 5 (line 217) then says you need an internet connection because the report loads its styles and some diagrams from the web. Line 235 tells you to \"rebuild the report with everything inside the one file\", which implies it wasn't inside one file to begin with. A cold reader takes \"self-contained\" to mean it works on its own.",
+            "evidence": "improve-codebase-architecture HTML-REPORT.md:3: \"Tailwind and Mermaid both come from CDNs\". SKILL.md:41: \"Tailwind via CDN ... Mermaid via CDN\". Lesson lines 133, 217 and 235.",
+            "fix": "Line 133: \"4. **Write a report.** One web page, a single HTML file, goes to your computer's temp folder (a place for throwaway files) as `architecture-review-<timestamp>.html`, so nothing lands in your project. It pulls its styles and some diagrams from the web, so it needs an internet connection.\" Step 5 can then just say \"Run the survey:\"."
+          },
+          {
+            "severity": "medium",
+            "where": "Your part: the strategist, \"One candidate per session ... The rest become tickets.\", line 173",
+            "problem": "Read literally, this sets up the very mistake the Final test then marks wrong. Two bullets later (line 175) the Lesson says an all-`Speculative` report found nothing worth doing. spot-all-speculative (line 342) makes \"turns all four into tickets\" the error. A reader who obeys \"The rest become tickets\" would do what Ana did.",
+            "evidence": "Lesson lines 173, 175 and 342-350. AI Hero's /improve-codebase-architecture page says to turn the rest into tickets when a run returns twelve candidates. The same page says `Speculative` cards are \"Included for completeness. You can ignore most of these\", and that an all-`Speculative` report means \"the skill found nothing\".",
+            "fix": "Replace \"The rest become tickets.\" with \"The others worth doing (`Strong` or `Worth exploring`) can become tickets for later.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Try it yourself, intro, \"plus Git (check with `git --version`)\", line 194",
+            "problem": "Step 1 depends on Git, but the course assumes only Claude Code, the plugin and a terminal. On native Windows, Claude Code installs without Git, so `git --version` can print \"not recognized\". The Lesson doesn't say what to do next, so a Visitor on PowerShell 5.1 is stuck at step 1. Other Lessons do say what to do.",
+            "evidence": "Claude Code setup docs (code.claude.com/docs/en/setup): on native Windows, Git for Windows is \"optional\", and without it Claude Code uses PowerShell. 01-how-agents-work.md:271: \"if it's missing, a Mac offers to install it; on Windows, install Git for Windows from git-scm.com, then open a new PowerShell window\". 02-context-window.md:259 also gives a fallback.",
+            "fix": "\"You need Claude Code installed and signed in (see [Start here](/learn/start-here)), plus Git. Type `git --version` to check. If it isn't found, a Mac offers to install it; on Windows, install Git for Windows from git-scm.com, then open a new terminal.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Try it yourself, It's working if, \"The warm-up called the Lessons module deep, and said `lessonsFrom(dir)` is a real seam: the real `content/lessons` folder plus the tests' folders of fake Lessons.\", line 228",
+            "problem": "This check grades the model's opinion, not whether the exercise worked. The live site and the tests run exactly the same file-reading code and pass it only a different folder path. Under the vocabulary's definition of an adapter, \"one adapter (the file system), two folders\" is a defensible answer. A Visitor whose run says that would wrongly conclude they did something wrong.",
+            "evidence": "src/lessons/lessons.ts:166-170: every caller goes through the same `readdir`/`readFile` of `dir`. Callers are lessons.ts:214 (content/lessons) and lessons.test.ts:8 and others (__fixtures__ folders). codebase-design SKILL.md:24 defines an adapter as \"a concrete thing that satisfies an interface at a seam\". DEEPENING.md:29 says \"(typically production + test)\" without settling whether a different data folder counts as a second adapter.",
+            "fix": "\"- [ ] The warm-up gave a verdict in the Skill's words: whether the Lessons module is deep, and how many adapters `lessonsFrom(dir)` has. This Lesson counts two (the real `content/lessons` folder and the tests' folders of fake Lessons). If yours counts one, ask it why: weighing its reason is the point.\""
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, step 3, \"If the label under the prompt box says \"auto mode on\", press Shift+Tab until it says \"manual mode on\".\", line 210",
+            "problem": "The step only covers a reader who starts in auto mode. A reader whose label says \"accept edits on\" or \"plan mode on\" gets no instruction. The step also gives no rule for permission prompts outside its list (for example, if the explorer asks to run the tests), so a beginner has to guess.",
+            "evidence": "Permission modes docs: the status bar shows `⏸ manual mode on`, `⏵⏵ accept edits on`, `⏸ plan mode on` or `⏵⏵ auto mode on`, and Shift+Tab cycles through them. Lesson line 210 lists only the temp-folder and report prompts (Yes) and changes inside the project (No).",
+            "fix": "\"3. Look under the prompt box. If it doesn't say \"manual mode on\", press Shift+Tab until it does. Now the agent asks before it writes a file or runs most commands. Choose Yes when it asks to find your temp folder, write the `architecture-review-….html` report there, or open it. Choose No to any change inside `idea-to-shipped`, such as `GLOSSARY.md`, and to anything else you don't understand.\""
+          },
+          {
+            "severity": "low",
+            "where": "Site story, \"the route finally matches its own comment: it only speaks HTTP\", line 246",
+            "problem": "In a Lesson where \"Comment\" is the glossary term for a Visitor's note, \"its own comment\" (a code comment, which the Lesson never explains) reads as if the route posted a Comment.",
+            "evidence": "GLOSSARY.md defines Comment as \"A note a Visitor leaves on one Lesson\". src/app/api/comments/route.ts:3 is the code comment meant: \"This file only speaks HTTP.\"",
+            "fix": "\"...and the route finally does what the note at the top of its file says: it only speaks HTTP, the language of web requests.\""
+          },
+          {
+            "severity": "low",
+            "where": "How Matt and others use it, \"a judge shown the reports unlabelled ranked a one-paragraph prompt slightly above the Skill\", line 189",
+            "problem": "A cold reader will picture a human judge. The judge was another AI session, which matters to how much the result is worth.",
+            "evidence": "gh api graphql (discussion #1247 body): \"Judge: a separate Opus 5.5 session. It got the 4 HTML reports in shuffled order as R1–R4, with no labels or paths.\"",
+            "fix": "\"...a separate AI session acting as judge, shown the reports unlabelled, ranked a one-paragraph prompt slightly above the Skill, which was cheaper and faster.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test spot-removed-seam, \"Kai deletes the app's `PaymentGateway` interface\", line 306",
+            "problem": "The Lesson defines an interface as everything a caller must know (line 33), not a block of code you can delete. Using \"interface\" here in the code-keyword sense clashes with what the reader was just taught. The Skill itself rejects that sense.",
+            "evidence": "codebase-design SKILL.md:108 rejects \"'Interface' as the TypeScript `interface` keyword\" as too narrow. Lesson line 33 defines interface as \"everything a caller ... must know to use it correctly\".",
+            "fix": "\"Kai deletes the app's `PaymentGateway` wrapper and has the payment code call Stripe (a payment service) directly, calling the old code \"a pass-through\". The live app plugged Stripe into it, and the tests plugged in a fake that records charges without taking money. Spot the mistake.\""
+          },
+          {
+            "severity": "low",
+            "where": "How Matt and others use it, \"In 1.3.1 the report comes first\", line 188",
+            "problem": "The body never says what \"1.3.1\" is. It appears only in the sources, so a cold reader meets a bare version number.",
+            "evidence": "Lesson line 188. A search of the Lesson finds no other \"1.3.1\" outside the sources block (lines 390-394).",
+            "fix": "\"In the current version of Matt's Skills (1.3.1) the report comes first, and the Try it prompt below insists on it.\""
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Checkpoint real-seam (line 92-102), \"Tests plug in a fake sender; the live app uses the real one.\" (line 94) vs Final test spot-removed-seam, \"Two adapters filled it, so it was a real seam worth keeping.\" (line 311)",
+            "problem": "The Checkpoint and the Final test question that replaced spot-one-adapter test the same thing in the same setup: a third-party service (email provider, Stripe) with the real one live and a fake in the tests makes two adapters, so the seam is real. A reader who did the Checkpoint is recalling it in the Final test, not transferring. The writing guide says not to reuse a Checkpoint as a Final test question. The earlier fix that brought in spot-removed-seam created this overlap.",
+            "evidence": "Line 93-95: \"Your app sends email through one provider. Which fact would justify putting an `EmailSender` seam...? [x] Tests plug in a fake sender; the live app uses the real one.\" Line 306-312: \"The live app plugged Stripe ... into it, and the tests plugged in a fake ... [x] Two adapters filled it, so it was a real seam\". DEEPENING.md:29 \"at least two adapters are justified (typically production + test)\". writing-guide.md:60 \"Don't reuse a Checkpoint as a Final test question.\" Seed applied: \"spot-one-adapter ... replaced by spot-removed-seam (fresh PaymentGateway setting, a test fake counts as an adapter)\".",
+            "fix": "Keep spot-removed-seam and flip the Checkpoint to the one-adapter case, keeping the id:\n```checkpoint real-seam\nLee puts an `EmailSender` seam in front of the app's only email provider, \"in case we switch one day\". Nothing else plugs into it, not even in the tests. What does the one-adapter-or-two rule say?\n- [x] One adapter: a hypothetical seam, so hold off.\n  > Right. Nothing varies across it yet. Add it when a second adapter, such as a test fake, actually exists.\n- [ ] Keep it: switching providers one day will be easier with it in place.\n  > \"One day\" is still one adapter today. Add the seam when the second adapter really exists.\n- [ ] Keep it: the name `EmailSender` makes the code read more nicely.\n  > A good name helps, but it doesn't make a seam. Only a second adapter does.\n- [ ] Split the long email code into tidier files behind it.\n  > Seams are about what varies, not about length or file layout.\n```"
+          },
+          {
+            "severity": "medium",
+            "where": "Final test sequence-survey (line 353-363), options b \"Explore every folder evenly → report → grill on its top pick\" (line 357) and d \"Write the report → refactor the `Strong` cards → grill on the rest\" (line 361)",
+            "problem": "An earlier fix did not hold. Only a (the wrong \"ask first\" option) and c (the right answer) have four steps; b and d have three. A test-wise reader can narrow it to the two more detailed options, and the right answer is among the most specific.",
+            "evidence": "Counting arrows: a = Ask → explore → report → grill (4); b = Explore → report → grill (3); c = Find hot spots → explore → report → grill (4); d = Write the report → refactor → grill (3). Seed applied list: \"low (quiz): sequence-survey options all have four steps\".",
+            "fix": "Give b and d four steps each, and let d share the right answer's opening so it can't be ruled out at a glance:\n- [ ] Explore every folder evenly → write the report → pick its top card → grill it\n  > It starts from the hot spots, and it grills only on the candidate you pick, not its own top card.\n- [ ] Find hot spots → write the report → refactor the `Strong` cards → grill the rest\n  > Building isn't one of its steps, and it grills only on the one candidate you pick."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test why-locality (line 377-387), \"Locality, which maintainers get\" / \"Leverage, which callers get\" (lines 379, 381)",
+            "problem": "The labels on the options give the answer away. The stem describes a maintainer's job (fixing a bug in one place), and the right option is the one labelled \"which maintainers get\", so a reader can match on the label without knowing what locality means. Options c and d aren't benefits of depth, so they don't fit the stem's \"Which benefit of depth is that?\". That leaves a two-way choice the label settles.",
+            "evidence": "Line 378 stem: \"fixing a rounding bug meant hunting through five files ... Which benefit of depth is that?\" Line 39: \"Callers get leverage ... Maintainers get locality\". Option c \"A real seam, since prices now pass through one spot\" and option d \"Depth in the implementation, since the module now holds more code\" name a seam and a property, not a benefit.",
+            "fix": "Drop the labels and widen the stem so every option fits it:\n```test why-locality\nBefore a deepening, fixing a rounding bug meant hunting through five files that each rounded prices their own way. Now there's one place to look and one place to change. Which word from the vocabulary names that gain?\n- [x] Locality\n  > Right. Change, bugs and checking now live in one place, so a fix there is a fix everywhere. It's what maintainers get.\n- [ ] Leverage\n  > Leverage is what callers get: more capability per thing they learn. This is about where a maintainer has to look and change.\n- [ ] A real seam, since prices now pass through one spot\n  > A seam is where adapters can be swapped. Nothing is being swapped here.\n- [ ] Depth in the implementation, since more code sits inside\n  > Depth is measured at the interface, not by how much code sits inside.\n```"
+          },
+          {
+            "severity": "medium",
+            "where": "Final test predict-deletion (line 365-375), a \"It's a pass-through, so its code belongs inside each caller.\" (line 367) and d \"It should be split into four, one copy per caller.\" (line 373)",
+            "problem": "Options a and d are the same misconception (move the code into each caller), so a reader can rule both out together. That leaves b against c, and c (\"It's an adapter, so the deletion test doesn't apply\") is weak, so the question nearly answers itself.",
+            "evidence": "Line 368 feedback for a: \"the tax rules, discounts and rounding come back in four callers\". Line 374 feedback for d: \"Four copies of the tax rules means four places to fix every bug.\" Both make the same point about spreading the code to callers.",
+            "fix": "Replace d with a different misconception, mixing up callers and adapters:\n- [ ] It's a seam, since four callers plug into it.\n  > Callers use a module through its front door; adapters are what plug in at a seam. Nothing is swapped behind `priceFor`."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test spot-carried-on (line 317-327), stem \"The agent then starts editing five files ... What should Sam have done?\" (line 318) and d \"Commit the HTML report first, so the edits can point back to it.\" (line 325)",
+            "problem": "Three things are wrong. (1) Distractor d is weak: the Lesson says the report is a temp file outside the project, so it can't be committed, and nobody would pick d. (2) The tenses clash: the agent \"starts editing\" now, yet the stem asks what Sam \"should have done\", and option a \"Let it finish\" reads oddly against it. (3) The stem and the right option repeat the Common mistakes bullet a few lines above, so the question checks recall, not transfer.",
+            "evidence": "Line 133: \"goes to your computer's temp folder ... so nothing lands in your project\". Line 241: \"If the agent starts editing after you agree, press Esc. The Main flow builds the decision.\" Right option, line 321: \"Stop it, and take the decision into the Main flow.\"",
+            "fix": "```test spot-carried-on\nSam runs the survey and, after two rounds of grilling, agrees with the top candidate. The agent then starts editing five files in the same session. What should Sam do?\n- [ ] Let it finish, since agreeing with the candidate was approval to build.\n  > Agreeing settles a design, not a go-ahead to build. The survey should end with a decision, not a code change.\n- [x] Press Esc, and carry what was agreed into `/to-spec`.\n  > Right. The Skill's job ends at the decision; building isn't one of its steps. A spec, then tickets, builds it.\n- [ ] Ask it to do the other candidates too, while it has the report open.\n  > One candidate per session. Several at once fill the context window with reports, grilling and edits.\n- [ ] Let it finish on a new branch, so the main code stays safe.\n  > A branch keeps the edits apart, but they're still a build nobody planned. The building comes later, through a spec and tickets.\n```"
+          },
+          {
+            "severity": "medium",
+            "where": "Final test spot-removed-seam (line 305-315), b \"It should have been renamed a boundary, since Stripe sits outside the app.\" (line 309)",
+            "problem": "This distractor is weak. The Lesson bans \"boundary\" outright, and the option blames a name when the question is about a deletion, so anyone who read the Lesson rules it out at once. The question is left with three real options.",
+            "evidence": "Line 41: \"The Skill bans looser words, \\\"component\\\", \\\"service\\\", \\\"API\\\" and \\\"boundary\\\"\". Feedback line 310: \"The vocabulary bans \\\"boundary\\\". The name was never the problem.\"",
+            "fix": "Use a right-verdict-wrong-reason distractor instead, so the reader has to know why the seam is real:\n- [ ] He was wrong only because outside services like Stripe always need a seam.\n  > Being outside the app isn't what makes a seam real. The two adapters, Stripe and the test fake, are."
+          },
+          {
+            "severity": "low",
+            "where": "Final test spot-removed-seam stem, \"Kai deletes the app's `PaymentGateway` interface\" (line 306)",
+            "problem": "The stem uses \"interface\" in the TypeScript-keyword sense. The vocabulary this question tests says an interface is everything a caller must know, and a module can't lose that by deletion. A careful reader can trip on it.",
+            "evidence": "Line 33: \"Its interface is everything a caller (the code that uses it) must know\". codebase-design/SKILL.md:108 rejects \"'Interface' as the TypeScript `interface` keyword\".",
+            "fix": "\"Kai deletes the app's `PaymentGateway` layer and calls Stripe directly, calling the layer \\\"a pass-through\\\".\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test scenario-settle-words stem, \"whether a new helper should be its own module\" (line 294)",
+            "problem": "In the vocabulary being tested, a helper function is already a module (\"at any size: a function\"), so the stem contradicts the words it asks about. The stem also asks two things (which Skill, and how it starts), but option a doesn't answer the second.",
+            "evidence": "Line 32: \"A module is anything with a front door and code behind it, at any size: a function...\". Option a, line 295: \"`/tdd` itself, since it already holds the deep-module words\" (no start mode).",
+            "fix": "Stem: \"Halfway through a `/tdd` session, you and the agent disagree about whether a new helper is earning its keep or should fold into its caller. Which Skill gives you shared words to settle it, and how does it start?\" Option a: \"`/tdd` itself, which you'd restart to get the deep-module words\"."
+          },
+          {
+            "severity": "low",
+            "where": "Final test spot-all-speculative right option, \"She treated `Speculative` cards as work; none was worth doing.\" (line 349)",
+            "problem": "The right option repeats the body's sentence (\"it found nothing worth doing\"), so it's a wording tell; the other options don't use that phrasing.",
+            "evidence": "Line 175: \"If every card is `Speculative`, it found nothing worth doing.\" The key itself is backed by AI Hero (https://www.aihero.dev/skills-improve-codebase-architecture): \"If every candidate in a report is `Speculative`, the skill found nothing.\"",
+            "fix": "\"- [x] She read four `Speculative` badges as four jobs to do.\" (keep the feedback)"
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint reference-not-driver right option, \"It's vocabulary with no steps or end, so the agent made its own.\" (line 120)",
+            "problem": "The option says the Skill has \"no steps\", but the body says the agent in issue #449 \"reached for the design-it-twice steps\". The Skill's deeper file has a process; only its main file has none. A careful reader can catch the mismatch.",
+            "evidence": "Line 110: \"its main file has no steps ... reached for the design-it-twice steps\". DESIGN-IT-TWICE.md:7-44 has a numbered Process. Issue #449 body: \"reaching for the most action-shaped content in the reference (`DESIGN-IT-TWICE.md`...)\".",
+            "fix": "\"- [x] It's a reference with no session steps or end, so the agent improvised.\""
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint shallow-library, feedback for c \"A seam is where an interface lives and an adapter can be swapped in. Nothing here can be swapped.\" (line 50)",
+            "problem": "The feedback's own definition cuts against it. The Book module has an interface, so by \"a seam is where an interface lives\" it has a seam. The option is wrong because \"Shallow\" fits best and nothing varies, not because there's no seam.",
+            "evidence": "codebase-design/SKILL.md:22: seam is \"the *location* at which a module's interface lives\". Line 36: \"It's where an interface lives\".",
+            "fix": "\"> Its interface does sit at a seam, but only one thing fills it, so nothing varies. The word that fits what you see is shallow.\""
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/architecture.json"
+}

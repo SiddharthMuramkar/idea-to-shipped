@@ -1,0 +1,213 @@
+{
+  "slug": "triage",
+  "next": {
+    "round": 2,
+    "step": "fix",
+    "why": "check round 2 done (accuracy and quiz before the first pause, reader in this run); its fixer was stopped before editing"
+  },
+  "applied": [
+    "r1: high, Windows/bash (Try it prerequisites): added a line saying Windows readers also need Git for Windows (git-scm.com) so Claude Code can run the practice project's bash script, matching Start here and the setup docs.",
+    "r1: medium, step 9 told readers to refuse any other prompt, which blocked the brief and the .out-of-scope/ file: moved the permission guidance into step 8, before the triage runs. It now says to choose Yes to run count.sh or to write to the three issue files or .out-of-scope/, and No to anything else such as changing count.sh (Esc if it's already changing it). Step 9 now only covers viewing the notes and /exit.",
+    "r1: medium, the Skill definition in Why it matters: it now says a Skill loads when you type its name, like /triage, or, for some Skills, when your request matches what the Skill is for. This agrees with the model-invoked paragraph and the other Lessons.",
+    "r1: medium, flow Scene vs chat Scene: the state-machine bullet now says a quick first pass can stop at needs-triage, and a full look at one issue can make both moves at once, as in the session below. I wrote 'can', not 'usually', because SKILL.md doesn't say how often.",
+    "r1: medium, the quick override vs 'before any brief': the table row for ready-for-agent now reads 'Fully specified, ready for an agent to build unattended (normally with a brief attached)'. The Quick override paragraph adds 'It doesn't reproduce anything first, so use it on claims you've already checked.' The unqualified spot-no-verify feedback was replaced (see the spot-no-verify line).",
+    "r1: medium, scenario-own-tickets repeated the Spec + tickets Checkpoint: replaced it with a sorting question in a fresh setting, new id scenario-which-to-triage. A climbing gym's tracker has four /to-tickets tickets plus a bug report and a feature idea a member emailed in. The right answer is (a) 'Only the two pasted ones...', which is the shortest option. Feedback ideas kept.",
+    "r1: medium, scenario-hard-bug answer given away and no goal checked: replaced it with scenario-rejected-bug for goal 4 (a bus-timetable layout bug caused by an ad-blocker, which you decide not to fix). The answer is (b), close as wontfix with a polite explanation and no .out-of-scope/ file, per SKILL.md:84.",
+    "r1: medium, scenario-hard-bug stem repeated the table's defining phrase: resolved by the replacement above, so that stem no longer exists.",
+    "r1: medium, scenario-quick-override: the stem now says you reproduced the bug yourself and the reporter answered in the comments. Option c now reads '`/triage Let's look at #31` and let it run every step again', and its feedback says it re-reads, re-checks and re-recommends what you already know. That drops the false premise that triage re-asks settled questions.",
+    "r1: medium, spot-no-verify tells: new stem in which Sam uses the quick override and has a brief written. Every option now shares the 'should have' pattern. The weak /to-tickets distractor became 'Sam should have had triage grill him before writing the brief' (grilling vs verification is a real misconception). The right feedback is scoped to the normal flow and says the quick override skips the check.",
+    "r1: medium, predict-reporter-replies: rewritten to read labels on a bakery's issue #9 (bug + needs-info, the customer replies) and ask which labels it should carry next. The answer is (c) 'bug and needs-triage'. The distractors cover two states at once and a dropped category. It now checks goal 2's roles half. Id kept, since the question still asks the same thing.",
+    "r1: medium, spot-brief-paths weak 'a page of detail' distractor: the prompt now reads 'One line of a triage brief...'. Option b became 'It should spell out the code to write, so the agent can't get it wrong.', with feedback about procedure. I didn't use the checker's 'name a date library', because the testable-criterion Checkpoint already has a date-library option and the Final test shouldn't test recognition of it.",
+    "r1: medium, sequence-one-item weak distractors: c is now 'Gather context → verify → recommend → grill if needed → apply outcome' and d is now 'Gather context → recommend → grill if needed → apply outcome → verify', with the suggested feedback. All four options are now the same length; ties pass both the lint and the test."
+  ],
+  "declined": [
+    {
+      "problem": "reader-8 (low): the afk.sh line says it picks up what triage labelled ready-for-agent, overnight, which supposedly goes beyond the source",
+      "reason": "Discussion #1136 (fetched with gh api graphql) is titled 'afk.sh: chaining /implement over ready-for-agent tickets overnight, one fresh session per ticket', and its body says 'once /triage has labelled a batch ready-for-agent'. Both claims are in the source, so I kept them, shortened."
+    }
+  ],
+  "pending": [
+    {
+      "severity": "medium",
+      "where": "Final test, right options across the block: scenario-quick-override b \"`/triage Move #31 to ready-for-agent.`\" (line 385), predict-reporter-replies c \"`bug` and `needs-triage`, to be evaluated again.\" (line 471), spot-no-verify d (line 437), scenario-rejected-bug b (line 373), spot-brief-paths a (line 419), scenario-which-to-triage a (line 359)",
+      "problem": "The lint only stops the right answer being the longest, and the fixes overcorrected. The right answer is now strictly the shortest option in 6 of the 10 Final test questions, and ties in sequence-one-item; the who-starts-triage Checkpoint does the same. In three questions the gap is large. Picking the shortest option scores 6/10 with no knowledge at all, and a little knowledge settles the rest. That is a wording tell.",
+      "evidence": "Option lengths in raw characters (python over the test fences): which-to-triage right a=57 vs 61/61/63; rejected-bug right b=60 vs 71/74/82; quick-override right b=38 vs 60/63/87; spot-brief-paths right a=53 vs 65/68/71; spot-no-verify right d=56 vs 62/71/74; predict-reporter-replies right c=48 vs 68/70/71; sequence-one-item all four 69. Only already-built (c=66), needs-human (d=69) and bulk-listing (a=70) have a right answer in the middle. The round-1 fix note even calls 'the shortest option' a plus for scenario-which-to-triage.",
+      "fix": "Lengthen the right answers with the widest gaps to mid-range. Each one below passes both the lint (raw) and course.test.ts (rendered) checks. quick-override b: \"`/triage Move #31 to ready-for-agent.` and accept its offer of a brief.\" (71/69 vs a 87), with feedback \"Right. Triage trusts you, says what it will change and applies it without grilling. Say yes to the brief: an AFK agent builds from it.\" predict-reporter-replies c: \"`bug` and `needs-triage`, so you evaluate it again with the reply.\" (66/62). spot-no-verify d: \"Sam should have had triage check the bug was real before the brief.\" (67; this also drops the Lesson's repeated 'before any brief' phrase). spot-brief-paths a: \"It points to a file and a line number, and both will soon go stale.\" (67). rejected-bug b, if that question is kept: \"Closes it as `wontfix`, with a comment explaining why you won't fix it.\" (71/69; this also drops 'polite', which echoes the Lesson's 'A rejected bug gets a polite explanation').",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Goals, \"decide which closed requests belong in `.out-of-scope/`\" (line 17), against Final test scenario-rejected-bug (lines 369-379) and scenario-already-built (lines 393-403)",
+      "problem": "Goal 4 asks the reader to decide which closed requests go into `.out-of-scope/`. Both Final test questions on it have the same answer: close it with a comment, and write no file. Each has the `.out-of-scope/` option as a wrong distractor. No Final test question has a rejected enhancement, the one case that does get a file. A reader who thinks triage never writes to `.out-of-scope/`, or who simply avoids any option that mentions it, passes both. The concept-match Checkpoint tests matching an existing file, not deciding to write one, and Checkpoints don't count towards goals.",
+      "evidence": "triage/SKILL.md:83-85 lists three wontfix shapes: already implemented (no file), rejected bug (polite explanation), rejected enhancement (write to .out-of-scope/). OUT-OF-SCOPE.md:86 says to write there only when an enhancement is rejected. The Lesson teaches all three (lines 225-231), plus 'too busy is a delay' (line 228). The Final test checks only the two 'no file' branches.",
+      "fix": "Replace scenario-rejected-bug with a sorting question that keeps the rejected bug as a distractor (stated as a bug, which also removes the category ambiguity reported separately). The right answer stays at b, so the a/b/c/d spread is unchanged:\n```test scenario-which-out-of-scope\nFour requests on a bus-timetable site end up closed or set aside this week. Which one gets a file in `.out-of-scope/`?\n- [ ] A bug report about a layout glitch that only one ad-blocker causes, which you won't fix.\n  > A rejected bug gets a polite explanation and is closed. The folder is only for rejected enhancements.\n- [x] A request for live bus positions, ruled out because the site only shows timetables.\n  > Right. It's a rejected enhancement with a lasting reason, so it gets one file for the idea, and later requests join its Prior requests.\n- [ ] A request to download timetables as a PDF, which the Download button already does.\n  > Already built: close it with a pointer to the button. Recording a built feature as rejected would mislead later duplicate checks.\n- [ ] A request for a route planner you'd like but have no time for yet.\n  > That's a delay, not a rejection. 'No time yet' isn't a lasting reason, so nothing goes in the folder.\n```\n(Raw lengths 88/83/82/66: the right answer is neither the longest nor the shortest.)",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, scenario-rejected-bug stem: \"a reporter says the page layout breaks. Triage confirms it happens only when one ad-blocking browser extension rewrites the page, and you decide not to fix it\" (line 370)",
+      "problem": "The answer depends entirely on whether this is a bug or an enhancement: a rejected bug gets no file, a rejected enhancement does. The stem never says which. A sharp reader can argue that the site works as designed and that supporting a third-party extension that rewrites the page is an improvement (an enhancement). On that reading, option a, writing `.out-of-scope/ad-blocker-layout.md`, is defensible, and it would also help match the next report of the same thing. Only the words 'breaks' and 'fix' point towards bug.",
+      "evidence": "The Lesson's category definitions (line 36): bug 'something is broken', enhancement 'a new feature or an improvement'. Lesson line 231: 'Only rejected enhancements go here. A rejected bug gets a polite explanation and is closed.' triage/SKILL.md:84-85 makes the outcome depend on the category.",
+      "fix": "If the question is kept rather than replaced by the sorting question in the `.out-of-scope/` finding, name the category in the stem: \"On a bus-timetable site, triage labels a report `bug` and confirms it: the page layout breaks, but only when one ad-blocking browser extension rewrites the page. You decide not to fix it. What does triage do?\"",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, scenario-already-built stem: \"Triage's already-built check finds a working Print button on every recipe page.\" (line 394)",
+      "problem": "The stem names the answer's category ('already-built'), and that word maps one-to-one onto the cheat sheet row 'Already built | `wontfix`, pointing to where it lives; nothing in `.out-of-scope/`' (line 353). The reader doesn't have to recognise that a working Print button means the request is already built; they only recall the row. The writing guide says not to restate the right answer's defining phrase in the prompt.",
+      "evidence": "Writing guide, Lessons from the pilot review: 'Don't restate the defining phrase of the right answer in the prompt.' Lesson lines 126, 231 and 353 all use 'already built' as the label for this outcome.",
+      "fix": "Stem: \"On a recipe site, someone asks for a printable version of each recipe. Searching the code, triage finds a working Print button on every recipe page. What's the right outcome?\" In option d's feedback, change 'The already-built check answered the question.' to 'Triage's search already answered the question.'",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, step 8: \"At a permission prompt, choose Yes to run `count.sh` or to write to the three issue files or `.out-of-scope/`. Choose No to anything else\" (line 314)",
+      "problem": "This permission rule (the round-1 fix) is too narrow for the verification it asks for. Report 01 (line 301) gives no file, only \"My file has two lines and ten words\". To reproduce it, the agent has to make a two-line, ten-word input, usually a small test file, or run `wc -w` to compare. Both count as \"anything else\", so a reader told to choose No refuses the reproduction. A plain No also stops the turn, and step 8 never says what to type next. The checklist item \"For 01 it ran `count.sh` to reproduce the miscount\" (line 321) can then fail, most likely for a reader in Manual mode, which How coding agents work invites. In auto mode few prompts appear, so it often works anyway.",
+      "evidence": "triage/SKILL.md:74: \"For a bug, reproduce it from the reporter's steps.\" Lesson line 301: the 01 report supplies no file. content/lessons/01-how-agents-work.md:120: \"A plain No (or Esc) stops the turn, and the agent waits for your next message.\" The same Lesson (line 118) shows readers how to switch to Manual mode, where every write and most commands prompt.",
+      "fix": "Replace the two sentences with: \"At a permission prompt, choose Yes to anything that reads files, runs `count.sh` or `wc`, makes a small test file to try the script on, or writes to the three issue files or `.out-of-scope/`. Choose No if it tries to change `count.sh` (press Esc if it's already changing it), then type \"Don't fix it; carry on with the triage.\"\"",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "When to reach for it, and when not: \"When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) goes `/grill-with-docs` ... → `/to-spec` → `/to-tickets`.\" (line 93), and \"Both end as an issue marked `ready-for-agent`\" (line 95)",
+      "problem": "This says the Main flow always runs through `/to-spec` and `/to-tickets`. The course facts and GLOSSARY.md say the Main flow splits work into a spec and tickets only when it's too big for one session; small work goes from grilling straight to `/implement`, with no ticket at all. The Main flow Lesson teaches that fork and names the heavy road for a light job as a mistake. A cold reader learns the opposite here.",
+      "evidence": "GLOSSARY.md, Main flow: \"grill the idea, split it into a spec and tickets if it's too big for one session, then implement and review it.\" writing-guide.md, Facts: \"small: `/implement` here; multi-session: `/to-spec` → `/to-tickets` → `/implement` per ticket\". content/lessons/12-main-flow.md:27: \"The heavy road for a light job. A one-button change goes through a spec, five tickets...\"; 12-main-flow.md:287 (a small idea goes to `/implement` with no spec or tickets).",
+      "fix": "Line 93: \"When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) starts with `/grill-with-docs` (the agent interviews you about your idea). If the work is too big for one session, it goes on to `/to-spec` → `/to-tickets`.\" Line 95: \"So there are two lanes, yours and other people's, and they ==meet at the same label==. When your own work becomes tickets, both lanes end as an issue marked `ready-for-agent`, which ...\"",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, step 8: \"At a permission prompt, choose Yes to run `count.sh` or to write to the three issue files or `.out-of-scope/`. Choose No to anything else, such as changing `count.sh`; if it's already changing it, press Esc.\" (line 314)",
+      "problem": "The round-1 fix holds, but the rule is too narrow for the reproduction the Lesson asks for, and it leaves the reader stuck. Report 01 gives no file, only a claim about \"two lines and ten words\". To reproduce it, the agent has to make a small two-line test file, or compare against `wc -w`. A beginner told to \"choose No to anything else\" refuses both, so the checklist item \"For 01 it ran `count.sh` to reproduce the miscount\" (line 321) fails. This is most likely for a reader who switched to Manual mode, which How coding agents work invites. Also, after a No or an Esc the turn stops and the agent waits, and step 8 never says what to type next.",
+      "evidence": "Lesson line 301: the 01 report supplies no file. triage/SKILL.md:74: \"For a bug, reproduce it from the reporter's steps.\" content/lessons/01-how-agents-work.md:90: in Manual mode \"Editing a file asks. Shell commands ask, apart from a built-in list of read-only ones.\" :118 suggests pressing Shift+Tab to Manual \"if you'd rather approve each step while you learn\". :120: \"A plain No (or Esc) stops the turn, and the agent waits for your next message.\"",
+      "fix": "Replace the two sentences with: \"At a permission prompt (Claude Code asking before it runs a command or changes a file), choose Yes to anything that reads files, runs `count.sh` or `wc`, makes a small test file, or writes to the three issue files or `.out-of-scope/`. If it tries to change `count.sh`, choose No (or press Esc if it's already changing it), then type \"Don't fix it; carry on with the triage.\"\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "When to reach for it, and when not: \"Matt's Main flow (the path most work takes, from idea to shipped) goes `/grill-with-docs` (the agent interviews you about your idea) → `/to-spec` → `/to-tickets`.\" (line 93) and \"Both end as an issue marked `ready-for-agent`\" (line 95)",
+      "problem": "A cold reader learns that the Main flow always goes through a spec and tickets. The Main flow Lesson teaches a fork: small work goes from grilling straight to `/implement` in the same conversation, with no ticket at all. It also names the heavy road for a light job as a mistake. So line 95 (\"Both end as an issue\") is only true for multi-session work. This contradicts another Lesson and the course facts. A quiz-lens round-2 finding already raised it, and it is still unfixed.",
+      "evidence": "GLOSSARY.md:32: \"grill the idea, split it into a spec and tickets if it's too big for one session\". writing-guide.md:82: \"small: `/implement` here; multi-session: `/to-spec` → `/to-tickets`\". content/lessons/12-main-flow.md:38-40: Fork B \"No: type `/implement` right here, in the same conversation.\" 12-main-flow.md:27: \"The heavy road for a light job.\"",
+      "fix": "Line 93: \"When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) starts with `/grill-with-docs` (the agent interviews you about your idea); work too big for one session then goes `/to-spec` → `/to-tickets`.\" Line 95, second sentence: \"Your tickets and triaged reports both end marked `ready-for-agent`, which `/implement` (...) or an AFK runner (...) picks up the same way.\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Why it matters, big-idea callout: \"Every item ends with a brief (for an agent, or for a person)\" (line 29); also \"normally with a brief attached\" (line 43), flow Scene \"It gets an agent brief\" (line 73), \"before any grilling\" step and \"gets an agent brief\" (lines 128, 130)",
+      "problem": "\"Brief\" is the Lesson's central output, and it is used five times before it is explained, at line 169 (\"an agent brief, a structured comment that becomes the contract\"). A round-1 fix (reader-12) took \"brief\" out of the one-line promise, so the callout is now the first use, and it has no gloss. A cold reader meets \"a brief (for an agent, or for a person)\" with no idea what kind of document it is.",
+      "evidence": "Lesson lines 29, 43, 73, 130 use \"brief\"; the first definition is line 169. writing-guide.md:36: \"Explain every term at or before first use, in a clause\".",
+      "fix": "Line 29: \"Triage itself writes no code. Every item ends with a brief (written instructions to build from, for an agent or for a person), specific questions for the reporter, or a closed issue with the reason on record.\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "The idea: \"a full look at one issue can make both moves at once, as in the session below.\" (line 51)",
+      "problem": "\"Session\" is one of the terms the course requires a clause for at first use. Its first use in the body is here, but it isn't explained until line 93 (\"each buildable in one session (one Claude Code conversation)\"), 40 lines later.",
+      "evidence": "grep: \"session\" at lines 16 (goal), 51, then 93 with the definition. writing-guide.md:109: \"Define Claude Code, agent, Skill, token, session, repo... at first use, in a clause\".",
+      "fix": "Move the clause, which keeps the word count the same. Line 51: \"...can make both moves at once, as in the session (one Claude Code conversation) below.\" Line 93: \"...tickets are small tasks cut from it, each buildable in one session.\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "The agent brief section: \"The ticket that built Lesson pages accepted, for v1, that an unknown address like `/learn/nope`...\" (line 176), and the example brief: \"for a Slug that doesn't exist\" (line 187), \"An unknown Slug answers 404\" (line 192), \"Redirecting misspelled Slugs\" (line 206)",
+      "problem": "\"Slug\" is a GLOSSARY term, and the Lesson never explains it. Its only uses are inside the example brief. A cold reader can't tell that a Slug is the last part of a Lesson's address, so the brief's Current and Desired behaviour are hard to follow. \"v1\" (line 176, and again in the Site story at line 338) is also never explained.",
+      "evidence": "grep \"Slug\" in 14-triage.md: only lines 187, 192 and 206, with no definition. GLOSSARY.md:15-16 defines Slug as \"A Lesson's permanent one-word identifier\". writing-guide.md:36.",
+      "fix": "Line 176: \"The ticket that built Lesson pages accepted, for v1 (the site's first version), that an address ending in an unknown Slug (a Lesson's one-word name, like `grilling`), such as `/learn/nope`, showed the not-found page but answered with status 200 (the web's code for \"OK\") instead of 404 (\"not found\").\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Checkpoint who-starts-triage, option c: \"`/triage` loads, but only after you approve a permission prompt.\" (line 112); Try it step 8: \"At a permission prompt, choose Yes...\" (line 314)",
+      "problem": "\"Permission prompt\" is never explained in this Lesson. It first appears as a Checkpoint distractor, then as the key instruction in the Try it. A reader who lands here cold doesn't know which on-screen prompts count, so the Yes/No rule in step 8 is hard to apply.",
+      "evidence": "grep \"permission prompt\" in 14-triage.md: lines 112 and 314 only, with no clause. The term is defined only in content/lessons/01-how-agents-work.md:120. writing-guide.md:109: every Lesson must stand alone for a cold reader.",
+      "fix": "Line 112: \"`/triage` loads, but only after you say Yes at a permission prompt (Claude Code asking before it acts).\" The feedback stays as it is; option c is still not the shortest, and b stays the right answer. For line 314, use the step 8 replacement in the step-8 finding, which already carries the clause \"(Claude Code asking before it runs a command or changes a file)\".",
+      "lens": "reader"
+    }
+  ],
+  "rounds": {
+    "r2": {
+      "checks": {
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "Try it yourself, step 8: \"At a permission prompt, choose Yes to run `count.sh` or to write to the three issue files or `.out-of-scope/`. Choose No to anything else, such as changing `count.sh`; if it's already changing it, press Esc.\" (line 314)",
+            "problem": "The round-1 fix holds, but the rule is too narrow for the reproduction the Lesson asks for, and it leaves the reader stuck. Report 01 gives no file, only a claim about \"two lines and ten words\". To reproduce it, the agent has to make a small two-line test file, or compare against `wc -w`. A beginner told to \"choose No to anything else\" refuses both, so the checklist item \"For 01 it ran `count.sh` to reproduce the miscount\" (line 321) fails. This is most likely for a reader who switched to Manual mode, which How coding agents work invites. Also, after a No or an Esc the turn stops and the agent waits, and step 8 never says what to type next.",
+            "evidence": "Lesson line 301: the 01 report supplies no file. triage/SKILL.md:74: \"For a bug, reproduce it from the reporter's steps.\" content/lessons/01-how-agents-work.md:90: in Manual mode \"Editing a file asks. Shell commands ask, apart from a built-in list of read-only ones.\" :118 suggests pressing Shift+Tab to Manual \"if you'd rather approve each step while you learn\". :120: \"A plain No (or Esc) stops the turn, and the agent waits for your next message.\"",
+            "fix": "Replace the two sentences with: \"At a permission prompt (Claude Code asking before it runs a command or changes a file), choose Yes to anything that reads files, runs `count.sh` or `wc`, makes a small test file, or writes to the three issue files or `.out-of-scope/`. If it tries to change `count.sh`, choose No (or press Esc if it's already changing it), then type \"Don't fix it; carry on with the triage.\"\""
+          },
+          {
+            "severity": "medium",
+            "where": "When to reach for it, and when not: \"Matt's Main flow (the path most work takes, from idea to shipped) goes `/grill-with-docs` (the agent interviews you about your idea) → `/to-spec` → `/to-tickets`.\" (line 93) and \"Both end as an issue marked `ready-for-agent`\" (line 95)",
+            "problem": "A cold reader learns that the Main flow always goes through a spec and tickets. The Main flow Lesson teaches a fork: small work goes from grilling straight to `/implement` in the same conversation, with no ticket at all. It also names the heavy road for a light job as a mistake. So line 95 (\"Both end as an issue\") is only true for multi-session work. This contradicts another Lesson and the course facts. A quiz-lens round-2 finding already raised it, and it is still unfixed.",
+            "evidence": "GLOSSARY.md:32: \"grill the idea, split it into a spec and tickets if it's too big for one session\". writing-guide.md:82: \"small: `/implement` here; multi-session: `/to-spec` → `/to-tickets`\". content/lessons/12-main-flow.md:38-40: Fork B \"No: type `/implement` right here, in the same conversation.\" 12-main-flow.md:27: \"The heavy road for a light job.\"",
+            "fix": "Line 93: \"When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) starts with `/grill-with-docs` (the agent interviews you about your idea); work too big for one session then goes `/to-spec` → `/to-tickets`.\" Line 95, second sentence: \"Your tickets and triaged reports both end marked `ready-for-agent`, which `/implement` (...) or an AFK runner (...) picks up the same way.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Why it matters, big-idea callout: \"Every item ends with a brief (for an agent, or for a person)\" (line 29); also \"normally with a brief attached\" (line 43), flow Scene \"It gets an agent brief\" (line 73), \"before any grilling\" step and \"gets an agent brief\" (lines 128, 130)",
+            "problem": "\"Brief\" is the Lesson's central output, and it is used five times before it is explained, at line 169 (\"an agent brief, a structured comment that becomes the contract\"). A round-1 fix (reader-12) took \"brief\" out of the one-line promise, so the callout is now the first use, and it has no gloss. A cold reader meets \"a brief (for an agent, or for a person)\" with no idea what kind of document it is.",
+            "evidence": "Lesson lines 29, 43, 73, 130 use \"brief\"; the first definition is line 169. writing-guide.md:36: \"Explain every term at or before first use, in a clause\".",
+            "fix": "Line 29: \"Triage itself writes no code. Every item ends with a brief (written instructions to build from, for an agent or for a person), specific questions for the reporter, or a closed issue with the reason on record.\""
+          },
+          {
+            "severity": "medium",
+            "where": "The idea: \"a full look at one issue can make both moves at once, as in the session below.\" (line 51)",
+            "problem": "\"Session\" is one of the terms the course requires a clause for at first use. Its first use in the body is here, but it isn't explained until line 93 (\"each buildable in one session (one Claude Code conversation)\"), 40 lines later.",
+            "evidence": "grep: \"session\" at lines 16 (goal), 51, then 93 with the definition. writing-guide.md:109: \"Define Claude Code, agent, Skill, token, session, repo... at first use, in a clause\".",
+            "fix": "Move the clause, which keeps the word count the same. Line 51: \"...can make both moves at once, as in the session (one Claude Code conversation) below.\" Line 93: \"...tickets are small tasks cut from it, each buildable in one session.\""
+          },
+          {
+            "severity": "medium",
+            "where": "The agent brief section: \"The ticket that built Lesson pages accepted, for v1, that an unknown address like `/learn/nope`...\" (line 176), and the example brief: \"for a Slug that doesn't exist\" (line 187), \"An unknown Slug answers 404\" (line 192), \"Redirecting misspelled Slugs\" (line 206)",
+            "problem": "\"Slug\" is a GLOSSARY term, and the Lesson never explains it. Its only uses are inside the example brief. A cold reader can't tell that a Slug is the last part of a Lesson's address, so the brief's Current and Desired behaviour are hard to follow. \"v1\" (line 176, and again in the Site story at line 338) is also never explained.",
+            "evidence": "grep \"Slug\" in 14-triage.md: only lines 187, 192 and 206, with no definition. GLOSSARY.md:15-16 defines Slug as \"A Lesson's permanent one-word identifier\". writing-guide.md:36.",
+            "fix": "Line 176: \"The ticket that built Lesson pages accepted, for v1 (the site's first version), that an address ending in an unknown Slug (a Lesson's one-word name, like `grilling`), such as `/learn/nope`, showed the not-found page but answered with status 200 (the web's code for \"OK\") instead of 404 (\"not found\").\""
+          },
+          {
+            "severity": "medium",
+            "where": "Checkpoint who-starts-triage, option c: \"`/triage` loads, but only after you approve a permission prompt.\" (line 112); Try it step 8: \"At a permission prompt, choose Yes...\" (line 314)",
+            "problem": "\"Permission prompt\" is never explained in this Lesson. It first appears as a Checkpoint distractor, then as the key instruction in the Try it. A reader who lands here cold doesn't know which on-screen prompts count, so the Yes/No rule in step 8 is hard to apply.",
+            "evidence": "grep \"permission prompt\" in 14-triage.md: lines 112 and 314 only, with no clause. The term is defined only in content/lessons/01-how-agents-work.md:120. writing-guide.md:109: every Lesson must stand alone for a cold reader.",
+            "fix": "Line 112: \"`/triage` loads, but only after you say Yes at a permission prompt (Claude Code asking before it acts).\" The feedback stays as it is; option c is still not the shortest, and b stays the right answer. For line 314, use the step 8 replacement in the step-8 finding, which already carries the clause \"(Claude Code asking before it runs a command or changes a file)\"."
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, step 2: \"Type a slash and the word triage. If `triage` isn't in the list that pops up, type `/exit`...\" (line 289)",
+            "problem": "The step never says not to press Enter, or to delete `/triage` from the prompt box once it shows in the list. A first-timer may press Enter and run triage in an empty, unconfigured folder before setup. Or they may type step 4's `/setup-matt-pocock-skills` after the leftover text. Four other Lessons word this same check carefully.",
+            "evidence": "content/lessons/08-tdd.md:239: \"Type a slash and then tdd, but don't press Enter. If `tdd` is in the list that pops up, delete what you typed\". 09-implement.md:239, 11-pr-and-ship.md:251 and 06-prototype.md:238 say the same.",
+            "fix": "\"2. Type a slash and the word triage, but don't press Enter. If `triage` is in the list that pops up, delete what you typed and go on. If it isn't, delete it, type `/exit`, install Matt's Skills, then run `claude` again:\""
+          },
+          {
+            "severity": "low",
+            "where": "A session, step 3: \"The result is confirmed (with the code path: which code actually runs), failed, or not enough detail to try, the strongest sign of `needs-info`.\" (line 128)",
+            "problem": "\"Failed\" here means the claim didn't hold up. But the Lesson read just before this one, in the same Part, teaches \"failing\" (red) as the result that shows the bug. A reader carrying that meaning over can read \"failed\" as \"the bug showed up\", the opposite of what is meant.",
+            "evidence": "content/lessons/13-diagnosing-bugs.md:32: \"Developers call a failing result red\", meaning the bug reproduces. triage/SKILL.md:74 lists the three results as confirmed, failed or insufficient detail, and calls insufficient detail only \"a strong `needs-info` signal\".",
+            "fix": "\"The result is confirmed (with the code path: which code actually runs), didn't hold up (the steps work fine, or the PR doesn't do what it says), or not enough detail to try, a strong sign of `needs-info`.\""
+          },
+          {
+            "severity": "low",
+            "where": "Try it, It's working if: \"Every note it wrote starts with the AI-triage disclaimer.\" (line 325), against \"Written like a short design note\" (line 228)",
+            "problem": "The Lesson calls the `.out-of-scope/` file a \"design note\". That file starts with a concept heading, not the disclaimer, so a reader who checks it under \"every note it wrote\" marks a correct run as failed. The disclaimer applies only to comments and issues posted to the tracker.",
+            "evidence": "triage/SKILL.md:13: the disclaimer goes on \"Every comment or issue posted to the issue tracker\". OUT-OF-SCOPE.md:23-54: the file format starts with `# Dark Mode` and has no disclaimer. Lesson line 228.",
+            "fix": "Line 325: \"- [ ] Every comment it added under `## Comments` starts with the AI-triage disclaimer.\""
+          },
+          {
+            "severity": "low",
+            "where": "Agent brief section: \"Never file paths or line numbers\" (line 172), then the example brief \"Visiting /learn/<slug>\" and \"GET /learn/nope\" (lines 187, 200); Try checklist \"The brief for 01 describes behaviour, with checkable acceptance criteria, an Out of scope list and no line numbers.\" (line 322)",
+            "problem": "A reader who barely uses a terminal takes `/learn/nope` for a file path, right after being told briefs never name one. The practice brief for 01 will almost certainly name `count.sh` too, since the report and the command both use it. The checklist is silent on paths, so the reader can't tell whether that is a failure. This was raised as a low in round 1 and deferred, not declined, and nothing has changed.",
+            "evidence": "Lesson lines 172, 187, 200 and 322. Line 301: the 01 report reads \"count.sh says 2\". AGENT-BRIEF.md:15 (\"Don't reference file paths: they go stale\").",
+            "fix": "Line 209, first sentence: \"There's no \"open this file\" and no line number, so if someone reorganises the folders next week, every line is still true (`/learn/nope` is an address a Visitor types, not a file).\" Line 322: \"...an Out of scope list and no line numbers (naming `count.sh` is fine: it's the command people run).\""
+          },
+          {
+            "severity": "low",
+            "where": "Word budget: table row \"Tickets that `/to-tickets` just made | Nothing: they're already `ready-for-agent`\" (line 101); Common mistakes \"Writing `.out-of-scope/` for a built feature. Point to where it lives instead.\" (line 334); Cheat sheet \"Looking at one item | It reproduces the bug, or runs the PR's tests, before any brief\" (line 350)",
+            "problem": "The Lesson is at 2,913 prose words, above the guide's 2,800 target and 87 under the lint cap. The definitions above need about 40 more words. Three lines only repeat points made elsewhere. The cheat sheet row also sits three rows below \"One item\" (line 347), so a reader sees two near-identical labels for different things.",
+            "evidence": "node .scratch/course-rewrite/tools/lint-lesson.mjs content/lessons/14-triage.md prints proseWords 2913. writing-guide.md:122: \"aim for 2,300–2,800 words (lint range 1,800–3,000)... Cut repetition\". Line 101 repeats lines 93 and 331. Line 334 repeats line 231 and cheat sheet row 353. Line 350 repeats line 128 (the verify-before-brief point is also at lines 209 and 265).",
+            "fix": "Delete the line-101 table row, the line-334 Common mistakes bullet and the line-350 cheat sheet row. That saves about 34 counted words, enough room for the clauses for brief, Slug, permission prompt and step 8."
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/triage.json"
+}

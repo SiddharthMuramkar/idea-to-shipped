@@ -1,0 +1,17 @@
+{
+ "n": 17,
+ "slug": "retro",
+ "title": "Retro",
+ "part": 4,
+ "old": null,
+ "img": [
+  "/photos/retro.jpg",
+  "A person in a green sweater looks at a blue wall covered in yellow sticky notes.",
+  "Per Lööv"
+ ],
+ "skills": [
+  "engineering/retro",
+  "productivity/writing-for-agents"
+ ],
+ "extra": "Teach `/retro` (seven categories, mechanical → check, judgement → CODING_STANDARDS.md, reviewer enforces standards, run before `/clear`), steering files and Matt's \"never run /init\", and `/writing-for-agents` (context pointers, two loads, progressive disclosure, no-ops, leading words, negation backfires). Site story: not used on this site yet; one honest line, e.g. the repo's CLAUDE.md is 17 lines of pointers written by setup and there is no CI job or pre-commit hook running the checks, which is exactly what a retro would flag. Do not invent a retro run."
+}

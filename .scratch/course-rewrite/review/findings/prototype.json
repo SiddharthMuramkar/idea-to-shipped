@@ -1,0 +1,329 @@
+{
+ "slug": "prototype",
+ "lenses": {
+  "reader": [
+   {
+    "severity": "high",
+    "where": "Try it yourself, step 1 (line 226), and the checklist item at line 259",
+    "problem": "On a fresh Git install the setup line can fail, or leave the reader on a branch the checklist doesn't name. `git commit` stops with \"Author identity unknown / Please tell me who you are\" when user.name and user.email aren't set, so `&& claude` never runs. Plain `git init` still names the first branch `master` unless init.defaultBranch is set. The checklist line \"`main` holds `DECISION.md`\" and the capture prompt (\"on main\") then point at a branch that doesn't exist.",
+    "evidence": "Line 226: `mkdir book-loans && cd book-loans && git init && git commit --allow-empty -m \"start\" && claude`. Line 259: \"`git branch` lists `prototype/book-loans`, and `main` holds `DECISION.md`\". Git 2.54 still defaults to master; it only works on the author's machine because `git config --global init.defaultBranch` returns `main` there.",
+    "fix": "Change the command to `mkdir book-loans && cd book-loans && git init -b main && git commit --allow-empty -m \"start\" && claude`. Add under it: \"If Git says 'Please tell me who you are', run the two `git config --global` lines it prints, with your own name and email, then run the line again.\""
+   },
+   {
+    "severity": "high",
+    "where": "Final test `sequence-detour` (lines 393-403); body lines 26, 179, 183",
+    "problem": "The sequence question rests on `/grill-with-docs` and `/to-tickets`. Neither appears in the body. The body only says \"grilling\" (linked to [Grilling], which teaches `/grill-me` and `/grilling`), and `/to-spec` shows up only once, in a flow-Scene caption. A cold reader is asked to order Skills they have never been shown.",
+    "evidence": "Every option in sequence-detour starts with `/grill-with-docs`, and option d includes `/to-tickets`. Searching the prose finds neither name before line 395.",
+    "fix": "Name them in the body. At line 183, after \"the path most work takes from idea to shipped\", add: \"Inside a project, the planning interview is `/grill-with-docs` ([Domain modeling](/learn/domain-modeling)). The detour comes next if a question needs it, then `/to-spec` writes the spec and `/to-tickets` splits it into tickets ([Spec + tickets](/learn/spec-and-issues)).\" Also relabel the flow node `grill` as \"Grilling with /grill-with-docs, question 13\"."
+   },
+   {
+    "severity": "high",
+    "where": "The detour section (lines 159-183) and the Try stretch (line 261)",
+    "problem": "The Lesson never says how to open a \"fresh session\" while session one stays open, or how to \"point the agent at that file\". Goal 4 promises the reader can run the detour, and the stretch can't be done as written by someone who has never used an agent. The stretch also says \"In a longer conversation\" without saying which one, and it doesn't cover the return trip.",
+    "evidence": "Line 173: \"In a fresh session you point the agent at that file.\" Line 177: \"you give it that file's path.\" Line 261: \"ask for the file's path, and have a fresh session read it.\" No step says to open a second terminal window and run `claude`.",
+    "fix": "Rewrite the stretch: \"Stretch: the round trip. In the same session, type `/handoff prototype the late-fee rules in a fresh session and report back`. The agent replies with the file's path; copy it. Open a second terminal window (leave the first one running), `cd book-loans`, run `claude`, and type `Read <path> and continue`. When you're done there, type `/handoff back to the planning session: the verdict and anything non-obvious`, copy that path, switch to the first window and type `Read <path>`.\" In the prose at line 159, add: \"A fresh session is just `claude` started again in a second terminal window; you paste it the file's path.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try step 6 capture prompt (line 246) and checklist line 259",
+    "problem": "The prompt never asks the agent to commit `DECISION.md`, so \"`main` holds `DECISION.md`\" may only mean an untracked file sitting in the folder. The reader also isn't told where to type `git branch` (inside Claude Code it would go to the agent as a message) or how to check what's on main.",
+    "evidence": "Line 246: \"Then, on main, write DECISION.md with the question, the verdict and a pointer to that branch.\" Nothing says to commit it. Line 259 asks the reader to run `git branch` and to judge main's contents.",
+    "fix": "Prompt: \"We're done. Commit the prototype to a new prototype/book-loans branch that is never merged. Then switch back to main, write DECISION.md with the question, the verdict and a pointer to that branch, and commit it.\" Checklist: \"After `/exit`, `git branch` lists `prototype/book-loans` and `* main`, and `ls` shows `DECISION.md` but no HTML file.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try checklist, line 257",
+    "problem": "A reader who doesn't code can't check whether the rules sit in their own `<script>` block that never mentions the page. They would have to read JavaScript.",
+    "evidence": "\"The rules sit in their own `<script>` block that never mentions the page.\"",
+    "fix": "Make it checkable: \"Ask the agent: 'Show me the rules part of the file. Does it touch `document` or any button?' It should show rules named like the business (renew, return, late fee) and answer no.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try steps 2-4 and 7 (lines 229-249)",
+    "problem": "The steps are out of order and leave gaps for a first-timer. Step 2 has them type \"/prototype\" into the box, then step 3 says \"type this\" without saying to clear what's already there. The safety advice (choose No, Esc to stop) comes at step 7, after the step where permission prompts actually appear. Step 4 says to double-click the file but doesn't say where it is.",
+    "evidence": "Line 229: \"Type a slash and the word prototype. If no prototype Skill appears...\" Line 235: \"Then type this\". Line 249: the permission and Esc advice sits at the end. Line 241: \"Open the HTML file it made by double-clicking it\".",
+    "fix": "Step 2: \"Type `/prot` and look at the menu that pops up under the box (don't press Enter). If no prototype Skill is listed, ...\" Step 3: \"Delete what you typed, then paste this.\" Move step 7 up to just before the prompt: \"While it works it may ask permission. Choose Yes for creating files in this folder, No for anything you didn't ask for, and press Esc to stop it.\" Step 4: \"Its reply names the file; it's in your book-loans folder. Double-click it in your file browser, or ask the agent to open it.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 40-47 (the Skill's \"branches\") versus lines 16, 38, 111-114 (Git branch)",
+    "problem": "\"Branch\" means two different things within a few paragraphs: the Skill's logic and UI paths, and a Git branch. A newcomer meets \"Logic branch\" and \"UI branch\" just after \"parked to one side in Git\", and could easily think the logic prototype goes on a Git branch called Logic.",
+    "evidence": "Line 40: \"two paths, which it calls branches\". Table column \"Branch\". Headings \"The logic branch\" and \"The UI branch\". Line 111: \"A Git branch is a separate line of commits\".",
+    "fix": "Line 40: \"The question also picks one of the Skill's two paths. The Skill calls them branches, but they have nothing to do with the Git branches that come up under rule 6.\" Optionally rename the table column to \"Path\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Scene chat, last agent line (line 150), versus body lines 113-117",
+    "problem": "The Scene contradicts the body for a newcomer. The body says capturing puts the decision into the real code and \"`main` keeps only the decision\". The Scene says \"Main keeps none of it\".",
+    "evidence": "Line 117: \"==`main` keeps only the decision==, none of the prototype.\" Line 150: \"Main keeps none of it; D gets rewritten properly, with tests, when the ticket is built.\"",
+    "fix": "Change to: \"Main keeps none of the prototype code. D's design goes into the real page, rewritten properly with tests, when the ticket is built.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Detour section (lines 157-185) with checkpoint `compact-or-handoff` and test `spot-handoff-misuse`",
+    "problem": "The Lesson teaches \"`/handoff` only when something has to travel\", and two questions mark a same-folder handoff wrong. It never says why the prototype detour passes that rule, so the reader sees a contradiction: the detour also opens a fresh session, and the Try stretch does it in the same folder.",
+    "evidence": "Line 185: \"It earns its place only when something has to travel: ... or a side task forked off mid-work.\" Line 190 feedback: \"Nothing is travelling: same folder, same tool, same work.\" ask-matt says the detour fits because \"a prototype lives in its own directory\".",
+    "fix": "Add after line 183: \"The detour passes the 'something must travel' test: the prototype is a side task forked off mid-grilling, and in Matt's map it lives in its own folder. Your planning session isn't finished, so you can't just carry on into the prototype there.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Unexplained core terms: lines 26, 38, 44, 47, 54, 67, 107, 114",
+    "problem": "Several terms a terminal-only reader needs are used without being explained: \"grilling\"/\"ungrillable\" as a word (lines 26, 54); \"UI\" (never expanded, used from line 45 and in headings); \"state model\" (44); \"HTML, CSS and JavaScript ... no framework, build step or server\" (67); \"tests\" and \"error handling\" (38, 107); \"merged\"/\"never merged\" (114, and in later questions).",
+    "evidence": "Line 26: \"Matt calls these ungrillable\". Line 44: \"Does this logic or state model feel right?\" Line 67: \"plain HTML, CSS and JavaScript in one file, with no framework, build step or server\". Line 38: \"no tests, no tidy structure\". Line 114: \"never merged\".",
+    "fix": "Line 26: \"Matt calls the interview grilling (the agent questions you about a plan, one question at a time) and calls these questions ungrillable.\" Line 40 or 44: \"UI (user interface: what's on the screen)\"; \"a state model (the situations something can be in and the rules for moving between them, like a book going from On loan to Overdue)\". Line 67: \"a single web page file (HTML) that opens in your browser when you double-click it. Everything is inside it, so there's nothing to install and nothing to start first.\" Line 38: \"no tests (extra code that checks the main code automatically), no tidy structure\". Line 114: \"never merged (its commits are never copied into `main`)\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Site story, first line (line 276)",
+    "problem": "\"After the accounts work merged\" will be read as user accounts. This site has none (GLOSSARY: Visitors are anonymous and have no accounts). Issue 02 was actually connecting GitHub, Vercel and Neon.",
+    "evidence": "Line 276: \"I used it once, after the accounts work merged and before the Lesson page existed.\" At d21fc2c, .scratch/lesson-site/issues/02-accounts-and-environments.md is titled \"02 \u2014 Connect GitHub, Vercel and Neon\".",
+    "fix": "\"I used it once, after the hosting and database setup merged and before the Lesson page existed.\""
+   },
+   {
+    "severity": "low",
+    "where": "Smaller unexplained terms: lines 38, 47, 76, 113, 122/128, 142, 195, 288, 290",
+    "problem": "Several smaller terms are left unexplained: \"Since version 1.2.0\" (of what?); \"backend module\"; \"`<script>` block\"; \"promoted\"; \"pure module\" / \"written pure\" in checkpoint feedback (the body never says \"pure\"); `npm run dev` in the Scene; \"QA\" in checkpoint option d, which comes before it's explained at line 206; \"issue 03\" in the Site story (the body says \"ticket\"); `/context`; and \"150k\"/\"1M\" notation.",
+    "evidence": "Line 38: \"Since version 1.2.0\". Line 47: \"a backend module means logic\". Line 76: \"one small `<script>` block\". Line 113: \"never promoted as it is\". Line 122: \"The pure module\". Line 195: \"we're going to do more QA on this\". Line 290: \"`/context` showed about 205k of 1M tokens\".",
+    "fix": "\"Since version 1.2.0 of Matt's Skills\". \"a backend module (code with no screen)\". \"one small `<script>` block (the part of the file that holds the code)\". \"never copied into the real code as it is\". Replace \"pure module\" with \"the rules block, which never touches the page\". Line 195: \"more QA (testing by hand) on this\". Line 288: \"issue 03 (the ticket for the Lesson pages)\". Line 290: \"`/context` (a Built-in command that shows how full the window is) showed about 205k (205,000) of 1M tokens\"."
+   },
+   {
+    "severity": "low",
+    "where": "Final test `scenario-logic-question` (line 310) and `spot-verdict-only` (line 418)",
+    "problem": "Both questions reuse examples straight from the body, so they test recognition rather than transfer, against the writing guide's \"use a fresh situation\" rule. The body's refund example is \"a refund after half an order has shipped\" (line 67), and the four-rounds-then-\"we picked C\" story is the GitHub issue from line 214.",
+    "evidence": "Line 310: \"can a customer cancel a refund after part of the order has shipped?\" Line 418: \"After four rounds of UI prototypes, a team wrote 'we picked C'\".",
+    "fix": "Line 310: \"Your question is 'can a gym member freeze a membership while a late fee is unpaid, and what happens to bookings already made?'\" Line 418: \"A bakery team prototyped its order page, wrote 'variant B' on the ticket and moved on. The finished page left out half of what B's side panel showed.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 51 and cheat sheet line 305",
+    "problem": "`/implement` comes up as the move when the design is settled, but it isn't explained or linked. A cold reader doesn't know what it does.",
+    "evidence": "Line 51: \"The design is settled: build it with `/implement`.\"",
+    "fix": "\"The design is settled: build it with `/implement`, Matt's Skill for building a planned change ([Implement](/learn/implement)).\""
+   },
+   {
+    "severity": "low",
+    "where": "Site story, line 290",
+    "problem": "The timing of the 205k reading doesn't match the research note. The note says the session showed about 205k tokens right after the prototype started; the Lesson says right after it was built. The Site story should match the session log exactly.",
+    "evidence": "Research note: \"That session showed about 205k of 1M tokens right after the prototype started (A3)\". Lesson: \"Right after the prototype was built, `/context` showed about 205k of 1M tokens\".",
+    "fix": "Check the session log. If the note is right, write \"Just after the prototype started, `/context` showed about 205k of 1M tokens\"."
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "06-prototype.md:321-331, test scenario-ui-question (stem)",
+    "problem": "The stem puts the reader \"Halfway through planning\", and the right answer is to type `/prototype` straight away. The Lesson teaches that a prototype mid-planning should go out through `/handoff` to a fresh session (detour section, cheat sheet line 303, Common mistakes line 273). So the keyed answer models a habit the Lesson calls a mistake, and a careful reader is stuck between two lessons.",
+    "evidence": "Line 322: \"Halfway through planning a dashboard for a dog-walking business...\". Right answer line 323: \"`/prototype`: three structurally different variants you flip between.\" Line 273: \"**Prototyping inside a long planning session,** or using `/handoff` when nothing has to travel.\"",
+    "fix": "Take the planning context out of the stem and keep all four options as they are. New stem: \"You're designing a dashboard for a dog-walking business and still can't choose between showing today's walks as a calendar, a list or a map. You've described all three twice. What's the best move?\""
+   },
+   {
+    "severity": "medium",
+    "where": "06-prototype.md:187-197, checkpoint compact-or-handoff (stem)",
+    "problem": "The right answer depends on two things the stem leaves weak. First, the reader has to remember the ~150k Smart zone number (trivia) to see that 140k leaves no room. Second, \"the design decisions so far matter\" points toward Continue, because the body says to carry on when the next step \"wants your reasoning word for word\", and PHASE-BOUNDARIES' first question says yes whenever the next phase needs this one as a primary source. A reader who reasons correctly toward Continue finds only a Continue option with a wrong reason (the 1M window), so the question feels like a trick.",
+    "evidence": "Line 188: \"You're at about 140k tokens, in the same folder, and the design decisions so far matter.\" Line 185: \"Going from planning straight to building, in the same place, with room left? Carry on: the build wants your reasoning word for word.\"",
+    "fix": "State the lack of room in words instead of making the reader recall a number. New stem: \"Your UI variants are built and you're about to start a round of feedback on them. The session is near the edge of the Smart zone, you're in the same folder, and the next round needs the design decisions so far. Which move fits?\" The options and feedback can stay."
+   },
+   {
+    "severity": "medium",
+    "where": "06-prototype.md:345-355 and 393-403, tests scenario-detour and sequence-detour",
+    "problem": "The two Final test questions test the same fact with the same answer: handoff out, prototype in a fresh session, handoff back. Seeing scenario-detour's right option gives away sequence-detour, so goal 4 is effectively scored twice. scenario-detour's stem also repeats the cheat sheet's cue word for word (\"the prototype will be big\"), so it can be answered by recall alone.",
+    "evidence": "scenario-detour right answer, line 349: \"`/handoff` out, `/prototype` in a fresh session, `/handoff` the answer back.\" sequence-detour right answer, line 399: \"`/grill-with-docs` \u2192 `/handoff` \u2192 `/prototype` in a fresh session \u2192 `/handoff` back \u2192 `/to-spec`\". Cheat sheet line 303: \"Mid-planning, and the prototype will be big\".",
+    "fix": "Rewrite scenario-detour to test the return trip, in a fresh domain:\n```test scenario-detour\nYou detoured out of a planning session to prototype a pet-sitting app's booking rules. The prototype session has settled the question, and the planning session is still open. What do you bring back?\n- [ ] The whole prototype conversation, pasted into the planning session so nothing is lost.\n  > That pours the prototype's tokens into the very window the detour was protecting.\n- [x] A second `/handoff` file holding the verdict and the non-obvious lessons.\n  > Right. The planning session gets only the answer, reads it from one file, and carries on grilling.\n- [ ] Nothing: the planning session can read the prototype's files on disk when it needs them.\n  > The files show what was built, not what you decided or learned. Hand the answer back explicitly.\n- [ ] A `/compact` run in the planning session, so it has room for the prototype's results.\n  > `/compact` summarises the session you run it in. It can't bring back anything from the other one.\n```\nThis keeps the right answer at position b and stops it being the longest option."
+   },
+   {
+    "severity": "medium",
+    "where": "06-prototype.md:309-319, test scenario-logic-question",
+    "problem": "This tests recall, not transfer. The stem reuses the body's own logic example (a refund after part of an order has shipped), which the writing guide forbids (\"Use a fresh situation... not the body's own example sentence\"). The question also asks the reader to predict what an already-chosen Skill builds, so it is really a predict- question wearing a scenario- id. The other three scenario- ids already meet the minimum of 3.",
+    "evidence": "Line 67: \"a refund after half an order has shipped\". Line 310: \"can a customer cancel a refund after part of the order has shipped?\"",
+    "fix": "Use a new domain and keep the four options' structure:\n```test scenario-logic-question\nYour question is \"if a parcel is marked lost, then turns up, then is refused at the door, who gets refunded?\" You type `/prototype` with it. What should you expect it to build?\n- [ ] Three layouts of the parcel-tracking page, switched by `?variant=` and a bar at the bottom.\n  > That's the UI branch, for \"what should this look like?\". This question is about rules and state.\n- [ ] A small terminal app you run from the command line to step through the parcel rules.\n  > That's what the logic branch built before 1.2.0. It now builds one HTML file anyone can open.\n- [x] One HTML file with a state panel, free-play buttons and walkthrough tabs.\n  > Right. A logic question gets a single double-click page that pushes the rules through tricky cases.\n- [ ] A real parcel-status feature wired to the database, with tests, so the answer can be trusted.\n  > Tests and a real database are exactly what a prototype skips. They come when the answer is built for real.\n```\nIf the id is not yet published, consider renaming it `predict-logic-question`."
+   },
+   {
+    "severity": "medium",
+    "where": "06-prototype.md:417-427, test spot-verdict-only; goal at line 16",
+    "problem": "Two problems. First, the stem restates the body's own GitHub-issue example (\"four rounds of UI prototypes\"), so it tests recall. Second, goal 3 tells the reader to put \"the verdict on the ticket\", and this question then marks \"only the verdict was written down\" as the mistake. The goal and the test pull against each other. Option B (\"one round of variants is the limit\") is also a strawman, since the Lesson never suggests a limit on rounds.",
+    "evidence": "Line 214: \"a team ran four rounds of UI prototypes... only the verdicts had been written down.\" Line 418: \"After four rounds of UI prototypes, a team wrote \\\"we picked C\\\"...\" Goal, line 16: \"...the verdict on the ticket.\"",
+    "fix": "Change goal 3's ending to \"...the verdict and what it settled on the ticket.\" Then rewrite the question:\n```test spot-verdict-only\nA team prototyped a checkout form and wrote \"Going with C\" on the ticket. Weeks later the agent building it guessed at C's field order and help text, and got both wrong. Spot the mistake.\n- [ ] They should have deleted the prototype so the agent couldn't copy from it.\n  > Deleting removes the only runnable record of what C looked like.\n- [ ] They should have run more rounds of variants until nothing was left to decide.\n  > More rounds don't help if what they settle never reaches the ticket.\n- [ ] They should have built all three variants for real and compared them live.\n  > That's building three features to choose one, which the prototype exists to avoid.\n- [x] The ticket named the winner, not what C settled or where its branch is.\n  > Right. Write down the question and what it settled (field order, help text), with a pointer to the `prototype/<name>` branch.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "06-prototype.md:405-415, test why-no-tests",
+    "problem": "The right answer paraphrases the body's rule-4 sentence almost word for word, so it can be picked by recognising the sentence. Two distractors are strawmen. C (\"only the switcher bar needs tests\") cannot apply, because a logic prototype has no switcher, and its own feedback says so. D pairs tests with a real database, which no reader would believe.",
+    "evidence": "Line 107: \"Once it needs tests, it has stopped being a prototype.\" Line 409: \"\\\"Once it needs tests, it isn't a prototype. Tests come with the real code.\\\"\" Line 412 feedback: \"a logic prototype doesn't have one.\"",
+    "fix": "Keep option a. Replace b, c and d:\n- [x] \"Skip them. The rules get tested when they move into real code.\"\n  > Right. A prototype exists to learn one thing fast. The validated rules get their tests once they move into the real code.\n- [ ] \"Test just the walkthrough tabs, since other people will click those.\"\n  > The tabs are part of the throwaway page. Testing them teaches you nothing about whether the rules are right.\n- [ ] \"Fine, as long as the tests use a real database instead of memory.\"\n  > A prototype keeps state in memory unless the database is the question. A real database is another thing it skips."
+   },
+   {
+    "severity": "medium",
+    "where": "06-prototype.md:76 vs 113 (body), affecting checkpoint winner-goes-where and test spot-merged-prototype",
+    "problem": "The body contradicts itself on whether prototype code can be promoted. Line 76 says the logic block \"lifts straight into the real code\". Line 113 says \"Prototype code is never promoted as it is.\" A reader who applies line 113 to winner-goes-where would doubt the keyed answer (the module moves into the real code) and lean toward \"the module gets rewritten\". LOGIC.md says the pure module lifts as it is; UI.md says a winning variant gets rewritten.",
+    "evidence": "Line 76: \"Once they're right, that block lifts straight into the real code\". Line 113: \"The logic module lifts in; a winning variant is rewritten properly, with tests. Prototype code is never promoted as it is.\"",
+    "fix": "Rewrite the line 113 bullet: \"**The decision goes into the real code.** The logic module lifts in as it is, because it was written pure for exactly that; a winning UI variant is rewritten properly, with tests. The clickable page and the switcher are never promoted.\""
+   },
+   {
+    "severity": "low",
+    "where": "06-prototype.md:333-343, test scenario-settled-design",
+    "problem": "The stem gives away the right answer: \"every design question was settled\" is the defining phrase of the right answer (body line 51: \"The design is settled: build it with `/implement`\"). Distractors a (\"a prototype is always the safest next step\") and c (\"look for something left to prototype\") are strawmen. The right answer is also the shortest option.",
+    "evidence": "Line 334: \"every design question was settled while planning, and the agent suggests running `/prototype` before building.\"",
+    "fix": "Rewrite it, keeping the right answer at position d:\n```test scenario-settled-design\nYour tickets for a recipe site are written. While you're building the first one, the agent offers to run `/prototype` to try a few layouts for the ingredients list, which the spec already describes and you're happy with. What do you do?\n- [ ] Accept: seeing three layouts can only help before more code exists.\n  > A prototype answers an open question. With none left, it spends tokens and reopens a settled decision.\n- [ ] Accept, but have the layouts built on a throwaway route so the real page stays clean.\n  > Where it would live isn't the issue. There's no question for it to answer.\n- [ ] Stop building and go back to `/grill-with-docs` to reopen the layout first.\n  > You'd be reopening a decision you're happy with. Nothing is unsettled.\n- [x] Decline, and carry on building the ticket with `/implement`.\n  > Right. Agents can suggest the prototype Skill at the wrong moment. When nothing is left to decide, build.\n```"
+   },
+   {
+    "severity": "low",
+    "where": "06-prototype.md:369-379, test spot-merged-prototype",
+    "problem": "There is a wording tell: options a, b and c all start \"She should have...\", and only the right answer (d) breaks the pattern. Option c (\"the variant with the nicest colours\") is a strawman. The best real misconception here, merging only the winning variant's files, is missing.",
+    "evidence": "Line 377: \"- [x] Prototype code went into main; B should be rewritten properly.\" Line 375: \"She should have picked the variant with the nicest colours instead.\"",
+    "fix": "Replace c and d:\n- [ ] She should have merged only B's files, leaving the other variants and the switcher on the branch.\n  > Closer, but B itself was written under prototype rules: no tests, minimal error handling. It gets rewritten, not merged.\n- [x] She should have rewritten B properly instead of merging prototype code.\n  > Right. Prototype code skips tests and error handling. Rewrite the winner into the real code, and park the rest on a never-merged branch."
+   },
+   {
+    "severity": "low",
+    "where": "06-prototype.md:90-100, checkpoint existing-page-variants",
+    "problem": "There is a keyword tell: `?variant=` appears only in the right answer (c). Option d (\"three screenshots the agent draws from its imagination\") is not a real misconception, because nothing in the Lesson suggests the Skill produces images.",
+    "evidence": "Line 96: \"- [x] On the real settings route, picked by `?variant=`, with its data kept.\" Line 98: \"As three screenshots the agent draws from its imagination.\"",
+    "fix": "Put the keyword in a distractor and replace d:\n- [ ] On a brand-new `/prototype/settings` route, switched by `?variant=`, so the real page stays untouched.\n  > That's the last resort, for screens with no home. An empty route hides problems the real page would expose.\n- [ ] As three copies of the page at `/settings-a`, `/settings-b` and `/settings-c`.\n  > One route with `?variant=` keeps the real data in one place and lets the bar flip between versions. Three copies drift apart."
+   },
+   {
+    "severity": "low",
+    "where": "06-prototype.md:119-129, checkpoint winner-goes-where",
+    "problem": "There is a keyword tell: the branch name `prototype/<name>` appears only in the right answer (a). Option b (delete both halves) also overlaps the 'deleting' distractors already used twice in the Final test (spot-merged-prototype a, spot-verdict-only a).",
+    "evidence": "Line 121: \"- [x] The rules module moves into the real code; the page goes onto a `prototype/<name>` branch.\"",
+    "fix": "Replace b:\n- [ ] Both halves go onto a `prototype/<name>` branch, and only the verdict reaches the ticket.\n  > The rules module was written pure so it could lift into the real code. Parking it too means rebuilding validated rules from memory.\nThe right answer (a, 90 chars) stays shorter than d (96)."
+   },
+   {
+    "severity": "low",
+    "where": "06-prototype.md:393-403, test sequence-detour",
+    "problem": "The right option (c) leaves out the 'finish grilling' step that its own feedback describes, while distractor d spells 'finish grilling' out. The stem also never says the prototype is big. The Lesson justifies the detour only by size, so a reader could fairly argue that option a (prototype in the same session) is fine for a small prototype.",
+    "evidence": "Line 394: \"one question needs a UI prototype. Which order is right?\" Line 399: \"`/grill-with-docs` \u2192 `/handoff` \u2192 `/prototype` in a fresh session \u2192 `/handoff` back \u2192 `/to-spec`\". Line 400 feedback: \"...finish grilling, then write the spec...\"",
+    "fix": "Stem: \"You're in a repo, planning a feature, and one question needs a UI prototype that will be big. Which order is right?\" Option c: \"`/grill-with-docs` \u2192 `/handoff` \u2192 `/prototype` (fresh session) \u2192 `/handoff` back \u2192 more grilling \u2192 `/to-spec`\". That is about 109 chars against d's 112. Re-run lint-lesson.mjs to confirm c is not the longest."
+   },
+   {
+    "severity": "low",
+    "where": "06-prototype.md:357-367, test spot-colour-variants",
+    "problem": "The right answer says the variants \"differ in colour\", but the stem's third variant differs by rounded corners, which is not colour. Distractor a (\"at least ten variants\") is a strawman.",
+    "evidence": "Line 358: \"one blue, one green, one with rounded corners\". Line 361: \"The variants differ in colour, not structure.\" Line 359: \"There should be at least ten variants to choose from.\"",
+    "fix": "Option b: \"The variants differ in styling, not structure.\" Option a: \"Sam should have asked for five variants, so at least one would come out different.\" with feedback \"More copies of the same grid are still the same grid. The number isn't the problem; structure is.\""
+   },
+   {
+    "severity": "low",
+    "where": "06-prototype.md:381-391, test spot-handoff-misuse (and overlap with checkpoint compact-or-handoff)",
+    "problem": "There is a wording tell: b, c and d start \"Lee should have...\", and only the right answer (a) opens with its reason (\"Nothing had to travel, so...\"). The question's core idea (nothing travels, so no `/handoff`) also repeats the checkpoint compact-or-handoff's option a feedback almost word for word, so the checkpoint pre-teaches this Final test answer.",
+    "evidence": "Line 383: \"- [x] Nothing had to travel, so Lee should have carried on in the same session.\" Line 190: \"Nothing is travelling: same folder, same tool, same work.\"",
+    "fix": "Option a: \"Lee should have carried on in the same session; nothing had to travel.\" Its feedback can stay. In the checkpoint, reword option a's feedback so it doesn't share the test's phrasing: \"A handoff file is for work that moves elsewhere. Here the feedback round happens right where you are.\""
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:82, :86, :88, :301 (UI.md quotes); :34 and :106 (SKILL.md quotes); :76 and :258 (LOGIC.md quote)",
+    "problem": "The fixed quote rule (at most one direct quote per source, under 15 words) is broken for the Skill's own files: four quoted fragments come from UI.md, two from SKILL.md, and the same LOGIC.md phrase is quoted twice. One of the UI.md quotes is also altered inside quotation marks.",
+    "evidence": "Contract (.scratch/course-rewrite/contract-v1.md:99): \"At most one direct quote per source, under 15 words\". UI.md quotes in the Lesson: line 82 \"Three slightly-tweaked card grids isn't a UI prototype, it's wallpaper.\" (UI.md step 2, exact) and \"don't use a card grid\" (UI.md step 2 reads \"do not use a card grid\"); line 86 \"B (Sidebar layout)\" (UI.md step 4); line 88 \"the header from B with the sidebar from C\" (UI.md step 5 reads \"I want the header from B...\"; the exact form is in docs/engineering/prototype.md:57); line 301 \"Redo one with no card grid\". SKILL.md: line 34 \"throwaway code that answers a question\" and line 106 \"PROTOTYPE, wipe me\". LOGIC.md: \"wait, that shouldn't be possible\" at lines 76 and 258.",
+    "fix": "Keep one quote per source file: for UI.md keep the \"wallpaper\" sentence and paraphrase the rest (e.g. a label such as B, Sidebar layout; feedback that mixes B's header with C's sidebar; ask it to redo one without a card grid). Unquote \"PROTOTYPE, wipe me\" (describe it as a name that says it is a prototype to be wiped) or unquote the SKILL.md definition. Drop the quotation marks from the second \"wait, that shouldn't be possible\" at line 258 or reword it."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:276 (Site story, first sentence)",
+    "problem": "\"after the accounts work merged\" describes issue 02 as account work. On a site whose GLOSSARY says Visitors have no accounts, a reader will take this to mean user accounts; the merged work was actually connecting the GitHub, Vercel and Neon services.",
+    "evidence": ".scratch/lesson-site/issues/02-*.md title: \"02 \u2014 Connect GitHub, Vercel and Neon\"; wizard-02.sh header in the session log (line 1149) \"Connect GitHub, Vercel and Neon (issue 02)\"; PR #1 merged 2026-10-21T08:00:27Z, prototype typed 08:14:20Z. GLOSSARY.md: \"Visitors are anonymous and have no accounts.\"",
+    "fix": "Say what merged: \"after the GitHub, Vercel and Neon hookup (issue 02) merged and before the Lesson page existed\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:288 (Site story, The capture)",
+    "problem": "\"The verdict went onto issue 03 ... and issue 06 ..., each pointing at the branch and VariantC\" overstates issue 06: its note points at the branch and at issue 03's note, and never names VariantC.",
+    "evidence": ".scratch/lesson-site/issues/06-comment-box.md ## Comments: \"...from layout C ... See the note on issue 03 and branch `prototype/lesson-page`.\" Only 03-lesson-pages.md names \"`src/app/prototype/lesson/variants.tsx` (`VariantC`)\".",
+    "fix": "\"each pointing at the branch; the issue 03 note also names the file and `VariantC`.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:195-196 (checkpoint compact-or-handoff) and :206",
+    "problem": "The suggested /compact note is in quotation marks as \"we're going to do more QA on this\" and the explanation says \"Matt did exactly this\", which reads as his words; Matt's actual words differ slightly.",
+    "evidence": "Transcript n0VhIVtviC0 [5:50\u20135:53]: \"I'm actually going to compact and say, 'We're going to do some more QA on this.'\"",
+    "fix": "Either match the transcript (\"we're going to do some more QA on this\") or drop the quotation marks and present it as your own example note."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:49",
+    "problem": "\"A hidden Built-in command ... shares the name\" labels the colliding item a Built-in command. The cited issue describes a hidden, not-yet-enabled built-in *skill* (bundled with Claude Code 2.1.221), and the official docs distinguish bundled skills (prompt-based) from built-in commands (fixed logic). The GLOSSARY definition of Built-in command covers it loosely, but the sentence is less precise than the source.",
+    "evidence": "github.com/mattpocock/skills/issues/1019 (opened 2026-09-03, closed not planned 2026-10-07): \"CC is now bundling a hidden, not-yet-enabled, built-in 'prototype' skill, as of 2.1.221 ... `/prototype` errors out with 'unknown skill', but `/mattpocock-skills:prototype` still works.\" code.claude.com/docs/en/slash-commands \"Bundled skills\": bundled skills are prompt-based; most built-in commands execute fixed logic.",
+    "fix": "\"A hidden skill bundled with Claude Code itself shares the name\" (keeping the GLOSSARY term only where it is accurate), and keep the \"if it says unknown skill\" hedge since the report dates from September 2026."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:36",
+    "problem": "\"the question is always written where you'll see it\" is true of the logic branch only; the UI branch writes the plan in the prototype's location or a top-of-file code comment, not on the page.",
+    "evidence": "LOGIC.md step 1: \"One paragraph, at the top of the demo (in a visible intro, not just a comment)\". UI.md step 1: \"Write down the plan in one line, in the prototype's location or a top-of-file comment\". The author's own prototype wrote it as a code comment: src/app/prototype/lesson/page.tsx:1 at commit 8cdcfa1.",
+    "fix": "\"so the question is always written down first: on the page itself for a logic prototype, at the top of the code for a UI one.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:214",
+    "problem": "\"a team ran four rounds\" infers a team; the issue is one reporter's run, with the implementers being agents (Opus via Claude Code, some GPT via Codex).",
+    "evidence": "github.com/mattpocock/skills/issues/1306 (opened 2026-10-20): \"Setup: Claude Code, Opus 5.5 at high/xhigh (some implementers GPT-6.1 Sol via Codex)\"; the body refers to \"the user\" singular. The 27 tickets, all green, and 16 problems at first glance are stated as in the Lesson.",
+    "fix": "\"one developer ran four rounds of UI prototypes, had agents build 27 tickets with every check passing, and still found 16 visible differences\"."
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "high",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:148-153 (also cheat sheet :302)",
+    "problem": "The Scene shows the agent writing the settled details on the ticket (\"what each part of D shows\") after a bare \"D wins. Capture it.\", and line 153 then says \"The agent does the rest.\" The 1.3.1 Skill does not tell the agent to record those details. Its rule 6 records only the verdict, the question it settled, and a pointer to the branch. This is the exact gap the Lesson's own cited issue #1306 (line 214) describes. A reader who copies the Scene ends up in the failure the Lesson warns about at lines 214, 271 and in the spot-verdict-only test.",
+    "evidence": "prototype/SKILL.md:26: \"Capture the answer too (the verdict and the question it settled) in the issue or a commit.\" UI.md:100 says to capture \"which variant and why\". Issue #1306 (OPEN, read via gh) says \"Rule 6 writes down only 'the verdict and the question it settled'\" and proposes adding the settled details as a change that has not been made yet. The Lesson's line 115 describes the Skill's capture correctly (verdict and question), so the Scene and line 153 contradict the body.",
+    "fix": "Have the user ask for the details in the Scene, e.g. `you: D wins. Capture it, and write down what each part of D settled.` Change line 153 to include asking it to write down what the prototype settled. Add one sentence after line 115: by default the Skill records the verdict and question; the details (what each control does, what each panel holds) are yours to ask for (open issue #1306)."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:150 vs :111-117",
+    "problem": "The Scene's capture leaves the winner out of the real code (\"Main keeps none of it; D gets rewritten properly ... when the ticket is built\"). The Skill's capture step folds the winner into the real code. The Lesson's own body (line 113) lists \"The decision goes into the real code\" as the first of three capture parts. So the Scene shows two of the three parts and silently changes when the fold-in happens.",
+    "evidence": "UI.md:100-102: \"Fold the winner into the real code and move the rest onto the throwaway branch... Sub-shape A: fold the winner into the existing page; drop the losing variants and the switcher from main.\" SKILL.md:26: \"Fold any validated decision into the real code, then capture the prototype itself...\"",
+    "fix": "Option 1: show the fold-in in the Scene, e.g. the agent rewrites D into the Lesson page properly on the working branch and drops the variants and switcher from main. Option 2: make the deferral explicit and user-owned, e.g. the user says \"leave the build to the ticket\", and add a clause at line 113 saying the fold-in can happen when the implementation ticket is built."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:185 and checkpoint compact-or-handoff :187-197",
+    "problem": "The checkpoint's right-answer feedback says /compact is \"where the checklist lands\". By the source tree, step 1 (Continue) is already a yes in this scenario: the prompt says \"the design decisions so far matter\", meaning the next phase needs this one as a primary source, and the tree says that alone makes Continue a yes. Line 185 also hides step 1's conditions. It lists \"carry on\" with no condition, then says \"with room left? Carry on\", which reads as if room AND primary-source need are both required. The /compact answer is defensible, but only through ask-matt's separate Smart-zone rule, which the Lesson never cites here. A careful reader applying the checklist as shown could argue for Continue.",
+    "evidence": "PHASE-BOUNDARIES.md:21: \"Two things make the answer yes: the next phase needs this phase as a primary source, or you have enough smart zone left (~150k tokens)\". ask-matt SKILL.md:40: \"If a session approaches it ..., don't push on degraded; `/compact` at the nearest phase boundary\".",
+    "fix": "State Continue's conditions accurately at line 185 (primary-source need or Smart-zone room, but don't push on past the Smart zone). Reword the right-answer feedback, e.g. \"At 140k you're at the edge of the Smart zone, so carrying on means working degraded. With relevant context, the same place and you in the loop, /compact at this boundary is the move; Matt did exactly this at about 100k.\""
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:157-159, :185, tests scenario-detour :345-355 and spot-handoff-misuse :381-391",
+    "problem": "The Lesson justifies the prototype detour only by token budget (lines 157-159). Line 185 then says /handoff \"earns its place only when something has to travel\", and spot-handoff-misuse says \"/handoff is for work that has to move somewhere\". The Lesson never says which travel case the detour is. A cold reader sees scenario-detour (nothing said about a new folder) answered with /handoff, and spot-handoff-misuse (same folder) marked wrong for using /handoff, with no stated rule telling them apart. The sources do give the reason.",
+    "evidence": "ask-matt SKILL.md:20: prototype detour \"bridged by **`/handoff`** in both directions (a prototype lives in its own directory, which is exactly what `/handoff` is for\". PHASE-BOUNDARIES.md:32: \"forking a side task you found **mid-phase** without derailing what you're doing\". docs/productivity/handoff.md:16,18 (a prototype directory is the common case; forking a side task mid-phase).",
+    "fix": "Add one sentence in the detour section: the detour qualifies because the prototype is a side task forked off mid-grilling, which is one of the travel cases. Echo that in the scenario-detour right-answer feedback. Avoid claiming the prototype always lives in its own folder, since prototype/SKILL.md:21 and UI.md sub-shape A put it next to the real code or on the real route."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:175 (flow Scene caption)",
+    "problem": "The caption says \"a second `/handoff` writes only the verdict and the non-obvious lessons\", as if the Skill does this by default. /handoff summarises the conversation and tailors it to whatever purpose you pass. Matt got a verdict-only return by asking for it explicitly.",
+    "evidence": "handoff/SKILL.md:8 (\"Write a handoff document summarising the current conversation\") and :16 (tailor to the user's arguments). dtAJ2dOd3ko 8:30-8:43: Matt's instruction to take the learnings that are non-obvious or not captured in the prototype and hand them back.",
+    "fix": "e.g. \"A second `/handoff`, told to carry back only the verdict and the non-obvious lessons, writes a short file.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:49",
+    "problem": "The clash is described as \"A hidden Built-in command\". The source says it is a hidden built-in *skill* that ships with Claude Code. GLOSSARY defines Built-in command as a command and \"Not a Skill\".",
+    "evidence": "Issue #1019 title: \"Shorthand `/prototype` conflicts with hidden new Claude Code built-in skill `/prototype`\"; body: \"CC is now bundling a hidden, not-yet-enabled, built-in 'prototype' skill\". .out-of-scope/harness-name-collisions.md:3 (\"a built-in command or skill\"). Writing guide :75 says only \"A hidden Built-in\".",
+    "fix": "\"Claude Code itself ships a hidden prototype Skill of its own with the same name, so if `/prototype` says 'unknown skill'...\" (or just \"a hidden Built-in shares the name\")."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:208",
+    "problem": "\"His video shows a terminal app\" overstates what the video shows. In 9:36-9:58 Matt reads the old Skill's logic-branch instruction (\"build a tiny interactive terminal app...\") and points at the reference docs. He doesn't demo a terminal app.",
+    "evidence": "n0VhIVtviC0 9:36-9:58: \"what I've got here is build a tiny interactive terminal app that pushes the state machine through cases... Both of these branches have their own reference docs here\". CHANGELOG 1.2.0 #763 confirms the change from terminal app to HTML file.",
+    "fix": "\"In his video the Skill still said to build a terminal app; since 1.2.0 that branch builds the HTML file instead.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:74",
+    "problem": "\"each starting from the same reset state\" suggests every tab starts from one identical state. The Skill only says each walkthrough resets to a known initial state so it runs the same way every time. Different scenarios can start from different states, e.g. one starting with an overdue loan.",
+    "evidence": "LOGIC.md:46: \"Starting a walkthrough resets to a known initial state so the scenario runs the same way every time.\"",
+    "fix": "\"each resetting to a known starting state so it runs the same way every time\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/06-prototype.md:310 vs :67",
+    "problem": "The Final test question scenario-logic-question reuses the body's own example (\"a refund after half an order has shipped\", line 67). That tests recognition rather than transfer, which the writing guide forbids.",
+    "evidence": "writing-guide.md:118: \"Use a fresh situation..., not the body's own example sentence.\"",
+    "fix": "Use a fresh logic question in the test (e.g. a gym membership freeze or a parcel-locker pickup rule), or change the body example at line 67."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

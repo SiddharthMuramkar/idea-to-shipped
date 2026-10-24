@@ -1,0 +1,385 @@
+{
+ "slug": "domain-modeling",
+ "lenses": {
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "checkpoint earns-an-adr, option c (line 155) and its feedback (line 156)",
+    "problem": "The right answer is ambiguous under the Lesson's own third test. \"As its rules require\" means nothing else was allowed, which is the same reason the TypeScript distractor fails (\"No real alternative was weighed\"). A reader who applies all three tests strictly, as the body says to (\"Miss any one and there's no ADR\"), rejects c as well and finds no right answer. The feedback's \"a real trade-off against an easier setup\" is asserted, not shown.",
+    "evidence": "Option c: \"Store pupils' marks only in the council's database, as its rules require.\" Option d feedback: \"No real alternative was weighed\". ADR-FORMAT.md test 3: \"there were genuine alternatives and you picked one for specific reasons\".",
+    "fix": "Make the choice a real trade-off. Replace option c with: \"Keep pupils' marks in the council's system, not the app's own database, so the school skips its own data audit.\" Replace its feedback with: \"Right. Moving the data later is costly, a reader would expect the app's own database, and you swapped speed for a lighter legal burden. All three tests pass.\" Also change option b's feedback (line 154) from \"It fails two of the tests\" to \"Easy to change, and nobody will wonder why. Missing even one test means no ADR.\" (A colour that matches the school arguably fails all three tests, so \"two\" is wrong.)"
+   },
+   {
+    "severity": "medium",
+    "where": "test spot-assumed-saved, right option c (line 421) and its feedback",
+    "problem": "\"/clear erased the rest\" is wrong by course canon: /clear empties the working context, but /resume can still reopen the old conversation. The right answer teaches the reader that the decisions are gone for good, when Omar could still get them back.",
+    "evidence": "Writing guide, course facts: \"`/clear` empties the working context; the old conversation can still be reopened with `/resume`, but it doesn't come back into the current session.\"",
+    "fix": "Option c: \"The docs hold terms and rare decisions; `/clear` took the rest out of the session.\" Feedback: \"Right. Most decisions live only in the conversation. Run `/to-spec` in the same session, before any `/clear`. (`/resume` can reopen the old conversation, but a fresh session doesn't have it.)\""
+   },
+   {
+    "severity": "medium",
+    "where": "test sequence-files-appear (lines 427-437)",
+    "problem": "The prompt gives away the order (\"first term in round 1 \u2026 ADR in round 3\"), so option d is ruled out by the prompt itself rather than by anything the Lesson teaches. The right answer's \"more terms added\" is a step the prompt never mentions. Once the backticks render, the right answer is also the longest option (85 characters against 83). The lint passes only because it counts the raw text, where options a and b tie at 87.",
+    "evidence": "Raw lengths a=87, b=87. Rendered lengths a=83, b=85, c=80, d=74. Prompt: \"You settle your first term in round 1 and accept one ADR in round 3.\" Option d: \"The ADR is written \u2192 the agent copies its key words into a new `GLOSSARY.md`\".",
+    "fix": "Prompt: \"You run `/grill-with-docs` in a brand-new repo with no docs. Over the session you settle four terms and accept one ADR. Which sequence matches what appears on disk?\" Option b: \"First term settled \u2192 `GLOSSARY.md` created \u2192 it grows term by term \u2192 `docs/adr/` arrives with the ADR\" (shorten option b, or lengthen option a, so b is not the longest once rendered). Replace option d with a real misconception: \"Nothing is written until `/to-spec`, which creates `GLOSSARY.md` and `docs/adr/` together\", with feedback: \"Domain modeling writes during the interview. `/to-spec` writes the spec, not the glossary.\""
+   },
+   {
+    "severity": "medium",
+    "where": "test why-not-surprising, prompt (line 440)",
+    "problem": "The prompt states the defining phrase of the right answer (\"nobody reading the code would be surprised\"), so the question checks reading, not judgement. The writing guide forbids restating the right answer's defining phrase in the prompt.",
+    "evidence": "Prompt: \"so nobody reading the code would be surprised.\" Right answer: \"No: it fails \\\"surprising without context\\\".\"",
+    "fix": "Prompt: \"A team picks Tailwind (a styling library) for a new app. Swapping it out later would mean restyling every page, and they did weigh two other options. It came preselected in their framework's starter template, and nearly every app built from that starter uses it. Should the agent offer an ADR?\" Keep the options as they are."
+   },
+   {
+    "severity": "medium",
+    "where": "test spot-recipe-entry, prompt (line 392) and option d feedback (line 400)",
+    "problem": "Two problems. First, the entry is a near-copy of the body's bad Comment entry (\"A row in the \u2026 table (id, \u2026). <API limit>. <decision>.\") and of the glossary-entry Checkpoint's Late fee distractor, so it tests recognition, not transfer, and it overlaps a Checkpoint. Second, option d's feedback says \"None of it passes the three ADR tests\", which isn't clear: \"we dropped video\" is an explicit scope \"no\", which ADR-FORMAT names as a kind that can qualify.",
+    "evidence": "Body line 113: \"A row in the comments table (id, lesson_slug, body). POST /api/comments rejects bodies over 2,000 characters. We decided not to allow editing.\" Test: \"A row in the recipes table (id, slug, steps as JSON). The API caps steps at 30, and in round 2 we dropped video.\" ADR-FORMAT: \"The explicit no-s are as valuable as the yes-s.\"",
+    "fix": "Give it a different shape: a good first sentence followed by extra material. Prompt: \"Here's a new entry in a recipe site's glossary: **Recipe**: A dish's ingredients and the steps to cook it. Steps are saved as JSON and capped at 30; we dropped video in round 2. _Avoid_: Dish, post. What's wrong with it?\" Option b: \"Only the first sentence belongs; the rest is storage and decisions.\" Feedback: \"Right. The glossary says what a Recipe is. Storage, limits and choices go elsewhere.\" Lengthen option a slightly so b stays shorter. Option d feedback: \"Even if one of those choices earned an ADR, the entry would still need trimming to what a Recipe is.\""
+   },
+   {
+    "severity": "medium",
+    "where": "test scenario-no-docs-repo, right option d (line 387)",
+    "problem": "The right answer copies the body sentence word for word (\"Type `/grill-with-docs help me document my repo`, and expect a long interview.\", line 205), which is a wording tell: readers can match it by recall. Option a gives itself away with \"commit it unread\", which makes it a strawman next to the prompt's \"trustworthy\".",
+    "evidence": "Body line 205: \"**Existing project, no docs?** Type `/grill-with-docs help me document my repo`, and expect a long interview.\" Test option d is identical apart from the bold lead-in.",
+    "fix": "Option d: \"Start `/grill-with-docs` and ask it to interview you about the existing code.\" Feedback: \"Right. It reads the code, asks what each thing really is, and writes each settled term as you go. Expect a long session.\" Option a: \"Ask the agent to read the code and write the whole glossary in one go.\" Feedback: \"That skips the interview. An agent-written glossary nobody reviewed fills with confident claims that later sessions trust.\""
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-new-words, prompt (line 344)",
+    "problem": "The prompt hands over the answer's defining property (\"settled and written where next week's session will find them\"), so the question checks the Skill's description, not the Lesson's rule \"repo \u2192 docs version\".",
+    "evidence": "Prompt: \"you want those words settled and written where next week's session will find them.\"",
+    "fix": "Prompt: \"You're in your team's repo for a dog-walking app, about to plan a feature. You keep saying \\\"walk\\\", \\\"outing\\\" and \\\"slot\\\" for what may be the same thing. Which Skill do you type to start?\" Option a: \"`/grill-me`, since all you need is the interview\". Feedback: \"Same interview, but it writes nothing. In a repo, the docs version settles each word and writes it to `GLOSSARY.md`.\""
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-glossary-missing (lines 355-365)",
+    "problem": "It is a diagnosis question, not a \"which Skill would you reach for\" scenario as the contract defines that kind. Its stem also restates the body's sentence (\"Good rounds but a `GLOSSARY.md` that never changes means only grilling did\"). Option b (\"The grilling Skill failed to load\") is contradicted by the prompt itself, so it isn't a real distractor. The kind count is safe: the other three scenario- ids still meet the minimum of 3.",
+    "evidence": "Contract: \"at least 3 scenario (\\\"which Skill would you reach for\u2026\\\")\". Body line 206. Prompt: \"tidy numbered rounds with \u27a1\ufe0f recommendations\".",
+    "fix": "Rename the id (ids aren't published yet) to `why-glossary-missing`. Replace option b with a real misconception: \"The glossary waits until you accept an ADR.\" Feedback: \"Terms and ADRs are separate. The glossary is created with the first settled term, whether or not any ADR comes.\""
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint glossary-entry, options (lines 123-130)",
+    "problem": "The right answer is the only option in the exact taught format (bold term, definition, `_Avoid_`), so a reader can pick it by its shape without judging the content.",
+    "evidence": "Only option d contains \"_Avoid_:\".",
+    "fix": "Give a distractor the same shape. Option b: \"**Late fee**: \u00a35 a day, charged through Stripe, as agreed in round 3. _Avoid_: Fine, penalty\" (still a decision plus implementation details; its feedback can stay)."
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint earns-an-adr options a and d; test spot-adr-pile prompt",
+    "problem": "Two of the three Checkpoint distractors repeat the body's own examples (swapping a date library; \"TypeScript in a TypeScript project\"), and the Final test uses the date library a third time (\"Use date-fns for dates\"). That tests recognition, not transfer.",
+    "evidence": "Body line 139: \"Swapping one date library for another doesn't count.\" Line 141: \"We used TypeScript in a TypeScript project\". spot-adr-pile: \"Use date-fns for dates\".",
+    "fix": "Checkpoint option a: \"Use one charting library rather than another for the progress graphs, since both would do.\" Checkpoint option d: \"Store homework as rows in the same Postgres database the rest of the app already uses.\" Feedback: \"That's the obvious path with no real alternative, so there's nothing to record.\" spot-adr-pile: replace \"Use date-fns for dates\" with \"Use a 12-hour clock\"."
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint where-it-lands, prompt (line 75); overlap with test spot-assumed-saved",
+    "problem": "\"Where does that decision live when the session ends?\" clashes with the answer \"Only in the conversation\", since an ended session no longer has a live conversation. The Checkpoint also checks the same point the Final test's spot-assumed-saved checks (decisions stay in the conversation; don't /clear before /to-spec), down to the feedback text.",
+    "evidence": "Checkpoint feedback: \"Don't clear before `/to-spec`.\" spot-assumed-saved feedback: \"Run `/to-spec` in the same session, before any `/clear`.\"",
+    "fix": "Prompt: \"\u2026 Where does that decision live once the interview wraps up?\" Right-answer feedback: \"Right. It isn't a term and it's easy to reverse, so it stays in the conversation, waiting for `/to-spec`.\" (This drops the /clear advice, which the Final test covers.)"
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint wait-what-reply, option c feedback (line 225)",
+    "problem": "The feedback argues about scope (\"often bigger than one sentence\") instead of naming what the Skill actually requires: a little context. \"Only the last sentence, reworded\" is wrong because it adds no context, not because of its length.",
+    "evidence": "wait-what SKILL.md: \"Re-pitch that: give me a little bit of context\".",
+    "fix": "Feedback c: \"Rewording alone adds nothing you missed. The re-pitch must give a little context, and the agent decides how far back to go.\""
+   },
+   {
+    "severity": "low",
+    "where": "test why-shared-words, right option a (line 453)",
+    "problem": "The right answer doesn't answer the teammate's premise (\"The agent can read our code\"). Code already shows names, so the answer needs to say what code can't show: which word is right and what it means.",
+    "evidence": "Prompt: \"The agent can read our code, so why keep a glossary at all?\" Option a: \"Agreed words become the names in our code and replies, so nothing gets two names.\"",
+    "fix": "Option a: \"Code shows names, not which word is right or what it means, so sessions drift.\" (76 characters, still shorter than option c.) Feedback: \"Right. The glossary fixes one word per thing, so every session, reply and new file uses it, and searching the code finds everything.\""
+   }
+  ],
+  "reader": [
+   {
+    "severity": "high",
+    "where": "05-domain-modeling.md line 252 (Try step 1)",
+    "problem": "The Try uses the same folder name as the Try in Grilling. A reader who does the Lessons in order already has `book-club` from Grilling, so `mkdir` fails and the `&&` chain stops. `git init` and `claude` never run, and the reader is stuck at step 1.",
+    "evidence": "05 line 252: `mkdir book-club && cd book-club && git init && claude`. 04-grilling.md line 227: `mkdir book-club && cd book-club && claude`. The second run prints `mkdir: book-club: File exists` and nothing after it runs.",
+    "fix": "Use a folder name no other Lesson uses: `mkdir book-club-docs && cd book-club-docs && git init && claude`. Keep the step text \"Make an empty folder, turn it into a Git repo and start Claude Code in it.\""
+   },
+   {
+    "severity": "high",
+    "where": "Try steps 5, 6 and 9 (lines 268-277)",
+    "problem": "The advice on permission prompts comes at step 9, but the first file write happens at step 5, when the first term is settled. A newcomer who sees a permission prompt mid-round with no guidance may choose No. Then `GLOSSARY.md` is never created, `!cat GLOSSARY.md` in step 6 prints \"No such file or directory\", and the first three \"It's working if\" boxes fail. The fallback line also blames the wrong cause (Skills not loading).",
+    "evidence": "Line 268: \"5. Answer each round by number...\". Line 277 (step 9): \"If it asks permission to create `GLOSSARY.md` or an ADR, choose Yes; for any other file, choose No, or press Esc.\" Line 289: \"No \u27a1\ufe0f recommendations, or no glossary? Ask: 'Did you load grilling and domain-modeling?'\"",
+    "fix": "Move the permission advice into step 5: \"5. Answer each round by number in one reply (for example `1 yes, 2 no: call them Members`). When it asks what to call something, pick one word. If it asks permission to create or edit `GLOSSARY.md` or a file in `docs/adr/`, choose Yes; for any other file, choose No.\" Step 9 becomes: \"Type 'Let's wrap up.' and correct anything wrong in the summary. If it starts on anything else, press Esc. Type `/exit` when you're done.\" Fallback line: \"No glossary? Check you didn't choose No at a permission prompt, then ask: 'Did you load grilling and domain-modeling?'\""
+   },
+   {
+    "severity": "medium",
+    "where": "'Your part', line 206 (Check both halves loaded)",
+    "problem": "The symptom it gives is wrong and over-claims. Grilling asks the whole frontier at once by design (the reader saw this in Grilling and in this Lesson's Scene), so 'all the questions at once' is normal behaviour. And missing recommendations only show that grilling failed to load; they don't show that 'neither' loaded.",
+    "evidence": "Line 206: \"All the questions at once with no \u27a1\ufe0f recommendations means neither loaded properly.\" grilling SKILL.md: \"Ask the whole frontier in one round: number each question and give your recommended answer.\"",
+    "fix": "\"**Check both halves loaded.** Questions without \u2753 numbers and \u27a1\ufe0f recommendations mean grilling didn't load. Good rounds but a `GLOSSARY.md` that never changes mean domain modeling didn't. Ask \"Which Skills did you load?\", or type `/domain-modeling` yourself.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Chat Scene, line 175",
+    "problem": "The worked example breaks the rule the Lesson has just taught. It writes the Q2 decision (hiding keeps the Comment but doesn't show it, which is a storage fact) into the Comment glossary entry. The section before calls exactly this kind of content 'storage and decisions, not what a Comment is'. The writing guide says worked examples must model the advice.",
+    "evidence": "Line 175: \"Updated **Comment**: a hidden Comment is kept but not shown.\" Line 109: \"everything after 'A row' is storage and decisions, not what a Comment *is*.\" domain-modeling SKILL.md: GLOSSARY.md should be \"totally devoid of implementation details\".",
+    "fix": "Settle a word instead of recording a decision: \"Added **Flag** to GLOSSARY.md: a Visitor's mark that one Comment may be spam. _Avoid_: report, vote. Added **Hidden Comment**: a Comment you've taken off its Lesson's page; it can be shown again. _Avoid_: deleted, removed.\" Update the line 181 summary (\"Glossary: added **Flag** and **Hidden Comment**\") and the line 184 recap (\"The glossary changed twice\") to match."
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 296, 336 and the line 422 feedback (also line 55)",
+    "problem": "The rule 'run /to-spec before any /clear' tells the reader that clearing is safe once `/to-spec` has run. The course canon says to keep `/grill-with-docs` \u2192 `/to-spec` \u2192 `/to-tickets` in one unbroken window and not `/clear` until after `/to-tickets`. A reader who follows the Cheat sheet would clear between `/to-spec` and `/to-tickets`. It also conflicts with line 208 ('in the same conversation').",
+    "evidence": "Line 296: \"Run `/to-spec` before any `/clear`.\" Line 336: \"Lives in the conversation: `/to-spec` before any `/clear`\". Writing guide canon: \"don't `/clear` or `/compact` until after `/to-tickets`.\"",
+    "fix": "Line 336: \"Lives in the conversation: run `/to-spec` (and `/to-tickets` for a multi-session build) before any `/clear`\". Line 296: \"**Assuming the docs hold every decision.** Don't `/clear` until `/to-spec`, and `/to-tickets` if you need it, have run.\" Line 55: \"So never `/clear` between grilling and `/to-spec` (or `/to-tickets`).\""
+   },
+   {
+    "severity": "medium",
+    "where": "Files Scene caption line 68; Checkpoint feedback line 81; table line 52",
+    "problem": "'The three tests' is used before it has been named. The table lists three properties but never calls them tests, and the heading that introduces them ('Decision records: the three tests') comes 65 lines later. A cold reader meets 'passes all three tests' in a Scene caption and doesn't know what it refers to. 'Tests' also means three things in this Lesson: the ADR criteria, the Final test, and code tests (ADR 0003, 'Tests hit a real Postgres database').",
+    "evidence": "Line 52: \"A decision that's hard to reverse, surprising without context, and a real trade-off\". Line 68: \"# A decision passes all three tests, so the agent offers a record.\" Line 81: \"An ADR needs all three tests.\"",
+    "fix": "Name them in the table at first use: \"A decision that passes three tests: hard to reverse, surprising without context, and a real trade-off\". Optionally change the caption to \"# A decision is hard to reverse, surprising and a real trade-off, so the agent offers a record...\""
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 106, 109, 117, 135, 139, 141, 203, 212, 216, 322",
+    "problem": "Several terms a reader who has never used an agent won't know are used without a clause explaining them.",
+    "evidence": "Unexplained at first use: 'Markdown' (line 135: \"a tiny Markdown file\"); 'Models' and 'the model's thinking text' (lines 109 and 117; only 'an AI' is defined); 'endpoints, frameworks' (line 109); 'Timeout' (line 106); 'library' (line 139: \"date library\"); 'TypeScript' (line 141); 'refactored' (line 203); 're-pitch' (line 212); 'Opus 5' (line 216); 'Phase' in Matt's sense (line 322, the Site story says only that his meaning clashed).",
+    "fix": "Line 135: \"a tiny Markdown file (plain text with light formatting, like `**bold**`)\". Line 109: \"Models (the AI behind the agent) tend to treat the file...\"; \"No database tables, API endpoints (the web addresses your code answers), frameworks (the toolkits an app is built on), decisions or to-do notes.\" Line 117: \"shorter replies and less of the model's visible reasoning (the 'thinking' it writes before answering)\". Line 106: \"'Timeout' (how long code waits before giving up) doesn't belong\". Line 139: \"Swapping one date library (a ready-made package of code) for another\". Line 141: \"'We used TypeScript (a programming language) in a TypeScript project'\". Line 203: \"names can be changed later\". Line 212: \"asks it to re-pitch (explain again)\". Line 216: \"Opus 5's (one of Anthropic's Claude models) replies\". Line 322: \"...clashed with Matt's (a chunk of work inside one session).\""
+   },
+   {
+    "severity": "medium",
+    "where": "Checkpoint earns-an-adr, line 155",
+    "problem": "The right answer is phrased as a requirement ('as its rules require'), which reads as 'no real choice'. That is the same shape as the TypeScript distractor ('because the whole project already uses TypeScript'), whose feedback says 'No real alternative was weighed'. A reader applying test 3 as the Lesson words it ('genuine alternatives, chosen between for specific reasons') can reasonably reject the keyed answer.",
+    "evidence": "Line 155: \"Store pupils' marks only in the council's database, as its rules require.\" Line 141: \"**A real trade-off.** There were genuine alternatives, chosen between for specific reasons.\"",
+    "fix": "Put the alternative in the option: \"Keep pupils' marks in the council's database, not the app's own, to meet council rules, though one database would be simpler.\" Check it stays shorter than the longest distractor (the lint rule). Feedback: \"Right. Costly to undo, invisible in the code, and chosen over a simpler setup for a specific reason. All three tests pass.\""
+   },
+   {
+    "severity": "medium",
+    "where": "'When a reply loses you', lines 212-214",
+    "problem": "'The leading word does the work' and 'It re-pitches \"that\"' rely on the Skill's wording, which the Lesson never shows. A newcomer can't tell which word is 'leading' or what 'that' refers to.",
+    "evidence": "Line 214: \"==The leading word does the work.== ... 'Wait' is about *your* state.\" Line 214: \"It re-pitches 'that', deciding for itself how far back to go.\"",
+    "fix": "Introduce the wording first (one quote from the wait-what SKILL.md, under 15 words): \"Its text opens 'Wait, I don't understand where you've got to here.'\" Then: \"==The first word, 'Wait', does the work.== ... It asks the agent to re-pitch 'that' (whatever lost you), and the agent decides how far back to go.\""
+   },
+   {
+    "severity": "low",
+    "where": "Try step 2, line 255",
+    "problem": "It doesn't say which list or what to do after looking. A newcomer may press Enter and start a Skill by accident before step 4.",
+    "evidence": "Line 255: \"Type a slash and the word grill. If `grill-with-docs` isn't in the list, type `/exit`...\"",
+    "fix": "\"2. Type a slash and the word grill, but don't press Enter: just look at the list that pops up, then delete what you typed. If `grill-with-docs` isn't in it, type `/exit`, install Matt's Skills, then run `claude` again:\""
+   },
+   {
+    "severity": "low",
+    "where": "Try step 6, line 269",
+    "problem": "A newcomer won't know when 'a word is settled'.",
+    "evidence": "Line 269: \"6. Once a word is settled, peek at the file\"",
+    "fix": "\"6. Once the agent says it added a term to `GLOSSARY.md`, peek at the file (a leading `!` runs a shell command):\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 184 (recap after the chat Scene)",
+    "problem": "The intro to the Scene says 'Watch for the four moves', but the recap names only three. 'Sharpen fuzzy words' is never pointed out, so the reader can't check they spotted it.",
+    "evidence": "Line 163: \"Watch for the four moves\". Line 184: \"Q1 challenged your word against the glossary. Q2 caught your idea bumping into an existing definition. Q3 was an invented scenario plus a code check.\"",
+    "fix": "\"Q1 challenged your word against the glossary. Q2 sharpened a fuzzy word: does 'hide' mean delete, or keep but not show? Q3 was an invented scenario plus a code check.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 40",
+    "problem": "'then merged the two' is ambiguous: it could mean grilling and ubiquitous language, or the two Skills, and it doesn't say what they became.",
+    "evidence": "Line 40: \"Matt first ran a separate ubiquitous-language Skill mid-grill, then merged the two.\"",
+    "fix": "\"Matt first ran a separate ubiquitous-language Skill partway through grilling, then folded it into `/grill-with-docs`.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 24 (first definition of Skill)",
+    "problem": "Skills are defined as files 'the agent loads when you type their name'. Fourteen lines later the Lesson says the agent may load a model-invoked Skill by itself, so the first definition is incomplete.",
+    "evidence": "Line 24: \"short instruction files the agent loads when you type their name\". Line 38: \"or the agent may reach for it when a task fits\".",
+    "fix": "\"(short instruction files the agent loads when you type their name, or, for some, when it decides a task needs them)\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 135 (ADR filenames)",
+    "problem": "`0001-slug.md` uses 'slug' before the Lesson defines Slug (line 145), and with a different meaning (a short filename versus a Lesson's permanent short name). That is confusing next to a GLOSSARY term.",
+    "evidence": "Line 135: \"numbered in order: `0001-slug.md`, `0002-slug.md`\". Line 145: \"its Lesson's Slug, the Lesson's permanent short name\".",
+    "fix": "\"numbered in order, with a short name: `0001-short-title.md`, `0002-short-title.md` (this site's first is `0001-rest-endpoints-in-nextjs.md`).\""
+   },
+   {
+    "severity": "low",
+    "where": "Final test spot-recipe-entry (line 393), spot-adr-pile (line 409); scenario-lost-reply (line 375)",
+    "problem": "The Final test names things the body never introduces under those names: 'Considered Options' (the body says 'rejected options') and `/compact` (never mentioned in the body). A cold reader has to guess what they are.",
+    "evidence": "Line 135: \"Optional sections (a Status line, rejected options, consequences)\". Line 393: \"It needs a Considered Options section\". Line 375: \"`/compact`, so the agent summarises the session\".",
+    "fix": "Line 135: \"Optional sections (Status, Considered Options for the rejected alternatives, Consequences) appear only when they add something.\" For `/compact`, add a clause to line 55: \"...So never `/clear` (the Built-in command that empties the conversation) or `/compact` (which swaps it for a summary) straight after grilling.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 235 (How Matt uses it)",
+    "problem": "It's vague for a newcomer: 'the page' and 'its own section' have no referent.",
+    "evidence": "Line 235: \"a naming question ended up deciding whether the page got its own section\"",
+    "fix": "Say what the page and the section were in Matt's May 2026 demo (check 6BB6exR8Zd8 at 8:35-11:30), or cut the clause: \"In that demo, the agent's first move was to flag a tension with an existing glossary entry, before asking anything else.\""
+   },
+   {
+    "severity": "low",
+    "where": "Lines 88-93 (sample glossary)",
+    "problem": "The sample is called 'one of this site's real entries', but its description sentence differs from the site's actual GLOSSARY.md.",
+    "evidence": "Lesson: \"A small personal course that teaches Matt Pocock's Skills, written as a journal of building this site.\" GLOSSARY.md: \"A small personal course that teaches Matt Pocock's skills and agentic coding, written as a journal of building this very site.\"",
+    "fix": "Copy the real sentence exactly, or say \"Here's the start of this site's glossary, lightly trimmed:\"."
+   },
+   {
+    "severity": "low",
+    "where": "Line 212",
+    "problem": "'a three-line, user-invoked Skill': the wait-what SKILL.md body is a single paragraph on one line, so a reader who opens the file sees one line, not three.",
+    "evidence": "wait-what SKILL.md body: \"Wait, I don't understand where you've got to here. Re-pitch that: give me a little bit of context, talk in ASD-STE100 ... (follow `GLOSSARY-MAP.md` ...).\" (one line after the frontmatter)",
+    "fix": "\"`/wait-what` is a one-paragraph, user-invoked Skill for that moment.\""
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "medium",
+    "where": "content/lessons/05-domain-modeling.md:88-100 (\"The glossary\" section, the fenced md example)",
+    "problem": "The example is introduced as \"one of this site's real entries in that shape\", but the frame around the Visitor entry is not the site's real file: the description sentence is reworded and a `## Language` heading is inserted that the real GLOSSARY.md does not have (it goes straight to `## Course` / `## Discussion`).",
+    "evidence": "Real file (git show d21fc2c:GLOSSARY.md, identical at HEAD): \"A small personal course that teaches Matt Pocock's skills and agentic coding, written as a journal of building this very site.\" followed by `## Course`. Lesson shows \"A small personal course that teaches Matt Pocock's Skills, written as a journal of building this site.\" followed by `## Language`. Only the Visitor entry itself (lines 97-99) is verbatim.",
+    "fix": "Either quote the real header verbatim and show it with its real `## Course`/`## Discussion` subheadings, or reword the lead-in to \"the Visitor entry is real; the header follows the Skill's template\" so the reader is not told the whole block is the site's file."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/05-domain-modeling.md:216 (\"Matt added it in August 2026, when he found Opus 5's replies verbose\")",
+    "problem": "The model name \"Opus 5\" rests only on the Arabic machine-translated transcript; no English source names the version.",
+    "evidence": "gaDdrDdczO4.ar.json 2:34-2:35 (\"Opus\u060c \u0648\u062a\u062d\u062f\u064a\u062f\u0627\u064b Opus 5\") is the only source for \"5\". English sources say only \"Opus\": YouTube description for gaDdrDdczO4 (2026-08-05) \"Wait What for Opus verbosity\"; aihero v1.2 changelog page (2026-08-05) and CHANGELOG.md #751 name no version. The task's Arabic-transcript warning applies to facts lifted from that track.",
+    "fix": "Write \"Opus's replies\" (or \"the Opus model of the day\"), or confirm the version against an English transcript/caption of gaDdrDdczO4 before keeping \"Opus 5\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:320 (Site story: \"Every spec on this site opens by telling the agent to read `GLOSSARY.md` and the ADRs\")",
+    "problem": "Slight over-claim: the newest spec names only ADR 0004, not \"the ADRs\", and the v1 spec's \"Read first\" line comes after the Goal paragraph rather than opening the file.",
+    "evidence": ".scratch/course-rewrite/spec.md:5 \"Read first: `GLOSSARY.md` (...) and `docs/adr/0004`\"; .scratch/lesson-site/spec.md:8 \"Read first: `GLOSSARY.md` (...) and `docs/adr/0001`\u2013`0004`\" after \"## Goal\"; .scratch/main-flow-and-redesign/spec.md:5 reads 0001\u20130004.",
+    "fix": "\"Every spec on this site starts by telling the agent to read `GLOSSARY.md` and the ADRs it touches.\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:235 (\"He asked it to save the terms near the end; today's version writes each one as it's settled.\")",
+    "problem": "The parenthetical implies the May 2026 Skill lacked inline writing. Matt describes the Skill at the time as already instructed to \"update it as you go\"; what the demo shows is that he prompted the save manually anyway.",
+    "evidence": "6BB6exR8Zd8.json 5:39-5:52 (\"challenge language usage against the existing glossary... cross-reference with code, and update it as you go\") vs 11:21-11:23 (\"Could you save what we have into context.md so far?\").",
+    "fix": "Reword to \"In the demo he prompted the save himself near the end; the Skill's instruction, then and now, is to write each term as it's settled.\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:206 (\"All the questions at once with no \u27a1\ufe0f recommendations means neither loaded properly.\")",
+    "problem": "The symptom shows grilling didn't load; it doesn't by itself show domain-modeling failed too, so \"neither\" over-reads the evidence.",
+    "evidence": "skills/productivity/grilling/SKILL.md defines the rounds and \u27a1\ufe0f format; domain-modeling/SKILL.md has no question format. aihero skills-grill-with-docs \"It's working if\" treats a mid-session GLOSSARY.md change as the domain-modeling signal and the round shape as the grilling signal.",
+    "fix": "\"All the questions at once with no \u27a1\ufe0f recommendations means grilling didn't load (and the wrapper probably loaded neither).\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:109 and :140 (two direct quotes from the same sources-list item)",
+    "problem": "\"It is a glossary and nothing else.\" (domain-modeling SKILL.md) and \"why on earth did they do it this way?\" (ADR-FORMAT.md) are two quotes from one listed source entry; the course rule is at most one quote per source.",
+    "evidence": "Sources block line 465 lists SKILL.md, GLOSSARY-FORMAT.md and ADR-FORMAT.md as a single item. Quotes match skills/engineering/domain-modeling/SKILL.md:64 and ADR-FORMAT.md:31 exactly (both under 15 words).",
+    "fix": "Either split the ADR-FORMAT.md into its own sources item (it is already attributed as \"Matt's ADR guide\") or paraphrase one of the two quotes."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:24 (\"a video not attached to any lesson\")",
+    "problem": "Matt's definition was a video not connected to a lesson or a course; the lesson drops \"or course\".",
+    "evidence": "6BB6exR8Zd8.json 2:26-2:30: \"a video that's not connected to a lesson or a course\".",
+    "fix": "\"a video not attached to any lesson or course\"."
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "high",
+    "where": "content/lessons/05-domain-modeling.md:113, :171, :175, :181",
+    "problem": "The Lesson contradicts its own main glossary rule. Line 113 holds up \"We decided not to allow editing\" as a decision that does not belong in a glossary. But the Scene's Q2 (line 171) treats \"The glossary says a Comment can't be edited once posted\" as a valid glossary fact. Then at line 175 the agent writes a behaviour rule into the Comment entry (\"a hidden Comment is kept but not shown\"), and the closing line 181 calls that same rule a decision (\"No ADR: hiding is easy to undo\"). So the worked example does exactly what line 47 calls \"the part people get wrong\". It also undercuts goal 2, and spot-recipe-entry and spot-adr-pile test against it.",
+    "evidence": "domain-modeling/SKILL.md:64 says the glossary must be \"totally devoid of implementation details\" and must not be \"a repository for implementation decisions\". GLOSSARY-FORMAT.md:28 says \"Define what it IS, not what it does.\" The site's real GLOSSARY.md:34 (course-rewrite worktree) does say a Comment \"can't be edited after it's posted\", so the Scene matches the real file but clashes with the Lesson's own bad example. writing-guide.md:114 forbids worked examples that contradict a rule.",
+    "fix": "Make the bad example at line 113 use a decision that has nothing to do with editing, for example \"We agreed in round 2 to show the oldest first\". Base Q2 on a purely definitional clash instead, for example \"Your glossary defines a Comment as a note a Visitor leaves on one Lesson\u2026\". In the line 175 write, add only the new term and drop \"Updated Comment: a hidden Comment is kept but not shown\". Add a caption or reply line saying the hiding rule is a decision, so it stays in the conversation. Then fix lines 181 and 184 (\"updated Comment\", \"changed twice\") to match."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/05-domain-modeling.md:175 (with :163, :184, :200)",
+    "problem": "The Scene writes **Flag** to GLOSSARY.md, with \"_Avoid_: report, vote\", but no question ever settled that word or those synonyms. Q1 asked who flags and Q2 asked about hiding. Yet the caption says \"The moment a word is settled\". This shows the agent picking the project's words for you, against \"The agent proposes; you decide\" (line 200) and \"Own the words\". Line 163 also promises \"the four moves\", but the Scene never shows \"Sharpen fuzzy words\", and the recap at line 184 lists only three.",
+    "evidence": "domain-modeling/SKILL.md:50: \"propose a precise canonical term\"; SKILL.md:62: \"When a term is resolved, update GLOSSARY.md right there.\" docs/engineering/domain-modeling.md:77 (It's working if): \"It stops you mid-sentence to ask which of two things you meant\".",
+    "fix": "Add a naming question to round 1, for example \"\u2753 **Q3** - **Name**: You said 'flag'. Call it a **Flag**, not a 'report' or 'vote'? \u27a1\ufe0f Yes.\", and renumber. This both settles the term before it's written and shows the missing \"Sharpen fuzzy words\" move. Update the recap at line 184 to name all four moves."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/05-domain-modeling.md:206",
+    "problem": "The diagnosis is wrong. \"All the questions at once with no \u27a1\ufe0f recommendations means neither loaded properly.\" Missing recommendations only shows that grilling didn't load; it tells you nothing about domain-modeling. Also, \"all the questions at once\" is normal behaviour: a working grilling round asks the whole frontier in one go. A reader could misread a correct round as a failure, or conclude both halves failed when only one did. That undercuts goal 4.",
+    "evidence": "docs/engineering/grill-with-docs.md:51-52 gives the both-failed symptom as no recommendations AND the agent \"never mentioned GLOSSARY.md\", and the partial case as \"grilling loads, domain-modeling does not\". grilling/SKILL.md:8: \"Ask the whole frontier in one round\".",
+    "fix": "Reword it as two separate signals. No numbered \u27a1\ufe0f recommendations means grilling didn't load. Settled words that never reach GLOSSARY.md mean domain-modeling didn't. Both missing means neither loaded. Drop \"all the questions at once\" as a symptom."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/05-domain-modeling.md:55, :296, :336, :422",
+    "problem": "The Lesson's repeated shorthand for context hygiene is \"/to-spec before any /clear\" (also \"never /clear straight after grilling\"). That suggests clearing between /to-spec and /to-tickets is fine, and it never mentions /compact. The course canon and ask-matt both say not to clear or compact until after /to-tickets. Line 208 does say \"in the same conversation\", but the cheat sheet and the Common mistakes line teach the weaker rule.",
+    "evidence": "ask-matt/SKILL.md:38: \"don't compact or clear until after `/to-tickets`\". writing-guide.md:77: \"don't `/clear` or `/compact` until after `/to-tickets`.\"",
+    "fix": "Change the cheat sheet row and Common mistakes line to \"Run `/to-spec` (and `/to-tickets` for a multi-session build) before any `/clear` or `/compact`\". Adjust the spot-assumed-saved feedback the same way."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/05-domain-modeling.md:277 (Try it, step 9) vs :268-273",
+    "problem": "Step 9 tells the reader to choose Yes if asked permission to create GLOSSARY.md. But that prompt, if it appears, comes at step 5, when the first word is settled, and step 6 already expects the file to exist. A reader in Manual mode gets the prompt with no guidance. A reader coming from the pilot, whose Try block says to choose No for any file, may decline. Either way GLOSSARY.md never appears and the first \"It's working if\" check fails.",
+    "evidence": "domain-modeling/SKILL.md:40 and :62 (create GLOSSARY.md when the first term is resolved, inline). 04-grilling.md Try step 8: \"If it asks permission to create or edit a file, choose No\".",
+    "fix": "Move the permission sentence into step 5: \"If it asks permission to create or edit `GLOSSARY.md` or a file in `docs/adr/`, choose Yes; for any other file, choose No.\" Keep only the wrap-up and `/exit` in step 9."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/05-domain-modeling.md:235",
+    "problem": "The parenthetical \"(He asked it to save the terms near the end; today's version writes each one as it's settled.)\" suggests the May 2026 Skill didn't write terms inline and that this changed later. In the same video, Matt lists \"update it as you go\" as one of grill-with-docs' instructions. So the demo shows an agent skipping an inline write it was already told to do, not an older behaviour.",
+    "evidence": "Transcript 6BB6exR8Zd8 5:37-5:52 (\"challenge uh language usage against the existing glossary, to sharpen fuzzy language, discuss concrete scenarios, cross-reference with code, and update it as you go\"); 11:20-11:28 (he asks it to save into context.md).",
+    "fix": "Rewrite it as: \"(The Skill already said to update the glossary as you go, yet he still asked it to save near the end: a reason to peek at the file mid-session.)\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:88-100, :107",
+    "problem": "The block is introduced as \"one of this site's real entries in that shape\", but the wrapper isn't real. The site's GLOSSARY.md has no `## Language` heading; it uses `## Course` and `## Discussion` as top-level sections. Its description is also different (\"\u2026teaches Matt Pocock's skills and agentic coding, written as a journal of building this very site.\"). Only the Visitor entry is word for word. A reader who opens the repo will see a different shape, and line 107's \"subheadings\" actually replace `## Language` rather than sitting under it.",
+    "evidence": "course-rewrite worktree GLOSSARY.md:1-5, :31, :37-39. GLOSSARY-FORMAT.md:5-23 (the `## Language` structure).",
+    "fix": "Say \"adapted from this site's GLOSSARY.md\", or quote the real heading and description and note that the site groups terms under its own section headings."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:24",
+    "problem": "The first definition says Skills are files \"the agent loads when you type their name\". That leaves out model-invoked Skills, which the agent can load when a task fits. domain-modeling itself is one, and line 38 says so.",
+    "evidence": "domain-modeling/SKILL.md frontmatter has no disable-model-invocation (model-invoked). writing-guide.md:73 lists domain-modeling among the 11 model-invoked Skills.",
+    "fix": "\"\u2026short instruction files the agent loads when you type their name, or, for some, when the task fits\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:177, :184",
+    "problem": "Q3's \"code check\" isn't the Skill's Cross-reference-with-code move. That move fires when you state how something works and the code may disagree; in Q3 the agent checks the code on its own initiative and finds nothing. Line 184 also says the glossary \"changed twice\", but the Scene shows one write that touches two entries.",
+    "evidence": "domain-modeling/SKILL.md:58: \"When the user states how something works, check whether the code agrees. If you find a contradiction, surface it\".",
+    "fix": "Have the reader assert something checkable (for example \"I can already hide comments in the admin page\") and let the agent reply \"I checked src/comments: nothing hides a Comment today. Which is right?\". Say \"the glossary gained one entry\" (after the fix above) instead of \"changed twice\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:214",
+    "problem": "\"So the agent backs up, adds the step you missed, and only then trims.\" The sources describe asking for both halves at once (fewer words and the missing context), not a sequence where trimming comes last.",
+    "evidence": "CHANGELOG.md:138 (#751): naming the listener's state \"asks for both halves at once, fewer words **and** the context you were missing\". docs/productivity/wait-what.md:17, :29.",
+    "fix": "\"So the agent backs up and adds the step you missed, while still using fewer words.\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:57",
+    "problem": "\"Nothing needs setting up first\" can be read as \"no setup at all\". But ask-matt and the course canon say to run /setup-matt-pocock-skills once per repo before the first engineering flow. The sentence only means the docs files are created lazily.",
+    "evidence": "ask-matt/SKILL.md:97 (Precondition). writing-guide.md:82: \"`/setup-matt-pocock-skills` once per repo first\". docs/engineering/grill-with-docs.md:25 says the docs files need no setup.",
+    "fix": "\"None of these files need setting up first.\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:421 (spot-assumed-saved feedback)",
+    "problem": "\"/clear erased the rest\" overstates it. Per the course canon, a cleared conversation can still be reopened with /resume; it just no longer feeds the current session that /to-spec runs in.",
+    "evidence": "writing-guide.md:79: \"`/clear` empties the working context; the old conversation can still be reopened with `/resume`, but it doesn't come back into the current session.\"",
+    "fix": "\"The docs hold terms and rare decisions; `/clear` took the rest out of the session `/to-spec` writes from.\" (Same position and meaning, so the id is safe.)"
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:207",
+    "problem": "\"A throwaway one-day build doesn't need a glossary\" is sourced, but it pulls against ask-matt's routing (grill-with-docs is strictly better whenever you're in a working directory) and against the Lesson's own line 234. It also doesn't tell the reader which Skill to type in a repo in that case.",
+    "evidence": "docs/engineering/domain-modeling.md:70: \"On a one-day build, skip it.\" ask-matt/SKILL.md:85: \"If you are in a working directory, use `/grill-with-docs` instead ... it is strictly the better one.\"",
+    "fix": "Name what to type: \"A throwaway one-day build may not be worth a glossary; `/grill-me` is enough there.\" Or drop the clause and keep the no-repo and `/wayfinder` cases."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/05-domain-modeling.md:468 (sources)",
+    "problem": "The CHANGELOG source entry reads \"(1.3.0, #1120: \u2026 ; #751: wait-what)\", which places #751 in 1.3.0. #751 (adding wait-what) shipped in 1.2.0.",
+    "evidence": "CHANGELOG.md:87 (## 1.2.0) contains #751 at line 136; #1120 is under ## 1.3.0 (line 9).",
+    "fix": "\"(1.3.0, #1120: `CONTEXT.md` renamed `GLOSSARY.md`; 1.2.0, #751: wait-what)\"."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

@@ -1,0 +1,315 @@
+{
+ "slug": "diagnosing-bugs",
+ "lenses": {
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "Final test as a whole vs goal 3 (lines 16, 318-436); scenario-flaky (lines 426-436)",
+    "problem": "Goal 3 lists four steering abilities (give the exact symptom, re-rank hypotheses, ask for a pause before the fix, hand over human-only steps). Only one, the human-only steps, is tested in the Final test (scenario-human-click). The exact symptom, re-ranking and the pause appear only in Checkpoints, which don't count toward passing. Meanwhile scenario-flaky repeats the body's own numbers ('one in a hundred' at line 56 becomes 'once in every 100 tries'), so it checks recognition rather than transfer, and goal 1's 'tight loop' is already covered by spot-fake-loop.",
+    "evidence": "Goal: 'give the exact symptom, re-rank its hypotheses, ask for a pause before the fix, and hand over steps only you can do.' Final test ids: scenario-raw-report, scenario-quick-question, scenario-human-click, scenario-after-fix, spot-fake-loop, spot-theory-first, spot-shallow-seam, sequence-phases, predict-good-hypothesis, scenario-flaky. Only scenario-human-click touches goal 3. Writing guide: 'Every goal gets at least one Final test question.'",
+    "fix": "Replace scenario-flaky (the test is already at its 10-question maximum) with a steering question. Keep the right answer in position b so the spread is unchanged. This leaves 4 scenario-, 4 spot- and 1 sequence- ids. If the Lesson is already published, the old id must simply be retired, not reused.\n\n```test spot-vague-symptom\nOn a recipe site, you type: \"`/diagnosing-bugs` The servings scaler is broken. Show me the root cause before you change any code.\" Spot the weakness in this request.\n- [ ] It asks for a pause, and the Skill can't pause before the fix.\n  > It can, when you ask up front like this. The Skill just has no pause of its own there.\n- [x] \"Broken\" gives the loop no exact symptom to go red on.\n  > Right. Say what you did, saw and expected (\"6 servings shows 1 cup of flour, should be 3\") so the loop can check that exact output.\n- [ ] It should list its own hypotheses for the agent to test.\n  > Writing 3\u20135 ranked hypotheses is the agent's job in Phase 3. Your part is to re-rank them with what you know.\n- [ ] It names the Skill; saying \"debug this\" would work better.\n  > Both start it, since it's model-invoked. Typing its name is the surest way.\n```\n(Option lengths are 62/55/56/58, so the right answer is not the longest.)"
+   },
+   {
+    "severity": "medium",
+    "where": "checkpoint pause-first, option c feedback (lines 191-192)",
+    "problem": "The feedback gives the wrong reason why plan mode fails. In plan mode the agent investigates, proposes a plan that includes the fix, and waits for your approval before changing code, which is a pause before the fix. A careful reader can argue that option c works. The real problem is that plan mode blocks all edits, including the repro script and failing test that Phase 1 needs, so the diagnosis stalls before it starts.",
+    "evidence": "'Plan mode only reads and proposes until you approve a plan. It isn't a pause between finding the cause and fixing it.' The course canon also says plan mode only reads and proposes until you approve, which makes the second sentence contestable.",
+    "fix": "Replace the option c feedback with: `  > Plan mode blocks every edit, including the repro script and failing test the loop needs, so Phase 1 stalls. Ask for the one pause you want instead.`"
+   },
+   {
+    "severity": "medium",
+    "where": "Final test predict-good-hypothesis, option c feedback and option d wording (lines 420-423)",
+    "problem": "The option c feedback faults it for being 'one untested guess' and says the Skill wants 3\u20135. But the right answer (d) is also a single hypothesis, so the feedback contradicts the key. What is actually wrong with c is that certainty is not a prediction: it names no change that could prove it wrong, and it jumps to the fix. Option d is also vague ('using Sydney time' where?).",
+    "evidence": "c feedback: 'One untested guess. The Skill wants 3\u20135 ranked hypotheses, tested before any fix.' d: 'If the server's UTC clock is the cause, using Sydney time fixes it.'",
+    "fix": "Option c feedback: `  > Certainty isn't a prediction: it names no change that could prove it wrong, and it skips straight to the fix.`\nOption d: `- [x] \"If dates are formatted in UTC, formatting in Sydney time fixes them.\"` (about 70 characters, still shorter than b at 71 and c at 72). Keep its feedback."
+   },
+   {
+    "severity": "medium",
+    "where": "checkpoint rerank (lines 155-165)",
+    "problem": "This tests recognition, not transfer. The situation is the Skill's own example almost word for word (a change to #3 made recently), and the next section repeats it as advice ('we changed #3 yesterday'). The right option also echoes the prompt's phrase ('your team changed yesterday' becomes 'Mention yesterday's change'), which gives the answer away.",
+    "evidence": "Prompt: 'Number 3 blames the daylight-saving code, which your team changed yesterday.' Right: 'Mention yesterday's change so it tests 3 first.' Line 170: 'Re-rank the list in one line: \"we changed #3 yesterday\"'. SKILL.md: '(\"we just deployed a change to #3\")'.",
+    "fix": "Rewrite in place with fresh domain knowledge that sinks a hypothesis instead of promoting one. The right answer stays in position d; options run 55/52/52/50 characters.\n\n```checkpoint rerank\nDiagnosing \"gift cards are charged twice\", the agent shows four ranked hypotheses. Its top one blames the payment provider's test sandbox, but you've seen the double charge on real orders too. What's the best move?\n- [ ] Say nothing; the probes will rule it out soon enough.\n  > They might, but each probe costs time. The list comes to you so one line of what you know can save several.\n- [ ] Tell it to skip the probes and fix number 2 now.\n  > Ruling one out doesn't prove another right. Number 2's prediction still needs testing.\n- [ ] Ask it to start over with a fresh set of hypotheses.\n  > The other three are still live. Re-ranking keeps them; starting over throws that work away.\n- [x] Tell it about the real orders so it can re-rank.\n  > Right. What you know sinks number 1 before a single probe is spent.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "Final test scenario-human-click, option b and its feedback (lines 346-347)",
+    "problem": "The distractor is a strawman (pasting your password into chat), and its feedback explains a different rule: why signing in shouldn't be a captured answer in the script. The template's real warning is about using `capture` for a password, and that misconception deserves to be the distractor. The prompt also never says why a headless browser (way 4) can't do the job.",
+    "evidence": "Option b: 'Ask you to paste your password into the chat so it can sign in by itself'. Feedback: 'because captured answers are printed back where the agent reads them'. Template: '`capture` prints its value back to the terminal, where the agent reads it, so capture observations, and leave signing in to the user as a `step`.'",
+    "fix": "Prompt: `Reproducing a bug needs a person to sign in to a test dashboard with a code texted to their phone, click Refund and read the message that appears. The agent can't do that part. What does the Skill have it do?`\nOption a (right; shortened so it isn't tied for longest): `- [x] A script that prompts you step by step and reads back your answers` (66 characters).\nOption b: `- [ ] A script whose first question asks for your password` with feedback `  > No. Captured answers are printed back where the agent reads them, so signing in stays a step you do yourself; only what you observe gets captured.`"
+   },
+   {
+    "severity": "medium",
+    "where": "checkpoint no-loop-stop, prompt vs right option (lines 67, 72)",
+    "problem": "The prompt says the laptop is one *you* can't access, but the right answer is to 'ask you for access'. A careful reader sees the contradiction: asking you for something you've just been told you can't give is pointless. That leaves only 'or a log' doing the work.",
+    "evidence": "Prompt: 'A bug only happens on one customer's laptop, which you can't access.' Right: 'Stop, say what it tried, and ask you for access or a log.'",
+    "fix": "Prompt: `A bug only happens on one customer's laptop, which the agent can't reach. It has tried a failing test, a curl script and a replayed request, and nothing goes red. What should it do now?` Keep the options as they are."
+   },
+   {
+    "severity": "low",
+    "where": "Final test spot-shallow-seam, prompt and option b (lines 391, 394)",
+    "problem": "The prompt shows a second, unflagged mistake (fixing first, then adding the test, and never watching it fail), which muddies the 'spot the mistake' framing. 'Guards nothing' also overclaims: the test guards single-call behaviour, just not this bug.",
+    "evidence": "'The agent fixes it, adds a unit test that calls the update function once from a single caller, and declares the bug locked down.' Option b: 'One caller can't recreate the bug, so it guards nothing.'",
+    "fix": "Prompt: `A cart total goes wrong only when two browser tabs update the same cart at once. Before fixing it, the agent writes a unit test that calls the update function once, from a single caller, then fixes the bug and declares it locked down. Spot the mistake.`\nOption b: `- [x] One caller can't recreate this bug, so the test can't catch it.` (57 characters; c is still longest at 61)."
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint minimise-cut, option d feedback (line 125)",
+    "problem": "'Least likely cause' is soft and slightly wrong. If the loop stays red without the setting, the setting isn't needed for this failure at all, so it is out, not merely unlikely.",
+    "evidence": "'If removing it changed nothing, it's the least likely cause.'",
+    "fix": "`  > The bug still happens without it, so it isn't needed for this failure. That rules it out as the trigger.`"
+   },
+   {
+    "severity": "low",
+    "where": "Final test scenario-after-fix, option c (line 360) and option a feedback (line 357)",
+    "problem": "The right answer is by far the shortest (30 characters vs 49\u201364), and it is the only option with no justifying clause, which is a mild tell. The option a feedback also implies `/retro` is useless after `/clear`, but ask-matt says you can still point it at the old session's log.",
+    "evidence": "c: '`/retro`, in this same session'. a feedback: 'Clearing first empties the conversation it should read, so run it before `/clear`.' ask-matt: 'after clearing, point it at that session's log instead.'",
+    "fix": "Option c: `- [x] \\`/retro\\` now, while this session is still open` (still shorter than a at 64).\nOption a feedback: `  > \\`/retro\\` reviews the current session by default, and after \\`/clear\\` that's an empty one. Run it first; otherwise you'd have to point it at the old session's log.`"
+   },
+   {
+    "severity": "low",
+    "where": "Final test spot-theory-first, options b and c (lines 382-385)",
+    "problem": "Option b ('add logs everywhere') is a weak distractor: the Lesson rules it out in plain words, so almost nobody picks it. Option c is phrased as a defence rather than a candidate mistake, which breaks the 'spot the mistake' frame.",
+    "evidence": "b: 'It should add logs everywhere instead of in one helper.' c: 'One hypothesis is fine as long as it has a prediction.'",
+    "fix": "b: `- [ ] It should have read more files before naming a cause.` with feedback `  > More reading is still guessing. What's missing is a command that shows the wrong total.`\nc: `- [ ] Its only error is skipping the 3\u20135 ranked hypotheses.` with feedback `  > That's a later gate. Hypotheses of any number come only after a red loop and a minimised repro.`"
+   }
+  ],
+  "reader": [
+   {
+    "severity": "high",
+    "where": "Try it yourself, steps 6-7 (lines 247-253)",
+    "problem": "Step 7 tells the reader to wait for the ranked hypotheses and then reply. The body says the opposite, at line 109 (\"It doesn't wait\") and in the pause-first Checkpoint (\"even that doesn't block\"). With the prompt as written, the agent will usually show the list and keep going straight to probes and a fix, so the reader never gets the moment step 7 describes. The exercise also fails to practise the habit the Lesson teaches: ask for the pause up front.",
+    "evidence": "Step 6 prompt: \"/diagnosing-bugs Running <command> prints <wrong output>, but it should print <correct output>.\" Step 7: \"When the ranked hypotheses appear, read them and reply 'Go with your ranking.'\" SKILL.md Phase 3: \"Don't block on it; proceed with your ranking if the user is AFK.\"",
+    "fix": "Step 6 prompt: \"/diagnosing-bugs Running <command> prints <wrong output>, but it should print <correct output>. Stop after you show me your ranked hypotheses.\" (Add after the block: \"Replace each <\u2026>, brackets included, with what step 4 printed.\") Step 7: \"It stops once it has shown the ranked hypotheses, because you asked it to. Read them and reply 'Go with your ranking.'\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, intro and step 4 (lines 225, 243)",
+    "problem": "The step 4 prompt needs Git and either Node or Python on the reader's machine, but the exercise never says so. The Bonus states \"If you have Node and Git\"; the main exercise doesn't. A cold reader with neither just gets an agent error.",
+    "evidence": "Line 225: \"You need Claude Code installed and signed in\". Line 243: \"Make this folder a git repository. Write a tiny script in Node or Python, whichever is installed here\".",
+    "fix": "Line 225: \"You need Claude Code installed and signed in (see [Start here](/learn/start-here)), plus Git and either Node or Python. If you're not sure, the agent will tell you in step 4 which one is missing.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 2 and step 8 (lines 233, 254)",
+    "problem": "There are three gaps here. (1) After step 2 the reader has \"/diagnosing\" sitting in the prompt box, and nothing tells them to clear it before step 4. (2) The only guidance on permission prompts is in step 8, but step 4 (create files, git init, commit) is where prompts first appear. (3) \"press Esc to stop it\" sits mid-sentence after \"choose Yes\", so it reads as if pressing Esc is part of saying yes.",
+    "evidence": "Step 2: \"Type a slash and the word diagnosing. If `diagnosing-bugs` isn't in the list that pops up\u2026\" Step 8: \"If it asks permission to edit or run something in this folder, choose Yes; press Esc to stop it.\"",
+    "fix": "Step 2: add \"If it's there, delete what you typed with Backspace.\" New line after step 1: \"Whenever it asks permission to create, edit or run something in this folder, choose Yes. To stop it at any point, press Esc.\" Step 8 becomes: \"Let it fix the bug. Then type `/retro` and read its suggestions (you needn't accept any). Type `/exit` when you're done.\""
+   },
+   {
+    "severity": "medium",
+    "where": "The six phases: flow Scene (lines 82-105) and Checkpoint no-loop-stop feedback (line 69)",
+    "problem": "The flow Scene captions and node labels use \"hypotheses\", \"instrument with tagged logs\", \"regression test\" and \"probe\" before the numbered list below them defines any of these. \"Instrument\" and \"probe\" are never defined in plain words anywhere; line 110 opens with \"Each probe tests one prediction\" without saying what a probe is. Read as a caption sequence, the Scene shows a cold reader several unknown words in a row.",
+    "evidence": "Captions: \"Phase 3 shows you 3\u20135 ranked hypotheses\u2026\", \"Phase 4 tests one prediction at a time, with every debug log tagged.\", \"Phase 5 writes a regression test first\u2026\". Node: \"Phase 4: instrument with tagged logs\". Line 110: \"**Instrument.** Each probe tests one prediction\u2026\"",
+    "fix": "Gloss the terms inside the captions. Phase 3 caption: \"Phase 3 shows you 3\u20135 ranked hypotheses (guesses at the cause), each with a prediction, before testing any.\" Phase 4: \"Phase 4 runs probes (small experiments, like a temporary log line) one prediction at a time, each log tagged so cleanup can find it.\" Phase 5: \"Phase 5 first writes a regression test (one that fails if this bug ever returns), at a correct seam, or records that none exists.\" Line 110: \"**Instrument.** Add probes: small, temporary ways to watch the code run, such as a breakpoint or a log line. Each probe tests one prediction\u2026\""
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 32, 80, 84-90, 107-112 and the Final test (\"Phase 1/2/3/6\")",
+    "problem": "The Lesson uses capitalised \"Phase 1\" to \"Phase 6\" for the Skill's internal steps. The course GLOSSARY redefines Phase (contract v1, PR A) in Matt's sense: a chunk of work inside a session, bounded by `/clear`, `/compact` and `/handoff`. A reader coming from [The context window](/learn/context-window) brings that meaning here, and nothing tells them this is a different one.",
+    "evidence": "Contract v1: \"Phase redefined to Matt's meaning (a chunk of work inside a session; its boundaries are `/clear`, `/compact`, `/handoff`)\". Line 80: \"The Skill works in six phases, each behind a gate\".",
+    "fix": "At line 80, flag the second meaning: \"The Skill works in six phases (its own word for its steps, all inside one session; not the Phase of [The context window](/learn/context-window)), each behind a gate\u2026\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 109 (Hypothesise)",
+    "problem": "\"the Skill's only built-in human checkpoint\" uses two reserved words at once. Checkpoint is the GLOSSARY name for the Lesson's own practice questions, and the Checkpoint blocks sit right next to this text. \"Built-in\" belongs to Built-in command. A cold reader can easily take this to mean a Checkpoint question or a Claude Code feature.",
+    "evidence": "\"The list is shown to you before testing: the Skill's only built-in human checkpoint. It doesn't wait\u2026\"",
+    "fix": "\"The list is shown to you before testing. It's the only point where the Skill invites your input, and it doesn't wait for it: if you're AFK (away from the keyboard), the agent carries on with its own ranking.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Steering bullet on the script (line 173), Common mistakes (line 286), Site story (line 293)",
+    "problem": "\"If the prompts race past\" doesn't say why that would happen or how the reader would notice. Common mistakes then lists \"running its script inside the chat\" as a mistake, but the steering bullet never teaches that; it implies the agent runs the script and you only step in if something goes wrong. The Site story's \"with `!`\" is never explained either.",
+    "evidence": "Line 173: \"If the prompts race past, run the script yourself in a separate terminal window and paste the final lines back.\" Line 286: \"running its script inside the chat\". Line 293: \"I'd run it inside the Claude chat with `!`, which can't press Enter\".",
+    "fix": "Line 173 ending: \"Claude Code's chat can't type into a script for you: neither the agent's own runs nor a line you start with `!` (the chat box's prefix for running a shell command) can press Enter or answer a question. If the prompts race past or it quits, run the script yourself in a separate terminal window and paste the final `KEY=VALUE` lines back.\" Line 286: \"running its script through the chat instead of your own terminal\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 179, 209, 212, 216, 219; Final test scenario-raw-report (line 319)",
+    "problem": "`/triage` is one of the goal's alternatives and the right answer to a Final test question, but the body never says what it does; there is only a table row and a feedback line. \"Issue\" (a bug report on GitHub) and \"push\" are used without explanation in Matt's bullets, the issue-tracker line, the CI gloss (\"every push\") and the Final test prompt.",
+    "evidence": "Line 179: \"A raw bug report from someone else, not yet confirmed | `/triage` first\". Line 212: \"had it push the fix and close the issue\". Line 219: \"checks that run on every push\". Line 319: \"A stranger opens an issue on your open-source project\".",
+    "fix": "Table row: \"`/triage` first (Matt's Skill for sorting incoming reports and confirming they're real); see [Triage](/learn/triage)\". Line 212: \"had it push the fix (upload the commit to GitHub) and close the issue (the bug report filed on GitHub)\". Line 216: \"through its issue tracker (the list of bug reports and requests on its GitHub page)\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Checkpoint pause-first (line 191), Final test scenario-quick-question (line 336), Try step 3 (line 239)",
+    "problem": "Plan mode and Esc show up as answer options, and plan mode as a Try step, but the body never defines either. The reader only learns what plan mode is from a feedback line after answering. Try step 3 has them leave plan mode without saying why.",
+    "evidence": "Option \"Switch to plan mode before typing `/diagnosing-bugs`.\" with feedback \"Plan mode only reads and proposes\u2026\". Option \"Watch closely and press Esc when the fix starts.\" Step 3: \"If you see 'plan mode on' under the prompt box, press Shift+Tab until it changes.\"",
+    "fix": "Add to the \"Ask for the pauses you want\" bullet (line 171): \"Plan mode (a Claude Code setting where the agent only reads and proposes until you approve a plan) won't give you this pause, and pressing Esc (which stops the agent mid-step) only works if you're watching.\" Try step 3: \"\u2026press Shift+Tab until it changes, because plan mode stops the agent writing files.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, Bonus (lines 267-277)",
+    "problem": "The framing is hard to follow. It says the notes report 200, that a check now prints 404, and that \"nobody has diagnosed why\", without saying why what. A cold reader can't tell whether the bug exists or what result to expect. The point of the exercise (the bug may already be gone, so you see the stop-and-ask path) is buried. Opening Claude Code in a fresh clone will also show the trust prompt again, and nothing mentions it.",
+    "evidence": "\"When this Lesson was written, a check printed 404 on the live site and a local dev server, and nobody has diagnosed why.\"",
+    "fix": "\"**Bonus: a real report from this site.** The author's notes say `/learn/nope` returned HTTP status 200 (\"OK\") instead of 404 (\"not found\"). When this Lesson was written, a quick check printed 404, so the bug may already be gone. That makes it a good way to see what the Skill does when nothing goes red. If you have Node and Git: \u2026 (choose Yes at the trust prompt).\""
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 182, 211; Final test scenario-raw-report option c",
+    "problem": "TDD is never expanded or explained, but the reader needs it to reject the `/tdd` distractor and to follow \"his TDD Skill\".",
+    "evidence": "Line 182: \"`/tdd`; see [TDD](/learn/tdd)\". Line 211: \"Matt noted it works like his TDD Skill\".",
+    "fix": "Line 182: \"`/tdd` (test-driven development: write a failing test, then the code); see [TDD](/learn/tdd)\". Line 211: \"his `/tdd` Skill\"."
+   },
+   {
+    "severity": "low",
+    "where": "Line 60 (\"Secrets come first\")",
+    "problem": "The paragraph is headed \"Secrets come first\" and the brief says to teach redaction first, but it comes fourth in its section, after the agent has already been described showing commands and output. The heading and its position disagree.",
+    "evidence": "\"**Secrets come first.** Before it shows any command, output or artifact, it writes `<REDACTED>` over secrets\u2026\"",
+    "fix": "Move the paragraph up to sit right after line 41, which is where showing output is first required, or retitle it \"**And always, secrets out.**\""
+   },
+   {
+    "severity": "low",
+    "where": "Chat Scene (lines 137, 145, 146, 148)",
+    "problem": "\"bash\" (line 137; only defined at line 173), \"JavaScript\" and \"API\" are not explained.",
+    "evidence": "\"Loop: `bash repro.sh` posts a comment\u2026\"; \"JavaScript's `.length` counts each \ud83c\udf38 as two\"; \"a regression test at the API\".",
+    "fix": "Line 130 lead-in: \"\u2026`repro.sh` is a small script of terminal commands, and the site's code is JavaScript.\" Phase 5 caption: \"Phase 5: a regression test at the API (the address the comment box sends comments to), red before the fix, green after.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 111 (Fix and regression test)",
+    "problem": "\"caller\" and \"diffs\" are jargon. \"If it forced the red by deliberately breaking code\" makes no sense to a cold reader: why would it break code on purpose?",
+    "evidence": "\"(one caller when the bug needs two, say)\"; \"If it forced the red by deliberately breaking code, it diffs against an untouched copy to prove the break happened.\"",
+    "fix": "\"(a test that calls the code from one place when the bug needs two at once, say)\" and \"If it made a test fail on purpose by editing code or test data, it compares the files line by line with an untouched copy, to prove the edit really happened.\""
+   },
+   {
+    "severity": "low",
+    "where": "Lines 210-211, 218",
+    "problem": "There are three small snags in this passage. \"Unresolved task ID\" means nothing to a cold reader. \"100K\" and \"150k\" use different casing. \"Users of the GPT-5.6-Sol model\" puzzles a reader who has only heard of Claude Code: the text explains neither \"model\" nor why a GPT model would be running this Skill.",
+    "evidence": "\"asserting that a generated prompt contained no unresolved task ID\"; \"about 100K tokens \u2026 about 150k\"; \"users of the GPT-5.6-Sol model reported that it fires on plain questions\".",
+    "fix": "\"checking that text it generated had no leftover placeholder ID\"; write \"100k\" to match \"150k\"; \"Matt's Skills also run in other coding agents. In July 2026, people using OpenAI's GPT-5.6-Sol model (the AI behind the agent) reported\u2026\""
+   },
+   {
+    "severity": "low",
+    "where": "Table, line 180",
+    "problem": "\"Nothing yet\" is ambiguous: it could mean \"do nothing for now\" or \"no Skill exists for this\".",
+    "evidence": "\"| \\\"Where are the slow parts of this codebase?\\\" | Nothing yet: it diagnoses one known failure, it doesn't audit |\"",
+    "fix": "\"| \u2026 | No Skill for this: `/diagnosing-bugs` chases one known failure; it doesn't survey a codebase |\""
+   },
+   {
+    "severity": "low",
+    "where": "Site story table (lines 293-297)",
+    "problem": "A cold reader won't follow \"setup wizard\", \"output stream\", \"a preview\" or \"both databases\".",
+    "evidence": "\"My setup wizard raced\u2026\"; \"reading the wrong output stream\"; \"A comment from a preview seemed to appear on the real site\"; \"Checked both databases\".",
+    "fix": "\"My setup wizard (a script that asked me questions)\"; \"reading the error output instead of the normal output\"; \"A comment from a preview copy of the site seemed to appear on the real one\"; \"Checked both databases (the preview and the real site each have their own)\"."
+   },
+   {
+    "severity": "low",
+    "where": "Lines 22, 24, 41, 109, 199, 203; Final test predict-good-hypothesis",
+    "problem": "A few small wording issues for a cold reader. Line 22 says \"a reader's comment\" where the GLOSSARY term is Visitor. \"README\" and \"types\" (line 24) aren't explained. \"may not form a theory\" (line 41) can read as \"might not\". \"one guess anchors\" (line 109) is jargon. \"a rule for the reviewer\" (line 199) doesn't say which reviewer. \"Matt's map\" (line 203) doesn't say which map. \"UTC\" is not explained.",
+    "evidence": "\"a reader's comment on this site\"; \"a line his README borrows\"; \"(types, tests, a browser)\"; \"it may not form a theory\"; \"one guess anchors on the first plausible idea\"; \"a rule for the reviewer\"; \"In Matt's map\"; \"the server's UTC clock\".",
+    "fix": "\"a Visitor's comment on this site\"; \"his README (the front page of his Skills' repository)\"; \"(type checks, tests, a browser)\"; \"it isn't allowed to form a theory\"; \"a single guess tends to lock onto the first idea that seems plausible\"; \"a rule for the code reviewer (the `/code-review` Skill)\"; \"In `/ask-matt`'s map\"; \"the server's UTC clock (world standard time, not Sydney's)\"."
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "high",
+    "where": "13-diagnosing-bugs.md:141-145 (chat Scene), :153 (recap), :253 (Try it step 7)",
+    "problem": "The Scene shows the agent stopping after the ranked hypotheses and waiting for you to say \"go\". The Skill says the opposite: show the list but don't block on it. The Lesson's own text agrees with the Skill, so the Scene contradicts it. The user in the Scene never asked for a pause after the hypotheses; they only asked to see the root cause before any code change. Try it step 7 then tells the reader to reply \"Go with your ranking\" when the hypotheses appear, which suggests the agent will be waiting. With the step-6 prompt, which asks for no pause, it will usually carry straight on to the fix.",
+    "evidence": "SKILL.md:98 \"Don't block on it; proceed with your ranking if the user is AFK.\" Lesson :109 \"It doesn't wait\". Lesson :188 \"even that doesn't block\". The Scene has the agent end on \"I'll go in this order unless you re-rank\" (:141), then a separate user turn \"Go with your ranking\" (:143), with the comment \"You add what you know, or just say go\" (:142). The recap at :153 says \"You did three things: ... and said go.\" In Matt's real run (MzWIIlx0Gpc 7:07-7:11) the agent was \"just busting on with it without asking\". The writing guide (:47) requires every Scene to match how the Skill behaves in 1.3.1.",
+    "fix": "Have the agent's hypothesis message carry on in the same turn (for example \"Testing in this order; say if you want to re-rank\" followed straight away by the Phase 4 probe). Delete the \"Go with your ranking\" user turn, or keep it but have the opening prompt also ask \"stop after the hypotheses\". Change the :153 recap to match. Change Try it step 7 to say: read the hypotheses as they appear; it may carry straight on, so if you know something that changes the order, type it at once."
+   },
+   {
+    "severity": "medium",
+    "where": "13-diagnosing-bugs.md:173 (steering bullet) and :286 (Common mistakes)",
+    "problem": "The Lesson describes the human-in-the-loop script without saying the template is built for the agent to run it while you answer the prompts. So \"If the prompts race past\" comes with no explanation. Common mistakes then lists \"running its script inside the chat\" as a mistake from the steering section, but the steering section never says that. The idea comes from the site story's /wizard incident, where the author ran a script with `!`. For diagnosing-bugs, the Skill's own template expects the agent to run it.",
+    "evidence": "hitl-loop.template.sh:4 \"The agent runs the script; the user follows prompts in their terminal.\" AI Hero docs (docs/engineering/diagnosing-bugs.md:37): \"the agent runs the script, you follow prompts in your terminal\". wizard/SKILL.md:43-44 is the Skill that tells the user to run its script; the site-story row at :293 is about the wizard.",
+    "fix": "At :173, say the template has the agent run the script while you answer its prompts. Then say: if the prompts race past without waiting (the agent's command runner can't take your keystrokes), run it yourself in a separate terminal and paste the KEY=VALUE lines back. At :286, replace \"running its script inside the chat\" with something the steering section actually teaches, such as \"letting its prompts race past unanswered\"."
+   },
+   {
+    "severity": "medium",
+    "where": "13-diagnosing-bugs.md:109 (Phase 3 rule) and :141 (Scene hypotheses 2 and 3)",
+    "problem": "The Lesson narrows the Skill's falsifiability rule to \"naming a change that should make the bug vanish if it's right\". The Skill's format also accepts a change that makes the bug worse. The Scene then breaks the Lesson's own narrowed rule. Hypothesis 2's prediction is an observation (\"logging the name on arrival shows extras\"), and hypothesis 3's says another input \"also fails\". Neither names a change that makes the bug vanish. A reader who has just learned the rule sees the worked example ignore it.",
+    "evidence": "SKILL.md:94 Format: \"If <X> is the cause, then <changing Y> will make the bug disappear / <changing Z> will make it worse.\" Lesson :109 \"by naming a change that should make the bug vanish if it's right\". Scene :141 \"*Prediction:* logging the name on arrival shows extras\" and \"*Prediction:* 26 \\\"\u00e9\\\" also fail\".",
+    "fix": "At :109, use the Skill's full rule: each hypothesis names a change that should make the bug vanish, or one that should make it worse. Rewrite the Scene's hypotheses 2 and 3 in that shape. For example: \"stripping invisible characters on arrival makes 26 \ud83c\udf38 pass\", and \"if the limit is in bytes, 26 '\u00e9' (52 bytes) will also fail\"."
+   },
+   {
+    "severity": "low",
+    "where": "13-diagnosing-bugs.md:26",
+    "problem": "This line says Start here covers installing Matt's Skills, but Start here hands that off to the Skills Lesson. A cold reader following the link won't find the install steps there.",
+    "evidence": "00-start-here.md:38 \"You'll install Matt's Skills in [Skills](/learn/skills).\" The install command is in 03-skills.md:132.",
+    "fix": "Change it to \"([Skills](/learn/skills) covers installing Matt's.)\"."
+   },
+   {
+    "severity": "low",
+    "where": "13-diagnosing-bugs.md:180 (when-to-reach-for table)",
+    "problem": "\"Nothing yet\" suggests a Skill for auditing the codebase for slow parts is on the way. The docs say no Skill does this, and the proposal for one was closed.",
+    "evidence": "docs/engineering/diagnosing-bugs.md:63: \"A skill for the proactive version was proposed and closed; no skill does it now.\" (issue #431)",
+    "fix": "Write \"No Skill does this: /diagnosing-bugs diagnoses one known failure, it doesn't audit\"."
+   },
+   {
+    "severity": "low",
+    "where": "13-diagnosing-bugs.md:58",
+    "problem": "The list of what the agent asks for when nothing goes red says \"a captured artifact\". The Skill specifically asks for a redacted one, and 1.2.3 added that word on purpose. The checkpoint feedback at :73 does say \"redacted\", so the two places disagree.",
+    "evidence": "SKILL.md:55 \"(b) a redacted captured artifact (HAR file, log dump, core dump, screen recording with timestamps)\". CHANGELOG 1.2.3 (#779): \"Phase 1 asks the user for a **redacted** captured artifact.\"",
+    "fix": "Write \"a redacted captured artifact (a log, or a HAR file: ...)\"."
+   },
+   {
+    "severity": "low",
+    "where": "13-diagnosing-bugs.md:130-148 (chat Scene premise)",
+    "problem": "The Scene says it happens \"on this site\", but the site's name field caps input with the browser's maxLength. Browsers count that in the same units as JavaScript's `.length`, where each \ud83c\udf38 counts as two. So a Visitor using the form couldn't enter 26 \ud83c\udf38, and the server error in the story couldn't come from the form. The fix in the Scene (counting characters on the server) would also leave the form still blocking that name. The Scene is labelled illustrative, so this is a polish issue.",
+    "evidence": "src/app/learn/[slug]/discussion.tsx:56 `maxLength={MAX_NAME}`. src/comments/limits.ts:4 `MAX_NAME = 50`. src/comments/comments.ts:48 `if (name.length > MAX_NAME)`.",
+    "fix": "Say the report came from a direct API call, not the form. Or have the Phase 5 fix mention the form's maxLength as well. Or switch to a symptom the form can actually produce."
+   },
+   {
+    "severity": "low",
+    "where": "13-diagnosing-bugs.md:210",
+    "problem": "\"He kept a budget of about 100K tokens per session then\" turns a remark about that one session into a standing rule.",
+    "evidence": "MzWIIlx0Gpc 5:34-5:39: \"I've sort of have a budget of 100K for this session. We're at 46.5K\".",
+    "fix": "Write \"He'd set a budget of about 100K tokens for that session and was at 46.5K\"."
+   },
+   {
+    "severity": "low",
+    "where": "13-diagnosing-bugs.md:125 (checkpoint minimise-cut, option 4 feedback)",
+    "problem": "\"It's the least likely cause\" is imprecise. A cut that leaves the loop red shows the piece isn't needed for the failure, which rules it out of the minimal repro. That's the Skill's load-bearing test, not a likelihood ranking.",
+    "evidence": "SKILL.md:80-84: keep only what's load-bearing; \"removing any one of them makes the loop go green\".",
+    "fix": "Write \"If removing it left the loop red, the bug doesn't need it, so it's ruled out, not proved the cause\"."
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "low",
+    "where": "content/lessons/13-diagnosing-bugs.md:111 (Phase 5, \"it diffs against an untouched copy\") and :220, :439 (sources say SKILL.md is \"pinned to mattpocock-skills 1.3.1\")",
+    "problem": "The pristine-copy diff step is taught as part of the pinned Skill, but it is not in any tagged release: it landed on GitHub main after v1.3.1 and is only in the plugin build. The Lesson gives a version for the redaction rule (1.2.3) but no \"added on main, October 2026\" note for this one, so a reader who checks the v1.3.1 tag or installed via `npx skills` won't find it.",
+    "evidence": "gh api: v1.3.1 released 2026-10-04T12:48Z; PR #1209 (\"prove a forced mutation landed\") merged 2026-10-07T10:22Z; CHANGELOG.md 1.3.1 section has no entry for it. Installed SKILL.md line 125 (commit 49dd158, 2026-10-09) does contain it. Research note S6 flags it as \"Unreleased, but already in the local install\"; spec user story 25 asks for a short note where main has moved on.",
+    "fix": "Add a clause at line 111 or 220, e.g. \"(added on GitHub main in October 2026 after issue #955; the plugin build you install already has it)\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/13-diagnosing-bugs.md:203 (\"`/improve-codebase-architecture`, which looks for ways to reshape code so it can be tested properly\")",
+    "problem": "The gloss describes the Skill only through this one use. Its real job is a survey of deepening opportunities presented as an HTML report, then grilling on the one you pick; testability is a consequence, not its description.",
+    "evidence": "skills/engineering/improve-codebase-architecture/SKILL.md frontmatter: \"Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.\" ask-matt SKILL.md line 60 and line 50 (\"no good seam to lock it down\" \u2192 that Skill).",
+    "fix": "Reword to something like \"which surveys the codebase for places worth deepening, a missing seam among them\", keeping the link to [Architecture](/learn/architecture)."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/13-diagnosing-bugs.md:109 (\"the Skill's only built-in human checkpoint\")",
+    "problem": "Slightly overstated and in tension with the Lesson's own line 58: the Skill also has the agent stop and ask you when no loop can be built, and ask when redacted output is not enough. The hypothesis list is the only checkpoint on the happy path.",
+    "evidence": "SKILL.md lines 16 (\"say so and ask the user\") and 55 (\"Stop and say so explicitly... Ask the user for...\"); the docs page says \"Only Phase 3 has a human checkpoint\" in the narrower sense of a pause before the fix.",
+    "fix": "Say \"the only point in a normal run where it shows you something and invites a reply\" or \"its one checkpoint on the way to a fix\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/13-diagnosing-bugs.md:183, :218, :314, :339 (the quoted workaround \"just answer, don't diagnose\")",
+    "problem": "Presented in quotation marks as \"the documented workaround\", but the documented phrase differs slightly, and the issue thread itself documents no workaround (Matt's reply proposes changing the Skill).",
+    "evidence": "https://www.aihero.dev/skills-diagnosing-bugs (read 2026-10-23): workaround is to say what you want (\"just answer this, don't diagnose\") or disable model invocation. gh api issues/578/comments: mattpocock 2026-07-15 only says he could make the Skill start lighter.",
+    "fix": "Either match the docs page wording (\"just answer this, don't diagnose\") or drop the quotation marks and say \"tell it to just answer, as the docs page suggests\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/13-diagnosing-bugs.md:201 and :357 (feedback: clearing \"empties the conversation it should read, so run it before `/clear`\")",
+    "problem": "Before `/clear` is the right advice, but the feedback implies `/retro` after `/clear` cannot work. ask-matt and the retro Skill say it can be pointed at the session log afterwards.",
+    "evidence": "ask-matt SKILL.md line 38: \"Run /retro in the session it's looking back on, before you clear; after clearing, point it at that session's log instead.\" retro SKILL.md step 2: \"This may mean searching through session logs on this machine.\"",
+    "fix": "Soften the distractor feedback: \"It can still be pointed at the old session's log, but it loses the live conversation; run it before `/clear`.\""
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/13-diagnosing-bugs.md:267-277 (Bonus: clone the repo, `npm install && claude`, start the dev server)",
+    "problem": "The bonus says \"If you have Node and Git\" but the repo's README requires Node.js 24, and a reader may expect database env files to be needed. The claim that the URL now returns 404 is correct (verified live and locally), so the exercise is honest; only the prerequisite is understated. (For the coordinator: the brief's \"real unfixed `/learn/nope` returns 200 bug\" is stale; the Lesson is right.)",
+    "evidence": "README.md line 165: \"You need: Node.js 24 and a Neon project...\". curl https://idea-to-shipped.vercel.app/learn/nope \u2192 HTTP/2 404 (x-nextjs-prerender: 1, 2026-10-23); local `next dev` 16.4.2 \u2192 `GET /learn/nope 404`. The page route does not import src/db/index.ts (only comments.ts does, via the API route), so no DATABASE_URL is needed for this check.",
+    "fix": "Change to \"If you have Node 24 and Git\" and optionally add \"you don't need the database env files for this check\"."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

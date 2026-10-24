@@ -1,0 +1,109 @@
+{
+  "slug": "implement",
+  "next": {
+    "round": 3,
+    "step": "check",
+    "why": "fix round 2 done; check round 3 was stopped before any checker finished"
+  },
+  "applied": [
+    "r1: medium, accuracy, line 69 (blocking edges): now says a blocker must be 'finished'. By hand that means built, committed and closed. Inside /implement-spec it means landed (merged into the run's shared branch). This matches the Checkpoint feedback and Common mistakes, which say closing is what unblocks.",
+    "r1: medium, accuracy, Site story PR sentence: replaced the causal claim with what the repo shows. The PR was opened only after the fix-up and was never a draft (gh: createdAt 08:09:52Z after the last commit at 08:08:57Z, isDraft false, no ready_for_review event in the timeline). /pr wrote its description (journal at d21fc2c).",
+    "r1: medium, accuracy and reader (two issues, same flow Scene): the last caption now says this is where the Skill runs its one review and hands every finding to one fix-up agent, and that on this run an early review had also run while 05 was building. I renamed the node to 'Final review of the whole branch'.",
+    "r1: high, reader, Try it prerequisites: now asks for Node.js or Python, says how to check (node --version, python --version, python3 --version on a Mac) and to install the Node.js LTS from nodejs.org if neither is found. The step 3 prompt adds 'if neither is installed, stop and tell me'.",
+    "r1: medium, reader, Git identity: the step 3 prompt adds 'If Git has no name and email yet, set placeholder ones for this folder only.'",
+    "r1: medium, reader, Try it step 2: 'Type /implement but don't press Enter', check it shows in the list, then delete what you typed. If it wasn't there, exit and install.",
+    "r1: medium, reader, chat Scene review caption: now says the review reads only what's been committed since the fixed point, and this new branch has no commits yet. That removes the clash with Matt's July run, where the review ran before committing.",
+    "r1: medium, quiz, goal 2 had no question where /implement-spec is the right pick: replaced spot-no-clear with a new id, scenario-pick-spec-run (right answer a). I placed it after scenario-serial-harness to keep the a/b/c/d spread. This also ends the double testing of the /clear branch. Ids now: 5 scenario-, 2 spot-, 1 sequence-.",
+    "r1: medium, reader, spot-no-clear stem gave the answer away and had a weak distractor: fixed by removing the question (see scenario-pick-spec-run).",
+    "r1: medium, quiz, spot-no-clear symptoms supported two answers: fixed by removing the question.",
+    "r1: medium, reader, /to-tickets used before it was explained: line 36 now glosses it as 'the Skill that splits a spec into tickets'. I cut the repeat gloss at line 82 to save words.",
+    "r1: medium, reader, 'plugin' never explained: line 125 now shows /mattpocock-skills:code-review and explains it as the plugin's name (the bundle Matt's Skills were installed as), a colon, then the Skill's name.",
+    "r1: medium, reader, 'code smells' jargon: now 'code smells, classic signs of code that's hard to change'.",
+    "r1: medium, quiz, scenario-afk-task: every option is now a ticket that breaks one AFK condition. The breaks are an open spec question, no sandbox with prompts off, and an irreversible live-database delete; the right option stays the same. The distractors repeat the safety words, so the right option no longer stands out. I didn't use the checker's 'only you clicking through' option: the Lesson's 'hard to review afterwards' test would make it arguable.",
+    "r1: medium, quiz, run-once-first: the right option is now 'Start it on just one ticket and stay at the keyboard to watch.' It no longer echoes the highlight.",
+    "r1: medium, quiz, shared-file: the right option is now 'Make one wait for the other, or agree the label names before either starts.' The feedback ties it to blocking edges and agreed names in the tickets or the exploration notes.",
+    "r1: medium, quiz, spot-on-main: dropped 'which was on main' from the stem. It now reads 'the run went well. Afterwards, the new commit is on main.'",
+    "r1: medium, quiz, 'should have' phrasing tell: all spot- options are now past tense. spot-on-main b is 'Sam didn't run /mattpocock-skills:code-review before typing /implement.' and c is 'Sam didn't type /clear before /implement, so no clean branch was made.' spot-midrun-review c is 'Jo reviewed everything at once instead of one worktree at a time.' The spot-no-clear part no longer applies because that question was removed.",
+    "r2: medium, quiz, shortest-right-answer tell: rewrote scenario-afk-task so all four options share one shape (a CSV export: open column order / settled columns and seams in a sandbox / settled but on your laptop with permission prompts off / a live-database clean-out). Right answer 79 chars against 75/92/81. Cut the trailing clauses from scenario-pick-spec-run's distractors (b is now 43, right 49). Went past the checker's two questions to remove the same tell elsewhere: plan-in-chat d shortened, loop-choice d shortened, serial-harness b shortened, two-terminals d and run-once-first b replaced, run-once-first's right answer lengthened. Now no right answer is the shortest by either measure except sequence-one-run, where all four options are the same length.",
+    "r2: medium, quiz, scenario-serial-harness option a contradicted the stem: it is now '/implement-spec anyway, after splitting the spec into more tickets', with feedback saying more tickets don't help when only one sub-agent runs. The right answer is now '...with a /clear before each new one'. b is now 'builds' instead of 'implements', so the right answer is not the shortest in visible text either.",
+    "r2: medium, quiz, ticket-still-open option d used /triage, which the Lesson never explains: replaced it with 'Leave it: the next ticket's run closes this one before it starts.' The feedback says no run touches the ticket and the waiting tickets never start.",
+    "r2: medium, quiz, spot-on-main weak distractor: d is now 'The ticket wasn't ready-for-agent, so the branch step was skipped.' This catches the belief that /implement makes a branch. The feedback says there is no branch step. b was kept, because every branch-related replacement I tried could be defended as right (the docs say an instruction in the /implement message can steer where it commits).",
+    "r2: medium, accuracy, Site story 'In all ... about 15 problems': now 'After the build, the review found about 15 problems...', which follows the journal's order (git show d21fc2c:content/lessons/11-main-flow.md, items 5 and 6). It no longer sums the two reviews. I didn't use the checker's bare `/code-review`, because the Lesson warns that the short name can reach the Built-in command.",
+    "r2: medium, reader, Warshoow's 'tdd never loaded' read as current: added '(an October fix makes /implement load it)'. Checked: upstream commit e48341a on 2026-10-06 ('implement: call the Skill tool for tdd and code-review') against Warshoow's comment of 2026-09-29 on Discussion #1136. Only the tdd half is dated; the code-review clash is still current. I also changed 'his' to 'their' and 'his script' to 'the script', because the comment says 'the 173 sessions on my machine' and gives no gender.",
+    "r2: medium, reader, the manual loop clashed with the by-hand rhythm the Lesson teaches: now 'Fine for a few tickets, but he calls it not really workable, and not much fun.' Checked against transcript BsJGo1wFTvQ 1:20-1:46. Paid for by cutting the off-topic 'read any Skill in full (3:23-3:33)' clause and its timestamp in the sources.",
+    "r2: medium, reader, 'closes work through pull requests' was never explained: the body now says 'closes tickets when a pull request merges (GitHub Issues can)'. predict-run-end option a's feedback now says the same and names 'a folder of Markdown files'. Paid for by shortening the next sentence to 'Otherwise it resolves the tickets and stops on the integration branch.'",
+    "r2: medium, reader, Matt's review-in-a-fresh-context advice clashed with the same-session review in the Scene and Try it: added ', which code-review's fresh sub-agents avoid' to the workshop bullet (checked against -QFHIoCo-Ko 65:47-66:24). Added a caption line in the chat Scene: 'Its two axes run in fresh sub-agents, away from this session's crowded context window.'",
+    "r2: low, also cuts words: Try it step 7 is now 'If no review with Standards and Spec sections appeared, type ...', which also covers the case where no review appeared at all (-8 words). Step 8 now asks for the commits on main and on try-implement, so the reader can check the last checklist item (-2 words). The Cheat sheet row matches step 7.",
+    "r2: low: the callout's unattributed docs quote 'just write the code' is now 'the run quietly stops being test-first' (one quote per source, attributed). 'Every finished ticket is merged' is now 'Each built ticket is merged', which removes the circular reading against line 69's definition of 'finished'. In the Site story, the seam line now says 'every builder started from the same seam', not 'settled', because the author skipped /to-spec's check.",
+    "r2: low, Checkpoint distractors: two-terminals d is now a blockers-first misconception. shared-file c is now 'Leave it to the final review...', with feedback on why the review doesn't stop the clash. run-once-first b is now 'skip code-review' instead of the permissive-mode option, which gave away scenario-afk-task's answer."
+  ],
+  "declined": [
+    {
+      "problem": "acc-skills 14 suggests writing that the author typed /mattpocock-skills:to-spec, /mattpocock-skills:to-tickets and /mattpocock-skills:implement-spec",
+      "reason": "Only the session log backs that, and the Site story rule allows repo facts only. The repo's journal (git show d21fc2c:content/lessons/11-main-flow.md, 'What I typed') records /to-spec, /to-tickets and /implement-spec, so the Site story uses those names. The finding's underlying inconsistency is fixed."
+    },
+    {
+      "problem": "reader 19 suggests keeping '13 findings' if the session log or PR #9 confirms it",
+      "reason": "No repo file or commit holds 13. Only other Lessons repeat it, from a session log. The repo journal says 'about 15 problems', so I used that and cut the early review's 'three problems'."
+    },
+    {
+      "problem": "spot-on-main option b (a review before /implement) is also weak (part of the medium spot-on-main issue)",
+      "reason": "The checker's fix only replaces d, and I did that. Every branch-related misconception I tried for b ('didn't name a branch in the message', 'should have used /implement-spec') can be defended as right: the AI Hero implement docs say people steer the commit target in the /implement message, and /implement-spec does create a branch. I kept b, because c (/clear) and the new d already catch the 'it makes a branch' belief."
+    },
+    {
+      "problem": "low (saved, not pending): spot-midrun-review stem retells the body bullet; checker's new stem adds 'with two tickets still in their worktrees'",
+      "reason": "That stem puts the right answer's defining phrase ('two tickets still hadn't landed') into the prompt, which gives the answer away. The current stem describes symptoms, not the cause."
+    },
+    {
+      "problem": "low (saved, not pending): Colin Eberhardt bullet dates the write-up, not the rebuild",
+      "reason": "The fix adds 2 words to a Lesson above 2,850 words, and the medium fixes needed the word room. Left for a later pass."
+    },
+    {
+      "problem": "low (saved, not pending): cut 'checking one finished branch at the end suits you' from the scenario-pick-spec-run stem",
+      "reason": "Not needed: the stem doesn't count toward the word budget, and once the right answer was no longer the shortest option, the clause doesn't decide the answer."
+    }
+  ],
+  "pending": [],
+  "rounds": {
+    "r2": {
+      "fix": {
+        "applied": [
+          "medium, quiz, shortest-right-answer tell: rewrote scenario-afk-task so all four options share one shape (a CSV export: open column order / settled columns and seams in a sandbox / settled but on your laptop with permission prompts off / a live-database clean-out). Right answer 79 chars against 75/92/81. Cut the trailing clauses from scenario-pick-spec-run's distractors (b is now 43, right 49). Went past the checker's two questions to remove the same tell elsewhere: plan-in-chat d shortened, loop-choice d shortened, serial-harness b shortened, two-terminals d and run-once-first b replaced, run-once-first's right answer lengthened. Now no right answer is the shortest by either measure except sequence-one-run, where all four options are the same length.",
+          "medium, quiz, scenario-serial-harness option a contradicted the stem: it is now '/implement-spec anyway, after splitting the spec into more tickets', with feedback saying more tickets don't help when only one sub-agent runs. The right answer is now '...with a /clear before each new one'. b is now 'builds' instead of 'implements', so the right answer is not the shortest in visible text either.",
+          "medium, quiz, ticket-still-open option d used /triage, which the Lesson never explains: replaced it with 'Leave it: the next ticket's run closes this one before it starts.' The feedback says no run touches the ticket and the waiting tickets never start.",
+          "medium, quiz, spot-on-main weak distractor: d is now 'The ticket wasn't ready-for-agent, so the branch step was skipped.' This catches the belief that /implement makes a branch. The feedback says there is no branch step. b was kept, because every branch-related replacement I tried could be defended as right (the docs say an instruction in the /implement message can steer where it commits).",
+          "medium, accuracy, Site story 'In all ... about 15 problems': now 'After the build, the review found about 15 problems...', which follows the journal's order (git show d21fc2c:content/lessons/11-main-flow.md, items 5 and 6). It no longer sums the two reviews. I didn't use the checker's bare `/code-review`, because the Lesson warns that the short name can reach the Built-in command.",
+          "medium, reader, Warshoow's 'tdd never loaded' read as current: added '(an October fix makes /implement load it)'. Checked: upstream commit e48341a on 2026-10-06 ('implement: call the Skill tool for tdd and code-review') against Warshoow's comment of 2026-09-29 on Discussion #1136. Only the tdd half is dated; the code-review clash is still current. I also changed 'his' to 'their' and 'his script' to 'the script', because the comment says 'the 173 sessions on my machine' and gives no gender.",
+          "medium, reader, the manual loop clashed with the by-hand rhythm the Lesson teaches: now 'Fine for a few tickets, but he calls it not really workable, and not much fun.' Checked against transcript BsJGo1wFTvQ 1:20-1:46. Paid for by cutting the off-topic 'read any Skill in full (3:23-3:33)' clause and its timestamp in the sources.",
+          "medium, reader, 'closes work through pull requests' was never explained: the body now says 'closes tickets when a pull request merges (GitHub Issues can)'. predict-run-end option a's feedback now says the same and names 'a folder of Markdown files'. Paid for by shortening the next sentence to 'Otherwise it resolves the tickets and stops on the integration branch.'",
+          "medium, reader, Matt's review-in-a-fresh-context advice clashed with the same-session review in the Scene and Try it: added ', which code-review's fresh sub-agents avoid' to the workshop bullet (checked against -QFHIoCo-Ko 65:47-66:24). Added a caption line in the chat Scene: 'Its two axes run in fresh sub-agents, away from this session's crowded context window.'",
+          "low, also cuts words: Try it step 7 is now 'If no review with Standards and Spec sections appeared, type ...', which also covers the case where no review appeared at all (-8 words). Step 8 now asks for the commits on main and on try-implement, so the reader can check the last checklist item (-2 words). The Cheat sheet row matches step 7.",
+          "low: the callout's unattributed docs quote 'just write the code' is now 'the run quietly stops being test-first' (one quote per source, attributed). 'Every finished ticket is merged' is now 'Each built ticket is merged', which removes the circular reading against line 69's definition of 'finished'. In the Site story, the seam line now says 'every builder started from the same seam', not 'settled', because the author skipped /to-spec's check.",
+          "low, Checkpoint distractors: two-terminals d is now a blockers-first misconception. shared-file c is now 'Leave it to the final review...', with feedback on why the review doesn't stop the clash. run-once-first b is now 'skip code-review' instead of the permissive-mode option, which gave away scenario-afk-task's answer."
+        ],
+        "declined": [
+          {
+            "problem": "spot-on-main option b (a review before /implement) is also weak (part of the medium spot-on-main issue)",
+            "reason": "The checker's fix only replaces d, and I did that. Every branch-related misconception I tried for b ('didn't name a branch in the message', 'should have used /implement-spec') can be defended as right: the AI Hero implement docs say people steer the commit target in the /implement message, and /implement-spec does create a branch. I kept b, because c (/clear) and the new d already catch the 'it makes a branch' belief."
+          },
+          {
+            "problem": "low (saved, not pending): spot-midrun-review stem retells the body bullet; checker's new stem adds 'with two tickets still in their worktrees'",
+            "reason": "That stem puts the right answer's defining phrase ('two tickets still hadn't landed') into the prompt, which gives the answer away. The current stem describes symptoms, not the cause."
+          },
+          {
+            "problem": "low (saved, not pending): Colin Eberhardt bullet dates the write-up, not the rebuild",
+            "reason": "The fix adds 2 words to a Lesson above 2,850 words, and the medium fixes needed the word room. Left for a later pass."
+          },
+          {
+            "problem": "low (saved, not pending): cut 'checking one finished branch at the end suits you' from the scenario-pick-spec-run stem",
+            "reason": "Not needed: the stem doesn't count toward the word budget, and once the right answer was no longer the shortest option, the clause doesn't decide the answer."
+          }
+        ],
+        "words": 2980,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/implement.json"
+}

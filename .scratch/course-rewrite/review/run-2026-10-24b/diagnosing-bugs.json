@@ -1,0 +1,328 @@
+{
+  "slug": "diagnosing-bugs",
+  "next": {
+    "round": 2,
+    "step": "fix",
+    "why": "check round 2 done; its fixer was stopped before editing"
+  },
+  "applied": [
+    "r1: acc medium + reader medium (Scene contradicts 'before you change any code'): the Scene's opening message and spot-vague-symptom now say 'Show me the root cause before you fix anything.' The Phase 4 caption now reads 'Then it pauses before the fix, as you asked.' The steering bullet now says 'show me the root cause before you fix it'. It has no pause of its own before the fix, and the repro and probes still come first. This follows SKILL.md:26, :110 and :136: the loop, probes and tagged logs are edits that come before Phase 5.",
+    "r1: acc medium + quiz high (pause-first stem and plan-mode option): the stem now asks for agreement 'before the agent starts fixing the bug', and the key b stays. The plan-mode option and its false 'diagnosis can't start' feedback are gone; the permission-modes docs say plan mode still runs shell commands. In its place: 'Choose No at its first permission prompt for an edit.' Its feedback says new sessions start in auto mode, so there may be no prompt, and the first edits are for the loop and probes. The Esc feedback now says 'By then it's already fixing'.",
+    "r1: reader medium (replying 'at once' never explained): the paragraph after the Scene now says to type while the agent works, because Claude Code queues your message and hands it over once the current step finishes. This matches interactive-mode#queue-messages-while-claude-works. The steering bullet comes after this paragraph, so I left it unchanged.",
+    "r1: reader medium (HITL run-it-yourself step on Windows): the bullet now says to run the script in a second terminal window, using Git Bash from the Start menu on Windows because PowerShell can't run bash scripts. It says to type `bash`, a space and the script path the agent gives, then paste the KEY=VALUE lines back. This matches 15-wizard.md:258.",
+    "r1: reader medium (/clear keeps auto memory): the step 4 prompt adds 'Don't save anything about this to memory.' Step 5 now says to copy the command and both outputs before `/clear`, and that memory notes would survive `/clear`, which is why step 4 asks for none. The memory docs back this: auto memory is on by default and loaded every session, and the commands docs say `/clear` keeps project memory.",
+    "r1: reader medium (Phase comparison confusing): the sentence now reads 'The Skill works in six phases, its own name for its steps. (Elsewhere in this course, a Phase is a chunk of work inside one session: one Claude Code conversation.) Each phase sits behind a gate'. Session is now defined here, so I took the duplicate gloss out of the Scene intro.",
+    "r1: reader medium (repository undefined): the README clause now reads 'the front page of his Skills' repository, the online project folder that holds them'. The Bonus now says 'Its repository records' without the late gloss, and later 'with no fix recorded since' and 'its README'.",
+    "r1: reader medium (Deterministic vs flaky): the Deterministic bullet now adds 'for a bug that comes and goes, a steady, high failure rate (see below)', per SKILL.md:62.",
+    "r1: reader medium (npm.ps1 on Windows): after the Bonus sh block I added 'On Windows, if PowerShell says npm.ps1 cannot be loaded, type `npm.cmd install` instead.'",
+    "r1: reader medium + quiz medium (scenario-quick-question wording tell): the stem now asks 'What's your best move?' and all four options are actions. The key is now 'Press Esc, then say you only want an explanation.' (still d), and it no longer echoes the body's quoted workaround.",
+    "r1: quiz medium (spot-shallow-seam option c close to right): c is now 'It should have written its test after the fix, not before.' Its feedback says the Skill writes the test first to watch it fail, and this one could never fail. I wrote 'its test' to avoid the lint's bare-'the test' warning.",
+    "r1: quiz medium (spot-theory-first had several mistakes): the stem now has the agent show four ranked hypotheses, each with a prediction, before running anything. The options are now 'read more files before ranking them', 'test them before showing you the list' and 'Time-of-day bugs can't be caught...'. The key stays a. I wrote 'Time-of-day' because the new stem no longer mentions timezones.",
+    "r1: quiz medium (goal 3 not checked for re-ranking): goal 3 is narrowed to 'give the exact symptom, ask up front for any pause you want, and hand over steps only you can do'. Re-ranking is still taught in the body and checked by the rerank Checkpoint.",
+    "r1: quiz medium (predict-good-hypothesis weak distractors): option b is now the symptom-restating conditional 'If it's a timezone bug, Sydney invoices will show the wrong date.', with feedback that a prediction names a change. The key d now glosses UTC as 'universal time'. Option c is still the longest.",
+    "r1: Word budget: the edits took the count to 3033, over the 3,000 limit, so I trimmed to make room. I removed the Common mistakes recap bullet, which repeated the cheat sheet. I shortened the force-a-failure sentence in Phase 5, the hypothesis-list sentence in Phase 3, the April 2026 talk sentence, and the speed row in the 'Reach for' table (Phase 4 already covers measuring)."
+  ],
+  "declined": [
+    {
+      "problem": "acc-skills medium, suggested rewrite of Scene hypothesis 3 as 'if the limit is in bytes, 26 é (52 bytes) will also fail'",
+      "reason": "The finding was right, but that wording would break the Scene's own Phase 2 result: 25 🌸 is 100 bytes in UTF-8, so a bytes limit would refuse it, yet the Scene shows 25 🌸 going green. I used a hypothesis that fits all the Phase 2 results instead: the check measures screen width, predicting 26 '漢' get refused too."
+    },
+    {
+      "problem": "acc-sources low (Bonus), suggested adding 'you don't need the database env files for this check', and the draft's claim that a check printed 404 live and locally",
+      "reason": "Only the reviewer's own curl and code reading back these, not a repo fact, and task item 4 limits the Bonus to what the repo holds. The Bonus now cites only issue 03 line 12 and the PR #2 body, adds that the repo records no fix since, and says the agent should stop and ask if something such as the README's database settings blocks it."
+    }
+  ],
+  "pending": [
+    {
+      "severity": "medium",
+      "where": "The six phases, gate by gate: step 3 Hypothesise, \"the one point where the Skill invites your input\" (line 109)",
+      "problem": "This says the hypothesis list is the only point where the Skill asks for your input. The Lesson contradicts that itself: line 60 and the no-loop-stop Checkpoint say that when nothing goes red the agent stops and asks you for access, an artifact or permission. Round 1 fixed this by writing \"the one point in a normal run where the Skill invites your input\", but \"in a normal run\" was lost, probably in the word-budget trim. The fix didn't hold.",
+      "evidence": "SKILL.md:55: \"Stop and say so explicitly. List what you tried. Ask the user for: (a) access ... (b) a redacted captured artifact ... or (c) permission ...\". SKILL.md:16: \"If the redacted output is not enough to diagnose the bug, say so and ask the user.\" Lesson line 60: \"the agent stops, lists what it tried, and asks you for one of three things\". The seed's reviseFixed entry records the agreed replacement as \"the one point in a normal run where the Skill invites your input\". Current line 109 reads \"It shows you the list before testing, the one point where the Skill invites your input, but it doesn't wait\".",
+      "fix": "Restore the qualifier: \"It shows you the list before testing, the one point in a normal run where the Skill invites your input, but it doesn't wait: if you're AFK (away from the keyboard), it carries on with its own ranking.\" This adds 4 words, so the prose stays under 3,000 (lint reports 2991).",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Steering it, and when to reach for it: HITL bullet, \"The agent runs it while you answer, but Claude Code's chat can't press Enter for a script. If the prompts race past or it quits, run it yourself\" (line 169)",
+      "problem": "\"While you answer\" and the hedge \"if the prompts race past or it quits\" both suggest the agent's own run can sometimes take your answers. In Claude Code it can't. The agent's shell has no keyboard (stdin is not a terminal), so the template's first `read` hits end-of-file and `set -euo pipefail` stops the script at the first prompt, every time. Readers may wait to answer in the chat when that can never work. The Wizard Lesson teaches the correct behaviour, so the two Lessons contradict each other.",
+      "evidence": "hitl-loop.template.sh:18 `set -euo pipefail` and :22 `read -r -p \"    [Enter when done] \" _`. I ran a copy of the template's helpers plus one `step` and one `capture` from the agent's Bash shell. Output: `>>> Sign in, then press Enter.` then `exit=1`, so it stopped at the first prompt, and `[ -t 0 ]` reported \"stdin is not a tty\". 15-wizard.md:67 says the agent \"never runs the wizard itself, because the script opens browsers and waits for a human\". 15-wizard.md:388: \"The output races past every 'Press Enter' and stops at the first prompt.\" The template's line 4 (\"The agent runs the script; the user follows prompts in their terminal\") assumes a harness with a real terminal, which Claude Code's tool shell is not.",
+      "fix": "Replace those two sentences with: \"When the agent runs it in Claude Code, the script quits at the first prompt, because the agent's shell has no keyboard. So run it yourself in a second terminal window (on Windows, Git Bash from the Start menu: PowerShell can't run bash scripts).\" Keep the next sentence, \"Type `bash`, a space and the script path...\". This uses fewer words than the original.",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "A session, step by step: chat Scene, hypothesis 3, '*Prediction:* 26 \"漢\" (also two columns wide) get refused too.' (line 139)",
+      "problem": "The Scene's third hypothesis has a prediction that neither makes the bug vanish nor makes it worse. The Lesson twice says those are the only two shapes a prediction can take, so the worked example breaks the rule the reader has just learned and will be tested on. A Visitor who copies the Scene could also defend option b of predict-good-hypothesis. 'Screen width ... two columns' is also unexplained terminal jargon for a cold reader.",
+      "evidence": "Lesson line 109: 'a change that should make the bug vanish, or one that should make it worse'. Lesson line 430 (predict-good-hypothesis feedback): 'A prediction names a change that should make the bug vanish or get worse.' SKILL.md /Users/siddharth/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/diagnosing-bugs/SKILL.md:94 gives the format '<changing Y> will make the bug disappear / <changing Z> will make it worse'. Hypotheses 1 and 2 in the Scene follow that shape ('makes 26 🌸 pass', 'makes it pass'); hypothesis 3 doesn't. This doesn't re-raise the declined bytes issue: the fix keeps the display-width hypothesis and its 漢 test, which fit the Phase 2 results.",
+      "fix": "Line 139, hypothesis 3: `3. The check measures display width, where an emoji takes the space of two letters. *Prediction:* it gets worse with other wide characters: 26 \"漢\" (also two letters wide) get refused too.` (Scene text doesn't count toward the word budget.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "The six phases, gate by gate: item 3 Hypothesise, 'the one point where the Skill invites your input, but it doesn't wait: if you're AFK' (line 109)",
+      "problem": "An earlier fix didn't hold. The seed records the wording as 'the one point in a normal run where the Skill invites your input', but 'in a normal run' is gone, probably in the r1 word trim. As it stands, the sentence contradicts the Lesson's own line 60, where the agent stops and asks you for access, an artifact or permission. The second half also confuses a cold reader: 'it doesn't wait: if you're AFK, it carries on' suggests that it does wait when you're at the keyboard. Line 149 then says it 'never waits there'.",
+      "evidence": "SKILL.md:55 ('Stop and say so explicitly. List what you tried. Ask the user for: ...'), SKILL.md:16 ('say so and ask the user'), SKILL.md:98 ('Don't block on it'). Lesson line 60: 'the agent stops, lists what it tried, and asks you for one of three things'. Seed file reviseFixed: \"'only built-in human checkpoint' replaced with 'the one point in a normal run where the Skill invites your input'\". The current line lacks 'in a normal run' (git show HEAD:content/lessons/13-diagnosing-bugs.md line 109).",
+      "fix": "Replace the last sentence of item 3 with: \"It shows you the list before testing, the one point in a normal run where it invites your input, but it never waits for a reply: it carries on with its own ranking, AFK (away from the keyboard) or not.\" (+5 words; see the line 149 low for the offset.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Why it matters: '`/diagnosing-bugs` packages the veteran's habit: ==no theory until something goes red==' (line 26)",
+      "problem": "The Lesson's key highlighted phrase uses 'goes red' before 'red' is defined. A Visitor who has never used a coding agent meets 'red' here, but the definition (failing = red, passing = green) only comes in the next section, at line 32.",
+      "evidence": "Line 26 has the highlight. Line 32: 'Developers call a failing result red and a passing one green, after the colours test tools print.' No earlier line explains red.",
+      "fix": "Line 26: \"`/diagnosing-bugs` packages the veteran's habit: ==no theory until something goes red== (fails on the bug).\" (+4 words)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Steering it, and when to reach for it: pause-first Checkpoint, option c feedback, 'New sessions start in auto mode, so there may be no prompt at all.' (line 188)",
+      "problem": "A mode is used before it's explained. The reader first meets 'auto mode' in this feedback, but the gloss only comes 20 lines later, in Matt's bullet. Without it, 'so there may be no prompt at all' doesn't follow for a cold reader.",
+      "evidence": "Line 188 is the first use. Line 208: 'switched to auto mode (where the agent stops asking for each step)'. The brief's reader lens says every mode needs a clause at first use.",
+      "fix": "Line 188: \"New sessions start in auto mode, where the agent stops asking for each step, so there may be no prompt at all. And its first edits are for the loop and probes, not the fix: saying No there stalls the diagnosis.\" Keep the line 208 gloss too (feedback may show only for the option picked). Checkpoint text doesn't count toward the word budget.",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Why it matters: 'his README (the front page of his Skills' repository, the online project folder that holds them)' (line 24)",
+      "problem": "The r1 gloss defines a repository as an online folder. That conflicts with Start here, which defines a repo as a folder Git tracks, and with this Lesson's own Try step 4, which turns a local folder into a git repository. A cold reader could think step 4 puts their practice folder online, or wonder how a local folder becomes 'online'.",
+      "evidence": "content/lessons/00-start-here.md:35: 'Most of the course happens in a repo: a folder git tracks.' Lesson line 239 (Try step 4 prompt): 'Make this folder a git repository'. Lines 263 and 275 then say 'Its repository' and 'This repo's' for the site's GitHub copy.",
+      "fix": "Line 24: \"his README (the front page of his Skills' repository: the project folder, tracked by Git and shared online, that holds them)\" (+4 words)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Steering it, and when to reach for it: HITL bullet, 'The agent runs it while you answer, but Claude Code's chat can't press Enter for a script. If the prompts race past or it quits, run it yourself' (line 169)",
+      "problem": "The step can't be followed as written. 'While you answer' gives the Visitor nowhere to answer, and the next clause says the chat can't send input to the script. So by the Lesson's own logic the 'if' always comes true, and the reader may wait for prompts that never arrive. 'The script path the agent gives you' also fails if the path is relative, because a new terminal window opens in the home folder. The Wizard Lesson tells readers to run such scripts themselves in a second window, from the project folder.",
+      "evidence": "hitl-loop.template.sh:18 'set -euo pipefail' and :22/:28 'read -r -p'. A read with no input fails, and set -e then ends the script ('it quits'). Lesson Site story row 1 (line 292): the wizard 'raced through every question' when run from the chat with `!`, 'which can't press Enter'. content/lessons/15-wizard.md:250-255: 'Open a second terminal window, not `!` in Claude Code', followed by `cd ~/wizard-practice` before `bash scripts/...`.",
+      "fix": "Replace the last three sentences of the bullet with: \"The template has the agent run it while you answer, but Claude Code's chat can't type into a script, so the prompts race past or it quits. Ask for the script's full path and run it yourself in a second terminal window (on Windows, Git Bash from the Start menu: PowerShell can't run bash scripts): type `bash`, a space and that path, then paste the `KEY=VALUE` lines back.\" (+4 words)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, scenario-quick-question: stem \"You want a quick explanation\" (line 330); key \"Press Esc, then say you only want an explanation.\" (line 337)",
+      "problem": "Wording tell: the key repeats the stem's own words (\"want ... explanation\"). No other option mentions an explanation, so a reader can match stem to key without knowing how the Skill behaves. The r1 fix made all four options actions and moved the key away from the body's quoted workaround, but the new key now echoes the prompt.",
+      "evidence": "Line 330: 'You want a quick explanation, but the agent starts setting up a reproduction harness.' Line 337: '- [x] Press Esc, then say you only want an explanation.' The other options (lines 331, 333, 335) say 'carry on', '/clear' and 'plan mode', and none echoes the stem. Writing guide, Questions: 'no wording tells'; pilot lessons: 'Don't restate the defining phrase of the right answer in the prompt.' Seed r1 entry: 'The key is now Press Esc, then say you only want an explanation.'",
+      "fix": "Change the stem only: 'You ask: \"Why might a row of buttons overflow on small screens?\" You'd like a two-line answer, but the agent starts setting up a reproduction harness. What's your best move?' The key and feedback stay as they are. 'Answer' now echoes distractor a ('the loop will make the answer more accurate') instead of the key, which works against the tell.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Checkpoint pause-first: stem \"You want to agree with the root cause\" (line 182); key \"Ask when you start: \\\"show me the root cause first\\\".\" (line 185)",
+      "problem": "Wording tell plus recall. The key is the only option that contains 'root cause', the stem's key phrase. It is also almost word for word the steering bullet (line 167: \"show me the root cause before you fix it\") and the Scene's opening message (line 133). A reader can pick it by matching words, without understanding that the Skill has no pause of its own.",
+      "evidence": "Line 182: 'You want to agree with the root cause before the agent starts fixing the bug.' Line 185: '- [x] Ask when you start: \"show me the root cause first\".' None of options a, c and d (lines 183, 187, 189) contains 'root cause'. Line 167: 'Ask for the pauses you want, up front: \"stop after the hypotheses\" or \"show me the root cause before you fix it\".'",
+      "fix": "Stem: 'You want to approve the agent's diagnosis before it starts fixing the bug. How do you get that pause?' Key b: 'Say so when you start: \"check with me before fixing\".' (53 characters, still shorter than d's 65). Keep the feedback: 'Right. The Skill has no pause before the fix, so say you want one when you invoke it.' Option a's 'approval' now echoes the stem's 'approve' in a distractor instead of the key.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, scenario-raw-report: stem \"and you haven't confirmed it\" (line 318); key \"`/triage`, to check it's real and get it written up\" (line 321)",
+      "problem": "Wording tell: the key's gloss 'to check it's real' answers the stem's 'you haven't confirmed it' directly. It also copies the body table's gloss for /triage ('checking they're real', line 175). A reader can match unconfirmed → check it's real without knowing which Skill handles raw reports.",
+      "evidence": "Line 318: '...no error text, and you haven't confirmed it.' Line 321: '- [x] `/triage`, to check it's real and get it written up'. Line 175: '| A raw bug report from someone else, not yet confirmed | `/triage` first (Matt's Skill for sorting other people's reports and checking they're real)'. The distractor glosses ('builds a loop right away', 'write tests', 'rebuild the export') don't touch confirmation.",
+      "fix": "Key: '`/triage`, to label it and choose its next step' (47 characters). This matches triage SKILL.md:9 and :45, which say it moves issues through category and state roles. Keep the feedback: 'Right. Raw reports from other people go through `/triage` first; it does a light version of reproducing and confirming.'",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "goals, goal 3 \"ask up front for any pause you want\" (line 16); Final test spot-vague-symptom option a (line 403)",
+      "problem": "The pause clause of goal 3 has no Final test question that checks it. It shows up only as distractor a of spot-vague-symptom, and that distractor doesn't separate readers: the vague symptom ('broken') is plainly the weakness, so a reader who believes up-front pauses don't work still picks b. Only the pause-first Checkpoint tests it, and Checkpoints don't count. In r1, goal 3 was narrowed to drop re-ranking for this same reason (checked only by a Checkpoint), so the same rule should apply here.",
+      "evidence": "Line 16: 'give the exact symptom, ask up front for any pause you want, and hand over steps only you can do.' Final test keys: exact symptom → spot-vague-symptom b (line 405); steps only you can do → scenario-human-click a (line 343); pause → no key. Seed r1: 'goal 3 not checked for re-ranking: goal 3 is narrowed ... Re-ranking is still taught in the body and checked by the rerank Checkpoint.' Writing guide: 'goals: 3–4 items, each checkable by the Final test.'",
+      "fix": "Narrow goal 3 to: 'You'll be able to steer a `/diagnosing-bugs` session: give the exact symptom, and hand over steps only you can do.' The pause stays taught (line 167) and checked by the pause-first Checkpoint. Or keep the goal and turn the weakest Final test distractor into a real pause check, without duplicating the Checkpoint.",
+      "lens": "quiz"
+    }
+  ],
+  "rounds": {
+    "r2": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "The six phases, gate by gate: step 3 Hypothesise, \"the one point where the Skill invites your input\" (line 109)",
+            "problem": "This says the hypothesis list is the only point where the Skill asks for your input. The Lesson contradicts that itself: line 60 and the no-loop-stop Checkpoint say that when nothing goes red the agent stops and asks you for access, an artifact or permission. Round 1 fixed this by writing \"the one point in a normal run where the Skill invites your input\", but \"in a normal run\" was lost, probably in the word-budget trim. The fix didn't hold.",
+            "evidence": "SKILL.md:55: \"Stop and say so explicitly. List what you tried. Ask the user for: (a) access ... (b) a redacted captured artifact ... or (c) permission ...\". SKILL.md:16: \"If the redacted output is not enough to diagnose the bug, say so and ask the user.\" Lesson line 60: \"the agent stops, lists what it tried, and asks you for one of three things\". The seed's reviseFixed entry records the agreed replacement as \"the one point in a normal run where the Skill invites your input\". Current line 109 reads \"It shows you the list before testing, the one point where the Skill invites your input, but it doesn't wait\".",
+            "fix": "Restore the qualifier: \"It shows you the list before testing, the one point in a normal run where the Skill invites your input, but it doesn't wait: if you're AFK (away from the keyboard), it carries on with its own ranking.\" This adds 4 words, so the prose stays under 3,000 (lint reports 2991)."
+          },
+          {
+            "severity": "medium",
+            "where": "Steering it, and when to reach for it: HITL bullet, \"The agent runs it while you answer, but Claude Code's chat can't press Enter for a script. If the prompts race past or it quits, run it yourself\" (line 169)",
+            "problem": "\"While you answer\" and the hedge \"if the prompts race past or it quits\" both suggest the agent's own run can sometimes take your answers. In Claude Code it can't. The agent's shell has no keyboard (stdin is not a terminal), so the template's first `read` hits end-of-file and `set -euo pipefail` stops the script at the first prompt, every time. Readers may wait to answer in the chat when that can never work. The Wizard Lesson teaches the correct behaviour, so the two Lessons contradict each other.",
+            "evidence": "hitl-loop.template.sh:18 `set -euo pipefail` and :22 `read -r -p \"    [Enter when done] \" _`. I ran a copy of the template's helpers plus one `step` and one `capture` from the agent's Bash shell. Output: `>>> Sign in, then press Enter.` then `exit=1`, so it stopped at the first prompt, and `[ -t 0 ]` reported \"stdin is not a tty\". 15-wizard.md:67 says the agent \"never runs the wizard itself, because the script opens browsers and waits for a human\". 15-wizard.md:388: \"The output races past every 'Press Enter' and stops at the first prompt.\" The template's line 4 (\"The agent runs the script; the user follows prompts in their terminal\") assumes a harness with a real terminal, which Claude Code's tool shell is not.",
+            "fix": "Replace those two sentences with: \"When the agent runs it in Claude Code, the script quits at the first prompt, because the agent's shell has no keyboard. So run it yourself in a second terminal window (on Windows, Git Bash from the Start menu: PowerShell can't run bash scripts).\" Keep the next sentence, \"Type `bash`, a space and the script path...\". This uses fewer words than the original."
+          },
+          {
+            "severity": "low",
+            "where": "Flow Scene caption, \"Phase 6: the repro is gone, the tags are gone, and the commit names the right hypothesis.\" (line 103)",
+            "problem": "\"The repro is gone\" can be read as \"the repro is deleted\". The chat Scene deletes `repro.sh` (line 146), which makes that reading more likely. The Skill's check is that the original repro no longer reproduces, rerun through the Phase 1 loop. The minimised repro lives on as the regression test.",
+            "evidence": "SKILL.md:134: \"Original repro no longer reproduces (re-run the Phase 1 loop)\". SKILL.md:82: the minimal repro \"becomes the clean regression test in Phase 5\". Lesson line 112 already says it correctly: \"the original repro no longer reproduces\".",
+            "fix": "\"# Phase 6: the original repro no longer fails, the tags are gone, and the commit names the right hypothesis.\""
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint pause-first, option a feedback, \"Only the hypothesis list is shown to you, and even that doesn't block.\" (line 184)",
+            "problem": "Read literally, this is false. Phase 1 must show you the loop command and its output, and when nothing goes red the agent stops and asks you. The point is that the hypothesis list is the only routine moment that invites your input, and it doesn't block.",
+            "evidence": "SKILL.md:59: \"show the invocation and its output, redacted\". SKILL.md:55: \"Stop and say so explicitly ... Ask the user for\". SKILL.md:98: \"Show the ranked list ... Don't block on it\".",
+            "fix": "\"It doesn't. In a normal run only the hypothesis list comes to you for input, and even that doesn't block.\""
+          },
+          {
+            "severity": "low",
+            "where": "Chat Scene, Phase 4: caption \"one tagged probe per prediction\" (line 140) and agent line \"`[DEBUG-7c1e] length=52 characters=26` ... (rules out 2) ... (confirms 1)\" (line 141)",
+            "problem": "The caption says one tagged probe per prediction, but the Scene shows something else. One tagged log settles hypotheses 1 and 2 together. Hypothesis 3 is ruled out by an untagged input test. Hypothesis 1 is marked \"confirms\" although its stated prediction (counting characters makes 26 🌸 pass) is never run in Phase 4.",
+            "evidence": "SKILL.md:102: \"Each probe must map to a specific prediction from Phase 3. **Change one variable at a time.**\" Lesson line 139 gives hypothesis 1's prediction: \"counting characters instead makes 26 🌸 pass.\"",
+            "fix": "Caption: \"# Phase 4: probes, each tied to one prediction, with debug logs tagged. Then it pauses before the fix, as you asked.\" Agent line: \"`[DEBUG-7c1e] length=52 characters=26`: the name arrives intact, with nothing to strip (rules out 2). 26 \"漢\" post fine (rules out 3). Counting characters instead lets 26 🌸 through (confirms 1). Shall I fix it?\""
+          },
+          {
+            "severity": "low",
+            "where": "The six phases, step 6 Cleanup, \"throwaway code is gone\" (line 112)",
+            "problem": "This overstates the rule. The Skill accepts throwaway prototypes being deleted or moved to a clearly marked debug location. The Lesson says they must be gone.",
+            "evidence": "SKILL.md:137: \"Throwaway prototypes deleted (or moved to a clearly-marked debug location)\".",
+            "fix": "\"throwaway code is deleted or moved to a clearly marked debug folder;\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "A session, step by step: chat Scene, hypothesis 3, '*Prediction:* 26 \"漢\" (also two columns wide) get refused too.' (line 139)",
+            "problem": "The Scene's third hypothesis has a prediction that neither makes the bug vanish nor makes it worse. The Lesson twice says those are the only two shapes a prediction can take, so the worked example breaks the rule the reader has just learned and will be tested on. A Visitor who copies the Scene could also defend option b of predict-good-hypothesis. 'Screen width ... two columns' is also unexplained terminal jargon for a cold reader.",
+            "evidence": "Lesson line 109: 'a change that should make the bug vanish, or one that should make it worse'. Lesson line 430 (predict-good-hypothesis feedback): 'A prediction names a change that should make the bug vanish or get worse.' SKILL.md /Users/siddharth/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/diagnosing-bugs/SKILL.md:94 gives the format '<changing Y> will make the bug disappear / <changing Z> will make it worse'. Hypotheses 1 and 2 in the Scene follow that shape ('makes 26 🌸 pass', 'makes it pass'); hypothesis 3 doesn't. This doesn't re-raise the declined bytes issue: the fix keeps the display-width hypothesis and its 漢 test, which fit the Phase 2 results.",
+            "fix": "Line 139, hypothesis 3: `3. The check measures display width, where an emoji takes the space of two letters. *Prediction:* it gets worse with other wide characters: 26 \"漢\" (also two letters wide) get refused too.` (Scene text doesn't count toward the word budget.)"
+          },
+          {
+            "severity": "medium",
+            "where": "The six phases, gate by gate: item 3 Hypothesise, 'the one point where the Skill invites your input, but it doesn't wait: if you're AFK' (line 109)",
+            "problem": "An earlier fix didn't hold. The seed records the wording as 'the one point in a normal run where the Skill invites your input', but 'in a normal run' is gone, probably in the r1 word trim. As it stands, the sentence contradicts the Lesson's own line 60, where the agent stops and asks you for access, an artifact or permission. The second half also confuses a cold reader: 'it doesn't wait: if you're AFK, it carries on' suggests that it does wait when you're at the keyboard. Line 149 then says it 'never waits there'.",
+            "evidence": "SKILL.md:55 ('Stop and say so explicitly. List what you tried. Ask the user for: ...'), SKILL.md:16 ('say so and ask the user'), SKILL.md:98 ('Don't block on it'). Lesson line 60: 'the agent stops, lists what it tried, and asks you for one of three things'. Seed file reviseFixed: \"'only built-in human checkpoint' replaced with 'the one point in a normal run where the Skill invites your input'\". The current line lacks 'in a normal run' (git show HEAD:content/lessons/13-diagnosing-bugs.md line 109).",
+            "fix": "Replace the last sentence of item 3 with: \"It shows you the list before testing, the one point in a normal run where it invites your input, but it never waits for a reply: it carries on with its own ranking, AFK (away from the keyboard) or not.\" (+5 words; see the line 149 low for the offset.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Why it matters: '`/diagnosing-bugs` packages the veteran's habit: ==no theory until something goes red==' (line 26)",
+            "problem": "The Lesson's key highlighted phrase uses 'goes red' before 'red' is defined. A Visitor who has never used a coding agent meets 'red' here, but the definition (failing = red, passing = green) only comes in the next section, at line 32.",
+            "evidence": "Line 26 has the highlight. Line 32: 'Developers call a failing result red and a passing one green, after the colours test tools print.' No earlier line explains red.",
+            "fix": "Line 26: \"`/diagnosing-bugs` packages the veteran's habit: ==no theory until something goes red== (fails on the bug).\" (+4 words)"
+          },
+          {
+            "severity": "medium",
+            "where": "Steering it, and when to reach for it: pause-first Checkpoint, option c feedback, 'New sessions start in auto mode, so there may be no prompt at all.' (line 188)",
+            "problem": "A mode is used before it's explained. The reader first meets 'auto mode' in this feedback, but the gloss only comes 20 lines later, in Matt's bullet. Without it, 'so there may be no prompt at all' doesn't follow for a cold reader.",
+            "evidence": "Line 188 is the first use. Line 208: 'switched to auto mode (where the agent stops asking for each step)'. The brief's reader lens says every mode needs a clause at first use.",
+            "fix": "Line 188: \"New sessions start in auto mode, where the agent stops asking for each step, so there may be no prompt at all. And its first edits are for the loop and probes, not the fix: saying No there stalls the diagnosis.\" Keep the line 208 gloss too (feedback may show only for the option picked). Checkpoint text doesn't count toward the word budget."
+          },
+          {
+            "severity": "medium",
+            "where": "Why it matters: 'his README (the front page of his Skills' repository, the online project folder that holds them)' (line 24)",
+            "problem": "The r1 gloss defines a repository as an online folder. That conflicts with Start here, which defines a repo as a folder Git tracks, and with this Lesson's own Try step 4, which turns a local folder into a git repository. A cold reader could think step 4 puts their practice folder online, or wonder how a local folder becomes 'online'.",
+            "evidence": "content/lessons/00-start-here.md:35: 'Most of the course happens in a repo: a folder git tracks.' Lesson line 239 (Try step 4 prompt): 'Make this folder a git repository'. Lines 263 and 275 then say 'Its repository' and 'This repo's' for the site's GitHub copy.",
+            "fix": "Line 24: \"his README (the front page of his Skills' repository: the project folder, tracked by Git and shared online, that holds them)\" (+4 words)"
+          },
+          {
+            "severity": "medium",
+            "where": "Steering it, and when to reach for it: HITL bullet, 'The agent runs it while you answer, but Claude Code's chat can't press Enter for a script. If the prompts race past or it quits, run it yourself' (line 169)",
+            "problem": "The step can't be followed as written. 'While you answer' gives the Visitor nowhere to answer, and the next clause says the chat can't send input to the script. So by the Lesson's own logic the 'if' always comes true, and the reader may wait for prompts that never arrive. 'The script path the agent gives you' also fails if the path is relative, because a new terminal window opens in the home folder. The Wizard Lesson tells readers to run such scripts themselves in a second window, from the project folder.",
+            "evidence": "hitl-loop.template.sh:18 'set -euo pipefail' and :22/:28 'read -r -p'. A read with no input fails, and set -e then ends the script ('it quits'). Lesson Site story row 1 (line 292): the wizard 'raced through every question' when run from the chat with `!`, 'which can't press Enter'. content/lessons/15-wizard.md:250-255: 'Open a second terminal window, not `!` in Claude Code', followed by `cd ~/wizard-practice` before `bash scripts/...`.",
+            "fix": "Replace the last three sentences of the bullet with: \"The template has the agent run it while you answer, but Claude Code's chat can't type into a script, so the prompts race past or it quits. Ask for the script's full path and run it yourself in a second terminal window (on Windows, Git Bash from the Start menu: PowerShell can't run bash scripts): type `bash`, a space and that path, then paste the `KEY=VALUE` lines back.\" (+4 words)"
+          },
+          {
+            "severity": "low",
+            "where": "A session, step by step: 'The agent showed its ranking and went straight on, because the Skill never waits there.' (line 149)",
+            "problem": "This repeats a point the Lesson already makes four times: line 109, the Scene caption at line 138, the rerank feedback at line 160 and the cheat sheet at line 308. The Lesson is at 2,991 of 3,000 words, so this sentence is the obvious cut to pay for the fixes above.",
+            "evidence": "Lint output: proseWords 2991 (node .scratch/course-rewrite/tools/lint-lesson.mjs content/lessons/13-diagnosing-bugs.md). The lint counts prose, try, callout and site-story text, but not Scene, Checkpoint or test text.",
+            "fix": "Delete that sentence (−15 words). The paragraph becomes: \"You did two things: gave the exact symptom, and asked for the one pause you wanted. To change the order, type while it works: Claude Code queues your message and hands it over as soon as the current step finishes.\" With the fixes above, the net is about 2,998 words. Recheck with the lint."
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, step 2: 'If `diagnosing-bugs` is in the list that pops up, delete what you typed. If not, type `/exit`' (line 229)",
+            "problem": "Deleting the typed text is only said for the installed case. In the not-installed case, '/diagnosing' is still in the prompt box, so a literal reader types '/diagnosing/exit'.",
+            "evidence": "Lesson line 229. The seed's reviseFixed note says step 2 was meant to tell the reader to delete '/diagnosing', but the instruction now sits only in the first branch.",
+            "fix": "\"2. Type a slash and the word diagnosing, look for `diagnosing-bugs` in the list that pops up, then delete what you typed. If it wasn't there, type `/exit`, install Matt's Skills, then run `claude` again:\" (+3 words)"
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, It's working if: '- [ ] Debug logs carried a tag like `[DEBUG-xxxx]`, and none were left.' (line 257)",
+            "problem": "With a tiny cart script, the agent may test its predictions with a debugger or by changing inputs, and add no debug logs at all. The Skill prefers a debugger first. The Visitor would then tick 'no' and think the run failed when it followed the Skill.",
+            "evidence": "SKILL.md:106 ('Debugger / REPL inspection if the env supports it. One breakpoint beats ten logs.'). Lesson line 110: 'A debugger ... comes first, then targeted logs'.",
+            "fix": "\"- [ ] Any debug logs it added carried a tag like `[DEBUG-xxxx]`, and none were left.\" (+2 words)"
+          },
+          {
+            "severity": "low",
+            "where": "Steering it, and when to reach for it: pause-first Checkpoint, option a feedback, 'Only the hypothesis list is shown to you, and even that doesn't block.' (line 184)",
+            "problem": "Read literally, this contradicts the Lesson's central rule: the agent must also show you the red command and its output. What's unique to the hypothesis list is that it invites your input, not that it's shown.",
+            "evidence": "Lesson line 41: 'The agent must show it: one named command it has already run, with its output.' SKILL.md:59 ('show the invocation and its output, redacted').",
+            "fix": "\"It doesn't. Its only check-in with you is the hypothesis list, and even that doesn't block.\""
+          },
+          {
+            "severity": "low",
+            "where": "The idea: a loop that goes red: no-loop-stop Checkpoint, option d feedback, 'Logging everything is ruled out' (line 75)",
+            "problem": "The feedback relies on a rule the reader hasn't met yet. 'Never log everything' is first taught in Phase 4 (line 110), the next section after this Checkpoint.",
+            "evidence": "Lesson line 110: 'never logging everything and searching the pile'. Up to line 75, the Lesson mentions logging only as 'permission to add temporary logging ... to the live system' (line 60).",
+            "fix": "\"Waiting isn't a loop: nothing goes red on demand. And logging on a live system needs your permission first.\""
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-quick-question: stem \"You want a quick explanation\" (line 330); key \"Press Esc, then say you only want an explanation.\" (line 337)",
+            "problem": "Wording tell: the key repeats the stem's own words (\"want ... explanation\"). No other option mentions an explanation, so a reader can match stem to key without knowing how the Skill behaves. The r1 fix made all four options actions and moved the key away from the body's quoted workaround, but the new key now echoes the prompt.",
+            "evidence": "Line 330: 'You want a quick explanation, but the agent starts setting up a reproduction harness.' Line 337: '- [x] Press Esc, then say you only want an explanation.' The other options (lines 331, 333, 335) say 'carry on', '/clear' and 'plan mode', and none echoes the stem. Writing guide, Questions: 'no wording tells'; pilot lessons: 'Don't restate the defining phrase of the right answer in the prompt.' Seed r1 entry: 'The key is now Press Esc, then say you only want an explanation.'",
+            "fix": "Change the stem only: 'You ask: \"Why might a row of buttons overflow on small screens?\" You'd like a two-line answer, but the agent starts setting up a reproduction harness. What's your best move?' The key and feedback stay as they are. 'Answer' now echoes distractor a ('the loop will make the answer more accurate') instead of the key, which works against the tell."
+          },
+          {
+            "severity": "medium",
+            "where": "Checkpoint pause-first: stem \"You want to agree with the root cause\" (line 182); key \"Ask when you start: \\\"show me the root cause first\\\".\" (line 185)",
+            "problem": "Wording tell plus recall. The key is the only option that contains 'root cause', the stem's key phrase. It is also almost word for word the steering bullet (line 167: \"show me the root cause before you fix it\") and the Scene's opening message (line 133). A reader can pick it by matching words, without understanding that the Skill has no pause of its own.",
+            "evidence": "Line 182: 'You want to agree with the root cause before the agent starts fixing the bug.' Line 185: '- [x] Ask when you start: \"show me the root cause first\".' None of options a, c and d (lines 183, 187, 189) contains 'root cause'. Line 167: 'Ask for the pauses you want, up front: \"stop after the hypotheses\" or \"show me the root cause before you fix it\".'",
+            "fix": "Stem: 'You want to approve the agent's diagnosis before it starts fixing the bug. How do you get that pause?' Key b: 'Say so when you start: \"check with me before fixing\".' (53 characters, still shorter than d's 65). Keep the feedback: 'Right. The Skill has no pause before the fix, so say you want one when you invoke it.' Option a's 'approval' now echoes the stem's 'approve' in a distractor instead of the key."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-raw-report: stem \"and you haven't confirmed it\" (line 318); key \"`/triage`, to check it's real and get it written up\" (line 321)",
+            "problem": "Wording tell: the key's gloss 'to check it's real' answers the stem's 'you haven't confirmed it' directly. It also copies the body table's gloss for /triage ('checking they're real', line 175). A reader can match unconfirmed → check it's real without knowing which Skill handles raw reports.",
+            "evidence": "Line 318: '...no error text, and you haven't confirmed it.' Line 321: '- [x] `/triage`, to check it's real and get it written up'. Line 175: '| A raw bug report from someone else, not yet confirmed | `/triage` first (Matt's Skill for sorting other people's reports and checking they're real)'. The distractor glosses ('builds a loop right away', 'write tests', 'rebuild the export') don't touch confirmation.",
+            "fix": "Key: '`/triage`, to label it and choose its next step' (47 characters). This matches triage SKILL.md:9 and :45, which say it moves issues through category and state roles. Keep the feedback: 'Right. Raw reports from other people go through `/triage` first; it does a light version of reproducing and confirming.'"
+          },
+          {
+            "severity": "medium",
+            "where": "goals, goal 3 \"ask up front for any pause you want\" (line 16); Final test spot-vague-symptom option a (line 403)",
+            "problem": "The pause clause of goal 3 has no Final test question that checks it. It shows up only as distractor a of spot-vague-symptom, and that distractor doesn't separate readers: the vague symptom ('broken') is plainly the weakness, so a reader who believes up-front pauses don't work still picks b. Only the pause-first Checkpoint tests it, and Checkpoints don't count. In r1, goal 3 was narrowed to drop re-ranking for this same reason (checked only by a Checkpoint), so the same rule should apply here.",
+            "evidence": "Line 16: 'give the exact symptom, ask up front for any pause you want, and hand over steps only you can do.' Final test keys: exact symptom → spot-vague-symptom b (line 405); steps only you can do → scenario-human-click a (line 343); pause → no key. Seed r1: 'goal 3 not checked for re-ranking: goal 3 is narrowed ... Re-ranking is still taught in the body and checked by the rerank Checkpoint.' Writing guide: 'goals: 3–4 items, each checkable by the Final test.'",
+            "fix": "Narrow goal 3 to: 'You'll be able to steer a `/diagnosing-bugs` session: give the exact symptom, and hand over steps only you can do.' The pause stays taught (line 167) and checked by the pause-first Checkpoint. Or keep the goal and turn the weakest Final test distractor into a real pause check, without duplicating the Checkpoint."
+          },
+          {
+            "severity": "low",
+            "where": "Final test, spot-vague-symptom option a \"It asks for a pause, and the Skill can't pause before the fix.\" (line 403)",
+            "problem": "This distractor depends on a fine wording difference. The Lesson says twice that the Skill 'has no pause of its own before the fix' (line 167) and that 'The Skill has no pause before the fix' (line 186). A sharp reader can call 'the Skill can't pause before the fix' half-true, and the feedback has to separate 'can't pause' from 'has no pause of its own'.",
+            "evidence": "Line 404 feedback: 'It can, when you ask up front like this. The Skill just has no pause of its own there.' Line 186: 'The Skill has no pause before the fix, so say you want one when you invoke it.'",
+            "fix": "Option a: 'It asks for a pause, which the agent will ignore.' (49 characters). Feedback: 'It won't: asked up front, it stops before the fix. The Skill just has no pause of its own there.'"
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint minimise-cut option d \"That setting must be the cause, because nothing changed.\" (line 122)",
+            "problem": "Weak distractor: few readers would decide something is the cause because removing it changed nothing. Meanwhile the gate's real rule, cutting one thing at a time, has no distractor testing it.",
+            "evidence": "SKILL.md:80: 'Cut inputs, callers, config, data, and steps **one at a time**, re-running the loop after each cut'. Line 108: 'cuts inputs, settings, data and steps one at a time, rerunning after each cut.' Line 123 feedback: 'The opposite: the bug still happens without it'.",
+            "fix": "Option d: 'Switch the other two settings off together next, to save time.' (62 characters; the key stays shorter at 55). Feedback: 'Cut one thing at a time. If the loop went green after two cuts, you couldn't tell which one mattered.'"
+          },
+          {
+            "severity": "low",
+            "where": "Final test, predict-good-hypothesis option c \"It's definitely the timezone, so I'll go ahead and fix that right now.\" (line 431)",
+            "problem": "Silly distractor: 'definitely ... right now' gives it away, so the real choice is between b and d. It is also the longest option, which is what keeps the key from being longest. Any replacement must stay longer than the key's 69 characters.",
+            "evidence": "Lengths: a 68, b 67, c 72, d (key) 69. Line 109: 'a change that should make the bug vanish, or one that should make it worse'. SKILL.md:94 format: 'If <X> is the cause, then <changing Y> will make the bug disappear'.",
+            "fix": "Option c: '\"If it's a timezone problem, changing the date code somewhere should fix it.\"' (77 characters). Feedback: 'The change is too vague to test: \"the date code somewhere\" could mean anything, so no single experiment can rule it in or out.'"
+          },
+          {
+            "severity": "low",
+            "where": "Final test, spot-theory-first option d \"Time-of-day bugs can't be caught with a feedback loop at all.\" (line 385)",
+            "problem": "This isn't a mistake the agent made. It's a general claim, so it reads oddly under 'Spot the mistake'. Its feedback also leans on pinning the clock, which the Lesson body never teaches (it's only in SKILL.md:45).",
+            "evidence": "Line 378 stem: 'Spot the mistake.' Line 386 feedback: 'pin the clock to just after midnight ... Pinning time is one way to make a loop deterministic.' grep shows 'pin' appears nowhere in the body. SKILL.md:45: 'Pin time, seed RNG...'",
+            "fix": "Option d: 'Four hypotheses is too many; it should pick the likeliest one.' (62 characters; the key stays at 54). Feedback: 'Three to five is the Skill's range, because one guess tends to lock onto the first plausible idea (see Phase 3). The real problem: nothing has gone red yet.'"
+          },
+          {
+            "severity": "low",
+            "where": "Final test, goal 4 questions scenario-raw-report (line 317), scenario-quick-question (line 329), scenario-after-fix (line 353)",
+            "problem": "Goal 4 says 'decide when to reach for /diagnosing-bugs instead of /triage or a plain question'. All three goal-4 questions have a key other than /diagnosing-bugs, and /diagnosing-bugs is a wrong option in two of them. A test-wise reader who never picks the Lesson's own Skill scores 3/3, and no question checks the positive case (a confirmed, specific defect).",
+            "evidence": "Keys: line 321 `/triage`, line 337 'Press Esc...', line 359 `/retro`. Line 319 (`/diagnosing-bugs`) and line 357 (`/diagnosing-bugs` again) are both wrong options. The body table rows at lines 173–174 (the positive cases) have no question.",
+            "fix": "Rework scenario-raw-report to test both sides: 'Two bugs land on your open-source project. A stranger writes \"Export is broken, please fix\", with no steps. And you see for yourself that since Tuesday's release, exports over 1,000 rows drop the last row every time. Which pairing is right?' Options: [x] '`/triage` for the stranger's, `/diagnosing-bugs` for yours' (58); '`/diagnosing-bugs` for both, so each gets a loop' (48); '`/triage` for both, since both are bugs' (39); '`/diagnosing-bugs` for the stranger's, since it came first, `/triage` for yours' (79). Feedback: triage is for reports you didn't create (ask-matt SKILL.md:48); your own exact, repeatable symptom is ready for a loop."
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/diagnosing-bugs.json"
+}

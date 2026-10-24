@@ -1,0 +1,307 @@
+{
+ "slug": "diagnosing-bugs",
+ "review": {},
+ "revise": {
+  "summary": "I revised content/lessons/13-diagnosing-bugs.md. Both gates pass (no lint ERRORs; 14 tests ran and passed). The chat Scene now matches the 1.3.1 Skill: the agent shows its ranked hypotheses and keeps going without waiting (SKILL.md:98). Its hypotheses use the Skill's full prediction rule, \"vanish or get worse\" (SKILL.md:94), and the Scene is no longer set on this site, whose name field's maxLength would block 26 emoji. The Try it exercise now asks for the pause after the hypotheses, falls back to bash if neither Node nor Python is installed, and says where permission prompts, Esc and the plan-mode exit come in. The Bonus now says only what the repo holds (issue 03 line 12 and the PR #2 body). The human-in-the-loop advice now follows the template: the agent runs the script while you answer (template:4). In the Final test, scenario-flaky is replaced by spot-vague-symptom so goal 3 gets tested, and four other questions were reworked. I also fixed most reader terms (Phase, plan mode, Esc, /triage, TDD, push, issue, repo, ticket) and the Site story wording, which now claims only what the repo shows. The prose is 2,932 words: under the 3,000 limit but above the 2,800 target, because the glosses the reader findings asked for cost about 110 words even after cutting every section.",
+  "fixed": [
+   "acc-skills high: chat Scene no longer has the agent wait for 'go' after the hypotheses; it shows the list and carries on (SKILL.md:98), and the recap now says so",
+   "reader high: Try step 6 prompt now ends 'Stop after you show me your ranked hypotheses.', with a note to replace each <...>; step 7 matches",
+   "acc-skills medium: HITL bullet now says the agent runs the script while you answer (hitl-loop.template.sh:4), and if the prompts race past or it quits, you run it in another terminal; Common mistakes no longer says 'running its script inside the chat'",
+   "acc-skills medium: Phase 3 now uses the Skill's full rule (a change that makes the bug vanish or worse, SKILL.md:94); Scene hypotheses 2 and 3 rewritten in that shape, and Phase 4 results match them",
+   "reader medium: Try now works from zero (Git assumed per Start here; script in Node or Python, otherwise bash; placeholder Git identity)",
+   "reader medium: Try step 2 says to delete '/diagnosing'; permission and Esc guidance moved to step 1; step 8 simplified",
+   "reader medium: flow Scene captions now gloss hypotheses, probes and regression test; Phase 4 defines probes",
+   "reader medium: 'six phases' now notes it is the Skill's own word, not the Phase of The context window",
+   "reader medium + acc-sources low: 'only built-in human checkpoint' replaced with 'the one point in a normal run where the Skill invites your input'",
+   "reader medium: /triage glossed in the table; push, issue and issue tracker glossed in Matt's and others' bullets",
+   "reader medium: plan mode and Esc defined inside the pause-first options; Try step 3 says why to leave plan mode",
+   "reader medium + task item 4: Bonus rewritten from repo facts only (issue 03 line 12, PR #2 body 'Known: ... status 200'); the unsupported claim that a check printed 404 removed; Node.js 24 per README:165; trust prompt; repo, ticket and PR glossed",
+   "reader medium: TDD expanded in the table; 'his TDD Skill' now '/tdd'",
+   "quiz medium: scenario-flaky replaced by spot-vague-symptom (answer b) so goal 3 has a Final test question",
+   "quiz medium: pause-first option c feedback now gives the real reason plan mode fails (it blocks the repro script and failing test, and after approval nothing stops it between cause and fix)",
+   "quiz medium: predict-good-hypothesis option c feedback no longer contradicts the key; option d reworded, with UTC glossed inside it",
+   "quiz medium: rerank Checkpoint rewritten as a fresh gift-card case where your knowledge sinks hypothesis 1; the right answer no longer echoes the prompt and teaches replying at once",
+   "quiz medium: scenario-human-click distractor is now the template's real trap (a script that asks for your password); prompt explains why a headless browser can't do it (a texted code)",
+   "quiz medium: no-loop-stop prompt now says 'which the agent can't reach', so asking you for access makes sense; feedback no longer says 'hypotheses' or 'instrumentation' before they're defined",
+   "acc-skills low: install pointer now links Skills, not Start here",
+   "acc-skills low + reader low: 'Nothing yet' changed to 'No Skill does this'",
+   "acc-skills low: 'a redacted captured artifact'",
+   "acc-skills low: Scene no longer set on this site (the form's maxLength would block 26 emoji)",
+   "acc-skills low: Matt's 100k is now a budget 'for that session'; casing matches 46.5k",
+   "acc-skills/quiz low: minimise-cut option d feedback no longer says 'least likely cause'",
+   "quiz low: spot-shallow-seam prompt has the test written before the fix; option b no longer overclaims",
+   "quiz low + acc-sources low: scenario-after-fix right answer gets a clause; option a feedback mentions pointing /retro at the old log",
+   "quiz low: spot-theory-first options b and c replaced with real candidate mistakes",
+   "acc-sources low: /improve-codebase-architecture gloss now 'surveys a codebase for places worth reshaping'",
+   "acc-sources low: quoted workaround now matches the AI Hero docs ('just answer this, don't diagnose') and appears in quotation marks once",
+   "acc-sources low: /retro after /clear softened in the body and feedback (ask-matt SKILL.md:38)",
+   "reader low: Secrets paragraph moved up to sit right after the first 'show its output' rule",
+   "reader low: repro.sh and the API glossed in the Scene lead-in and captions",
+   "reader low: 'caller', 'diffs' and 'forced the red' rewritten in Phase 5",
+   "reader low: GPT-5.6-Sol introduced as a non-Claude model; task-ID wording simplified",
+   "reader low: Site story glosses (setup wizard, the ! prefix, preview copy, both copies' databases)",
+   "reader low: Visitor glossed, README glossed, 'type checks', 'may form no theory', 'lock onto the first plausible idea', 'the agent that reviews code'",
+   "Overrides: dropped the SKILL.md phrases that sat in quotation marks without being verbatim ('log everything and search', 'it didn't crash'); Site story now claims only what the repo shows; one quote per source; commands one per line"
+  ],
+  "deferred": [],
+  "lowsDeferred": 1,
+  "declined": [
+   {
+    "problem": "acc-skills medium, suggested rewrite of Scene hypothesis 3 as 'if the limit is in bytes, 26 é (52 bytes) will also fail'",
+    "reason": "The finding was right, but that wording would break the Scene's own Phase 2 result: 25 🌸 is 100 bytes in UTF-8, so a bytes limit would refuse it, yet the Scene shows 25 🌸 going green. I used a hypothesis that fits all the Phase 2 results instead: the check measures screen width, predicting 26 '漢' get refused too."
+   },
+   {
+    "problem": "acc-sources low (Bonus), suggested adding 'you don't need the database env files for this check', and the draft's claim that a check printed 404 live and locally",
+    "reason": "Only the reviewer's own curl and code reading back these, not a repo fact, and task item 4 limits the Bonus to what the repo holds. The Bonus now cites only issue 03 line 12 and the PR #2 body, adds that the repo records no fix since, and says the agent should stop and ask if something such as the README's database settings blocks it."
+   }
+  ],
+  "words": 2932,
+  "lintClean": true,
+  "testsPassed": true
+ },
+ "rounds": {
+  "r1": {
+   "checks": {
+    "quiz": [
+     {
+      "severity": "high",
+      "where": "Steering it, and when to reach for it > checkpoint pause-first, prompt \"before the agent changes any code\" (line 182), option c \"Turn on plan mode...\" and its feedback (lines 187-188)",
+      "problem": "The prompt asks for agreement \"before the agent changes any code\". The key (b) can't give that. Under the Lesson's own Phase 4, the agent adds tagged debug log lines to the code before it knows the root cause. Option c (plan mode) is the only option that holds back every edit until you approve, so a sharp reader can defend c. c's feedback is also false: it says plan mode means \"the diagnosis can't start\", but the docs say plan mode still runs shell commands to explore, so a curl or existing-test loop can go red. The same wording appears in the Scene (line 133), the steering bullet (line 167) and spot-vague-symptom (line 401), where option a's feedback says the request can be honoured.",
+      "evidence": "Lesson line 110: \"Every debug log gets a unique tag like `[DEBUG-a4f2]`, so one search finds them all at cleanup.\" Line 141: the Scene agent prints \"`[DEBUG-7c1e] length=52 characters=26`\" before \"Shall I fix it?\", though line 133 asked \"Show me the root cause before you change any code.\" diagnosing-bugs/SKILL.md:110 \"Tag every debug log with a unique prefix\". https://code.claude.com/docs/en/permission-modes says plan mode means \"Claude reads files, runs shell commands to explore, and writes a plan, but does not edit your source.\" Option c feedback: \"Plan mode blocks edits, including the repro script and failing test the loop needs, so the diagnosis can't start.\"",
+      "fix": "Rewrite the Checkpoint (key stays b; lengths 59/51/53/65):\n```checkpoint pause-first\nYou want to agree with the root cause before the agent starts fixing it. How do you get that pause?\n- [ ] Nothing to do: it always waits for approval before the fix.\n  > It doesn't. Only the hypothesis list is shown to you, and even that doesn't block.\n- [x] Ask when you start: \"show me the root cause first\".\n  > Right. The Skill has no pause before the fix, so say you want one when you invoke it.\n- [ ] Choose No at its first permission prompt for an edit.\n  > New sessions start in auto mode, so there may be no prompt at all, and its first edit is the repro or a debug log, not the fix.\n- [ ] Watch closely and press Esc, which stops it, when the fix starts.\n  > By then it's already changing code, and you never got to agree with the cause.\n```\nAlso change \"Show me the root cause before you change any code.\" to \"Show me the root cause before you fix anything.\" at lines 133 and 401, and \"show me the root cause before changing code\" to \"show me the root cause before you fix it\" at line 167."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test spot-shallow-seam, option c \"It should have skipped the regression test and only fixed it.\" and its feedback (lines 394-395)",
+      "problem": "Option c is close to what the Skill actually prescribes when the only seam is too shallow: write no test there, fix, and record the missing seam. Its feedback, \"The problem is where this test sits, not that there is one\", contradicts the SKILL. The SKILL says a test should be written only if a correct seam exists, and the Lesson itself says \"a missing seam is itself the finding\". A sharp reader can argue for c. Only \"and only fixed it\" makes it wrong, and the feedback doesn't say so.",
+      "evidence": "diagnosing-bugs/SKILL.md:116 \"Write the regression test **before the fix**, but only if there is a **correct seam** for it.\" SKILL.md:120 \"If no correct seam exists, that itself is the finding.\" Lesson line 111: \"a test there gives false confidence, so ==a missing seam is itself the finding==, and the agent records it.\"",
+      "fix": "Replace option c and its feedback (58 characters; d is still the longest at 59):\n- [ ] It should have written the test after the fix, not before.\n  > The Skill writes it before the fix so you can watch it fail. This one could never fail: one caller can't trigger the bug."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test spot-theory-first, prompt (line 377) and option c \"Its only error is skipping the 3–5 ranked hypotheses.\" (lines 382-383)",
+      "problem": "The scenario holds more than one real mistake. The agent theorises before it has a loop. It also offers a single guess with no prediction instead of 3–5 ranked ones, and it jumps to logs before showing a list. Option c names one of those real mistakes, and only the word \"only\" keeps it from being right. That is a wording trick, and a spot- question should contain one mistake to spot.",
+      "evidence": "Prompt: \"I think it's a timezone bug in the date helper. I'll add some logs to confirm.\" Lesson line 109: \"Three to five ranked guesses at the cause, before testing any; a single guess tends to lock onto the first plausible idea.\" diagnosing-bugs/SKILL.md:90 \"Generate **3–5 ranked hypotheses** before testing any of them.\"",
+      "fix": "Rewrite so the only mistake is the missing loop (key stays a; lengths 54/51/48/58):\n```test spot-theory-first\nA report says \"the dashboard total is wrong after midnight\". The agent opens four files, then shows four ranked hypotheses, each with a prediction. It hasn't run anything yet. Spot the mistake.\n- [x] It's theorising before it has a command that goes red.\n  > Right. Reading code to build theories before the loop exists is the exact failure the Skill blocks. First, a command that shows the wrong total.\n- [ ] It should have read more files before ranking them.\n  > More reading is still guessing. What's missing is a command that shows the wrong total.\n- [ ] It should test them before showing you the list.\n  > The list comes to you before testing. The real problem comes earlier: nothing has gone red yet.\n- [ ] Timezone bugs can't be caught with a feedback loop at all.\n  > They can: pin the clock to just after midnight and check the total. Pinning time is one way to make a loop deterministic.\n```"
+     },
+     {
+      "severity": "medium",
+      "where": "goals, item 3 \"re-rank its hypotheses, ask for a pause before the fix\" (line 16) vs the Final test (lines 316-434)",
+      "problem": "Goal 3 lists four steering abilities. The Final test checks two of them directly: the exact symptom (spot-vague-symptom) and human-only steps (scenario-human-click). Re-ranking is checked only by the Checkpoint rerank, which never counts towards passing. Asking for a pause is touched only by a distractor (spot-vague-symptom option a). A Visitor can pass without showing they can re-rank.",
+      "evidence": "Writing guide, Questions: \"goals: 3–4 'You'll be able to <verb>…' items, each checkable by the Final test\" and \"Every goal gets at least one Final test question.\" No Final test question's right answer involves re-ranking. Only checkpoint rerank (lines 151-161) does.",
+      "fix": "Narrow goal 3 to what the Final test checks: \"- You'll be able to steer a `/diagnosing-bugs` session: give the exact symptom, ask up front for any pause you want, and hand over steps only you can do.\" Re-ranking stays taught in the body and checked by the rerank Checkpoint. The alternative is to keep the goal and swap one Final test question for a fresh re-rank scenario, not a copy of the Checkpoint's."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-quick-question, prompt \"What do you reply?\" (line 329) and options b, c, d (lines 332-337)",
+      "problem": "There is a wording tell. The prompt asks \"What do you reply?\", but only options a and d are replies in quotation marks. Options b (`/clear`) and c (plan mode) are actions, so the frame rules them out. That leaves a (\"Carry on\"), which contradicts the stated wish for a quick explanation. The key also repeats almost word for word the workaround the body quotes (line 213, \"just answer this, don't diagnose\") and the cheat sheet (line 312), so it tests recall rather than transfer.",
+      "evidence": "Right option d: \"\\\"Just answer the question; don't diagnose.\\\"\" Line 213: \"The AI Hero docs page suggests saying what you want: \\\"just answer this, don't diagnose\\\".\" Line 312: \"Tell it to just answer, not diagnose\".",
+      "fix": "Rewrite with a neutral frame and parallel actions (key stays d; lengths 61/48/45/49):\n```test scenario-quick-question\nYou ask: \"Why might a row of buttons overflow on small screens?\" You want a quick explanation, but the agent starts setting up a reproduction harness. What's your best move?\n- [ ] Let it carry on; the loop will make the answer more accurate.\n  > For a general question with no specific bug, a full diagnosis is slow overhead. The Skill is built for hard, specific defects.\n- [ ] Type `/clear`, then ask the same question again.\n  > The same words can trigger it again, because it's model-invoked. Say what you want instead.\n- [ ] Turn on plan mode so it can't build anything.\n  > That blocks edits but doesn't make it answer directly. Just tell it what you want.\n- [x] Press Esc, then say you only want an explanation.\n  > Right. It's model-invoked and sometimes fires on plain questions. Saying plainly what you want is the documented workaround.\n```"
+     },
+     {
+      "severity": "medium",
+      "where": "Final test predict-good-hypothesis, options a-c (lines 426-431)",
+      "problem": "The distractors are weak and share a tell. All three wrong options are vague or hedged statements (\"somewhere\", \"probably\", \"definitely\"), and only the key uses the \"If …, … fixes\" shape. A reader can pick it at a glance without knowing what makes a prediction count. None of the distractors tests the real misconception: a conditional whose \"prediction\" only restates the symptom and names no change.",
+      "evidence": "a: \"Something is off with how dates are handled somewhere in this app.\" b: \"The date code is messy and should probably be rewritten from scratch.\" c: \"It's definitely the timezone…\" d (key): \"If dates are in world time (UTC), using Sydney time fixes them.\" diagnosing-bugs/SKILL.md:94 \"Format: 'If <X> is the cause, then <changing Y> will make the bug disappear / <changing Z> will make it worse.'\"",
+      "fix": "Replace option b (67 characters; c is still the longest at 72):\n- [ ] \"If it's a timezone bug, Sydney invoices will show the wrong date.\"\n  > It only restates the symptom you already see. A prediction names a change that should make the bug vanish or get worse.\nAlso gloss UTC accurately in d: \"If dates are in universal time (UTC), using Sydney time fixes them.\" (69 characters, still shorter than c)."
+     },
+     {
+      "severity": "low",
+      "where": "Final test scenario-raw-report, prompt \"and you haven't confirmed it\" (line 317), key \"to check it's real\" (line 320)",
+      "problem": "The prompt repeats the table row's defining condition (\"not yet confirmed\"), and the key repeats the table's gloss (\"checking they're real\"). Only the key answers the gap the prompt points out, so this is recall of line 175 rather than transfer.",
+      "evidence": "Line 175: \"A raw bug report from someone else, not yet confirmed | `/triage` first (Matt's Skill for sorting other people's reports and checking they're real)\". triage/SKILL.md:74 \"For a bug, reproduce it from the reporter's steps… or insufficient detail (a strong `needs-info` signal).\"",
+      "fix": "Prompt: \"A stranger opens an issue on your open-source project: \\\"Export is broken, please fix.\\\" There are no steps and no error text. Which Skill do you start with?\" Key: \"- [x] `/triage`, to sort it before anyone works on it\". Key feedback: \"  > Right. Raw reports from other people go through `/triage` first: it tries the reporter's steps and, with none, flags that it needs more info.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test scenario-raw-report, option c feedback \"`/tdd` builds planned behaviour test-first.\" (line 323)",
+      "problem": "The feedback describes `/tdd` too narrowly. The tdd SKILL.md says it also fixes bugs test-first, so a reader who knows that may doubt the explanation.",
+      "evidence": "tdd/SKILL.md:3 \"Use when the user wants to build features or fix bugs test-first\".",
+      "fix": "  > `/tdd` builds or fixes a known behaviour test-first. You don't yet know what's wrong, or whether anything is."
+     },
+     {
+      "severity": "low",
+      "where": "Final test spot-shallow-seam, prompt (line 389)",
+      "problem": "The scenario is the body's own example in a new setting: one caller when the bug needs two at once. It tests recognition of line 111 rather than transfer. The SKILL's other shallow-seam pattern, a test that skips the chain that triggers the bug, would be a fresh case.",
+      "evidence": "Lesson line 111: \"(a test calling the code from one place when the bug needs two at once, say)\". diagnosing-bugs/SKILL.md:118 \"unit test that can't replicate the chain that triggered the bug\".",
+      "fix": "Optionally reset the prompt on a chain: \"A discount is applied twice only when checkout passes through the coupon middleware and then the cart service. Before fixing it, the agent writes a unit test that calls the cart service directly, then fixes the bug and declares it locked down. Spot the mistake.\" Key: \"- [x] A test that skips the middleware can't recreate this bug.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test sequence-phases, option a (line 414)",
+      "problem": "Option a alone says \"minimise\", while b, c and d all say \"reproduce + minimise\". The odd label makes a look different from the rest and is a small wording inconsistency.",
+      "evidence": "a: \"Hypothesise → build a loop → instrument → minimise → fix + regression test → cleanup\"; b/c/d use \"reproduce + minimise\".",
+      "fix": "- [ ] Hypothesise → build a loop → instrument → reproduce + minimise → fix + regression test → cleanup"
+     }
+    ],
+    "accuracy": [
+     {
+      "severity": "medium",
+      "where": "## A session, step by step, Scene \"Diagnosing a refused comment (illustrative)\": line 133 `you: ... Show me the root cause before you change any code.`; line 140-141 `[DEBUG-7c1e] length=52 characters=26 ... Shall I fix it?`; line 146 cleanup. The same wording comes back at line 167 (steering) and line 401 (spot-vague-symptom)",
+      "problem": "The worked example breaks the user's own instruction. The user asks for the root cause before any code changes, but in Phase 4 the agent adds a tagged debug log to the server code before it pauses with \"Shall I fix it?\". Line 146 then says it removed that log at cleanup. The Skill always edits code before the root cause is known: a failing test is its first choice of loop, and Phase 4 adds tagged logs. So \"before you change any code\" can't be honoured, and the Lesson teaches that phrase as the way to get the pause. A careful reader learns either that the agent ignores the request or that debug logs somehow don't count as code.",
+      "evidence": "diagnosing-bugs/SKILL.md:26 \"Failing test at whatever seam reaches the bug\" (the first loop it tries is test code). SKILL.md:110 \"Tag every debug log with a unique prefix, e.g. `[DEBUG-a4f2]`\". SKILL.md:136 \"All `[DEBUG-...]` instrumentation removed (`grep` the prefix)\" (the logs are edits to files). Lesson line 141 shows the log output before the pause, and line 146 says \"A search for `[DEBUG-` finds nothing\", so the log was written into a file.",
+      "fix": "Line 133: \"... Expected: it posts. Show me the root cause before you fix it.\" Line 140 caption: \"# Phase 4: one tagged probe per prediction. Then it pauses before the fix, as you asked.\" Line 167: \"**Ask for the pauses you want, up front:** \\\"stop after the hypotheses\\\" or \\\"show me the root cause before you fix it\\\". It has none before the fix.\" Line 401: \"... The servings scaler is broken. Show me the root cause before you fix it.\""
+     },
+     {
+      "severity": "medium",
+      "where": "## Steering it, and when to reach for it, Checkpoint pause-first, line 182: \"You want to agree with the root cause before the agent changes any code. How do you get that pause?\" (keyed answer at line 185)",
+      "problem": "Read literally, the stem makes the keyed answer fail and makes a distractor work. If you ask for \"show me the root cause first\", the agent still writes test code in Phase 1 and adds debug logs in Phase 4, both before you have agreed with the cause. Plan mode is the option that literally stops all code changes until you approve. A reader who takes the stem at its word can defend plan mode, and the plan-mode feedback has to argue against the question's own wording.",
+      "evidence": "SKILL.md:26 (failing test as the first loop) and SKILL.md:110 (tagged debug logs in Phase 4) both come before Phase 5, where the fix happens. Course facts (writing-guide.md:80): \"Plan mode only reads and proposes until you approve.\" Lesson line 188 feedback has to explain that plan mode \"blocks edits\", which is exactly what the stem asks for.",
+      "fix": "Line 182: \"You want to agree with the root cause before the agent starts fixing the bug. How do you get that pause?\" Line 185: \"- [x] Ask when you start: \\\"show me the root cause before you fix it\\\".\" Leave the feedback as it is."
+     },
+     {
+      "severity": "low",
+      "where": "## The idea: a loop that goes red, line 60: \"**When nothing will go red,** the agent stops, lists what it tried, and asks you...\"",
+      "problem": "The Lesson leaves out the Skill's insistence on trying hard before it gives up. Phase 1 is meant to get most of the effort, and the stop applies only when the agent \"genuinely cannot\" build a loop. A cold reader could think stopping and asking is a cheap early exit. The no-loop-stop Checkpoint makes this worse: the agent stops after three of the ten ways, although that scenario does justify it.",
+      "evidence": "SKILL.md:22 \"Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give up.**\" SKILL.md:53 heading \"When you genuinely cannot build a loop\".",
+      "fix": "\"**When it genuinely can't build one,** after real effort (the Skill tells it to spend most of its energy on this phase and not give up easily), the agent stops, lists what it tried, and asks you for one of three things: ...\""
+     },
+     {
+      "severity": "low",
+      "where": "## The six phases, gate by gate, flow Scene caption, line 103: \"# Phase 6: the repro is gone, the tags are gone, and the commit names the right hypothesis.\"",
+      "problem": "\"The repro is gone\" can be read as \"the repro script is deleted\". The Phase 6 requirement is that the original repro no longer goes red when it is rerun. The chat Scene (line 146) also says `repro.sh` is deleted, which makes it easy to mix up the two.",
+      "evidence": "SKILL.md:134 \"Original repro no longer reproduces (re-run the Phase 1 loop)\"; SKILL.md:137 \"Throwaway prototypes deleted\" is a separate item.",
+      "fix": "\"# Phase 6: rerun, the original repro no longer goes red; the tags are gone; and the commit names the right hypothesis.\""
+     },
+     {
+      "severity": "low",
+      "where": "## Try it yourself, \"It's working if\" list, line 257: \"Debug logs carried a tag like `[DEBUG-xxxx]`, and none were left.\"",
+      "problem": "The item reads as a requirement that debug logs appear. The Skill prefers a debugger or REPL first, and a tiny cart script may need no logs at all. A run that correctly adds no logs looks like a failed check.",
+      "evidence": "SKILL.md:106 \"**Debugger / REPL inspection** if the env supports it. One breakpoint beats ten logs.\" docs/engineering/diagnosing-bugs.md:86 \"Every debug log it adds carries a tag like `[DEBUG-a4f2]`\" (conditional).",
+      "fix": "\"- [ ] Any debug logs it added carried a tag like `[DEBUG-xxxx]`, and none were left.\""
+     },
+     {
+      "severity": "low",
+      "where": "## Final test, spot-shallow-seam, option c feedback, line 395: \"Locking the bug down matters. The problem is where this test sits, not that there is one.\"",
+      "problem": "The feedback suggests a regression test is always required. The Skill says that when no correct seam exists, the agent should not write the test and should record the missing seam as the finding. The Lesson teaches this itself at line 111. Option c is still wrong because it drops the recorded finding, but the feedback should say that, not contradict the rule.",
+      "evidence": "SKILL.md:116 \"Write the regression test **before the fix**, but only if there is a **correct seam** for it.\" SKILL.md:120 \"**If no correct seam exists, that itself is the finding.** Note it.\"",
+      "fix": "\"Not quite. Skipping the test is right only when no correct seam exists, and then the missing seam has to be recorded. The mistake here is trusting a test that can't recreate the bug.\""
+     }
+    ],
+    "reader": [
+     {
+      "severity": "medium",
+      "where": "A session, step by step: the Scene's opening message, \"Show me the root cause before you change any code.\" (line 133). The same wording is at line 167 (\"show me the root cause before changing code\"), line 182 (the pause-first stem, \"before the agent changes any code\") and line 401 (spot-vague-symptom).",
+      "problem": "The Scene contradicts itself and the rest of the Lesson. The user says no code changes until the root cause is shown, but in Phase 4 the agent prints `[DEBUG-7c1e] length=52 characters=26` (line 141). That is a tagged debug log added to the app's code, and Phase 6 then searches for it and removes it (line 146), all before the agent shows the cause. The pause-first feedback (line 188) also says the diagnosis itself needs edits: \"Plan mode blocks edits, including the repro script and failing test the loop needs\". So the Lesson tells the reader to ask for something the Skill can't do, and a literal agent could refuse to write `repro.sh` or add probes.",
+      "evidence": "diagnosing-bugs/SKILL.md:110 says \"Tag every debug log with a unique prefix\", and :136 says \"All `[DEBUG-...]` instrumentation removed (`grep` the prefix)\", so probes are edits to the code. Lesson line 141 shows the tagged log before \"Shall I fix it?\", and line 146 shows the cleanup search.",
+      "fix": "Line 133: \"... Expected: it posts. Show me the root cause before you fix anything.\" Line 167: \"Ask for the pauses you want, up front: \"stop after the hypotheses\" or \"show me the root cause before you fix it\". Temporary probes and a repro script aren't the fix. It has no pause of its own before the fix.\" Line 182: \"You want to agree with the root cause before the agent fixes anything.\" Line 401: \"... The servings scaler is broken. Show me the root cause before you fix anything.\""
+     },
+     {
+      "severity": "medium",
+      "where": "A session, step by step: \"anything that changed the order needed typing at once\" (line 149). Also line 160 (\"It won't wait for you, so say it straight away\"), line 166 (\"as soon as the list appears\") and line 307 (\"Re-rank at once\").",
+      "problem": "The Lesson tells the reader four times to reply \"at once\" while the agent keeps working, but never says this is possible. A Visitor who has never used a coding agent assumes they must wait for it to finish, and by then the probes have run. Only How coding agents work explains message queueing, and this Lesson has to stand alone.",
+      "evidence": "https://code.claude.com/docs/en/interactive-mode#queue-messages-while-claude-works says: \"Type a message and press `Enter` while Claude is working. Claude Code queues the message instead of interrupting the turn\", and if Claude is running tool calls it \"passes it to Claude as soon as those tool calls finish, within the same turn.\" content/lessons/01-how-agents-work.md:92 explains this; 13-diagnosing-bugs.md does not.",
+      "fix": "Line 149: \"The agent showed its ranking and went straight on, because the Skill never waits there. To change the order, type while it works: Claude Code queues your message and hands it to the agent as soon as its current step finishes.\" Line 166: \"**Hand over what only you know,** as soon as the list appears; you can type while it works.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Steering it, and when to reach for it: \"run it yourself in another terminal window and paste the final lines back\" (line 169)",
+      "problem": "This step can't be followed as written, least of all on Windows. It doesn't say what to type or where the script is. On Windows, PowerShell can't run a bash script, so typing it there fails. The Wizard Lesson tells the same reader to open Git Bash for exactly this case, so the two Lessons disagree.",
+      "evidence": "hitl-loop.template.sh:1 is `#!/usr/bin/env bash` and :7 is \"Usage: bash hitl-loop.template.sh\". content/lessons/15-wizard.md:258 says: \"On Windows, open Git Bash from the Start menu (it came with Git for Windows): PowerShell can't run bash scripts.\" https://code.claude.com/docs/en/setup says Git for Windows \"provides Git Bash\".",
+      "fix": "Replace the last sentence of line 169 with: \"The agent runs it while you answer, but Claude Code's chat can't press Enter for a script. If the prompts race past or it quits, open a second terminal window (on Windows, Git Bash from the Start menu, since PowerShell can't run bash scripts), type `bash` and a space followed by the script path the agent gives you, answer the prompts, and paste the `KEY=VALUE` lines back.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Try it yourself, step 5: \"Type `/clear` so the agent forgets what it planted.\" (line 242), with the step 4 prompt (line 239)",
+      "problem": "`/clear` empties the conversation but keeps Claude Code's project memory. Auto memory is on by default and is loaded into every new conversation. A note the planting agent saves (\"this folder holds a planted bug in the total\") would survive `/clear` and give the cause away, so the exercise can quietly fail.",
+      "evidence": "https://code.claude.com/docs/en/commands says \"`/clear` starts fresh on a new task while keeping project memory.\" https://code.claude.com/docs/en/memory says \"Auto memory is on by default in local sessions\", it is loaded into \"Every session\", and its `project` type holds \"ongoing work ... that Claude can't derive from the code or git history\".",
+      "fix": "Step 4 prompt: add \"Don't save anything about this to memory.\" after \"leave no hints in comments.\" Step 5: \"Copy the command and both outputs somewhere, then type `/clear` so the agent forgets what it planted. (`/clear` keeps Claude Code's project memory, which is why step 4 asked it not to save anything.)\""
+     },
+     {
+      "severity": "medium",
+      "where": "The six phases, gate by gate: \"(its own word for its steps, not the Phase of [The context window](/learn/context-window))\" (line 80)",
+      "problem": "For a reader arriving cold, the comparison names two things the Lesson never explains: Phase in Matt's sense and the context window. \"The Phase of The context window\" means nothing to them, so the clarification confuses more than it clears up.",
+      "evidence": "GLOSSARY.md:39-40 defines Phase as \"A chunk of work inside one agent session, such as the grilling or the implementation\". The Lesson never defines either term before line 80, and \"context\" first gets a clause at line 206.",
+      "fix": "\"The Skill works in six phases, its own name for its steps. (Elsewhere in this course a Phase means a chunk of work inside one session; see [The context window](/learn/context-window).) Each phase sits behind a gate: the next can't start until something specific is true.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Why it matters: \"his README (the front page of his Skills' repository)\" (line 24)",
+      "problem": "\"Repository\" is used with no explanation; the course's cold-reader list names repo as a term that needs a clause at first use. Its first explanation comes at line 263 (\"Its repo (the project folder, tracked with Git)\"). A Visitor who barely uses Git doesn't know what a repository is.",
+      "evidence": "Lesson line 24 vs line 263. writing-guide.md, \"Lessons from the pilot review\", says to define \"... token, session, repo, spec, ticket ...\" at first use, in a clause.",
+      "fix": "\"... with a line his README (the front page of his Skills' repository, the online project folder that holds them) borrows from *The Pragmatic Programmer* ...\" Line 263 can then shorten to \"Its repo records a known quirk ...\"."
+     },
+     {
+      "severity": "medium",
+      "where": "The idea: \"**Deterministic.** The same verdict on every run.\" (line 37) vs \"Failing half the time is debuggable\" (line 58)",
+      "problem": "The Lesson contradicts itself. A loop for a bug that comes and goes can never give the same verdict on every run, yet 21 lines later a loop that fails half the time is fine. The reader can't tell whether such a loop passes the Phase 1 gate. The Skill settles this with a flaky-bug clause that the Lesson leaves out.",
+      "evidence": "diagnosing-bugs/SKILL.md:62: \"**Deterministic**: same verdict every run (flaky bugs: a pinned, high reproduction rate, per above).\"",
+      "fix": "Line 37: \"**Deterministic.** The same verdict on every run; for a bug that comes and goes, a steady, high failure rate (see below).\""
+     },
+     {
+      "severity": "medium",
+      "where": "Try it yourself, Bonus: `npm install` (line 266)",
+      "problem": "Windows PowerShell 5.1 blocks scripts by default, so `npm install` often fails with \"npm.ps1 cannot be loaded because running scripts is disabled on this system\". A Visitor who barely uses a terminal is stuck, and nothing in the Lesson or in Start here mentions it.",
+      "evidence": "This is a widely reported error, e.g. https://dev.to/jackfd120/resolving-npm-execution-policy-error-in-powershell-a-step-by-step-guide-for-developers-32ip (\"npm : File C:\\Program Files\\nodejs\\npm.ps1 cannot be loaded because running scripts is disabled on this system\"). `grep -n -i \"execution policy\\|npm.ps1\" content/lessons/*.md` finds nothing.",
+      "fix": "After the sh block, add: \"On Windows, if PowerShell says npm.ps1 cannot be loaded, type `npm.cmd install` instead.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-quick-question: \"What do you reply?\" (line 329)",
+      "problem": "The stem gives the answer away. It asks for a reply, but options b (\"Type `/clear`, then ask the same question again.\") and c (\"Turn on plan mode so it can't build anything.\") are actions, not replies. A test-savvy reader drops them on grammar alone and is left choosing between the two quoted replies.",
+      "evidence": "Lesson lines 330-337: options a and d are quoted replies; b and c are imperative actions.",
+      "fix": "Stem: \"... but the agent starts setting up a reproduction harness. What's your best move?\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, It's working if: \"Debug logs carried a tag like `[DEBUG-xxxx]`, and none were left.\" (line 257)",
+      "problem": "In a tiny cart script the agent may test its predictions with a debugger or by changing inputs, and add no logs at all. A correct run then can't tick this box, and the reader may decide the Skill misbehaved.",
+      "evidence": "diagnosing-bugs/SKILL.md:106-107 puts \"Debugger / REPL inspection if the env supports it\" first and targeted logs second. The tag rule (:110) applies only to debug logs it actually adds.",
+      "fix": "\"- [ ] If it added debug logs, each carried a tag like `[DEBUG-xxxx]`, and none were left.\""
+     },
+     {
+      "severity": "low",
+      "where": "The six phases: the flow Scene captions (lines 91-104) and the numbered list (lines 107-112), including \"If it made a test fail on purpose by editing code or test data, it compares against an untouched copy to prove the edit landed.\" (line 111)",
+      "problem": "The captions and the list say nearly the same things, and probes and regression tests are each defined twice (lines 99/110 and 101/111). The Lesson is at 2,932 prose words, above the 2,300-2,800 aim and close to the 3,000 lint cap. The forced-red sentence on line 111 is an edge case a first-time reader can't place (why would it make a test fail on purpose?).",
+      "evidence": "`node .scratch/course-rewrite/tools/section-words.mjs 13-diagnosing-bugs.md` reports proseWords 2932. writing-guide.md: \"aim for 2,300–2,800 words\".",
+      "fix": "Cut the line 111 sentence beginning \"If it made a test fail on purpose\". Drop the duplicate definitions from the list, e.g. line 110: \"**Instrument.** Each probe tests one prediction, changing one thing at a time.\" and line 111: \"**Fix and regression test.** It's written before the fix, but only at a correct seam ...\"."
+     },
+     {
+      "severity": "low",
+      "where": "How Matt and others use it: \"The AI Hero docs page suggests saying what you want\" (line 213)",
+      "problem": "AI Hero is never introduced, so a cold reader doesn't know whose page this is or why it counts as the documented workaround that the scenario-quick-question feedback leans on.",
+      "evidence": "Lesson line 213. The only other mention is the sources entry at line 441.",
+      "fix": "\"AI Hero, Matt's site of guides to his Skills, suggests saying what you want: \"just answer this, don't diagnose\".\""
+     },
+     {
+      "severity": "low",
+      "where": "Steering it, the table: \"| A design question rather than a defect | `/prototype`; see [Prototype](/learn/prototype) |\" (line 177)",
+      "problem": "It tells the reader to type `/prototype` without the course-wide caveat that a hidden Built-in also answers to that name, so the short name can fail.",
+      "evidence": "writing-guide.md, Facts: \"A hidden Built-in also shadows `/prototype`; use `/mattpocock-skills:prototype` if the short name fails.\" content/lessons/04-grilling.md:166 and 12-main-flow.md:169 both add the caveat inline.",
+      "fix": "\"| A design question rather than a defect | `/prototype` (or `/mattpocock-skills:prototype` if that says \"unknown skill\"); see [Prototype](/learn/prototype) |\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, step 2: \"If not, type `/exit`, install Matt's Skills, then run `claude` again:\" (line 229)",
+      "problem": "The colon follows \"run `claude` again\", so the block underneath looks like the last step, but it is the install command that comes before it. A first-timer may run `claude` first, or wonder which line the block belongs to.",
+      "evidence": "Lesson lines 229-233. content/lessons/06-prototype.md:238 words the same step more clearly: \"type `/exit`, run this, then run `claude` again:\".",
+      "fix": "\"If not, type `/exit`, run this install command, then run `claude` again:\""
+     }
+    ]
+   },
+   "fix": {
+    "applied": [
+     "acc medium + reader medium (Scene contradicts 'before you change any code'): the Scene's opening message and spot-vague-symptom now say 'Show me the root cause before you fix anything.' The Phase 4 caption now reads 'Then it pauses before the fix, as you asked.' The steering bullet now says 'show me the root cause before you fix it'. It has no pause of its own before the fix, and the repro and probes still come first. This follows SKILL.md:26, :110 and :136: the loop, probes and tagged logs are edits that come before Phase 5.",
+     "acc medium + quiz high (pause-first stem and plan-mode option): the stem now asks for agreement 'before the agent starts fixing the bug', and the key b stays. The plan-mode option and its false 'diagnosis can't start' feedback are gone; the permission-modes docs say plan mode still runs shell commands. In its place: 'Choose No at its first permission prompt for an edit.' Its feedback says new sessions start in auto mode, so there may be no prompt, and the first edits are for the loop and probes. The Esc feedback now says 'By then it's already fixing'.",
+     "reader medium (replying 'at once' never explained): the paragraph after the Scene now says to type while the agent works, because Claude Code queues your message and hands it over once the current step finishes. This matches interactive-mode#queue-messages-while-claude-works. The steering bullet comes after this paragraph, so I left it unchanged.",
+     "reader medium (HITL run-it-yourself step on Windows): the bullet now says to run the script in a second terminal window, using Git Bash from the Start menu on Windows because PowerShell can't run bash scripts. It says to type `bash`, a space and the script path the agent gives, then paste the KEY=VALUE lines back. This matches 15-wizard.md:258.",
+     "reader medium (/clear keeps auto memory): the step 4 prompt adds 'Don't save anything about this to memory.' Step 5 now says to copy the command and both outputs before `/clear`, and that memory notes would survive `/clear`, which is why step 4 asks for none. The memory docs back this: auto memory is on by default and loaded every session, and the commands docs say `/clear` keeps project memory.",
+     "reader medium (Phase comparison confusing): the sentence now reads 'The Skill works in six phases, its own name for its steps. (Elsewhere in this course, a Phase is a chunk of work inside one session: one Claude Code conversation.) Each phase sits behind a gate'. Session is now defined here, so I took the duplicate gloss out of the Scene intro.",
+     "reader medium (repository undefined): the README clause now reads 'the front page of his Skills' repository, the online project folder that holds them'. The Bonus now says 'Its repository records' without the late gloss, and later 'with no fix recorded since' and 'its README'.",
+     "reader medium (Deterministic vs flaky): the Deterministic bullet now adds 'for a bug that comes and goes, a steady, high failure rate (see below)', per SKILL.md:62.",
+     "reader medium (npm.ps1 on Windows): after the Bonus sh block I added 'On Windows, if PowerShell says npm.ps1 cannot be loaded, type `npm.cmd install` instead.'",
+     "reader medium + quiz medium (scenario-quick-question wording tell): the stem now asks 'What's your best move?' and all four options are actions. The key is now 'Press Esc, then say you only want an explanation.' (still d), and it no longer echoes the body's quoted workaround.",
+     "quiz medium (spot-shallow-seam option c close to right): c is now 'It should have written its test after the fix, not before.' Its feedback says the Skill writes the test first to watch it fail, and this one could never fail. I wrote 'its test' to avoid the lint's bare-'the test' warning.",
+     "quiz medium (spot-theory-first had several mistakes): the stem now has the agent show four ranked hypotheses, each with a prediction, before running anything. The options are now 'read more files before ranking them', 'test them before showing you the list' and 'Time-of-day bugs can't be caught...'. The key stays a. I wrote 'Time-of-day' because the new stem no longer mentions timezones.",
+     "quiz medium (goal 3 not checked for re-ranking): goal 3 is narrowed to 'give the exact symptom, ask up front for any pause you want, and hand over steps only you can do'. Re-ranking is still taught in the body and checked by the rerank Checkpoint.",
+     "quiz medium (predict-good-hypothesis weak distractors): option b is now the symptom-restating conditional 'If it's a timezone bug, Sydney invoices will show the wrong date.', with feedback that a prediction names a change. The key d now glosses UTC as 'universal time'. Option c is still the longest.",
+     "Word budget: the edits took the count to 3033, over the 3,000 limit, so I trimmed to make room. I removed the Common mistakes recap bullet, which repeated the cheat sheet. I shortened the force-a-failure sentence in Phase 5, the hypothesis-list sentence in Phase 3, the April 2026 talk sentence, and the speed row in the 'Reach for' table (Phase 4 already covers measuring)."
+    ],
+    "declined": [],
+    "words": 2991,
+    "lintClean": true,
+    "testsPassed": true
+   }
+  }
+ }
+}

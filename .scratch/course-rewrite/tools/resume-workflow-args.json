@@ -1,0 +1,230 @@
+{
+ "lessons": [
+  {
+   "slug": "architecture",
+   "file": "16-architecture.md",
+   "part": 4,
+   "old": null,
+   "start": {
+    "round": 1,
+    "step": "fix"
+   },
+   "notes": ""
+  },
+  {
+   "slug": "retro",
+   "file": "17-retro.md",
+   "part": 4,
+   "old": null,
+   "start": {
+    "round": 2,
+    "step": "check"
+   },
+   "notes": "/retro is the last step (step 4) of the Main flow, as in ask-matt's SKILL.md. Ticket 06 wants /writing-for-agents taught here."
+  },
+  {
+   "slug": "wayfinder",
+   "file": "18-wayfinder.md",
+   "part": 4,
+   "old": null,
+   "start": {
+    "round": 2,
+    "step": "check"
+   },
+   "notes": "Ticket 06 wants /research and /to-questionnaire taught here."
+  },
+  {
+   "slug": "models-effort-ultracode",
+   "file": "19-models-effort-ultracode.md",
+   "part": 4,
+   "old": "10-models-effort-ultracode.md",
+   "start": {
+    "round": 2,
+    "step": "check"
+   },
+   "notes": "Claude Code facts (models, aliases, effort levels, ultracode, fast mode, /code-review ultra) must match Claude Code's official docs as of 2026-10-23 and the writing guide's course facts; date them."
+  },
+  {
+   "slug": "how-agents-work",
+   "file": "01-how-agents-work.md",
+   "part": 1,
+   "old": null,
+   "start": {
+    "round": 3,
+    "step": "check"
+   },
+   "notes": "New Slug: its Site story uses only facts the repo holds, or is cut; no Site story is required."
+  },
+  {
+   "slug": "context-window",
+   "file": "02-context-window.md",
+   "part": 1,
+   "old": null,
+   "start": {
+    "round": 2,
+    "step": "fix"
+   },
+   "notes": "In each spot- question, the three wrong options must not share a wording tell. New Slug: its Site story uses only facts the repo holds, or is cut; no Site story is required."
+  },
+  {
+   "slug": "domain-modeling",
+   "file": "05-domain-modeling.md",
+   "part": 2,
+   "old": "02-domain-modeling.md",
+   "start": {
+    "round": 2,
+    "step": "fix"
+   },
+   "notes": ""
+  },
+  {
+   "slug": "prototype",
+   "file": "06-prototype.md",
+   "part": 2,
+   "old": "05-prototype.md",
+   "start": {
+    "round": 2,
+    "step": "fix"
+   },
+   "notes": ""
+  },
+  {
+   "slug": "spec-and-issues",
+   "file": "07-spec-and-issues.md",
+   "part": 2,
+   "old": "03-spec-and-issues.md",
+   "start": {
+    "round": 2,
+    "step": "fix"
+   },
+   "notes": ""
+  },
+  {
+   "slug": "main-flow",
+   "file": "12-main-flow.md",
+   "part": 2,
+   "old": "11-main-flow.md",
+   "start": {
+    "round": 2,
+    "step": "fix"
+   },
+   "notes": "/retro is step 4 of the Main flow everywhere, as in ask-matt's SKILL.md ('The main flow' has 4 steps; /implement, /tdd, /code-review and /pr all sit inside step 3). Every map, Scene and question in the Lesson tells that one 4-step story. The Final test here may have 8 to 15 questions."
+  },
+  {
+   "slug": "diagnosing-bugs",
+   "file": "13-diagnosing-bugs.md",
+   "part": 3,
+   "old": "09-diagnosing-bugs.md",
+   "start": {
+    "round": 2,
+    "step": "fix"
+   },
+   "notes": "The 'Bonus: a real report from this site' paragraph says only what the repo holds (.scratch/lesson-site/issues/03-lesson-pages.md, commits), not the author's notes."
+  },
+  {
+   "slug": "triage",
+   "file": "14-triage.md",
+   "part": 3,
+   "old": null,
+   "start": {
+    "round": 2,
+    "step": "fix"
+   },
+   "notes": ""
+  },
+  {
+   "slug": "start-here",
+   "file": "00-start-here.md",
+   "part": 1,
+   "old": "00-start-here.md",
+   "start": {
+    "round": 3,
+    "step": "fix"
+   },
+   "notes": "No wording tell may repeat across the Final test questions. Ticket 03 wants a /teach tip here. Start here's Final test has 5 to 6 questions and is exempt from the scenario-/spot-/sequence- mix."
+  },
+  {
+   "slug": "skills",
+   "file": "03-skills.md",
+   "part": 1,
+   "old": null,
+   "start": {
+    "round": 3,
+    "step": "check",
+    "lenses": [
+     "accuracy"
+    ]
+   },
+   "notes": "Its Site story keeps only what the repo holds: the CLAUDE.md 'Agent skills' block, docs/agents/*.md, the commit that added them, PR bodies. Ticket 03 wants /setup-matt-pocock-skills and /ask-matt taught here."
+  },
+  {
+   "slug": "grilling",
+   "file": "04-grilling.md",
+   "part": 2,
+   "old": "01-grilling.md",
+   "start": {
+    "round": 3,
+    "step": "fix"
+   },
+   "notes": "This is the published text on the live site: change as little as the real issues need. Ticket 02 (.scratch/course-rewrite/issues/02-grilling-pilot.md) is its spec."
+  },
+  {
+   "slug": "tdd",
+   "file": "08-tdd.md",
+   "part": 2,
+   "old": "06-tdd.md",
+   "start": {
+    "round": 3,
+    "step": "fix"
+   },
+   "notes": ""
+  },
+  {
+   "slug": "implement",
+   "file": "09-implement.md",
+   "part": 2,
+   "old": null,
+   "start": {
+    "round": 3,
+    "step": "check"
+   },
+   "notes": "New Slug. Its real Site story material is PR #9's /implement-spec run: gh pr view 9 --repo SiddharthMuramkar/idea-to-shipped --comments, and that PR's commits."
+  },
+  {
+   "slug": "code-review",
+   "file": "10-code-review.md",
+   "part": 2,
+   "old": "07-code-review.md",
+   "start": {
+    "round": 3,
+    "step": "check",
+    "lenses": [
+     "accuracy"
+    ]
+   },
+   "notes": ""
+  },
+  {
+   "slug": "pr-and-ship",
+   "file": "11-pr-and-ship.md",
+   "part": 2,
+   "old": "08-pr-and-ship.md",
+   "start": {
+    "round": 3,
+    "step": "fix"
+   },
+   "notes": ""
+  },
+  {
+   "slug": "wizard",
+   "file": "15-wizard.md",
+   "part": 3,
+   "old": "04-wizard.md",
+   "start": {
+    "round": 3,
+    "step": "fix"
+   },
+   "notes": ""
+  }
+ ]
+}

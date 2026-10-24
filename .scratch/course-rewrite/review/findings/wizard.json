@@ -1,0 +1,294 @@
+{
+ "slug": "wizard",
+ "lenses": {
+  "reader": [
+   {
+    "severity": "high",
+    "where": "Lines 16, 42, 52-53, 64, 67 (first uses) vs line 102 (definitions), '## Where each value goes'",
+    "problem": "`.env`, 'GitHub secret' and 'GitHub variable' are used often before they are defined. A reader who has never used an agent meets 'safe writes to `.env`, GitHub writes' (42), a Checkpoint option about `.env.example` (52), 'Every secret or variable those files mention' (64) and 'every GitHub secret name matches the name CI reads' (67), and only learns what these are at line 102. Step 1 of the four steps cannot be followed on a first read.",
+    "evidence": "Line 42: \"hidden typing for secrets, safe writes to `.env`, GitHub writes, and the closing summary\". Line 64: \"Every secret or variable those files mention is a value the wizard must produce.\" The definitions first appear at line 102: \"**`.env`** is a private settings file in your project folder...\"",
+    "fix": "Define these terms in a clause at line 42: \"safe writes to `.env` (a private settings file in your project that your code reads values from), writes to GitHub secrets and variables (values stored in your GitHub repo's settings that CI can read: hidden for secrets, visible for variables)\". Line 102 can then be cut down to the secret/public distinction and the table."
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 52-53 (Checkpoint which-belongs-in-wizard), 64, 140, 142, 410",
+    "problem": "`.env.example` is never explained in the body. The only explanation is in the feedback of the last Final test question, so the reader meets it in the first Checkpoint without knowing what it is.",
+    "evidence": "Line 52: \"Adding the new key's name to the `.env.example` file.\" Line 410 feedback: \"`.env.example` only lists value names.\"",
+    "fix": "At line 64, write: \"the `.env` files and `.env.example` (a shared file that lists the names of the values `.env` needs, with no real values)\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 40, 42, 64, 102 (Git, GitHub, push, commit)",
+    "problem": "GitHub is never introduced. Git first appears as 'tracked with Git' (64) with no explanation, and 'push' (40) is undefined. A reader who only knows the terminal can't see why CI, secrets and variables live 'in GitHub'.",
+    "evidence": "Line 40: \"CI, short for continuous integration, means servers that run your tests on every push\". Line 64: \"your repo (the project folder, tracked with Git)\".",
+    "fix": "Line 40: \"servers that run your tests every time you push (send your saved changes up to GitHub, the website that hosts your project's code)\". Line 64: \"your repo (the project folder, tracked with Git, the tool that saves a history of your changes)\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, steps 2 and 4 (lines 241, 248-256)",
+    "problem": "Step 2 has the reader type '/wizard' to check the list but never says to clear it, so the line still holds '/wizard' when step 4 says 'Type this: /wizard I want...'. If the Skill is missing, typing '/exit' after '/wizard' also gives '/wizard/exit'. The step-4 prompt is also multi-line: if the reader types it, pressing Enter after the first line sends it early.",
+    "evidence": "Step 2: \"Type a slash and the word wizard. If `wizard` isn't in the list that pops up, type `/exit`...\" Step 4: \"Type this:\" followed by a 6-line text block.",
+    "fix": "Step 2: \"Type a slash and the word wizard, but don't press Enter. If `wizard` is in the list that pops up, delete what you typed and go on. If it isn't, delete it, type `/exit`, install Matt's Skills, then run `claude` again:\". Step 4: \"Copy this with the copy button, paste it into the prompt box and press Enter:\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 5 (line 258)",
+    "problem": "Permissions and stopping are underspecified. New sessions start in auto mode, so the agent may not ask before creating the file. It will also want to run `bash -n`, `shellcheck` and `chmod +x`, which may trigger their own prompts. The writing guide requires telling the reader how to stop the agent (Esc), and that is missing.",
+    "evidence": "\"When it asks permission to create the script, choose Yes.\" Esc is not mentioned anywhere in the Try block.",
+    "fix": "\"If it asks permission to create the script or to run a check on it, choose Yes. If the agent starts doing something you didn't ask for, press Esc to stop it.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 5 (line 258) vs the 'It's working if' checklist",
+    "problem": "The exercise invites the reader to 'drop a stage to see it adapt', but dropping any stage breaks checklist items: 'Stage n/3', 'two values', and 'typing was invisible for the token' if stage 3 is dropped. The reader then thinks the Skill failed.",
+    "evidence": "\"Reply \\\"OK\\\", or drop a stage to see it adapt.\" Checklist: \"`.env.practice` holds two values\"; \"showed \\\"Stage n/3\\\"\".",
+    "fix": "\"Read the stage list and reply \\\"OK\\\". (To see it adapt, ask it to reword a stage instead; dropping one changes what the checklist below expects.)\""
+   },
+   {
+    "severity": "medium",
+    "where": "'It's working if' checklist, line 268",
+    "problem": "Stage 3 asks for a made-up token and has no web page, so no browser opens there, and stage 2 asks for no value. The item 'The browser opened before each value was asked for' can look failed even when the wizard works.",
+    "evidence": "Prompt stage 3: \"Ask me for a made-up practice token with hidden input\" (no URL). Checklist: \"The browser opened before each value was asked for.\"",
+    "fix": "\"In stages 1 and 2, the browser opened before you were asked anything.\""
+   },
+   {
+    "severity": "medium",
+    "where": "'It's working if' checklist, line 270",
+    "problem": "The reader isn't told how to check the file. `.env.practice` starts with a dot, so `ls` hides it, and a beginner won't know to use `cat`.",
+    "evidence": "\"`.env.practice` holds two values, each in single quotes.\"",
+    "fix": "Add to step 7: \"Then run `cat .env.practice` to see what it saved (the token is fake, so showing it is fine).\" The checklist item can then read: \"`cat .env.practice` shows two lines, each value in single quotes.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Running it, terminal Scene (lines 166-195)",
+    "problem": "The Scene comes before the Site story and uses terms the reader hasn't met: Neon, Vercel, 'issue 02', 'branch' ('vercel-dev branch', 'test branch'), 'connection string', PR, `.env.local`. They are only defined later, in the Site story (285, 291, 292), so the captions don't stand alone as a sequence.",
+    "evidence": "\"Connect GitHub, Vercel and Neon (issue 02)\"; \"\u2713 .env.local has DATABASE_URL (vercel-dev branch)\"; \"Paste the test branch connection string:\"; \"Merge your first PR and see the live site\".",
+    "fix": "First caption: \"You run it yourself, in a terminal window of its own. This site's wizard connected Vercel (which hosts the site) to Neon (which hosts its database).\" Stage 3 caption: \"Secrets go into a hidden prompt: here, the test database's connection string (one line holding its address, username and password). Nothing shows as you paste, and nothing reaches the chat.\" Stage 4 caption: \"A stage can be a pure action: here you merge a pull request (a proposed change), and nothing is saved.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Final test sequence-four-steps, option b (line 421)",
+    "problem": "'run the whole wizard yourself' is ambiguous. Read as addressed to the reader, 'you run it' is the correct behaviour the Lesson teaches. The option is meant to describe the agent running it, which is what the feedback says.",
+    "evidence": "\"Read the repo, confirm stages \u2192 write stages \u2192 map every click \u2192 run the whole wizard yourself\"",
+    "fix": "\"Read the repo, confirm stages \u2192 write stages \u2192 map every click \u2192 run the whole wizard itself\"."
+   },
+   {
+    "severity": "low",
+    "where": "Final test spot-edited-library (line 406)",
+    "problem": "`ask_secret` is never introduced in the body; the Lesson only says 'hidden typing for secrets'. A reader who has never used an agent doesn't know what the name refers to.",
+    "evidence": "\"It adds the check by rewriting the `ask_secret` helper above the `STAGES` marker.\"",
+    "fix": "\"It adds the check by rewriting `ask_secret`, the library's hidden-typing helper above the `STAGES` marker.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 28, 'Why it matters'",
+    "problem": "'the model' and 'the model provider' are jargon that hasn't been introduced. The Lesson has so far spoken of 'Claude Code', 'the agent' and 'an AI'.",
+    "evidence": "\"Everything you paste becomes part of the model's context: everything the AI reads in this conversation, sent to the model provider's servers.\"",
+    "fix": "\"Everything you paste becomes part of the model's context (the model is the AI behind Claude Code; its context is everything it reads in this conversation), and it's sent to Anthropic's servers.\""
+   },
+   {
+    "severity": "low",
+    "where": "Where it fits, lines 211 and 213",
+    "problem": "`/implement`, Grilling and `/grill-with-docs` are named with links but not explained. A cold reader can't tell why grilling is the place to decide what to build, which scenario-not-for-deciding relies on.",
+    "evidence": "\"It pairs naturally with `/implement` ([Implement](/learn/implement))...\" and \"That's what [Grilling](/learn/grilling) and `/grill-with-docs` are for.\"",
+    "fix": "\"...with `/implement` (the Skill that builds a planned change; see [Implement](/learn/implement))\" and \"That's what [Grilling](/learn/grilling) is for: `/grill-with-docs` has the agent interview you until the plan is clear.\""
+   },
+   {
+    "severity": "low",
+    "where": "Lines 42, 64, 66, 164, 279 (small undefined terms)",
+    "problem": "Several small terms go unexplained: 'library' as helper code (42), 'A comment line' (42), README (64), 'dependency order' (66), 'scratch folder' (164) and 'Next.js' (279).",
+    "evidence": "\"Its top half is a fixed library\"; \"A comment line, the `STAGES` marker\"; \"in dependency order\"; \"saved to a scratch folder\"; \"(new Next.js projects list it already)\".",
+    "fix": "\"a fixed library (ready-made helper code)\"; \"A comment line (a note in the file that bash skips)\"; \"the README (the project's front-page guide)\"; \"in dependency order (a stage that needs another stage's result comes after it)\"; \"a scratch folder (a folder for throwaway files)\"; \"(projects made with Next.js, a popular web framework, list it already)\"."
+   },
+   {
+    "severity": "low",
+    "where": "Chat Scene, lines 139-146",
+    "problem": "'Stripe', 'test mode' and 'publishable key' are undefined for a reader who has never used them.",
+    "evidence": "\"Add Stripe test payments to the checkout page.\" / \"Sign in and switch to test mode\".",
+    "fix": "Change the first caption to: \"You ask for a feature: payments through Stripe (a payment company) in test mode (its practice mode, where no real money moves). The agent builds everything it can by itself.\""
+   },
+   {
+    "severity": "low",
+    "where": "Try it yourself, steps 6-7 (lines 259-260)",
+    "problem": "`cd wizard-practice` only works if the new window opens in the same parent folder as step 1. The reader also isn't told what happens first, a 'Ready to start?' pause, or to type a fake value at the token prompt.",
+    "evidence": "\"Open a second terminal window (not `!` in Claude Code), run `cd wizard-practice`, then run the command the agent gives you\".",
+    "fix": "\"Open a second terminal window (not `!` in Claude Code) and go to the same folder (if you made it in your home folder, `cd ~/wizard-practice`). Run the command the agent gives you, such as `bash scripts/wizard-practice.sh`. Press Enter at \\\"Ready to start?\\\", follow each stage, and type something fake like `test123` for the token. If anything looks wrong, press Ctrl-C.\""
+   },
+   {
+    "severity": "low",
+    "where": "Site story, line 296",
+    "problem": "'A safety check I didn't ask for' is a claim the original journal (d21fc2c 04-wizard.md) doesn't support; it says only that the wizard refused the production password in the test slot. 'real Comments' is also unexplained for a cold reader.",
+    "evidence": "Old journal: \"The wizard refused to accept the production password where the test password belonged.\" New: \"**A safety check I didn't ask for.** ... real Comments by mistake.\"",
+    "fix": "Keep \"I didn't ask for\" only if the session log confirms it; otherwise write \"**A safety check.**\". Also write \"real Comments (the notes Visitors leave on Lessons)\"."
+   },
+   {
+    "severity": "low",
+    "where": "Goals line 17 vs Final test",
+    "problem": "Goal 4 promises the reader can 're-run after a mistake', but only a Checkpoint (mistyped-value) checks that; no Final test question covers it. The writing guide says every goal gets at least one Final test question.",
+    "evidence": "Goal: \"re-run after a mistake and deleted when the job is done\". The Final test covers running in a real terminal, pasting secrets and keep-or-delete, but not re-running.",
+    "fix": "Either drop \"re-run after a mistake\" from goal 4, or change one Final test question (for example predict-gh-missing) to a fresh re-run situation, such as a recipe-site wizard where a value from stage 1 was typed wrong and you predict what the re-run offers."
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "Final test as a whole: test predict-gh-missing (lines 429-439), against goal 4 (line 17)",
+    "problem": "Goal 4 promises the reader can \"re-run after a mistake\", but no Final test question checks that. Only the Checkpoint mistyped-value does, and Checkpoints don't count. The tenth question, predict-gh-missing, checks the `gh` fallback, which no goal names, and its answer repeats line 112 almost word for word, so it tests recall rather than transfer.",
+    "evidence": "Final test ids: scenario-credentials-wall, scenario-agent-can-do, scenario-not-for-deciding, scenario-local-and-ci, scenario-keep-or-delete, spot-ran-in-chat, spot-pasted-in-chat, spot-edited-library, sequence-four-steps, predict-gh-missing. None is about stopping and re-running. Line 112: \"If `gh` isn't installed or signed in, the stage doesn't crash: it warns you, and the closing summary lists what to set by hand.\" That is the right answer of predict-gh-missing. The behaviour is confirmed by template.sh set_secret (lines 155-166) and ask/ask_secret, which offer the existing .env value as the default (lines 109-135).",
+    "fix": "Replace predict-gh-missing with this question. It is a new id because the meaning changes, it keeps the right answer at position a, and the right answer is 57 characters against a longest of 60:\n\n```test fix-rerun-after-stop\nStage 3 of your 4-stage wizard opens a page that doesn't match its clicks. Stages 1 and 2 already saved two values to `.env`. You press Ctrl-C and the agent fixes stage 3. What's the right next move?\n- [x] Re-run it yourself and press Enter past the saved values.\n  > Right. Values already in `.env` come back as defaults, so you only redo what's left.\n- [ ] Ask the agent to run the fixed wizard for you this time.\n  > It never runs a wizard: the script opens your browser and waits for your keys.\n- [ ] Paste the two saved values into the chat so nothing is lost.\n  > They're already safe in `.env`, and pasting them puts them in the model's context.\n- [ ] Delete `.env` first so the fixed wizard starts clean.\n  > That throws away good values. Re-running offers them back as defaults.\n```\n\nThis also covers \"A screen doesn't match? Stop and say so.\" Positions stay a=2, b=3, c=3, d=2. If you want to keep the gh fallback, move predict-gh-missing to a fifth Checkpoint after \"Where each value goes\"."
+   },
+   {
+    "severity": "medium",
+    "where": "test spot-ran-in-chat (lines 381-391)",
+    "problem": "The prompt retells the author's own story: `!` in Claude Code's prompt box, races through every pause, stops at the password prompt. The same story appears in the Site story (line 294) and in Running it (line 156), so the question tests recognition, not transfer. Distractor b, \"run `bash -n` first to turn on the pauses\", is not a misconception any reader holds, so it is a filler option.",
+    "evidence": "Site story, line 294: \"I ran it inside the Claude chat with `!`. The chat can't press Enter, so the wizard raced through every pause and stopped at the password prompt.\" Test prompt: \"Ana types `!bash scripts/setup-wizard.sh` into Claude Code's prompt box. The wizard flashes through every stage without waiting, then stops at the first password prompt.\"",
+    "fix": "Use a fresh situation that still tests \"run it yourself, in a real terminal\". Use a new id, since the meaning shifts. The right answer is at c with 49 characters; the longest option has 68:\n\n```test spot-agent-ran-wizard\nAna tells the agent \"run the setup wizard for me, I'll watch\". It runs `bash scripts/setup-wizard.sh` with its own shell tool. The output races past every \"Press Enter\" and exits at the first prompt. Spot the mistake.\n- [ ] The library above the marker has a bug, so the agent should edit it.\n  > The library is identical in every wizard and never hand-edited. The script is fine; who ran it, and where, isn't.\n- [ ] Her browser couldn't open, so each stage skipped ahead.\n  > A browser that won't open only prints a warning with the link to visit. The pauses still wait for Enter.\n- [x] The agent ran it; Ana should, in a real terminal.\n  > Right. A wizard waits for your Enter presses and typed values, and nothing can type into the agent's shell. The agent never runs a wizard, and the first real run is yours.\n- [ ] Her `gh` tool isn't signed in.\n  > That only affects GitHub writes, and it shows a warning. It doesn't skip pauses.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "test sequence-four-steps (lines 417-427)",
+    "problem": "The two distractors that look closest, b and d, each contain two errors, and both say \"run the whole wizard\". One fact (\"it never runs it\") rules them both out, so the reader is left choosing between a and c, and the map-before-write order is never tested on its own. Option b also says \"run the whole wizard yourself\" in a question about what the agent does. \"Yourself\" reads as the reader, so the option is ambiguous.",
+    "evidence": "b: \"Read the repo, confirm stages \u2192 write stages \u2192 map every click \u2192 run the whole wizard yourself\". d: \"Map every click \u2192 write stages \u2192 run the whole wizard end to end \u2192 confirm stages with you\". c (right): \"Read the repo, confirm stages \u2192 map every click \u2192 write stages \u2192 check it without running it\". The SKILL orders the steps 1 Scope, 2 Map, 3 Author, 4 Verify, and the docs say \"Only after you confirm does it map each stage\".",
+    "fix": "Change option b so it swaps only map and write:\n- [ ] Read the repo, confirm stages \u2192 write stages \u2192 map every click \u2192 check it without running it\n  > Close, but it maps every click before writing anything: each stage is written from its mapped path.\nThis is 88 characters, the same as c. d (90) stays the longest, so the right answer is still not the longest. Keep d as the distractor that runs the wizard, and change \"yourself\" anywhere it remains to \"itself\"."
+   },
+   {
+    "severity": "low",
+    "where": "test spot-edited-library (lines 405-415)",
+    "problem": "The prompt reuses the Site story's own check (refusing the production password, line 296), so it leans on recall. It also names `ask_secret`, which the Lesson body never introduces.",
+    "evidence": "Prompt: \"the agent wants a check that refuses the production password. It adds the check by rewriting the `ask_secret` helper\". Site story: \"The agent wrote stage 3 to refuse the production connection string\". `ask_secret` appears nowhere else in the Lesson.",
+    "fix": "New prompt: \"While writing a Stripe wizard, the agent wants to reject any secret key that doesn't start with `sk_test_`. It adds the check by changing the hidden-typing helper in the library above the `STAGES` marker. Spot the mistake.\" Keep the options and feedback as they are."
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint verify-before-handoff (lines 88-98)",
+    "problem": "The right answer paraphrases the body's sentence at line 67 (\"traces it on paper: every value lands where step 1 said\"), so it can be answered by recognising the wording. At 56 characters it is also only 1 character shorter than the longest option, so a small edit could make it the longest and fail the lint.",
+    "evidence": "Option lengths: a 57, b (right) 56, c 55, d 52.",
+    "fix": "Make it a fresh case. Prompt: \"The agent has written a wizard for a new email service, and `bash -n` passes. CI reads `secrets.MAIL_API_KEY`. What should it do before handing it to you?\" Right option b: \"Trace that its GitHub secret is named `MAIL_API_KEY`.\" (52 characters). Feedback: \"Right. It can't run the script, so it checks it on paper: every value lands where scoping said, and each GitHub secret name matches the name CI reads.\" Keep options a, c and d."
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-not-for-deciding (lines 345-355)",
+    "problem": "The right option's reason, \"to settle what to build first\", mirrors the prompt's \"you haven't decided\". The distractors' reasons are visibly off, so the reasons alone point to the answer. The question also restates line 213 (\"Don't use a wizard to decide *what* to build\").",
+    "evidence": "b (right): \"`/grill-with-docs`, to settle what to build first.\" The prompt: \"you haven't decided whether the app should take payments at all, or which provider\".",
+    "fix": "Change b to \"`/grill-with-docs`, so the agent questions you first.\" Keep its feedback. Optionally make every option a bare Skill name with the reason moved into the feedback, so no option carries a tell."
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint public-ci-value, option b feedback (line 125)",
+    "problem": "The feedback opens with \"It would work\", which tells the reader the wrong option is also acceptable and weakens the single right answer.",
+    "evidence": "\"It would work, but secrets stay hidden even from you, which makes a public value harder to check. Public CI values go in variables.\"",
+    "fix": "\"Secrets are for sensitive values. Once set, a secret can't be viewed again, so a public value stored there is just harder to check. Public CI values go in variables.\""
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-local-and-ci, option b feedback (line 362)",
+    "problem": "The feedback covers only the public/sensitive split. It misses the other half of the misconception in \"so you and CI can both read it\": your laptop doesn't read GitHub variables at all.",
+    "evidence": "Option: \"A GitHub variable, so you and CI can both read it.\" Feedback: \"Variables are visible, so they're for public values. A password is sensitive.\"",
+    "fix": "\"Variables are visible, so they're for public values, and a password is sensitive. Your laptop's code reads `.env`, not GitHub, so it still wouldn't have it.\""
+   },
+   {
+    "severity": "low",
+    "where": "test spot-pasted-in-chat, option b feedback (line 398)",
+    "problem": "The prompt says the key is a live payment key, but the feedback stops at naming the mistake. The safe recovery is to replace the key, because the copy already pasted can't be taken back out of the conversation.",
+    "evidence": "Feedback: \"Right. Anything pasted into the chat is part of the conversation. Describe values while scoping; type them only into the script.\"",
+    "fix": "Append: \"It can't be taken back, so create a new key in the dashboard, delete the old one, and re-run the wizard with the new one.\""
+   },
+   {
+    "severity": "low",
+    "where": "Final test, coverage of goal 4 (\"deleted when the job is done\")",
+    "problem": "The default (delete after one run) is never the right answer in the Final test. scenario-keep-or-delete tests only the exception, where the right answer is commit it, and the default shows up only as the distractor \"always\".",
+    "evidence": "scenario-keep-or-delete: the right answer is b, \"Commit it and link it from the README.\" Option a, \"Delete it: wizards are always one-run scripts.\", is wrong because of the word \"always\".",
+    "fix": "Optionally add a distractor-feedback contrast, or accept this as is. If you adopt the fix-rerun-after-stop replacement, you could instead make one option of a later question \"Delete it now that it's run\" as the right answer for a personal one-off setup. This is not required, since the exception case does test that the reader knows the default."
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:228 (also the test feedback this bullet supports at :330 is fine; only the issue summary is off)",
+    "problem": "The reason given for closing issue #1111 (\"Also closed as not planned: the human stays at the controls\") is not what the maintainer said. Matt closed it because it was a question rather than a failure report and belonged in GitHub Discussions; he said nothing about keeping a human in control. The lesson presents an editorial inference as the recorded outcome of the issue.",
+    "evidence": "gh issue view 1111 -R mattpocock/skills: state CLOSED, stateReason NOT_PLANNED, closed 2026-10-07T08:37:56Z; Matt's only comment: \"This is a question rather than a failure, so it fits GitHub Discussions better. If a wizard run got a step wrong, please open an issue with that run...\" The issue body (AcidRaZor, 2026-09-23) asks how to combine the wizard with the Claude Chrome extension and also says the wizard \"gets stuff wrong sometimes\" and restarting is annoying. The 'human at the controls' sentiment is Matt's from the video (gaDdrDdczO4.ar.json 7:51\u20138:01), not from the issue.",
+    "fix": "Rewrite the bullet so the closure reason is accurate, e.g.: \"A user asked how to combine it with Claude's browser extension so the agent could click through dashboards itself (issue #1111, September 2026). It was closed as not planned: a question, not a bug report. Matt's own answer on the design is in the video above: he wanted a human at the controls.\" Or drop the reason clause and keep only the dated status."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:227 (and the platform list at :42)",
+    "problem": "\"It was closed as not planned, so on Windows you run wizards inside WSL\" draws a conclusion the issue does not support and omits the workaround the maintainer actually gave. Matt's closing comment says the wizard is a bash template by design and suggests a one-line CLAUDE.md/AGENTS.md instruction (\"write /wizard scripts in PowerShell\") or editing your own copy of the template. The issue thread also notes that Claude Code on Windows runs in Git Bash by default, and the 1.3.1 template has an explicit `explorer.exe` branch for that case, so WSL is not the only way to run a wizard on Windows. Line 42 likewise lists only \"Mac, Linux and WSL\" for browser opening.",
+    "evidence": "gh issue view 954 -R mattpocock/skills: opened 2026-08-25, closed NOT_PLANNED 2026-10-07T08:38:18Z; Matt: \"I keep the skills free of OS- and harness-specific branches, and the wizard is a bash template by design. The simplest fix is one line in your CLAUDE.md/AGENTS.md ('write /wizard scripts in PowerShell'), or edit your skills.sh copy of the template.\" hades200082 comment 2026-08-26: \"on Windows for instance, Claude Code runs in gitbash by default\". Template open_url(): `command -v wslview` \u2192 `command -v explorer.exe` \u2192 `xdg-open` \u2192 `open` (/Users/siddharth/Developer/idea-to-shipped-work/state/skills/skills/engineering/wizard/template.sh). Claude Code settings-reference (code.claude.com/docs/en/settings-reference, defaultShell) also describes Windows with Git Bash as a supported setup. Research note _wizard.md lists #963 (Windows Git Bash open_url) as open, so Git Bash is a known target.",
+    "fix": "Replace the WSL conclusion with what was said: \"It was closed as not planned: the wizard is a bash template by design. Matt's suggested fix is one line in your CLAUDE.md asking for PowerShell, or editing your own copy of the template. On Windows, run it in Git Bash or WSL.\" At line 42 say \"browser opening on Mac, Linux, Windows Git Bash and WSL\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:219-221",
+    "problem": "Two paraphrases of Matt's video drift slightly from the (machine-translated) captions. (a) \"a lot of infrastructure and cloud configuration\" and \"click through the cloud console\": the captions name AWS specifically, twice. (b) \"it saved each value to the files that need it, and to GitHub secrets\": the captions say it saves to GitHub secrets \"if needed\" (i.e. only when CI wants the value), which matches the Skill's rule that `set_secret` is for values CI actually needs. Dropping the conditional makes the demo sound like every value went to GitHub.",
+    "evidence": "python3 -I ts.py gaDdrDdczO4.ar.json 447 540: [7:35\u20137:40] \"\u062a\u0648\u0641\u064a\u0631 \u0627\u0644\u0643\u062b\u064a\u0631 \u0645\u0646 \u0627\u0644\u0628\u0646\u064a\u0629 \u0627\u0644\u062a\u062d\u062a\u064a\u0629 \u0648\u0627\u0644\u062a\u0639\u0627\u0645\u0644 \u0645\u0639 \u0627\u0644\u0643\u062b\u064a\u0631 \u0645\u0646 \u0625\u0639\u062f\u0627\u062f\u0627\u062a AWS\" (provisioning a lot of infrastructure and dealing with a lot of AWS settings); [7:52\u20137:56] \"\u064a\u062f\u062e\u0644 \u0625\u0644\u0649 AWS \u0648\u064a\u0642\u0648\u0645 \u0628\u062a\u0648\u0641\u064a\u0631 \u0627\u0644\u0623\u0634\u064a\u0627\u0621 \u0628\u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0627\u0644\u062d\u0627\u0633\u0628 \u0627\u0644\u0622\u0644\u064a\" (go into AWS and provision things using computer use); [8:33\u20138:36] \"\u062d\u062a\u0649 \u0623\u0646\u0647 \u064a\u062d\u0641\u0638\u0647\u0627 \u0641\u064a \u0623\u0633\u0631\u0627\u0631 GitHub \u0625\u0630\u0627 \u0644\u0632\u0645 \u0627\u0644\u0623\u0645\u0631\" (it even saves them to GitHub secrets if needed). SKILL.md step 3: \"`set_secret` only the values CI actually needs\". Video date and chapter verified: YouTube page shows Aug 5, 2026, chapter \"Wizard skill for provisioning 7:27\", next chapter 8:58.",
+    "fix": "Say \"AWS\" (or \"AWS and other cloud setup\") where the captions do, and change the demo sentence to \"...saved each value to the files that need it, and to GitHub secrets where CI needed them (8:02\u20138:37)\". The paraphrase disclaimer at :217 can stay."
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "high",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:62",
+    "problem": "The Lesson says the Skill gives the agent four steps \"each with a clear 'done when'\". That is false. In SKILL.md only step 1 (Scope) and step 2 (Map) have a \"Done when\" line. Step 3 (Author) and step 4 (Verify and hand off) have none.",
+    "evidence": "/Users/siddharth/Developer/idea-to-shipped-work/state/skills/skills/engineering/wizard/SKILL.md:25 (\"**Done when:** every stage is named in order\u2026\") and :31 (\"**Done when:** every stage traces to concrete instructions\u2026\"). Sections ### 3 (lines 33-37) and ### 4 (lines 39-44) have no Done-when line.",
+    "fix": "Change it to something like \"The Skill gives the agent four steps; the first two each end with a clear 'done when'.\" Or drop the clause."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:228",
+    "problem": "\"Also closed as not planned: the human stays at the controls\" reads as the maintainer's reason for closing #1111. The triage reply gave no design reason. It said the post was a question that fits GitHub Discussions better, and asked for a bug report with the run if a wizard step went wrong. The line also leaves out the issue's main complaint: the wizard sometimes gets steps wrong, and restarting it or getting the agent to fix it is annoying.",
+    "evidence": "gh issue view 1111 -R mattpocock/skills: stateReason NOT_PLANNED, closed 2026-10-07. The mattpocock comment says \"This is a question rather than a failure, so it fits GitHub Discussions better. If a wizard run got a step wrong, please open an issue with that run\u2026\". The body says \"The wizard gets stuff wrong sometimes \u2026 it's annoying in a way to restart or have the agent who wrote it fix it\".",
+    "fix": "Say it was closed as not planned and redirected to Discussions as a question. If you want the 'human at the controls' point, credit it to Matt's video stance (7:51\u20138:01), not to this issue."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:227",
+    "problem": "\"It was closed as not planned, so on Windows you run wizards inside WSL\" presents WSL as the result of the closure and as the only route. The maintainer's triage reply gave a different fix: add one line to CLAUDE.md/AGENTS.md asking for PowerShell scripts, or edit your skills.sh copy of the template. The thread also notes that Claude Code on Windows runs in Git Bash by default, and the template's open_url already tries explorer.exe.",
+    "evidence": "gh issue view 954 -R mattpocock/skills, mattpocock comment: \"The simplest fix is one line in your CLAUDE.md/AGENTS.md (\\\"write /wizard scripts in PowerShell\\\"), or edit your skills.sh copy of the template.\" hades200082 comment: \"Claude Code runs in gitbash by default, or WSL\". template.sh:70-73 checks wslview, explorer.exe, xdg-open, open.",
+    "fix": "Use the maintainer's own advice instead, e.g. \"Closed as not planned: the template stays bash by design. On Windows, run it in WSL or Git Bash, or add a line to CLAUDE.md asking for PowerShell scripts.\""
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:268",
+    "problem": "The Try-it check \"The browser opened before each value was asked for\" can't pass for the practice wizard the Lesson tells you to build. Stage 3 asks for a made-up PRACTICE_TOKEN and has no page to open (line 254). A reader following the steps exactly will think the wizard is broken. The Skill's rule only applies to a value that comes from a page.",
+    "evidence": "Lesson lines 252-254: stage 3 has no URL. SKILL.md:37 \"open the URL before asking for its value\". docs/engineering/wizard.md:88 \"Every URL is opened before the value from that page is asked for.\"",
+    "fix": "Reword it to \"The browser opened the stars page before asking for PRACTICE_STARS\", or \"Each page opened before you were asked for a value from it.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:271",
+    "problem": "\"On the second run, each prompt offered '[Enter keeps current]'\" overstates it. Only the value prompts (ask/ask_secret) show that hint, and only when a saved value exists. The banner's \"Ready to start?\" and stage 2's pure-action pause/confirm never show it.",
+    "evidence": "template.sh:114 and :126 add \"[Enter keeps current]\" only inside ask/ask_secret when _existing finds a value. pause (:79-82) and confirm (:85-90) never print it.",
+    "fix": "Change it to \"On the second run, both value prompts offered '[Enter keeps current]'.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:64",
+    "problem": "\"Every secret or variable those files mention is a value the wizard must produce\" applies the Skill's rule to every scanned file (.env, README, config). The Skill's rule only covers the secrets.* / vars.* references in .github/workflows/*. A value already in .env is not automatically one the wizard has to produce.",
+    "evidence": "SKILL.md:20 \"\u2026and `.github/workflows/*` (every `secrets.*` / `vars.*` reference is a value the wizard must produce)\". docs/engineering/wizard.md:30 \"every `secrets.*` / `vars.*` reference in `.github/workflows/`. Each of those references is a value the wizard has to produce.\"",
+    "fix": "Change it to \"Every secret or variable the CI workflows read is a value the wizard must produce.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:38",
+    "problem": "\"bash is the language most Mac and Linux terminals speak\" is wrong for Mac. macOS terminals have used zsh by default since Catalina (2019). bash is still installed, and the script runs under bash through its shebang whatever shell the terminal uses.",
+    "evidence": "template.sh:1 \"#!/usr/bin/env bash\". Default macOS login shell is zsh (Apple, since macOS 10.15).",
+    "fix": "Change it to something like \"(bash is a shell language every Mac and Linux machine can run)\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:232-273",
+    "problem": "The Try block breaks the writing-guide rule that Try blocks show how to stop the agent (Esc, or choose No at a permission prompt). It only covers Ctrl-C for the script and /exit.",
+    "evidence": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/.scratch/course-rewrite/writing-guide.md:117 \"how to stop it (Esc, or choose No at a permission prompt) and `/exit`\".",
+    "fix": "Add a short line to step 4 or 5: \"To stop the agent at any point, press Esc, or choose No at a permission prompt.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/15-wizard.md:213",
+    "problem": "The 'not for deciding' pointer differs from the Skill's docs and the course map. The docs name /grill-with-docs and /to-spec, but the Lesson names Grilling and /grill-with-docs. It also links the Grilling Lesson, which teaches /grill-me and /grilling, while /grill-with-docs is taught in Domain modeling.",
+    "evidence": "docs/engineering/wizard.md:20 \"for that, grill-with-docs and to-spec are the tools\". writing-guide.md:13-14: grilling teaches `/grill-me`, `/grilling`; domain-modeling teaches `/grill-with-docs`.",
+    "fix": "Change it to \"That's what `/grill-with-docs` ([Domain modeling](/learn/domain-modeling)) and `/to-spec` are for.\" You can keep the Grilling link for the interview itself."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

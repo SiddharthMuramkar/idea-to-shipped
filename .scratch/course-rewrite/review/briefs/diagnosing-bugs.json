@@ -1,0 +1,16 @@
+{
+ "n": 13,
+ "slug": "diagnosing-bugs",
+ "title": "Diagnosing bugs",
+ "part": 3,
+ "old": "09-diagnosing-bugs.md",
+ "img": [
+  "/photos/diagnosing-bugs.jpg",
+  "A mechanic in a workshop studies and works on a motorcycle engine.",
+  "Aaron Huber"
+ ],
+ "skills": [
+  "engineering/diagnosing-bugs"
+ ],
+ "extra": "Teach redact first, the tight feedback loop (red-capable, deterministic, fast, agent-runnable) and its ways, the phase gates (reproduce/minimise, 3–5 ranked falsifiable hypotheses, instrument with tagged logs, fix + regression test at a correct seam or record the missing seam, cleanup), then `/retro`. Site story: the author never invoked the Skill in v1; keep the symptom → diagnosis → fix incidents honestly as everyday debugging. The real unfixed `/learn/nope` returns 200 bug is a good exercise."
+}

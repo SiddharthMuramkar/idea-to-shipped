@@ -1,0 +1,329 @@
+{
+ "slug": "grilling",
+ "lenses": {
+  "reader": [
+   {
+    "severity": "high",
+    "where": "04-grilling.md line 186 (What comes next, multi-session bullet)",
+    "problem": "The link text doesn't match the linked Lesson's title. The rule is to link other Lessons by their title, and the Lesson at /learn/spec-and-issues is titled \"Spec + tickets\". A reader who clicks through lands on a page with a different name, and the wrong name repeats the old \"issues\" wording the course has dropped.",
+    "evidence": "Line 186: \"See [Spec + issues](/learn/spec-and-issues).\" content/lessons/07-spec-and-issues.md has `title: Spec + tickets`, and the writing guide's course table also says \"Spec + tickets\".",
+    "fix": "Replace with: \"See [Spec + tickets](/learn/spec-and-issues).\""
+   },
+   {
+    "severity": "medium",
+    "where": "Goals line 17 vs the Final test (lines 315-429)",
+    "problem": "Goal 4 says the reader will be able to choose between `/grill-me`, `/grilling` and `/grill-with-docs`, but no Final test question has `/grilling` as its right answer, so the reader can't check the `/grilling` part of that goal. It only shows up as a distractor in scenario-overwhelmed, and as the answer to Checkpoint who-can-start, which doesn't count. Grilling's questions are frozen, so the fix has to go in the goal.",
+    "evidence": "Final test right answers: grill-me, grill-with-docs, prototype, CLAUDE.md, round reply, passive, fact, clear, sequence, misalignment. None is `/grilling`.",
+    "fix": "Reword goal 4 to: \"You'll be able to choose between `/grill-me` and `/grill-with-docs`, say what `/grilling` is, and say what to type once the interview is over.\" Scenario-overwhelmed's feedback (\"`/grill-me` is one line that loads `grilling`\") then checks the middle clause."
+   },
+   {
+    "severity": "medium",
+    "where": "Line 156 (Your half of the interview, opening)",
+    "problem": "The only Matt quote in this section contradicts how the Lesson has framed grilling up to this point. The intro, Why it matters and the callout all call grilling an interview (\"let it interview you\", \"the agent interviews you\", \"That interview is a grilling session\"). Then the reader is told \"It's a conversation, not an interview.\" A reader new to all this will reasonably wonder which one it is.",
+    "evidence": "Line 11 \"let it interview you\"; line 26 \"the agent interviews you \u2026 That interview is a grilling session\"; line 156 \"As Matt's docs put it: \\\"It's a conversation, not an interview.\\\"\"",
+    "fix": "Make the contrast explicit: \"A grilling session is only as good as your answers. The agent asks the questions, but you shouldn't just sit and answer them. As Matt's docs put it: \\\"It's a conversation, not an interview.\\\" You talk back.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 161 (Spot the questions talking can't settle)",
+    "problem": "The `/handoff` explanation packs four steps into one long sentence joined by a colon (prototype folder, hand off, fresh session, hand back). This is the reader's first sight of `/handoff` and of the idea of a second session, and it is hard to follow. \"hand off\" and \"prototype\" are also used as verbs before the reader knows what either does.",
+    "evidence": "\"Matt bridges the trip with `/handoff`, a Skill that writes what matters into a file a new session can read: the prototype lives in its own folder, so you hand off, prototype in a fresh session there, then `/handoff` back what you learned.\"",
+    "fix": "Split it into steps: \"The prototype gets its own folder and its own fresh session. To carry your decisions over, type `/handoff`: it's a Skill that writes what matters into a file the new session can read. Build and look at the prototype there. Once you know the answer, type `/handoff` again to carry it back to your grilling session.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 102, 161, 307, 347 (every `/prototype` the reader is told to type)",
+    "problem": "The course canon says a hidden Built-in shadows `/prototype`, so the short name can fail. The Lesson tells the reader, including in the Cheat sheet, to type `/prototype` and gives no fallback. A reader who follows the Cheat sheet may get something other than Matt's Skill and have no idea why.",
+    "evidence": "Writing guide, Name clashes: \"A hidden Built-in also shadows `/prototype`; use `/mattpocock-skills:prototype` if the short name fails.\" The Lesson never mentions this.",
+    "fix": "At line 161, after \"\u2026with `/prototype`\", add: \"(if that doesn't start Matt's Skill, type `/mattpocock-skills:prototype`)\". The Cheat sheet row can stay short."
+   },
+   {
+    "severity": "medium",
+    "where": "Try block step 8 (line 246)",
+    "problem": "Step 8 tells the reader to choose No if the agent asks permission to edit a file. But new sessions start in auto mode, which the Lesson itself describes on line 209 as the mode where the agent doesn't stop to ask permission. So the prompt the reader is told to watch for may never appear. Their correction message (\"correct anything that's wrong\") can also read as confirmation, and the agent may start building straight away. The step gives no reliable way to stop that.",
+    "evidence": "Line 209: \"auto mode, the Claude Code mode where the agent doesn't stop to ask permission for each step.\" Line 246: \"If it asks permission to create or edit a file, choose No; if it's already working, press Esc to stop it.\"",
+    "fix": "Reword step 8 to: \"Read the summary. Reply with any corrections, and end your reply with: \\\"Don't build anything.\\\" If it starts creating files anyway, press Esc to stop it. Type `/exit` when you're done.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 24 (first use of \"repo\"); line 96 (\"tracked with Git\")",
+    "problem": "\"repo\" is first used on line 24 (\"his Skills repo\") but only defined on line 96. The definition there depends on \"Git\", which is never explained, and the reader only knows what a terminal is.",
+    "evidence": "Line 24: \"The README (front-page guide) of his Skills repo borrows a line\u2026\". Line 96: \"whenever you're working in a repo: a project folder tracked with Git.\"",
+    "fix": "Line 24: \"The README (front-page guide) of his Skills repo (short for repository: a project's folder of files, with its full history kept by a tool called Git) borrows a line\u2026\". Line 96 can then just say \"whenever you're working in a repo.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 181 (first plain use of \"model\"); also lines 210, 258, 264",
+    "problem": "\"the model\" is never defined. The reader knows Claude Code is \"an AI\", but not that the AI inside it is a model they can swap. The Try block's troubleshooting then tells them to \"switch to a stronger model with `/model`\" with nothing to go on.",
+    "evidence": "Line 181: \"As the window fills up, the model reasons less sharply.\" Line 258: \"switch to a stronger model with `/model`.\"",
+    "fix": "Line 181: \"As the window fills up, the model (the AI that does the thinking inside Claude Code; you can switch between stronger and cheaper ones with `/model`) reasons less sharply.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 102 (table), line 158 (\"one to prototype\")",
+    "problem": "`/prototype` and the verb \"prototype\" come up twice before they're explained on line 161, so the table row means nothing to a reader starting from zero.",
+    "evidence": "Line 102: \"| A question you can't settle by talking, like how a page should look | `/prototype`, then come back |\"",
+    "fix": "Table cell: \"`/prototype` (a quick throwaway build you can look at), then come back\"."
+   },
+   {
+    "severity": "low",
+    "where": "Lines 103-104 (table)",
+    "problem": "\"(Part 4)\" and \"no wrapper\" aren't explained. A reader landing on this page cold doesn't know the course is split into Parts, and \"wrapper\" is jargon.",
+    "evidence": "\"`/wayfinder` (Part 4)\"; \"You want the bare interview with no wrapper\"",
+    "fix": "\"`/wayfinder` (see [Wayfinder](/learn/wayfinder))\" and \"You want just the interview, without `/grill-me`'s short name or `/grill-with-docs`'s glossary, or a Skill of your own that needs one\"."
+   },
+   {
+    "severity": "low",
+    "where": "Line 165 (one-question-at-a-time opt-out)",
+    "problem": "The reader is told to add a line to `~/.claude/CLAUDE.md` and \"create it if it doesn't exist\". They aren't told that `~` means their home folder, or how to create or edit a file from the terminal.",
+    "evidence": "\"(it lives at `~/.claude/CLAUDE.md`; create it if it doesn't exist): \\\"When grilling, ask one question at a time.\\\"\"",
+    "fix": "Add: \"The quickest way is to run this in your terminal (`~` means your home folder; `>>` adds the line to the end of the file and creates the file if needed):\" followed by `echo 'When grilling, ask one question at a time.' >> ~/.claude/CLAUDE.md`. That costs about 25 words, and the Lesson is at 2,816 of 3,000, so trim elsewhere if needed."
+   },
+   {
+    "severity": "low",
+    "where": "Try block, It's working if, line 254",
+    "problem": "The exercise runs in an empty folder, so there are no facts to look up. \"It never asked you for a fact it could look up itself\" can't fail and checks nothing.",
+    "evidence": "Step 1 makes an empty `book-club` folder. Line 254: \"It never asked you for a fact it could look up itself.\"",
+    "fix": "Replace with a check that works in an empty folder: \"No question in a round depended on another question in the same round.\""
+   },
+   {
+    "severity": "low",
+    "where": "Try block step 2 (line 230)",
+    "problem": "The reader has typed \"/grill\" into the prompt box and is then told to type `/exit`, but isn't told to delete what they typed. They also aren't told that the install command goes into the ordinary terminal, not into Claude Code, or what to do if `grill-me` does show up.",
+    "evidence": "\"Type a slash and the word grill. If `grill-me` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:\"",
+    "fix": "\"Type a slash and the word grill. If `grill-me` is in the list that pops up, delete what you typed and go to step 3. If it isn't, delete it, type `/exit`, and in your terminal run the line below, then run `claude` again:\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 216 (How Matt and others use it)",
+    "problem": "\"forked it\" and \"Claude Code's built-in question tool\" are unexplained jargon. Line 217's \"memory store\" is too.",
+    "evidence": "\"\u2026and forked it to use Claude Code's built-in question tool for a smoother experience.\" / \"save every question, answer and decision to a memory store\"",
+    "fix": "\"\u2026and made their own copy that asks each question through Claude Code's built-in question prompt, for a smoother experience.\" / \"\u2026to save every question, answer and decision to a separate store the agent can read later, because otherwise\u2026\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 266 (Common mistakes, last bullet)",
+    "problem": "The section names run into the sentence with no formatting, so it reads as a garbled phrase (\"Everything from Your half of the interview and What comes next\").",
+    "evidence": "\"**Everything from Your half of the interview and What comes next:** being passive, \u2026\"",
+    "fix": "\"**The rest, covered above** in \\\"Your half of the interview\\\" and \\\"What comes next\\\": being passive, \u2026\""
+   },
+   {
+    "severity": "low",
+    "where": "Flow Scene (lines 59, 69) vs chat Scene Q1 (line 125)",
+    "problem": "The two Scenes ask the same question with opposite wording. The flow asks \"Do Visitors need accounts?\" and the reader answers \"no\". The chat asks \"Can Visitors comment without an account?\" and \"yes\" means the same thing. The Lesson stresses that \"yes\" accepts the recommendation, so a reader reading the captions in order may be confused about whether \"no\" or \"yes\" means no login.",
+    "evidence": "Flow node: \"accounts | Do Visitors need accounts?\"; caption: \"You answer \\\"no accounts\\\"\u2026 because the answer it hung off was no.\" Chat: \"Can Visitors comment without an account? \u27a1\ufe0f Yes: no login in v1.\"",
+    "fix": "Flow node: \"accounts | Can Visitors comment without an account?\". Caption: \"You answer yes: no accounts. That unlocks round 2: is a name required? The login-provider question is never asked, because it only mattered if accounts were needed.\""
+   },
+   {
+    "severity": "low",
+    "where": "Lines 36, 44, 54, 131, 386 (small unexplained terms)",
+    "problem": "Several small terms are never explained: \"Visitors\" (capitalised, not defined until line 131), \"v1\" (line 44 onward), \"AI Hero\" (line 54), \"Postgres\" (line 131) and \"TypeScript\" (Final test, line 386). None of them blocks the reader, but each is a small bump for someone new to all this.",
+    "evidence": "Line 36 \"Do Visitors need an account to comment?\"; line 44 \"no login in v1\"; line 54 \"Matt's docs on AI Hero\"; line 131 \"a Postgres database\"; line 386 \"Is your site's code written in TypeScript?\"",
+    "fix": "Line 34: \"Take the comment box on this site, used by Visitors (anyone reading it):\". Line 40, where the format is introduced, add: \"(v1 means the first version)\". Line 54: \"Matt's docs on AI Hero (his teaching site)\". Line 131: \"a Postgres database (a common kind)\". Test prompt: \"Is your site's code written in TypeScript (a programming language)?\" (rewording only)."
+   },
+   {
+    "severity": "low",
+    "where": "Line 96 and line 181 (\"session\" defined twice); line 54 vs spot-passive feedback line 378",
+    "problem": "\"session\" is defined twice in slightly different words, which is repetition at a 2,816-word count. Separately, the session-length numbers drift: the body says \"thirteen questions to forty-six\", but the spot-passive feedback adds \"over four rounds\", which the body never states. The pilot review asked for the session-length story to stay consistent.",
+    "evidence": "Line 96 \"the next session (a fresh Claude Code conversation)\"; line 181 \"A session is one Claude Code conversation, from starting `claude` until you clear it or quit\". Line 378 \"forty-six questions over four rounds isn't unusual.\"",
+    "fix": "Line 96: \"so the next session, or the next agent, can read the words you agreed on\" (keep the fuller definition on line 181, or move it up to line 96). Line 378: \"Session length varies a lot; Matt's docs give examples up to forty-six questions.\""
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "goals block, goal 4 (line 17) vs Final test",
+    "problem": "Goal 4 promises the reader can choose between `/grill-me`, `/grilling` and `/grill-with-docs`, but no Final test question has `/grilling` as its answer or asks when to reach for it. Only the Checkpoint who-can-start covers it, and Checkpoints don't count. `/grilling` shows up in the Final test only as a wrong option (scenario-overwhelmed d). Ids and option order are frozen and the test already has the maximum 10 questions, so the goal has to change, not the test.",
+    "evidence": "Final test answers: grill-me (scenario-no-repo), grill-with-docs (scenario-repo-change), prototype, CLAUDE.md, round reply, pushback, fact, clear, sequence, misalignment. None of them is `/grilling`.",
+    "fix": "Reword goal 4: \"- You'll be able to choose between `/grill-me` and `/grill-with-docs` (both run the `/grilling` Skill underneath), and say what to type once the interview is over.\" The `/grilling` vs `/grill-me` link is then checked by scenario-overwhelmed d's feedback, and the plain-words point stays in the who-can-start Checkpoint."
+   },
+   {
+    "severity": "medium",
+    "where": "goals block, goal 3 (line 16) vs Final test",
+    "problem": "The steering half of goal 3 (\"steer the interview toward what matters to you\") has no Final test question. The only question whose answer is steering (hand the details over, say which branches you care about) is the Checkpoint steer-details. The Final test checks facts vs decisions (spot-asked-for-fact) and pushing back (spot-passive, scenario-round-reply), not steering.",
+    "evidence": "spot-passive's right answer is \"Lee never pushed back\". scenario-ungrillable b's feedback argues against delegating. No test option says \"tell it to decide the details\" or \"say which branches matter\".",
+    "fix": "Reword goal 3 to match what the Final test checks: \"- You'll be able to tell a decision (yours) from a fact (the agent's job), and push back when a recommendation isn't what you want.\" Steering stays taught in the body and checked by the steer-details Checkpoint."
+   },
+   {
+    "severity": "medium",
+    "where": "checkpoint confirm-summary, option b and its feedback (lines 146-147)",
+    "problem": "The right option teaches that you fix the line and then confirm straight away. In this Lesson's own model, a changed decision reshapes the design tree. Allowing edits on anonymous comments opens a new branch: with no accounts, how does a Visitor prove a comment is theirs? So the agent should ask a follow-up round before the frontier is empty again. \"Then confirm\" contradicts the SKILL's \"settled decisions push the frontier outward... Recompute the frontier and ask the next round.\"",
+    "evidence": "Option b: \"Correct it now: editing is in, for five minutes. Then confirm.\" Feedback: \"Fix the summary, and only then say yes.\"",
+    "fix": "Option b (52 chars, still not the longest): \"Correct it now, answer any follow-ups, then confirm.\" Feedback: \"> Right. The confirmation is there so nothing gets built on a guess. Your change can open new questions (with no accounts, how does a Visitor prove a comment is theirs?), so answer that round, then say yes once the summary matches what you want.\""
+   },
+   {
+    "severity": "medium",
+    "where": "test scenario-no-repo, prompt and option d feedback (lines 316, 324)",
+    "problem": "This tests recognition, not transfer. The prompt's \"conference talk\" with \"no code and no repo\" repeats the body table row word for word (\"No repo, or not code at all: a plan, a decision, a talk, a job offer\" -> `/grill-me`), so the reader can match the phrase without understanding why.",
+    "evidence": "Line 100: \"| No repo, or not code at all: a plan, a decision, a talk, a job offer | `/grill-me` |\" vs line 316: \"the outline of a conference talk ... There's no code and no repo.\"",
+    "fix": "Prompt: \"You want to stress-test your plan for a two-week cycling trip with three friends before anyone books anything. Nothing about it involves code. Which Skill do you type?\" Option d feedback: \"> That builds a quick throwaway version of software so you can see it. A trip plan is something you can settle by talking.\" The options and their order stay as they are."
+   },
+   {
+    "severity": "medium",
+    "where": "test scenario-no-repo, option a feedback (line 318)",
+    "problem": "The feedback overstates what `/grill-with-docs` does, which the pilot review explicitly warned against. It writes terms to GLOSSARY.md and only offers an ADR for the rare hard-to-reverse decision. It doesn't routinely write decision records. The body (line 96) gets this right, so the feedback contradicts it.",
+    "evidence": "\"That one writes a glossary and decision records into a repo. With no repo, there's nowhere for that paper trail to go.\"",
+    "fix": "\"> That one also writes the project's terms to `GLOSSARY.md` as you go, and offers a decision record for the rare hard-to-reverse choice. A trip plan (or talk) has no project folder for those files to live in.\""
+   },
+   {
+    "severity": "medium",
+    "where": "test spot-passive, prompt (line 376)",
+    "problem": "The prompt uses the body's key phrase for the mistake (line 158: \"If you answer 'agreed' to forty questions, you get the agent's plan with your name on it\"), so the reader spots the word \"agreed\" instead of reasoning about it. The writing guide says not to restate the right answer's defining phrase in the prompt. The two distractors (session length, one message per question) are weak, so the cue decides the question.",
+    "evidence": "Prompt: \"replied \\\"agreed\\\" to every recommendation\". Body line 158 uses the same word for the same failure.",
+    "fix": "Prompt: \"Lee spent an hour grilling a new feature. Each round, Lee accepted every \u27a1\ufe0f recommendation exactly as written, and now dislikes what got built. Spot the mistake.\" Options and order stay as they are."
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-repo-change, prompt (line 328)",
+    "problem": "The prompt asks \"Which Skill do you start with?\", but `/grill-me` (option a) also works as a start, and its own feedback admits it (\"there's a better option\"). The question is really asking for the best start, and the prompt should say so to keep it unambiguous.",
+    "evidence": "Option a feedback: \"It runs the same interview but saves nothing. In a repo, there's a better option.\"",
+    "fix": "Prompt: \"You're in your project's repo, planning a feature that should fit in one session. Which Skill is the best place to start?\""
+   },
+   {
+    "severity": "low",
+    "where": "checkpoint who-can-start, prompt and option b (lines 107, 110)",
+    "problem": "The prompt nearly copies the body's example (line 92: \"when you say something like 'grill me on this plan'\"), so it checks recognition. Option b's reason (\"because you're in a repo\") also rests on a premise the prompt never states.",
+    "evidence": "Prompt: \"You write \\\"can you grill me on this?\\\" in plain words\". Option b: \"`/grill-with-docs`, because you're in a repo.\"",
+    "fix": "Prompt: \"You're in your project's repo. Without typing any Skill's name, you write: \\\"Before we build this, stress-test my plan with hard questions.\\\" Which Skill can the agent load on its own?\" Options and feedback stay as they are, and b's premise is now true."
+   },
+   {
+    "severity": "low",
+    "where": "test why-grill-first, option b (line 423)",
+    "problem": "The right answer paraphrases the body closely (line 24: \"every gap in your sentence gets filled with a guess. The guesses look confident\"), so it gives itself away by wording rather than testing the idea.",
+    "evidence": "Option b: \"Every gap in what you said gets filled with a confident guess.\"",
+    "fix": "Option b: \"\\\"Working code can still miss what you meant, because it's built on guesses.\\\"\" (76 chars, shorter than a at 84). Keep the feedback."
+   },
+   {
+    "severity": "low",
+    "where": "test spot-cleared-early, option b feedback (line 400)",
+    "problem": "\"Threw away\" is true for the current session, but the course canon says `/clear` doesn't delete the old conversation: `/resume` can reopen it. Leaving out the recovery route misses a teaching point and suggests the work is gone for good.",
+    "evidence": "Writing guide canon: \"/clear empties the working context; the old conversation can still be reopened with /resume, but it doesn't come back into the current session.\"",
+    "fix": "\"> Right. The conversation is the record of the grilling, and `/clear` emptied it out of the session. `/to-spec` should run in the same conversation. To recover, `/resume` the old conversation and run `/to-spec` there.\""
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-round-reply option d vs checkpoint confirm-summary option a",
+    "problem": "The same distractor appears in a Checkpoint and in the Final test (\"agree now, fix it once code is being written\"), with almost the same feedback, so the test partly repeats the Checkpoint.",
+    "evidence": "confirm-summary a: \"Say yes for now, and ask for editing once the code has been written.\" scenario-round-reply d: \"\\\"Agreed\\\", then raise the 1,000 limit once it starts building.\" Feedbacks: \"code gets built on a decision you don't share\" / \"code is being written on a decision you don't share\".",
+    "fix": "Option meanings are frozen, so only vary the feedback. scenario-round-reply d: \"> That accepts all three, including the 500 limit, and the agent starts from a decision you don't hold. A few words now beat a rewrite later.\""
+   },
+   {
+    "severity": "low",
+    "where": "test scenario-ungrillable, option d feedback (line 348)",
+    "problem": "The right answer sends the reader to type `/prototype`, but the course canon notes that a hidden Built-in shadows `/prototype`. A reader who acts on the feedback can land in the wrong command, and the feedback doesn't mention the fallback.",
+    "evidence": "Writing guide: \"A hidden Built-in also shadows /prototype; use /mattpocock-skills:prototype if the short name fails.\"",
+    "fix": "\"> Right. Questions you need to see are ungrillable. Build a quick throwaway version with `/prototype` (or `/mattpocock-skills:prototype` if the short name opens something else), look at it, then bring the answer back.\""
+   },
+   {
+    "severity": "low",
+    "where": "test why-grill-first, option c feedback (line 426)",
+    "problem": "The feedback says only that `/grill-me` saves nothing, but the friend's claim is about grilling in general. A reader who knows `/grill-with-docs` writes files could think the claim is half right. The feedback should say that no grilling Skill writes a spec.",
+    "evidence": "\"> `/grill-me` saves nothing to disk. The decisions live in the conversation; a spec comes later, from `/to-spec`, and only for bigger builds.\"",
+    "fix": "\"> No grilling Skill writes a spec. The decisions live in the conversation (`/grill-with-docs` adds glossary terms); a spec comes later, from `/to-spec`, and only for bigger builds.\""
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "medium",
+    "where": "content/lessons/04-grilling.md:217 (and the source at :444)",
+    "problem": "The Lesson says a Reddit user \"extended grill-me to save every question, answer and decision to a memory store, because otherwise the decisions only live in the chat.\" The cited post does not report anyone having built or extended anything, and gives no such reason.",
+    "evidence": "https://www.reddit.com/r/SpecDrivenDevelopment/comments/1tv1ruy/grillme (fetched 2026-10-23, author shows as [deleted]): the whole post is one wish, \"Would be hella amazing if something like ts was there to aid sdd\", followed by a pasted prompt beginning \"Create a production-grade skill called forge. Start with Matt Pocock's grill-me workflow, but persist every question, answer, decision ... into an MCP-backed memory store.\" It is a proposal/prompt, not a report of work done, and the \"decisions only live in the chat\" rationale is the Lesson's inference (it comes from Matt's own point at UzMNBN6xLLA 6:54\u20138:38), not the poster's.",
+    "fix": "Reword to what the post shows, e.g. \"One Reddit poster wished for a grill-me variant that saves every question, answer and decision to a memory store, so they don't only live in the chat.\" Drop \"extended\" and attribute the rationale to Matt (or to the Lesson) rather than to the poster. Keep the 2026-06-03 date only if the engine/research session confirmed it; the page itself shows only \"5mo ago\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/04-grilling.md:208",
+    "problem": "\"he kicked off with one loose sentence about trimming a command-line tool\" is not what the transcript shows: Matt's opening was three short sentences.",
+    "evidence": "M6mYodf0dJM.en.json 8:39\u20138:53: \"I'm going to say grill with docs, and I'm going to kick it off with an idea. I'm going to say, I would like to remove most of the internal tooling on this CLI to make it just only public-facing. There's a lot of craft here. I want to just take this repo down a notch.\" He then adds (8:53) \"It really can be as vague as this.\"",
+    "fix": "Change \"one loose sentence\" to \"a couple of loose sentences\" or \"a vague, dictated idea\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/04-grilling.md:125-127 and :133 (scene chat)",
+    "problem": "The Scene shows each \u27a1\ufe0f recommendation on the same line as its question. In 1.3.1 the recommendation sits on its own \u27a1\ufe0f line and consecutive questions are separated by a `---` rule; the Lesson's own text block at lines 42\u201345 shows the two-line form, so the Scene and the text disagree, and the contract says Scenes must match 1.3.1 behaviour.",
+    "evidence": "skills/productivity/grilling/SKILL.md (1.3.1) template: \"\u2753 **Q1** - **<question title>**: <body>\" then a blank line, then \"\u27a1\ufe0f <your recommended answer>\", then \"---\" before Q2; CHANGELOG #917 added the `---` separator. aihero.dev/skills-grilling (updated 2026-08-24) \"It's working if\": \"each question with its recommendation on a separate \u27a1\ufe0f line\". Contract v1 line 20: \"Scenes must match how the Skill really behaves in 1.3.1\".",
+    "fix": "Either split each question into two chat lines (the \u2753 line, then an `agent:` line holding only the \u27a1\ufe0f recommendation), or add a short caption to the Scene saying the recommendations are shown inline here to save space and that in the real session each \u27a1\ufe0f arrives on its own line."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/04-grilling.md:181",
+    "problem": "\"Matt ... gives about 150k tokens as a rule of thumb\" is attributed to Matt in general, but the two videos this Lesson cites have him giving 120k and 140k; only his ask-matt Skill says ~150k. A reader following the sources will see the mismatch.",
+    "evidence": "ask-matt SKILL.md (1.3.1), Context hygiene: \"smart zone ... (~150k tokens on state-of-the-art models)\". UzMNBN6xLLA.json 5:08\u20135:13 (2026-05-25): \"about 120k is where I estimate most state-of-the-art models, that's where their dumb zone begins\". M6mYodf0dJM.en.json 10:33\u201310:40 (2026-07-16): \"getting significantly dumber around 140k mark. I think of that as kind of like the smart zone\". The writing guide (\"Facts the whole course agrees on\") asks for ~150k per ask-matt as a rule of thumb.",
+    "fix": "Attribute the number to its source: \"his ask-matt Skill gives about 150k tokens as a rule of thumb for today's best models (in his videos he has said 120k to 140k)\", or simply \"his ask-matt Skill puts it at roughly 150k tokens\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/04-grilling.md:209",
+    "problem": "Auto mode is defined as \"the Claude Code mode where the agent doesn't stop to ask permission for each step\", which leaves out that a background classifier still checks risky actions and that the mode only appears when it is available to the account, so a cold reader may look for a mode they don't have.",
+    "evidence": "https://code.claude.com/docs/en/settings-reference (permissions.defaultMode): \"auto: Claude Code runs without routine prompts; before actions such as shell commands and network requests run, a background classifier checks that they align with your request\". https://code.claude.com/docs/en/desktop, permission-mode table: \"Appears when auto mode is available; there is no separate Settings toggle for it.\"",
+    "fix": "Tighten the clause to \"auto mode (where available): Claude Code runs without routine permission prompts, with a background check on risky actions\". The Try block's \"Any other mode is fine\" already covers readers without it."
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/04-grilling.md:137 (repeated in the confirm-summary Checkpoint prompt at :143)",
+    "problem": "The worked Scene ends with the agent listing \"moderation\" as out of scope, but no question about moderation was ever put to the user. Q1\u2013Q4 cover accounts, editing, order and name, and the user's hand-over at :135 covers only CSS and file names. So the Scene shows the agent settling a scope decision on its own, which is exactly what the Skill forbids. A cold reader learns that this is normal.",
+    "evidence": "grilling/SKILL.md:28 \"The _decisions_ are the user's: put each to them and wait.\" and :30 \"nothing left silently assumed\". AI Hero /skills-grilling: an agent that answers its own decisions \"has broken the skill\". The lesson's own rule at :52 says \"nothing is silently assumed\", and :159 says the user owns the scope.",
+    "fix": "Rewording only, so ids and option order stay frozen. Have the user settle it, e.g. change :129 to \"1 yes, 2 yes, 3 no: oldest first, so it reads like a conversation. And no moderation in v1.\" This also models the scope pushback taught at :158 and in Try-it step 6. Alternatively, drop \"moderation\" from the summary at :137 and from the prompt at :143."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/04-grilling.md:96, :100, :101 (routing rule); :224-240 (Try it); :296 (Site story)",
+    "problem": "The lesson says Matt makes /grill-with-docs the first step \"whenever you're working in a repo: a project folder tracked with Git\" and sends \"No repo\" to /grill-me. Matt's actual test is whether you are working in a working directory (a project folder). No source mentions Git, and neither Skill needs it. A beginner with a project folder that isn't Git-tracked yet gets sent to /grill-me and loses the glossary. The Try it then has the reader create a project folder for a software idea and type /grill-me without saying why. The Site story's \"inside a repo I'd now type /grill-with-docs\" is also odd under the Git definition: the repo's first commit (4f849b9, 2026-10-21 13:09) came after that first grilling, which suggests the folder had no Git history yet.",
+    "evidence": "ask-matt/SKILL.md:19 \"Start here whenever you are **working in a working directory** ... (No working directory? Use `/grill-me` instead\". ask-matt/SKILL.md:85 \"Reach for it when you are **not working in a working directory** ... If you are in a working directory, use `/grill-with-docs` instead\". CHANGELOG.md:173 \"`grill-me` splits from `grill-with-docs` on whether you are in a working directory\". The AI Hero /skills-grilling table uses the same split.",
+    "fix": "State the split the way Matt does, e.g. \"whenever you're working in a project folder (Matt says a working directory; usually a repo)\". Change the table row at :100 to \"Not working in a project folder, or not code at all\". Add one line to the Try it: \"We use /grill-me here so the practice run writes no files; in a real project folder you'd type /grill-with-docs.\" Check that the scenario-no-repo and scenario-repo-change wording still fits; it does, since both say \"no code and no repo\" and \"your project's repo\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/04-grilling.md:91",
+    "problem": "The lesson says /grill-me exists \"so you have a short name to type\". That reason is wrong: `/grilling` is just as short and can also be typed. The real reason is that /grill-me is a front door the agent never starts on its own, and stateless.",
+    "evidence": "grill-me/SKILL.md:4 `disable-model-invocation: true`. AI Hero /skills-grilling: grill-me is \"the same session, under a name the agent will never fire by itself\". README.md:211 says user-invoked Skills' \"job is to orchestrate\".",
+    "fix": "Reword to: \"The whole Skill is one line telling the agent to load `grilling`, under a name only you can start: the agent never fires it by itself.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/04-grilling.md:47 (also the flow Scene caption at :67)",
+    "problem": "\"A question that depends on another question still open in the same round always waits for a later round\" overstates what happens. The SKILL tells the agent to do this, but the agent chooses the frontier by judgement and can get it wrong. The lesson never teaches the one fix: telling the agent. The flow Scene's \"Editing depends only on the idea too\" is itself debatable: with no accounts, who may edit a comment is a live question (the confirm-summary Checkpoint at :143 even imagines anonymous five-minute editing). A sharp reader can use that to doubt the rule.",
+    "evidence": "grilling/SKILL.md:26 \"belongs to a _later_ round\" (an instruction to the agent, not a guarantee). AI Hero /skills-grilling: \"The agent chooses it by judgement; it does not compute it from a graph ... The only guard is to tell it. That reopens the affected branch in the next round.\"",
+    "fix": "Change \"always waits\" to \"belongs in a later round\", and add: \"The agent judges this, so if two answers in one round clash, say so and it reopens that branch next round.\" Optionally replace editing in the flow Scene (:60, :67-68) with a clearly independent question, such as comment order. Keep the chat Scene's Q2 if you like, since it is labelled illustrative."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/04-grilling.md:191, :201, :399, :402",
+    "problem": "Two over-claims about /clear. First, the lesson says `/clear` \"throws away\" the decisions. Matt's phase-boundary note says /clear isn't final, because the old session can still be resumed; it just doesn't come back into the current session. Second, \"clearing first leaves it nothing to work with\" goes too far: /to-spec also reads the codebase, glossary and ADRs. It does lose the decisions, which is the real point.",
+    "evidence": "ask-matt/PHASE-BOUNDARIES.md:23 \"`/clear` also isn't terminal: the old session stays resumable.\" writing-guide.md:79 (course canon): \"the old conversation can still be reopened with /resume, but it doesn't come back into the current session\". to-spec/SKILL.md:7 \"takes the current conversation context and codebase understanding\" and :13 \"Explore the repo ... Use the project's domain glossary\".",
+    "fix": "In the callout at :191, write \"clearing first leaves it without your decisions: only the code is left to work from\". Optionally add \"(you could reopen the old conversation with /resume, but it won't come back into this one)\". Feedback at :201, :399 and :402 can stay as \"empties out of the conversation\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/04-grilling.md:103",
+    "problem": "The /wayfinder example \"like a whole new product\" suggests that any new product goes to /wayfinder. The Site story shows a whole new site planned in one grilling, which the author says should now start with /grill-with-docs. Matt's real test is \"too big for one session\". Wayfinder even stops early if the opening grilling finds no fog.",
+    "evidence": "ask-matt/SKILL.md:52 \"a greenfield project or a huge feature build, **too big for one session**\" and \"save it for exactly that, never a well-scoped feature\". wayfinder/SKILL.md:112: if the breadth-first grilling surfaces no fog, it stops and asks how to proceed. Site story at :271-296 of the lesson.",
+    "fix": "Reword to \"like a whole new product too big to plan in one sitting\". Or add \"(a small new site like this one still starts with /grill-with-docs)\"."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/04-grilling.md:118",
+    "problem": "\"With /grill-me the rhythm is identical; it just doesn't write GLOSSARY.md\" leaves out what else /grill-with-docs adds through domain-modeling. It challenges fuzzy terms against the glossary, checks your claims against the code, and may offer an ADR. A reader comparing the two gets an incomplete difference.",
+    "evidence": "grill-with-docs/SKILL.md:7 calls grilling and domain-modeling. domain-modeling/SKILL.md:44-58 covers challenging terms, sharpening fuzzy language, scenarios and cross-referencing code. :66-74 covers offering ADRs sparingly.",
+    "fix": "Reword to: \"With `/grill-me` the rhythm is identical; it just skips the glossary work (no term-sharpening, no GLOSSARY.md, no ADRs).\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/04-grilling.md:42-45 (and the chat Scene at :125-127)",
+    "problem": "The lesson calls the question layout \"a fixed format\" but shows a simplified one: a single question, no bold, and the recommendation run together with the question. The real round puts the recommendation on its own line after a blank line, with a `---` rule between questions. The Try-it checklist at :250 asks the reader to recognise this format.",
+    "evidence": "grilling/SKILL.md:12-22: `\u2753 **Q1** - **<question title>**: ...`, a blank line, `\u27a1\ufe0f <your recommended answer>`, then `---` before Q2. CHANGELOG.md:41 (#917) added the `---` separator.",
+    "fix": "Show two questions in the text block with the `\u27a1\ufe0f` line on its own and a `---` line between them. The chat Scene can stay compressed because chat lines are single lines."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/04-grilling.md:211",
+    "problem": "The lesson says Matt \"sometimes runs two grilling sessions side by side\". In the cited video he presents this as his usual habit and tells viewers to do it, so \"sometimes\" understates it.",
+    "evidence": "UzMNBN6xLLA.json 10:25-11:13 (English track): Matt says to grill multiple sessions in parallel, describes bouncing between two sessions, and says two is usually his limit.",
+    "fix": "Reword to \"He splits big ideas first, and usually runs two grilling sessions side by side, answering one while the other is thinking.\""
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

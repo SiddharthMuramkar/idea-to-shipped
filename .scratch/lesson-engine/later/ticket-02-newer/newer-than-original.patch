@@ -1,0 +1,53 @@
+--- /Users/siddharth/Developer/trying/.claude/worktrees/lesson-content-scrolling-ux-2a9171/src/app/api/answers/route.test.ts	2026-10-23 08:57:19
++++ src/app/api/answers/route.test.ts	2026-10-23 15:07:45
+@@ -2,6 +2,7 @@
+ import { db } from "@/db";
+ import { answers, testAttempts } from "@/db/schema";
+ import { lessons } from "@/lessons/lessons";
++import { streamedPost } from "@/test/requests";
+ import { GET, POST } from "./route";
+ 
+ // "grilling" is a real Lesson. Slugs never change (ADR 0004), and its question
+@@ -91,15 +92,15 @@
+   });
+ });
+ 
+-describe("POST /api/answers errors", () => {
+-  // Errors send no-store too, and never set a cookie.
+-  async function expectError(res: Response, status: number, error: string) {
+-    expect(res.status).toBe(status);
+-    expect(await res.json()).toEqual({ error });
+-    expect(res.headers.get("cache-control")).toBe("private, no-store");
+-    expect(res.headers.get("set-cookie")).toBeNull();
+-  }
++// Errors send no-store too, and never set a cookie.
++async function expectError(res: Response, status: number, error: string) {
++  expect(res.status).toBe(status);
++  expect(await res.json()).toEqual({ error });
++  expect(res.headers.get("cache-control")).toBe("private, no-store");
++  expect(res.headers.get("set-cookie")).toBeNull();
++}
+ 
++describe("POST /api/answers errors", () => {
+   test("a body that isn't JSON is rejected with 400", async () => {
+     await expectError(await post("not json{"), 400, "Request body must be JSON.");
+   });
+@@ -132,6 +133,18 @@
+   });
+ });
+ 
++describe("POST /api/answers body size", () => {
++  test("a declared length over 4,096 is refused with 413 before any of the body is read", async () => {
++    const { request, bytesRead } = streamedPost("http://localhost/api/answers", {
++      chunks: 1,
++      chunkBytes: 16,
++      headers: { "content-length": "4097" },
++    });
++    await expectError(await POST(request), 413, "Request body is too large.");
++    expect(bytesRead()).toBe(0);
++  });
++});
++
+ function list(query: string, cookie?: string) {
+   return GET(
+     new Request(`http://localhost/api/answers?${query}`, {

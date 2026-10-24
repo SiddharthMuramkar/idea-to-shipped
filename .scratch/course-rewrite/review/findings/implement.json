@@ -1,0 +1,399 @@
+{
+ "slug": "implement",
+ "lenses": {
+  "quiz": [
+   {
+    "severity": "medium",
+    "where": "Final test, `test scenario-whole-spec` (lines 321-331); goal 3 (line 16)",
+    "problem": "Goal 3 promises the reader can explain task graph, frontier, worktrees, one integration branch and one review at the end. The Final test only covers the integration branch (predict-run-end) and the review at the end (spot-midrun-review). Nothing tests the frontier or the task graph; only the shared-file Checkpoint touches them, and Checkpoints don't count. scenario-whole-spec is also recognition, not transfer. Its prompt repeats every prerequisite from the body and the docs table word for word ('split into six tickets with blocking edges', 'runs sub-agents in the background, each in its own worktree', 'one run to land them all'), so `/implement-spec` is the only option that matches. Two distractors are straw men: `/tdd` once per ticket, and `/code-review` with nothing built.",
+    "evidence": "Body line 132: 'The frontier is every ticket whose blockers have all landed, and every frontier ticket runs at once.' docs/engineering/implement-spec.md:5 and :21 ('Without edges the graph is flat and every ticket starts at once'). Writing guide: 'Every goal gets at least one Final test question' and 'Questions test transfer, not recognition... Don't restate the defining phrase of the right answer in the prompt.' The research note's candidate Q2 is nearly the same question.",
+    "fix": "Replace scenario-whole-spec with a frontier prediction (scenario- count drops to 4, still at least 3; ids aren't published yet):\n\n```test predict-frontier\nAn `/implement-spec` run has five tickets. A has no blockers. B and C are each blocked by A. D is blocked by B. E is blocked by C and D. Ticket A has just merged into the integration branch. What starts now?\n- [ ] B only, because tickets are built in the order they're numbered.\n  > The tickets form a graph, not a list. Order on the tracker doesn't set the pace; blockers do.\n- [x] B and C, each in its own worktree.\n  > Right. Both had only A as a blocker, so both join the frontier, and every frontier ticket runs at once.\n- [ ] B, C, D and E, because A was the only ticket with no blockers.\n  > D still waits for B, and E waits for C and D. Only tickets whose blockers have all landed are on the frontier.\n- [ ] Nothing until code-review has checked ticket A.\n  > The run's one review comes after every ticket has landed, not between merges.\n```\n\nIf you keep a Skill-choice question for goal 2 instead, make it need judgement. For example: \"Your events-page spec has six tickets, and after 01 lands, 02, 03 and 04 can all start. Your harness runs background sub-agents in worktrees, and you'd rather review one finished branch than six commits. In a cleared session, what do you type?\" Options: `/implement` with all six ticket numbers / `/implement-spec` with the spec's path [x] / `/implement` on 02, 03 and 04 in three terminals opened in the same project folder (feedback: sessions sharing one checkout amend each other's commits) / `/tdd` once per ticket."
+   },
+   {
+    "severity": "medium",
+    "where": "Checkpoint `next-ticket` (lines 86-96) vs `test spot-no-clear` (381-391) and `test scenario-serial-harness` (333-343)",
+    "problem": "Three questions test the same rule: `/clear` between tickets. The Checkpoint's right answer (`/clear`, then `/implement` for ticket 02) is the same lesson as spot-no-clear's right answer ('She never typed `/clear` between tickets'). It also overlaps serial-harness's right answer ('once per ticket, clearing between them'). The Checkpoint's 'two tickets together' distractor matches spot-no-clear's 'all at once'. That breaks 'no Checkpoint duplicates a Final test question'. Meanwhile a rule from the same section goes untested: never run two `/implement` sessions in one checkout.",
+    "evidence": "Writing guide: 'no Checkpoint duplicates a Final test question.' Body line 84: 'don't run two `/implement` sessions in one checkout: one user's sessions amended each other's commits, because they shared one folder.' No question tests this.",
+    "fix": "Rewrite the Checkpoint (it sits right after this section, so placement stays correct). It needs a new id, because the meaning changes:\n\n```checkpoint two-terminals\nYour book-club spec has tickets 02 and 03, and neither blocks the other. To save time, you open a second terminal in the same project folder and start `/implement` on 03 while 02 is still building in the first. What's likely to go wrong?\n- [ ] Nothing. Each session has its own context window, so they can't affect each other.\n  > Separate windows don't mean separate files. Both sessions edit and commit in the same folder.\n- [x] The two sessions edit the same checkout, so their changes and commits get tangled.\n  > Right. One checkout means one working folder. To build in parallel, use `/implement-spec`, which gives each ticket its own worktree.\n- [ ] The second `/implement` refuses to start until the first one commits.\n  > It doesn't check for other sessions. That's why the clash happens silently.\n- [ ] Ticket 03 skips tdd, because only one session can load a Skill at a time.\n  > Each session loads its own Skills. The problem is the shared folder, not the Skills.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "`test scenario-loop-choice` prompt (line 358)",
+    "problem": "The prompt gives away the right answer. 'You want the loop that's cheapest and most reliable once it's tuned' is the body's definition of the deterministic loop (line 194: 'it runs the same way every time, and it's cheap... tuning one takes patience'). The reader matches words instead of applying Matt's advice. 'Happy to spend a few weeks building something' gives it away a second time.",
+    "evidence": "Writing guide: 'Don't restate the defining phrase of the right answer in the prompt.' The right option C is the only one that fits 'once it's tuned'.",
+    "fix": "Describe the situation instead of the answer's properties:\n\n\"Your team works through about thirty tickets a week across several repos, all run overnight while nobody watches. One engineer can spend the next few weeks setting something up. Which way of looping over tickets fits Matt's advice for this team?\"\n\nKeep the four options. Change B's feedback so it still teaches the contrast: \"An agent making the orchestration decisions is less reliable than a script when nobody's watching. Matt calls it a good first step, not the end state for a team with time to build a loop.\""
+   },
+   {
+    "severity": "medium",
+    "where": "`test scenario-serial-harness` (lines 333-343): option A and the right answer's feedback",
+    "problem": "Option A gives itself away with an absolute ('because it's always the faster choice'). Any reader can rule it out without knowing the rule, so it isn't a real misconception. The right answer's feedback also overclaims: 'driving each ticket yourself loses nothing'. You do lose things: the integration branch, the single review, and not having to dispatch tickets yourself. The docs only say the Skill becomes a slower `implement`.",
+    "evidence": "docs/engineering/implement-spec.md:22: 'on a harness that runs subagents one at a time, it is only a slower `implement`.' Body line 164: 'One at a time, it's just a slower `/implement`.'",
+    "fix": "Option A: \"- [ ] `/implement-spec` anyway, so the four tickets build at the same time\" with feedback \"  > They can't. Your harness runs one sub-agent at a time, and then `/implement-spec` is just a slower `/implement`: the parallel frontier is its whole point.\" Right-answer feedback: \"  > Right. Without background sub-agents running side by side, `/implement-spec` gives you nothing to make up for being slower, so drive each ticket yourself in a fresh window.\""
+   },
+   {
+    "severity": "low",
+    "where": "Right answers across Checkpoints and the Final test",
+    "problem": "The right answer is the shortest option in 6 of 14 questions: next-ticket, run-once-first, scenario-whole-spec, scenario-serial-harness, spot-no-clear, spot-midrun-review. Distractors often carry an extra reason clause. A test-wise reader can do better than chance by picking the shortest. The contract only bans 'longest', but this is the mirror-image tell.",
+    "evidence": "For example, spot-no-clear's right answer 'She never typed `/clear` between tickets.' sits against three options that are each a clause longer. In run-once-first, 'Run one pass by hand and watch what the agent does.' is shorter than every distractor. In scenario-whole-spec, the bare '`/implement-spec`' is against three longer options.",
+    "fix": "Even out lengths in the worst cases. spot-no-clear right answer: \"- [x] She kept every ticket in one session instead of typing `/clear` between them.\" spot-midrun-review right answer: \"- [x] The review ran while two of the six tickets still hadn't landed on the integration branch.\" run-once-first: shorten distractor B to \"- [ ] Turn on the most permissive mode on your laptop first.\" (keep its feedback)."
+   },
+   {
+    "severity": "low",
+    "where": "Checkpoint `run-once-first` option D (lines 207-208) vs `test scenario-loop-choice` option B (lines 361-362)",
+    "problem": "Both questions test the same misconception, that `/implement-spec` (an agent loop) is more reliable than a script. The Checkpoint therefore previews a Final test distractor.",
+    "evidence": "Checkpoint D: 'Switch to `/implement-spec`, which is more reliable than a script.' Test B: '`/implement-spec`, because an agent makes smarter choices than a script.'",
+    "fix": "Replace Checkpoint option D (same position, same meaning slot; nothing is published yet): \"- [ ] Raise the effort level, so each ticket gets more careful thought overnight.\" with feedback \"  > More effort doesn't show you whether the prompt does what you want. One watched pass does. And if a ticket runs long, split it rather than raising effort.\""
+   },
+   {
+    "severity": "low",
+    "where": "`test spot-midrun-review` prompt (line 394)",
+    "problem": "The prompt retells the body's bullet almost step for step (line 167: 'Mid-run, every unbuilt ticket reads as a failure, the agent builds it, and another review starts'). It also echoes the Site story, so it checks recall rather than transfer. There's also an inconsistency: the two tickets are 'still building', yet 'the agent starts building them', which reads as a duplicate build.",
+    "evidence": "Writing guide: 'Questions test transfer, not recognition. Use a fresh situation.'",
+    "fix": "\"Halfway through an `/implement-spec` run on a six-ticket spec, Jo gets nervous and asks the orchestrating agent for 'a quick review of everything so far'. The report lists the search and export features as missing, the agent starts extra work on both, and a second review kicks off. Spot the mistake.\" Keep the options. In the right answer's feedback, add: \"Those two tickets were still in their worktrees, so the review saw them as failures.\""
+   },
+   {
+    "severity": "low",
+    "where": "`test spot-on-main` option C (lines 375-376)",
+    "problem": "The distractor states something true: `/implement-spec` does always build on a separate integration branch. That makes it a defensible 'mistake' rather than a clear misconception, and the feedback has to concede the point ('It does use an integration branch').",
+    "evidence": "implement-spec SKILL.md step 3: 'Create the integration branch.'",
+    "fix": "Replace it with an actual misconception, in the same position: \"- [ ] Sam should have typed `/clear` before `/implement`, so it started on a clean branch.\" with feedback \"  > `/clear` empties the context window. It doesn't touch Git, so the checkout stays on `main`.\""
+   },
+   {
+    "severity": "low",
+    "where": "Checkpoint `shared-file` right answer (line 178)",
+    "problem": "'Fix the exact label names in the exploration notes' reads as if the reader edits the notes. In the body, the exploration notes are written by an optional sub-agent, so the reader doesn't know how they'd do this. The docs word it as having the exploration notes fix the names.",
+    "evidence": "docs/engineering/implement-spec.md:56: 'or have the exploration notes fix the exact names each ticket adds.' Body line 136: the exploration sub-agent saves the notes.",
+    "fix": "\"- [x] Add a blocking edge between them, or have the exploration notes fix the exact label names each ticket adds.\" Feedback: \"  > Right. Either they run one after the other, or both start from the same agreed names, which you can ask for when you start the run.\""
+   },
+   {
+    "severity": "low",
+    "where": "`test scenario-whole-spec` option D (lines 329-330), if the question is kept",
+    "problem": "The option says bare `/code-review`, which the Lesson itself teaches may reach Claude Code's Built-in bug hunt rather than Matt's Skill. The feedback ignores this, so the question quietly contradicts the body's advice to use the full name.",
+    "evidence": "Body line 123: 'the short name code-review can reach Claude Code's Built-in `/code-review`... type `/mattpocock-skills:code-review`'.",
+    "fix": "Use \"- [ ] `/mattpocock-skills:code-review` against the spec\" with the same feedback, or remove the question as the first finding suggests."
+   }
+  ],
+  "reader": [
+   {
+    "severity": "high",
+    "where": "09-implement.md line 36 (The idea, user-invoked paragraph)",
+    "problem": "The text quotes `/to-tickets` as saying \"then implement each ticket\". The 1.3.1 to-tickets SKILL.md and its docs page contain no such words, so this is a made-up quote of a Skill.",
+    "evidence": "`grep -rni \"implement each\\|then implement\"` over skills/engineering/to-tickets/, to-spec/ and docs/engineering/to-tickets.md finds nothing. The only \"implement each ticket\" in 1.3.1 is implement-spec SKILL.md step 4.",
+    "fix": "Replace the sentence with: \"So when `/to-tickets` finishes, nothing starts building by itself: typing `/implement` is your move.\""
+   },
+   {
+    "severity": "high",
+    "where": "Try it yourself, step 7 and the closing paragraph (lines 261 and 271)",
+    "problem": "Step 7 ends with \"Then type `/exit`\". The paragraph after the checklist then says to type `/mattpocock-skills:code-review`. A reader who followed the steps in order is back in the shell, where that line does nothing. The paragraph also uses \"fixed point\", which the Lesson never explains.",
+    "evidence": "Line 261: \"Then type `/exit`.\" Line 271: \"type `/mattpocock-skills:code-review` and give it `main` as the fixed point.\" \"Fixed point\" appears nowhere else in the Lesson.",
+    "fix": "Move the fallback into the steps, before `/exit`: \"7. If the review was a bug hunt with effort levels, or said there was nothing to review, type `/mattpocock-skills:code-review main` (review everything that changed since `main`). 8. Type: \"Show me the last three commits and which branch we're on.\" Then type `/exit`.\" Keep the closing line only as the reflection question."
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 1 and step 3 (lines 233, 245) and the checklist (line 269)",
+    "problem": "`git init` names the first branch `master` unless the reader's Git is set up otherwise. The setup prompt says \"Commit it on main\", the checklist says \"`main` still holds only the setup commit\", and the review fallback uses `main`. On a default Git the reader may end up with `master` and checks that don't match. The exercise also needs Git installed, but only Claude Code is listed.",
+    "evidence": "Line 228 lists only Claude Code. Line 233: `mkdir word-tools && cd word-tools && git init && claude`.",
+    "fix": "Line 228: \"You need Claude Code installed and signed in (see [Start here](/learn/start-here)), and Git (type `git --version` in your terminal; if it says the command isn't found, install Git first).\" Step 1 command: `mkdir word-tools && cd word-tools && git init -b main && claude`."
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, steps 3, 5 and 6 (lines 242, 256, 260)",
+    "problem": "Step 3 only covers the prompt to run setup commands. The real `/implement` run in step 5 edits files and runs tests and git commit. If the reader's mode makes it ask, they get no instruction (the pilot Try says what to choose). They are also not told how to recognise the moments the checklist asks about (the tdd load, typechecks, the full suite).",
+    "evidence": "Line 242: \"(choose Yes when it asks to run setup commands)\". Step 6 covers only seam confirmation and the setup message. The checklist asks \"You saw it load the tdd Skill\" with no hint of what that looks like.",
+    "fix": "Add to step 6: \"If it asks permission to create or edit a file, run the tests or make a commit, choose Yes: that's the work you asked for.\" Add to the checklist item: \"You saw a line naming the tdd Skill (the agent loading it), and a failing test appeared before the code.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Why it matters and The idea (lines 27, 30, 41, 43)",
+    "problem": "The words \"test\", \"tests first\", \"test suite\" and \"tdd\" are never explained for a reader who has never coded with an agent. Nothing says a test is a small program that runs your code and checks the answer, or that tdd stands for test-driven development.",
+    "evidence": "Line 27: \"It may write tests afterwards, or none\". Line 30: \"tests first\". Line 41: \"It loads the tdd Skill\". Line 43 explains the full suite only in terms of \"test\".",
+    "fix": "Line 27: \"It may write tests (small programs that run your code and check it gives the right answer) afterwards, or none, and never review the result.\" Line 41: \"It loads the tdd Skill (test-driven development: write the test first; see [TDD](/learn/tdd)) and builds one slice at a time...\""
+   },
+   {
+    "severity": "medium",
+    "where": "Forward references in lines 11, 30, 34, 49, 56\u201360, 76",
+    "problem": "Several terms are used before they are explained. \"Commit\" is used in lines 11, 30 and 34 but defined at line 45. \"Merge\" and `main` appear at line 49; merge is defined at line 134 and `main` never. \"Blocking edges\" and \"unblocked\" appear in the first Checkpoint and the table, but blocking edge is defined at line 82. \"Land/landed\" is used throughout (76, 82, 132, 138) and never defined.",
+    "evidence": "Line 34: \"turns it into a commit\" (definition only at line 45). Line 49: \"to merge a branch into `main`\". Line 60: \"what makes the next ones look unblocked\". Line 76: \"with blocking edges, landed in one run\".",
+    "fix": "Line 30: \"...a fresh review, a commit (a saved snapshot of the changes).\" Line 49: \"...a proposal, usually on GitHub, to merge (combine) a branch into `main`, the project's primary branch...\" Move the blocking-edge sentence before the first Checkpoint, e.g. after line 49: \"Tickets can block each other: a blocking edge is a line on a ticket naming the tickets that must land (be built and committed) before it.\" Then line 82 just says \"Work blockers-first.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Checkpoint next-ticket, option d (line 94)",
+    "problem": "`/compact` is offered as an option, but the Lesson never says what it does. A cold reader can't weigh it against `/clear`.",
+    "evidence": "Line 94: \"`/compact`, so it keeps a summary of ticket 01\". There is no other mention of `/compact` in the body.",
+    "fix": "At line 82, after the `/clear` definition, add: \"(Its cousin `/compact`, another Built-in command, swaps the conversation for a summary instead of emptying it.)\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 84 (one checkout)",
+    "problem": "\"Checkout\" and \"amended\" are unexplained. \"Checkout\" is only implied later, at line 133.",
+    "evidence": "\"don't run two `/implement` sessions in one checkout: one user's sessions amended each other's commits, because they shared one folder.\"",
+    "fix": "\"And don't run two `/implement` sessions in one checkout (one copy of the project folder): one user's sessions rewrote each other's commits, because both were working in the same folder.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Human-in-the-loop or AFK, AFK bullet (line 187)",
+    "problem": "\"Permissive permission mode\" assumes the reader knows that the agent stops to ask before acting and that a setting controls this. This Lesson never says so.",
+    "evidence": "\"It usually needs a permissive permission mode, so the agent doesn't stop to ask...\"",
+    "fix": "\"It usually needs a permissive permission mode (Claude Code's setting for when the agent must stop and ask before it edits a file or runs a command), so nothing waits on you, plus a sandbox...\""
+   },
+   {
+    "severity": "medium",
+    "where": "Lines 77, 189, 215 (grilling)",
+    "problem": "\"Grill\" and \"grilling\" are used as if known. `/grill-with-docs` in the table gets only a link, and \"humans grill\" (189) and \"after grilling a small cleanup\" (215) are never explained in this Lesson. The same goes for `/to-spec` and `/to-tickets` (36, 82), which are named but never described.",
+    "evidence": "Line 77: \"`/grill-with-docs` first (see [Grilling](/learn/grilling))\". Line 189: \"humans grill, write the spec and cut tickets by day\". Line 82: \"after `/to-spec` and `/to-tickets`\".",
+    "fix": "Line 24: \"Say you've just agreed a comment box for this site with the agent, after it grilled you (asked question after question until the plan was settled; see [Grilling](/learn/grilling))...\" Line 82: \"...after `/to-spec` (writes the spec from the conversation) and `/to-tickets` (splits it into tickets) (see [Spec + tickets](/learn/spec-and-issues)).\""
+   },
+   {
+    "severity": "medium",
+    "where": "Line 123 (rough edges) and Cheat sheet line 304",
+    "problem": "The fix tells the reader to type `/mattpocock-skills:code-review` \"against the point you branched from\". It doesn't explain the prefixed name or what to actually type for \"the point you branched from\". \"Open on GitHub\" (meaning open issue reports) and \"effort levels\" are also unexplained here; effort is first defined at line 279.",
+    "evidence": "\"Two rough edges were still open on GitHub in October 2026... then type `/mattpocock-skills:code-review` against the point you branched from.\"",
+    "fix": "\"Two known problems were still open as bug reports on Matt's GitHub page in October 2026... Either way, let it commit, then type the Skill's full name, plugin name first, so nothing else can answer: `/mattpocock-skills:code-review main` (review everything since the branch you started from, here `main`).\" Also: \"(a bug hunt where you choose how hard it looks)\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Site story, last paragraph (line 294) vs Final test predict-run-end and line 138",
+    "problem": "The Lesson says a pull request appears only if the tracker closes work through pull requests or you ask, and the Final test says a local Markdown tracker gets no pull request. This site uses a local Markdown tracker, yet the Site story ends \"Then the pull request opened\" with no reason given. A reader will see a contradiction. The real reason, from the original journal, is that the author asked for a PR in his first message.",
+    "evidence": "d21fc2c 11-main-flow.md: \"I want to create a PR which teaches...\" and \"then `/pr` wrote the pull request\". Line 138: \"A pull request appears only if your tracker closes work through them or you ask.\"",
+    "fix": "\"...and one fix-up builder fixed all of them. Because my very first message had asked for a PR, the pull request opened at the end.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Implement-spec trade-offs, review bullet (line 167)",
+    "problem": "This bullet is hard to follow: \"it\" in \"the agent builds it\" has no clear referent, and \"Even then\" is unclear.",
+    "evidence": "\"Mid-run, every unbuilt ticket reads as a failure, the agent builds it, and another review starts. Even then it can loop: if a second broad review starts after the fix, tell it to stop.\"",
+    "fix": "\"**The review belongs at the end.** Run it mid-run and every ticket not yet built shows up as a failure, so the agent rushes to build it, then reviews again, round and round. Even a review at the end can repeat itself: if a second full review starts after the fix-up, tell it to stop.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Other developers, Warshoow bullet (line 223); Colin bullet (line 222)",
+    "problem": "\"The Built-in review answering code-review calls twice as often as Matt's\" is ambiguous: twice as often as Matt's Skill answered, or as Matt's own runs? \"Mocks\" is unexplained.",
+    "evidence": "Line 223 as quoted. Line 222: \"many tests only checked their own mocks\".",
+    "fix": "Line 223: \"His logs showed tdd never loading, and Claude Code's Built-in `/code-review` answering twice as often as Matt's code-review Skill, so his script now types each Skill's full name.\" Line 222: \"...though many tests only checked fake stand-ins (mocks) they had set up themselves, not the real code.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Scene chat, comments API replay (lines 100\u2013121)",
+    "problem": "The captions and lines use \"API\", `GET` and `POST /api/comments`, the `curl` check and \"Done when\" items with no explanation. Read as a caption sequence, a cold reader can't tell why the `curl` check needs them.",
+    "evidence": "Line 107: \"plus `GET` and `POST /api/comments`\". Line 116: \"every \\\"Done when\\\" item is met except the `curl` check, which needs you.\"",
+    "fix": "Line 100: \"...the comments API (the web address the page calls to save and load comments).\" Change the caption before line 116 to: \"# It loads code-review, which runs one fresh sub-agent per check. The ticket's \\\"Done when\\\" list includes a hand check with `curl`, a terminal program that calls the live site.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Checkpoint ticket-still-open prompt (line 56)",
+    "problem": "The prompt depends on \"ready-for-agent\" and \"none of its boxes are ticked\". The body never says that tickets carry a status label or a checklist of boxes, so a cold reader meets both for the first time here.",
+    "evidence": "Line 49 says only \"or close the ticket\".",
+    "fix": "Line 49: \"...act on the review's findings, or close the ticket (change its status label, such as \\\"ready-for-agent\\\", and tick its checklist of \\\"Done when\\\" boxes). Those jobs are yours.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 44 (code-review step)",
+    "problem": "The logic is off: the sub-agents didn't write the code, so they can't be \"biased toward code they just wrote\". The term \"axis\" is also used later (115, 216) without being introduced here.",
+    "evidence": "\"in two sub-agents: helpers with fresh, empty memories, so they aren't biased toward code they just wrote.\"",
+    "fix": "\"...checks two axes, Standards (...) and Spec (...), each in its own sub-agent: a helper with a fresh, empty memory, so it doesn't share the bias of the agent that just wrote the code.\""
+   },
+   {
+    "severity": "low",
+    "where": "Lines 28 and 215 (Smart zone numbers)",
+    "problem": "The reader gets 150k at line 28, then Matt's 140k and a 100k budget at line 215, with nothing linking them. The writing guide asks for one consistent session-length story.",
+    "evidence": "Line 28: \"about 150k tokens\". Line 215: \"He treats about 140k tokens as where his model gets noticeably dumber\".",
+    "fix": "Line 215: \"In that video he put the drop-off at about 140k tokens, a little under ask-matt's 150k rule of thumb, so he budgets roughly 100k for a job.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 217 (Sonnet/Opus); line 194 (for loop, Sandcastle library); line 131 (graph)",
+    "problem": "Model names, \"for loop\", \"library\" and \"graph\" are unexplained programming terms.",
+    "evidence": "\"He builds with Sonnet and reviews with Opus\"; \"You're the for loop\"; \"his Sandcastle library\"; \"their blocking edges make a graph\".",
+    "fix": "\"He builds with Sonnet (a cheaper, faster Claude model) and reviews with Opus (the strongest)...\"; \"You're the loop: implement ticket 1, clear, implement ticket 2.\"; \"his Sandcastle tool, or a shell script\"; \"their blocking edges make a graph: a map of which tickets wait on which.\""
+   },
+   {
+    "severity": "low",
+    "where": "Site story lines 288 and 294",
+    "problem": "`/workflows` is unexplained. \"After, the agent said: it's the Skill's last step\" reads ungrammatically. The finding count (13) differs from the original journal's \"about 15\".",
+    "evidence": "Old journal at d21fc2c (11-main-flow.md): \"The review found about 15 problems.\" Site story: \"fixed all 13 findings\".",
+    "fix": "\"...where I could follow it with `/workflows` (a Built-in command that lists background runs).\" \"'After,' the agent said: the review is the Skill's last step.\" Confirm 13 against the session log or PR #9; if it can't be confirmed, write \"about 15\" to match the original journal."
+   },
+   {
+    "severity": "low",
+    "where": "Scene flow, step at t04 (line 154) and line 133",
+    "problem": "The step that highlights node 04 has a caption mostly about ticket 03's conflict. \"The shared credits file\" is unexplained until the Site story.",
+    "evidence": "\"# 04 lands first. Before reporting done, 03 merges the integration branch in, and the shared credits file conflicts.\"",
+    "fix": "\"# 04 lands first. Before reporting done, 03 pulls in the integration branch, which now holds 04, and the two clash in the shared photo-credits file.\""
+   },
+   {
+    "severity": "low",
+    "where": "Line 223 and line 123 (GLOSSARY form)",
+    "problem": "\"Built-in\" is used as a free-standing adjective (\"the Built-in review\", \"Claude Code's Built-in `/code-review`\"). The GLOSSARY term is \"Built-in command\".",
+    "evidence": "Line 223: \"the Built-in review answering code-review calls\".",
+    "fix": "Write \"the Built-in command `/code-review`\" in both places."
+   },
+   {
+    "severity": "low",
+    "where": "Final test scenario-serial-harness prompt (line 334); scenario-afk-task option d (line 354); line 127",
+    "problem": "\"In the foreground\" and \"a prototype\" are never explained. Line 127's \"issue number\" brings in a third word for ticket.",
+    "evidence": "\"can only run one sub-agent at a time, in the foreground\"; \"through a prototype\"; \"pointing at the spec's file or issue number\".",
+    "fix": "\"...can only run one sub-agent at a time, and you wait while it works.\" \"That's a decision you need to see, by trying both, before anyone can make it.\" \"pointing at the spec's file or its ticket number on your tracker.\""
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "high",
+    "where": "content/lessons/09-implement.md:100 (\"## A session, step by step\", first paragraph)",
+    "problem": "\"It was really built with `/tdd` before `/implement` existed\" is false. `/implement` shipped in mattpocock-skills v1.1 (July 2026) and was installed when the site's v1 was built in October 2026; the author simply used `/tdd` instead.",
+    "evidence": "Repo's first commit is 2026-10-21 (`git log --reverse`: 4f849b9 \"Scaffold Next.js app\u2026 (issue 01)\"). The only plugin version ever cached is 1.3.1, installed 2026-10-21 10:48 (`ls -la ~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/` \u2192 `1.3.1  Oct 21 10:48`), and 1.3.1 contains skills/engineering/implement/SKILL.md. The aihero implement docs page carries `updatedAt: 2026-08-24` and the v1.1 changelog (2026-07-08, https://www.aihero.dev/skills/skills-changelog-v1-1-wayfinder-to-spec-to-tickets-grilling-improvements, per research/_community-and-changes.md) introduced /implement. The v1 session log (~/.claude/projects/-Users-siddharth-Developer-trying/8230810b-\u2026.jsonl) shows `/mattpocock-skills:tdd` typed 5 times and no `/implement`; the research note (research/implement.md:148) says only \"v1 never used /implement\".",
+    "fix": "Rewrite to what is true, e.g. \"It was really built with `/tdd` typed by hand, once per ticket, before I'd learnt `/implement`, so this is a replay.\""
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/09-implement.md:36",
+    "problem": "The quoted instruction \"then implement each ticket\" is attributed to `/to-tickets`, but to-tickets' SKILL.md in 1.3.1 contains no such sentence; the \"`/implement` per ticket\" wording comes from ask-matt (and the aihero implement docs page, which names ask-matt or to-tickets loosely).",
+    "evidence": "`grep -n -i implement /Users/siddharth/Developer/idea-to-shipped-work/state/skills/skills/engineering/to-tickets/SKILL.md` matches only lines 23, 73 and 92 (\"implementation easier\", \"layer-by-layer implementation list\"), none telling anyone to implement tickets. ask-matt SKILL.md step 3: \"**`/implement`** per ticket, **`/clear`ing context between each one**\". docs/engineering/implement.md: \"Wherever ask-matt or to-tickets says 'then `/implement` per ticket', that is an instruction to you\".",
+    "fix": "Attribute it to ask-matt: \"When ask-matt says `/implement` per ticket, that's an instruction to you\" (and drop the quotation marks, since the exact phrase appears nowhere)."
+   },
+   {
+    "severity": "medium",
+    "where": "content/lessons/09-implement.md:123 and :442 (sources)",
+    "problem": "Issue #1277 is described as \"review runs before the commit\", but its actual title and report is \"/implement doesn't run /code-review\"; the review-before-commit diagnosis is a commenter's suggestion (pointing at #511 and #1016), not the issue's claim. The ordering problem itself is documented on the aihero implement page, which is the better citation.",
+    "evidence": "https://github.com/mattpocock/skills/issues/1277 \u2014 title \"/implement doesn't run /code-review\", opened 2026-10-14 by shacharbardavid, labels bug + needs-triage, still open; comment by waterooox on 2026-10-15: \"`/implement` invokes the review before committing, while `/code-review` uses `git diff <fixed-point>...HEAD`\u2026 #511 and #1016 describe similar issues\". docs/engineering/implement.md: \"`implement` runs it before committing, so unless an interim commit already exists there is nothing in that diff to review.\"",
+    "fix": "In the sources line, name the issue as reported (\"issue #1277: `/implement` doesn't run `/code-review`, where a commenter traced it to the review running before the commit\") or cite #511 for the commit-ordering bug and keep #1277 for the review-not-running report; keep the body text, which is correct per the docs page."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/09-implement.md:109 (Scene chat, tdd seam line) and :41",
+    "problem": "The Scene has the agent say the seam is \"the comments module's public functions, save and list, as the spec's testing section says\". The v1 spec's Testing section names module *and* API tests, and the real v1 tests went at the API routes, so \"as the spec's testing section says\" overstates what the spec pinned down. Acceptable under the \"(illustrative)\" label, but the attribution to the spec is not accurate.",
+    "evidence": "`git show d21fc2c:.scratch/lesson-site/spec.md` lines 51\u201352: \"### Testing (see ADR 0003) / Vitest. Comments module and API tests run against the real Neon `test` branch. No database mocks.\" `git show d21fc2c:content/lessons/06-tdd.md` table: \"05 Comments API | `GET`/`POST /api/comments`, against the real test database | 12 tests\".",
+    "fix": "Change the agent line to \"\u2026save and list, plus the two API routes, as the spec and ticket say. OK?\" or drop \"as the spec's testing section says\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/09-implement.md:215",
+    "problem": "\"so he budgets roughly 100k for a job\" generalises a remark about the room left in that one session (about 40k already used) into a per-job rule.",
+    "evidence": "M6mYodf0dJM.en transcript [10:28\u201310:52]: \"I've still got about\u2026 my context window is\u2026 getting significantly dumber around 140k mark\u2026 So, I think of having like, okay, we've got 100k of budget here to remove 10 commands.\" (the 100k is what remained in that session, not a stated per-job budget).",
+    "fix": "Write \"so with about 40k already used he reckoned he had 100k of room for the job\" or \"so he saw roughly 100k of room left for that job\"."
+   },
+   {
+    "severity": "low",
+    "where": "content/lessons/09-implement.md:288 (Site story)",
+    "problem": "\"where I could follow it with `/workflows`\" implies the author watched the run in `/workflows`; the session log shows the run did use background Workflows, but the author never typed `/workflows` in that session. The hedge \"could\" keeps it technically true, but it reads as something that happened.",
+    "evidence": "Session log ~/.claude/projects/-Users-siddharth-Developer-trying/8bf55acc-42cf-45d9-a9eb-b4943908248f.jsonl: 7 `\"name\":\"Workflow\"` tool calls; the only `<\\command-name>` entries typed are `/mattpocock-skills:to-spec`, `/mattpocock-skills:to-tickets`, `/mattpocock-skills:implement-spec`. Claude Code docs confirm `/workflows` lists running workflows (https://code.claude.com/docs/en/workflows).",
+    "fix": "Either drop the clause or make the hedge explicit: \"It ran in the background as a workflow; `/workflows` would have shown its progress, though I never opened it.\""
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "high",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:100",
+    "problem": "The Lesson says the comments API ticket was built with /tdd \"before /implement existed\". That's false. /implement was already in the plugin by 1.1.0, Matt demoed it in July 2026, and this site's v1 was built on 2026-10-21. The author just didn't use it.",
+    "evidence": "CHANGELOG.md:218 opens the 1.1.0 section. CHANGELOG.md:223 says \"The /implement skill and docs point at /code-review\", and CHANGELOG.md:247 has ask-matt routing to /implement. M6mYodf0dJM.en.json 14:06-14:11: Matt types \"implement this\" in his 2026-07-16 video. AI Hero's implement page was published 2026-07-07 (research/implement.md:11). git log puts the first commit of .scratch/lesson-site/issues/05-comments-api.md on 2026-10-21 (4f849b9). research/implement.md:148 says only that v1 never used /implement.",
+    "fix": "Reword: \"It was really built with /tdd, one ticket at a time, without /implement, so this is a replay.\""
+   },
+   {
+    "severity": "high",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:36",
+    "problem": "The Lesson puts the phrase \"then implement each ticket\" in quotation marks and says /to-tickets says it. That phrase isn't in the 1.3.1 to-tickets Skill or its docs page.",
+    "evidence": "skills/engineering/to-tickets/SKILL.md never mentions /implement. Its process ends at step 5, publishing the tickets (lines 58-67), and the only implement words are \"implementation\" (lines 23, 73, 92). docs/engineering/to-tickets.md has no such phrase either. The nearest real wording is ask-matt/SKILL.md:26, which says \"/implement per ticket\". docs/engineering/implement.md:9 credits it to \"ask-matt or to-tickets\", but only ask-matt actually contains it.",
+    "fix": "Point at the real text, e.g. \"When ask-matt says '/implement per ticket', that's an instruction to you.\" Or drop the quote: \"When /to-tickets finishes, nothing starts building: typing /implement is your job.\""
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:102-121",
+    "problem": "The Scene doesn't match how code-review behaves in 1.3.1. The Scene starts on a fresh ticket branch and nothing is committed before the review. /implement passes code-review no fixed point, so code-review should ask you for one. Its diff covers only committed work, so it should also stop on an empty diff. Instead the Scene shows a clean Standards/Spec report. Line 121 then says only two moments needed you, which undercounts. Line 123 admits the review \"may see nothing\", so the Lesson contradicts its own Scene.",
+    "evidence": "code-review/SKILL.md:19 asks for the fixed point when none is given. code-review/SKILL.md:21 diffs fixed point to HEAD, and :23 says an empty diff should fail. implement/SKILL.md:15 calls code-review with no fixed point, and the commit only comes at :17. docs/engineering/implement.md:65 says there's nothing to review unless an interim commit exists. In the Lesson, line 104 says you're on a branch made for this ticket, and line 116 shows full findings.",
+    "fix": "Make the Scene show what 1.3.1 does. For example, the agent asks for the fixed point (\"main\"), or reports an empty diff, and you then follow line 123's workaround. Then count that as a moment that needed you on line 121. Or add a caption saying this replay assumes an interim commit already existed."
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:248-271",
+    "problem": "The Try it block doesn't prepare the reader for code-review's questions. Step 6 covers seams and setup only, but with no fixed point and no spec file, code-review will ask for both. Also, try-implement is a brand-new branch with nothing committed when the review runs, so the diff is empty and the review will usually stop. That means the checkbox \"A review ran with two parts, Standards and Spec\" will fail for most readers by design.",
+    "evidence": "code-review/SKILL.md:19 asks for a fixed point when none is given. code-review/SKILL.md:23 fails on an empty diff. code-review/SKILL.md:32 asks the user where the spec is when none is found. In the Lesson, line 251 creates the fresh branch, line 260 is step 6, and line 268 is the checkbox. The research note's own checklist (research/implement.md:143) reads \"If it says there's nothing to review, that's the known commit-first issue.\"",
+    "fix": "Add to step 6: \"If the review asks for a fixed point, reply main. If it asks where the spec is, say it's in my first message.\" Reword the checkbox to: \"A review started. If it found nothing to review, that's the known commit-first issue (see below).\""
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:294",
+    "problem": "The Site story ends \"Then the pull request opened.\" without saying the author asked for it. This site uses a local Markdown tracker, and the Lesson teaches that /implement-spec opens no PR on a local tracker unless you ask (line 138, and the Final test predict-run-end at lines 417-427). Without that detail, the story reads as the Skill contradicting the Lesson.",
+    "evidence": "In session log ~/.claude/projects/-Users-siddharth-Developer-trying/8bf55acc-42cf-45d9-a9eb-b4943908248f.jsonl, the author typed \"just create a pr ... just run code review by matt pocok before the pr\". The agent had said earlier \"I'll ask first\" before opening the PR. implement-spec/SKILL.md:25 opens a PR only if the tracker closes work through PRs or the user asks for one.",
+    "fix": "\"Then, because I'd asked for one, the pull request opened.\""
+   },
+   {
+    "severity": "medium",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:193",
+    "problem": "The Lesson reports Matt as saying the manual loop \"works, but it's no fun\". In the cited video he says the opposite: it's not really workable, as well as not much fun. The feedback for the Final test scenario-loop-choice repeats \"It works\" (line 360).",
+    "evidence": "BsJGo1wFTvQ.json 1:38-1:46: \"You're kind of acting like a for loop there. It's not really workable.\" Then: \"the manual loop there which is not much fun.\"",
+    "fix": "Paraphrase him correctly, e.g. \"You're the for loop: implement ticket 1, clear, implement ticket 2. Matt calls it not much fun and hard to keep up.\" Adjust the feedback on line 360 to match."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:138",
+    "problem": "This paragraph says the Skill always resolves the tickets and a PR may also appear. In step 8, though, those are two alternatives: if a draft PR exists, the Skill marks it ready for review; only if there's no PR does it resolve the tickets itself. Also, the PR is a draft opened after the first merge, not something that appears at the end.",
+    "evidence": "implement-spec/SKILL.md:25: open a draft PR after the first merge in step 5. implement-spec/SKILL.md:38: \"If a draft PR exists, mark it ready for review. Otherwise, resolve each ticket ...\". docs/engineering/implement-spec.md:32.",
+    "fix": "\"If your tracker closes work through pull requests, or you asked for one, it opens a draft PR after the first merge and marks it ready at the end. Otherwise it resolves each ticket the way your tracker closes work, and the run ends on the integration branch. Either way it removes the worktrees.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:195",
+    "problem": "The Lesson says \"In his October 2026 video...\" and then lists, as Matt's points, that /implement-spec needs no infrastructure and lets you watch and steer it. He doesn't say those things in that video. They come from the implement-spec docs page.",
+    "evidence": "BsJGo1wFTvQ.json 3:05-3:23 says only that it's worse than a deterministic loop but a good way into AFK work. docs/engineering/implement-spec.md:64 has the \"no infrastructure ... watch and steer\" point.",
+    "fix": "Credit the second half to the docs: \"The docs add that it needs no infrastructure and you can watch and steer it.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:215",
+    "problem": "The Lesson presents \"budgets roughly 100k for a job\" as Matt's general rule. In the video, 100k was simply the room he had left in that session, about 46k used out of his 140k smart zone.",
+    "evidence": "M6mYodf0dJM.en.json 10:48-10:54: \"we've got 100k of budget here to remove 10 commands\". At 11:29 the discussion so far is 46.1k tokens.",
+    "fix": "\"...so with about 46k used he reckoned he had roughly 100k of room left for the job.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:44",
+    "problem": "The Lesson describes the Standards axis as checking only the rules written in your repo. It leaves out the fixed baseline of Fowler code smells that the axis always applies, even when the repo documents no standards. That's exactly the case in the Try it block's empty repo, and Matt points it out in the cited July video.",
+    "evidence": "code-review/SKILL.md:38-41 (the smell baseline applies even when a repo documents nothing). README.md Reference: \"plus a Fowler smell baseline\". M6mYodf0dJM.en.json 15:35-15:45.",
+    "fix": "\"Standards (does it follow the rules written in your repo, plus a fixed list of classic code smells?)\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:145",
+    "problem": "In the flow Scene, ticket 04 is a side node declared after t03. A side node hangs off the main node declared just before it, so the picture shows 04 branching from 03. In the real graph, 04's only blocker is 02, and it ran alongside 03.",
+    "evidence": "contract-v1.md:93: \"it hangs off the main node declared just before it\". .scratch/main-flow-and-redesign/issues/04-main-flow-lesson.md:5: \"Blocked by: 02\". issues/03-home-page.md:14 lists 01 and 02.",
+    "fix": "Declare t04 straight after t02 so it hangs off 02 (order: t01, t02, t04 | side, t03, t05, review), and keep the captions."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:278",
+    "problem": "The common mistake \"Expecting tickets to close themselves\" isn't tied to a Skill, and the bullet just before it covers both Skills. It's true for /implement, but /implement-spec does resolve tickets (when no PR exists).",
+    "evidence": "implement-spec/SKILL.md:38. docs/engineering/implement.md:53.",
+    "fix": "\"Expecting /implement to close tickets.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:127",
+    "problem": "\"Joined Matt's main set\" is vague and is easy to confuse with the Main flow. The CHANGELOG says the Skill graduated into the Engineering bucket, which is what made it ship in the Claude Code plugin.",
+    "evidence": "CHANGELOG.md:13: \"Graduate implement-spec into the Engineering bucket, so it ships in the Claude Code plugin\".",
+    "fix": "\"...and graduated into the plugin's Engineering Skills in version 1.3.0, in October 2026.\""
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:109",
+    "problem": "The illustrative Scene says the save/list seam comes from \"the spec's testing section\". The site spec's Testing section names comments module and API tests, not save and list; those functions come from the ticket. The replay's \"All 8 slices green\" also differs from the real build: the old TDD Lesson records 12 tests for this ticket.",
+    "evidence": ".scratch/lesson-site/spec.md:51-52: \"Comments module and API tests run against the real Neon test branch\". .scratch/lesson-site/issues/05-comments-api.md:7: \"comments module (validate, save, list)\". git show d21fc2c:content/lessons/06-tdd.md:37: \"12 tests\".",
+    "fix": "Write \"as the ticket says\" (or \"as the spec and ticket say\"), and avoid specific counts in the replay, or use the real ones."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:284",
+    "problem": "The Site story says the author typed /to-spec and /to-tickets by their short names and only /implement-spec by its full name. The session log shows all three were typed with the namespaced form.",
+    "evidence": "8bf55acc-42cf-45d9-a9eb-b4943908248f.jsonl shows command-name entries /mattpocock-skills:to-spec, /mattpocock-skills:to-tickets and /mattpocock-skills:implement-spec.",
+    "fix": "\"I typed /mattpocock-skills:to-spec, /mattpocock-skills:to-tickets and then /mattpocock-skills:implement-spec, all in one session.\" Or use the short names for all three and say they were typed in full."
+   },
+   {
+    "severity": "low",
+    "where": "/Users/siddharth/Developer/idea-to-shipped-work/pr-b/content/lessons/09-implement.md:28,87,215,279",
+    "problem": "The token numbers move around: about 150k (line 28), Matt's 140k and 100k (line 215), 90k (line 87) and 150k again (line 279). The writing guide asks for one set of numbers, stated once.",
+    "evidence": "writing-guide.md:121: \"Keep the session-length story consistent (one set of numbers, stated once)\". writing-guide.md:76 gives the Smart zone canon: about 150k, with Matt's 100k-140k noted as drift.",
+    "fix": "Keep 150k as the course number, and frame line 215's 140k explicitly as Matt's own figure (\"Matt's own number has drifted\"), or drop it."
+   }
+  ]
+ },
+ "note": "first-pass findings; last label wins; source records/pr-b-finished-checks.json"
+}

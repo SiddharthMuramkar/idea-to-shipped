@@ -1,0 +1,462 @@
+{
+ "slug": "start-here",
+ "review": {},
+ "revise": {
+  "summary": "I revised content/lessons/00-start-here.md and nothing else. Both gates pass: the lint prints no ERROR lines at 1,385 words, and the vitest run passes 13 tests. The hidden high is fixed. In 5 of the 6 Final test questions the right answer was the shortest option (or tied for shortest), and the wrong options carried a \"because/since/so\" reason that the right one lacked. Now every question uses one option shape, and no right answer is the shortest or the longest by either measure. Two Final test questions were replaced so every goal is tested: scenario-which-part (Part 1) replaces scenario-where-to-start, and scenario-renamed-skill (dated sources) replaces predict-teach-first-move. The Main flow Scene now shows both forks (the prototype detour, and a small change built right here); code review is folded into the build step, and /retro now suggests changes instead of making them. The Site story now holds only repo facts: the plugin install date (which came from installed_plugins.json) and \"default effort\" are cut, and the eight same-day PR merges are dated 21 October 2026 from gh. The Eberhardt claim is also corrected: his review is from October 2026, but he tried the Skills the month before.",
+  "fixed": [
+   "Hidden high (quiz): the right answer was shortest or tied-shortest in 5 of 6 Final test questions, and wrong options had a reason clause the right one lacked; all options are now parallel, and the right answer is never the shortest or the longest by raw or rendered length",
+   "reader high (&& chains): already split one per line; the prose now says 'Press Enter after each command' and the Scene caption says 'one command per line'",
+   "reader medium (git on Windows/Linux): bullet now says to install Git for Windows (git-scm.com), which also gives Claude Code Bash, and to use the package manager on Linux; the Scene covers the Mac",
+   "reader medium (stop/permission): Try step 3 now says Esc stops it, and to choose No at a permission prompt for anything you didn't ask for",
+   "reader medium (install contradiction, /teach prerequisite): removed 'You'll install Matt's Skills in Skills'; the /teach section says it works once the Skills are installed (Try step 5)",
+   "reader medium (session undefined): defined in the plan bullet as one conversation, until you quit or clear it",
+   "reader medium (Console account): defined as Anthropic's developer account, paid with credits bought in advance (Quickstart: 'API access with pre-paid credits')",
+   "reader medium (/ask-matt in cheat sheet): row now reads 'Describe your situation to Matt's /ask-matt Skill'",
+   "reader medium (first-run screens): Scene caption and Try step 2 now say to answer its first-run questions and log in when a browser opens (Quickstart: 'follow the prompts')",
+   "reader medium (/teach prompt gives the reason): prompt is now '/teach git basics. I've never used git.'",
+   "reader medium (goal 3 untested): goal narrowed to Checkpoints, Final test and dated sources; tested by scenario-failed-final-test and the new scenario-renamed-skill",
+   "quiz medium (goal coverage): goal 1 is now tested by scenario-which-part and goal 3 by scenario-renamed-skill",
+   "quiz medium (scenario-where-to-start guessable): replaced with the new id scenario-which-part (long session goes downhill -> Part 1). I didn't use the suggested Part 4 'members area' question: it hinges on the plan-in-one-sitting split, which this Lesson doesn't teach, so Part 2 would also be defensible",
+   "quiz medium (predict-teach-first-move is recall): replaced with the new id scenario-renamed-skill (a spring 2026 blog post says to type diagnose; CHANGELOG 1.0.0 lines 310-312 confirm the rename). The prompt doesn't give the new name, and it uses a hypothetical blog post rather than an invented Matt video",
+   "quiz medium (site-story-vs-teaching): options reworded so none is impossible, and the right one no longer echoes the prompt",
+   "quiz medium (which-lesson-stubborn-bug word match): prompt no longer says 'bug'; Code review and How coding agents work replace Retro and The context window, which keeps the right answer from being the longest",
+   "quiz medium (spot-unneeded-step tell): every step now carries a reason; the Node step moved to step 2 and the options name each step",
+   "quiz low (failed-final-test cookie feedback): now says clearing the cookie loses all your answers",
+   "quiz low (teach-folder feedback): adds that Matt starts a learner in a separate workspace even to learn a codebase (s5T5oQJcJ6U 10:30-10:35)",
+   "quiz low (Checkpoint/test overlap): teach-next-session option c replaced with 'Make a new empty folder...'",
+   "acc-sources medium (CHANGELOG doesn't record write-a-prd): CHANGELOG source now lists diagnose->diagnosing-bugs (1.0.0) and to-prd->to-spec (1.1.0); write-a-prd is sourced to the March video at 4:05, checked in the transcript",
+   "acc-sources low (setup page title, PATH docs): sources now cite Quickstart, Advanced setup, Troubleshoot installation and login, and Authentication; the feedback says 'install troubleshooting docs'",
+   "acc-sources low (pay-as-you-go): replaced with credits bought in advance",
+   "acc-sources low (install date provenance): date dropped under the Site story rule; 'the same day' is now 21 October 2026, from gh PR mergedAt for PRs 1-8",
+   "acc-skills medium (flow Scene shows no forks): added side nodes 'Detour: a quick prototype' and 'Small change: build it right here', matching ask-matt SKILL.md:20-28",
+   "acc-skills medium (separate code-review node): review folded into the build caption ('/implement ... closes with a code review'), per implement SKILL.md:11,15 and ask-matt :30",
+   "acc-skills medium (/retro 'improves'): caption now says it suggests changes and you choose which to make (retro SKILL.md:7,25); the Retro option and its feedback are gone from the Checkpoint",
+   "acc-skills low (Retro is in Part 4): retro caption says it has its own Lesson in Part 4",
+   "acc-skills low (Skill auto-loading): 'or, for some Skills, when your request matches what it's for'",
+   "acc-skills low (learning record needs evidence): caption now 'You get the practice right' (LEARNING-RECORD-FORMAT.md:33,40)",
+   "acc-skills low (community step incomplete): sentence cut for the word budget instead of expanded",
+   "acc-skills low (rename attribution): same fix as the acc-sources medium",
+   "acc-skills low (/teach 'covers any gaps' overclaim): sentence removed",
+   "reader lows: WSL, Bash and Node.js glossed; 'Visitors (readers of this site)'; 'version 1.3.1 of Matt's Skills'; Scenes 'above it on a phone' with no 'context meter'; 'not recognized' added for Windows; ls shows MISSION.md; Linux terminal named; Site story jargon cut or glossed ('effort' cut, Neon copies spelled out, 'issues (tickets)', 'full-stack (pages, server and database)'); HTML glossed as a web page",
+   "Accuracy (found while checking): Eberhardt line said he tried the Skills in October 2026; the review (2026-10-19) says 'last month', so it now reads 'In an October 2026 review ... found their practices sound but said they don't remove the need for your judgement'",
+   "Try step 1 now covers a missing git as well as a missing claude ('If either isn't found')"
+  ],
+  "deferred": [],
+  "lowsDeferred": 1,
+  "declined": [],
+  "words": 1385,
+  "lintClean": true,
+  "testsPassed": true
+ },
+ "rounds": {
+  "r1": {
+   "checks": {
+    "accuracy": [
+     {
+      "severity": "medium",
+      "where": "What you need, Checkpoint command-not-found: \"A new window picks up the folder the installer put `claude` in.\" (line 62). Also line 64 \"The old window just hasn't seen the new command.\" and Final test spot-unneeded-step, line 295 \"A new window is what lets the terminal find `claude`\"",
+      "problem": "The advice (try a new window first) is right, but the reason given is wrong. The native installer never adds its folder to PATH, so a new window only helps if that folder is already on PATH. On a stock Mac with zsh, ~/.local/bin usually isn't, so the new window fails too. The reader learns that the installer set PATH up, and the Final test feedback repeats it as fact.",
+      "evidence": "troubleshoot-install docs (https://code.claude.com/docs/en/troubleshoot-install, read 2026-10-24), Verify your PATH: the installer reports `Native installation exists but ~/.local/bin is not in your PATH.` under `Setup notes:` and \"prints the fix with that note but doesn't change PATH itself.\" setup docs: \"open a new terminal window and run `claude --version` ... If your shell says `claude` isn't found ... the install directory isn't on your PATH yet\".",
+      "fix": "Line 62: \"> Right. The docs say to check in a new window first. If it's still missing, the installer didn't put its folder on your PATH (the list of folders your terminal searches for commands): its 'Setup notes' print the fix, and the install troubleshooting docs explain it.\" Line 64: \"> Don't reinstall yet. First rule out the old window, then check the installer's Setup notes about PATH.\" Line 295: \"> The docs say to check the install in a new window, and the version number proves it worked.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-renamed-skill: \"A blog post from spring 2026 says to type diagnose to start Matt's bug-hunting Skill. You try it and nothing matches\" (line 325)",
+      "problem": "The premise contradicts how the renamed Skill behaves. `diagnosing-bugs` is model-invoked, and its description names the plain word \"diagnose\" as a trigger. If the Visitor types the word diagnose as written, the agent will probably start `/diagnosing-bugs`, so \"nothing matches\" is false. The course's own facts say plain words can start a model-invoked Skill. The scenario only holds for the old slash name.",
+      "evidence": "~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/diagnosing-bugs/SKILL.md:3 `description: ... Use when the user says \"diagnose\"/\"debug this\" ...` (and there's no disable-model-invocation line). writing-guide.md, Facts: \"Plain words can start a model-invoked Skill, never a user-invoked one\". The rename date does fit: `gh api repos/mattpocock/skills/commits/47bde84...` shows 2026-06-17.",
+      "fix": "Make it the slash name, left unbackticked so the lint still passes: \"A blog post from spring 2026 says to type /diagnose at the start of your message to start Matt's bug-hunting Skill. You type /diagnose and no Skill by that name exists, though his other Skills, like `/teach`, work fine. What's the likeliest reason?\""
+     },
+     {
+      "severity": "medium",
+      "where": "How to read a Lesson: \"build a step at a time as you scroll\" (line 72), \"Press Check to see feedback on your choice and how other Visitors ... answered\" (line 73), \"80% passes ... retry ... latest Attempt counts, and passed Lessons get a tick on the home page\" (line 76), \"Your answers are saved under a random ID in a cookie\" (line 79). The Final test scenario-failed-final-test (lines 300-310) depends on the same features.",
+      "problem": "None of this site behaviour exists yet. Today questions show a \"Show the answer\" box with no Check button, no grading, no Attempts, no ticks and no cookie, and Scenes show only their final state. If this Lesson ships before the Lesson-engine tickets, a Visitor reads false claims about the page in front of them. The handoff kept the README Features section on main's text for exactly this reason.",
+      "evidence": "src/app/learn/[slug]/question.tsx:5-9: \"Nothing grades yet (ticket 05 adds checking, scores and crowd stats), so there's no Check button\". .scratch/course-rewrite/HANDOFF.md:9: \"the course's Features describe grading, the 80% pass mark, the progress cookie and Scenes that step, and none of those are built\". HANDOFF.md:21-22: \"Not built yet: quizzes (tickets 02 and 05), Scene stepping (04)\". .scratch/lesson-engine/issues/02, 04 and 05 are all `Status: ready-for-agent`.",
+      "fix": "Hold this Lesson until Lesson-engine tickets 02, 04 and 05 have shipped, and record that dependency in HANDOFF.md step 6. If it has to ship first, change line 73 to \"Pick an option, then open the answer box to compare\" and line 76 to \"Questions checked together; once grading ships, 80% passes ...\", and hold back scenario-failed-final-test until then."
+     },
+     {
+      "severity": "low",
+      "where": "Site story, closing line: \"today `/grill-with-docs` would replace rows 1 and 2.\" (line 249)",
+      "problem": "Row 3 shows the plain words `write the spec` producing a spec and 6 tickets. A cold reader may copy that, but `/to-spec` and `/to-tickets` are user-invoked, so plain words can't start them. The closing line names only rows 1 and 2, which implies the rest still matches the Main flow.",
+      "evidence": "skills/engineering/to-spec and to-tickets are listed under User-invoked in ~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/README.md:14-15. writing-guide.md, Facts: \"Plain words can start a model-invoked Skill, never a user-invoked one\". d21fc2c:content/lessons/03-spec-and-issues.md: the author typed `write the spec` and the agent followed docs/agents/issue-tracker.md.",
+      "fix": "\"That order isn't Matt's Main flow, so the course follows his: today `/grill-with-docs` would replace rows 1 and 2, and `/to-spec` then `/to-tickets` row 3.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test scenario-renamed-skill, option b feedback: \"Both routes install the same Skills under the same names.\" (line 329)",
+      "problem": "The names aren't quite the same. The plugin route also gives every Skill a `mattpocock-skills:` prefix, which this Lesson's own Site story uses (`/mattpocock-skills:code-review`). So option b is partly true, and its feedback overstates the point.",
+      "evidence": "Lesson line 243: `/mattpocock-skills:code-review`. writing-guide.md, Name clashes: \"Matt's Skill is always reachable as `/mattpocock-skills:code-review`\".",
+      "fix": "\"> Both routes install the same Skills. The plugin only adds a `mattpocock-skills:` prefix you rarely need, and neither route has a Skill called diagnose any more.\""
+     },
+     {
+      "severity": "low",
+      "where": "Scene flow, build caption: \"Either way, `/implement` builds by driving `/tdd` ...\" (line 121)",
+      "problem": "For a build split into tickets, ask-matt offers two ways to work the tickets: `/implement` per ticket, or `/implement-spec` for the whole spec in one run. The caption gives only one, which a later Lesson then contradicts.",
+      "evidence": "skills/engineering/ask-matt/SKILL.md:25-27 (\"Then work the tickets one of two ways: /implement per ticket ... /implement-spec for the whole spec in one run\") and :30 (\"/implement runs both per ticket; /implement-spec's implementers each drive /tdd\").",
+      "fix": "\"Either way, the code is built by driving `/tdd` (one small automated check, then just enough code to pass it), usually through `/implement`, and it closes with a code review against your coding standards and the spec.\""
+     },
+     {
+      "severity": "low",
+      "where": "What you need: \"You'd only use it for the other way of installing Matt's Skills, or to run this site's code.\" (line 36). Also Final test spot-unneeded-step feedback, line 293.",
+      "problem": "\"Only\" leaves out the npm route for installing Claude Code itself, which needs Node.js 22 or later. This matters a little because the Final test checks the goal \"know when you'd need Node.js\".",
+      "evidence": "setup docs (https://code.claude.com/docs/en/setup, read 2026-10-24): \"You can also install Claude Code as a global npm package. The npm package requires Node.js 22 or later.\"",
+      "fix": "Line 36: \"With the native installer, Claude Code doesn't need this JavaScript tool. You'd only use it for the other way of installing Matt's Skills, or to run this site's code.\""
+     }
+    ],
+    "quiz": [
+     {
+      "severity": "high",
+      "where": "Final test, test scenario-failed-final-test: \"You finish a Lesson's Final test with 4 of 6 right, so it isn't passed\" (lines 300-310). The cause is in How to read a Lesson, lines 72-79: \"Press Check\", \"80% passes\", \"passed Lessons get a tick\", \"saved under a random ID in a cookie\".",
+      "problem": "This question's setup and answer key assume a site that grades: a score, pass or fail, a retry, a latest Attempt that counts, and Answers saved in a cookie. None of that is built, and PR B is set to ship all 20 Lessons before it is. On the live site a Final test has no score, so the setup can never happen. Option c's feedback (\"clearing it loses all of them\") is false today, because nothing is saved. The body lines the question rests on tell Visitors to do things they can't: press a Check button that isn't there, and look for ticks that never appear. Line 72 also promises Scenes that step as you scroll, which aren't built either.",
+      "evidence": "src/app/learn/[slug]/question.tsx:5-9: \"Nothing grades yet (ticket 05 adds checking, scores and crowd stats), so there's no Check button\". .scratch/lesson-engine/issues/05-checkpoints-and-final-test.md has \"Status: ready-for-agent\" and a 2026-10-23 comment: \"Deferred from the first release.\" .scratch/course-rewrite/HANDOFF.md:9 says the course's Features describe \"grading, the 80% pass mark, the progress cookie and Scenes that step, and none of those are built\". HANDOFF.md:21-22: \"Questions show a 'Show the answer' box with no grading. Scenes show their final state.\" The HANDOFF plan's step 6 is \"Ship all 20 at once\", and tickets 02 and 05 are listed under \"for later tickets\".",
+      "fix": "The brief asks for the 80% pass mark and retries, so the author has to pick one of two routes. (a) Make tickets 02, 04 and 05 block the merge of start-here. (b) Describe the site as it is today. Line 72: \"...such as a chat, a terminal, a flow chart or a file list, each with numbered captions to read in order.\" Line 73: \"**Checkpoints.** One question right after the idea it checks. Pick an answer, then open Show the answer to see why each option is right or wrong. They never count towards anything, so guess freely.\" Line 76: \"**The Final test.** Questions at the end on the Lesson's goals. Answer them all, then open each answer to check yourself.\" Cut line 79. Then replace this question with:\n```test scenario-unsure-checkpoint\nHalfway through a Lesson, a Checkpoint asks something you're not sure about. What's the best move?\n- [ ] Skip it, since a wrong guess lowers your Final test score.\n  > Checkpoints never count towards anything. A wrong guess costs nothing, and the feedback teaches you.\n- [ ] Reread the whole Lesson from the top before you answer.\n  > A Checkpoint sits right after the idea it checks, so the section just above is all you need.\n- [ ] Jump to the Final test, since only it shows the answers.\n  > Every Checkpoint shows its own answer and why each option is right or wrong.\n- [x] Guess, then read why each option is right or wrong.\n  > Right. Checkpoints never count, so a guess is free, and the feedback on every option shows what you missed.\n```\nThe right option is 51 characters, the shortest of the four."
+     },
+     {
+      "severity": "medium",
+      "where": "How to read a Lesson, checkpoint site-story-vs-teaching, option d: \"`/grilling`, since the Site story is newer than the teaching.\" (line 89)",
+      "problem": "Option d is a weak distractor. Nothing in the Lesson suggests the Site story is newer. The stem itself frames the story as the past (\"the author typed\"), and line 75 calls it \"what happened\". No real reader holds this belief, so the question is really a choice among three options.",
+      "evidence": "Line 75: \"the story is what happened, the teaching is what to do.\" Line 82: \"A Lesson's Site story box says the author typed `/grilling` to start.\" Nothing in the Lesson's text compares how old the story and the teaching are.",
+      "fix": "Replace option d with a real beginner belief, that the more concrete worked example wins:\n- [ ] `/grilling`, since the Site story shows the steps in more detail.\n  > Detail isn't the point. The story records one past run, mistakes included. The teaching is what to do now.\nAt 66 characters it's longer than the right option (61) and shorter than b (69), so the length rule still passes."
+     },
+     {
+      "severity": "medium",
+      "where": "The four Parts, checkpoint which-lesson-stubborn-bug, option d: \"How coding agents work\" (line 137)",
+      "problem": "Option d is a weak distractor. Nobody would turn to an explanation of how agents read files to find out why a comment box drops comments. An earlier review flagged \"The context window\" in this slot for exactly this reason, and the revision swapped in another background Lesson from Part 1 that is just as off-topic. Only Triage and Code review are real competitors. The right answer is also the only title that names a kind of problem.",
+      "evidence": "The option's own feedback admits the mismatch: \"That Lesson explains the agent itself... It won't walk you through hunting down why your code misbehaves.\" The earlier quiz-lens finding in .scratch/course-rewrite/review/findings/start-here.json called \"The context window\" a weak distractor. Lint constraint: \"Diagnosing bugs\" is 15 characters, so a shorter title such as \"Retro\" (5) would make the right answer the longest and fail src/lessons/course-lint.ts:89.",
+      "fix": "Use a real misconception, \"just use a smarter model\", from a title long enough to pass the length rule:\n- [ ] Models, effort & ultracode\n  > A stronger model or more effort won't tell you why comments vanish. First you need the cause, and that's what Diagnosing bugs is for."
+     },
+     {
+      "severity": "medium",
+      "where": "What you need, checkpoint command-not-found, option d: \"Upgrade to a higher plan.\" (line 65)",
+      "problem": "Option d is an obviously silly distractor. Nothing a beginner reads suggests that a plan affects whether the terminal can find a program, and the option's own feedback concedes the point. With it, the question offers only three real choices.",
+      "evidence": "Line 66 is the option's feedback: \"Your plan only matters once you log in. The terminal can't even find `claude` yet.\" The body ties the plan only to logging in (line 34).",
+      "fix": "Replace option d with a belief a beginner might really hold, that the version check needs a login:\n- [ ] Log in first, then run the version check again.\n  > There's nothing to log in to yet: the terminal can't find `claude` at all. You log in the first time `claude` starts.\nAt 47 characters it's longer than the right option (41)."
+     },
+     {
+      "severity": "medium",
+      "where": "Learn anything with /teach, checkpoint teach-next-session, right option d: \"In `~/learn-git`, type `/teach` and tell it where you're stuck.\" (line 176)",
+      "problem": "Wording tell. The stem names the folder `~/learn-git`, and the right option is the only one that repeats it. It also echoes the body's own instruction almost word for word. A reader can match the folder name without knowing that /teach keeps its state in files.",
+      "evidence": "Stem, line 169: \"Last week you ran `/teach` in `~/learn-git`\". Body, line 164: \"To carry on later, open Claude Code in that folder and type `/teach` again.\" Options a, b and c (lines 170, 172, 174) don't name any folder.",
+      "fix": "Let a wrong option name the same folder, so the folder stops being the clue:\n- [ ] In `~/learn-git`, paste last week's lesson so it remembers you.\n  > No need. Everything it knows about you is already saved in the folder's files.\nAt about 64 characters it doesn't make the right option (63) the longest; c is still 68."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, test scenario-free-plan: \"only has the free claude.ai plan. What else do they need?\" (lines 277-278)",
+      "problem": "Two problems. First, \"What else do they need?\" assumes something is missing, so option a (\"Nothing more than the free plan\") is ruled out by the question itself. Second, the stem repeats the body's defining phrase almost word for word, so the question tests recognition of a sentence rather than transfer to a new case.",
+      "evidence": "Body, line 34: \"The free claude.ai plan doesn't include Claude Code.\" Stem, line 277: \"only has the free claude.ai plan. What else do they need?\" The writing guide's Questions rules (lines 118 and 62) say \"Don't restate the defining phrase of the right answer in the prompt\" and \"no wording tells\".",
+      "fix": "```test scenario-free-plan\nYour friend has only ever used Claude's free chats in the browser. They've just installed Claude Code with the native installer and want to follow along. Is anything missing?\n- [ ] No, their chat account works once they log in\n  > Free claude.ai chats don't include Claude Code at all. They need a paid plan or a Console account.\n- [ ] A GitHub account to log in with\n  > Claude Code logs in with a Claude account in the browser, not with GitHub.\n- [x] A paid plan or a Console account\n  > Right. Claude Code needs a paid Pro, Max, Team or Enterprise plan, or a Claude Console account with credits bought in advance.\n- [ ] Node.js installed alongside Claude Code\n  > The native installer doesn't need Node. The plan is what's missing.\n```\nThe options are 47, 31, 32 and 39 characters, so the right one isn't the longest."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, test scenario-teach-folder, right option a: \"In a new folder, so SQL gets a workspace of its own.\" (line 314)",
+      "problem": "Wording tell. The right option is the only one that mentions SQL, the stem's topic, and the only one that repeats the Lesson's catchphrase \"of its own\". That phrase appears in goal 4, the bold rule, the Try block and the cheat sheet. The right option also says only \"a new folder\", which doesn't rule out a new folder inside `~/recipes`, the very thing the Lesson forbids.",
+      "evidence": "Stem, line 313: \"want to spend the next two weeks learning SQL properly\". The phrase \"of its own\" appears in goal 4 (line 17), the bold rule \"run it in an empty folder of its own, never in your project\" (line 164), Try step 5 (line 208) and the cheat sheet (line 260). Options b, c and d (lines 316-321) mention neither SQL nor \"of its own\".",
+      "fix": "- [x] In a new empty folder, such as `~/learn-sql`.\nKeep the feedback. Like b and d, the option now names a place, and at 45 characters it's shorter than b (52) and d (58)."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, test scenario-renamed-skill, option b's feedback: \"Both routes install the same Skills under the same names.\" (line 329). Also option a: \"The plugin install quietly failed.\" (line 326)",
+      "problem": "Option b's feedback says something this very Lesson contradicts. The plugin route also gives every Skill a prefixed name, `/mattpocock-skills:<name>`, and this Lesson's own Site story uses one. A careful reader could argue for b on that basis, and the feedback would then teach them something false. Separately, the stem's \"his other Skills, like `/teach`, work fine\" rules out option a by design, which leaves a distractor nobody can choose.",
+      "evidence": "Lesson, line 243: \"`/mattpocock-skills:code-review`\". Writing guide, line 75: \"Matt's Skill is always reachable as `/mattpocock-skills:code-review`.\" Writing guide, line 83: the npx route \"copies editable files\". The rename itself checks out: CHANGELOG 1.0.0 says \"Rename the **`diagnose`** skill to **`diagnosing-bugs`**\", from commit 47bde84, dated 2026-06-17. That is after the spring of 2026, so the stem is consistent.",
+      "fix": "Option b's feedback: \"  > Neither route has a Skill called diagnose in 1.3.1, so the route can't be the reason. The name itself changed over time.\" Replace option a with a belief the stem doesn't already rule out:\n- [ ] Bug-hunting Skills only start on their own, never by typing.\n  > Any of Matt's Skills starts when you type its name, and some can also start on their own. The name in the post is out of date.\nThat feedback matches the glossary's definition of a Model-invoked Skill: \"You can still type its name to start it yourself.\" At 60 characters the new option is longer than the right option (55)."
+     },
+     {
+      "severity": "low",
+      "where": "Wrong options across several questions: checkpoint teach-next-session b and c (lines 172, 174); test scenario-free-plan a (line 278); test scenario-failed-final-test b (line 304); test scenario-teach-folder c and d (lines 318, 320)",
+      "problem": "Sweeping words (\"everything\", \"each session\", \"Nothing more\", \"can only\", \"just as well\", \"every project\") appear only in wrong options, and never in a right one. A test-wise reader who avoids absolute words gains an edge on 5 of the 10 questions.",
+      "evidence": "\"erased everything it knew\"; \"each session needs a fresh workspace\"; \"Nothing more than the free plan\"; \"can only be taken once\"; \"works just as well\"; \"so every project you have can use it\". None of the right options (lines 61, 87, 131, 176, 266, 282, 292, 308, 314, 330) uses such a word.",
+      "fix": "Soften two or three of them. Teach-next-session b: \"Start from scratch, because a fresh session forgot last week.\" Teach-folder d: \"In your home folder, so your other projects can reach it too.\" Failed-final-test b, if that question stays: \"Accept the result, since your first go is the one that's kept.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test, test scenario-which-part, option d's feedback: \"Level up builds on everything before it.\" (line 273). Also The four Parts, line 97: \"why its working memory fills up\"",
+      "problem": "The answer key depends on an inference the Lesson never states: that a filling working memory makes the agent's work worse. Line 97 says only that the memory fills up. Part 4 lists \"choosing models\", and option d's feedback doesn't answer the real belief behind it, that a better model would stop the sloppiness.",
+      "evidence": "Line 97: \"how an agent works, why its working memory fills up, and what a Skill is.\" Line 100 (Part 4): \"choosing models\". Writing guide, line 76: \"a session can be in the dumb zone with most of the window free\".",
+      "fix": "Line 97: \"how an agent works, why its work gets worse as its working memory fills up, and what a Skill is.\" Option d's feedback: \"  > Part 4 covers choosing models, but a long session goes downhill on any model as its working memory fills. That's a foundation, in Part 1.\""
+     },
+     {
+      "severity": "low",
+      "where": "The Node.js idea is tested three times: checkpoint command-not-found a (line 59), test scenario-free-plan d (line 284), and test spot-unneeded-step, whose answer is step 2 (line 292)",
+      "problem": "One misconception takes up three slots. The Checkpoint's feedback (\"doesn't need Node\") also gives away the spot question's answer, and that spot question's step 3 restates the Checkpoint's answer (open a new window). An earlier review flagged the repeated Node distractor in scenario-free-plan, and the revision moved it from position a to d rather than replacing it.",
+      "evidence": "Line 60: \"Claude Code's native installer doesn't need Node\". Line 289: \"(3) opened a new terminal window, so it could find `claude`\". .scratch/course-rewrite/review/findings/start-here.json (quiz, low): \"The Node.js distractor repeats a misconception that spot-unneeded-step tests directly\".",
+      "fix": "In scenario-free-plan, replace option d:\n- [ ] The Claude desktop app installed first\n  > Claude Code runs in the terminal on its own, so no app is needed. The plan is what's missing.\nAt 38 characters it is still longer than the right option (32)."
+     },
+     {
+      "severity": "low",
+      "where": "How to read a Lesson, line 76: \"Your latest Attempt counts\". Also test scenario-failed-final-test, option c: \"forgets your last Attempt\" (line 306)",
+      "problem": "\"Attempt\" is a glossary term, capitalised as one, but the Lesson never explains it, and a Final test option relies on it.",
+      "evidence": "GLOSSARY.md:76: \"**Attempt**: One submission of a whole Final test by one Visitor, with its score.\" The word appears nowhere in the Lesson before line 76.",
+      "fix": "Line 76: \"Your latest Attempt (one go at the whole Final test) counts\". If the high finding's route (b) is taken, the sentence goes, and so does this issue."
+     }
+    ],
+    "reader": [
+     {
+      "severity": "medium",
+      "where": "Checkpoint command-not-found, prompt: \"In the same terminal window, you type `claude --version`\" (line 58)",
+      "problem": "The prompt gives the answer away. It stresses \"the same terminal window\", and the right option (line 61) is the only one about the window: \"Open a new terminal window and try again.\" A reader can match the words without understanding why a new window helps.",
+      "evidence": "Lesson line 58: \"In the same terminal window, you type `claude --version` and get \\\"command not found\\\"\"; line 61: \"- [x] Open a new terminal window and try again.\" Writing guide, Questions: \"no wording tells\"; pilot lessons: \"Don't restate the defining phrase of the right answer in the prompt.\"",
+      "fix": "Line 58: \"The installer has just finished. You type `claude --version` and get \\\"command not found\\\" (on Windows, \\\"not recognized\\\"). What do you try first?\" The answer stays the same, because the reader hasn't opened a new window."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-which-part (line 265) vs The four Parts, Part 1 bullet: \"why its working memory fills up\" (line 97)",
+      "problem": "The right answer depends on a link the Lesson never makes. The question describes sloppier answers and forgotten decisions in a long session. The Lesson only says Part 1 explains \"why its working memory fills up\", never that a full memory makes the agent's work worse. A cold reader can reasonably pick \"Part 3, When things go wrong\", because the agent going wrong looks like things going wrong. The question has one right answer only if you already know about context windows.",
+      "evidence": "Line 97: \"how an agent works, why its working memory fills up, and what a Skill is.\" Line 265: \"the agent's answers get sloppier and it starts contradicting decisions you settled at the start... Which Part explains it?\" No line of the Lesson connects a filling memory with worse answers. Writing guide, Questions: \"One unambiguous right answer from what the Lesson teaches.\"",
+      "fix": "Line 97: \"- **Part 1, Foundations:** how an agent works, why its working memory fills up and its work slips in a long session, and what a Skill is. [links unchanged]\" The Lesson is at 1,385 of 1,400 prose words (lint), so offset the extra words. The low finding on line 249 frees 19."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-renamed-skill, prompt: \"says to type diagnose to start Matt's bug-hunting Skill. You try it and nothing matches\" (line 325)",
+      "problem": "The premise doesn't hold as written. The name has no slash, so it reads as typing the plain word \"diagnose\". In 1.3.1 diagnosing-bugs is model-invoked, and its description tells the agent to start it when the user says \"diagnose\". Typing the word would start the very Skill the question says can't be found. The question means the old slash name, but it never says so.",
+      "evidence": "skills/engineering/diagnosing-bugs/SKILL.md:3: description \"... Use when the user says \\\"diagnose\\\"/\\\"debug this\\\", or reports something broken...\" (no disable-model-invocation). Writing guide facts list diagnosing-bugs as model-invoked: \"Plain words can start a model-invoked Skill.\"",
+      "fix": "Line 325: \"A blog post from spring 2026 says Matt's bug-hunting Skill is called diagnose. You type a slash and that name, and no such Skill appears, though his other Skills, like `/teach`, work fine. What's the likeliest reason?\" (No backticks on the old name, so the lint still passes.)"
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-renamed-skill, option b: \"The post used the other install route, which names Skills differently.\" and its feedback \"Both routes install the same Skills under the same names.\" (lines 328-329)",
+      "problem": "The feedback is false, and it contradicts the Skills Lesson. The plugin gives each Skill a full name with a `mattpocock-skills:` prefix (this Lesson's own Site story shows `/mattpocock-skills:code-review`). The npx route lets you choose which Skills to install and rename them. Also, the plugin didn't exist in spring 2026, so a spring 2026 post really did use the other route, which makes half the distractor true. A careful reader could defend b.",
+      "evidence": "Claude Code docs, https://code.claude.com/docs/en/skills: plugin skills are \"namespaced by plugin\" (\"/my-plugin:review\"), and the bare name works only \"unless another command already uses that name\". content/lessons/03-skills.md:135: \"Each answers to its short name, like `/grill-me`, and its full name, `/mattpocock-skills:grill-me`\"; :137: npx \"asks which Skills you want\"; :241: \"On the npx route the files are yours, so you can rename the folder\"; :137: Matt's July 2026 walkthrough came \"before the plugin existed\". Release dates: v1.0.0 (the diagnose rename) is 2026-06-17 (gh api repos/mattpocock/skills/releases).",
+      "fix": "Replace option b and its feedback with: \"- [ ] That Skill only starts inside a git repo.\\n  > Where you are doesn't hide a Skill's name. `/teach` works, so the Skills are loaded; this name is out of date.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Site story table, row 7: \"`/mattpocock-skills:code-review`\" (line 243)",
+      "problem": "A cold reader sees one Skill name with a prefix, unlike every other row, and the Lesson never says why. It looks like a different kind of name, and it backs up the \"names Skills differently\" distractor in scenario-renamed-skill. The name itself is right: the old journal Lesson records it.",
+      "evidence": "`git show d21fc2c:content/lessons/07-code-review.md` under \"What I typed\": \"/mattpocock-skills:code-review\". grep finds no other mention of the prefix in 00-start-here.md. The reason is in the writing guide facts (\"Claude Code has its own Built-in `/code-review`... Matt's Skill is always reachable as `/mattpocock-skills:code-review`\") and in 03-skills.md:241.",
+      "fix": "Row 7: \"| 7 | `/mattpocock-skills:code-review` (its full name: Claude Code has its own `/code-review`) | The finished code checked against the spec |\" Offset the words elsewhere (see the line 249 low)."
+     },
+     {
+      "severity": "medium",
+      "where": "What you need, Node.js bullet: \"the other way of installing Matt's Skills\" (line 36); also spot-unneeded-step feedback (line 293), the renamed-skill distractor \"the other install route\" (line 328), and \"plugin\" (lines 211, 231, 326)",
+      "problem": "The Lesson says \"the other way\" of installing Matt's Skills before it has shown any way. The first route appears only later, in optional step 5, as a bare `claude plugin install` command, and the word \"plugin\" is never explained. A cold reader can't tell what either route is, but three questions or feedback lines assume they can.",
+      "evidence": "Line 36: \"You'd only use it for the other way of installing Matt's Skills, or to run this site's code.\" Line 208: \"5. Optional: install Matt's Skills...\" is the first install route shown. The word plugin first appears at line 211 (the command) and line 231, with no explanation. The npx route is in the writing guide facts (\"The other route, `npx skills@latest add mattpocock/skills`\").",
+      "fix": "Line 36: \"**Node.js is optional.** Claude Code doesn't need this JavaScript tool. You'd only use it for `npx`, a second way to install Matt's Skills (this course uses the plugin), or to run this site's code.\" Line 208: \"5. Optional: install Matt's Skills as a plugin (an add-on Claude Code installs and keeps updated), then start a learning folder of its own.\""
+     },
+     {
+      "severity": "medium",
+      "where": "The four Parts, Part 2 bullet: \"[Spec + tickets]... [TDD]... [PR + ship]\" (line 98); flow Scene captions (lines 121, 123)",
+      "problem": "Spec and tickets first appear as link titles at line 98 and aren't explained until the Scene caption at line 117. TDD and PR are never expanded anywhere. The Scene says `/tdd` and \"A pull request\" but never connects them to the abbreviations in the Lesson titles.",
+      "evidence": "grep finds \"TDD\" only at line 98 and \"PR\" only in the \"PR + ship\" link (line 98). Line 121: \"`/implement` builds by driving `/tdd` (one small automated check...)\"; line 123: \"A pull request (a proposed change, checked before it joins the main code)\". Pilot lessons in the writing guide: define spec and ticket at first use.",
+      "fix": "Line 121: \"...builds by driving `/tdd` (test-driven development: one small automated check, then just enough code to pass it)...\" Line 123: \"A pull request, or PR (a proposed change, checked before it joins the main code), is how...\" Line 98: \"Matt's path from idea to shipped code, step by step (the picture below explains each step), then the whole map.\" Scene captions don't count towards the word budget."
+     },
+     {
+      "severity": "medium",
+      "where": "Flow Scene, caption at `build`: \"Either way, `/implement` builds by driving `/tdd`... and closes with a code review against your coding standards and the spec.\" (line 121)",
+      "problem": "The Scene contradicts itself. The caption just before it (line 119) says a small change \"skips the spec and tickets\". Then \"Either way\" says the review always checks against the spec. In 1.3.1, when there's no spec, code-review skips its Spec check.",
+      "evidence": "Line 119: \"A small change skips the spec and tickets: `/implement` builds it right here\". skills/engineering/code-review/SKILL.md:32: \"If they say there isn't one, the **Spec** sub-agent will skip and report \\\"no spec available\\\".\"",
+      "fix": "Line 121: \"Either way, `/implement` builds by driving `/tdd` (...), and closes with a code review against your coding standards and, when there is one, the spec.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Cheat sheet, row \"Find which Skill fits | Describe your situation to Matt's `/ask-matt` Skill\" (line 259)",
+      "problem": "`/ask-matt` first appears in the cheat sheet. The body never teaches it, so the cheat sheet adds new material instead of recapping. \"Describe your situation to\" it also doesn't tell the reader to type the name first. ask-matt is user-invoked, so describing your situation in plain words won't start it.",
+      "evidence": "grep: `/ask-matt` appears only at line 259 and in the sources. skills/engineering/ask-matt/SKILL.md:4 `disable-model-invocation: true`. Writing guide facts: \"Plain words can start a model-invoked Skill, never a user-invoked one: type the command at the start of your message.\"",
+      "fix": "Row: \"| Find which Skill fits | Type `/ask-matt`, then your situation, in one message ([Skills](/learn/skills) covers it) |\". Or cut the row, since the Skills Lesson teaches `/ask-matt`."
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, step 5 and checklist: \"Answer its questions, then type `/exit`.\" and \"`ls` in `~/learn-git` lists `MISSION.md`\" (lines 208-227)",
+      "problem": "A beginner can't tell when the questions are over. `/teach` interviews you, then writes MISSION.md, then goes on to research and write a lesson. Running `ls` appears only in the checklist, never as a step. The new folder's trust prompt isn't mentioned either, though step 2 explained it for the first folder only.",
+      "evidence": "teach/SKILL.md:75 (question the user on why first); MISSION-FORMAT.md:29 (\"interview them before writing anything\"); Lesson lines 192, 221, 227.",
+      "fix": "Line 221: \"When it asks whether you trust `~/learn-git`, choose Yes. Answer its questions. When it says it has saved your mission, type `/exit`, then run `ls` to see its files.\""
+     },
+     {
+      "severity": "low",
+      "where": "Site story, last line: \"That order isn't Matt's Main flow, so the course follows his: today `/grill-with-docs` would replace rows 1 and 2.\" (line 249)",
+      "problem": "This puts teaching inside the story box, after the Lesson promised at line 75 that the box is \"kept apart from the teaching\". A cold reader also can't see why `/grill-with-docs` would replace row 2: the flow Scene only says it asks questions, not that it writes GLOSSARY.md.",
+      "evidence": "Line 75: \"It's kept apart from the teaching: the story is what happened, the teaching is what to do.\" Line 113 describes `/grill-with-docs` only as asking questions.",
+      "fix": "Cut line 249. That frees 19 of the words the medium fixes need, with the Lesson at 1,385 of 1,400 (lint). The Main flow Scene already shows the course's order."
+     },
+     {
+      "severity": "low",
+      "where": "Learn anything with `/teach`: \"cites them in every lesson\" (line 145); Scene captions (lines 153, 160); Checkpoint teach-next-session (lines 169-177)",
+      "problem": "`/teach`'s own lessons (lowercase) sit right beside this site's Lessons (capitalised), and capitalisation is the only thing telling them apart. A cold reader can mix up \"finished a lesson on commits\" with a Lesson on this site.",
+      "evidence": "Line 145 \"every lesson\"; line 169 \"finished a lesson on commits\"; GLOSSARY.md defines Lesson as \"One page of the course\".",
+      "fix": "Line 145: \"...cites them in every lesson it writes (a web page in that folder, not one of this site's Lessons), and recommends one to read yourself.\" Offset by cutting \"and keeps everything there as files\" from the same paragraph, since line 164 says it again."
+     },
+     {
+      "severity": "low",
+      "where": "What this course is: \"while you steer... The steering comes from Matt Pocock\" (line 22)",
+      "problem": "The paragraph first says you steer, then says the steering comes from Matt. A cold reader can't tell who steers.",
+      "evidence": "Line 22: \"an AI that reads your files, runs commands and writes code while you steer... The steering comes from Matt Pocock, a developer and teacher...\"",
+      "fix": "\"Your way of steering it comes from Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code.\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself step 5 commands `mkdir ~/learn-git` (line 212); Checkpoint teach-next-session (line 169); test scenario-teach-folder `~/recipes` (line 313)",
+      "problem": "`~` is never explained. A Visitor who barely uses a terminal, especially in PowerShell, won't know it means their home folder.",
+      "evidence": "grep: `~` first appears at line 169 and in the step 5 commands, with no gloss anywhere in the Lesson.",
+      "fix": "Line 208: \"5. Optional: install Matt's Skills and start a learning folder of its own (`~` means your home folder).\""
+     }
+    ]
+   },
+   "fix": {
+    "applied": [
+     "command-not-found feedback (PATH reason, medium accuracy): the right option's feedback now says the docs advise checking in a new window first. If claude is still missing, the installer's folder isn't on PATH, and the installer doesn't change PATH itself: its \"Setup notes\" give the fix. Checked against troubleshoot-install, which says it \"prints the fix with that note but doesn't change PATH itself\". The reinstall option's feedback now points to the old window, then the Setup notes. spot-unneeded-step step 3 feedback now reads \"The docs say to check the install in a new window, and the version number proves it worked.\"",
+     "command-not-found prompt (giveaway, medium): \"In the same terminal window\" is gone. It now reads \"The installer has just finished. You type `claude --version`...\" The id and answer are unchanged.",
+     "command-not-found option d (weak distractor, medium): \"Upgrade to a higher plan\" is now \"Log in first, then run the version check again.\", with feedback that you log in the first time claude starts.",
+     "How to read a Lesson (high) and its medium accuracy twin: the section now describes the site as it is built today (question.tsx, scene.tsx). Scenes have numbered captions to read in order, no longer 'build as you scroll'. Checkpoints: pick an answer, then open \"Show the answer\"; they never count. The Final test is questions on the goals: answer them all, then open the box under each one. The claims about the Check button, crowd answers, 80% pass, retries, Attempts and ticks are cut, and so is the cookie line. The Lesson can't hold or reorder tickets, and HANDOFF.md is off-limits, so this follows option (b). It departs from the brief's 'Scenes that move as you scroll' and '80% pass mark and retries'; revisit it when tickets 02, 04 and 05 ship, as HANDOFF already says for README Features.",
+     "scenario-failed-final-test (high): replaced by a new question with a new id, scenario-unsure-checkpoint, about what to do when unsure at a Checkpoint. The right answer is d ('Guess, then read why each option is right or wrong.', 51 characters, the shortest). It still checks goal 3, and the a/b/c/d spread is unchanged.",
+     "site-story-vs-teaching option d (weak distractor, medium): it is now \"`/grilling`, since the Site story shows the steps in more detail.\", with feedback that detail isn't the point.",
+     "which-lesson-stubborn-bug option d (weak distractor, medium): \"How coding agents work\" is now \"Models, effort & ultracode\", with feedback that a stronger model won't find the cause and Diagnosing bugs will.",
+     "teach-next-session (wording tell, medium): option a now names `~/learn-git` too ('In `~/learn-git`, paste last week's lesson so it remembers you.'), so the folder name no longer marks the right answer.",
+     "scenario-which-part (medium): the Part 1 bullet now reads 'why its working memory fills up and its work slips in a long session'. That ties the question's symptom to Part 1. The id is unchanged.",
+     "scenario-free-plan (medium): the prompt is rewritten. The friend has only used Claude's free chats in the browser, and the question is now 'Is anything missing?', so the body's sentence isn't repeated. Option a is now 'No, their chat account works once they log in', with feedback. The id is kept because the meaning is the same.",
+     "scenario-teach-folder (wording tell, medium): the right option is now 'In a new empty folder, such as `~/learn-sql`.' It no longer echoes SQL or 'of its own', and it rules out a folder inside ~/recipes.",
+     "scenario-renamed-skill (two premise mediums, the option-b feedback medium and the option-a/b feedback medium): the prompt now uses the slash name, unbackticked: 'says Matt's bug-hunting Skill starts when you type /diagnose. You type it, but no Skill by that name exists'. That fixes the plain-word trigger problem, since diagnosing-bugs/SKILL.md names \"diagnose\" as a trigger. Option a, which the prompt itself ruled out, is now 'Bug-hunting Skills only start on their own, never by typing.' Option b, along with its false 'same names' feedback, is now 'That Skill only starts inside a git repo.' The id is unchanged.",
+     "Node.js bullet ('the other way' before any way is shown, medium): it now reads 'You'd only use it to run this site's code, or for a second way of installing Matt's Skills that this course doesn't use.' The spot-unneeded-step feedback matches. Try step 5 now says 'install Matt's Skills as a plugin (an add-on that updates itself)', which explains 'plugin' where the command appears.",
+     "TDD/PR not expanded (medium): the build caption now says 'test-driven development: one small automated check...', and the PR caption says 'A pull request, or PR (...)'. The Part 2 bullet adds '(this section's Scene walks through it)', not 'the picture below', because on desktop the Scene sits beside the text.",
+     "Flow Scene build caption contradicts itself (medium): the review now checks against 'your coding standards and, when there is one, the spec'. code-review/SKILL.md says the Spec sub-agent skips when there is no spec.",
+     "Site story row 7 prefix unexplained (medium): it now reads '`/mattpocock-skills:code-review` (its full name: Claude Code has its own `/code-review`)'.",
+     "Cheat sheet /ask-matt row (medium): it now reads 'Type `/ask-matt`, then your situation, in one message ([Skills](/learn/skills) covers it)', because ask-matt is user-invoked (disable-model-invocation: true)."
+    ],
+    "declined": [],
+    "words": 1386,
+    "lintClean": true,
+    "testsPassed": true
+   }
+  },
+  "r2": {
+   "checks": {
+    "quiz": [
+     {
+      "severity": "medium",
+      "where": "Checkpoint site-story-vs-teaching, option d: \"`/grilling`, since the Site story shows the steps in more detail.\" (line 87)",
+      "problem": "The round-1 fix made option d a second `/grilling` answer, so two distractors now type the same thing. A test-wise reader knows only one option is right, so the two `/grilling` options cancel each other out. That leaves the hedge \"Either one\" (b) and the right answer (c), and c can be picked without having read the Lesson. The feedback for a and d is also nearly the same.",
+      "evidence": "Line 81: \"`/grilling`, because it's what really worked on this site.\" Line 87: \"`/grilling`, since the Site story shows the steps in more detail.\" Line 82 feedback: \"The Site story is one real run, mistakes and all.\" Line 88 feedback: \"...The story records one past run, mistakes included. The teaching is what to do now.\" The applied-fixes list confirms that d became this second `/grilling` option in round 1.",
+      "fix": "Replace lines 87-88 with a distinct misconception:\n- [ ] Both, one after the other, so you follow the story and the teaching.\n  > One interview is enough. The story records one past run; the teaching names the one to use now.\n(68 characters. The right option c has 59 and b has 69, so the length lint still passes.)"
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-unsure-checkpoint, right option d: \"Guess, then read why each option is right or wrong.\" (line 306)",
+      "problem": "The right option copies the body's defining sentence almost word for word. So the question tests whether the reader recognises that sentence, not whether they can apply it. Option c's feedback (line 305) repeats the same phrase, which ties the right option to the Lesson's wording even more.",
+      "evidence": "Line 73 (How to read a Lesson): \"Pick an answer, then open \\\"Show the answer\\\" to see why each option is right or wrong. They never count, so guess freely.\" Line 306: \"Guess, then read why each option is right or wrong.\" Line 305: \"Every Checkpoint shows its own answer and why each option is right or wrong.\" The writing guide (line 118) says to test transfer, not recognition.",
+      "fix": "Line 306: \"- [x] Answer anyway, then read the feedback on every option.\" (54 characters; option a has 58, so it isn't the longest). Line 307: \"  > Right. Checkpoints never count, so a wrong answer costs nothing, and the feedback shows what you missed.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-teach-folder, right option a: \"In a new empty folder, such as `~/learn-sql`.\" (line 312)",
+      "problem": "This is a wording tell. All three wrong options end with a reason clause (\", so ...\" or \", since ...\"); only the right option has no reason. It is also the shortest option (43 characters against 50-64). And \"a new empty folder\" repeats the Lesson's bold rule, so a reader can pick it by its shape and its echo of the body.",
+      "evidence": "Line 314: \"In `~/recipes`, so it can learn from your real code.\" Line 316: \"Nowhere, since asking in your recipe session works just as well.\" Line 318: \"In your home folder, so every project you have can use it.\" Line 312 has no reason clause. Line 162: \"So **run it in an empty folder of its own**, never in your project.\"",
+      "fix": "Line 312: \"- [x] In a new empty folder, so lesson files stay out of your code.\" (61 characters; c has 64, so it isn't the longest). This also rules out a new folder inside ~/recipes, which was the round-1 aim. Keep the feedback on line 313."
+     },
+     {
+      "severity": "medium",
+      "where": "Checkpoint teach-next-session, option a (line 168) with its feedback (line 169), and right option d (line 174)",
+      "problem": "First, option a's feedback \"No need.\" says pasting is just unnecessary, which suggests it would still work. It wouldn't: `/teach` is user-invoked, so pasting a lesson without typing `/teach` never starts the Skill. A reader who picked a can fairly argue their answer also carries on, and the feedback gives no reason why it doesn't. Second, this Checkpoint has the same tell as scenario-teach-folder: a, b and c each carry a reason clause (\"so it remembers you\", \"because `/clear` erased...\", \"since each session needs...\"), while d has none and repeats lines 162 and 164.",
+      "evidence": "productivity/teach/SKILL.md:4 has `disable-model-invocation: true`. Lesson line 141: \"`/teach` is user-invoked (only you can start it, by typing its name)\". Line 169: \"No need. Everything it knows about you is already saved in the folder's files.\" Line 162: \"To carry on later, open Claude Code in that folder and type `/teach` again.\" Line 164: \"opening a session by saying where he's stuck\". Line 174: \"In `~/learn-git`, type `/teach` and tell it where you're stuck.\"",
+      "fix": "Line 169: \"  > Pasting doesn't start `/teach`: only typing its name does. And its files already hold what you've learned.\"\nLine 174: \"- [x] In `~/learn-git`, type `/teach`, since its files hold your progress.\" (64 characters; c has 68).\nLine 175: \"  > Right. It reads its own files, sees what you've learned and plans the next lesson. Tell it where you're stuck, as Matt does.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Goals, goal 3: \"You'll be able to use a Lesson's Checkpoints, its Final test and its dated sources.\" (line 16)",
+      "problem": "No Final test question checks the \"its Final test\" part of goal 3 any more. Round 1 replaced scenario-failed-final-test, the only question on using the Final test, with scenario-unsure-checkpoint, which is about Checkpoints. The Final test already has six questions, the most Start here allows, so a new question can't be added. The goal has to be narrowed instead.",
+      "evidence": "What each Final test question checks: scenario-which-part covers goal 1. scenario-free-plan and spot-unneeded-step cover goal 2. scenario-unsure-checkpoint covers Checkpoints. scenario-teach-folder covers goal 4. scenario-renamed-skill covers dated sources. None asks how to use the Final test (line 76: \"Answer them all, then open the box under each one to check yourself.\"). Writing guide line 61: \"Final test: 8–10 questions (Start here 5–6...)\". Line 119: \"Every goal gets at least one Final test question\".",
+      "fix": "Line 16: \"- You'll be able to use a Lesson's Checkpoints as you read, and its dated sources to spot an out-of-date Skill name.\""
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint command-not-found, right-option feedback (line 62)",
+      "problem": "The feedback says to try a new window first and also that \"The installer doesn't change PATH itself\", but it never says why a new window could help. A cold reader sees two lines that seem to contradict each other: if PATH didn't change, what would a new window fix? The docs give the reason in one clause.",
+      "evidence": "troubleshoot-install (read 2026-10-24): \"If the shell reports `claude` isn't found, open a new terminal window and retry: the session you installed from keeps its old `PATH`.\" The same page says the installer \"prints the fix with that note but doesn't change PATH itself.\"",
+      "fix": "\"  > Right. The window you installed from keeps the PATH it started with (the list of folders your terminal searches for commands), so the docs say to check in a new window first. If it's still missing, the installer's folder isn't on your PATH. The installer doesn't change PATH itself, but the \\\"Setup notes\\\" it prints give the fix.\""
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint which-lesson-stubborn-bug, Code review feedback: \"against your coding standards and the spec\" (line 134)",
+      "problem": "This feedback says code review always checks against a spec. The round-1 fix to the flow Scene (line 119) says \"and, when there is one, the spec\". The two now disagree.",
+      "evidence": "Line 119: \"closes with a code review against your coding standards and, when there is one, the spec.\" engineering/code-review/SKILL.md:74: \"If the spec is missing, skip the Spec sub-agent and note this in the final report.\"",
+      "fix": "Line 134: \"  > Code review checks a finished change against your coding standards and, when there is one, the spec. Here something misbehaves and nobody knows why, so the first job is finding the cause.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test scenario-which-part, Part 4 feedback (line 271)",
+      "problem": "The strongest pull towards Part 4 is \"choosing models\" (line 98): sloppy answers suggest a weaker model. The feedback doesn't answer that pull. It only says Part 4 builds on earlier Parts.",
+      "evidence": "Line 98: \"**Part 4, Level up:** ... huge projects, choosing models.\" Line 271: \"Level up builds on everything before it. Why a long session goes downhill is a foundation, so it comes first, in Part 1.\" The writing guide facts say the smart zone applies \"on today's best models\".",
+      "fix": "Line 271: \"  > Part 4 covers choosing models, but even the best model slips as a long session fills its working memory. Why that happens is a foundation, in Part 1.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test scenario-renamed-skill, option b feedback: \"Where you are doesn't hide a Skill's name.\" (line 327)",
+      "problem": "As a general rule this is false. A project Skill only loads in sessions in its own repo. It is true only of plugin Skills such as Matt's, so a reader will later meet a case that contradicts it.",
+      "evidence": "https://code.claude.com/docs/en/skills (read 2026-10-24), the table of where Skills live: Project `.claude/skills/` \"Loads in: Sessions in this repository\"; Plugin \"Wherever the plugin is enabled\".",
+      "fix": "Line 327: \"  > Matt's Skills come as a plugin, so they load in every folder. `/teach` works, so they're loaded; this name is out of date.\""
+     }
+    ],
+    "accuracy": [
+     {
+      "severity": "low",
+      "where": "Final test, scenario-teach-folder, option b feedback: \"Even to learn a codebase, Matt starts the learner in a separate workspace and points it at the code.\" (line 315)",
+      "problem": "The sentence says Matt does this, as if it were his own practice. In the cited video he only says he can imagine teach being used to onboard people to a codebase, and sketches how it would go. The advice itself is supported; the claim that Matt does it is not.",
+      "evidence": "Transcript /Users/siddharth/Developer/trying/.handoff/transcripts/s5T5oQJcJ6U.json, 10:04–10:43: \"I can imagine this skill being really useful in onboarding people to a code base ... you start them off in their own workspace, you point them at code base\". The plugin's docs/productivity/teach.md:24 backs only the general rule: keep it out of the project you are working in, and use a separate repo.",
+      "fix": "Replace the second sentence with: \"Even for learning a codebase, Matt suggests starting the learner in a separate workspace and pointing it at the code.\""
+     },
+     {
+      "severity": "low",
+      "where": "Site story, last line: \"That order isn't Matt's Main flow, so the course follows his: today `/grill-with-docs` would replace rows 1 and 2.\" (line 247)",
+      "problem": "Only rows 1 and 2 are named as different, so a cold reader may assume rows 3 to 7 already follow the Main flow. They don't. Row 3 (`write the spec`, typed as plain words) couldn't have started `/to-spec`, which is user-invoked; in the Main flow that step is `/to-spec` and then `/to-tickets`. The Lesson's own flow Scene shows that step, so the box contradicts what it sits under.",
+      "evidence": "Writing guide, Facts: \"Plain words can start a model-invoked Skill, never a user-invoked one\" and to-spec is in the user-invoked list. ask-matt/SKILL.md:25 has the multi-session branch as `/to-spec`, then `/to-tickets`. The old Lesson (git show d21fc2c:content/lessons/00-start-here.md) has row 3 as `write the spec`.",
+      "fix": "\"That order isn't Matt's Main flow, so the course follows his: today `/grill-with-docs` would replace rows 1 and 2, and `/to-spec` then `/to-tickets` would replace row 3.\" If the 1,400-word cap is tight, cut \"so the course follows his\" to make room."
+     },
+     {
+      "severity": "low",
+      "where": "Main flow Scene, build caption: \"Either way, `/implement` builds by driving `/tdd` ... and closes with a code review\" (line 119)",
+      "problem": "In the big-build branch, ask-matt gives two ways to work the tickets: `/implement` per ticket, or `/implement-spec` for the whole spec. \"Either way, `/implement`\" leaves out the second. It's a simplification rather than an error, since the spec caption's \"pieces the agent can finish one at a time\" fits `/implement` per ticket. It still differs from the course facts' Main flow line.",
+      "evidence": "ask-matt/SKILL.md:26-27 lists `/implement` per ticket and `/implement-spec` for the whole spec. ask-matt/SKILL.md:30: \"`/implement` runs both per ticket; `/implement-spec`'s implementers each drive `/tdd`, and it runs one `/code-review`\". Writing guide Facts, Main flow: \"`/implement` per ticket (clear between) or `/implement-spec`\".",
+      "fix": "Only if the word budget allows (lint shows 1,386 of 1,400 prose words): \"Either way, the build is driven by `/tdd` (test-driven development: ...)\", then keep the rest of the caption. That puts `/tdd` first and doesn't tie the step to one Skill. Otherwise leave it, since [The main flow](/learn/main-flow) covers both routes."
+     }
+    ],
+    "reader": [
+     {
+      "severity": "medium",
+      "where": "What you need, Claude Code bullet, \"Then open a new terminal window and run `claude --version`.\" (line 33); terminal Scene caption \"A version number means it worked.\" (line 42); Try step 1 \"install it (see What you need), then open a new terminal window\" (line 183); Cheat sheet \"`claude --version`, in a new window\" (line 254)",
+      "problem": "Everywhere the reader is meant to look, the Lesson says a new window is all it takes. On a default Mac or Windows machine that's often not enough. The installer puts `claude` in a folder that isn't on PATH and doesn't add it, so a new window still says \"command not found\". The only place the Lesson says what to do next (run the line under \"Setup notes\") is inside the command-not-found Checkpoint's closed answer box (line 62). A Visitor who never opens that box gets stuck before the Try, or keeps reopening windows and reinstalling. The Mac Scene also shows a new window working first time, which a fresh Mac may not do.",
+      "evidence": "troubleshoot-install (https://code.claude.com/docs/en/troubleshoot-install, Verify your PATH): the installer \"places `claude` at `~/.local/bin/claude` on macOS/Linux or `%USERPROFILE%\\.local\\bin\\claude.exe` on Windows\". It reports a missing PATH entry under \"Setup notes:\" and \"prints the fix with that note but doesn't change PATH itself.\" The default PATH list on this Mac (`cat /etc/paths`) is only /usr/local/bin, /System/Cryptexes/App/usr/bin, /usr/bin, /bin, /usr/sbin and /sbin, with no ~/.local/bin. The setup page (https://code.claude.com/docs/en/setup) says that if `claude` still isn't found after the new window, \"the install directory isn't on your PATH yet\". In the Lesson, only line 62 (Checkpoint feedback) mentions Setup notes.",
+      "fix": "Line 33: after \"Then open a new terminal window and run `claude --version`.\" add \"Still not found? Run the line the installer printed under \"Setup notes\", then open another window.\" (+15 prose words). To stay under the 1,400 cap (now 1,386), shorten line 93 to \"Read them in order the first time.\" (−7). Scene caption at line 42 (captions don't count toward the budget): \"# Open a new terminal window, then check it. A version number means it worked. If it says \"command not found\", run the line the installer printed under \"Setup notes\", then open another window.\" Try step 1: \"If either isn't found, install it and open a new terminal window (see What you need, including the Setup notes line for `claude`).\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-unsure-checkpoint, right option d \"Guess, then read why each option is right or wrong.\" (line 306)",
+      "problem": "The right answer to this new round-1 question is almost a copy of the How to read a Lesson bullet. A Visitor can pick it by spotting the familiar phrase, without understanding how Checkpoints work. That is a wording tell, and it tests recognition, not transfer. The other three options don't echo any body sentence that closely.",
+      "evidence": "Line 73: \"Pick an answer, then open \"Show the answer\" to see why each option is right or wrong. They never count, so guess freely.\" Line 306: \"Guess, then read why each option is right or wrong.\" The writing guide's Questions and pilot-review rules say questions test transfer, not recognition.",
+      "fix": "Change option d to \"Choose one anyway, then study the feedback on each.\" That's 51 characters, the same as now: still not the longest, and the a/b/c/d spread is unchanged. Keep its feedback: \"Right. Checkpoints never count, so a guess is free, and the feedback on every option shows what you missed.\""
+     },
+     {
+      "severity": "low",
+      "where": "The four Parts, Part 1 bullet \"why its working memory fills up and its work slips in a long session\" (line 95)",
+      "problem": "The only time a reader meets \"context window\" is as a link title, [The context window], in this bullet. Nothing tells a cold reader that the \"working memory\" in the same sentence is the context window. The writing guide lists context window among the terms that need a clause at first use.",
+      "evidence": "Line 95 uses \"working memory\" and links \"[The context window](/learn/context-window)\" without connecting the two. Writing guide line 109: \"Define Claude Code, agent, Skill, token, session, repo, spec, ticket, context window ... at first use, in a clause\".",
+      "fix": "\"how an agent works, why its working memory (the context window) fills up and its work slips in a long session, and what a Skill is.\" (+3 words)"
+     },
+     {
+      "severity": "low",
+      "where": "What this course is, \"writes code while you steer. ... The steering comes from Matt Pocock\" (line 22)",
+      "problem": "The Lesson's first paragraph contradicts itself on who steers. First the reader steers, and two sentences later the steering comes from Matt. A newcomer can't tell whether they or Matt's Skills are in charge, and that clash undercuts the course's point that decisions stay yours (line 26).",
+      "evidence": "Line 22: \"an AI that reads your files, runs commands and writes code while you steer.\" Then: \"The steering comes from Matt Pocock, a developer and teacher who publishes a popular set of Skills\". Line 26: \"which decisions stay yours\".",
+      "fix": "\"The way to steer it comes from Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code.\""
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint which-lesson-stubborn-bug, option c feedback \"checks a finished change against your coding standards and the spec\" (line 134)",
+      "problem": "Round 1 changed the flow Scene caption to say the review checks the spec only when there is one. This feedback, a few lines below, still says it always checks the spec, so the Lesson now says two different things.",
+      "evidence": "Line 119: \"closes with a code review against your coding standards and, when there is one, the spec.\" Line 134: \"Code review checks a finished change against your coding standards and the spec.\" code-review/SKILL.md, Process step 2 item 4: \"If they say there isn't one, the **Spec** sub-agent will skip and report \"no spec available\".\"",
+      "fix": "\"Code review checks a finished change against your coding standards and, when there is one, the spec. Here something misbehaves and nobody knows why, so the first job is finding the cause.\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, step 5 and its check (lines 206–225): \"mkdir ~/learn-git\", \"Answer its questions, then type `/exit`.\", \"`ls` in `~/learn-git` lists `MISSION.md`\"",
+      "problem": "Step 5 has three gaps for someone who barely uses a terminal. Starting `claude` in a new folder brings the trust question back, but only step 2 says to choose Yes. Nothing says when it's safe to exit: `/teach` writes MISSION.md only after the mission interview, then keeps working on sources and a lesson, so exiting right after the last answer can leave the check failing. Finally, `ls` and `~` are never explained.",
+      "evidence": "Line 190 (step 2) covers the trust prompt, but lines 206–219 (step 5) don't. teach/MISSION-FORMAT.md, Rules: \"If the user cannot articulate why, interview them before writing anything.\" teach/SKILL.md (Philosophy) puts finding resources first. The words `ls` and `~` appear only in commands and checks, never with a clause.",
+      "fix": "After the step 5 code block: \"When it asks whether you trust this folder, choose Yes. Then type:\". Line 219: \"Answer its questions. Once it says it has saved your mission, type `/exit`, then `ls` (it lists the files in a folder).\" In step 5's lead: \"a learning folder of its own in your home folder (`~`)\". These add about 25 prose words, so pair them with cuts elsewhere."
+     },
+     {
+      "severity": "low",
+      "where": "Site story, \"a Neon Postgres database with a copy for my laptop, tests and the live site\" (line 243)",
+      "problem": "\"A copy\" (singular) reads as one copy shared by the laptop, the tests and the live site, which is the opposite of what the repo records: a separate copy for each, including every pull request.",
+      "evidence": "`git show d21fc2c:content/lessons/00-start-here.md`: \"**Neon**: Postgres in the cloud, with **branches**: a separate database copy for my laptop, for tests, for every PR, and for production.\"",
+      "fix": "\"a Neon Postgres database with a separate copy for my laptop, for tests, for each pull request and for the live site\" (+6 words)."
+     }
+    ]
+   }
+  }
+ }
+}

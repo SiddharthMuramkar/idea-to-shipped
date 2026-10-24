@@ -1,0 +1,18 @@
+{
+ "n": 18,
+ "slug": "wayfinder",
+ "title": "Wayfinder",
+ "part": 4,
+ "old": null,
+ "img": [
+  "/photos/wayfinder.jpg",
+  "A lone person walks along a forest trail into thick fog.",
+  "Dominik Chelstowski"
+ ],
+ "skills": [
+  "engineering/wayfinder",
+  "engineering/research",
+  "productivity/to-questionnaire"
+ ],
+ "extra": "Teach `/wayfinder` (destination, fog, the map as an index, decision tickets of four types, frontier, one ticket per session, chart vs work modes, hands off at `/to-spec`), `/research` (background agent, primary sources, one cited file), `/to-questionnaire` (grill the send, not the subject). Site story: not used on this site yet; one honest line (the repo is wired for it; this 20-Lesson rewrite was planned in a single grilling session instead)."
+}

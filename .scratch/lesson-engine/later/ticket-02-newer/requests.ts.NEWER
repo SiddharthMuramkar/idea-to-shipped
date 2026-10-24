@@ -1,0 +1,31 @@
+// Helpers for building the Requests that route tests send.
+
+// A POST whose body is a stream the handler has to pull from, so a test can see
+// how much of the body the handler really read. `chunks` pieces of `chunkBytes`
+// bytes each are on offer; nothing is produced until the handler asks for it
+// (highWaterMark 0), and bytesRead() counts what was asked for.
+export function streamedPost(
+  url: string,
+  options: { chunks: number; chunkBytes: number; headers?: Record<string, string> },
+) {
+  const chunk = new TextEncoder().encode("x".repeat(options.chunkBytes));
+  let served = 0;
+  const body = new ReadableStream<Uint8Array>(
+    {
+      pull(controller) {
+        if (served === options.chunks) return controller.close();
+        served += 1;
+        controller.enqueue(chunk);
+      },
+    },
+    { highWaterMark: 0 },
+  );
+  const request = new Request(url, {
+    method: "POST",
+    headers: { "content-type": "application/json", ...options.headers },
+    body,
+    // A streamed request body needs duplex, which the DOM typings don't list yet.
+    duplex: "half",
+  } as RequestInit);
+  return { request, bytesRead: () => served * options.chunkBytes };
+}

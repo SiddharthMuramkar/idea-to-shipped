@@ -1,0 +1,17 @@
+{
+ "n": 14,
+ "slug": "triage",
+ "title": "Triage",
+ "part": 3,
+ "old": null,
+ "img": [
+  "/photos/triage.jpg",
+  "Black-and-white photo of postal workers sorting letters into wall-mounted cubby-holes.",
+  "Library of Congress"
+ ],
+ "skills": [
+  "engineering/triage",
+  "engineering/setup-matt-pocock-skills"
+ ],
+ "extra": "Teach roles (category + state), transitions, the attention buckets, verify before brief, agent briefs (behavioural, durable, no paths), `.out-of-scope/`, the AI disclaimer, quick override, and that `/to-tickets` output is never triaged. Site story: not used on this site yet; say so in one honest line (the repo is set up for it via docs/agents/triage-labels.md; incoming Visitor reports would be the trigger)."
+}

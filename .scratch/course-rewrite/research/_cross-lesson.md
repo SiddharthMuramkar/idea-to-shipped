@@ -1,0 +1,231 @@
+# Cross-lesson findings
+
+Facts each research agent found that belong to other Lessons, collected as-is (paraphrased and cited, read on 2026-10-23). Check them against the target Lesson's own research note before use.
+
+---
+
+- **skills (Lesson 3):**
+  - Skill descriptions load at session start; the full text loads only when used [D1].
+  - `disable-model-invocation: true` keeps a Skill's description out of the window, and the agent can't start it [D1; S2]. 16 of the plugin's 27 Skills have this flag. Known bug: ask-matt may then report them as "not installed"; check `.claude-plugin/plugin.json` [S1 ask-matt.md].
+  - After compaction, Skill text is re-injected with a cap of 5,000 tokens per Skill (25,000 total), so important instructions belong near the top of SKILL.md [D13].
+  - The author's 122 Skills cost 9.9k tokens [LOG].
+  - Lesson 11, point 1: asking for `/grill-with-docs` in plain words doesn't start it [L].
+- **grilling (Lesson 4):** Matt stopped using plan mode and plans by grilling, because plan mode creates a plan too eagerly and asks almost nothing [X1, 2026-04-03]. He quotes The Pragmatic Programmer on nobody knowing what they want [V1 3:50].
+- **prototype (Lesson 6):**
+  - The `/handoff` detour, out and back, is Matt's fork case [S2].
+  - The author used a `prototype/lesson-page` branch instead [L 05].
+  - In the 7-phases video, prototypes live on a throwaway route and are committed so later agents can see them [V3 2:43–3:16].
+- **spec-and-issues (Lesson 7):**
+  - Matt's dictionary calls specs and tickets "handoff artifacts" [M3 index].
+  - The 7-phases video goes idea → research → prototype → PRD → kanban with blocking links → execution → QA [V3, 2026-03-03]. The old Skill names map to `/to-spec` and `/to-tickets` [S1 README].
+- **implement (Lesson 9):** `/implement` per ticket with `/clear` between tickets; or `/implement-spec`, where helper agents work in their own worktrees [S1; L 11].
+- **code-review (Lesson 10):**
+  - Review in a fresh subagent: the reviewer sees only the diff and the criteria [D6].
+  - Writer/Reviewer pattern: a fresh context isn't biased toward code it just wrote [D6].
+- **main-flow (Lesson 12):** keep grill → spec → tickets in one window; run `/retro` before clearing [S1].
+- **architecture (Lesson 16):** Matt's "Never run `/init`": trust exploration, put steering in Skills, keep CLAUDE.md nearly empty [M2]. Compare Anthropic's progressive-disclosure advice [B1].
+- **retro (Lesson 17):** run it in the session it reviews, before `/clear`. After clearing, point it at that session's log [S1].
+- **wayfinder (Lesson 18):** work bigger than one smart zone gets split across sessions; wayfinder is for efforts too big for one session [S1; M3 smart-zone].
+- **models-effort-ultracode (Lesson 19):**
+  - `opusplan` uses Opus in plan mode and Sonnet to carry it out [D14].
+  - Opus 4.7+ and Fable/Sonnet 5 run a 1M window by default; Haiku 5.5 costs more above 100K [D14].
+  - A subagent's window size depends on its own model [D12].
+- **start-here (Lesson 0):** recent Claude Code starts in auto mode (v2.1.283+); the author runs v2.1.309 [D2; local `claude --version`].
+
+---
+
+- **skills (Lesson 3)**
+  - User-invoked Skills orchestrate; model-invoked ones hold the reusable discipline. A user-invoked Skill can call model-invoked ones, never another user-invoked one (README "Reference").
+  - Matt says his Skills are mostly user-invoked and short-described, so all of them together cost only about 660 tokens of context (M6mYodf0dJM 4:07 to 4:31, 2026-07-16).
+  - Naming a Skill in prose doesn't reliably load it, hence "Call the Skill tool with" (CHANGELOG #878).
+- **context-window (Lesson 2)**
+  - Smart-zone figures: ~120k (UzMNBN6xLLA 5:11, 2026-05-25), ~140k (M6mYodf0dJM 10:30), ~150k (ask-matt), 125k to 150k "debated" (aihero dictionary smart-zone, 2026-09-24).
+  - In the demo, `/to-spec` compressed a 46.1k-token grilling conversation into a spec (M6 11:30).
+  - Each ticket is sized to one smart zone (M6 12:31), and he clears between tickets (M6 14:38).
+  - ask-matt PHASE-BOUNDARIES gives five ordered options (continue, `/clear`, `/handoff`, subagent, `/compact`).
+  - The glossary's "Phase" collides with Matt's "phase".
+- **main-flow (Lesson 12)**
+  - The chain `grill-with-docs → to-spec → to-tickets → implement → code-review → retro` (aihero grill-with-docs page).
+  - Keep steps 1 to 3 in one context window (ask-matt).
+  - Author's Lesson 11 mistakes: plain-words invocation; typing `/to-tickets` before answering `/to-spec`'s question.
+- **prototype (Lesson 6)**
+  - "Ungrillable" (high-fidelity) questions trigger grill, then `/handoff` to a prototype session, then hand back (UzMNBN6xLLA 1:28 to 3:38; the fidelity terms come from Ryan Singer's Shape Up).
+- **spec-and-issues (Lesson 7)**
+  - `/to-spec` writes from the conversation without re-interviewing. Re-read the spec against your own answers, because precise answers get softened (aihero grill-with-docs FAQ).
+  - "to-PRD" was renamed "to-spec" (CHANGELOG #734).
+- **code-review (Lesson 10)**
+  - Two axes (spec, then standards with a Fowler-smells fallback) run in sub-agents, because the agent that wrote the code is bad at critiquing it (M6 15:13 to 16:05).
+- **wayfinder (Lesson 18)**
+  - For multi-session planning only. Using it on a well-scoped feature is the common mistake (aihero grill-with-docs FAQ; ask-matt).
+  - `/to-questionnaire` is the inverse of grill-me (ask-matt).
+- **models-effort-ultracode (Lesson 19)**
+  - Use the strongest model for grilling (parametric knowledge) and a cheaper one for implementation (UzMNBN6xLLA 8:40 to 10:20; aihero grill-me FAQ).
+- **start-here / how-agents-work (Lessons 0 and 1)**
+  - Plan mode makes the agent rush to a plan. Matt grills in auto mode (aihero grill-me; M6 10:02).
+  - `/setup-matt-pocock-skills` asks single vs multi context, and single fits about 99% of people (M6 5:54 to 6:15).
+- **retro / writing-for-agents (Lesson 17)**
+  - wait-what's "the name is the mechanism" leading-word idea is a writing-for-agents principle (aihero wait-what; CHANGELOG #751).
+
+---
+
+- **12 main-flow:**
+  - `/retro` is Main flow step 4. Run it in the same session before `/clear`. [R5]
+  - The smart zone is about 150k tokens. [ask-matt]
+  - Lesson 11 already says `/research` is model-invoked and `/triage`/`/retro` are user-only (verified against SKILL.md).
+- **13 diagnosing-bugs:**
+  - Since 1.3.0, Phase 6 is cleanup only; the hand-off to improve-codebase-architecture was removed (#880).
+  - ask-matt now says: run `/retro` after the fix, and use `/improve-codebase-architecture` if a seam is missing. [A6, A8]
+- **10 code-review:**
+  - `/retro` creates `CODING_STANDARDS.md`, which `/code-review` reads. [R7]
+  - An unreleased change on main has code-review hand standards files to the Standards reviewer. [main changeset, 2026-10-23]
+  - Real site case: built-in `/code-review max` found 10 bugs in the untested comment box. [R16]
+- **8 tdd:**
+  - tdd uses "seam" for where tests go, and points to `/codebase-design` when the interface shape is in question. [A11, A21 line 1400]
+  - The "note what each seam catches and misses" change is on main and in the cache.
+- **3 skills:**
+  - Model- vs user-invoked trade-off; context load vs cognitive load; router Skills. [R3]
+  - Issue #693 hides user-invoked Skills from listings on Claude desktop and web (the reason `/wizard` became model-invoked, 1.2.0). [W4]
+- **2 context-window:**
+  - Context phases (system prompt fixed; explore, implement and test flexible) and the 300–400 instruction budget. [R9 1:41, 7:15]
+- **7 spec-and-issues:**
+  - `/to-spec #<map_issue>` collapses a wayfinder map into a spec. [W8]
+  - Matt closes spec issues after the work ships. [W11 13:41]
+- **6 prototype:**
+  - In wayfinder, prototypes are how planning avoids becoming waterfall. [W11 8:13]
+  - The prototype choice is yours, not the agent's. [W8]
+- **15 wizard:** a reviewer saw a wizard script fail on stale Supabase dashboard steps, with no escape hatch. [A23]
+- **19 models-effort-ultracode:**
+  - Lower reasoning effort is a suggested fix for long wayfinder questions. [W8]
+  - Nate Herk's podcast description (2026-10-16, https://www.youtube.com/watch?v=Z8lf5oWKfj0) says Matt runs Opus 5.5 on medium effort. Not verified from the audio.
+- **0/1 start-here, how-agents-work:** the agent as a new starter with no memory (the Memento framing), and tactical vs strategic programming. [A13; A15 17:18]
+- **5 domain-modeling:**
+  - improve-codebase-architecture adds GLOSSARY terms and offers ADRs for rejected candidates. [A4]
+  - CONTEXT.md was renamed GLOSSARY.md in 1.3.0. [A6]
+
+---
+
+- **code-review (10).**
+  - Claude Code has a Built-in command `/code-review` (effort levels low to max, plus `ultra`) that shares a name with Matt's `/code-review` Skill. Reach Matt's version with `/mattpocock-skills:code-review`. Renames are out of scope: https://github.com/mattpocock/skills/blob/main/.out-of-scope/harness-name-collisions.md.
+  - Open #1215 (2026-10-07): `/implement` and `/implement-spec` call `code-review` by its bare name, which runs the Built-in command.
+  - The author's Lesson 10 `/code-review max` was the Built-in command.
+- **pr-and-ship (11).** Matt prefers a PR that references the issue, so merging closes it (T12 8:07–8:17).
+- **context-window (2).** Matt budgets about 100K tokens per session and watches the context counter (T12 5:29–5:43). ask-matt puts the smart zone at about 150k.
+- **skills (3).**
+  - User-invoked vs model-invoked is defined in the 1.3.1 README "Reference".
+  - Issue #693: Claude's desktop and web apps drop user-invoked Skills from the model's listing. In this desktop session, `/triage` was indeed absent from the agent's Skill list. The v1.2 move of `/wizard` to model-invoked avoids this (W3, W4).
+- **setup (0/3).** The unreleased setup fix creates triage labels on GitHub and GitLab (2026-10-07). Open #812: the label section never runs on the plugin channel.
+- **tdd (8).** Matt notes the diagnose loop mirrors TDD (regression test first) (T12 7:14–7:23).
+- **architecture (16).** A missing-seam finding from `/diagnosing-bugs` hands off to `/improve-codebase-architecture`. It's user-invoked, so you start it (S3).
+- **retro (17).**
+  - Run `/retro` in the same session after a diagnosis (CHANGELOG 1.3.1).
+  - Open #1308: make `/retro` aware of `.out-of-scope`.
+- **wayfinder (18).** Unreleased: it no longer labels maps or tickets `ready-for-agent` (#518).
+- **how-agents-work (1).** Dictionary entries for AFK (2026-09-24) and Human-in-the-loop (2026-07-01) explain when to stay in the loop.
+- **main-flow (12).**
+  - `/triage` and `/diagnosing-bugs` are on-ramps onto the Main flow.
+  - Thariq's interview, implement on low, review, verify on high loop (M7) is a model and effort layer on top of grill, implement, review.
+
+---
+
+- **context-window (Lesson 2):**
+  - Smart-zone figures differ by source: about 120k (handoff video 2:32–3:06, 2026-05-21), about 140k (end-to-end video 10:35, 2026-07-16), about 150k (current `ask-matt`).
+  - Matt on GitHub #186: past about 100k tokens, summary quality can't be guaranteed.
+  - Repeated `/compact` builds up layers of summaries ("sediment"), which is useful for long debugging (handoff video 3:56–4:44).
+  - The dictionary defines compaction as a handoff done in memory, lossy, trading detail for room (aihero dictionary, read 2026-10-23).
+- **how-agents-work (Lesson 1):** Matt explains Explore as a subagent that reads widely and returns only a summary to save tokens (hX7yG1KVYhI 6:36–7:19). He avoids the AskUserQuestion tool for grilling to save tokens (25:00–25:45).
+- **skills (Lesson 3):**
+  - A user-invoked Skill may call model-invoked ones, never another user-invoked one (README Reference; CHANGELOG #880).
+  - Short `/name` can clash with a Claude Code built-in; the namespaced `/mattpocock-skills:<name>` always works (GitHub #1019, closed 2026-10-07).
+  - Beta Skills in `in-progress/` aren't in the plugin and install one at a time with `npx skills@latest add mattpocock/skills --skill=<name>`.
+- **grilling (Lesson 4):** Matt's sessions usually run about 20 questions; he grills in auto mode, not plan mode (M6mYodf0dJM 9:40–9:58). One real session took about 22 minutes to settle 8 scope bullets, at about 40k tokens (hX7yG1KVYhI 22:04–22:49, 25:00).
+- **domain-modeling (Lesson 5):** The "materialization cascade" example appears live (hX7yG1KVYhI 23:32–23:34).
+- **implement (Lesson 9):**
+  - `/implement` one ticket at a time, clearing between (M6mYodf0dJM 13:55–14:38).
+  - `/implement` doesn't close tickets (to-tickets docs; GitHub #1080 → #508).
+  - It now fetches a passed ticket reference and states its title (pending changeset).
+- **tdd (Lesson 8):** Tickets drop the agreed seams, and `/tdd` fired 0 times in 17 runs (GitHub #1078, open).
+- **code-review (Lesson 10):** Two axes (spec and standards), run in subagents with a fresh context, because the agent that wrote the code reviews it poorly (M6mYodf0dJM 14:58–16:08). Matt's older QA loop: a QA plan as an issue, a feedback button that files issues, and an unattended "Ralph" loop running tests and types on each commit (hX7yG1KVYhI 34:27–41:30).
+- **wayfinder (Lesson 18):** `prototype` is one of four ticket types (research, grilling, prototype, task); a cleared map feeds `/to-spec #<map_issue>` (to-spec and prototype docs; v1.1 changelog 2026-07-08).
+- **main-flow (Lesson 12):** The "day shift and night shift" framing comes from Matt's friend (hX7yG1KVYhI 33:44).
+- **triage (Lesson 14):** Don't triage `/to-tickets` output (ask-matt).
+
+---
+
+- **how-agents-work (1):**
+  - Agents have no memory between sessions, so process has to be strict and written down (V2 0:00–0:42).
+  - Treat agents like humans with odd limits, such as no memory (V2 15:05).
+- **context-window (2):**
+  - The Skill listing gets 1% of the context window.
+  - After compaction, each invoked Skill keeps its first 5,000 tokens, with a 25,000-token total (K1).
+  - The smart zone is about 150k tokens; it was about 120k before v1.2 (M3; M6).
+  - `/context` shows a Skills row (K1).
+- **grilling (4):**
+  - The design-tree idea comes from Brooks' *The Design of Design* (V2 1:26–2:08).
+  - Sessions can run 30–50 questions (V2 3:34).
+  - Since v1.2, grilling asks in rounds of questions. To get one question at a time, add a line to your global `CLAUDE.md` (M6; CHANGELOG 1.2.0). The author asked for one or two at a time (Lesson 1).
+  - The pinned build words questions so that "yes" accepts the recommended answer (changeset #706).
+  - grill-me saves nothing; grill-with-docs writes files (V3 1:40).
+- **domain-modeling (5):** 1.3.0 renamed `CONTEXT.md` to `GLOSSARY.md`; use `git mv` (CHANGELOG). There's no automatic upgrade (#1176).
+- **spec-and-issues (7):**
+  - Renames: write-a-prd → to-spec, prd-to-issues → to-tickets.
+  - Tracer-bullet vertical slices and blocking links between issues (V2 6:29–7:54).
+  - The local tracker uses one file per ticket (M2 issue-tracker-local).
+- **tdd (8):** the refactor step is weak, because an agent is reluctant to change code still sitting in its own context (V2 11:29).
+- **code-review (10):**
+  - Claude Code's own `/code-review` (alias `/review`) vs Matt's `code-review` (K3).
+  - Review in subagents with a fresh context, because the agent that wrote the code is a poor judge of it (V1 15:19–16:00).
+- **triage (14):** setup now creates missing labels on GitHub and GitLab (pinned changeset). The `wayfinder:*` labels still have to be created by hand (M2 docs page; #1202).
+- **wizard (15):** model-invoked; built from `template.sh`; the time estimate was removed in 1.2.3 (CHANGELOG).
+- **architecture (16):**
+  - Matt runs improve-codebase-architecture about weekly, or after a burst of new features (V2 14:21).
+  - "Design it twice" (several subagents propose different interfaces) now lives in codebase-design's `DESIGN-IT-TWICE.md` (CHANGELOG 1.2.0).
+- **models-effort-ultracode (19):**
+  - Matt used Opus 4.8 at medium effort for the teach demo (V3 6:41).
+  - The teach docs say higher effort gives better lessons (S3).
+- **All Lessons, quiz design:** `/teach`'s SKILL.md says to give every answer the same word count, vary which position holds the right answer, and avoid formatting clues (S3, line 110). Apply this to the course's checkpoint quizzes.
+
+---
+
+- **context-window (2):**
+  - Smart zone / dumb zone, credited to Dex Horthy. Attention cost grows quadratically with tokens (football-league analogy). Matt's marker was ~100k regardless of window size (V3 workshop 0:03:00–0:04:00).
+  - A cleared session always starts from the same state (Memento analogy); Matt dislikes compacting (0:07:00–0:10:00).
+  - A 1M-token window is good for retrieval but mostly adds dumb zone for coding (0:37:00–0:38:00).
+  - Dictionary: clearing keeps the transcript on disk but the agent's working state is gone. Compaction is lossy and can be steered with an instruction. Plan around the smart zone, not the window size (aihero dictionary entries, 2026-09-24).
+- **skills (3):**
+  - User- vs model-invoked: a user-invoked Skill may call model-invoked ones, never another user-invoked one (README).
+  - Matt's Skills cost only ~660 tokens of always-loaded context in his demo (end-to-end video 4:00–4:30).
+  - Push (CLAUDE.md, always sent) vs pull (Skills, loaded on demand) (V3 1:28:00).
+  - Since v1.3, Skills call each other via "call the Skill tool" because naming a Skill in prose didn't reliably load it (v1.3 changelog post).
+  - Some harnesses hide user-invoked Skills from the agent, which then says they're missing (ask-matt docs).
+  - The plugin prefix `mattpocock-skills:` sidesteps name clashes; Matt won't rename Skills to dodge Built-in commands (`.out-of-scope/harness-name-collisions.md`).
+- **grilling (4):**
+  - Planning/alignment must be human-in-the-loop (V3 0:26:00–0:27:00).
+  - Matt doesn't read the PRD after grilling: you share the design concept already, so reading it only checks the agent's summarising (V3 0:35:00).
+  - His sessions usually run around 20 questions (end-to-end 9:30).
+- **domain-modeling (5):** v1.3 renamed `CONTEXT.md` → `GLOSSARY.md`, a breaking change: `git mv` the old file. "Context" felt too vague, and the file had shrunk to just a glossary (v1.3 video 8:10–9:35; CHANGELOG 1.3.0 #1120).
+- **spec-and-issues (7):**
+  - `/to-spec` compressed about 46k tokens of discussion into a spec, and `/to-tickets` ran in the same session. Tickets are sized to one smart zone; he asked for 1 slice instead of 3 when that was enough (end-to-end 11:00–13:00).
+  - A Kanban board of tickets with blocking edges, each tagged AFK or human-in-the-loop (V3 0:40:00). Vertical slices beat horizontal layers because you get feedback sooner (V3 0:43:00).
+  - Name the test seams in the spec (implement and implement-spec docs).
+- **prototype (6):** `/prototype` code is kept on a `prototype/<name>` branch as a primary source (ask-matt). The author's `prototype/lesson-page` branch with `VariantC` is the example (`.scratch/lesson-site/issues/03`).
+- **diagnosing-bugs (13):** after the fix, run `/retro` in the same session. If the finding is a missing seam, use `/improve-codebase-architecture` (CHANGELOG 1.3.1 #1121). Phase 6 is cleanup only (v1.3 changelog post).
+- **triage (14):** only for issues you didn't create; never triage `/to-tickets` output (ask-matt).
+- **architecture (16):**
+  - Deep modules mean fewer tests tied to file structure; `/improve-codebase-architecture` produces an HTML report of deepening opportunities; `codebase-design` defines seam, locality and leverage (V2 PR Bottleneck 8:00–11:00).
+  - Design the interfaces and delegate the implementation ("gray boxes") (V3 1:20:00).
+  - Cursor's review keeps files under 1k lines because big files are hard for agents to navigate (Cursor review video 2:00–3:00).
+- **retro (17):**
+  - v1.3 video 9:37–14:00: reads real sessions; finds what agents hide; human-in-the-loop, don't automate; run it on a sample of sessions.
+  - Seven places it looks; mechanical problems become deterministic checks, judgement calls become `CODING_STANDARDS.md` entries; `AGENTS.md` should shrink over time (v1.3 changelog post).
+  - "Never write the same review comment twice" (PR Bottleneck 20:00–22:00).
+- **wayfinder (18):** merge at `/to-spec`, not `/implement` (ask-matt).
+- **models-effort-ultracode (19):**
+  - Matt implements with Sonnet and reviews with Opus (V3 1:32:00).
+  - He ran Opus at medium effort in the end-to-end demo (end-to-end 9:00; the model version is garbled in the translated track).
+  - `/pr` fires reliably on Opus 5.5 (v1.3 video 7:45–8:05).
+  - Split an oversized ticket rather than raising effort (implement docs).
+  - Open issue #1270: run reviewers at the most capable model.
+- **start-here / how-agents-work (0–1):**
+  - Feedback loops (types, tests, pre-commit hooks) set the ceiling on agent output (V3 1:09:00–1:10:00).
+  - Basic setup: a `typecheck` script, Vitest, and Husky running lint-staged, typecheck and tests (feedback-loops article, updated 2026-01-16).
+  - A low-quality codebase gets copied ("happy to play in the mud") (TDD video 4:25–5:02).

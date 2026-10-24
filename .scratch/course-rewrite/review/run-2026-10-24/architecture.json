@@ -1,0 +1,256 @@
+{
+ "slug": "architecture",
+ "review": {
+  "acc-skills": [
+   {
+    "severity": "high",
+    "where": "Try it yourself, step 3: \"Now the agent asks before editing any file: answer No every time today.\" (line 214)",
+    "problem": "If the Visitor follows this step, the survey can't produce its report. The Skill has to create the HTML file in the temp folder and then run `open`. In Manual mode both trigger a permission prompt, and step 3 says to answer No. So the report is never written or opened, and the checklist items at lines 233, 235 and 236 fail.",
+    "evidence": "improve-codebase-architecture/SKILL.md:39 says to write `<tmpdir>/architecture-review-<timestamp>.html` and then run `open <path>` (macOS), `xdg-open` (Linux) or `start` (Windows). The Claude Code docs at https://code.claude.com/docs/en/permissions have a table row \"File modification | Edit/write files | Approval required: Yes\". They also say Bash commands need approval \"except a built-in set of read-only commands\" (ls, cat, grep, read-only git and similar). `open` is not in that set. Default mode is \"Labeled Manual in the CLI\".",
+    "fix": "Replace the second sentence of step 3 with: \"Now the agent asks before it writes a file or runs a command. Say Yes when it asks to create `architecture-review-…html` in your temp folder or to open it. Say No to any change inside the project folder (`src/`, `GLOSSARY.md`, `docs/adr/`).\""
+   },
+   {
+    "severity": "high",
+    "where": "Two Skills, two jobs: \"The survey finds the candidates, and `/codebase-design` is the bench you design the chosen one on.\" (line 112)",
+    "problem": "This sentence is a near-verbatim copy of a 19-word sentence in ask-matt's SKILL.md, with no quotation marks. 15 of the source's words appear in the same order; the only edits are dropping \"It's … that\" and \"(below)\" and changing \";\" to \", and\". The course rule is never to copy a SKILL.md sentence of 15 or more words, and quotes must stay under 15 words.",
+    "evidence": "engineering/ask-matt/SKILL.md:60: \"It's the survey that finds the candidates; **`/codebase-design`** (below) is the bench you design the chosen one on.\" An n-gram check finds a contiguous 9-word match (\"is the bench you design the chosen one on\") and the rest of the sentence is in the same order.",
+    "fix": "Paraphrase it and keep only the metaphor as the single quote from ask-matt: \"The survey picks where to dig; in `/ask-matt`'s words, `/codebase-design` is \"the bench you design the chosen one on\".\" Or with no quote at all: \"The survey picks where to dig; `/codebase-design` gives you the words for designing the one you pick.\""
+   },
+   {
+    "severity": "high",
+    "where": "site-story block (lines 253-265) and the flow Scene title \"Judging this site's code with the vocabulary (from a real run)\" (line 71)",
+    "problem": "Several Site story claims are backed only by the author's session log, not by anything in the repo: the `/mattpocock-skills:codebase-design` session, the verdict table, \"Its recommendation: change nothing\", \"I was also lucky\", and the timing (\"Minutes after v1\", \"merged minutes earlier\"). The same goes for the \"second review of PR #7\" that suggested `parseCommentInput`. The Scene title calls that log-only run \"a real run\". The task's decisions say anything only a session log can back is rewritten from a repo fact or cut. That overrides the brief's note that this story is real.",
+    "evidence": "The research note cites only the session log for these: .scratch/course-rewrite/research/architecture.md:29 (A21 = \"The author's Claude Code session log\"), :192-203 (A21 line refs and clock times). `grep -rn codebase-design .scratch docs` outside course-rewrite finds only docs/authoring-lessons.md:578, a list of Skill names. None of the old Lessons at d21fc2c mention the Skill (`git show d21fc2c:content/lessons/<file>` for all 12 files). `gh pr view 7 --comments` shows the PR body and a single Vercel bot comment. `parseCommentInput` appears only in this Lesson and the research note. Some of the material is in the repo: commit 1262b31 removes the JSON-object check from route.ts and adds it to postComment. PR #7's body says \"All input checks now live in the comments module; the Route Handler only parses JSON\" and \"Length limits are shared (`src/comments/limits.ts`)\". Old Lesson 07 at d21fc2c lists the review's judgement calls: \"the comment length limits written in two places\" and \"the endpoint checking input itself, when the issue said endpoints only speak HTTP\".",
+    "fix": "Rewrite the Site story from repo facts only, for example: \"**The deepening move came from a review.** My two-axis `/code-review` of v1 flagged two judgement calls: the comment length limits were written in two places, and the endpoint checked input itself when the issue said endpoints only speak HTTP. PR #7 fixed both. The 'is this a JSON object?' check moved out of the route into `postComment`, and the limits moved into one file, `src/comments/limits.ts`. The route's own comment now says it only speaks HTTP. More behaviour behind the same two functions is depth; one home for the limits is locality.\" Keep the honest \"Not run on this site yet\" line about `/improve-codebase-architecture`. Drop the verdict table, the luck line and the `parseCommentInput` paragraph. Retitle the Scene \"Judging this site's code with the vocabulary (illustrative)\"."
+   },
+   {
+    "severity": "medium",
+    "where": "\"It ==never changes code==.\" (line 137); goal (line 16); feedback at lines 160, 312, 320, 356 (\"The Skill never changes code.\") and 384",
+    "problem": "\"Never changes code\" is presented as a guarantee, but the 1.3.1 SKILL.md has no such rule. Its process just ends at the grilling loop, and it does write to the repo along the way (GLOSSARY.md, ADRs). The grilling Skill it runs only says not to act until the user confirms shared understanding, which leaves room to act afterwards. The Lesson undercuts itself too: spot-carried-on (line 352) has the agent editing five files, and its right-answer feedback then says \"The Skill never changes code\". Common mistakes (line 246) also warns that the agent may start editing.",
+    "evidence": "improve-codebase-architecture/SKILL.md:62-71: the process ends with the grilling loop and its side effects. Lines 68-70 add terms to GLOSSARY.md and offer ADRs. No line forbids code changes, and line 39's \"nothing lands in the repo\" refers only to the report. productivity/grilling/SKILL.md:30: \"Do not act on it until the user confirms you have reached a shared understanding.\" `gh issue view 232 --repo mattpocock/skills` (2026-05-21, \"improve-codebase-architecture continues with implementation\"): Matt replied \"I see this as a failure of the harness, not the skill\", and no rule was added.",
+    "fix": "Line 137: \"Its job ends at a decision: there's no build step, though an eager agent may try to carry on.\" Goal: \"...carry one candidate forward, knowing its job ends at a decision, not a code change.\" Line 356: \"Right. The Skill's process ends at the grilling; building isn't its job. Press Esc, then carry the decision into `/to-spec` or `/grill-with-docs`.\" Make the same change at lines 160, 312, 320 and 384, e.g. \"It has no build step.\""
+   },
+   {
+    "severity": "medium",
+    "where": "\"plus any glossary or ADR updates you agreed to\" (line 137)",
+    "problem": "This says the Skill asks before every glossary change, which overstates it. The Skill edits GLOSSARY.md inline as decisions settle, without asking. It only offers before writing an ADR, and only when you reject a candidate for a lasting reason. Any prompt a Visitor sees before a glossary edit comes from Claude Code's Manual mode, not from the Skill.",
+    "evidence": "improve-codebase-architecture/SKILL.md:66: \"Side effects happen inline as decisions crystallize\". SKILL.md:68: \"Add the term to `GLOSSARY.md`.\" SKILL.md:69: \"Update `GLOSSARY.md` right there.\" SKILL.md:70: \"Offer an ADR\" (the only step that asks).",
+    "fix": "\"The run produces a conversation and one HTML file, plus any terms it adds to `GLOSSARY.md` along the way and any ADR you said yes to.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Checkpoint reference-not-driver: \"You type `/codebase-design` as your whole message in a fresh session and go for a coffee. You come back to an agent that has re-read half the repo...\" (line 115)",
+    "problem": "The stem doesn't match the evidence the Lesson cites, and the Lesson's own Site story contradicts it. In issue #449, the spiral came from a handoff telling a fresh session to use the Skill to \"drive the open decisions\", not from typing it bare. The Site story (line 253) says the author typed the Skill \"with nothing after it\" and got a one-reply verdict. Readers are taught that a bare invocation spirals, but the only first-hand run shows the opposite.",
+    "evidence": "`gh issue view 449 --repo mattpocock/skills`, steps to reproduce: \"write a handoff whose resume instruction says: 'resume in `/codebase-design` to drive the open decisions.'\" Matt's closing comment: \"the handoff told the agent to ... drive the open decisions', and it did what it was told.\" The Lesson's own line 110 describes the issue correctly as \"an agent told to 'drive the open decisions' with it\".",
+    "fix": "Stem: \"A handoff note tells a fresh session to 'use `/codebase-design` to drive the open decisions'. You go for a coffee and come back to an agent that has re-read half the repo and is designing interfaces nobody asked for. Why?\""
+   },
+   {
+    "severity": "medium",
+    "where": "The words: \"at any size: a function ..., a file, a folder\" (line 32) vs Common mistakes: \"**Treating folders as modules.**\" (line 250)",
+    "problem": "The Lesson contradicts itself. The definition says a folder can be a module, and Common mistakes then calls treating folders as modules a mistake. The Skill's own list of scales is function, class, package or a slice across tiers. The real mistake (Matt's point) is confusing folder layout with depth.",
+    "evidence": "codebase-design/SKILL.md:14: \"Deliberately scale-agnostic: a function, class, package, or tier-spanning slice.\" Lesson line 32 vs line 250.",
+    "fix": "Line 32: \"...at any size: a function, a file, a package of files, even a slice that runs from the page to the database.\" Line 250: \"**Mistaking tidy folders for depth.** Matt's docs are firm: depth is about the interface, whatever the folders look like.\""
+   },
+   {
+    "severity": "medium",
+    "where": "\"The Lessons module's interface is three functions: `listLessons`, `getLesson` and `lessonExists`.\" (line 33); also line 34 and the Scene caption \"behind three functions\" (line 82)",
+    "problem": "This is out of date. The Lessons module that `lessonsFrom(dir)` returns now has four functions, both on this branch and on main, which is what the Try it clones. A Visitor whose warm-up answer names four functions will think the Lesson or the agent is wrong. The verdict table in the Site story describes v1, when there were three, so the present-tense body text is what's wrong.",
+    "evidence": "src/lessons/lessons.ts:188-210 (and `git show origin/main:src/lessons/lessons.ts`) returns `listLessons`, `getLesson`, `getQuestions` and `lessonExists`. At d21fc2c, `git show d21fc2c:src/lessons/lessons.ts` has only listLessons (line 72), getLesson and lessonExists (line 88).",
+    "fix": "Line 33: \"The Lessons module's interface is four functions: `listLessons`, `getLesson`, `getQuestions` and `lessonExists`.\" Line 34: \"Behind those four functions...\" Line 82: \"...behind four functions.\""
+   },
+   {
+    "severity": "low",
+    "where": "A survey, step by step, item 1: \"...for ==hot spots==, the files that keep changing, and leaves dormant code alone.\" (line 130)",
+    "problem": "This overstates the scoping. The Skill gives extra weight to recently changed code and looks there first, and it widens the search if no hot spot stands out. It doesn't skip dormant code outright.",
+    "evidence": "improve-codebase-architecture/SKILL.md:20: \"put extra weight on the parts of the codebase that have recently changed\". SKILL.md:23: \"let those paths pull your attention first. If the changes are scattered with no clear hot spot, widen the net.\"",
+    "fix": "\"...for ==hot spots==, the files that keep changing, and looks there first. If nothing stands out, it widens the search.\""
+   },
+   {
+    "severity": "low",
+    "where": "item 2: \"It only reopens an ADR when the friction is real, and marks the conflict on the card.\" (line 131)",
+    "problem": "The Skill doesn't reopen ADRs itself. It only lists a candidate that goes against an ADR when the friction is real, and flags the conflict on that card.",
+    "evidence": "improve-codebase-architecture/SKILL.md:56: \"only surface it when the friction is real enough to warrant revisiting the ADR. Mark it clearly in the card\".",
+    "fix": "\"It only suggests something an ADR rules out when the friction is real, and flags the clash on that card.\""
+   },
+   {
+    "severity": "low",
+    "where": "\"What it lacks is a process: no steps, and no point where it stops.\" (line 110); Checkpoint feedback \"It has no process at all.\" (line 123)",
+    "problem": "Not quite true. DESIGN-IT-TWICE.md, one of the Skill's own files, has a three-step Process section. Issue #449's root cause was the agent grabbing that process as if it were the Skill's.",
+    "evidence": "codebase-design/DESIGN-IT-TWICE.md:7-44 (\"## Process\", steps 1-3). Issue #449 body: the agent reached for \"the most action-shaped content in the reference (`DESIGN-IT-TWICE.md`'s ...)\".",
+    "fix": "Line 110: \"What it lacks is a session process: its main file has no steps and nothing says when to stop. Its one procedure, design-it-twice, is meant to be called by a driver.\" Line 123: \"Its main file has no steps or end. That's exactly why the agent improvised one.\""
+   },
+   {
+    "severity": "low",
+    "where": "Scene chat: \"Report written to your temp folder and opened: architecture-review-20261023-1412.html.\" (line 146)",
+    "problem": "The Skill tells the user the absolute path, not just the file name. The Try it checks that the report came from the temp folder, so the Scene should show the full path.",
+    "evidence": "improve-codebase-architecture/SKILL.md:39: \"Open it for the user ... and tell them the absolute path.\"",
+    "fix": "\"Report written and opened: /var/folders/…/T/architecture-review-20261023-1412.html.\""
+   },
+   {
+    "severity": "low",
+    "where": "Scene chat: one-question round (line 150), then \"Decided: ...\" (line 154)",
+    "problem": "The Scene shows a single question and then a final decision. In the grilling Skill, each round asks every open question at once (the frontier), and nothing is acted on until the user confirms a shared understanding. The Scene skips both, so it teaches a thinner grilling than the Skill runs.",
+    "evidence": "productivity/grilling/SKILL.md:8: \"Ask the whole frontier in one round\". grilling/SKILL.md:30: \"The session is done when the frontier is empty ... Do not act on it until the user confirms you have reached a shared understanding.\"",
+    "fix": "Add a second question to the round, e.g. \"❓ **Q2** - **Tests**: Should the three old merging tests be replaced by tests on `addRecipe`? ➡️ Yes: replace, don't layer.\" Have the user reply \"Yes to the ADR. 1 yes, 2 yes.\" Make the last agent line start: \"That settles every open question. Shared understanding? Decided: ...\""
+   },
+   {
+    "severity": "low",
+    "where": "Try it step 5: \"the report loads its styles and diagrams from the web\" (line 221); \"If the page shows plain text with no diagrams...\" (line 239)",
+    "problem": "Only Tailwind and the Mermaid diagrams come from the web. The report also uses hand-built div and SVG diagrams, which still render offline. A blocked CDN gives an unstyled page with some diagrams shown as raw code, not a page with no diagrams at all.",
+    "evidence": "improve-codebase-architecture/SKILL.md:41: \"Mix Mermaid with hand-crafted CSS/SVG visuals\". HTML-REPORT.md:3: \"Tailwind and Mermaid both come from CDNs ... hand-built divs and inline SVG handle the more editorial visuals\".",
+    "fix": "Line 221: \"...because the report loads its styles and some diagrams from the web.\" Line 239: \"If the page looks unstyled, or some diagrams show as raw code, something blocked the web scripts.\""
+   },
+   {
+    "severity": "low",
+    "where": "Final test spot-layered-tests, distractor feedback: \"A seam needs two real adapters, not a wish to fake things.\" (line 370)",
+    "problem": "\"Real\" is ambiguous here. In the Skill's vocabulary a test fake counts as one of the two adapters, so \"two real adapters\" could be read as \"two production adapters\".",
+    "evidence": "codebase-design/DEEPENING.md:29: \"Don't introduce a port unless at least two adapters are justified (typically production + test).\"",
+    "fix": "\"That's testing past the interface with extra steps. A seam needs a second adapter that actually exists, not a wish to fake things.\""
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "high",
+    "where": "Site story, lines 253-265: \"Minutes after v1 of this site shipped, I typed `/mattpocock-skills:codebase-design` ... with nothing after it. I wanted to learn the words.\" plus the verdict table and \"Its recommendation: change nothing. It added that knowing when not to restructure is a useful lesson too.\" Also line 267: \"PR #7, merged minutes earlier\"",
+    "problem": "The whole `/codebase-design` run is backed only by the author's session log: the timing, what was typed, why, the agent's one-reply verdict table and its \"change nothing\" advice. No commit, PR body, PR comment, old journal Lesson or .scratch note other than the research note records it. The research note cites it as A21, \"The author's Claude Code session log, lines 3094-3101 (2026-10-21T09:39:48Z...)\". Under the Site story decision this is exactly what gets cut: clock times and what the agent did in a session. \"Merged minutes earlier\" depends on that same log time.",
+    "evidence": "Search of every commit: `for c in $(git rev-list --all); do git grep -l 'mattpocock-skills:codebase-design' $c; done` finds only .scratch/course-rewrite/research/architecture.md, review/briefs/architecture.json and this Lesson. research/architecture.md:29 cites A21 as the session log, and :192-200 cite \"[A21 line 3094]\" and \"[A21 line 3101]\". `gh pr view 7 --comments` has only the Vercel bot comment. `git show d21fc2c:content/lessons/` has no architecture Lesson. What the repo does hold: PR #7 body (\"Fixes from the two-axis `/code-review`... All input checks now live in the comments module\"), commit 1262b31's diff, the comment on route.ts line 3, ADR 0001, ADR 0003, and old 07-code-review.md at d21fc2c (\"the endpoint checking input itself, when the issue said endpoints only speak HTTP\").",
+    "fix": "Rebuild the box from repo facts only, for example:\n\n**The deepening move came before I had the words.** PR #7 came out of a two-axis code review. Its Standards side flagged the comments endpoint for checking input itself, when the issue said endpoints only speak HTTP. The fix moved the \"is this a JSON object?\" check out of the route and into `postComment`. Now the comments module checks all of its input, and the route, as its own comment says, only speaks HTTP. More behaviour behind the same small interface: that's depth.\n\n**A real seam, and one I didn't cut.** `lessonsFrom(dir)` gets the real `content/lessons` folder on the live site and fixture folders in the tests: two adapters. The comments module talks to Postgres directly, and ADR 0003 has the tests use a real database branch, so a database seam would have one adapter and nothing to swap.\n\n**Not run on this site yet:** I've never typed `/improve-codebase-architecture` on this repo, so there's no report of mine to show you.\n\nThis drops the table, \"Minutes after v1\", \"merged minutes earlier\", the agent's \"change nothing\" and the \"I was also lucky\" line."
+   },
+   {
+    "severity": "high",
+    "where": "Site story, line 269: \"One judgement call is still open. A second review of PR #7 suggested splitting `postComment` into a `parseCommentInput` step and the save.\"",
+    "problem": "Only the session log records that a review suggested `parseCommentInput`. No PR review or comment, commit message or old journal Lesson mentions it. The research note's source for it is the log (A21 lines 3183, 3223). Only the closing \"I haven't done it\" is backed by the repo, because the code has no such function.",
+    "evidence": "research/architecture.md:203: \"Reviewing PR #7, the Standards reviewer said `postComment` does two jobs ... [A21 lines 3183, 3223]\". Searching every commit for `parseCommentInput|two jobs` finds it only in the research note and this Lesson. `gh pr view 7 --json reviews` returns 0 reviews. Old 07-code-review.md at d21fc2c lists the review's judgement calls (limits in two places, the endpoint checking input, naming drift) but not this split. `grep -rn parseCommentInput src` finds nothing.",
+    "fix": "Cut the paragraph. If the internal-seam idea should stay, state it as a fact about the code, with no review behind it: \"`postComment` still checks the input and saves it in one function (src/comments/comments.ts). Splitting those would stay inside the module, so callers would see the same interface.\""
+   },
+   {
+    "severity": "high",
+    "where": "Flow Scene title, line 71: \"Judging this site's code with the vocabulary (from a real run)\"",
+    "problem": "The title presents the Scene's six verdicts, ending in \"Change nothing\", as the output of a real agent run. Only the session log backs that run, as in the Site story finding. Each verdict can be checked against repo files, but \"from a real run\" claims a session the repo doesn't hold.",
+    "evidence": "Same evidence as the Site story run: research/architecture.md:192-200 cite only A21, the session log. The repo backing for each caption: ADR 0001 (\"The endpoints stay thin\"), route.ts:3 (\"This file only speaks HTTP\"), src/lessons/lessons.test.ts:8 (`lessonsFrom(path.join(fixtures, \"valid\"))`), lessons.ts:214 (the real folder), and ADR 0003 (tests on a real Neon branch).",
+    "fix": "Retitle it `title: Judging this site's code with the vocabulary` and make the last caption the Lesson's own judgement: \"# The verdict: each piece is the right shape for now, so nothing needs to change.\""
+   },
+   {
+    "severity": "high",
+    "where": "Try it yourself, step 3, line 214: \"Now the agent asks before editing any file: answer No every time today.\" (with steps 5-7 and the check on line 233)",
+    "problem": "In Manual mode Claude Code asks before writing files and before running shell commands, not only before edits. The survey must write `architecture-review-<timestamp>.html` to the temp folder and then run `open`/`xdg-open`/`start` on it. If the Visitor answers No every time, as told, the report never gets written or opened. Then step 6 (\"Read every card in the page that opens\") and the check \"The report opened from your temp folder\" can't pass. The sentence also understates what Manual mode asks about.",
+    "evidence": "https://code.claude.com/docs/en/permission-modes (read 2026-10-24): \"In Manual mode, Claude Code stops and asks you before most actions that edit files, run shell commands, or reach the network.\" The modes table lists only \"Reads only\" as running without asking in `default`. improve-codebase-architecture/SKILL.md:39 says to write the file to `<tmpdir>/architecture-review-<timestamp>.html` and open it with `open <path>` (macOS), `xdg-open` (Linux) or `start` (Windows). The status-bar wording itself is right: the docs list \"⏸ manual mode on\" and \"⏵⏵ auto mode on\".",
+    "fix": "Replace the sentence: \"Now the agent asks before it writes a file or runs a command. Today, say Yes only to writing the `architecture-review-….html` report in your temp folder and to opening it. Say No to anything that would change a file inside the project.\""
+   },
+   {
+    "severity": "medium",
+    "where": "How Matt and others use it, Other developers, line 192: \"A Reddit user runs it on just the code they've written, after each build (r/ClaudeCode, August 2026).\" Source line 422.",
+    "problem": "The cited page doesn't visibly support the claim. The post has been removed by a moderator. None of the comments that load mention running `/improve-codebase-architecture` on just-written code after each build. The only architecture remark there praises an unnamed \"architecture skill ... especially the automatic updates\", which reads like a custom skill. A Visitor who clicks the link lands on \"[ Removed by moderator ]\". The claim reached the Lesson second-hand, through the community research note.",
+    "evidence": "tavily_extract of https://www.reddit.com/r/ClaudeCode/comments/1vgtqpy/ (2026-10-24): the title is \"[ Removed by moderator ] : r/ClaudeCode\". The loaded comments are about grill-me, file-and-archive, Superpowers, bug-hunting sub-agents and i-have-adhd. OpeningTea5030: \"That architecture skill sounds incredibly useful, especially the automatic updates.\" Hidden replies wouldn't load (Reddit blocks WebFetch and firecrawl). The only other record is .scratch/course-rewrite/research/_community-and-changes.md:68: \"Another user runs /improve-codebase-architecture scoped to just-written code after each build.\"",
+    "fix": "Cut the bullet, or swap in a source a Visitor can check: \"- One user loved the original survey but found the grilling loop crowded out the report (GitHub issue #274, May 2026). Asking for the report first, as in Try it yourself, avoids that.\" Change the source line to: \"[Issue #274: improve-codebase-architecture after grilling was added](https://github.com/mattpocock/skills/issues/274), opened 2026-05-29, closed 2026-10-06.\" `gh issue view 274` confirms the title, date and author fuzzyhope1502."
+   },
+   {
+    "severity": "medium",
+    "where": "Other developers, line 193: \"...but it's a fair reminder that the method matters more than the magic words.\"",
+    "problem": "The moral contradicts the cited source. The discussion says its plain prompt copied the report fields, so the test isolated the Skill's method (hot-spot scoping, the deletion test, the deep-module vocabulary). That method gave no gain in report quality. The Skill's only wins were cost and speed. \"The method matters more\" tells the reader the opposite of what the data showed. The other facts in the bullet are accurate: about 20k lines of Go, 2 runs per arm, both plain runs ranked above both Skill runs, the Skill about 37% cheaper and faster.",
+    "evidence": "https://github.com/mattpocock/skills/discussions/1247 (jinhuang712, 2026-10-10), Caveats: \"Arm B's prompt listed the report fields, so the test compared the skill's *method* (hot-spot scoping, the deletion test, deep-module vocabulary), not its formatting.\" Takeaway: \"the skill gave no gain in report quality over a plain prompt.\" The author also notes a heavy global CLAUDE.md was active in both arms.",
+    "fix": "\"A counterpoint: in an October 2026 A/B test on a 20,000-line Go service, a blind judge ranked a one-paragraph prompt slightly above the Skill, though the Skill was cheaper and faster. That prompt copied the Skill's report format, there were only two runs each, and the tester's own CLAUDE.md overlapped with the Skill. It's one data point, but a fair reminder that a Skill is a well-written prompt, not magic.\""
+   },
+   {
+    "severity": "medium",
+    "where": "The words, line 33: \"The Lessons module's interface is three functions: `listLessons`, `getLesson` and `lessonExists`.\" Also line 34 (what it hides) and the flow Scene caption, line 82: \"behind three functions\".",
+    "problem": "The Lesson says each term \"maps onto a real file on this site\", but the file now has four functions at its front door. PR #10 (2026-10-23) added `getQuestions`. A Visitor who opens src/lessons/lessons.ts, or runs the warm-up in Try it step 4, sees four functions, not the three the Lesson describes. Three was true only at v1, which the Site story table can keep because it describes that time.",
+    "evidence": "src/lessons/lessons.ts:187-208 (branch and main) returns `listLessons`, `getLesson`, `getQuestions` (\"Every question in the Lesson, Checkpoints and Final test alike\") and `lessonExists`. `git show 1262b31:src/lessons/lessons.ts` has three (lines 53, 57, 69). `git log -S getQuestions -- src/lessons/lessons.ts` shows the fourth arrived in 7934668 (#10), 2026-10-23.",
+    "fix": "Line 33: \"The Lessons module's interface is four functions: `listLessons`, `getLesson`, `getQuestions` and `lessonExists`.\" Line 34: add \"pulls out each Lesson's questions\" to the list of hidden jobs. Line 82: \"...hides files, headers, sorting, questions and Markdown behind four functions.\""
+   },
+   {
+    "severity": "low",
+    "where": "Your part: the strategist, line 174: \"**Design the interface; delegate the implementation.** Matt's rule from his April 2026 talk\"",
+    "problem": "The bold heading is Matt's words from the talk, but it isn't in quotation marks. Under the quote rule, his exact words need quotation marks.",
+    "evidence": "v4F1gFy-hqg transcript [16:27]: \"so that's tip number five design the interface delegate the implementation\". The sources block lists it as a quote: \"Design the interface, delegate the implementation.\" 16:26.",
+    "fix": "**\"Design the interface, delegate the implementation.\"** That's Matt's rule from his April 2026 talk: ..."
+   },
+   {
+    "severity": "low",
+    "where": "Two Skills, two jobs, line 112: \"...and `/codebase-design` is the bench you design the chosen one on.\"",
+    "problem": "This is a 10-word phrase copied from ask-matt without quotation marks, while the rest of the Lesson is in the author's own words.",
+    "evidence": "ask-matt/SKILL.md:60: \"It's the survey that finds the candidates; **`/codebase-design`** (below) is the bench you design the chosen one on.\"",
+    "fix": "\"The survey finds the candidates; `/codebase-design` supplies the words you design the chosen one with.\""
+   },
+   {
+    "severity": "low",
+    "where": "Final test scenario-legacy, option b feedback, line 320: \"Matt's README calls it a survey, not a rescue.\"",
+    "problem": "\"a survey, not a rescue\" is verbatim from the README but has no quotation marks.",
+    "evidence": "README.md:203 (1.3.1): \"It is a survey, not a rescue: on a genuinely old codebase it will find real candidates, but it won't untangle the mud for you.\"",
+    "fix": "> It never changes code, and Matt's README calls it \"a survey, not a rescue\"."
+   },
+   {
+    "severity": "low",
+    "where": "Your part: the strategist, line 171: \"you decide what's good for the code's long-term health.\"",
+    "problem": "This follows Matt's spoken words almost word for word but isn't quoted.",
+    "evidence": "3MP8D-mdheA transcript [9:52]: \"you the general have to go and actually make the change and decide what's good for the long-term health of the codebase.\"",
+    "fix": "\"The agent finds candidates; you judge which changes will keep the code easy to work in.\""
+   },
+   {
+    "severity": "low",
+    "where": "Site story, line 265: \"issue #449 shows the same Skill, handed a session to drive, spiralling for 105k tokens.\"",
+    "problem": "The issue gives an approximate figure. The body text (line 110) correctly says \"about 105k\", but the Site story states it as exact.",
+    "evidence": "gh issue view 449 --repo mattpocock/skills: \"ran to ~105k tokens before asking the user anything\".",
+    "fix": "\"...spiralling for about 105k tokens.\" Or drop the sentence: the body already tells the story on line 110, and the Site story rewrite above removes it."
+   }
+  ]
+ },
+ "revise": {
+  "summary": "I revised content/lessons/16-architecture.md and both gates pass: the lint shows no ERROR lines and the course test passes 13 tests. The Site story is rebuilt from repo facts only: PR #7's body and the 1262b31 diff, the judgement calls in the old 07-code-review.md at d21fc2c, route.ts line 3, the redesign spec's \"the one seam\" line, and the honest \"not run here yet\" line. I cut the codebase-design run that only the session log backs up, along with its verdict table, the timing and parseCommentInput; the flow Scene also no longer claims to come \"from a real run\". The Try it step about Manual mode now says Yes to finding the temp folder and to writing and opening the report, and No to any change inside the project, so the exercise works. Claims about the Skills now match the 1.3.1 SKILL.md files: the survey's job ends at a decision rather than \"never changes code\", it edits GLOSSARY.md inline, it looks at hot spots first and widens if none stand out, the Lessons module has four functions, the folder contradiction is gone, and the copied ask-matt \"bench\" sentence is now my own words. Five questions were replaced with new ids (turned-down, scenario-unscoped-run, spot-removed-seam, spot-all-speculative, plus why-locality reworded under its old id) to fix two defensible answers, a Checkpoint that duplicated a Final test question, recall-style prompts and wording tells. The prose is 2,854 words by the lint, inside the 1,800–3,000 limit but a little above the 2,800 aim.",
+  "fixed": [
+   "acc-sources high: Site story rebuilt from repo facts (PR #7 body, commit 1262b31, old 07-code-review.md judgement calls, route.ts:3, redesign spec 'the one seam'); dropped the log-only codebase-design run, its verdict table, 'change nothing', 'lucky', 'minutes after v1' and 'merged minutes earlier'",
+   "acc-sources high: cut the parseCommentInput paragraph (backed only by the session log)",
+   "acc-sources high: flow Scene retitled 'Judging this site's code with the vocabulary'; its last caption is now the Lesson's own judgement",
+   "acc-sources/acc-skills/reader high: Try step 3 now says Manual mode asks before writing files and running most commands; say Yes to finding the temp folder and to writing and opening the report, No to any change inside idea-to-shipped",
+   "acc-skills high: the ask-matt 'bench you design the chosen one on' sentence is paraphrased ('The survey picks where to dig; /codebase-design gives you the words...')",
+   "quiz high: spot-one-adapter (two defensible answers, copied the body's example) replaced by spot-removed-seam (fresh PaymentGateway setting, a test fake counts as an adapter)",
+   "acc-skills medium: 'never changes code' reframed as 'its job ends at a decision; none of its steps builds anything' in the goal, the body and every feedback line",
+   "acc-skills medium: the run's outputs now say GLOSSARY.md terms are added along the way and only an ADR is offered first",
+   "acc-skills medium: reference-not-driver stem is now a session note telling a fresh session to run /codebase-design and finish a design, which matches issue #449; right option reworded to avoid echoing the body",
+   "acc-skills medium: module scales are now function/file/package; Common mistakes says 'Mistaking tidy folders for depth', so no contradiction",
+   "acc-sources/acc-skills medium: Lessons module interface is now four functions (getQuestions added) in the body and Scene caption",
+   "acc-sources medium: removed the Reddit claim; replaced with GitHub issue #274 (verified with gh), and its source line",
+   "acc-sources medium: A/B test moral rewritten to match discussion #1247 ('a Skill is a well-written prompt, not magic', prompt copied the report format, two runs each)",
+   "quiz medium: Checkpoint after-the-report (duplicated spot-carried-on) replaced by turned-down (ADR offer for a lasting rejection)",
+   "quiz medium: goal 3 'read its report' now has a Final test question: scenario-legacy replaced by spot-all-speculative",
+   "quiz medium: why-locality rewritten so the prompt no longer restates 'fix it once, fixed everywhere'; adds a depth-in-the-implementation distractor",
+   "quiz medium: scenario-big-build (recall) replaced by scenario-unscoped-run (what goes wrong with no direction: hot-spot scoping)",
+   "quiz medium: spot-layered-tests option c feedback no longer contradicts internal seams or 'two real adapters'",
+   "reader medium: report's 'Wins' heading and dependency tag explained in step 4",
+   "reader medium: Try step 6 says to go back to the terminal, type the card title and answer the round by number",
+   "reader medium: Try step 2 says a list pops up and to delete what you typed",
+   "reader medium: Try checks made verifiable (real folder plus test folders; path outside idea-to-shipped; exact git status text)",
+   "reader medium: glossed tests, Git/repo, Postgres, pass-through, driver Skill, router Skill, spec, tickets, auto mode, browser/server code and README at first use; removed Markdown/header jargon",
+   "reader medium: adapter gets a concrete example; the route is defined in the Scene caption and called a thin caller",
+   "reader medium: /tdd, /grill-with-docs, /to-spec, /to-tickets and /implement each get a one-clause gloss",
+   "reader medium: jargon removed or glossed (diff becomes code change, effort setting glossed, HTTP/JSON reworded, blind judge/Go reworded, 'the Lesson check' reworded, mock question replaced)",
+   "low (acc-sources): 'Design the interface, delegate the implementation.' put in quotation marks",
+   "low (acc-sources): 'decide what's good for the long-term health' paraphrased",
+   "low (acc-sources): 'a survey, not a rescue' no longer used (its question was replaced)",
+   "low (acc-sources): '105k tokens' removed from the Site story; the body keeps 'about 105k'",
+   "low (acc-skills): hot spots now looked at first, with the search widened if none stand out",
+   "low (acc-skills): ADR wording is now 'only suggests something an ADR rules out when the friction is real, and flags the clash'",
+   "low (acc-skills): 'no process' is now 'its main file has no steps'; #449 notes it reached for the design-it-twice steps",
+   "low (acc-skills): chat Scene shows the absolute temp path",
+   "low (acc-skills): chat Scene round has Q1 and Q2 and ends with a shared-understanding check",
+   "low (acc-skills): CDN text says 'styles and some diagrams'; fallback says unstyled or raw-code diagrams",
+   "low (acc-skills): 'two real adapters' feedback removed",
+   "low (reader): Skill is defined at first mention; 'label under the prompt box' replaces 'status bar'; Scene caption explains the question and answer markers",
+   "low (reader): repetition cut (#449 is no longer retold in the Site story; 'one at a time' merged into Your part; Common mistakes points back in one line); lowercase 'lesson' is gone; 'Matt's docs on AI Hero' is identified at first use",
+   "low (quiz): predict-deletion prompt no longer does the deletion test for the reader",
+   "low (quiz): sequence-survey options all have four steps",
+   "low (quiz): the 'never changes code' tell across questions is gone",
+   "low (quiz): scenario-grown-fast prompt no longer says 'slow'",
+   "low (quiz): scenario-settle-words distractors now use Skills the Lesson teaches (/tdd, /grill-with-docs, /improve-codebase-architecture)",
+   "extra: the repeated aihero quote was paraphrased in the Cheat sheet, and the quoted text was removed from a source note so each source has one quote",
+   "extra: wording tells removed in spot-all-speculative (wrong options no longer all start 'she should') and scenario-unscoped-run (right option no longer hedged); every right answer is strictly shorter than at least one wrong option, both raw and as the reader sees it"
+  ],
+  "deferred": [],
+  "lowsDeferred": 0,
+  "declined": [],
+  "words": 2854,
+  "lintClean": true,
+  "testsPassed": true
+ },
+ "rounds": {}
+}

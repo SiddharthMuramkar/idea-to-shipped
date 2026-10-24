@@ -1,0 +1,267 @@
+{
+  "slug": "pr-and-ship",
+  "next": {
+    "round": 3,
+    "step": "fix",
+    "why": "fix round 2 and check round 3 done; its round 3 fixer was stopped mid-run (some edits may already be in the file)"
+  },
+  "applied": [
+    "r1: Site story (medium, accuracy): added PR #8, the README, which had all three sections (a file-tree diff, a before and an after, and Merge Danger with blast radius \"none\"). PR #9, merged the next day, now reads as a slip back, and PR #10 as the return to the full shape. Kept a hedge from repo facts: \"The PRs don't show whether the agent loaded `/pr` for #9.\" Added PRs #8 and #10 with their merge dates to the sources line.",
+    "r1: Review before the body (medium, reader): the bullet now says to run Matt's Skill by its full name, `/mattpocock-skills:code-review`. It explains that the short name can reach the Built-in bug hunt, and that a reply without the Standards and Spec sections means the Built-in answered. It notes that `/implement` calls the short name too, so you run the full name yourself afterwards. The Cheat sheet row now says the same.",
+    "r1: Plugin (medium, reader): the first use now reads \"the plugin (the bundle that installs all of Matt's Skills at once)\".",
+    "r1: Chat Scene (medium, reader): you now skim the diff yourself because the agent that wrote the code also made the door call. You confirm the call and ask for the push and the PR. The agent no longer vouches for its own call.",
+    "r1: Coding terms (medium, reader): the key now explains the route handler, the comments module and `postComment`. The table explains a component tree (\"the page's building blocks, nested\"). The scenario-visual-evidence option now says \"the styling code (CSS)\".",
+    "r1: sequence-review-body-ship (high, quiz): the stem now asks \"Which order matches the advice in this Lesson?\" instead of \"safely\". Option a's feedback now explains that a review that changes the code leaves this body out of date. Id kept.",
+    "r1: spot-merge-then-test (medium, quiz): now a real spot question that ends \"Spot the mistake.\". The distractors are \"Nothing: a revert undoes...\", \"Nothing: production waits until someone has tested the preview.\" and \"Squash and merge skips migrations, so Sam must run this one by hand.\". Id kept.",
+    "r1: scenario-visual-evidence (medium, quiz): replaced the build-output distractor with a real A-tier competitor, a layout test that failed at phone width before the fix and passes now. Its feedback says it ranks below screenshots for a visible change, as pr/SKILL.md ranks screenshots S-tier and test runs A-tier.",
+    "r1: body-only Checkpoint (medium, quiz): the stem now says \"and press Enter\", so the right option no longer echoes the stem's \"nothing else\".",
+    "r1: spot-claim-evidence (medium, quiz): dropped \"Pasta\" from the right option. Its feedback now asks for a before and an after: screenshots of the search if the agent can take them, otherwise the test that failed and now passes.",
+    "r1: scenario-stale-body (medium, quiz): option a is now \"Leave it: reviewers can follow the new commits in the diff.\", with feedback on a stale Summary and Merge Danger. The right option is now \"Ask the agent to rewrite the body and update the PR.\", and its feedback notes that `/pr` won't put the body on the PR.",
+    "r1: scenario-repo-template (medium, quiz): the stem now names the file as a PR template. The weak distractor about deleting the template became \"Copy the repo's template into `GLOSSARY.md`, since `/pr` reads that file.\", with feedback that the glossary supplies words, not a layout.",
+    "r1: spot-email-door renamed spot-text-door (medium, quiz): a fresh scenario, text-message reminders on a dentist's booking site, so the question tests transfer instead of the Lesson's email example. The new id fits the new scenario, and the ids are unpublished.",
+    "r1: spot-prose-summary (medium, quiz): the stem now says \"Jo's Summary is four paragraphs...\", which removes the ambiguity. The silly alphabetical-order option became \"It needs a fifth paragraph saying why each file changed.\", with feedback.",
+    "r1: door-lasting-fix Checkpoint (medium, quiz): the weak option about deleting Merge Danger became \"Run a code review on every PR that changes the database.\". Its feedback says a review doesn't change how the next session calls the door. The wording avoids the `/code-review` name clash.",
+    "r2: sequence-review-body-ship and Your part line 207 (medium, quiz): all four options and the Main flow sentence now use the full name `/mattpocock-skills:code-review`, which matches the Lesson's 'Review before the body' advice and the course fact on the name clash. The steps are unchanged and option d is still the longest. Id kept.",
+    "r2: spot-merge-then-test (medium, quiz): option c ('Nothing: production waits...') is replaced with 'The preview already migrated the real database, so merging first changed nothing.' Its feedback says each preview migrates its own database branch and only the merge's production build touches the real one. This leaves one 'Nothing:' option, and goal 1's 'preview with its own database branch' is now checked in the Final test. The right answer, b, is still shorter than c and d. Id kept.",
+    "r2: scenario-review-effort (medium, quiz): the straw-man option d ('Block it until the team writes screenshot tests') is replaced with a real misconception from Your part, 'Ask the agent if it's sure, and merge if it says yes.' Its feedback says this has the agent grade its own call a second time, and your quick skim is the independent check. The right answer, b, is still shorter than a and d. Id kept.",
+    "r2: Site story PR #9 (medium, accuracy): checked against gh pr view 9, where the body opens with '## What changes' and the checks line is the first bullet under '## Evidence'. The text now reads 'It had an Evidence heading and a door line, but no before. Its Evidence opened with passing checks (...)', so the passing checks no longer read as the opening of the whole body. Net -2 words.",
+    "r2: scenario-visual-evidence (medium, reader): the stem no longer says 'screenshots', which only the right option used. It now states the condition from pr/SKILL.md: 'In your setup, the agent can open the page in a browser at any width and capture what it shows.' The options and feedback are unchanged. Id kept."
+  ],
+  "declined": [
+    {
+      "problem": "quiz low spot-merge-then-test: suggested distractor 'The preview's database branch is deleted the moment you merge', with feedback 'The preview is still there'",
+      "reason": "No repo fact or source in hand says whether this site's Neon/Vercel setup keeps or deletes preview branches on merge, so that feedback could teach something false. I used a different real misconception instead, 'Production waits for someone to test the preview before it deploys'; the Lesson already states that merging to main deploys production automatically."
+    },
+    {
+      "problem": "quiz MEDIUM spot-claim-evidence: suggested Evidence text 'Fixed. Full suite green (112 tests), types clean.'",
+      "reason": "'types clean' is jargon the Lesson never explains (reader lens), so I shortened it to 'Fixed. All 112 tests pass.' The question still asks the same thing."
+    },
+    {
+      "problem": "medium, accuracy: 12-main-flow.md:322 and 09-implement.md:297 say flatly that `/pr` wrote PR #9's body, which conflicts with this Lesson's hedge.",
+      "reason": "The fix belongs in 12-main-flow.md and 09-implement.md. Other agents own those files, and this round may edit only 11-pr-and-ship.md. This Lesson already hedges, and the hedge is kept: \"The PRs don't show whether the agent loaded `/pr` for #9.\" Pass the suggested rewording of those two lines to their fixers."
+    },
+    {
+      "problem": "medium, reader: duplicate of the item above. Implement and The main flow credit PR #9's body to `/pr`.",
+      "reason": "Declined for the same reason. The edits are in 09-implement.md:297 and 12-main-flow.md:322, which are outside this agent's single-file scope. This Lesson needs no change for it."
+    }
+  ],
+  "pending": [
+    {
+      "severity": "medium",
+      "where": "Your part, Checkpoint door-lasting-fix, right-option feedback, line 214: \"List the changes your repo always treats as one-way where the agent reads them before it makes the call.\" Also line 200: \"List the changes your repo always treats as one-way (migrations, ...)\"",
+      "problem": "Line 214 copies a sentence from Matt's pr docs page almost word for word, with no quotation marks. About 17 of its 19 words match the source. The same page is already this Lesson's quoted source (line 199, \"rolling back a commit won't unsend a batch of emails\"), so this works as an unmarked second quote from one source, and it runs past 15 words. That breaks the course rule that everything except one short attributed quote per source is in the author's own words. Line 200 reuses the same 9-word run.",
+      "evidence": "/Users/siddharth/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/docs/engineering/pr.md:31: \"write down the changes your repo always treats as one-way (schema migrations, anything that ships outward or deletes) where the agent will read them before it makes the call.\" The research note (.scratch/course-rewrite/research/pr-and-ship.md, row L3) lists https://www.aihero.dev/skills-pr as the public copy of this file. That is the same \"Matt's docs\" that line 199 quotes. An 8-gram overlap scan of the Lesson against pr.md flags line 214 (15 of 21 words in shared 5-grams) and line 200 (\"the changes your repo always treats as one way\"). Round 2 saved this as a low but didn't apply it. It was not declined.",
+      "fix": "Line 214 feedback: \"Right. A rule in `CLAUDE.md` is read at the start of every session, so the next door call starts from it.\" Line 200, second sentence: \"In `CLAUDE.md`, a file of standing instructions the agent reads at the start of every session, write down which kinds of change are one-way in your repo: migrations, anything that sends messages out, anything that deletes.\"",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, step 4 (lines 263-267): \"First write a test that an empty or blank name shows as \"Anonymous\", and run it so we see it fail.\"",
+      "problem": "This prompt asks for test-first work, which is exactly what Matt's `tdd` Skill describes, so the agent may load it on its own. That Skill won't write a test until you confirm the seams. So the agent can stop and ask which seams to test, and a cold reader has no reply ready. The word \"seam\" never appears in this Lesson. The TDD and Implement Lessons both tell the reader what to say at this point; this one doesn't.",
+      "evidence": "tdd/SKILL.md:3: \"Use when the user wants to build features or fix bugs test-first\". tdd/SKILL.md:22: \"Before writing any test, write down the seams under test and confirm them with the user. No test is written at an unconfirmed seam.\" tdd/SKILL.md:24: Ask: \"What's the public interface, and which seams should we test?\" content/lessons/08-tdd.md:252: \"When it proposes a seam, reply: ...\". content/lessons/09-implement.md:263: \"Seams: reply \"yes\"\". grep -n -i seam content/lessons/11-pr-and-ship.md: no matches.",
+      "fix": "Step 4 lead text: \"4. Make a change on a branch. Watching the new test fail first is what gives the body a real \"before\". If the agent proposes a seam (the place a test checks the code from) and waits for your OK, reply: \"Yes, test the display-name function itself.\"\" To keep the word count flat (proseWords is 2,881, above the 2,800 aim), delete line 180 as the next finding suggests.",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "A session, step by step: intro line 160 (\"Earlier in this same session the agent built the fix test-first ... and it has been reviewed.\"), caption line 170 (\"the failing run from earlier in the session\"), and line 180 (\"Notice two things...\")",
+      "problem": "The Scene gets its \"before\" from the build session's memory, and it implies the review ran in that same session too. The course's advised flow is different: this Lesson's order is review, then the body (line 202, and the right answer at line 446), and Code review says to review from a clean session. A reader who follows that flow asks for the body in the clean review session, which never saw the failing run. The Lesson never says how to get a real before then, so the reader may accept a body with only an \"after\", which this Lesson calls a claim. The worked example doesn't model the advice next to it.",
+      "evidence": "Line 160 and line 170 as quoted. Line 202: \"Review before the body.\" content/lessons/10-code-review.md:214: \"**Review from a clean session.** ... Review after `/clear` ... or in a new session.\" content/lessons/10-code-review.md:229: \"Run `/mattpocock-skills:code-review` yourself afterwards, from a clean session.\" pr/SKILL.md:160-164 asks for a before and after: \"Show the exact test that now fails and passes\". writing-guide.md:114: \"Worked examples must model the advice.\" Line 180 only repeats captions 166 and 176.",
+      "fix": "Replace line 180 with: \"If you reviewed in a clean session first, as [Code review](/learn/code-review) advises, that session never saw the failing run. Ask for the before anyway: the agent can run the new test against `main`'s code, where it still fails.\" At line 160, change \"and it has been reviewed\" to \"and you've reviewed it\". Optional, to make the Scene model this: line 167 becomes \"*Loads the `pr` Skill, reads the diff between this branch and `main`, then runs the new test against `main`'s code (500) and on this branch: 20 of 20 pass.*\", and caption 170 becomes \"Evidence is a before and an after: the new test on `main`'s code, then on this branch.\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Checkpoints and Final test, all option lists: e.g. line 73 \"On the real site too, because...\", line 338 \"Yes, because only typing `/pr`...\", line 384 \"...since `/pr` reads that file.\", line 434 \"...so merging first changed nothing.\"",
+      "problem": "Wording tell across the whole quiz. Every option with a reason clause (because / since / so) is wrong, and none of the 14 right answers has one. A reader who rules out the options that justify themselves gets down to two choices on preview-separate, door-lasting-fix, scenario-need-to-type, scenario-review-effort, scenario-repo-template and spot-merge-then-test without knowing the content. A second, weaker version of the same tell: every option that opens with \"Nothing:\", \"None:\" or \"Leave it:\" is wrong (lines 362, 370, 382, 400, 420, 430).",
+      "evidence": "A script over the Lesson's option lines finds the reason words because/since/so in 11 wrong options: lines 73, 77, 211, 338, 340, 358, 372, 384, 388, 434, 436. They appear in 0 of the 14 right options: lines 75, 148, 190, 213, 334, 352, 360, 376, 386, 396, 412, 418, 432, 446. Line 334 uses a semicolon, not one of these words.",
+      "fix": "Give three right answers a reason clause. Each one stays shorter than that question's longest option, so the lint still passes. Line 386: \"Say in `CLAUDE.md` how they combine, since every session reads it.\" (66 characters; option b is 73). Line 432: \"The merge migrated the real database, so the check came too late.\" (65; option c is 81). Line 418: \"The door is one-way, since texts can't be unsent.\" (49; option c is 54). Then cut the reason clause from two distractors. Line 77: \"Nowhere. Previews are read-only.\" Line 340: \"No. `/implement` already wrote the body when it committed.\" The existing feedback lines still fit all five options.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "How a change ships, line 39 (\"gives each preview its own **database branch**, a separate copy of the database\"), checked by Checkpoint preview-separate, option d at line 79 (\"In production, but only after you squash and merge.\")",
+      "problem": "The answer depends on a fact the body never states: data added on a preview's database branch never reaches production, even after the merge. The Lesson calls the copy a \"branch\" and says (line 36) that merging \"folds the branch into main\". A cold reader can fairly conclude that a database branch gets folded in too, which makes d look right. The fact appears only in d's feedback (\"Merging ships the code and its migrations, not the recipes you added while testing\"), so the reader learns it from the feedback, not from the Lesson.",
+      "evidence": "Lesson line 39 says only that the copy is separate and that \"only the merge runs it [the migration] on the real one\". Nothing in the body says the copy's data stays behind. The repo backs the missing fact: docs/adr/0002-neon-branch-per-environment.md describes \"a throwaway branch per PR preview\", chosen to avoid the \"risk [of] test data leaking into production\".",
+      "fix": "In line 39, after \"a separate copy of the database.\", add: \"It's a throwaway copy that's never merged back, so nothing you add while testing a preview reaches the real site.\" That is +20 words, taking the prose to about 2,900, under the 3,000 lint cap.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test scenario-review-effort, option c at line 362 (\"None: a two-way door can be merged unread.\"), and How Matt and others use it, line 229 (\"A small two-way door only needs a light review; every one-way door needs a real one.\")",
+      "problem": "A sharp reader can defend distractor c from the talk the Lesson cites as the source for line 229. Matt's closing rule is that you don't need to review every two-way door, though every one-way door needs review. So \"a two-way door can be merged unread\" is roughly Matt's own position for some PRs. The Lesson softens that rule to \"only needs a light review\", and c's feedback then marks Matt's actual rule as wrong. The right answer, b, is still right by the Lesson's own reasoning (the agent is marking its own homework), but c needs to state that error instead of Matt's rule.",
+      "evidence": "The English transcript at https://ai.engineer/talks/LlgiOCmFG_w-fixing-pr-bottleneck (read 2026-10-24) has, at the closing rule: \"You really don't need to review every single two-way door.\" That page's own summary says \"not every two-way door needs human review\". At 18:14 he says of a localized two-way door that he will \"sort of review it a little\". The Arabic track LlgiOCmFG_w.ar.json at 22:09–22:15 matches. Lesson sources line 460 cites \"the closing rule 21:44–22:14\".",
+      "fix": "Change option c at line 362 to \"None: the agent's door call already settles it.\" (47 characters; the right answer b is 45, option a 58). Keep its feedback: \"The call comes from the agent that wrote the code. A quick look is how you catch a 'two-way' that isn't.\" To keep line 229 true to the source, reword its last sentence to: \"When a door is two-way with a local blast radius, he reviews it only a little, and he closed by saying not every two-way door needs a human review, but every one-way door does.\"",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Goals, line 15 (\"it's model-invoked, and it writes only the PR body\"), against the Final test, lines 330-450",
+      "problem": "No Final test question turns on the second half of goal 2: that `/pr` writes only the body and never pushes, opens or updates the PR. Only the Checkpoint body-only tests it, and Checkpoints don't count towards passing. In the Final test it shows up only as a side point. In scenario-need-to-type, a reader who knows `/pr` is model-invoked picks a without needing this fact. In scenario-stale-body, the right answer d (\"rewrite the body and update the PR\") covers both steps, so a reader who thinks `/pr` updates the PR itself still picks d.",
+      "evidence": "In scenario-need-to-type, option c (line 338) is the only option that mentions pushing, and the \"No\" side settles the question. In scenario-stale-body, none of the distractors (lines 370, 372, 374) depends on what `/pr` leaves to you. The fact is mentioned only in the right answer's feedback at line 377 (\"`/pr` won't put it on the PR for you\"). The plugin's docs/engineering/pr.md:51-55 back it: \"It writes the body and stops\" and \"It writes the body at one point in time\".",
+      "fix": "In scenario-stale-body, replace option b (line 372) with \"Type `/pr` again: it rewrites the body and puts it on the PR.\" (61 characters; the right answer d is 52 and option a 59). Its feedback: \"It rewrites the body, but `/pr` only writes. Putting the new body on the PR is a step you ask the agent for.\" The question then checks that `/pr` writes only the body.",
+      "lens": "quiz"
+    }
+  ],
+  "rounds": {
+    "r2": {
+      "fix": {
+        "applied": [
+          "sequence-review-body-ship and Your part line 207 (medium, quiz): all four options and the Main flow sentence now use the full name `/mattpocock-skills:code-review`, which matches the Lesson's 'Review before the body' advice and the course fact on the name clash. The steps are unchanged and option d is still the longest. Id kept.",
+          "spot-merge-then-test (medium, quiz): option c ('Nothing: production waits...') is replaced with 'The preview already migrated the real database, so merging first changed nothing.' Its feedback says each preview migrates its own database branch and only the merge's production build touches the real one. This leaves one 'Nothing:' option, and goal 1's 'preview with its own database branch' is now checked in the Final test. The right answer, b, is still shorter than c and d. Id kept.",
+          "scenario-review-effort (medium, quiz): the straw-man option d ('Block it until the team writes screenshot tests') is replaced with a real misconception from Your part, 'Ask the agent if it's sure, and merge if it says yes.' Its feedback says this has the agent grade its own call a second time, and your quick skim is the independent check. The right answer, b, is still shorter than a and d. Id kept.",
+          "Site story PR #9 (medium, accuracy): checked against gh pr view 9, where the body opens with '## What changes' and the checks line is the first bullet under '## Evidence'. The text now reads 'It had an Evidence heading and a door line, but no before. Its Evidence opened with passing checks (...)', so the passing checks no longer read as the opening of the whole body. Net -2 words.",
+          "scenario-visual-evidence (medium, reader): the stem no longer says 'screenshots', which only the right option used. It now states the condition from pr/SKILL.md: 'In your setup, the agent can open the page in a browser at any width and capture what it shows.' The options and feedback are unchanged. Id kept."
+        ],
+        "declined": [],
+        "words": 2881,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    "r3": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "Your part, Checkpoint door-lasting-fix, right-option feedback, line 214: \"List the changes your repo always treats as one-way where the agent reads them before it makes the call.\" Also line 200: \"List the changes your repo always treats as one-way (migrations, ...)\"",
+            "problem": "Line 214 copies a sentence from Matt's pr docs page almost word for word, with no quotation marks. About 17 of its 19 words match the source. The same page is already this Lesson's quoted source (line 199, \"rolling back a commit won't unsend a batch of emails\"), so this works as an unmarked second quote from one source, and it runs past 15 words. That breaks the course rule that everything except one short attributed quote per source is in the author's own words. Line 200 reuses the same 9-word run.",
+            "evidence": "/Users/siddharth/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/docs/engineering/pr.md:31: \"write down the changes your repo always treats as one-way (schema migrations, anything that ships outward or deletes) where the agent will read them before it makes the call.\" The research note (.scratch/course-rewrite/research/pr-and-ship.md, row L3) lists https://www.aihero.dev/skills-pr as the public copy of this file. That is the same \"Matt's docs\" that line 199 quotes. An 8-gram overlap scan of the Lesson against pr.md flags line 214 (15 of 21 words in shared 5-grams) and line 200 (\"the changes your repo always treats as one way\"). Round 2 saved this as a low but didn't apply it. It was not declined.",
+            "fix": "Line 214 feedback: \"Right. A rule in `CLAUDE.md` is read at the start of every session, so the next door call starts from it.\" Line 200, second sentence: \"In `CLAUDE.md`, a file of standing instructions the agent reads at the start of every session, write down which kinds of change are one-way in your repo: migrations, anything that sends messages out, anything that deletes.\""
+          },
+          {
+            "severity": "low",
+            "where": "Idea section, line 104: \"Screenshots are the strongest evidence when the change is visible and the agent can take them. Next comes evidence from running the code: the exact test that failed before the change and passes after it, written as pseudocode, or console output ... that changed. \\\"All tests pass\\\" on its own is a claim, not evidence.\" Also goal line 16 and scenario-repo-template feedback, line 383.",
+            "problem": "These lines follow Matt's docs page sentence by sentence and only swap a few words. Each one is under the 15-word quote limit, but taken together they track the docs too closely to count as the author's own words.",
+            "evidence": "docs/engineering/pr.md:22: \"A screenshot is the strongest evidence when the change is visual and the environment can take one. Otherwise, use the exact test that failed and now passes, written as pseudocode, or the console output that changed.\" pr.md:59: \"\\\"Tests are green\\\" on its own is a claim, not a before and after.\" pr.md:3: \"a **Summary** that shows the change, **Evidence** that it works, and a **Merge Danger** call on how risky it is to land\" (goal line 16 shares \"body: a Summary that shows the change, Evidence\" and \"a Merge Danger call on\"). pr.md:43: \"`pr` has its own template and does not look for ... If you do nothing, the agent has two competing instructions\" (line 383: \"`/pr` has its own template and doesn't look for yours. Left alone, the agent has two competing instructions.\"). In the overlap scan, line 104 has 25 of 69 words in shared 5-grams.",
+            "fix": "Line 104: \"**2. Evidence: prove it works.** Always a **before** and an **after**. If the change shows on screen and the agent can capture it, screenshots win. Otherwise, run the code: the test that went red before the change and green after, sketched in pseudocode, or the console output (what a program prints) that differs. A bare \\\"all tests pass\\\" asserts; it doesn't prove.\" Line 383 feedback: \"`/pr` carries its own layout and never goes looking for the repo's. Say nothing, and the agent is pulled two ways.\""
+          },
+          {
+            "severity": "low",
+            "where": "How Matt and others use it, line 229: \"In his \\\"Fixing the PR Bottleneck\\\" talk (25 September 2026), he said...\"",
+            "problem": "The talk was given at AI Engineer Paris, which ran on 23–24 September 2026. 25 September is the day the video went up on YouTube, but the sentence presents it as the day he gave the talk. The sources line can keep the publish date, but the body text puts the date on the talk itself.",
+            "evidence": "https://ai.engineer/paris/2026: \"AI Engineer Paris 2026: September 23-24 at Station F\", which lists \"Fixing the PR Bottleneck ... 16:30 - 17:00 Main Stage, Matt Pocock\". The YouTube page for LlgiOCmFG_w shows \"Sep 25, 2026\" and \"Recorded at AI Engineer Paris 2026\". The English transcript at https://ai.engineer/talks/LlgiOCmFG_w-fixing-pr-bottleneck ends at 22:14 with \"Thank you, Paris.\"",
+            "fix": "\"In his \\\"Fixing the PR Bottleneck\\\" talk at AI Engineer Paris (September 2026), he said...\" (Leave the sources line's 2026-09-25 as the publish date.)"
+          },
+          {
+            "severity": "low",
+            "where": "Site story, line 297: \"The agent opened each PR with `gh pr create`, and I clicked **Squash and merge** on GitHub. ... A rule on my machine blocks pushing straight to `main`, so every change has to go through a PR.\"",
+            "problem": "The old journal Lesson backs this wording, but git history shows two exceptions. PR #1 went in as an ordinary merge commit, not a squash. And three commits landed on `main` directly before PR #1. So \"each PR ... Squash and merge\" and \"every change has to go through a PR\" claim a little more than the repo holds.",
+            "evidence": "`git log --first-parent origin/main` prints \"100f548 Merge pull request #1 from SiddharthMuramkar/setup/neon-branch-names\" (`git log --format='%h %p' -1 100f548` shows two parents, d75af87 and c226730). Every later PR is a single squash commit, ae9ae38 (#2) through 7934668 (#10). The commits 4f849b9, 6db2cac and d75af87 (2026-10-21 13:09–13:13) sit on main's first-parent line before PR #1, which was opened against d75af87. `git show d21fc2c:content/lessons/08-pr-and-ship.md`: \"The agent opened each PR with `gh pr create`, and I clicked **Squash and merge** on GitHub.\"",
+            "fix": "\"The agent opened each PR with `gh pr create`, and from PR #2 on I clicked **Squash and merge** on GitHub. Six PRs built v1. After the first scaffold commits, a rule on my machine blocked pushing straight to `main`, so every change since has gone through a PR.\""
+          },
+          {
+            "severity": "low",
+            "where": "Site story, line 313: \"My early bodies (PRs #2 to #7) were bullet lists of what changed, most with steps for checking it on the preview.\"",
+            "problem": "PR #6 doesn't fit. Its body is two prose paragraphs and a numbered check-by-eye list, with no bullet list of changes. So \"were bullet lists\" overstates what the PR bodies show. (\"most with steps for checking it on the preview\" holds: #4, #5, #6 and #7 have them, and #2 and #3 don't.)",
+            "evidence": "`gh pr view 6 --repo SiddharthMuramkar/idea-to-shipped --json body` starts \"Drafts the last six lessons, so the course has all 11. Also marks issue 06 resolved.\\n\\nLesson 7 (Code review) has a placeholder...\" and then \"**Check by eye on the preview (Vercel bot → Visit Preview):** 1. ...\". PRs #2, #3, #4, #5 and #7 do open with bullet lists of changes.",
+            "fix": "\"My early bodies (PRs #2 to #7) were mostly bullet lists of what changed, most with steps for checking it on the preview.\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "Try it yourself, step 4 (lines 263-267): \"First write a test that an empty or blank name shows as \"Anonymous\", and run it so we see it fail.\"",
+            "problem": "This prompt asks for test-first work, which is exactly what Matt's `tdd` Skill describes, so the agent may load it on its own. That Skill won't write a test until you confirm the seams. So the agent can stop and ask which seams to test, and a cold reader has no reply ready. The word \"seam\" never appears in this Lesson. The TDD and Implement Lessons both tell the reader what to say at this point; this one doesn't.",
+            "evidence": "tdd/SKILL.md:3: \"Use when the user wants to build features or fix bugs test-first\". tdd/SKILL.md:22: \"Before writing any test, write down the seams under test and confirm them with the user. No test is written at an unconfirmed seam.\" tdd/SKILL.md:24: Ask: \"What's the public interface, and which seams should we test?\" content/lessons/08-tdd.md:252: \"When it proposes a seam, reply: ...\". content/lessons/09-implement.md:263: \"Seams: reply \"yes\"\". grep -n -i seam content/lessons/11-pr-and-ship.md: no matches.",
+            "fix": "Step 4 lead text: \"4. Make a change on a branch. Watching the new test fail first is what gives the body a real \"before\". If the agent proposes a seam (the place a test checks the code from) and waits for your OK, reply: \"Yes, test the display-name function itself.\"\" To keep the word count flat (proseWords is 2,881, above the 2,800 aim), delete line 180 as the next finding suggests."
+          },
+          {
+            "severity": "medium",
+            "where": "A session, step by step: intro line 160 (\"Earlier in this same session the agent built the fix test-first ... and it has been reviewed.\"), caption line 170 (\"the failing run from earlier in the session\"), and line 180 (\"Notice two things...\")",
+            "problem": "The Scene gets its \"before\" from the build session's memory, and it implies the review ran in that same session too. The course's advised flow is different: this Lesson's order is review, then the body (line 202, and the right answer at line 446), and Code review says to review from a clean session. A reader who follows that flow asks for the body in the clean review session, which never saw the failing run. The Lesson never says how to get a real before then, so the reader may accept a body with only an \"after\", which this Lesson calls a claim. The worked example doesn't model the advice next to it.",
+            "evidence": "Line 160 and line 170 as quoted. Line 202: \"Review before the body.\" content/lessons/10-code-review.md:214: \"**Review from a clean session.** ... Review after `/clear` ... or in a new session.\" content/lessons/10-code-review.md:229: \"Run `/mattpocock-skills:code-review` yourself afterwards, from a clean session.\" pr/SKILL.md:160-164 asks for a before and after: \"Show the exact test that now fails and passes\". writing-guide.md:114: \"Worked examples must model the advice.\" Line 180 only repeats captions 166 and 176.",
+            "fix": "Replace line 180 with: \"If you reviewed in a clean session first, as [Code review](/learn/code-review) advises, that session never saw the failing run. Ask for the before anyway: the agent can run the new test against `main`'s code, where it still fails.\" At line 160, change \"and it has been reviewed\" to \"and you've reviewed it\". Optional, to make the Scene model this: line 167 becomes \"*Loads the `pr` Skill, reads the diff between this branch and `main`, then runs the new test against `main`'s code (500) and on this branch: 20 of 20 pass.*\", and caption 170 becomes \"Evidence is a before and an after: the new test on `main`'s code, then on this branch.\""
+          },
+          {
+            "severity": "low",
+            "where": "Your part, line 199 (\"Doubt the comfortable call most.\"), and the chat Scene caption at line 174 (\"You skim the diff yourself\")",
+            "problem": "The Lesson tells the reader to check the agent's door call against the change, and the right answer to scenario-review-effort (line 360) is \"a quick skim\". It never says where a beginner sees the diff, either before a PR exists or on GitHub. Someone who barely uses Git can't follow \"skim the diff yourself\".",
+            "evidence": "Line 174: \"You skim the diff yourself, because the agent that wrote the code also made the door call\". Line 199 gives no way to see the change. The only description of where the diff lives is line 35: \"It shows the **diff**\".",
+            "fix": "End the line 199 bullet with: \"Ask the agent to show you the diff (on GitHub, it's the PR's Files changed tab) and check the call against it.\""
+          },
+          {
+            "severity": "low",
+            "where": "Goals, line 17: \"use that to decide how hard to review and when to test before merging\"",
+            "problem": "This contradicts the Lesson itself. The goal says the door call decides when to test before merging, but line 69 says you always test on the preview before you merge, never after. A reader could take the goal to mean that a two-way door can be merged first and tested later.",
+            "evidence": "Line 69: \"That's why ==you test on the preview before you merge==, never after\". spot-merge-then-test (line 433) marks merging before testing as the mistake. Lines 143, 198 and 229 teach the door only as setting how much review a change gets.",
+            "fix": "Line 17: \"- You'll be able to judge whether a change can be undone (a two-way door) or not (a one-way door), and use that to decide how hard to review it.\" Testing before the merge stays in goal 1, which already ends \"testing, then squash and merge\"."
+          },
+          {
+            "severity": "low",
+            "where": "How a change ships, line 39 (\"Vercel, which builds and hosts the site ... Every build also runs any **migration**\"), line 65 (\"that build runs the migration\"), and Your part, line 207 (\"only if your issue tracker (where tickets live) closes work through PRs\")",
+            "problem": "Two terms reach a cold reader without a clause. \"Build\" as a noun is never explained, yet the migration story depends on it: \"the merge's production build\" (line 435) and \"the preview build migrates the copy\" (line 311). The Lesson also uses \"build\" to mean writing the feature (lines 201 and 441). \"Closes work through PRs\" is the Skill's wording, and a beginner can't parse it.",
+            "evidence": "No clause explains \"build\" anywhere in the Lesson. implement-spec/SKILL.md:25: \"If the issue tracker closes work through PRs\", which line 207 copies. content/lessons/09-implement.md:140 says it plainly: \"If your tracker closes tickets when a pull request merges\".",
+            "fix": "Line 39: \"On this site, two services make PRs safe to try. Vercel hosts the site. Each time you push a branch, it runs a **build** (turning the code into a working website) and makes a **preview** from it: a full, temporary copy of the website at its own address, so every PR has one.\" Keep the rest of the paragraph. Line 207: \"...and only if your issue tracker (where tickets live) marks tickets done when a PR merges, or you ask.\""
+          },
+          {
+            "severity": "low",
+            "where": "Your part, line 202 (\"can reach Claude Code's own Built-in review, a bug hunt\"), and Cheat sheet line 321 (\"can reach Claude Code's own\")",
+            "problem": "The glossary term \"Built-in command\" appears nowhere in the Lesson. Line 202 says \"Built-in review\" and line 321 leaves the noun off. An earlier fix had made this \"Built-in /code-review command\", but round 1's rewrite of the bullet undid it. Implement and Code review both use the glossary term for this same clash.",
+            "evidence": "GLOSSARY.md:35-37: \"**Built-in command**: A command that comes with Claude Code itself ... Not a Skill\". The seed's reviseFixed list includes \"reader low: 'Built-in review' changed to 'Built-in /code-review command'\". grep -n \"Built-in\" on the Lesson finds only line 202. content/lessons/10-code-review.md:210 and content/lessons/09-implement.md:125 both say \"Built-in command\".",
+            "fix": "Line 202: \"The short name `/code-review` can reach Claude Code's Built-in command of the same name (it comes with Claude Code; it isn't a Skill), a bug hunt; if the reply lacks Matt's two sections, Standards and Spec, that's what answered.\" Line 321: \"`/mattpocock-skills:code-review` (the bare `/code-review` can reach Claude Code's Built-in command)\"."
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint door-lasting-fix, right-option feedback, line 214: \"List the changes your repo always treats as one-way where the agent reads them before it makes the call.\"",
+            "problem": "This is close to a straight lift from Matt's pr docs page, without quotation marks. Leave out the docs' parenthetical, and 17 of its 18 words appear in the same order, with only \"will read\" changed to \"reads\". The course rule is that everything except attributed quotes is in the author's own words. An earlier round flagged this as a saved low, and it is still unfixed.",
+            "evidence": "/Users/siddharth/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/docs/engineering/pr.md:31: \"write down the changes your repo always treats as one-way (schema migrations, anything that ships outward or deletes) where the agent will read them before it makes the call.\" writing-guide.md:99: \"Lesson text is in your own words ... Never paste transcript passages or docs paragraphs.\"",
+            "fix": "Line 214: \"  > Right. `CLAUDE.md` is read at the start of every session, so the next door call starts from your rule.\""
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Checkpoints and Final test, all option lists: e.g. line 73 \"On the real site too, because...\", line 338 \"Yes, because only typing `/pr`...\", line 384 \"...since `/pr` reads that file.\", line 434 \"...so merging first changed nothing.\"",
+            "problem": "Wording tell across the whole quiz. Every option with a reason clause (because / since / so) is wrong, and none of the 14 right answers has one. A reader who rules out the options that justify themselves gets down to two choices on preview-separate, door-lasting-fix, scenario-need-to-type, scenario-review-effort, scenario-repo-template and spot-merge-then-test without knowing the content. A second, weaker version of the same tell: every option that opens with \"Nothing:\", \"None:\" or \"Leave it:\" is wrong (lines 362, 370, 382, 400, 420, 430).",
+            "evidence": "A script over the Lesson's option lines finds the reason words because/since/so in 11 wrong options: lines 73, 77, 211, 338, 340, 358, 372, 384, 388, 434, 436. They appear in 0 of the 14 right options: lines 75, 148, 190, 213, 334, 352, 360, 376, 386, 396, 412, 418, 432, 446. Line 334 uses a semicolon, not one of these words.",
+            "fix": "Give three right answers a reason clause. Each one stays shorter than that question's longest option, so the lint still passes. Line 386: \"Say in `CLAUDE.md` how they combine, since every session reads it.\" (66 characters; option b is 73). Line 432: \"The merge migrated the real database, so the check came too late.\" (65; option c is 81). Line 418: \"The door is one-way, since texts can't be unsent.\" (49; option c is 54). Then cut the reason clause from two distractors. Line 77: \"Nowhere. Previews are read-only.\" Line 340: \"No. `/implement` already wrote the body when it committed.\" The existing feedback lines still fit all five options."
+          },
+          {
+            "severity": "medium",
+            "where": "How a change ships, line 39 (\"gives each preview its own **database branch**, a separate copy of the database\"), checked by Checkpoint preview-separate, option d at line 79 (\"In production, but only after you squash and merge.\")",
+            "problem": "The answer depends on a fact the body never states: data added on a preview's database branch never reaches production, even after the merge. The Lesson calls the copy a \"branch\" and says (line 36) that merging \"folds the branch into main\". A cold reader can fairly conclude that a database branch gets folded in too, which makes d look right. The fact appears only in d's feedback (\"Merging ships the code and its migrations, not the recipes you added while testing\"), so the reader learns it from the feedback, not from the Lesson.",
+            "evidence": "Lesson line 39 says only that the copy is separate and that \"only the merge runs it [the migration] on the real one\". Nothing in the body says the copy's data stays behind. The repo backs the missing fact: docs/adr/0002-neon-branch-per-environment.md describes \"a throwaway branch per PR preview\", chosen to avoid the \"risk [of] test data leaking into production\".",
+            "fix": "In line 39, after \"a separate copy of the database.\", add: \"It's a throwaway copy that's never merged back, so nothing you add while testing a preview reaches the real site.\" That is +20 words, taking the prose to about 2,900, under the 3,000 lint cap."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test scenario-review-effort, option c at line 362 (\"None: a two-way door can be merged unread.\"), and How Matt and others use it, line 229 (\"A small two-way door only needs a light review; every one-way door needs a real one.\")",
+            "problem": "A sharp reader can defend distractor c from the talk the Lesson cites as the source for line 229. Matt's closing rule is that you don't need to review every two-way door, though every one-way door needs review. So \"a two-way door can be merged unread\" is roughly Matt's own position for some PRs. The Lesson softens that rule to \"only needs a light review\", and c's feedback then marks Matt's actual rule as wrong. The right answer, b, is still right by the Lesson's own reasoning (the agent is marking its own homework), but c needs to state that error instead of Matt's rule.",
+            "evidence": "The English transcript at https://ai.engineer/talks/LlgiOCmFG_w-fixing-pr-bottleneck (read 2026-10-24) has, at the closing rule: \"You really don't need to review every single two-way door.\" That page's own summary says \"not every two-way door needs human review\". At 18:14 he says of a localized two-way door that he will \"sort of review it a little\". The Arabic track LlgiOCmFG_w.ar.json at 22:09–22:15 matches. Lesson sources line 460 cites \"the closing rule 21:44–22:14\".",
+            "fix": "Change option c at line 362 to \"None: the agent's door call already settles it.\" (47 characters; the right answer b is 45, option a 58). Keep its feedback: \"The call comes from the agent that wrote the code. A quick look is how you catch a 'two-way' that isn't.\" To keep line 229 true to the source, reword its last sentence to: \"When a door is two-way with a local blast radius, he reviews it only a little, and he closed by saying not every two-way door needs a human review, but every one-way door does.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Goals, line 15 (\"it's model-invoked, and it writes only the PR body\"), against the Final test, lines 330-450",
+            "problem": "No Final test question turns on the second half of goal 2: that `/pr` writes only the body and never pushes, opens or updates the PR. Only the Checkpoint body-only tests it, and Checkpoints don't count towards passing. In the Final test it shows up only as a side point. In scenario-need-to-type, a reader who knows `/pr` is model-invoked picks a without needing this fact. In scenario-stale-body, the right answer d (\"rewrite the body and update the PR\") covers both steps, so a reader who thinks `/pr` updates the PR itself still picks d.",
+            "evidence": "In scenario-need-to-type, option c (line 338) is the only option that mentions pushing, and the \"No\" side settles the question. In scenario-stale-body, none of the distractors (lines 370, 372, 374) depends on what `/pr` leaves to you. The fact is mentioned only in the right answer's feedback at line 377 (\"`/pr` won't put it on the PR for you\"). The plugin's docs/engineering/pr.md:51-55 back it: \"It writes the body and stops\" and \"It writes the body at one point in time\".",
+            "fix": "In scenario-stale-body, replace option b (line 372) with \"Type `/pr` again: it rewrites the body and puts it on the PR.\" (61 characters; the right answer d is 52 and option a 59). Its feedback: \"It rewrites the body, but `/pr` only writes. Putting the new body on the PR is a step you ask the agent for.\" The question then checks that `/pr` writes only the body."
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint body-only, option b at line 186 (\"A draft PR, waiting for your approval.\") and option a at line 184 (\"An open PR on GitHub with that body.\")",
+            "problem": "The reader meets \"draft PR\" here before the Lesson explains it at line 207 (\"a draft (marked not ready for review)\"). The gloss \"waiting for your approval\" doesn't match that later definition. Option a's \"that body\" has nothing to refer to, because the stem never mentions a body.",
+            "evidence": "Line 207 defines a draft as \"marked not ready for review\". The stem at line 183 mentions only typing `/pr` on a reviewed branch.",
+            "fix": "Line 186: \"A draft PR on GitHub, marked not ready for review.\" (50 characters; option c is 52). Line 184: \"An open PR on GitHub with the new body.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test scenario-stale-body, stem at line 369 (\"Reviewers asked for big changes...\")",
+            "problem": "The stem repeats the trigger words of the Your part bullet at line 203 (\"Ask for a rewrite after big changes\"), and the right answer repeats its action (\"rewrite the body\"). The question tests whether the reader recalls that sentence, not whether they can apply it to a new case.",
+            "evidence": "Line 203: \"**Ask for a rewrite after big changes.** The body is written once.\" Line 376: \"Ask the agent to rewrite the body and update the PR.\"",
+            "fix": "Make the stem a concrete case: \"On a book-club site, a reviewer asked you to move the reply form into its own module and drop a page, and you've pushed three more commits to the PR. The body still describes the first version. What do you do?\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test spot-prose-summary, options b and c at lines 408 and 410",
+            "problem": "Two of the three distractors make the same weak suggestion (keep the prose and add more: a screenshot per paragraph, or a fifth paragraph). A reader can drop both on sight, which leaves a coin toss between a and d.",
+            "evidence": "Line 408: \"Four paragraphs is fine, but each one needs a screenshot.\" Line 410: \"It needs a fifth paragraph saying why each file changed.\"",
+            "fix": "Replace b with a different real misconception: \"It's fine, as long as Evidence and Merge Danger follow it.\" (58 characters; the right answer d is 48). Its feedback: \"The order is right, but the Summary should show the diff's outline in the smallest view, not retell it file by file.\""
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/pr-and-ship.json"
+}
