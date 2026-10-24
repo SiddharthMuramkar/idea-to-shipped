@@ -223,7 +223,11 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make an empty practice repo (a project folder tracked by Git) and start Claude Code there. If it asks whether you trust the folder, choose Yes.
 
 ```sh
-mkdir book-loans && cd book-loans && git init && git commit --allow-empty -m "start" && claude
+mkdir book-loans
+cd book-loans
+git init
+git commit --allow-empty -m "start"
+claude
 ```
 
 2. Type a slash and the word prototype. If no prototype Skill appears, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -427,10 +431,10 @@ After four rounds of UI prototypes, a team wrote "we picked C" on the ticket and
 ```
 
 ```sources
-- [prototype SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md), with [LOGIC.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/LOGIC.md) and [UI.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/UI.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [handoff SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) and [PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/PHASE-BOUNDARIES.md) (the prototype detour, the five options at a phase boundary, the Smart zone): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/main/CHANGELOG.md) (1.1.0 makes prototype model-invoked; 1.2.0, #763, the HTML file and the `prototype/<name>` branch): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [prototype SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/prototype/SKILL.md), with [LOGIC.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/prototype/LOGIC.md) and [UI.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/prototype/UI.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [handoff SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/handoff/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) and [PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/PHASE-BOUNDARIES.md) (the prototype detour, the five options at a phase boundary, the Smart zone): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/CHANGELOG.md) (1.1.0 makes prototype model-invoked; 1.2.0, #763, the HTML file and the `prototype/<name>` branch): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /prototype Skill](https://www.aihero.dev/skills-prototype), AI Hero docs, undated, read 2026-10-23.
 - [The /handoff Skill](https://www.aihero.dev/skills-handoff), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [Don't waste time on specs: /prototype instead](https://www.youtube.com/watch?v=n0VhIVtviC0), Matt Pocock, 2026-07-23 (specs vs code 0:00–0:55, fidelity 1:31–2:53, variants and remix 4:01–7:36, compact at ~100k 5:46–6:08, live page 7:13–7:32, implementer 8:03–8:39, logic prototypes 8:53–9:50, Shape Up 10:25).

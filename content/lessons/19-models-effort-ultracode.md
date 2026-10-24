@@ -225,7 +225,9 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make a practice folder and start Claude Code in it. If it asks whether you trust the folder, choose Yes.
 
 ```sh
-mkdir dials && cd dials && claude
+mkdir dials
+cd dials
+claude
 ```
 
 2. Read the session header at the top: it names your model and its effort. Type `/status` to double-check the model.

@@ -244,7 +244,10 @@ You need Claude Code installed and signed in, plus Git (see [Start here](/learn/
 1. In your terminal, make a practice folder that's a Git repo and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir pr-practice && cd pr-practice && git init -b main && claude
+mkdir pr-practice
+cd pr-practice
+git init -b main
+claude
 ```
 
 2. Type a slash and the letters pr. If `pr` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -451,9 +454,9 @@ Which order ships a change on a site set up like this one?
 ```
 
 ```sources
-- [pr SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/pr/SKILL.md) and [pr CREDITS.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/pr/CREDITS.md) (Dex Horthy's show-me): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [implement SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md) and [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement-spec/SKILL.md) (commits to the current branch; draft PRs): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (where `/pr` sits in the Main flow): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [pr SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/pr/SKILL.md) and [pr CREDITS.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/pr/CREDITS.md) (Dex Horthy's show-me): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [implement SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement/SKILL.md) and [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement-spec/SKILL.md) (commits to the current branch; draft PRs): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (where `/pr` sits in the Main flow): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /pr Skill](https://www.aihero.dev/skills-pr), AI Hero docs, published 2026-10-05, read 2026-10-23 (what it doesn't do, trusting the door call, users' quotes).
 - [Skills changelog v1.3](https://www.aihero.dev/skills-changelog-v13-implement-spec-pr-retro-and-glossary-md), AI Hero, 2026-10-05.
 - [New Skills! v1.3 brings /pr, /implement-spec, and /retro](https://www.youtube.com/watch?v=BsJGo1wFTvQ), Matt Pocock, 2026-10-05 (most used 4:54–5:00, the bottleneck 5:28–5:40, evidence 5:53–6:25, doors and blast radius 6:28–7:11, his example PR 7:11–7:46, fires every time 7:46–8:05).

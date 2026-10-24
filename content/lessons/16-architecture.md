@@ -200,7 +200,9 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Copy this site's public repo and start Claude Code in it. If it asks whether you trust the folder, choose Yes.
 
 ```sh
-git clone https://github.com/SiddharthMuramkar/idea-to-shipped.git && cd idea-to-shipped && claude
+git clone https://github.com/SiddharthMuramkar/idea-to-shipped.git
+cd idea-to-shipped
+claude
 ```
 
 2. Type a slash and the word improve. If `improve-codebase-architecture` isn't in the list, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -407,10 +409,10 @@ After a deepening, a teammate says: "I fixed the rounding bug once, and every pa
 ```
 
 ```sources
-- [codebase-design SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/SKILL.md), with [DEEPENING.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DEEPENING.md) and [DESIGN-IT-TWICE.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DESIGN-IT-TWICE.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [improve-codebase-architecture SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md), with [HTML-REPORT.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/HTML-REPORT.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) ("Codebase health", "Vocabulary underneath"): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/main/README.md) ("We Built A Ball Of Mud"; a survey, not a rescue; every few days) and [CHANGELOG](https://github.com/mattpocock/skills/blob/main/CHANGELOG.md) (hot-spot scoping in 1.2.0): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [codebase-design SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/codebase-design/SKILL.md), with [DEEPENING.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/codebase-design/DEEPENING.md) and [DESIGN-IT-TWICE.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/codebase-design/DESIGN-IT-TWICE.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [improve-codebase-architecture SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/improve-codebase-architecture/SKILL.md), with [HTML-REPORT.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/improve-codebase-architecture/HTML-REPORT.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) ("Codebase health", "Vocabulary underneath"): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/README.md) ("We Built A Ball Of Mud"; a survey, not a rescue; every few days) and [CHANGELOG](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/CHANGELOG.md) (hot-spot scoping in 1.2.0): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /improve-codebase-architecture Skill](https://www.aihero.dev/skills-improve-codebase-architecture) and [The /codebase-design Skill](https://www.aihero.dev/skills-codebase-design), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [How To De-Slop A Codebase Ruined By AI (with one skill)](https://www.youtube.com/watch?v=3MP8D-mdheA), Matt Pocock, 2026-04-29 (entropy and the ball of mud 0:06–0:32, auto mode off 5:53, six candidates and the locality pick 6:28–7:06, a ticket for an unattended agent 7:47–7:54, answering thoughtfully 7:57–8:10, tactical vs strategic 9:16–9:56, every couple of days 9:57, legacy code 10:25–10:59).
 - ["Software Fundamentals Matter More Than Ever"](https://www.youtube.com/watch?v=v4F1gFy-hqg), Matt Pocock, AI Engineer, 2026-04-23 (Ousterhout's complexity 2:40–3:01, better codebase, better feedback 12:15–12:35, shallow modules are hard for AI 13:18–13:52, grey boxes 15:34–16:24, "Design the interface, delegate the implementation." 16:26, modules in the spec 16:45–16:55, tactical vs strategic 17:23–17:39).

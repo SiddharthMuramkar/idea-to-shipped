@@ -249,7 +249,10 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make an empty folder, turn it into a Git repo and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir book-club && cd book-club && git init && claude
+mkdir book-club
+cd book-club
+git init
+claude
 ```
 
 2. Type a slash and the word grill. If `grill-with-docs` isn't in the list, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -461,11 +464,11 @@ A teammate asks: "The agent can read our code, so why keep a glossary at all?" W
 ```
 
 ```sources
-- [grill-with-docs SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [domain-modeling SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md), with its [GLOSSARY-FORMAT.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md) and [ADR-FORMAT.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/ADR-FORMAT.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [wait-what SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/wait-what/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (`/grill-with-docs` as the Main flow's first step; "Vocabulary underneath"): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/main/CHANGELOG.md) (1.3.0, #1120: `CONTEXT.md` renamed `GLOSSARY.md`; #751: wait-what): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [grill-with-docs SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/grill-with-docs/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [domain-modeling SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/domain-modeling/SKILL.md), with its [GLOSSARY-FORMAT.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md) and [ADR-FORMAT.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/domain-modeling/ADR-FORMAT.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [wait-what SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/wait-what/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (`/grill-with-docs` as the Main flow's first step; "Vocabulary underneath"): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/CHANGELOG.md) (1.3.0, #1120: `CONTEXT.md` renamed `GLOSSARY.md`; #751: wait-what): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /grill-with-docs Skill](https://www.aihero.dev/skills-grill-with-docs), [The /domain-modeling Skill](https://www.aihero.dev/skills-domain-modeling) and [The /wait-what Skill](https://www.aihero.dev/skills-wait-what), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [I stopped using /grill-me for coding. Here's what I use instead](https://www.youtube.com/watch?v=6BB6exR8Zd8), Matt Pocock, 2026-05-14 (standalone-video jargon 2:20–3:28, ubiquitous-language origin 3:40–4:44, ADR tests 7:27–8:24, demo 8:35–11:30, good enough 11:54–12:22, benefits 12:25–13:21, grill-me vs grill-with-docs 13:35–14:25).
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (single vs multi-context setup 5:54–6:22; ask-matt routes to `/grill-with-docs` 7:46–7:57).

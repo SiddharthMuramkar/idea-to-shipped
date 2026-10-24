@@ -273,7 +273,9 @@ You need Claude Code installed and signed in, plus git (see [Start here](/learn/
 1. Get this site's code and start Claude Code in it. If it asks whether you trust the folder, choose Yes.
 
 ```sh
-git clone https://github.com/SiddharthMuramkar/idea-to-shipped && cd idea-to-shipped && claude
+git clone https://github.com/SiddharthMuramkar/idea-to-shipped
+cd idea-to-shipped
+claude
 ```
 
 2. Look under the prompt box. It probably says "auto mode on". Press Shift+Tab until it shows Manual.
@@ -466,7 +468,7 @@ You want the agent to plan a change, then let you review each edit as it builds.
 - [How Claude remembers your project](https://code.claude.com/docs/en/memory) (`CLAUDE.md` locations, `/init`, `/memory`, the 200-line advice, auto memory), Claude Code docs, read 2026-10-23.
 - [Checkpointing](https://code.claude.com/docs/en/checkpointing) (the rewind menu and what it can't undo), Claude Code docs, read 2026-10-23.
 - [Best practices](https://code.claude.com/docs/en/best-practices) (explore, plan, code; approval fatigue; correcting course), Claude Code docs, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (what `/setup-matt-pocock-skills` configures): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (what `/setup-matt-pocock-skills` configures): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [I was an AI skeptic. Then I tried plan mode](https://www.youtube.com/watch?v=WNx-s-RxVxk), Matt Pocock, 2026-01-15 (plan, execute, test, commit loop 0:18–0:40; what plan mode blocks 1:37–2:11; Shift+Tab 2:11; the forgetful colleague 2:36–2:56; Explore sub-agent on Haiku 3:02–3:19 and 5:44–6:00; the plan and its question 6:19–6:51; the two `CLAUDE.md` lines 8:16–8:51).
 - [Matt Pocock on X: "I don't use plan mode"](https://x.com/mattpocockuk/status/2040054706928578851), 2026-04-03, quoting his post of 2026-04-02, read 2026-10-23.
 - [An Introduction To Plan Mode](https://www.aihero.dev/plan-mode-introduction), Matt Pocock, AI Hero, written January 2026 with a later note that he no longer uses plan mode, read 2026-10-23.

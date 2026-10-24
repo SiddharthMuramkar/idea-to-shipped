@@ -48,7 +48,9 @@ $ claude --version
 $ git --version
 git version 2.54.0 (Apple Git-157)
 # Make an empty practice folder and turn it into a repo.
-$ mkdir agent-practice && cd agent-practice && git init
+$ mkdir agent-practice
+$ cd agent-practice
+$ git init
 Initialized empty Git repository in /Users/you/agent-practice/.git/
 # Start Claude Code. The first time, a browser opens so you can log in. Then it asks whether you trust this folder: choose Yes.
 $ claude
@@ -189,7 +191,10 @@ git --version
 2. Make a practice repo and start Claude Code in it. Log in if a browser opens. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir agent-practice && cd agent-practice && git init && claude
+mkdir agent-practice
+cd agent-practice
+git init
+claude
 ```
 
 3. Type `/help`, then ask:
@@ -203,7 +208,9 @@ What's in this folder? Don't change anything.
 
 ```sh
 claude plugin install mattpocock-skills@claude-plugins-official
-mkdir ~/learn-git && cd ~/learn-git && claude
+mkdir ~/learn-git
+cd ~/learn-git
+claude
 ```
 
 ```text
@@ -326,9 +333,9 @@ You type `/teach the basics of git` in an empty folder for the first time. What 
 ```
 
 ```sources
-- [teach SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/teach/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (the Main flow): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/main/CHANGELOG.md) (renamed Skills): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [teach SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/teach/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the Main flow): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/CHANGELOG.md) (renamed Skills): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /teach Skill](https://www.aihero.dev/skills-teach), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [Set up Claude Code](https://code.claude.com/docs/en/setup) and [Authentication](https://code.claude.com/docs/en/authentication), Claude Code docs, read 2026-10-23 (Claude Code 2.1.309).
 - [Learn anything with the /teach skill](https://www.youtube.com/watch?v=s5T5oQJcJ6U), Matt Pocock, 2026-06-08 (bus ride and Rubik's Cube 0:16–0:28, empty folder 2:28–2:38, mission first 2:42–3:04, telling it where he's stuck 6:13–6:41, state in files 8:24–8:35, onboarding to a codebase 10:04–10:43).

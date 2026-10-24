@@ -264,7 +264,10 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make a practice repo and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir skills-practice && cd skills-practice && git init && claude
+mkdir skills-practice
+cd skills-practice
+git init
+claude
 ```
 
 2. Type a slash and the word setup. If `setup-matt-pocock-skills` isn't in the list, type `/exit`, install the plugin, then run `claude` again:
@@ -277,7 +280,8 @@ claude plugin install mattpocock-skills@claude-plugins-official
 4. Type `/exit`. Check what it wrote, then add a Skill of your own and restart:
 
 ```sh
-cat CLAUDE.md && ls docs/agents
+cat CLAUDE.md
+ls docs/agents
 mkdir -p .claude/skills/repo-tour
 cat > .claude/skills/repo-tour/SKILL.md <<'EOF'
 ---
@@ -463,11 +467,11 @@ A friend refuses to install Matt's 27 Skills: "That much text will fill my conte
 ```
 
 ```sources
-- [setup-matt-pocock-skills SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/SKILL.md) and its templates (`issue-tracker-local.md`, `triage-labels.md`, `domain.md`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) and [PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/PHASE-BOUNDARIES.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [writing-for-agents SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) and [SKILL-MECHANICS.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL-MECHANICS.md) (context load, cognitive load, router Skills): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/main/README.md) (Installation; Reference: user-invoked vs model-invoked) and the bucket READMEs for [engineering](https://github.com/mattpocock/skills/blob/main/skills/engineering/README.md), [productivity](https://github.com/mattpocock/skills/blob/main/skills/productivity/README.md), [misc](https://github.com/mattpocock/skills/blob/main/skills/misc/README.md) and [in-progress](https://github.com/mattpocock/skills/blob/main/skills/in-progress/README.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [Renaming skills to dodge harness built-in commands](https://github.com/mattpocock/skills/blob/main/.out-of-scope/harness-name-collisions.md), mattpocock/skills `.out-of-scope/`: pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [setup-matt-pocock-skills SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/setup-matt-pocock-skills/SKILL.md) and its templates (`issue-tracker-local.md`, `triage-labels.md`, `domain.md`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) and [PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/PHASE-BOUNDARIES.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [writing-for-agents SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/writing-for-agents/SKILL.md) and [SKILL-MECHANICS.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/writing-for-agents/SKILL-MECHANICS.md) (context load, cognitive load, router Skills): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/README.md) (Installation; Reference: user-invoked vs model-invoked) and the bucket READMEs for [engineering](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/README.md), [productivity](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/README.md), [misc](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/misc/README.md) and [in-progress](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/in-progress/README.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [Renaming skills to dodge harness built-in commands](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/.out-of-scope/harness-name-collisions.md), mattpocock/skills `.out-of-scope/`: pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [Extend Claude with skills](https://code.claude.com/docs/en/skills), Claude Code docs (frontmatter, where Skills live, who can invoke them, loading), read 2026-10-23 with Claude Code 2.1.309.
 - [Discover and install plugins](https://code.claude.com/docs/en/discover-plugins), Claude Code docs (marketplaces, scopes, updates, `/plugin`, `/reload-plugins`), read 2026-10-23.
 - [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills), Anthropic Engineering, 2025-10-16 (progressive disclosure).

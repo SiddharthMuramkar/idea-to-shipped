@@ -235,7 +235,9 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make an empty folder and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir wizard-practice && cd wizard-practice && claude
+mkdir wizard-practice
+cd wizard-practice
+claude
 ```
 
 2. Type a slash and the word wizard. If `wizard` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -439,11 +441,11 @@ A stage ends by writing a GitHub secret, but `gh` isn't signed in on your laptop
 ```
 
 ```sources
-- [wizard SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/wizard/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [wizard template.sh](https://github.com/mattpocock/skills/blob/main/skills/engineering/wizard/template.sh) (the library, the `STAGES` marker, hidden entry, `.env` writes, `gh` fallback, closing summary): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (wizard as a standalone; "if the agent could just do it itself, it should"): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [wizard SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/wizard/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [wizard template.sh](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/wizard/template.sh) (the library, the `STAGES` marker, hidden entry, `.env` writes, `gh` fallback, closing summary): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (wizard as a standalone; "if the agent could just do it itself, it should"): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /wizard Skill](https://www.aihero.dev/skills-wizard), AI Hero docs (destinations, ephemeral by default, secrets and the model's context, where it fits), same text as `docs/engineering/wizard.md` in 1.3.1, read 2026-10-23.
-- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/main/CHANGELOG.md) (1.2.0 #680: graduated and made model-invoked; 1.2.3 #783: progress counted in stages), read 2026-10-23.
+- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/CHANGELOG.md) (1.2.0 #680: graduated and made model-invoked; 1.2.3 #783: progress counted in stages), read 2026-10-23.
 - [New Skills! v1.2 brings /wait-what, /writing-for-agents, and fixes /grill-me](https://www.youtube.com/watch?v=gaDdrDdczO4), Matt Pocock, 2026-08-05 (wizard chapter 7:27–8:56; machine-translated captions, paraphrased).
 - [An honest review of Matt Pocock's Skills framework](https://blog.scottlogic.com/2026/10/19/an-honest-review-of-matt-pococks-skills.html), Colin Eberhardt, Scott Logic, 2026-10-19.
 - [Issue #1310: fixed resumability banner is unsafe for stateful cutovers](https://github.com/mattpocock/skills/issues/1310), opened 2026-10-20, open when read 2026-10-23.

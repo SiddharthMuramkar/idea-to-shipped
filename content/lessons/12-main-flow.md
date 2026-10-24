@@ -248,7 +248,10 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make a folder, turn it into a Git repo, and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir recipe-box && cd recipe-box && git init && claude
+mkdir recipe-box
+cd recipe-box
+git init
+claude
 ```
 
 2. Type a slash and the word ask. If `ask-matt` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -522,10 +525,10 @@ You have a free afternoon, no feature planned, and the code has started to feel 
 ```
 
 ```sources
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (the Main flow, forks, context hygiene, on-ramps, codebase health, standalones): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/PHASE-BOUNDARIES.md) (the five options, in order): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [implement SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md), [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement-spec/SKILL.md), [to-spec SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md) and [retro SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/retro/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/main/README.md) ("Reference": user-invoked vs model-invoked): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the Main flow, forks, context hygiene, on-ramps, codebase health, standalones): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/PHASE-BOUNDARIES.md) (the five options, in order): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [implement SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement/SKILL.md), [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement-spec/SKILL.md), [to-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/to-spec/SKILL.md) and [retro SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/retro/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/README.md) ("Reference": user-invoked vs model-invoked): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /ask-matt Skill](https://www.aihero.dev/skills-ask-matt), AI Hero docs, updated 2026-08-24, read 2026-10-23 (the hidden-Skills quirk; "It's working if").
 - [Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone), AI Coding Dictionary, updated 2026-09-24, read 2026-10-23.
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (order questions 0:12–0:18, setup 4:35–6:50, `/ask-matt` 7:00–8:24, grilling and auto mode 9:36–10:08, ~140k and normally typing `/implement` 10:28–11:03, spec and tickets in one session 11:19–12:53, clearing 13:55–14:39, review in subagents 14:55–16:08, the quote at 16:33–16:38).

@@ -225,7 +225,10 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make a practice folder, turn it into a Git repo and start Claude Code. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir todo-practice && cd todo-practice && git init && claude
+mkdir todo-practice
+cd todo-practice
+git init
+claude
 ```
 
 2. Type a slash and the letters "to-". If `to-spec` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -403,11 +406,11 @@ A teammate asks why `/to-spec` and `/to-tickets` are two Skills instead of one. 
 ```
 
 ```sources
-- [to-spec SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [to-tickets SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-tickets/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [setup-matt-pocock-skills SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/SKILL.md) and [issue-tracker-local.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/issue-tracker-local.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (the multi-session fork, one unbroken window, don't triage these tickets): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/main/CHANGELOG.md) (1.1.0: to-prd renamed to-spec, to-issues merged into to-tickets; 1.2.0: one file per local ticket): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [to-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/to-spec/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [to-tickets SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/to-tickets/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [setup-matt-pocock-skills SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/setup-matt-pocock-skills/SKILL.md) and [issue-tracker-local.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/setup-matt-pocock-skills/issue-tracker-local.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the multi-session fork, one unbroken window, don't triage these tickets): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/CHANGELOG.md) (1.1.0: to-prd renamed to-spec, to-issues merged into to-tickets; 1.2.0: one file per local ticket): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /to-spec Skill](https://www.aihero.dev/skills-to-spec), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [The /to-tickets Skill](https://www.aihero.dev/skills-to-tickets), AI Hero docs, read 2026-10-23.
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (normally `/implement` 10:58–11:23, `/to-spec` and 46.1k tokens 11:16–11:32, destination and route 11:43–11:56, `/to-tickets` in the same session 12:20–12:25, three slices to one 12:39–12:53, `tickets.md` 12:53–12:57, the 11-ticket spec 13:03–13:44, one ticket per cleared session and review against the spec 13:55–14:48).

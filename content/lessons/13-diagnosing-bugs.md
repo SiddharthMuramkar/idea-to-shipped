@@ -227,7 +227,9 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make an empty folder and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir bug-practice && cd bug-practice && claude
+mkdir bug-practice
+cd bug-practice
+claude
 ```
 
 2. Type a slash and the word diagnosing. If `diagnosing-bugs` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -267,7 +269,10 @@ If a theory arrives before any command output, reply "Show me the red command fi
 **Bonus: a real report from this site.** The author's notes say `/learn/nope` returned HTTP status 200 ("OK") instead of 404 ("not found"). When this Lesson was written, a check printed 404 on the live site and a local dev server, and nobody has diagnosed why. If you have Node and Git:
 
 ```sh
-git clone https://github.com/SiddharthMuramkar/idea-to-shipped.git && cd idea-to-shipped && npm install && claude
+git clone https://github.com/SiddharthMuramkar/idea-to-shipped.git
+cd idea-to-shipped
+npm install
+claude
 ```
 
 ```text
@@ -436,10 +441,10 @@ An upload fails about once in every 100 tries, and never while you're watching. 
 ```
 
 ```sources
-- [diagnosing-bugs SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/SKILL.md) and its [hitl-loop.template.sh](https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/scripts/hitl-loop.template.sh): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (the "Something's broken" on-ramp, `/retro` after the fix): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [retro SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/retro/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/main/README.md) ("#3: The Code Doesn't Work") and [CHANGELOG](https://github.com/mattpocock/skills/blob/main/CHANGELOG.md) (1.0.0 rename from `diagnose`, 1.2.3 redaction, 1.3.1 `/retro` routing): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [diagnosing-bugs SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/diagnosing-bugs/SKILL.md) and its [hitl-loop.template.sh](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/diagnosing-bugs/scripts/hitl-loop.template.sh): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the "Something's broken" on-ramp, `/retro` after the fix): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [retro SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/retro/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/README.md) ("#3: The Code Doesn't Work") and [CHANGELOG](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/CHANGELOG.md) (1.0.0 rename from `diagnose`, 1.2.3 redaction, 1.3.1 `/retro` routing): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /diagnosing-bugs Skill](https://www.aihero.dev/skills-diagnosing-bugs), AI Hero docs, read 2026-10-23 (its notes on redaction and issue #124 predate 1.2.3 and October 2026).
 - [Burn through the backlog from hell with /triage](https://www.youtube.com/watch?v=MzWIIlx0Gpc), Matt Pocock, 2026-05-07 (diagnosing inside a triage session 5:02–5:27, context budget 5:29–5:43, the loop and the TDD comparison 6:57–7:23, two sessions 7:38–7:49, auto mode and push 7:51–8:07).
 - [/handoff is my new favourite skill](https://www.youtube.com/watch?v=dtAJ2dOd3ko), Matt Pocock, 2026-05-21 (compacting during long debugging 4:21–4:43).

@@ -283,7 +283,9 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. In your terminal, make an empty folder and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir triage-practice && cd triage-practice && claude
+mkdir triage-practice
+cd triage-practice
+claude
 ```
 
 2. Type a slash and the word triage. If `triage` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -478,14 +480,14 @@ An issue has sat in `needs-info` for a week. The reporter finally replies with e
 ```
 
 ```sources
-- [triage SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/triage/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [triage AGENT-BRIEF.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/triage/AGENT-BRIEF.md) and [OUT-OF-SCOPE.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/triage/OUT-OF-SCOPE.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [setup-matt-pocock-skills SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/SKILL.md) and [triage-labels.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/triage-labels.md) (label mapping, local `Status:` line): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (on-ramps: triage only issues you didn't create) and [to-tickets SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-tickets/SKILL.md) (tickets are labelled `ready-for-agent`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [triage SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/triage/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [triage AGENT-BRIEF.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/triage/AGENT-BRIEF.md) and [OUT-OF-SCOPE.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/triage/OUT-OF-SCOPE.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [setup-matt-pocock-skills SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/setup-matt-pocock-skills/SKILL.md) and [triage-labels.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/setup-matt-pocock-skills/triage-labels.md) (label mapping, local `Status:` line): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (on-ramps: triage only issues you didn't create) and [to-tickets SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/to-tickets/SKILL.md) (tickets are labelled `ready-for-agent`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /triage Skill](https://www.aihero.dev/skills-triage), AI Hero docs (verify before you brief, the bulk-pass report), read 2026-10-23.
 - [Burn through the backlog from hell with /triage](https://www.youtube.com/watch?v=MzWIIlx0Gpc), Matt Pocock, 2026-05-07 (teams 0:00–0:31, every repo 0:33, roles 0:52–2:09, Sandcastle first pass 3:04–4:45, `.out-of-scope/` 3:45–4:29, reproduce it yourself 4:45–5:28, queue management 6:02–6:29, fixing in the session 7:29–7:37, PR habit 8:05–8:17).
-- [mattpocock/skills `.out-of-scope/` folder](https://github.com/mattpocock/skills/tree/main/.out-of-scope), added 2026-10-06, read 2026-10-23.
-- [mattpocock/skills triage workflows](https://github.com/mattpocock/skills/tree/main/.github/workflows) (`triage-label.yml`, `needs-info.yml`), added 2026-10-05, read 2026-10-23.
+- [mattpocock/skills `.out-of-scope/` folder](https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33efb035946536778336/.out-of-scope), added 2026-10-06, read 2026-10-23.
+- [mattpocock/skills triage workflows](https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33efb035946536778336/.github/workflows) (`triage-label.yml`, `needs-info.yml`), added 2026-10-05, read 2026-10-23.
 - [Issue #863: my team finds needs-info comments hard](https://github.com/mattpocock/skills/issues/863), opened 2026-08-14, read 2026-10-23.
 - [Discussion #1136: afk.sh](https://github.com/mattpocock/skills/discussions/1136), Warshoow, 2026-09-28.
 - [AFK](https://www.aihero.dev/ai-coding-dictionary/afk), AI Coding Dictionary, 2026-09-24, read 2026-10-23.

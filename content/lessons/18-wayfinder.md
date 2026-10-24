@@ -262,7 +262,9 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Clone the repo and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-git clone https://github.com/SiddharthMuramkar/idea-to-shipped && cd idea-to-shipped && claude
+git clone https://github.com/SiddharthMuramkar/idea-to-shipped
+cd idea-to-shipped
+claude
 ```
 
 2. Type a slash and the word wayfinder. If `wayfinder` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -452,10 +454,10 @@ A map has four tickets. *Venue shortlist* is closed. *Catering budget* is open, 
 ```
 
 ```sources
-- [wayfinder SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/wayfinder/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [research SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/research/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [to-questionnaire SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/to-questionnaire/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (wayfinder as an on-ramp that merges at `/to-spec`; research and to-questionnaire as standalones; the Smart zone): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [wayfinder SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/wayfinder/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [research SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/research/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [to-questionnaire SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/to-questionnaire/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (wayfinder as an on-ramp that merges at `/to-spec`; research and to-questionnaire as standalones; the Smart zone): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [/wayfinder: Nothing is too big to plan anymore](https://www.youtube.com/watch?v=F3lL98Pj90o), Matt Pocock, 2026-07-30 (why he built it 0:00–1:39; charting the command palette 5:40–6:44; a session per ticket 6:53–7:38; ticket types and waterfall 7:40–9:06; 14 of 17 done 9:18; to-spec and the character limit 9:46–10:52; spec links back to tickets 10:54–11:23; "too heavy" 11:45–12:08; garden office 12:17–12:32; specs as temporary 13:36–14:00; courses and AFK agents 14:15–14:33).
 - [The /wayfinder Skill](https://www.aihero.dev/skills-wayfinder), [The /research Skill](https://www.aihero.dev/skills-research) and [The /to-questionnaire Skill](https://www.aihero.dev/skills-to-questionnaire), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [Matt Pocock's Wayfinder skill gives fog a place on the map](https://ai.plainenglish.io/matt-pococks-wayfinder-skill-gives-fog-a-place-on-the-map-1dc288523ecb), Gilles d'Andrea, 2026-07-25.

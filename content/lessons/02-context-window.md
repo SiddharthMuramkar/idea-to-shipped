@@ -259,7 +259,8 @@ You need Claude Code installed and signed in, and Git (see [Start here](/learn/s
 1. In your terminal, copy this site's code and go into it:
 
 ```sh
-git clone https://github.com/SiddharthMuramkar/idea-to-shipped && cd idea-to-shipped
+git clone https://github.com/SiddharthMuramkar/idea-to-shipped
+cd idea-to-shipped
 ```
 
 2. The last step uses Matt's Skills. If you haven't installed them, do it now. Then start Claude Code, and choose Yes if it asks whether you trust this folder:
@@ -455,8 +456,8 @@ A friend says: "My model has a 1M-token window, so I never need to clear." What'
 ```
 
 ```sources
-- [handoff SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (the Smart zone, context hygiene in the Main flow) and [PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/PHASE-BOUNDARIES.md) (the five ordered questions): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [handoff SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/handoff/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the Smart zone, context hygiene in the Main flow) and [PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/PHASE-BOUNDARIES.md) (the five ordered questions): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /handoff Skill](https://www.aihero.dev/skills-handoff), AI Hero docs (the four reasons, the fork case, practical habits), updated 2026-08-24, read 2026-10-23.
 - [AI Coding Dictionary: Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone) and [Token](https://www.aihero.dev/ai-coding-dictionary/token), Matt Pocock, updated 2026-09-24 and 2026-07-01, read 2026-10-23.
 - [Most devs don't understand how context windows work](https://www.youtube.com/watch?v=-uW5-TaVXu4), Matt Pocock, 2025-10-22 (the most common skill issue 0:17, lost in the middle 3:45–4:52, `/context` and clearing at 50k left 5:10–5:54, the compact demo 5:56–6:57, MCP servers and rules files 7:06–7:48).

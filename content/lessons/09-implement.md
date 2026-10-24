@@ -230,7 +230,10 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make an empty folder, turn it into a Git repo, and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir word-tools && cd word-tools && git init && claude
+mkdir word-tools
+cd word-tools
+git init
+claude
 ```
 
 2. Type a slash and the word implement. If `implement` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -427,9 +430,9 @@ You run `/implement-spec` in a repo whose tracker is a folder of local Markdown 
 ```
 
 ```sources
-- [implement SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement-spec/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (the fork between `/implement` per ticket and `/implement-spec`; clearing between tickets) and [tdd SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md) (pre-agreed seams): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [implement SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement-spec/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the fork between `/implement` per ticket and `/implement-spec`; clearing between tickets) and [tdd SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/SKILL.md) (pre-agreed seams): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /implement Skill](https://www.aihero.dev/skills-implement), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [The /implement-spec Skill](https://www.aihero.dev/skills-implement-spec), AI Hero docs, published 2026-10-05, read 2026-10-23.
 - [Skills changelog v1.3: implement-spec, pr, retro and GLOSSARY.md](https://www.aihero.dev/skills-changelog-v13-implement-spec-pr-retro-and-glossary-md), AI Hero, updated 2026-10-05, read 2026-10-23.

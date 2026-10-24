@@ -212,7 +212,10 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. Make a practice folder, turn it into a Git repo and start Claude Code. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir retro-practice && cd retro-practice && git init && claude
+mkdir retro-practice
+cd retro-practice
+git init
+claude
 ```
 
 2. Type a slash and the word retro. If `retro` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -399,11 +402,11 @@ You've just built a feature in one session, and a few things went sideways along
 ```
 
 ```sources
-- [retro SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/retro/SKILL.md) (the four steps, the seven categories, mechanical vs judgement, implementation vs review, which file is for what): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [writing-for-agents SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) and [SKILL-MECHANICS.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL-MECHANICS.md) (context pointers, the two loads, the information hierarchy, leading words, negation, pruning): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [code-review SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md) (`CODING_STANDARDS.md` is always a standards source): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (`/retro` as the last Main flow step, before you clear; after `/diagnosing-bugs`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/main/CHANGELOG.md) (`retro` graduates in 1.3.0; writing-great-skills renamed in 1.2.0): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [retro SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/retro/SKILL.md) (the four steps, the seven categories, mechanical vs judgement, implementation vs review, which file is for what): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [writing-for-agents SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/writing-for-agents/SKILL.md) and [SKILL-MECHANICS.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/writing-for-agents/SKILL-MECHANICS.md) (context pointers, the two loads, the information hierarchy, leading words, negation, pruning): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [code-review SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/code-review/SKILL.md) (`CODING_STANDARDS.md` is always a standards source): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (`/retro` as the last Main flow step, before you clear; after `/diagnosing-bugs`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/CHANGELOG.md) (`retro` graduates in 1.3.0; writing-great-skills renamed in 1.2.0): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /retro Skill](https://www.aihero.dev/skills-retro), AI Hero docs, updated 2026-10-05, read 2026-10-23.
 - [The /writing-for-agents Skill](https://www.aihero.dev/skills-writing-for-agents), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [New Skills! v1.3 brings /pr, /implement-spec, and /retro](https://www.youtube.com/watch?v=BsJGo1wFTvQ), Matt Pocock, 2026-10-05 (why he built it 9:38–10:27; what agents hide 10:42–11:16; his findings 11:16–12:34; judging them 12:34–12:50; don't automate 12:50–13:16; run it on a sample 13:16–13:35; the categories 13:35–14:00).

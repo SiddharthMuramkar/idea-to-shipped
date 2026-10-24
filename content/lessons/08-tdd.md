@@ -239,7 +239,9 @@ You need Claude Code installed and signed in (see [Start here](/learn/start-here
 1. In your terminal, make an empty folder and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir reading-time && cd reading-time && claude
+mkdir reading-time
+cd reading-time
+claude
 ```
 
 2. Type a slash and then tdd. If `tdd` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -437,9 +439,9 @@ A friend says: "I let the agent write the code, then ask it for tests at the end
 ```
 
 ```sources
-- [tdd SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md), with [tests.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/tests.md) and [mocking.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/mocking.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [to-spec SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md) (seams in the spec), [implement SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md) (drives tdd) and [codebase-design SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/SKILL.md) (seam): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/main/README.md) ("The Code Doesn't Work"; user-invoked vs model-invoked): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [tdd SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/SKILL.md), with [tests.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/tests.md) and [mocking.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/mocking.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [to-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/to-spec/SKILL.md) (seams in the spec), [implement SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement/SKILL.md) (drives tdd) and [codebase-design SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/codebase-design/SKILL.md) (seam): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/README.md) ("The Code Doesn't Work"; user-invoked vs model-invoked): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
 - [The /tdd Skill](https://www.aihero.dev/skills-tdd), AI Hero docs, updated 2026-08-24, read 2026-10-23.
 - [mattpocock/skills release v1.1.0](https://github.com/mattpocock/skills/releases/tag/v1.1.0) (refactor step dropped, seams introduced), 2026-07-08; issues [#589](https://github.com/mattpocock/skills/issues/589), [#607](https://github.com/mattpocock/skills/issues/607) and [#746](https://github.com/mattpocock/skills/issues/746), read 2026-10-23.
 - [5 Claude Code skills I use every single day](https://www.youtube.com/watch?v=EJyuu6zlQCg), Matt Pocock, 2026-03-16 (TDD as his most consistent lever 9:24–9:52; the weak refactor step 11:37–11:59; TDD needs clear module boundaries 12:05–12:27).

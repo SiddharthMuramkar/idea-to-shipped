@@ -268,7 +268,10 @@ You need Claude Code installed and signed in, plus Git (see [Start here](/learn/
 1. Make an empty folder, turn it into a Git repo and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
 ```sh
-mkdir review-practice && cd review-practice && git init -b main && claude
+mkdir review-practice
+cd review-practice
+git init -b main
+claude
 ```
 
 2. Type a slash and the word mattpocock. If `mattpocock-skills:code-review` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
@@ -467,11 +470,11 @@ A friend asks why Matt's review starts two sub-agents instead of one agent check
 ```
 
 ```sources
-- [code-review SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [code-review docs page](https://github.com/mattpocock/skills/blob/main/docs/engineering/code-review.md) (the name clash, same-session review, convergence, uncommitted work): pinned to mattpocock-skills 1.3.1, read 2026-10-23. Public copy: [The /code-review Skill](https://www.aihero.dev/skills-code-review), AI Hero, updated 2026-08-24, read 2026-10-23.
-- [implement SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md) and [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement-spec/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [retro SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/retro/SKILL.md) (`CODING_STANDARDS.md` is read during review; mechanical rules become checks): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [Out of scope: harness name collisions](https://github.com/mattpocock/skills/blob/main/.out-of-scope/harness-name-collisions.md), mattpocock/skills, read 2026-10-23.
+- [code-review SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/code-review/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [code-review docs page](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/docs/engineering/code-review.md) (the name clash, same-session review, convergence, uncommitted work): pinned to mattpocock-skills 1.3.1, read 2026-10-23. Public copy: [The /code-review Skill](https://www.aihero.dev/skills-code-review), AI Hero, updated 2026-08-24, read 2026-10-23.
+- [implement SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement/SKILL.md) and [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement-spec/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [retro SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/retro/SKILL.md) (`CODING_STANDARDS.md` is read during review; mechanical rules become checks): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [Out of scope: harness name collisions](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/.out-of-scope/harness-name-collisions.md), mattpocock/skills, read 2026-10-23.
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (clearing between tickets and a final review 14:39–14:50; review inside `/implement` 14:55–15:12; two axes and the Fowler fallback 15:12–15:46; why sub-agents 15:46–16:21).
 - [AI Engineer workshop](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock, 2026-04-24 (reviewing in the Smart zone 1:04:59–1:06:24; standards go to the reviewer, Sonnet implements, Opus reviews 1:32:23–1:32:44).
 - [Can Cursor's HARDCORE Review Skill Stop The Slop?](https://www.youtube.com/watch?v=mh5XZ-L5SFQ), Matt Pocock, 2026-05-28 (impact of automated review 0:00–0:06; reviewers stay inside the diff 2:00–2:15; false positives vs missed improvements 12:06–12:29).
