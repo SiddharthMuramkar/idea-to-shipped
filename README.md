@@ -2,11 +2,11 @@
 
 # Idea to Shipped
 
-**A small course on Matt Pocock's Claude Code skills and agentic coding, written as a journal of building this site.**
+**A from-zero course on Matt Pocock's Claude Code Skills that uses the building of this site as its worked example.**
 
 [![Live site](https://img.shields.io/badge/live-idea--to--shipped.vercel.app-1E3FCC?style=flat-square&logo=vercel&logoColor=white)](https://idea-to-shipped.vercel.app)
 ![Status](https://img.shields.io/badge/status-v1%20shipped-1E3FCC?style=flat-square)
-![Lessons](https://img.shields.io/badge/lessons-12-1E3FCC?style=flat-square)
+![Lessons](https://img.shields.io/badge/lessons-20-1E3FCC?style=flat-square)
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)
@@ -28,28 +28,55 @@
 
 ## About
 
-Each Lesson covers one Skill: what it is, when to use it, what I typed, and what happened. Each one was written right after the step of building this site that used it, so the course is a record of the site being built.
+Twenty Lessons in four Parts teach Matt Pocock's Skills from zero, for someone who has never coded with an agent. Each Lesson explains the idea behind one Skill (or one foundation, like the context window), walks through a real session step by step, shows how Matt and other developers use it day to day, gives you a prompt to try yourself, and checks what you understood.
+
+The building of this site is the worked example. Each Lesson has a short "How I used it building this site" box with the prompts I actually typed and what happened, mistakes included.
 
 You can leave a Comment on any Lesson in the Discussion band at its end. You don't need an account.
 
-This is my first full-stack app that actually made it to production. Everything from the first idea to the deploy was done with the skills the course teaches.
+This is my first full-stack app that actually made it to production. Everything from the first idea to the deploy was done with the Skills the course teaches.
 
 ## The Lessons
 
+**Part 1: Foundations**
+
 | # | Lesson | What it covers |
 |---|---|---|
-| 0 | [Start here](https://idea-to-shipped.vercel.app/learn/start-here) | What this course is and how to read it |
-| 1 | [Grilling](https://idea-to-shipped.vercel.app/learn/grilling) | Stress-testing an idea before writing code |
-| 2 | [Domain modeling](https://idea-to-shipped.vercel.app/learn/domain-modeling) | A shared glossary and ADRs |
-| 3 | [Spec + issues](https://idea-to-shipped.vercel.app/learn/spec-and-issues) | Turning the plan into a spec and ordered issues |
-| 4 | [Wizard](https://idea-to-shipped.vercel.app/learn/wizard) | Guided setup for accounts, keys and environments |
-| 5 | [Prototype](https://idea-to-shipped.vercel.app/learn/prototype) | A throwaway build to settle a design question |
-| 6 | [TDD](https://idea-to-shipped.vercel.app/learn/tdd) | Red, green, refactor against a real database |
-| 7 | [Code review](https://idea-to-shipped.vercel.app/learn/code-review) | Checking code against standards and against the spec |
-| 8 | [PR + ship](https://idea-to-shipped.vercel.app/learn/pr-and-ship) | Branch, preview deploy, merge, production |
-| 9 | [Diagnosing bugs](https://idea-to-shipped.vercel.app/learn/diagnosing-bugs) | A step-by-step loop for hard bugs |
-| 10 | [Models, effort & ultracode](https://idea-to-shipped.vercel.app/learn/models-effort-ultracode) | The four dials: model, effort, ultracode and fast mode |
-| 11 | [The main flow](https://idea-to-shipped.vercel.app/learn/main-flow) | How the Skills fit together, from idea to shipped |
+| 0 | [Start here](https://idea-to-shipped.vercel.app/learn/start-here) | What the course is, what you need, how to read a Lesson |
+| 1 | [How coding agents work](https://idea-to-shipped.vercel.app/learn/how-agents-work) | The agent loop, tools, permission modes, plan mode, CLAUDE.md |
+| 2 | [The context window](https://idea-to-shipped.vercel.app/learn/context-window) | Tokens, the Smart zone, `/clear`, `/compact`, subagents, `/handoff` |
+| 3 | [Skills](https://idea-to-shipped.vercel.app/learn/skills) | What a Skill is, installing Matt's Skills, `/setup-matt-pocock-skills`, `/ask-matt` |
+
+**Part 2: The main flow**
+
+| # | Lesson | What it covers |
+|---|---|---|
+| 4 | [Grilling](https://idea-to-shipped.vercel.app/learn/grilling) | Being interviewed until you and the agent want the same thing |
+| 5 | [Domain modeling](https://idea-to-shipped.vercel.app/learn/domain-modeling) | `/grill-with-docs`: a shared glossary and decision records |
+| 6 | [Prototype](https://idea-to-shipped.vercel.app/learn/prototype) | A throwaway build to settle a design question |
+| 7 | [Spec + tickets](https://idea-to-shipped.vercel.app/learn/spec-and-issues) | Turning the conversation into a spec and tracer-bullet tickets |
+| 8 | [TDD](https://idea-to-shipped.vercel.app/learn/tdd) | Red, green, one test at a time at an agreed seam |
+| 9 | [Implement](https://idea-to-shipped.vercel.app/learn/implement) | `/implement` per ticket or `/implement-spec` for the whole spec |
+| 10 | [Code review](https://idea-to-shipped.vercel.app/learn/code-review) | Checking the diff against standards and against the spec |
+| 11 | [PR + ship](https://idea-to-shipped.vercel.app/learn/pr-and-ship) | A PR body a reviewer can trust, then preview, merge, production |
+| 12 | [The main flow](https://idea-to-shipped.vercel.app/learn/main-flow) | The whole map: which Skill to type when |
+
+**Part 3: When things go wrong**
+
+| # | Lesson | What it covers |
+|---|---|---|
+| 13 | [Diagnosing bugs](https://idea-to-shipped.vercel.app/learn/diagnosing-bugs) | A tight feedback loop before any theory |
+| 14 | [Triage](https://idea-to-shipped.vercel.app/learn/triage) | Turning incoming reports into agent-ready work |
+| 15 | [Wizard](https://idea-to-shipped.vercel.app/learn/wizard) | Guided scripts for the steps only a human can do |
+
+**Part 4: Level up**
+
+| # | Lesson | What it covers |
+|---|---|---|
+| 16 | [Architecture](https://idea-to-shipped.vercel.app/learn/architecture) | Deep modules, seams and the architecture survey |
+| 17 | [Retro](https://idea-to-shipped.vercel.app/learn/retro) | Improving the agent's environment after a build |
+| 18 | [Wayfinder](https://idea-to-shipped.vercel.app/learn/wayfinder) | Planning a huge, foggy effort one decision at a time |
+| 19 | [Models, effort & ultracode](https://idea-to-shipped.vercel.app/learn/models-effort-ultracode) | Choosing the model, the effort level, ultracode and fast mode |
 
 ## Features
 

@@ -1,7 +1,8 @@
 ---
 title: Spec + issues
 slug: spec-and-issues
-order: 3
+order: 7
+part: 2
 image: /photos/spec-and-issues.jpg
 imageAlt: A person drafts on a large sheet with a scale ruler and a rolled blueprint on a wooden table.
 imageCredit: Daniel McCullough

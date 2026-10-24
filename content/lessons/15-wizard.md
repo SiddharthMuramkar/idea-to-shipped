@@ -1,7 +1,8 @@
 ---
 title: Wizard
 slug: wizard
-order: 4
+order: 15
+part: 3
 image: /photos/wizard.jpg
 imageAlt: A man in a dark room carefully plugs a cable into a server rack.
 imageCredit: ThisisEngineering

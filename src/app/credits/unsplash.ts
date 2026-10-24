@@ -50,6 +50,38 @@ export const unsplash: Record<string, { page: string; profile: string }> = {
     page: "https://unsplash.com/photos/aerial-photography-of-roads-on-city-during-daytime-Zeu57mprpaI",
     profile: "https://unsplash.com/@dnevozhai",
   },
+  "/photos/how-agents-work.jpg": {
+    page: "https://unsplash.com/photos/black-and-white-industrial-machine-dRMQiAubdws",
+    profile: "https://unsplash.com/@possessedphotography",
+  },
+  "/photos/context-window.jpg": {
+    page: "https://unsplash.com/photos/fogs-covered-snow-capped-mountain-range-view-outside-window-I_-OwWnUw6w",
+    profile: "https://unsplash.com/@danielsessler",
+  },
+  "/photos/skills.jpg": {
+    page: "https://unsplash.com/photos/a-wall-full-of-tools-Q-j4syZXqGg",
+    profile: "https://unsplash.com/@tonchik",
+  },
+  "/photos/implement.jpg": {
+    page: "https://unsplash.com/photos/construction-worker-in-hard-hat-on-building-frame-X1P1_EDNnok",
+    profile: "https://unsplash.com/@josholalde",
+  },
+  "/photos/triage.jpg": {
+    page: "https://unsplash.com/photos/african-american-postal-employees-sorting-mail-into-cubby-holes-KUB91Ugo-mg",
+    profile: "https://unsplash.com/@libraryofcongress",
+  },
+  "/photos/architecture.jpg": {
+    page: "https://unsplash.com/photos/white-bridge-support-photo-cH-BsxjHwoY",
+    profile: "https://unsplash.com/@danibix95",
+  },
+  "/photos/retro.jpg": {
+    page: "https://unsplash.com/photos/person-looking-at-sticky-note-wall-oXqn2CXC_9Q",
+    profile: "https://unsplash.com/@perloov",
+  },
+  "/photos/wayfinder.jpg": {
+    page: "https://unsplash.com/photos/a-person-walking-down-a-trail-in-the-woods-HXN1KCzyoFE",
+    profile: "https://unsplash.com/@jackomowa",
+  },
   "/photos/home-hero.jpg": {
     page: "https://unsplash.com/photos/two-men-working-on-computers-at-night-QN1Sz74hVjg",
     profile: "https://unsplash.com/@bluext",
