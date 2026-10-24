@@ -1,0 +1,367 @@
+{
+  "lessons": [
+    {
+      "slug": "architecture",
+      "file": "16-architecture.md",
+      "part": 4,
+      "round": 1,
+      "fix": {
+        "applied": [
+          "medium (accuracy) adapter counting, database paragraph: the stopped fixer had already changed line 63 and the db Scene caption, so the Lesson no longer says only one thing fills the database slot (src/test/setup-env.ts points tests at the Neon test branch). I also made the existing-versus-new seam difference clear: 'A setting already picks...' and 'A new seam for a fake database would have one adapter'. No net words added.",
+          "medium (accuracy) reference-not-driver feedback: already applied and checked against grill-with-docs/SKILL.md, which loads only grilling and domain-modeling. The feedback now tells the note to name /grill-with-docs and use the /codebase-design words, which the agent can load itself.",
+          "medium (reader) internal seams contradiction: already applied and checked against DEEPENING.md (internal seams are used by the module's own tests, and the interface stays the test surface). I tidied the grammar ('can hold small parts and even private internal seams, where its own tests plug in a stand-in yet still call the front door') and cut 1 word.",
+          "medium (reader) cards, friction and candidate used before they're explained: already applied. Step 2 now says 'suggestions' and 'the problem is worth reopening that decision', friction first appears with examples in step 3, and step 4 says what a candidate is ('a place it suggests deepening').",
+          "medium (reader) 'self-contained' clashed with needing CDN access: already applied. Step 4 no longer says self-contained, and step 5 and the fallback line agree with HTML-REPORT.md (Tailwind and Mermaid both come from CDNs).",
+          "medium (reader) 'The rest become tickets' clashed with spot-all-speculative: already applied. It now reads 'Others worth doing (`Strong` or `Worth exploring`) can become tickets.'",
+          "medium (reader) Git prerequisite had no fallback: already applied. The Try intro now says what to do if `git --version` isn't found, on Mac and on Windows.",
+          "medium (reader) the warm-up check graded the model's opinion: already applied. The check now asks for a verdict in the Skill's words, notes that this Lesson counts two adapters, and if the run says one, tells the reader to ask why and weigh the reason.",
+          "medium (quiz) the real-seam Checkpoint duplicated spot-removed-seam: already applied. The Checkpoint is now the one-adapter case under the same id. I fixed the tense clash ('Lee plans an `EmailSender` seam', 'Nothing else would plug into it', 'Add it:' instead of 'Keep it:') so 'Hold off' reads naturally.",
+          "medium (quiz) sequence-survey step counts: already applied. All four options now have four steps, and option d opens like the right answer.",
+          "medium (quiz) why-locality labels gave the answer away: already applied. The 'which maintainers/callers get' labels are gone and the stem asks 'Which term from the vocabulary names that gain?', so every option fits.",
+          "medium (quiz) predict-deletion options a and d were the same misconception: already applied. d is now 'It's a seam, since four callers plug into it.' with feedback separating callers from adapters.",
+          "medium (quiz) spot-carried-on had a weak distractor and a tense clash: already applied. The stem is now present tense ('What should Sam do?'), the right answer is 'Press Esc, and carry what was agreed into `/to-spec`', and the uncommittable-report distractor is replaced with 'Let it go on, but ask it to run the tests after each file it edits.'",
+          "medium (quiz) spot-removed-seam 'boundary' distractor was weak: already applied. It's now a right-verdict, wrong-reason option ('He was wrong, because code that handles money always needs a seam.')."
+        ],
+        "declined": [],
+        "words": 2847,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "context-window",
+      "file": "02-context-window.md",
+      "part": 1,
+      "round": 2,
+      "fix": {
+        "applied": [
+          "medium (reader, MCP servers called plug-ins): checked that line 40 now reads 'connectors that link the agent to other services', so MCP servers are no longer confused with the plugin that Try step 2 installs. The interrupted fixer had already applied this, and commit 7d20d5c saved it.",
+          "medium (reader, startup-tokens option b partly true): checked against auto memory and code.claude.com. The right option is now 'Instructions, tool lists and saved notes loaded at startup.' (57 chars). Option b is now 'Your whole last conversation, which Claude Code reloads so you don't start cold.', and its feedback says only short auto-memory notes carry over. The right option is not the longest. Already applied.",
+          "medium (reader, Try step 3 'biggest row' is Free space): step 3 now asks for the biggest row of used tokens, not Free space or the buffer, and the checklist says 'the biggest used row'. Already applied.",
+          "medium (reader, ZIP route has no way to get into the folder): the prerequisite now says to type `cd` and a space, drag the folder with `src` inside onto the window, and press Enter. That also handles the nested folder Windows makes when unzipping. Already applied.",
+          "medium (reader, spot-handoff-file c/d ruled out by the stem) and medium (quiz, stem gives the mistake away): both are fixed by the rewritten question, id kept. The stem now lists the file's parts without judging them (summary, suggested skills, [removed] key, pasted 300-line spec), and the right option b is 'The pasted spec: the colleague needs only a path or link to it.' This matches handoff/SKILL.md: refer to specs by path or URL. Visible lengths are 70/63/60/65, all options share one shape, and the right one is not the longest. Already applied.",
+          "medium (quiz, 'Phase boundary' wording tell): read-context-rows b is now 'Skills: uninstall most of them at the next Phase boundary.' (58, against 47 for the right option). spot-louder-rule b is now 'He should switch to a bigger-window model at the next Phase boundary.' (69, against 55), with the Smart-zone feedback. In the quality-not-size Checkpoint, option a now names the Smart zone too. Already applied.",
+          "medium (quiz, scenario-find-callers was recognition, not transfer, and had a straw-man distractor): replaced by a new question with a new id, scenario-mid-phase-reading, about reading forty files mid-grilling and never needing them again. Its right option b is 'Have a subagent read them and send back a short report.' The feedback line saying grilling dispatches a sub-agent for facts was checked against grilling/SKILL.md. Lengths are 65/55/51/41. Already applied.",
+          "medium (quiz, goal 3's subagent branch untested): scenario-switch-harness is replaced by scenario-afk-review, a new id. A diff review at 140k runs while you're at lunch, and the right option d is a subagent. This matches question 4 of PHASE-BOUNDARIES.md (AFK, the automated-review case) and its order before question 5, /compact. The handoff part of goal 4 is still covered by spot-handoff-file, sequence-prototype-detour and the handoff-reason Checkpoint. Already applied."
+        ],
+        "declined": [
+          {
+            "problem": "The MCP plug-ins issue also asked to change 01-how-agents-work.md:88, which still reads 'MCP servers (plug-ins that connect the agent to outside systems)'.",
+            "reason": "Out of scope: this fixer may edit only content/lessons/02-context-window.md. The clash is fixed on this Lesson's side. The how-agents-work fixer should make the same change there, to 'connectors that link the agent to outside systems'."
+          }
+        ],
+        "words": 2943,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "domain-modeling",
+      "file": "05-domain-modeling.md",
+      "part": 2,
+      "round": 2,
+      "fix": {
+        "applied": [
+          "high+medium (quiz and accuracy, same line): why-shared-words option d feedback no longer says the agent has no memory between sessions. It now reads 'Only files carry anything from one session to the next, and the glossary holds words, not past conversations.' That fits auto memory and CLAUDE.md (memory docs; how-agents-work:40, context-window:38). Line 22 also changed from 'starts every session knowing nothing about your project' to 'starts every session blank', which is how-agents-work words it, and that cut 4 words.",
+          "medium accuracy (repo vs working directory): ask-matt:19,85 splits on a working directory, and Grilling now says 'project folder'. So Your part now says 'No project folder: `/grill-me`...'. How Matt uses it now says 'whenever he's in a project folder (his Skills say working directory)'. In the Cheat sheet, 'Start a change in a repo' became 'Start a change' and 'No repo' became 'No project folder'.",
+          "medium accuracy: scenario-no-docs-repo option b feedback now says setup records where the glossary will live, plus your issue tracker and labels, but writes no glossary (setup SKILL.md:9-13).",
+          "medium reader (Try needs Git): I removed `git init` and 'turn it into a Git repo' from Try step 1 instead of adding Git as a prerequisite, and 'This practice repo' became 'This practice folder'. Neither grill-with-docs nor domain-modeling needs Git, a project folder is enough, and the writing guide says a Try assumes only Claude Code, the Skills and a terminal. The dead end is gone and the step is 6 words shorter.",
+          "medium reader (unexplained terms): 'the model obeys by cutting words' became 'the agent obeys'. 'A codebase means the docs version' became 'A codebase (a project's code) means the docs version'. I kept 'codebase' because the transcript at 6BB6exR8Zd8 13:38 and 14:20 says 'code base'. The `!` note now says it 'runs a terminal command', not a shell command.",
+          "medium quiz: why-not-surprising option b, which the prompt itself ruled out, is now 'No: only databases and hosting earn ADRs, never a library.', with feedback that a library can qualify when swapping it is costly. Option lengths are 48/58/39/42, so the right answer d is neither the longest nor the shortest, raw or shown.",
+          "medium quiz (hedge tell): spot-adr-pile right answer is now 'Decisions like these fail the three tests, so they aren't ADRs.' (63 characters, against 54/69/64).",
+          "medium quiz (weak distractor): spot-assumed-saved option b is now 'He should have run `/compact` instead, which keeps every decision.' Its feedback says /compact swaps the conversation for a summary that can drop details, so keep it until /to-spec and /to-tickets have run. Lengths are 78/66/75/69 raw, so right answer c is neither the longest nor the shortest.",
+          "medium quiz (weak, repeated button distractor): earns-an-adr option b is now 'List homework oldest first, unlike most apps, so overdue work stays on top.' Its feedback says it is surprising but cheap to flip back, so it fails 'hard to reverse'. I didn't use the checker's 'hide marks from parents' wording, because the Lesson lists scope calls and firm 'no's among the kinds that pass, so a reader could defend it as a second right answer. Lengths are 69/75/81/82, so right answer c is neither the longest nor the shortest."
+        ],
+        "declined": [],
+        "words": 2844,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "prototype",
+      "file": "06-prototype.md",
+      "part": 2,
+      "round": 2,
+      "fix": {
+        "applied": [
+          "accuracy medium (Site story, 'record of everything I typed'): replaced with 'None of the \"What I typed\" notes in my build journal mentions `/handoff`.' Checked: all 12 old journal Lessons at d21fc2c have a 'What I typed' section, and the only mention of handoff is 11-main-flow.md:23, which is in the flow section and isn't something the author typed. Net -1 word.",
+          "reader medium (Try checklist asks a question no step tells you to ask): step 6 now ends 'Ask whether the rules block touches the page.' The checklist item now reads 'The agent said the rules block doesn't touch the page.' (LOGIC.md:33,65). Net 0 words.",
+          "reader medium (the Try practised only 2 of the 3 capture parts): step 7 now reads 'Capture it (`loans.js` stands in for real code, `DECISION.md` for the ticket):'. The prompt now copies the rules block into a new loans.js and commits both. The check now reads '`git branch` lists ... `* main`; `ls` shows `DECISION.md` and `loans.js` but no HTML file.' Net 0 words.",
+          "reader medium (Stretch 'points at files' check can't pass for the first handoff): now reads 'It's working if both files are short, the first suggests the prototype Skill, and the second points at the HTML file.' (handoff SKILL.md:10,12). Net -3 words.",
+          "reader medium (Common mistakes 'Rewrite the winner; park the rest' contradicts the capture rules): now reads '`main` gets the decision; `prototype/<name>` gets the whole prototype.' (SKILL.md:26, UI.md:105, LOGIC.md:58). Cut 'extra' from the Hardening bullet. In spot-merged-prototype, the right option's feedback now says 'Rewrite B into the real code, and park the whole prototype, B included, on a never-merged branch.' Net -1 word.",
+          "reader medium ('the Skill then said to build a terminal app' is ambiguous): now reads 'before 1.2.0, the Skill built a terminal app (8:53–9:50)'. Checked against transcript n0VhIVtviC0 at 9:36–9:46 and CHANGELOG.md:116 (1.2.0). Net -1 word.",
+          "reader medium ('the model' undefined): line 155 now says 'the agent reasons less sharply', and the compact-or-handoff Checkpoint feedback got the same change. Net 0 words.",
+          "reader medium ('pushed' and 'sticky' undefined): both 'sticky' panels in the Site story are now 'always-visible', and 'pushed and never merged' is now 'on GitHub, never merged' (an earlier record confirms the push: GitHub logged the branch's creation, and gh api still returns 8cdcfa1). Net 0 words.",
+          "quiz medium (spot-colour-variants right option echoes the stem): rewrote the stem so it states the real route, ?variant= and no tests. New options: a, the page's real route instead of a prototype route; [x] b, 'Under the colours and corners, all three are the same layout.'; c, no tests; d, three is too few. Each has new feedback. I kept the route out of backticks, because the lint rejects `/recipes`. I also applied the r2 accuracy low here: the feedback now says 'Ask for two of them redone, each without a card grid' (UI.md:54). Lengths: 80/61/56/66.",
+          "quiz medium (spot-verdict-only right option echoes the Site story): d now reads 'They should have listed every decision made inside C on the ticket as well.' (75 characters, against 78 for the longest wrong option).",
+          "quiz medium (scenario-detour-return right option copies the flow caption): b now reads 'A `/handoff` from the prototype session: the verdict and what surprised you.' with new feedback. Visible length 74, against 86/88/83.",
+          "quiz medium (sequence-detour: only c had a /handoff back): replaced d with '`/grill-with-docs` → `/to-spec` → `/handoff` → `/prototype` (fresh session) → `/handoff` back → then `/to-tickets`'. Its feedback explains that the spec was written while the question was still open. Visible length 102, against 99 for c.",
+          "quiz medium (why-no-tests: every wrong option said to write tests): replaced c with 'Skip them: the prototype gets deleted once it answers, so tests go too.' (right action, wrong reason, with feedback). Lengthened b to '...the rules move into, not here.' Lengths are a78/b75/c73/d70.",
+          "quiz medium (right answer too often the shortest): in scenario-logic-question, shortened a to 'Three layouts of the tracking page, flipped with `?variant=` and a bar.' and d to 'A real parcel-status feature with tests and the real database.', so c (73) now sits in the middle. The right answer is now the shortest in only scenario-settled-design and scenario-detour-return."
+        ],
+        "declined": [],
+        "words": 2970,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "spec-and-issues",
+      "file": "07-spec-and-issues.md",
+      "part": 2,
+      "round": 2,
+      "fix": {
+        "applied": [
+          "medium, Site story 'My slip.': I dropped the parenthetical '(the seam check is the one place that Skill stops)'. The old journal Lesson at d21fc2c (11-main-flow.md, item 4) says only 'one design choice'. Saves 10 words.",
+          "medium, spot-cleared-before-tickets option b feedback: 'what clearing threw away' now reads 'that clearing emptied the reasoning from the window', so it agrees with the course fact that /resume can reopen a cleared conversation.",
+          "medium, Skill defined late: the definition now sits where Matt is introduced in 'Why it matters': 'Matt Pocock, a developer and teacher, publishes a popular set of Skills for Claude Code: short instruction files ... (see [Skills](/learn/skills)). He calls ...'. The next paragraph now says 'His Skills do that in two steps'. No net change in words.",
+          "medium (raised by the reader and quiz lenses), why-write-it-down option c relied on /resume, which the Lesson never teaches before this Checkpoint: c is now 'Every session shares one context window, so the spec is only for teammates.', and its feedback says each session gets its own window and a fresh one has seen none of the conversation. The section above it disproves this. The id is kept because the question means the same thing.",
+          "medium, 'nothing to show = horizontal' clashed with prefactoring tickets: the line now reads 'If nothing, and it isn't prefactoring, it's a horizontal slice.' (to-tickets SKILL.md: 'Any prefactoring should be done first'). Saves 1 word.",
+          "medium, scenario-two-agents wording tell: the prompt now says 'three agents free', so counting no longer points to the key, and option c (02, 03 and 04) becomes a real temptation. The key's feedback adds 'so the third agent waits too.'",
+          "medium, scenario-near-smart-zone option d feedback: 'this one is nearly full' now reads 'this one is already near the end of the Smart zone', which matches the course fact that the limit is about quality, not window size.",
+          "medium, invented-limit option b was a weak distractor: it is now 'A guess you can leave: the spec is mostly for agents, not for you.', with feedback that every line should still be your decision and the tickets get cut from this spec. That misconception comes from the Lesson's own 'written mostly for agents' paragraph.",
+          "medium, too many /clear distractors: spot-seam-skip option a is now 'The agent broke its rules: `/to-spec` isn't supposed to ask anything.', whose feedback says it asks no new round of questions but stops once for the seams. scenario-too-many-tickets option d is now 'Merge the whole sharing feature into one ticket instead.', whose feedback says that overcorrects because one ticket won't fit in a fresh context window. I didn't use the suggested /tdd distractor: tdd SKILL.md confirms seams with the user itself, so that option would be arguable. I didn't use the suggested /implement-spec 'Approve...' distractor either: it would have made three options start with 'Approve', which is a wording tell.",
+          "medium, no Final test question tested the triage goal: I added a tenth question, scenario-what-to-triage, about a stranger's bug report versus ticket 03. The key is 'Only the stranger's bug report.' (position a), and each distractor has feedback grounded in ask-matt SKILL.md ('don't triage them') and triage SKILL.md (categorise, write agent-ready briefs). Test blocks aren't counted as running text, so the word count is unchanged."
+        ],
+        "declined": [],
+        "words": 2905,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "main-flow",
+      "file": "12-main-flow.md",
+      "part": 2,
+      "round": 2,
+      "fix": {
+        "applied": [
+          "Fork A detour (reader, medium): the step now says to type /handoff, which writes a summary file, and copy the path it shows. Then, in a second terminal window, cd into the project and start claude, type /prototype and paste the path. This matches handoff SKILL.md (it saves to the OS temp folder) and the Prototype Lesson.",
+          "Seams on the short road (reader, medium): the line now reads 'On the short road no spec has, so answer when /tdd asks which seams to test; agreed nowhere, /implement may just write the code.' tdd SKILL.md:22-24 says it proposes seams and confirms them with you, and this matches the Implement Lesson's wording.",
+          "'The tree' never introduced (reader, medium): I took the fix that adds no words. Line 135 now says 'ask these five questions in order', question 1 says 'not the five questions', the sequence-boundary-questions stem says 'Matt's five questions', and the scenario-unsteered-check feedback no longer says 'tree'. The word 'tree' no longer appears in the Lesson.",
+          "/clear one-way vs /resume contradiction (reader, medium): question 2 now says the why 'is gone from the session you carry on in'. This matches PHASE-BOUNDARIES.md:23, the course facts and the Context window Lesson.",
+          "tdd-never-loading presented as a current misfire (reader, medium): the paragraph now dates it. The review misfire stays 'as of October 2026' (issues #1215 and #1277, both still open). Then 'One developer's September logs (below) showed /tdd never loading, before an October fix told /implement to load it' (#1189/#1196; implement SKILL.md:11). The Other developers bullet now says 'Their next prompt named each Skill in full, like mattpocock-skills:tdd, still untested when they posted'. I checked that against Warshoow's 2026-09-29 comment in Discussion #1136 ('I haven't seen it on a real run yet'). This now agrees with the TDD and Implement Lessons.",
+          "scenario-unsteered-check (quiz, medium): the stem is now about 145k tokens with 'all 300 pages' links', so Continue clearly fails the Smart-zone test. Option a's feedback now says 300 pages of results would push the window past the Smart zone just before the PR write-up. Option c's feedback now says 'caught first, by the AFK question' instead of the ambiguous 'question 4'. The id and the key (d) are unchanged.",
+          "scenario-agent-may-start (quiz, medium): the stem now says 'saved into the project's private settings file' instead of the unexplained `.env`. That is the same gloss the Wizard Lesson uses, and no words were added.",
+          "Recall-not-transfer (quiz, medium), three parts. (1) scenario-fits-one-session's stem is now a bakery's ordering site, a delivery note and about 45k tokens; the options are unchanged. (2) Checkpoint next-ticket keeps its id and the clear-between-tickets rule, but now asks something the Context window Lesson doesn't. Ticket 3 is blocked by ticket 2, and the new distractor 'Carry on... since ticket 3 builds on ticket 2's work' is answered by 'its code is in the commit'. (3) scenario-near-smart-zone's right option now reads '/compact at this break, telling it payments is next.' instead of copying that Lesson's answer.",
+          "Word budget: the Lesson was 2,977 words, so the fixes had to pay for themselves. Cuts: the duplicate 'Built-in command' gloss on /clear in Context hygiene, which 'Who can type what' explains in full. Common mistakes bullets 1-3 are now one line pointing back to 'Why it matters'. Also trimmed: the /code-review misfire lead-in, 'ask him all the time' → 'constantly ask' (checked against M6mYodf0dJM.en.json at 0:12-0:15), and 'it' → '/implement'. I also applied the accuracy low, cost-neutral: 'some harnesses hide' → 'Claude Code hides user-invoked Skills', matching the Skills Lesson. The count is now 2,972."
+        ],
+        "declined": [
+          {
+            "problem": "The quiz checker's suggested replacement for Checkpoint next-ticket, a messy ticket 2 where the right move is '/retro here, then /clear, then /implement ticket 3'.",
+            "reason": "It tests the same rule as the Final test question spot-retro-next-day (run /retro in the session before clearing). The writing guide says no Checkpoint may duplicate a Final test question. I fixed the real problem, recall of the Context window Lesson's scenario-next-ticket, with a new angle on the clear-between-tickets rule: ticket 3 blocked by ticket 2."
+          }
+        ],
+        "words": 2972,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "diagnosing-bugs",
+      "file": "13-diagnosing-bugs.md",
+      "part": 3,
+      "round": 2,
+      "fix": {
+        "applied": [
+          "acc medium + reader medium (Hypothesise, 'the one point where the Skill invites your input'): the sentence now reads 'It shows you the list before testing, the one point in a normal run where it invites your input, but it never waits: it carries on with its own ranking.' This restores 'in a normal run', so it no longer contradicts the stop-and-ask case (SKILL.md:16, :55). It also drops the AFK clause that implied the Skill waits when you're at the keyboard (SKILL.md:98 'Don't block on it'), and it matches line 149. Net -4 words.",
+          "acc medium + reader medium (HITL bullet, 'runs it while you answer' / 'if the prompts race past'): the bullet now says that if the agent runs the script, it stops at the first prompt, because nobody can type into the agent's terminal (template :18 set -euo pipefail, :22 read). It tells the reader to ask for the script's full path, so a fresh terminal opened in the home folder still finds it, and to run it in a second terminal window (Git Bash on Windows). They type `bash`, a space and that path, then paste the KEY=VALUE lines back. This matches 15-wizard.md:67 and :388. Net -4 words.",
+          "reader medium (Scene hypothesis 3 prediction fits neither allowed shape, plus 'columns' jargon): it now reads 'The check measures display width, where an emoji takes the space of two letters. *Prediction:* other wide characters make it worse: 26 \"漢\" (also two letters wide) get refused too.' It still fits every Phase 2 result and the Phase 4 probe (26 漢 post fine). Scene text, not counted.",
+          "reader medium ('goes red' used before red is defined): the definition moved up to the highlight: '==no theory until something goes red== (red means failing, as test tools colour it; green means passing)'. I removed the later sentence 'Developers call a failing result red...' from The idea. Net -6 words.",
+          "reader medium ('auto mode' first used in pause-first feedback, glossed 20 lines later): option c's feedback now says 'New sessions start in auto mode, where the agent stops asking for each step, so there may be no prompt at all.' The later gloss in Matt's bullet stays. Checkpoint text, not counted.",
+          "reader medium (repository glossed as 'the online project folder', against Start here's 'a folder git tracks' and Try step 4): it now reads 'the front page of his Skills' repository: the project folder holding them, shared online'. Being online is now a fact about Matt's repo, not part of what a repository is. Net 0 words.",
+          "quiz medium (scenario-quick-question wording tell, stem 'want a quick explanation' echoed by key 'only want an explanation'): only the stem changed, to 'You'd like a two-line answer, but the agent starts setting up a reproduction harness.' The key and feedback stay, and 'answer' now echoes distractor a, not the key.",
+          "quiz medium (pause-first tell, 'root cause' in both stem and key and near-verbatim from the body): the stem is now 'You want to approve the agent's diagnosis before it starts fixing the bug. How do you get that pause?' Key b is now 'Say so when you start: \"check with me before fixing\".' (53 chars, shorter than d), and d's feedback now ends 'approve the diagnosis'. Same meaning, so the id pause-first is kept. 'approval' in distractor a now echoes the stem.",
+          "quiz medium (scenario-raw-report key 'to check it's real' answered the stem's 'haven't confirmed it'): the key is now '`/triage`, to label it and choose its next step', which matches triage SKILL.md:9, :41 and :45 (one category role and one state role per issue). Its feedback is unchanged and still the shortest of the non-tell options' lengths rule holds.",
+          "quiz medium (goal 3's pause clause has no Final test question): goal 3 is narrowed to 'give the exact symptom, and hand over steps only you can do', which spot-vague-symptom b and scenario-human-click a check. The up-front pause is still taught in the steering bullet and cheat sheet and checked by the pause-first Checkpoint, the same treatment r1 gave re-ranking. The Final test stays at 10, its maximum, so I didn't add a question."
+        ],
+        "declined": [],
+        "words": 2977,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "triage",
+      "file": "14-triage.md",
+      "part": 3,
+      "round": 2,
+      "fix": {
+        "applied": [
+          "Checked first: the working copy equals commit 795722d, which had already applied 6 of the 12 pending issues. All 6 were checked against the current Lesson and stand: (1) right-answer lengths are now mid-range in every Final test question by both measures, with only the four-way tie in sequence-one-item left; (2) scenario-rejected-bug was replaced by scenario-which-out-of-scope, so goal 4 now has a Final test question whose right answer is a rejected enhancement that gets a file; (3) the rejected-bug category ambiguity went away with that replacement; (4) the scenario-already-built stem no longer names the category; (5) the accuracy and reader step-8 issues: step 8 now says choose Yes unless it wants to change count.sh, then press Esc and type 'Don't fix it; carry on with the triage.'; (6) the accuracy and reader Main flow issues: the Main flow line now says /to-spec and /to-tickets come only when the work is too big for one session, and the lanes meet at ready-for-agent only 'when yours ends in tickets'.",
+          "medium (reader), 'brief' used before it's explained: the big-idea callout now reads 'a brief (written instructions to build from, for an agent or a person)'.",
+          "medium (reader), 'session' used 40 lines before it's explained: moved the gloss to its first body use ('as in the session (one Claude Code conversation) below') and took it out of the Main flow paragraph.",
+          "medium (reader), 'Slug' and 'v1' never explained: the agent-brief intro now says 'for the first version, that an address ending in an unknown Slug (a Lesson's one-word name), like /learn/nope, showed...'. The Site story now says 'the first version's tickets' instead of 'the v1 tickets'. Checked against .scratch/lesson-site/issues/03-lesson-pages.md:12, which says 'Accepted for v1'.",
+          "medium (reader), 'permission prompt' never explained: in the who-starts-triage Checkpoint, option c now avoids the term ('`/triage` loads, but Claude Code asks your permission first.'), and its feedback is now 'There's nothing to approve.'; b is still the right answer and still not the longest. Try step 8, where the term is first used in prose, now glosses it: 'At a permission prompt (Claude Code asking before it acts), ...'.",
+          "Word budget: the Lesson was at 2,913 words, above 2,850, so I cut more than I added. I cut the afk.sh run-time detail ('ten tickets in 62 minutes'), the repeat of 'Type /triage and say what you want' at the start of A session, step by step (now 'Triage carries on through later messages in the same session.'), and the quick-override parenthetical '(labels, any comment, closing)'. I also tightened the state-machine sentence ('That makes it a state machine: one state at a time, with fixed moves between them.') and the bulk-pass lead-in. Net change: -5 words."
+        ],
+        "declined": [],
+        "words": 2908,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "start-here",
+      "file": "00-start-here.md",
+      "part": 1,
+      "round": 3,
+      "fix": {
+        "applied": [
+          "Goal 1 (quiz, medium, untested half): narrowed to \"You'll be able to say which of the course's four Parts to turn to for a given problem.\" scenario-which-part tests it. The opening paragraph and \"What this course is\" still teach what the course is. Goals aren't counted as prose, and the Final test stays at 6 questions.",
+          "teach-next-session (quiz, medium, replays the Scene's example): the topic is now chess, not git. The prompt reads \"Last week you ran `/teach` in `~/learn-chess` and finished a lesson on how the knight moves.\" Options a and d now name `~/learn-chess`. The logic, the id, the answer position (d) and all four feedback lines are unchanged. The right option is 67 raw and 63 rendered characters, and option c is 68 by both measures, so the right answer isn't the longest by either measure."
+        ],
+        "declined": [],
+        "words": 1395,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "skills",
+      "file": "03-skills.md",
+      "part": 1,
+      "round": 3,
+      "fix": {
+        "applied": [
+          "reader+quiz medium (Common mistakes /code-review assumes the plugin route; reported twice): the bullet now reads '**With the plugin, typing `/code-review` for Matt's review.** Type `/mattpocock-skills:code-review`.' That matches line 241 (on the npx route Matt's copy takes over /code-review) and the Cheat sheet's '(plugin)' row.",
+          "reader medium (same issue, scenario-lost option b feedback): the clause now reads 'and with the plugin the short name reaches Claude Code's own review anyway', so it holds on both routes. This is the reader lens's fix, chosen over the quiz low's plain cut because it keeps the teaching point. Test feedback isn't in the lint's word count.",
+          "reader medium (AGENTS.md never explained): at its first use in setup's Explore step it now reads '`AGENTS.md` (the name other agents use for that kind of file)'. That's +10 words. It's accurate per code.claude.com/docs/en/memory: Claude Code reads AGENTS.md only when no CLAUDE.md exists. Setup SKILL.md:24 and :76-80 confirm setup checks both files and asks which to create when neither exists.",
+          "reader medium (Try it closing note can't be followed from the shell after /exit): it now says 'so start `claude` again and type `/setup-matt-pocock-skills triage is installed`'. That's +3 counted words.",
+          "quiz medium (scenario-review-clash: the right option echoed the highlighted phrase 'the full name'): options a and c are now parallel, 'Write `mattpocock-skills:code-review` in that line.' (right) and 'Write `claude-plugins-official:code-review` in that line.' Only the prefix tells them apart now. Lengths: a is 51 raw / 49 visible, b 53/53, c 57/55, d 50/48, so the right answer is neither the longest nor the shortest. Id kept, and the feedback is unchanged.",
+          "Word budget (reader low, line 207): I cut the sentence 'With the full set, if it says a Skill isn't installed, that's the blind spot above: type the name.' (−19 words). It pays for the fixes above. The point still appears at line 113, Try it step 8 (router-specific), Common mistakes and the Cheat sheet.",
+          "Low applied (dangling 'that March video'): line 22 now says 'in a March 2026 video' and line 52 says 'in that video' (net +1 word).",
+          "Low applied (CLAUDE.md mechanism): 'your own `CLAUDE.md`, which every Skill reads' is now 'which loads in every session'. That matches line 24 and the memory docs (+1 word).",
+          "Low applied (Matt's scopes misread): it now reads 'he chose his whole computer, since he works solo, and advised project scope for teams'. Checked against M6mYodf0dJM.en.json 2:58-3:16, where he recommends project skills for teams, says global is fine solo, and installs in his home directory (+3 words).",
+          "Low applied (spot-chained-skills assumed the plugin route): the stem now starts 'Kai, a plugin user, writes a personal Skill...', so option c's feedback ('/tdd came from the plugin') rests on a fact the reader was given. Id and options unchanged."
+        ],
+        "declined": [
+          {
+            "problem": "reader low: line 168, add 'and push them (send them to GitHub)' so a commit reaches clones",
+            "reason": "This adds 6 words for a low, and the Lesson is at 2,847, at the edge of the 2,850 ceiling. The practice repo in Try it has no remote, and pushing is taught in the PR + ship Lesson. It isn't in the pending list."
+          },
+          {
+            "problem": "quiz low: why-light-context overlaps the what-loads-early Checkpoint; rewrite it to test the flag's context cost",
+            "reason": "This is a low outside the pending list. The Final test question already adds a point the Checkpoint doesn't test (user-invoked Skills add nothing, about 660 tokens for the set). Round 2 also declined reworking this question. I left it for scope."
+          }
+        ],
+        "words": 2847,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "grilling",
+      "file": "04-grilling.md",
+      "part": 2,
+      "round": 3,
+      "fix": {
+        "applied": [
+          "accuracy medium (near-copy of AI Hero /grilling, line 54 + Try it checklist): checked against aihero.dev/skills-grilling, and the copy is real (\"Your answers settle decisions, the frontier moves outward, and the next round asks what that unblocked.\"). Line 54 now reads 'Each answer settles a branch, and whatever it unlocks joins the next round.' (13 words, down from 19). The checklist item now reads 'Questions in one round didn't hang off each other, or you said so when one did.' That uses the Lesson's own 'hang off' wording and matches line 54's 'if you spot that, say so'. I picked shorter wording than the suggested fix because the Lesson was over 2,850 words. Net change: -4 prose words.",
+          "reader medium (scenario-overwhelmed option a feedback contradicted the stop-early advice): replaced it with 'A total cap doesn't make rounds smaller: round 1 could still bring nine at once.' Option text, order and [x] are unchanged.",
+          "quiz medium (scenario-ungrillable wording tell, and option c already ruled out by the prompt): reworded only option c to 'Leave it open for now and let `/to-spec` settle the layout later.' Its feedback is now '`/to-spec` doesn't interview you; it writes up what's already decided. This question needs something you can look at.' That follows to-spec/SKILL.md:7 ('Do NOT interview the user; just synthesize'). Now d is no longer the only option naming a Skill. The right answer d (56 raw chars) is shorter than c (65) by both measures. Position, order and [x] are unchanged.",
+          "quiz medium (spot-cleared-early weak distractor c, and the unsupported 'Forty-five minutes is plenty'): reworded only option c to 'Forty-five minutes of answers was too much for `/to-spec` to fit in one spec.' Its feedback is now 'Length wasn't the problem: `/clear` had already emptied the conversation, so none of those answers reached `/to-spec`.' The right answer b stays much shorter than c. Position, order and [x] are unchanged."
+        ],
+        "declined": [],
+        "words": 2854,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "tdd",
+      "file": "08-tdd.md",
+      "part": 2,
+      "round": 3,
+      "fix": {
+        "applied": [
+          "medium accuracy, existing vs new seam: the Seams paragraph now reads 'prefer existing seams to new ones, the highest you can, ideally one', which is to-spec SKILL.md step 2's sense. In the chat Scene the labels are now '(the API tests already use it)' and '`postComment`, one layer down (no tests there yet)'. postComment exists (src/comments/comments.ts), so it is no longer called a 'new seam', and the Lesson agrees with spec-and-issues, where 'new' means nothing does that job yet. Net -1 word.",
+          "medium accuracy, Eberhardt: the line now says '...but its storage tests, repeated for every kind of record, checked their fakes more than the code.' I checked this against the Scott Logic post: CRUD tests for every entity over a thin Supabase layer 'do more to validate the mocks... than the code', while the functional slices were reasonable. Paid for by cutting the Warshoow follow-up sentence about naming tdd in full. Net -4.",
+          "medium reader, Try it vs the red-first rule: the checklist item now reads 'Tests appeared one at a time, and you saw each fail: before its code, or with the code broken on purpose.' The recovery paragraph adds: 'If one passes straight away, say: \"Break the code, show me that test fail, then restore it.\"' To pay for it I cut Common mistakes bullet 2, which repeated line 38 and the Checkpoint, and trimmed the CLAUDE.md clause to 'reads each session'. Net 0.",
+          "medium reader, tracer bullet and horizontal slice: line 40 now calls each test a tracer bullet '(the idea from [Spec + tickets](/learn/spec-and-issues), shrunk to one test): it shows where your shots land, so the next cycle can learn from it'. Horizontal slicing now reads 'Every test first, then all the code: a layer at a time. Such a batch...'. Line 24 now says 'a whole layer of tests for it', not the jargon 'below it', which matches the -QFHIoCo-Ko transcript at 67:59-68:07. Paid for by trimming the #589 parenthetical and the Lessons-module sentence. Net -1.",
+          "medium reader, undefined terms: 'constant' now has a clause, '(a named, fixed value like `MAX_BODY = 2000`)'. X is now 'X's (Twitter's)'. 'production' is now 'for real users'. 'type checks' is now 'other automatic checks', which still holds because the transcript at 69:45 and 70:39 says it ran the tests and the type check. Paid for by trimming line 209's repeat of how /implement calls tdd, which now reads 'which closes out with `code-review`'. Net -2.",
+          "medium quiz, skipped-seam Checkpoint: the stem now asks 'Which of the Skill's required steps has it skipped?' The right answer is 'Agreeing with you which boundary to test.', so it no longer echoes 'your OK'. The new distractors are 'Planning the refactor that follows each green.' (ruled out at line 42) and 'Listing every edge case the tests will cover.' (ruled out at line 83), each with feedback. Option d is kept. Same id, same meaning. The right answer is the shortest option.",
+          "medium quiz, scenario-tickets shape tell: all four options now name the ticket and carry a purpose clause: '`/implement`, to work through the ticket' (right, shortest), '`/tdd` for the ticket's tests, then `/implement` for its code', '`/mattpocock-skills:code-review` on the ticket, to set standards first' and '`/to-spec` again, to add the ticket's test cases'. Feedback is unchanged.",
+          "medium quiz, scenario-clock option a: it is now 'The function that works out each task's age.', with feedback 'That's your own code, part of what's under test. Fake it and the test only checks the fake; control the clock it reads instead.' It avoids 'own' and 'helper' in the option. Option c is still the longest.",
+          "medium quiz, why-test-first wording tell: options a and c no longer share the 'Fine,' opening. They now read '\"It's the same if every test passes at the end.\"' and '\"Then just ask it for twice as many tests.\"'. Feedback is unchanged, and the right answer b is still not the longest (d is)."
+        ],
+        "declined": [],
+        "words": 2866,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "code-review",
+      "file": "10-code-review.md",
+      "part": 2,
+      "round": 3,
+      "fix": {
+        "applied": [
+          "high (reader) Try it step 7, Esc doesn't stop background reviewers: checked against code.claude.com/docs/en/sub-agents, where sub-agents start in the background by default in a terminal session and Esc at their prompts only denies one tool call, and docs/en/interactive-mode, where Ctrl+X Ctrl+K stops all background sub-agents if pressed twice within 3 seconds. The step now says: if more rows keep appearing, press Ctrl+X then Ctrl+K, and again within 3 seconds, to stop them all, then type `/clear` and rerun the step.",
+          "medium (reader) Visitor can't find the sub-agents or knows to wait: step 7 now says two sub-agent rows, one per axis, should appear together in the panel below the prompt box, and that they run in the background, so wait for the report even if the prompt comes back first. This is backed by the sub-agents docs on the subagent panel and on completion notifications. The permission-prompt part is declined (see declined). To pay for the words, I cut the line-52 sentence 'So the report never merges the two and never re-ranks findings across them.' (line 170, the flow Scene and worst-per-axis already make that point) and '; the 1.3.1 Skill only reports' at line 249, as the checker suggested. I also cut Matt's 'commit their fixes' wish, which now had no contrast and could suggest the Skill edits code, plus its source timestamp, and the type-checker example, since the linter example is enough.",
+          "medium (reader) 'session' was used before it was defined, and 'both' was ambiguous: line 87 now says 'the instructions Claude Code loads into every conversation', so 'session' is still first defined at the Spec section. The list now reads 'ADRs (...) and the glossary in `GLOSSARY.md`, plus `CLAUDE.md` (...) and `AGENTS.md`, which both point agents at the docs for Next.js'. Checked against git show 8e2ff32:CLAUDE.md.",
+          "medium (quiz) spot-same-session right-answer feedback gave two wrong reasons: it now reads 'It was biased toward its own choices, and three hours in it was likely past the Smart zone. Use `/mattpocock-skills:code-review` from a clean session, so neither the reviewers nor the agent briefing them built the code.' This matches writing-guide.md (the dumb zone is about quality, not window size) and the body's clean-session paragraph (SKILL.md:62-72, 78). For the same reason, line 29 now says the context window 'holds the whole build' instead of 'is full of the build'. I didn't use the checker's 'past the Smart zone' wording there, because the Smart zone isn't defined until the 'Two reviewers' section. Option text and id are unchanged."
+        ],
+        "declined": [
+          {
+            "problem": "medium (reader) part 3: in Manual mode a reviewer's `git diff` brings up a permission prompt, so step 7 should say 'If a reviewer asks to run a `git` command, choose Yes'",
+            "reason": "The evidence is wrong. https://code.claude.com/docs/en/permissions, 'Read-only commands', says Claude Code runs a built-in set of read-only commands, including 'read-only forms of `git`', without a permission prompt in every mode. permission-modes.md says the same for Manual mode. The reviewers' `git diff` and `git log` don't prompt, so the extra sentence would teach something false and cost words in a Lesson near 2,850. The other parts of this finding (where the rows appear and the background wait) are fixed."
+          }
+        ],
+        "words": 2844,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "pr-and-ship",
+      "file": "11-pr-and-ship.md",
+      "part": 2,
+      "round": 3,
+      "fix": {
+        "applied": [
+          "Issue 1, near-copy of a pr.md sentence (medium, accuracy): the door-lasting-fix right-option feedback now reads \"Right. Every session reads `CLAUDE.md` at the start, so the next door call begins from your rule.\" In the Your part bullet, the copied run is now \"Name your repo's one-way changes (...) in `CLAUDE.md`...\". The ticket sentence beside it was also reworded (\"Show it the ticket ... not only the diff\") to cut a second shared run with pr.md:31. A 7-gram scan against pr.md, pr/SKILL.md and tdd/SKILL.md now finds only short phrases and the one attributed quote. Prose words net -7.",
+          "Issue 2, tdd seam stop in Try it step 4 (medium, reader): confirmed in tdd/SKILL.md:22-24, which says no test is written at an unconfirmed seam. Step 4 now adds: If the agent proposes a seam (the boundary a test checks the code at) and waits, reply: \"Yes, test the display-name function itself.\" This matches the TDD Lesson's wording. The 23 words added are paid for by deleting the old line after the Scene (\"Notice two things...\", 25 words), which only repeated Scene captions 164/166 and 176.",
+          "Issue 3, Scene's before came from build-session memory (medium, reader): the Scene now models the course's flow. The intro says the fix and its new test are committed on their own branch, and that you've just reviewed them in a clean session, as [Code review](/learn/code-review) advises, so this session never saw the new test fail. In the Scene, the agent now runs the new test against `main`'s code (a 500) and on this branch (20 of 20 pass). Captions 166 and 170 now say the before comes from that run. Caption 174 no longer says \"the agent that wrote the code\", which a clean session isn't. You skim rather than take the agent's door call on trust. Intro prose net -3.",
+          "Issue 4, reason-clause wording tell (medium, quiz): confirmed: all 11 options with because/since/so were wrong, and none of the right ones had one. Three right answers now carry a reason clause: scenario-repo-template \"Say in `CLAUDE.md` how they combine, since every session reads it.\", spot-text-door \"The door is one-way, since texts can't be unsent.\" and spot-merge-then-test \"The merge migrated the real database, so the check came too late.\" Reason clauses were cut from preview-separate (\"Nowhere. Previews are read-only.\") and scenario-need-to-type (\"No. `/implement` already wrote the body when it committed.\"). The issue 7 swap removed one more. Now 3 of 14 right options and 8 of 42 wrong ones have a reason clause. For the weaker opening tell, scenario-repo-template's option a dropped \"Nothing:\" and is now \"Let `/pr` find the repo's template and fill it in.\" Each right answer is strictly shorter than at least one wrong option, both raw and rendered. Ids kept.",
+          "Issue 5, the database-branch fact behind preview-separate option d (medium, quiz): the How a change ships paragraph now says Neon gives each preview a database branch: \"a throwaway copy, never merged back, so test data stays off the real site\". ADR 0002 backs this (a throwaway branch per PR preview, chosen to avoid test data leaking into production). The Vercel sentence was trimmed in the same paragraph (\"Vercel, the site's host, builds a preview of every pushed branch\") so the paragraph comes out at net -1 word.",
+          "Issue 6, scenario-review-effort option c against Matt's closing rule (medium, quiz): checked against LlgiOCmFG_w.ar.json. At 22:09-22:15 Matt says you don't need to review every two-way door, but every one-way door must be reviewed. At 18:30-18:37 he says he only reviews a small two-way door lightly. Option c is now \"None: the agent's door call already settles it.\", with its feedback kept, so it states the error of trusting the agent's own call rather than Matt's rule. The last sentence of the Review the irreversible bullet now paraphrases the closing rule: \"He closed with the rule: not every two-way door needs review, but every one-way door does.\" (16 words for 16). This is a paraphrase, not a quote, because only a machine translation exists. Id kept.",
+          "Issue 7, no Final test question checks that `/pr` writes only the body (medium, quiz): in scenario-stale-body, option b is now \"Type `/pr` again: it rewrites the body and puts it on the PR.\", with feedback \"It rewrites the body, but `/pr` only writes. Putting the new body on the PR is a step you ask the agent for.\" pr.md:51-55 backs this (\"It writes the body and stops\"). The right answer, d (52 characters), is shorter than a (59) and b (61 raw, 59 rendered). Id kept."
+        ],
+        "declined": [
+          {
+            "problem": "Issue 4, the weaker part: options that open with \"Nothing:\" in spot-claim-evidence, spot-text-door and spot-merge-then-test are always wrong. scenario-review-effort's \"None:\" and scenario-stale-body's \"Leave it:\" are left as they were.",
+            "reason": "A \"Spot the mistake.\" stem already says there is a mistake, so a \"Nothing:\" option is wrong by the stem itself, however it's worded. Rewording it can't remove that tell short of changing the course-wide spot- format. scenario-review-effort keeps \"None:\" because issue 6's own fix asked for that wording, and \"none\" is a natural answer to \"How much review does it need?\". scenario-stale-body's \"Leave it:\" is a real choice a reader might make. The removable case, scenario-repo-template's \"Nothing:\", was reworded."
+          }
+        ],
+        "words": 2868,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    {
+      "slug": "wizard",
+      "file": "15-wizard.md",
+      "part": 3,
+      "round": 3,
+      "fix": {
+        "applied": [
+          "high (Site story, first production deploy): confirmed in the repo. The old journal Lesson at d21fc2c says the site went live before the author clicked anything, and the PR #1 body only predicted a deploy before the merge. Cut 'Merging it set off the first production deploy (the build of the live site).' from stage 4. The last paragraph now gives the ticket's real done-when from .scratch/lesson-site/issues/02-accounts-and-environments.md: the live site showed the placeholder page and the agent could reach both databases. Dropped '; the first production deploy' from the PR #1 source line. Net -6 words.",
+          "medium (.env read during scoping vs 'the conversation never sees it'): confirmed. SKILL.md:20 lists .env among the files scoping reads. The tip now says scoping reads your .env files and Claude Code can open them, and that once real keys are saved you should ask the agent to look only at the names in .env and to confirm a value by testing it without printing it. To pay for it, cut the repeated sentence 'The wizard is a plain program in your terminal, and the model isn't connected to it.' Net -5 words.",
+          "medium (Where it fits, 'a wizard sets up everything else'): this contradicted SKILL.md:3 and backed distractor b of scenario-agent-can-do. The line now says '/setup-matt-pocock-skills, sets up the Skills in a repo; a wizard covers your part of other setups.' Cut 'new' and 'themselves' in the same paragraph so the word count is unchanged.",
+          "medium (GitHub used in the big-idea callout before it's defined): moved the clause '(the website that keeps your code online)' from the CI sentence into the callout, where GitHub first appears. No change in word count.",
+          "medium ('command-line tool' never explained): What it's not for now says 'If you're signed in to a command-line tool (a program you run from the terminal) that can create the thing, like GitHub's `gh`, the agent runs it with your login.' Cut 'own', 'already' and 'genuinely' in the same paragraph so the word count is unchanged.",
+          "medium (scenario-not-for-deciding, option d ruled out by the stem): replaced d with '`/to-spec`, so the agent writes up the payment plan you'll follow.' Its feedback says a spec writes down a plan you've already agreed, nothing is decided yet, so grill first and run /to-spec after. The right option is still shorter than d by both measures. Kept the id and the stem.",
+          "medium (spot-edited-library, two 'no mistake' distractors under 'Spot the mistake'): kept b and replaced c with 'The agent's `bash -n` check should test the key's length instead.' Its feedback says bash -n only checks syntax before anyone runs the script, never sees the key, and the key check runs in its stage below the marker. The right option is still not the longest by either measure. Kept the id."
+        ],
+        "declined": [],
+        "words": 2914,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    }
+  ],
+  "failed": []
+}
