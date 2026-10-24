@@ -1,5 +1,5 @@
 ---
-title: Spec + issues
+title: Spec + tickets
 slug: spec-and-issues
 order: 7
 part: 2
@@ -8,41 +8,411 @@ imageAlt: A person drafts on a large sheet with a scale ruler and a rolled bluep
 imageCredit: Daniel McCullough
 ---
 
-## What it is
+When a build is too big for one session, turn your grilling into a spec (where you're going) and a set of tracer-bullet tickets (how you'll get there), before you clear anything.
 
-A **spec** is one page describing what v1 is: what it does, what it doesn't, and how you'll know it's done. **Issues** are small tickets that split the spec into pieces an agent can build and check one at a time.
-
-This is where you **steer** the agent. You don't tell it "build comments". You give it a ticket that says exactly what "done" means.
-
-## When to use it
-
-- After grilling and domain modeling, before any code.
-- Whenever a piece of work is too big to describe in one sentence. Split it into tickets.
-
-## What I typed
-
-```
-write the spec
+```goals
+- You'll be able to decide whether a grilled change needs `/to-spec` and `/to-tickets`, or goes straight to `/implement`.
+- You'll be able to run `/to-spec` and `/to-tickets` in the same session as your grilling, answering the seam check and reviewing the breakdown before anything is published.
+- You'll be able to tell a tracer-bullet ticket from a horizontal one, read blocking edges and say which tickets are ready to start.
+- You'll be able to avoid the common traps: clearing too early, triaging these tickets, too many tickets, and forcing a wide refactor into slices instead of using expand–contract.
 ```
 
-The agent followed my repo's own rules in `docs/agents/issue-tracker.md`: the spec lives in `.scratch/lesson-site/spec.md`, with one file per ticket in `issues/`.
+## Why it matters
 
-## What happened
+Say you've just spent forty minutes being grilled by Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal) about a new feature for this site: Checkpoints and a Final test under every Lesson, with the Answers of every Visitor (anyone reading the site) saved in the database. Every decision is settled, and every decision lives in one place: the conversation.
 
-**1. It wrote a one-page spec** from the grilling decisions, the glossary and the ADRs. It includes the API as a table (method, path, success, errors), the data, the environments, the look, and an **Out of scope** list.
+That conversation is a session, and all of it sits in the agent's context window: its working memory, measured in tokens (small chunks of text). Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, calls the part where the model still reasons sharply the Smart zone: about 150k tokens on today's best models, as a rule of thumb. A feature this size won't fit in the room you have left. Push on, and the agent builds the second half getting sloppier as it goes. Clear the window instead (`/clear` is a Built-in command, part of Claude Code itself) and the next session starts knowing nothing.
 
-**2. It split the work into 6 issues, in build order:**
+So the decisions have to land in files a fresh session can read. Matt's Skills (short instruction files the agent loads when you type their name; see [Skills](/learn/skills)) do it in two steps. `/to-spec` writes a ==spec==: one document describing what the finished feature does and why. `/to-tickets` cuts it into tickets: small tasks, each sized for one fresh session, each naming the tickets that must finish first. Matt calls the spec the destination and the tickets the route. The spec stays as the record of why; each ticket is done with once it's built.
 
+```callout big-idea
+Neither Skill decides anything. They write down what you already decided, in a shape a fresh session can pick up without you in the room.
 ```
-01 Scaffold ──┬──► 03 Lesson pages ──────────┐
-              └──► 02 Accounts (me) ──► 04 Table ┴──► 05 API ──► 06 Comment box ──► v1
+
+```checkpoint why-write-it-down
+You've grilled a recipe-site feature that will take about three sessions to build. Why can't the second session simply carry on from the conversation?
+- [ ] The agent isn't allowed to write any code until a spec file exists.
+  > It is: `/implement` builds straight from the conversation when the work fits in one session.
+- [x] Each new session starts empty, so decisions must be written down.
+  > Right. A fresh session has seen none of the conversation. The spec and tickets carry your decisions across.
+- [ ] The tracker deletes old conversations after each session.
+  > Trackers hold issues, not conversations. The problem is that a new session starts with an empty context window.
+- [ ] Every session after the first one uses a weaker model.
+  > The model doesn't change. What changes is that the new session hasn't seen anything you said.
 ```
 
-Every issue has:
-- **Status**: `ready-for-agent` (the agent can do it alone) or `ready-for-human` (only I can, e.g. logging into Vercel).
-- **Blocked by**: which tickets must be finished first.
-- **Done when**: a checklist. This is the most important part. It's how I'll judge the agent's work without reading every line.
+## The idea: a destination and a route
 
-**3. It flagged three things it added that I hadn't decided:** length limits on comments, rejecting unknown slugs, and deploying the empty app early. A good agent tells you what it assumed instead of hiding it. I approved all three.
+Before either Skill can publish anything, the project needs to know where tickets live. A repo (a project folder tracked with Git) learns this once, from `/setup-matt-pocock-skills`. It asks which issue tracker you use, meaning the place a project keeps its list of tasks: GitHub, GitLab, markdown files inside the repo, or anything else you describe, such as Jira or Linear. It records your answer in `docs/agents/issue-tracker.md` and points to it from `CLAUDE.md`, the file of standing instructions the agent reads at the start of every session.
 
-**4. The lesson for me:** my job isn't writing code. It's writing (or approving) good **"Done when"** lists, then checking them.
+This site uses the local-markdown tracker, and its layout is fixed:
+
+- One folder per feature: `.scratch/<feature>/`.
+- The spec at `.scratch/<feature>/spec.md`.
+- One file per ticket at `.scratch/<feature>/issues/01-<name>.md`, then `02-…`, numbered with blockers first.
+- A `Status:` line near the top of each file, such as `ready-for-agent`.
+
+Both Skills are ==user-invoked==: only you can start them, by typing the name at the start of your message. The agent will never reach for `/to-spec` on its own, however finished the grilling feels, and writing "let's write the spec" in plain words won't start it.
+
+```scene files
+title: What lands in the repo (illustrative)
+# Once per repo, setup records where tickets live.
++ docs/agents/issue-tracker.md
+~ CLAUDE.md
+# `/grill-with-docs` writes the words you agree on into the glossary as you go.
+~ GLOSSARY.md
+# `/to-spec` publishes one spec, marked ready-for-agent.
++ .scratch/final-test/spec.md
+# `/to-tickets` writes one file per ticket, blockers first.
++ .scratch/final-test/issues/01-one-checkpoint-end-to-end.md
++ .scratch/final-test/issues/02-final-test-with-a-score.md
++ .scratch/final-test/issues/03-answers-survive-a-reload.md
+# Each build session works from one ticket file, and you update its Status when it's built.
+~ .scratch/final-test/issues/01-one-checkpoint-end-to-end.md
+```
+
+## `/to-spec`: write down what you decided
+
+Type `/to-spec` in the same conversation, right after you confirm the grilling summary. ==It doesn't interview you.== It only puts together what's already known: the conversation, the code, the project's glossary (`GLOSSARY.md`, the words you agreed) and its ADRs (short records of hard-to-reverse decisions). Matt's docs are blunt about it: "If the spec states something you never said, that is a defect."
+
+It works in three steps:
+
+1. **Explore.** It reads the code if it hasn't already, and uses the glossary's words throughout.
+2. **Check the seams with you.** A seam is a place where tests can check the feature from the outside, such as a module's public functions. It prefers seams that already exist, picks the highest-level one it can (so tests check behaviour, not internals) and proposes as few as possible; one is ideal. Then it stops and asks whether they match what you expect.
+3. **Write and publish.** It fills in a fixed template, saves the spec to your tracker and labels it `ready-for-agent`, meaning no further sorting is needed.
+
+The seam question is the one moment `/to-spec` waits for you. Later, `/tdd` (Matt's test-first building Skill; see [TDD](/learn/tdd)) writes tests only at seams you agreed, and `/code-review` checks the finished code against the spec. ==Answer the seam question before you type anything else.==
+
+The template has seven sections: Problem Statement and Solution (both from the user's side), a long numbered list of User Stories ("As a (who), I want (what), so that (why)"), Implementation Decisions (modules, interfaces, data changes), Testing Decisions (what makes a good test, which modules get tested), Out of Scope (what you refused) and Further Notes. There are no file paths or code, because they go stale fast. The one exception is a trimmed prototype snippet that pins a decision down better than words can.
+
+You needn't read every line; the spec is written mostly for agents. Do read the seams and Out of Scope, where a wrong decision is cheap to fix now and expensive to find later. One quirk: the spec's `ready-for-agent` label says the spec is complete, not that it should be built, yet an agent left to pick up ready issues on its own may try to build the whole spec at once. If you ever run agents that way, tell them to skip it.
+
+```checkpoint invented-limit
+`/to-spec` has written the spec for a book-club site. Under Implementation Decisions it says "Reviews are limited to 300 words." Nobody mentioned a limit while grilling. What is this line?
+- [ ] A normal detail: filling gaps with sensible defaults is the Skill's job.
+  > No. `/to-spec` records decisions; it doesn't make new ones. A gap it filled is a guess with your name on it.
+- [ ] Proof the grilling went well, because the spec is so thorough.
+  > Thoroughness isn't the goal. Every line should be something you decided.
+- [x] A defect: decide the limit yourself, then correct the spec.
+  > Right. If the spec says something you never said, it's a defect. Decide it or strike it before the tickets are cut from it.
+- [ ] A sign to `/clear` and run `/to-spec` again from scratch.
+  > Clearing throws away the conversation the spec is written from. Fix the one line instead.
+```
+
+## `/to-tickets`: tracer bullets with blocking edges
+
+Next, still in the same conversation, type `/to-tickets`. It works from the spec it can see, or from one you name, like `/to-tickets .scratch/final-test/spec.md`.
+
+Its core idea is the ==tracer bullet==, from the book *The Pragmatic Programmer*: gunners at night mix glowing rounds in with ordinary ones so they can see where they're aiming. In software, a tracer bullet is a thin piece of a feature that runs through every layer at once (the database, the API that other code calls, the screen, and the tests), so you can try it the moment it lands.
+
+The opposite is a horizontal slice: one layer per ticket. Matt has noticed that AI loves to build this way, so nobody gets feedback until the last layer lands. This site's own first plan had that shape. Written from the plain words `write the spec`, before the author used `/to-spec` and `/to-tickets`, it had a ticket for the comments table, then one for the comments API, then one for the comment box. A Visitor couldn't post a Comment until the third ticket was done. A tracer-bullet first ticket would have been: a Visitor can post a Comment and still see it after a reload.
+
+The Skill drafts tickets by four rules:
+
+- Each ticket cuts a narrow but complete path through every layer.
+- Once it's done, it can be demoed or checked on its own.
+- It fits in one fresh context window.
+- Prefactoring (tidying the code so the change becomes easy) goes first. In Kent Beck's words, which the Skill quotes: "Make the change easy, then make the easy change."
+
+Each ticket also lists its **blocking edges**: the tickets that must finish before it can start. The **frontier** is every ticket whose blockers are all done: the ones ready to build now, possibly by several agents at once.
+
+Before publishing, it shows you a numbered breakdown (title, what blocks it, what it delivers) and asks: is the size right, are the edges real, should anything merge or split? This review step (the Skill calls it quizzing you) repeats until you approve. ==Ask of every ticket: what can I demo when this is done?== A ticket with no answer is a horizontal slice.
+
+Then it publishes. On the local tracker that's one file per ticket, numbered blockers first, each with **What to build** (the behaviour from the user's side), **Blocked by** (or "None (can start immediately)"), `Status: ready-for-agent` and a checklist of acceptance criteria: the checks that prove it's done. On a real tracker like GitHub it makes one issue per ticket, uses the tracker's own blocking links and files each ticket under the spec's issue. Either way, it leaves the spec itself alone.
+
+### The exception: wide refactors
+
+A wide refactor is one mechanical change, like renaming a database column, that touches thousands of places in the code at once, so no thin slice can land without breaking the rest. `/to-tickets` orders it as **expand–contract**:
+
+1. **Expand:** add the new form beside the old one, so nothing breaks.
+2. **Migrate:** move the code over in batches (a folder at a time, say), one ticket per batch, each blocked by the expand. The old form still works, so the automatic checks stay green, meaning passing, after every batch.
+3. **Contract:** delete the old form in a last ticket, blocked by every batch.
+
+If even a batch can't pass on its own, the batches share one branch (a separate line of work in Git) and all block a final integrate-and-verify ticket, the only point where everything has to pass.
+
+```checkpoint first-tracer-bullet
+`/to-tickets` is drafting tickets for a recipe site. Which proposed first ticket is a tracer bullet?
+- [x] A cook saves one recipe and sees it after a reload.
+  > Right. It runs through storage, the API and the page at once, and you can try it the moment it lands.
+- [ ] Create every database table the site will need.
+  > That's one whole layer. A cook can't see anything until other tickets add the API and the pages.
+- [ ] Build all the page layouts using fake recipe data.
+  > Screens with nothing behind them. It's a horizontal slice, just from the top instead of the bottom.
+- [ ] Write the API routes for recipes, ratings and comments.
+  > The middle layer only, for three features at once. Thin and complete beats wide and partial.
+```
+
+## A session, step by step
+
+Here's the whole thing in one sitting, continuing the Final test feature from the start of this page. Grilling (see [Grilling](/learn/grilling)) is done and confirmed, and the session still has room.
+
+```scene chat
+title: Spec and tickets for a Final test feature on this site (illustrative)
+# Grilling is confirmed and the build needs several sessions. In the same conversation, you type the next Skill.
+you: `/to-spec`
+# No new interview. It explores, then stops once: to check the seams.
+agent: Before I write it: I'd test at two seams. The existing **Lessons module**, for reading a Lesson's questions, and a new **attempts module**, for saving and scoring Answers. Do these match what you expect?
+# You answer that question before typing anything else.
+you: Yes, both. Keep scoring inside the attempts module.
+# It writes the spec from the conversation and publishes it.
+agent: Published `.scratch/final-test/spec.md` (Status: ready-for-agent) with Problem Statement, Solution, 24 user stories, Implementation Decisions, Testing Decisions, Out of Scope and Further Notes.
+# Still no `/clear`. You type the next Skill.
+you: `/to-tickets`
+# It drafts a numbered breakdown and asks you to check it before publishing anything.
+agent: 1. **Answers table and attempts module.** Blocked by: none. Delivers: Answers can be saved. 2. **One Checkpoint end to end.** Blocked by: 1. Delivers: a Visitor answers a Checkpoint and sees the feedback. 3. **Final test with a score.** Blocked by: 2. Delivers: a score at the end. 4. **Answers survive a reload.** Blocked by: 2. Delivers: earlier Answers reappear. Is the size right? Are the blocking edges real? Should anything merge or split?
+# You push back: ticket 1 is a horizontal slice, with nothing a Visitor can try.
+you: 1 is one layer, with nothing to demo. Merge it into 2, so the first ticket is one Checkpoint working end to end.
+# It redraws, you approve, and only then does it write one file per ticket, blockers first.
+agent: Redrawn: 01 One Checkpoint end to end (blocked by: none), 02 Final test with a score (blocked by: 01), 03 Answers survive a reload (blocked by: 01). Approve?
+you: Approved.
+agent: Written to `.scratch/final-test/issues/`, 01 to 03.
+```
+
+Notice the two moments you were needed: the seam check and the review step. Once the files exist, everything that matters is on disk, so now you can `/clear` and build one ticket per fresh session, or hand the whole set to `/implement-spec`, which builds ready tickets in parallel (see [Implement](/learn/implement)).
+
+## Your part: when to use them, and when not
+
+The trigger is size, not importance. Once grilling is done, Matt's Main flow (the path most work takes, from idea to shipped; see [The main flow](/learn/main-flow)) asks one question: is this a multi-session build?
+
+| Where you are | What to type |
+|---|---|
+| Nothing is decided yet | `/grill-with-docs` first |
+| Decided, and it fits the room this session has left | `/implement`, right here; skip the spec |
+| Decided, and it needs several sessions | `/to-spec`, then `/to-tickets` |
+| A huge, foggy effort you can't plan in one sitting | `/wayfinder` (Part 4), which hands over to `/to-spec` once its map is clear |
+
+**Keep it in one window.** Don't `/clear`, or `/compact` (the Built-in command that swaps the conversation for a summary), until after `/to-tickets`. The spec is written from the conversation, and the tickets come out better with the reasoning behind the spec still in view. On a real tracker there's a practical reason too: a very large spec can come back cut short when a fresh session fetches it. The one exception is the Smart zone. If you near it before `/to-tickets`, `/compact` at the nearest phase boundary (a natural break between chunks of work, such as the end of grilling).
+
+**Don't triage these tickets.** `/triage` (see [Triage](/learn/triage)) sorts issues that arrive raw from other people: bug reports, feature requests. Tickets from `/to-tickets` are ready for an agent by construction.
+
+**Keep the books yourself.** `/implement` doesn't reliably mark a ticket done, so update its `Status:` line yourself.
+
+**Check that the seam reached the ticket.** The ticket templates have no field for the seams `/to-spec` agreed (more below), so make sure each ticket that needs tests names its seam, and add it by hand if not.
+
+```checkpoint triage-these
+`/to-tickets` has just written four tickets for your newsletter feature. A friend says: "Run `/triage` over them first, to be safe." What do you say?
+- [ ] Yes: every new issue should go through triage before an agent builds it.
+  > Triage is for issues you didn't create. These came out of your own grilling and spec.
+- [ ] Yes, but only for the first ticket, since nothing blocks it.
+  > Blockers have nothing to do with triage. None of these tickets need it.
+- [ ] No: run `/to-spec` again instead, to double-check the tickets.
+  > `/to-spec` writes a spec from a conversation; it doesn't check tickets.
+- [x] No: they're ready for an agent already; triage is for raw issues.
+  > Right. `/to-tickets` output is agent-ready by construction. Triage sorts bug reports and requests that arrive from other people.
+```
+
+## How Matt and others use it
+
+**Matt Pocock**, in his videos:
+
+- **One window, no clearing.** In his July 2026 walkthrough, a small cleanup fitted his remaining room, so he'd normally type `/implement`. To demo the long road he typed `/to-spec`, which squeezed 46.1k tokens of grilling into a spec, then `/to-tickets` without changing sessions. (His ticket landed in one `tickets.md`; since version 1.2.0 it's one file per ticket.)
+- **He pushes back on size.** That session proposed three slices, and he said one would do. In March 2026, using the older names write-a-PRD and PRD-to-issues, he merged tiny tickets, six down to four, because every ticket pays for a whole fresh agent start-up.
+- **Seams first.** In that March session the older Skill asked which modules needed tests. He picked the ones that already had test setups, and told it to look harder when it claimed there were none.
+- **Short tickets, detailed spec.** A real spec he showed had 11 tickets under it, each one session of work, kept short because most acceptance criteria lived in the spec.
+- **Slices, not layers.** At an April 2026 workshop he told the agent its first slice was "too horizontal", and said he prefers a board of tickets with blocking edges to a numbered plan, which only one agent can work through.
+- **Day shift, night shift.** Borrowing a friend's phrase, he grills and writes specs and tickets by day while agents build unattended. Back in March he skipped reading the spec; today's docs say to read at least the seams and Out of Scope.
+
+**Other developers:**
+
+- Colin Eberhardt, CTO of Scott Logic, rebuilt a karting-tracker app with the Skills in October 2026. `/to-spec` proposed one seam, a layer above the cloud storage, and wrote an 80-line spec; `/to-tickets` made eight sensible, lightweight tickets. He felt the user stories were ceremony for simple create-and-edit screens, where a data model would say more.
+- In September 2026 a user opened a GitHub issue after measuring 17 `/implement` runs in which `/tdd` never ran once, and traced it to the tickets dropping the seams `/to-spec` had agreed. It's still open, which is why you check the seam yourself.
+
+## Try it yourself
+
+````try
+You need Claude Code installed and signed in (see [Start here](/learn/start-here)). This app is small enough that you'd normally just type `/implement`; you're using it to practise both Skills cheaply.
+
+1. Make a practice folder, turn it into a Git repo and start Claude Code. If it asks whether you trust this folder, choose Yes.
+
+```sh
+mkdir todo-practice && cd todo-practice && git init && claude
+```
+
+2. Type a slash and the letters "to-". If `to-spec` isn't in the list that pops up, type `/exit`, install Matt's Skills, then run `claude` again:
+
+```sh
+claude plugin install mattpocock-skills@claude-plugins-official
+```
+
+3. If you see "plan mode on" under the prompt box, press Shift+Tab until it changes.
+4. Type `/setup-matt-pocock-skills`. Choose **Local markdown** for the tracker, choose `CLAUDE.md` if it asks which file to create, and accept the other recommendations.
+5. Grill the idea. Accept recommendations unless you disagree, and say "let's wrap up" after two or three rounds:
+
+```text
+/grill-with-docs I want a single web page to-do list: add an item, tick it off, and the list survives a page reload. Keep it tiny: no accounts, no server.
+```
+
+6. Confirm the summary, then type `/to-spec`. When it shows you the seams, answer before typing anything else.
+7. Type `/to-tickets`. At the numbered list, ask: "For each ticket, what can I demo when it's done?" Merge any ticket without a good answer, then approve.
+8. Read the spec and ticket files in the `.scratch` folder. Don't `/clear` before this point. If it offers to start building, say no, or press Esc to stop it. Type `/exit` when you're done.
+
+**It's working if:**
+
+- [ ] `/to-spec` started writing instead of asking a new round of questions, and checked the seams with you first.
+- [ ] `spec.md` has Problem Statement, Solution, numbered user stories, Implementation Decisions, Testing Decisions and Out of Scope, with no file paths.
+- [ ] You remember making every decision in it, and Out of Scope lists things you refused, like accounts.
+- [ ] The tickets are separate files, `01-…`, `02-…`, each with **What to build**, **Blocked by**, `Status: ready-for-agent` and a checklist.
+- [ ] Ticket 01 says "None (can start immediately)".
+- [ ] Every ticket delivers something you could try in the browser, and you got two or three tickets, not ten.
+````
+
+## Common mistakes
+
+- **Clearing or compacting before `/to-tickets`.** Keep grilling, spec and tickets in one window.
+- **A spec for single-session work.** If it fits, go from grilling to `/implement`.
+- **Typing past the seam check, or letting the spec invent.** Answer the question; every line should be a decision you made.
+- **Horizontal tickets.** Ask what each ticket lets you demo.
+- **Twelve tickets for a three-line change.** Merge them at the review step, or skip tickets entirely.
+- **Acceptance criteria that can't fail.** For each one, name what you'd see if it were false.
+- **Triaging these tickets.** They're agent-ready already.
+- **Treating the spec as a living document.** It's a snapshot. Lasting decisions belong in `GLOSSARY.md` and ADRs.
+
+```site-story
+**The first time, I used plain words.** For v1 I typed `write the spec`. The agent followed my repo's `docs/agents/issue-tracker.md`: a one-page spec in `.scratch/lesson-site/spec.md`, and six tickets, each with a `Status:` (`ready-for-agent`, or `ready-for-human` for logins only I could do), a "Blocked by" line and a "Done when" checklist. It flagged three things it had added that I hadn't decided: length limits on comments, rejecting unknown slugs, and deploying the empty app early. I approved all three. My lesson then: my job isn't writing code. It's writing, or approving, good "Done when" lists, then checking them.
+
+**For the redesign, I used the real Skills:** grilling, then `/to-spec`, then `/to-tickets`, then `/implement-spec`, with no `/clear` in between. The spec followed the template, with 35 user stories and one seam, the Lessons module. The tickets came out as five files: 01 design, then 02 Lesson photos, then 03 home page and 04 the Main flow Lesson side by side, then 05 scroll motion. Ticket 02 even carried the seam into the build: "Build the Lessons module change with `/tdd`."
+
+**My slip.** `/to-spec` stopped to check one design choice, the seam. I typed `/to-tickets` instead of answering, so the spec went in with the agent's best guess.
+
+`/implement-spec` then built the tickets with helper agents, each in its own worktree (a separate checkout of the repo), and every ticket ended with a build note and `Status: resolved`. What I'd do differently: answer the open question before typing the next Skill. It asked for a reason.
+```
+
+## Cheat sheet
+
+| Moment | What to do |
+|---|---|
+| Once per repo | `/setup-matt-pocock-skills` |
+| Grilling done, fits this session | `/implement`, right here |
+| Grilling done, needs several sessions | `/to-spec`, in the same conversation |
+| `/to-spec` asks about seams | Answer first; fewer is better |
+| Spec written | Read the seams and Out of Scope |
+| Next | `/to-tickets`, still the same conversation |
+| Reviewing the breakdown | "What can I demo when this is done?" Merge or split |
+| A wide refactor | Expand, migrate in batches, contract |
+| Tickets published | Now `/clear`; one ticket per fresh session, or `/implement-spec` |
+| Never | `/triage` these tickets |
+
+## Final test
+
+```test scenario-fits-one-session
+You've grilled a change to a recipe site: add a "print this recipe" button. It's all settled, and the session has plenty of room left. What do you type next?
+- [ ] `/to-spec`, then `/to-tickets`, so the work is documented.
+  > That's the road for multi-session builds. Here it's an extra writing step with room for drift, and nothing needs carrying across sessions.
+- [ ] `/clear`, then `/implement` in a fresh session.
+  > Clearing throws away the decisions you just made. Build in this conversation.
+- [x] `/implement`, right here, in the same conversation.
+  > Right. The work fits the room you have, and the decisions are in this conversation. Skip the spec.
+- [ ] `/to-tickets` on its own, to keep each step small.
+  > Splitting a one-session change into tickets only adds fresh-session start-up costs.
+```
+
+```test scenario-wide-rename
+Your team has to rename a field used in about 3,000 places across the code. Any single edit breaks everything that still uses the old name. How should the tickets be shaped?
+- [x] Expand–contract: add the new name, migrate in batches, delete the old.
+  > Right. Each batch keeps the checks green because the old form still exists, and the final ticket removes it once nothing uses it.
+- [ ] One tracer-bullet ticket for each screen that shows the field.
+  > Tracer bullets suit features. A wide refactor breaks thousands of places at once, so no thin slice can land green.
+- [ ] One ticket that renames everything in a single pass.
+  > An edit touching 3,000 places is far beyond one fresh session, and nothing passes until all of it is done.
+- [ ] One ticket per layer, so the database changes first, then the API, then every screen.
+  > Layer slicing doesn't help: the database rename alone breaks every caller above it.
+```
+
+```test scenario-two-agents
+Your tickets: 01 is blocked by nothing; 02 is blocked by 01; 03 is blocked by 01; 04 is blocked by 02 and 03. Ticket 01 is done and you have two agents free. Which tickets can they start?
+- [ ] 02 and 04, since 04 is the biggest.
+  > 04 still waits for 03. Size doesn't matter; only blockers do.
+- [ ] Only 02, because tickets go strictly in number order.
+  > Numbering only puts blockers first. 03's one blocker is done too, so it's ready.
+- [ ] 02, 03 and 04, since 01 was the first ticket.
+  > 04 needs both 02 and 03 finished. It isn't on the frontier yet.
+- [x] 02 and 03, since each one's only blocker is done.
+  > Right. The frontier is every ticket whose blockers are all done. Both depend only on 01; 04 waits for both of them.
+```
+
+```test scenario-too-many-tickets
+`/to-tickets` shows you a numbered breakdown of twelve tickets for what is really a three-line change. What's your best move?
+- [ ] Approve; more, smaller tickets are always safer.
+  > Every ticket costs a fresh session's start-up, and twelve slivers lose the grouping that makes them meaningful.
+- [x] Push back now: merge them, or skip tickets and `/implement`.
+  > Right. The review step is where you fix the size, and a change that fits one session needs no tickets at all.
+- [ ] Approve them, then run `/triage` afterwards to merge the small ones.
+  > Triage sorts raw issues from other people. It isn't for reshaping `/to-tickets` output.
+- [ ] Type `/clear` and run `/to-tickets` again.
+  > Clearing loses the conversation the tickets are cut from, and the next draft may be no better. Push back in the review instead.
+```
+
+```test spot-cleared-before-tickets
+Ana finished grilling and typed `/to-spec`. Then she typed `/clear` "to start the tickets with a clean slate", and finally `/to-tickets` with the spec's path. Spot the mistake.
+- [x] `/clear` came too early: grill, spec and tickets belong in one window.
+  > Right. The tickets lose the reasoning behind the spec, and on a real tracker a big spec can come back cut short. Clear after `/to-tickets`.
+- [ ] `/to-tickets` can't read a spec from a file path, only from the conversation.
+  > It can: give it a path or an issue number and it fetches it. The problem is what clearing threw away.
+- [ ] She should have typed `/to-tickets` before `/to-spec`.
+  > Tickets are cut from the spec, so the spec comes first.
+- [ ] She should have run `/compact` after the grilling as well.
+  > Compacting is for a session nearing the Smart zone. Here the fix is simply not clearing until after `/to-tickets`.
+```
+
+```test spot-seam-skip
+While `/to-spec` was waiting for an answer about which seams to test at, Sam typed `/to-tickets` to keep things moving. Spot the mistake.
+- [ ] Sam should have typed `/clear` between the two Skills.
+  > Clearing before `/to-tickets` breaks the one-window rule. The problem was the unanswered question.
+- [ ] Nothing: the seam question is optional, and seams only matter to experts.
+  > Seams decide where `/tdd` writes tests and what `/code-review` checks against. They're yours to agree.
+- [x] The spec went in with the agent's guess at the seams, not Sam's answer.
+  > Right. The seam check is the one moment `/to-spec` waits for you. Answer it before typing the next Skill.
+- [ ] `/to-tickets` should only ever run in a new session.
+  > It runs in the same conversation as `/to-spec`, so it can see the reasoning behind the spec.
+```
+
+```test spot-horizontal
+Lee approved this breakdown for a booking site: 01 every database table, 02 every API route, 03 every screen. A week later, nobody had seen anything work until ticket 03 landed. Spot the mistake.
+- [ ] Too few tickets: it should have been twelve smaller ones.
+  > More layer tickets would make it worse. The problem is the direction of the cut.
+- [x] Each ticket was one layer, so nothing worked until the last landed.
+  > Right. Horizontal slices push all feedback to the end. A tracer bullet runs through every layer and can be tried on its own.
+- [ ] The tickets needed file paths and line numbers so agents could find the code.
+  > Tickets avoid file paths because they go stale. The cut was the problem.
+- [ ] Ticket 03 should have been blocked by nothing.
+  > Screens with nothing behind them still can't be tried. Changing the edges doesn't fix layer slicing.
+```
+
+```test sequence-multi-session
+You're in a repo, planning a feature that needs several sessions to build. Which order is right?
+- [ ] `/grill-with-docs` → `/clear` → `/to-spec` → `/to-tickets` → `/implement` each ticket
+  > Clearing after grilling empties the conversation `/to-spec` writes from.
+- [ ] `/grill-with-docs` → `/to-tickets` → `/to-spec` → `/clear` → `/implement` each ticket
+  > Tickets are cut from the spec, so the spec has to come first.
+- [ ] `/grill-with-docs` → `/to-spec` → `/clear` → `/to-tickets` → `/implement` all at once
+  > Clearing before `/to-tickets` breaks the one-window rule, and one session building every ticket runs past the Smart zone.
+- [x] `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/clear` → `/implement` per ticket
+  > Right. One window for grilling, spec and tickets; then a fresh session per ticket, clearing in between.
+```
+
+```test why-destination-route
+A teammate asks why `/to-spec` and `/to-tickets` are two Skills instead of one. What's the best answer?
+- [x] The spec records where you're going; tickets are the steps there.
+  > Right. The spec is the destination and the record of why. Each ticket is one fresh session's step, done once it's built.
+- [ ] The spec is for humans to read and approve; tickets are only for agents.
+  > Both are written mostly for agents. The difference is destination versus route.
+- [ ] The spec holds the code; tickets hold the tests.
+  > Neither holds code: both avoid file paths and snippets, apart from a trimmed prototype snippet.
+- [ ] Two small Skills cost fewer tokens than one big Skill.
+  > The split isn't about token cost. They do different jobs.
+```
+
+```sources
+- [to-spec SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [to-tickets SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-tickets/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [setup-matt-pocock-skills SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/SKILL.md) and [issue-tracker-local.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/issue-tracker-local.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md) (the multi-session fork, one unbroken window, don't triage these tickets): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/main/CHANGELOG.md) (1.1.0: to-prd renamed to-spec, to-issues merged into to-tickets; 1.2.0: one file per local ticket): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
+- [The /to-spec Skill](https://www.aihero.dev/skills-to-spec), AI Hero docs, updated 2026-08-24, read 2026-10-23.
+- [The /to-tickets Skill](https://www.aihero.dev/skills-to-tickets), AI Hero docs, read 2026-10-23.
+- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (normally `/implement` 10:58–11:23, `/to-spec` and 46.1k tokens 11:16–11:32, destination and route 11:43–11:56, `/to-tickets` in the same session 12:20–12:25, three slices to one 12:39–12:53, `tickets.md` 12:53–12:57, the 11-ticket spec 13:03–13:44, one ticket per cleared session and review against the spec 13:55–14:48).
+- [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock at AI Engineer, 2026-04-24 (horizontal coding and tracer bullets 41:55–45:09, "too horizontal" 45:21–46:10, a board versus a numbered plan 49:40–51:38).
+- [Building a REAL feature with Claude Code: every step explained](https://www.youtube.com/watch?v=hX7yG1KVYhI), Matt Pocock, 2026-03-18 (modules and tests 26:06–28:53, not reviewing 29:14–29:29 and 30:56–31:07, six tickets to four 29:49–30:56, day shift and night shift 33:44–34:02).
+- [An honest review of Matt Pocock's Skills framework](https://blog.scottlogic.com/2026/10/19/an-honest-review-of-matt-pococks-skills.html), Colin Eberhardt, Scott Logic, 2026-10-19, read 2026-10-23.
+- [to-tickets drops the seam agreement that to-spec just made (#1078)](https://github.com/mattpocock/skills/issues/1078), GitHub issue opened 2026-09-13, read 2026-10-23.
+```
