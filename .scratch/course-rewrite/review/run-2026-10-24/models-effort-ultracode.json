@@ -1,0 +1,453 @@
+{
+ "slug": "models-effort-ultracode",
+ "review": {
+  "acc-skills": [
+   {
+    "severity": "high",
+    "where": "Site story, \"So when I typed `/mattpocock-skills:implement-spec`, the build ran as a workflow I could watch in `/workflows`\" (line 289; also line 291, \"A day later I was the one turning effort down\")",
+    "problem": "The paragraph says implement-spec ran as a dynamic workflow, and that is a claim about how the Skill behaves. The installed Skill describes something else: background implementer sub-agents, each in its own worktree, merged by a merger sub-agent. It never mentions a workflow script or `/workflows`. The repo's own records of that run describe sub-agents and worktrees only. This Lesson's line 160 separates workflows from ordinary sub-agents, and the Implement Lesson's Site story describes the same run without any workflow, so the two Lessons contradict each other. Nothing in the repo holds the other claims in the paragraph either: that ultracode was on, the \"expedite the process by spinning more subagents in the dynamic workflow\" quote, `/effort` set to medium and then low, or Claude Code's \"saved as your default\" replies. Line 291 depends on those effort claims.",
+    "evidence": "~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/implement-spec/SKILL.md:17 (\"Implementer subagents should be run in the background\"), :27 (each ticket in its own worktree on its own branch), :32 (a merger subagent merges the work); the file has no 'workflow' or '/workflows'. `git show d21fc2c:content/lessons/11-main-flow.md` line 110: \"`/implement-spec` | A helper agent per ready ticket, each in its own worktree, all merged into the `main-flow-and-redesign` integration branch\" (no workflow). content/lessons/09-implement.md:291 (Site story): \"Each got its own builder and worktree, and merged into one integration branch\". `git show d21fc2c:content/lessons/10-models-effort-ultracode.md` line 61, unchanged by PR #9 (`git diff 8e2ff32 d21fc2c` on that file only adds image fields): \"The whole site was built on **Opus 5.5** at the session's default effort.\" `git log --all -S\"expedite\"` returns only c1d7896 and 0ecacb3, the WIP and restore commits of this draft. `gh pr view 9 --comments` contains no 'workflow', 'ultracode', 'effort' or 'expedite'. The research note (line 208) marks the author's effort level as \"Uncertain … confirm before stating a level.\" .scratch/main-flow-and-redesign/spec.md:140 backs only the typing of `/implement-spec`.",
+    "fix": "Replace line 289 with what the repo holds, e.g.: \"**The next day I built the redesign and the Main flow Lesson with `/implement-spec`.** It gave each ticket its own builder sub-agent in its own worktree and merged them all into one integration branch (see [Implement](/learn/implement)). That's ordinary sub-agents, not a dynamic workflow; ultracode is a separate setting.\" Then change line 291's \"A day later I was the one turning effort down.\" to something the repo holds, e.g. \"Matt's advice now points lower than either.\" If the author can point to a repo record (a commit, a PR comment or a .scratch note) for ultracode being on or for the effort changes, cite it. Otherwise cut those claims."
+   },
+   {
+    "severity": "high",
+    "where": "Site story, \"My very first message to the agent … carried this request near the end: it should also teach when to use what model for building …\" and \"The agent then suggested a small \\\"Built with: Opus 5.5 · effort high · ultracode off\\\" box\" (lines 280-285)",
+    "problem": "The Site story quotes the author's first message word for word and says the agent proposed a box with exact contents. No commit, PR body, PR comment or .scratch note holds either one. The repo records three things only: the Lesson was planned, a per-Lesson model/effort box was ruled out, and `/effort` was opened and then cancelled. It doesn't say who proposed the box, what it said, or that the `/effort` look happened during that grilling. This is a Site story claim the repo doesn't hold.",
+    "evidence": "`git log --all -S\"when to use what model\"` returns only c1d7896 and 0ecacb3, the WIP and restore commits of this draft. `grep -rn \"ultra code\"` over the repo finds only content/lessons/19-models-effort-ultracode.md:283. PR bodies and comments for #1–#12 contain neither phrase. What the repo does hold: .scratch/lesson-site/spec.md:17 lists \"Models, effort & ultracode\" among the 11 Lessons; .scratch/lesson-site/spec.md:58 rules out \"a per-Lesson \\\"built with\\\" box\"; `git show d21fc2c:content/lessons/01-grilling.md` line 46 reads \"Model/effort box on every lesson | No | Writing it down doesn't teach it. Lesson 10 does.\"; `git show d21fc2c:content/lessons/10-models-effort-ultracode.md` line 57 reads \"/effort (opened it, then cancelled: I was just looking)\".",
+    "fix": "Rewrite lines 280-285 from repo facts, e.g.: \"This Lesson was in the plan from the start: the site's first spec lists \\\"Models, effort & ultracode\\\" as the last of 11 Lessons. In grilling we also weighed a small model-and-effort box on every Lesson, and I said no: writing it down doesn't teach it, so one Lesson about the dials would do. Around then I opened `/effort`, looked at the slider, and cancelled.\""
+   },
+   {
+    "severity": "low",
+    "where": "Final test spot-ultra-names, feedback on option c: \"Matt's Skill reviews a change against standards and a spec. It isn't a way to run many agents on an audit.\" (line 404)",
+    "problem": "Matt's code-review Skill does run several agents: two parallel sub-agents. Readers who took that in from the Code review Lesson may find \"isn't a way to run many agents\" confusing. The real difference is scope: the Skill reviews only the diff since a fixed point, so it can't audit a whole codebase.",
+    "evidence": "~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/code-review/SKILL.md:6 (\"Two-axis review of the diff between `HEAD` and a fixed point\") and :11 (\"Both axes run as **parallel sub-agents**\").",
+    "fix": "\"Matt's Skill reviews the diff since a fixed point against your standards and the spec, with two sub-agents. It can't run an audit across the whole codebase.\""
+   },
+   {
+    "severity": "low",
+    "where": "Models section, \"Matt's rule of thumb: grilling … deserves the strongest model\" (line 54) and \"Matt adds the flip side: ==better information lowers the effort you need==\" (line 122)",
+    "problem": "Both claims rest only on videos. The installed 1.3.1 Skill docs say the same thing directly, and those docs are the course's highest-trust source. The Lesson doesn't use them, and the sources list leaves them out.",
+    "evidence": "~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/docs/productivity/grilling.md:61: weaker, faster, lower-effort or non-frontier models tend to skip grilling's confirmation gate, cutting the interview to a couple of questions and an outline. ~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/docs/engineering/implement.md:71: when a ticket runs over its token budget, split it rather than raise the effort level.",
+    "fix": "After line 54, add a sentence in your own words, e.g.: \"The grilling Skill's own docs agree: on weaker or lower-effort models, the interview tends to shrink to a couple of questions before the agent starts building.\" After line 122, add: \"The implement docs say the same: if a ticket keeps running long, split it instead of raising effort.\" Add both docs pages, pinned to commit 49dd158, to the sources list."
+   }
+  ],
+  "quiz": [
+   {
+    "severity": "high",
+    "where": "## Model or effort? Reading a bad result, checkpoint diagnose-ceiling, option \"Turn on fast mode so the retries come back quicker.\" (lines 147, 152-153)",
+    "problem": "The question says you're on Sonnet. The Lesson's own fast-mode section says turning fast mode on from another model switches you to Opus. So this \"wrong\" option ends up doing what the key asks for: a bigger model. A sharp reader can defend it. Its feedback, \"it changes speed, not capability\", is also false when you start on Sonnet.",
+    "evidence": "Lesson line 197: \"turning it on from another model switches you to Opus\". https://code.claude.com/docs/en/fast-mode (\"Toggle fast mode\"): \"If your current model doesn't support fast mode, Claude Code switches to Opus\". The feedback at line 153: \"Fast mode only works on Opus, and it changes speed, not capability.\"",
+    "fix": "Replace the option with one that tests the fix-the-task branch:\n- [ ] Reword the prompt and send it again on Sonnet.\n  > The task wasn't the problem: it had the right files and did the work. Rewording won't raise Sonnet's ceiling."
+   },
+   {
+    "severity": "medium",
+    "where": "## Final test, sequence-reading-a-miss, \"Which order of fixes is right?\" (lines 409-419)",
+    "problem": "Two of the feedback lines rest on a cost ranking the Lesson never teaches: (a) \"it's the priciest change, so it comes last\" and (d) \"a cheaper effort change comes before a bigger model\". The cited Anthropic guide doesn't rank them that way, and says a larger model can lower total cost on hard multi-step tasks. The question also asks for an \"order of fixes\", but you don't try fixes one after another. You ask diagnostic questions in order. And it repeats the flow Scene almost word for word, so it tests recall, not transfer.",
+    "evidence": "https://claude.com/blog/claude-model-and-effort-level-in-claude-code (2026-07-07): check your context first, then ask whether Claude \"did not try hard enough, or did it not know enough?\". It never says effort is cheaper, and it notes larger models cost more per token but can lower total cost on hard tasks. Lesson flow Scene, lines 124-144.",
+    "fix": "```test sequence-reading-a-miss\nClaude's fix to a book club's RSVP form came back wrong. Before you touch a dial, you ask three questions in turn. Which order lets each answer point to the right fix?\n- [ ] Did it try hard enough? → Was the task clear? → Is the model capable enough?\n  > If the task was vague, more effort just digs harder in the wrong place. Check the task first.\n- [ ] Is the model capable enough? → Did it try hard enough? → Was the task clear?\n  > You can't call it the model's ceiling until you know it had what it needed and did the work.\n- [x] Was the task clear? → Did it try hard enough? → Is the model capable enough?\n  > Right. Fix a vague task first, then check it did the work. Only a clear task, fully worked and still wrong, points to a bigger model.\n- [ ] Was the task clear? → Is the model capable enough? → Did it try hard enough?\n  > You only reach the model's ceiling once you know it did the work. A skipped file or test points to effort first.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "## Effort: how much work each turn gets, checkpoint effort-low-means, right option \"A first version sooner, with less checking and more questions to you.\" (line 104; same claim in the body at line 68: \"Claude would rather ask you than dig on its own\")",
+    "problem": "The answer key says low effort means \"more questions to you\". Neither cited source says that. The docs say a lower level returns a starting point sooner, for you to steer, and that a higher level makes more choices on its own. That means fewer assumptions made for you, not more questions asked.",
+    "evidence": "https://code.claude.com/docs/en/model-config (\"Choose an effort level\"): at a higher level Claude \"made more choices on its own\"; at a lower level it \"returned a starting point sooner\" for work where you \"steer the next step\". Thariq's post (https://claude.dev/blog/spending-your-effort/): higher effort means Claude will \"make more assumptions on my behalf\". It doesn't say low effort asks more.",
+    "fix": "Option: \"- [x] A first version sooner, with less checking and fewer choices made for you.\" Feedback: \"> Right. Low effort reads and verifies less and hands back a starting point sooner, so you steer the next step.\" Line 68: change \"and Claude would rather ask you than dig on its own\" to \"for you to steer\"."
+   },
+   {
+    "severity": "medium",
+    "where": "## Final test, spot-ultra-names, \"Sam wants a big audit done by many agents, so he types `/code-review ultra`.\" (lines 397-407)",
+    "problem": "The premise is ambiguous. `/code-review ultra` really is \"done by many agents\": the Lesson calls it a fleet of reviewer agents. If Sam's audit is a bug audit of his branch, nothing went wrong. Yet option a, which starts \"Nothing;\", is marked wrong. The prompt never says Sam wanted ultracode or a whole-codebase job. The right option also echoes the prompt: \"cloud review\" in the prompt, \"cloud bug review\" in the answer.",
+    "evidence": "Lesson line 201: \"a fleet of reviewer agents hunts for bugs\". https://code.claude.com/docs/en/ultrareview: \"Without arguments, ultrareview reviews the diff between your current branch and the default branch\". The prompt (line 398) says \"confirm a cloud review\"; the right option (line 405) says \"He launched a cloud bug review\".",
+    "fix": "Make the task one that `/code-review ultra` can't do. Prompt: \"Sam wants many agents to check every page of his recipe site for missing image descriptions, so he types `/code-review ultra`. A dialog asks him to confirm and shows his free runs. What went wrong?\" Right option: \"- [x] He started a review of his branch, not a workflow.\" Feedback: \"> Right. `/code-review ultra` reviews what changed on his branch, in the cloud, and can cost credits. For a site-wide sweep, put `ultracode` in the prompt.\" If you take the goal-4 replacement below instead, drop this question."
+   },
+   {
+    "severity": "medium",
+    "where": "## Final test, spot-max-everywhere, \"Jo sets effort to max in every session \"because this project matters\".\" (lines 373-383)",
+    "problem": "Three problems. (1) The prompt reuses the Why it matters example almost word for word, so it tests recall, not transfer. (2) All three wrong options are phrased \"...should have...\" and the right one isn't. (3) Two distractors are absolutes nobody believes after reading the Lesson: \"`xhigh`, which is always better than max\" and \"effort only matters on big models\".",
+    "evidence": "Line 24: \"the highest effort \"because the project matters\". ... the weekly limit runs out by Wednesday ... changes things nobody asked for\". Line 374: \"\"because this project matters\" ... the weekly limit runs out early ... extra changes nobody asked for\". Options at lines 375, 377, 381 all use \"should have\"; the right option at line 379 doesn't.",
+    "fix": "```test spot-max-everywhere\nDev runs every book-club site task at max: renaming a variable, fixing a typo, reading the README. Each takes minutes, the weekly limit is gone by Thursday, and a typo fix arrives with two \"improvements\" nobody asked for. Spot the mistake.\n- [ ] Dev left fast mode off, so max had no chance to be quick.\n  > Fast mode would make it faster and pricier. The work would still be overthought.\n- [ ] Dev picked max when `xhigh` is the strongest level.\n  > `max` is the deepest level; `xhigh` sits below it. Both are far more than routine edits need.\n- [x] Dev gave routine edits the deepest level, so it overthought them.\n  > Right. Start at the default (medium on the 5.5 models) and raise effort only for the genuinely hard part.\n- [ ] Dev stayed on Opus, when Haiku at max would have been quick and cheap.\n  > A smaller model at max still overthinks routine edits. The level is the problem.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "## Final test, scenario-grill-then-build, right option \"Your strongest model to grill, and a cheaper one to build.\" (lines 313-323)",
+    "problem": "Wording tells. Each wrong option carries a \"since/because\" justification (\"since it's only conversation\", \"because the strongest model can never be the wrong choice\", \"since models only differ in speed\"). The right one has none. Two of those justifications are absolutes that are easy to rule out. The right option also echoes the bold lead-in at line 210. And \"Your strongest model\" clashes with the Cheat sheet's \"Your strongest everyday model\" for grilling (line 300), because the Lesson calls Fable the top model (`best`).",
+    "evidence": "Line 210: \"**A big model to grill, a cheaper one to build.**\" Line 300: \"Grilling, review, a strange bug | Your strongest everyday model\". Line 48: `best` means \"Fable where your account has it\".",
+    "fix": "Options:\n- [ ] A small, fast model to grill, and your strongest one for the tickets.\n  > Backwards. Grilling leans on what the model learned in training to raise things you missed, so it gets the stronger model.\n- [ ] `fable` for both, so neither step is short of brainpower.\n  > Fable costs the most and may bill usage credits. Building from clear tickets doesn't need it.\n- [x] A strong everyday model to grill, and a cheaper one to build.\n  > Right. Grilling relies on the model's own knowledge; building from a clear ticket mostly uses what's already in context.\n- [ ] One mid-sized model for both, so the two steps stay consistent.\n  > The steps lean on different things: grilling on the model's own knowledge, building on the ticket."
+   },
+   {
+    "severity": "medium",
+    "where": "## Final test, predict-ultrathink, right option \"Medium, as before.\" (lines 421-431)",
+    "problem": "Wording tell. The right option is the only bare one. Every wrong option carries a reason clause (\"because ultrathink raised...\", \"until you type...\", \"whether you also wrote...\"). A test-wise reader can pick the plain, shortest option. Distractor d (\"think hard\") is weak.",
+    "evidence": "Lesson lines 423, 425, 427, 429.",
+    "fix": "Give all four options the same shape:\n- [x] Medium, because `ultrathink` only affects the prompt it's in.\n- [ ] High, because `ultrathink` raises your level by one step.\n- [ ] Max, because `ultrathink` sets max until you run `/effort auto`.\n- [ ] `xhigh`, because `ultrathink` is a shortcut for `/effort xhigh`.\n  > It isn't a level at all: it adds an instruction for that one turn, and the effort sent stays the same.\n(If you take the goal-1 replacement below, this question goes away.)"
+   },
+   {
+    "severity": "medium",
+    "where": "goals, \"switch with `/model`, either as your new default or for one session only\" (line 14), and \"set effort with `/effort`\" (line 15)",
+    "problem": "No Final test question checks saved vs session-only switching (Enter or typing the name, versus `s`) for `/model` or `/effort`. Only the Checkpoint model-saves-default does, and Checkpoints don't count towards passing. The goal names this skill explicitly.",
+    "evidence": "Final test ids at lines 313-421: none asks about `s`, Enter or a saved default. The only mention is predict-ultrathink's distractor about `/effort auto`. Docs (https://code.claude.com/docs/en/model-config, \"Setting your model\"): \"Typing `/model <name>` directly behaves like `Enter`\"; `s` switches \"for this session only\".",
+    "fix": "Replace predict-ultrathink (ultrathink is still checked by diagnose-ceiling's option b and Common mistakes) with:\n```test predict-session-only\nYou're on Opus 5.5 at medium with nothing saved. For one tricky afternoon you open `/model`, highlight Fable and press `s`. What does tomorrow's new session start on?\n- [ ] Fable, because every pick in the `/model` picker is saved.\n  > Enter saves your pick, and so does typing `/model fable`. `s` keeps it to this session.\n- [x] Opus 5.5, because `s` left your saved default alone.\n  > Right. `s` switches for this session only, so tomorrow starts on your default again.\n- [ ] Sonnet 5.5, because session-only picks fall back to the everyday model.\n  > Nothing falls back to Sonnet. A new session starts on your saved default, Opus 5.5 here.\n- [ ] Fable, as long as you still have usage credits.\n  > Credits decide whether Fable bills extra, not whether it's saved. `s` didn't save it.\n```"
+   },
+   {
+    "severity": "medium",
+    "where": "goals, \"decide when fast mode and `/code-review ultra` are worth paying for\" (line 17)",
+    "problem": "No Final test question asks whether either paid option is worth its price. scenario-live-debug assumes you already want fast mode and asks only when to switch it on. spot-ultra-names and the other distractors test only the ultra/ultracode name mix-up. The 'when it's worth it' half of the goal goes unchecked.",
+    "evidence": "scenario-live-debug (line 362): \"You have usage credits and want faster answers. When do you turn on `/fast`?\". spot-ultra-names (lines 397-407) is about the name clash. Cheat sheet lines 308-309 teach the worth-it rule, but no question checks it.",
+    "fix": "Replace spot-ultra-names (the spot- count stays at 2: max-everywhere and ultracode-left-on) with:\n```test scenario-worth-paying\nThis week Claude will run a two-hour refactor overnight while you sleep, and on Friday you'll merge a risky change to how the site stores Comments. You have usage credits. Where is paying extra worth it?\n- [ ] Fast mode for the overnight refactor, so it's done sooner.\n  > Nobody is waiting on those replies, so you'd pay more per token for speed you never use.\n- [ ] Fast mode while you write the Comments change, switched on halfway.\n  > Halfway is when the one-time charge is biggest, and speed doesn't make a risky change safer.\n- [ ] `/code-review ultra` every morning on whatever changed overnight.\n  > After the free runs each review costs roughly $5–$25. Save it for the change that's risky to merge.\n- [x] `/code-review ultra` on the Comments change before Friday's merge.\n  > Right. A cloud review that verifies every finding earns its price before a risky merge. Fast mode pays off only when you wait on every reply.\n```\nWith both replacements, right answers fall a2 b3 c3 d2."
+   },
+   {
+    "severity": "low",
+    "where": "## Final test, scenario-skipped-tests, \"never opened the API route that also checks the length\" (line 338)",
+    "problem": "This detail sits on the line the Lesson draws between \"the key file never came up\" (fix the task, line 120) and \"skipped a file\" (raise effort, line 119). sequence-reading-a-miss tells readers to check the task first, so a careful reader may hesitate. The key still holds, because \"fix the task\" isn't offered. Distractor d (\"follows short instructions more literally\") isn't a real misconception.",
+    "evidence": "Lines 119-120 and 338.",
+    "fix": "Prompt: \"...never opened the API route your prompt named, and didn't run the tests.\" Option d: \"- [ ] Switch to `opusplan`, so Opus plans the fix first.\" Feedback: \"> Planning on Opus doesn't make the build step read or check more. The problem was effort.\""
+   },
+   {
+    "severity": "low",
+    "where": "Fast mode used as a filler distractor (lines 152, 333, 343, 355, 375)",
+    "problem": "Fast mode is a wrong option in five questions about things it has nothing to do with: a model ceiling, an outage, skipped tests, workflows, and max effort. Readers learn to throw it out on sight, so it stops working as a distractor.",
+    "evidence": "diagnose-ceiling c, scenario-outage-hunt d, scenario-skipped-tests c, scenario-migration-day c, spot-max-everywhere a.",
+    "fix": "Keep fast mode in the live-debug and worth-paying questions. Elsewhere swap it for real misconceptions: \"Reword the prompt\" (diagnose-ceiling), `opusplan` (skipped-tests), \"Start the first prompt with `ultracode`\" (migration-day; see the next item)."
+   },
+   {
+    "severity": "low",
+    "where": "## Ultracode, checkpoint ultracode-one-task (lines 183-193) vs Final test scenario-migration-day (lines 349-359)",
+    "problem": "These two mirror each other. They share three of four options (`/effort max`, `/effort ultracode`, `/code-review ultra`). The Checkpoint's feedback on `/effort ultracode` (\"it changes the session: Claude keeps planning workflows for later tasks\") hands over the Final test answer.",
+    "evidence": "Lines 185-191 and 351-357.",
+    "fix": "Change scenario-migration-day's distractors to \"- [ ] Start the first prompt with `ultracode`.\" (feedback: \"The keyword opts in that one task; the rest of the day runs turn by turn.\"), plus `claude --effort xhigh`, alongside `/effort max`."
+   },
+   {
+    "severity": "low",
+    "where": "## Final test, scenario-outage-hunt, right option \"`fable`, picked on purpose.\" (line 327)",
+    "problem": "The right option copies the Cheat sheet row word for word (line 301), and the prompt echoes Fable's alias row (\"root-cause hunts, outages\", hours-long). The Cheat sheet's \"a strange bug → Your strongest everyday model\" (line 300) also gives a reader grounds to argue for Opus.",
+    "evidence": "Line 301: \"`fable`, picked on purpose\". Line 46: \"root-cause hunts, outages, architecture\". Line 300.",
+    "fix": "Make the option just \"`fable`\". Reword the Cheat sheet's line 300 situation to \"Grilling, review, a subtle bug\", so an hours-long unknown outage clearly belongs to the Fable row."
+   },
+   {
+    "severity": "low",
+    "where": "## Models, checkpoint model-saves-default (lines 56-64)",
+    "problem": "It has only three options, and \"Whichever model Claude judges best\" is weak. The right option echoes the prompt (\"you type\" becomes \"typing the name\") and the highlighted line 52.",
+    "evidence": "Lines 57, 60, 62. Line 52: \"==`/model` saves your choice as the default for new sessions==\".",
+    "fix": "Add a fourth real misconception, for example \"- [ ] Opus 5.5, because quitting with `/exit` resets the model.\" Feedback: \"> Quitting doesn't touch your saved default. Only `s` in the picker keeps a switch to one session.\""
+   },
+   {
+    "severity": "low",
+    "where": "## Model or effort?, checkpoint diagnose-ceiling, feedback \"That's a one-turn effort boost\" (line 151)",
+    "problem": "The docs say `ultrathink` leaves the effort level sent to the API unchanged and adds an instruction. predict-ultrathink's feedback (line 426) says it \"adds an instruction for that turn only\". So this feedback contradicts the docs and the Lesson's own later feedback.",
+    "evidence": "https://code.claude.com/docs/en/model-config (\"Use ultrathink\"): \"adds an in-context instruction. The effort level sent to the API is unchanged.\"",
+    "fix": "\"> That asks for deeper reasoning on one turn. It helps with skipped steps, not with a ceiling.\""
+   }
+  ],
+  "reader": [
+   {
+    "severity": "high",
+    "where": "site-story box, lines 280-291: \"carried this request near the end\" (282-283), \"The agent then suggested a small 'Built with: Opus 5.5 · effort high · ultracode off' box\" (285), \"The next day ... ultracode was on ... ran as a workflow I could watch in /workflows ... 'expedite the process by spinning more subagents' ... set /effort to medium ... dropped it to low\" (289), \"A day later I was the one turning effort down\" (291)",
+    "problem": "Most of the Site story comes only from a session log. Nothing in the repo holds the verbatim first-message quote, the agent's exact 'Built with' suggestion or the author's reason for refusing it, the claim that ultracode was on and /implement-spec ran as a workflow watched in /workflows, the 'expedite' prompt, or the effort changes to medium and then low with Claude Code's 'saved' reply.",
+    "evidence": "`git log --all --oneline -S \"expedite the process\"` (and the same for \"ultra code be used\", \"Built with:\", \"Quick, straightforward implementation\") returns only c1d7896 (WIP snapshot) and 0ecacb3 (restore). Both commits touch this Lesson draft only. The PR #9 body (`gh pr view 9 --json body`) says only: \"/implement-spec, with 5 tickets on parallel worktrees and /code-review on both axes plus a fix-up\". It has no ultracode, workflow or effort. `git show d21fc2c:content/lessons/10-models-effort-ultracode.md` holds only these facts: /effort opened then cancelled; /code-review max in the background; \"built on Opus 5.5 at the session's default effort\"; a table with grilling 'opus high' and final review 'opus max'; \"higher isn't always better ... Match the dial to how hard the problem is\". `.scratch/lesson-site/spec.md:17` lists the Lesson in v1, and :58 lists \"a per-Lesson 'built with' box\" as out of scope. implement-spec/SKILL.md:17-34 describes implementer subagents, not workflows.",
+    "fix": "Rewrite from repo facts only. For example: \"This Lesson was on the list from the start: the first spec for this site names 'Models, effort & ultracode' as the last of its 11 Lessons, and rules out a per-Lesson 'built with' box. One Lesson about the dials would do. While building that first version I opened `/effort`, looked at the slider, and cancelled. **The whole first build ran on Opus 5.5 at the session's default effort,** and the commits credit Claude Opus 5.5 as co-author. For review I ran Claude Code's Built-in `/code-review max` in the background, and separately Matt's `/mattpocock-skills:code-review` over everything since the first commit: two different things that share a short name. The next day's redesign and the Main flow Lesson went through `/mattpocock-skills:implement-spec`, with five tickets on parallel worktrees. My first version of this Lesson had a rule-of-thumb table that put grilling on high and the final review on max. The line I wrote under it still holds: higher isn't always better, so match the dial to how hard the problem is.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Model or effort? Reading a bad result: flow Scene caption, line 134: \"A vague request or a file it never opened is a problem with the task.\"",
+    "problem": "The Scene contradicts the prose and the Final test. The caption files 'a file it never opened' under 'fix the task'. Line 119 files 'It skipped a file' under 'Raise effort', and scenario-skipped-tests (line 338, \"never opened the API route that also checks the length\") marks raise effort as the right answer. A reader who follows the flow's first question would call that case a task problem.",
+    "evidence": "Line 119: \"It skipped a file, didn't run the tests or gave up halfway. It didn't do the work. Raise effort.\" Line 134 caption as quoted. Line 341: the right answer is \"Raise effort to medium or high.\" The Anthropic blog (https://claude.com/blog/claude-model-and-effort-level-in-claude-code, 2026-07-07) says to pick a higher effort level \"if Claude got it wrong by skipping a file\".",
+    "fix": "Line 134: \"# First: did it have the context? A vague request, or a key fact nobody gave it and it couldn't find, is a problem with the task.\" Line 120: \"**The request was vague, or it lacked a fact it couldn't have found.**\" Line 119: \"**It skipped a file it could have found, didn't run the tests or gave up halfway.**\""
+   },
+   {
+    "severity": "medium",
+    "where": "Model or effort? Reading a bad result, bullets at lines 118-120",
+    "problem": "The prose lists the three causes as model ceiling, then effort, then task. That is exactly the wrong option a of sequence-reading-a-miss (line 411, \"bigger model → more effort → fix the task\"). Only the flow Scene's captions say which to check first, so a reader who studied the prose is steered to the wrong answer.",
+    "evidence": "Lines 118-120 run in the order model, effort, task. Line 411 has the same order as a wrong option. Lines 134 and 138 (\"First:\", \"Second:\") are the only places that give the order.",
+    "fix": "Reorder the bullets and say they are an order: \"Ask three questions, in this order: - **Was the request vague, or did it lack a fact it couldn't find?** No dial fixes that. Fix the task: ... - **Did it skip a file, skip the tests or stop halfway?** It didn't do the work. Raise effort. - **It had what it needed, clearly tried, and was still wrong.** That's the model's ceiling. Pick a bigger model.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, steps 4-5 (lines 235-241) and the checklist at line 260: \"The low answer came back sooner and shorter than the high one.\"",
+    "problem": "The exercise may not show what the checklist promises, and the checklist contradicts the Lesson. The prompt caps the answer at five bullets, the empty 'dials' folder has no files to read or tests to run, and the second run sees the first answer in the same conversation. So 'shorter' may never happen, and the time gap may be small. The Lesson itself teaches (line 107) that effort is not about reply length.",
+    "evidence": "Line 238: \"In five bullets, plan a one-page site for a book club. Don't create any files.\" Line 241: \"send the same prompt. Compare the two answers.\" Line 107, Checkpoint feedback: \"Effort changes how much work it does, not just how long the reply is.\" Line 68 defines effort by files read and tests run, and neither exists in this folder.",
+    "fix": "Line 260: \"- [ ] The high run spent longer before answering. On a prompt this small the gap can be slight; effort shows most on work that reads files and runs tests.\" Step 5: \"... send the same prompt. Claude can see its first answer, so look at how long it worked rather than how long the reply is.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, step 3, line 234: \"Type `/effort`. Look at the levels and the Ultracode toggle\"",
+    "problem": "On a Pro plan the Ultracode toggle isn't there at step 3. Workflows start off on Pro, and the toggle is removed while they are off. The Lesson only tells Pro users to turn them on at step 7, so a Pro reader at step 3 can't find what they're told to look at.",
+    "evidence": "https://code.claude.com/docs/en/workflows: \"On Pro, turn them on from the Dynamic workflows row in /config.\" The same page, under 'When workflows are disabled': \"the Ultracode toggle is removed from /effort\". Lesson line 167: \"If the Ultracode toggle is missing, workflows are off\". Line 248: \"On a Pro plan, first turn on Dynamic workflows in `/config`.\"",
+    "fix": "Step 3: \"Type `/effort`. Look at the levels and, if you see it, the Ultracode toggle (on a Pro plan it appears only after the `/config` change in step 7). Move to `low` with the arrow keys and press `s` (this session only).\""
+   },
+   {
+    "severity": "medium",
+    "where": "Models: which brain answers, line 54: \"Building from a clear ticket mostly follows what's already in front of the agent\"",
+    "problem": "'Ticket' is never explained, yet it is the hinge of Matt's rule and recurs at line 122 (\"a well-grilled ticket\") and in scenario-grill-then-build (lines 314-320). A Visitor who has never used a coding agent doesn't know what a ticket is.",
+    "evidence": "`grep -n -i ticket` finds lines 54, 122, 314, 315, 318 and 320, and none of them defines the word. The writing guide's 'Lessons from the pilot review' requires ticket to be defined at first use.",
+    "fix": "Line 54: \"Building from a clear ticket (a short written description of one small piece of work, usually cut from a bigger plan) mostly follows what's already in front of the agent\""
+   },
+   {
+    "severity": "medium",
+    "where": "How Matt and others use it, line 217: \"has Claude interview him about a spec\"",
+    "problem": "'Spec' is used without explanation, here and again in spot-ultra-names (line 404, \"against standards and a spec\").",
+    "evidence": "`grep -n -i spec` finds lines 217, 289 and 404, with no definition. The writing guide requires spec to be defined at first use.",
+    "fix": "Line 217: \"has Claude interview him about a spec (a written plan of what to build)\""
+   },
+   {
+    "severity": "medium",
+    "where": "Ultracode: many agents instead of one, line 167: \"and in auto mode the approval before the first run\"; chat Scene caption, line 175: \"(in auto mode, only before your first workflow ever)\"",
+    "problem": "'Auto mode' is used twice and never explained. New sessions start in it, so the reader is in auto mode without knowing it and can't tell which approval behaviour applies to them.",
+    "evidence": "`grep -n -i \"auto mode\"` finds only lines 167 and 175. The writing guide's course facts: \"new sessions start in **auto** mode\". The workflows docs: in Auto mode the approval prompt shows on \"First launch only ... Skipped entirely when ultracode is on\".",
+    "fix": "Line 167: \"... and, in auto mode (the permission mode new sessions start in, where a safety check approves most actions for you), the approval before the first run.\""
+   },
+   {
+    "severity": "medium",
+    "where": "goals, line 14: \"switch with `/model`, either as your new default or for one session only\"; line 17: \"when ... `/code-review ultra` [is] worth paying for\"; Final test, lines 313-431",
+    "problem": "No Final test question checks whether `/model` saves a default or switches for one session only. Only the Checkpoint `model-saves-default` does, and Checkpoints don't count. Goal 4's 'when /code-review ultra is worth paying for' is also unchecked: spot-ultra-names only tests that it isn't ultracode.",
+    "evidence": "The ten Final test ids are scenario-grill-then-build, scenario-outage-hunt, scenario-skipped-tests, scenario-migration-day, scenario-live-debug, spot-max-everywhere, spot-ultracode-left-on, spot-ultra-names, sequence-reading-a-miss and predict-ultrathink. None mentions `/model`, `s` or a saved default. The writing guide: \"Every goal gets at least one Final test question\".",
+    "fix": "Add, for example: ```test scenario-sonnet-for-today``` \"Today is all small CSS fixes, so you want Sonnet for this session, and Opus again tomorrow without thinking about it. What do you do?\" Options: \"Type `/model sonnet`, which lasts only until you quit.\" / \"[x] Open `/model` and press `s` on the Sonnet row.\" / \"Type `/effort low`, which moves you to a smaller model.\" / \"Type `/model default`, then `/model sonnet`.\" Each needs feedback. For goal 4, either add a question on when ultrareview pays off (before merging a substantial change) or narrow the goal to \"tell `/code-review ultra` apart from ultracode\"."
+   },
+   {
+    "severity": "medium",
+    "where": "Ultracode section, line 167: \"Watch any run with `/workflows` ... press `x` there to stop it\"; Try it step 7, line 248: \"open `/workflows` to watch, and press `x` there if it grows\"",
+    "problem": "In the progress view, x stops only the selected agent unless the run itself has focus. A reader who follows the instruction may stop one agent (which counts as a failure) and leave the run spending tokens. 'If it grows' is also vague for a newcomer.",
+    "evidence": "https://code.claude.com/docs/en/workflows key table: \"`x` | Stop the selected agent, or stop the whole workflow when focus is on the run\". The same page: \"To stop a running workflow from the list without opening it, select it and press `x`.\" Also: \"When the session has only one run, `/workflows` skips the list and opens that run.\"",
+    "fix": "Line 167: \"... `/workflows` shows each agent's tokens. To stop the whole run, press Esc until the run itself is selected, then `x` (with one agent selected, `x` stops only that agent).\" Step 7: \"... and stop the whole run the same way if its token count climbs past what you'd spend.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Effort section, terminal Scene caption, line 89: \"This is Claude Code's real reply.\"",
+    "problem": "The Scene presents its output line as Claude Code's real reply, but neither the docs nor the repo holds that text. The only source is the session log behind this draft, and the Scene is labelled illustrative anyway.",
+    "evidence": "`git log --all --oneline -S \"Quick, straightforward implementation\"` returns only c1d7896 and 0ecacb3, both this Lesson draft. https://code.claude.com/docs/en/model-config says only that a level typed after /effort will \"save the level as your default and apply it in later sessions\", and gives no reply text.",
+    "fix": "Line 89: \"# Typing a level by name sets it and saves it as your default for new sessions too.\" Keep the output line as illustrative, or shorten it to \"Effort set to low (saved as your default)\"."
+   },
+   {
+    "severity": "medium",
+    "where": "How Matt and others use it, line 207: \"In an October 2026 interview with Nate Herk, he said he runs Opus 5.5 on medium, is thinking about low, and that most people use far too much effort.\"",
+    "problem": "The claim is attributed to a source the repo can't back. The repo records only that the interview's description mentions medium, and it flags even that as unverified. 'Thinking about low' and 'far too much effort' come from the 'STILL TOO HIGH' short, which the Lesson credits with merely repeating the message.",
+    "evidence": ".scratch/course-rewrite/research/_cross-lesson.md:99: \"Nate Herk's podcast description ... says Matt runs Opus 5.5 on medium effort. Not verified from the audio.\" Research note, lines 140-144: the M8 short (2026-10-13) holds \"Even high is overkill\" and \"He runs Opus 5.5 on medium and is considering low.\" Line 443 cites the interview at 32:03-32:30, which no note covers.",
+    "fix": "\"**Medium effort, maybe lower.** In an October 2026 short he said he runs Opus 5.5 on medium, is weighing low, and that even high is more than most coding needs. The same day, he put 'Your effort level is too high' at the top of a list of common mistakes on X.\" Cite the short (JgEsphDAXnY) for this, and drop the interview or cite it only for its description."
+   },
+   {
+    "severity": "medium",
+    "where": "How Matt and others use it, line 208: \"His advice: \"just try a lower effort level. You'll be surprised by what you get.\"\"",
+    "problem": "The words are quoted directly, but no text source on this machine backs them. The research note covers only 0:00-0:36 of that short, yet the Lesson quotes 1:12-1:17 and cites 0:38-1:05 for the surrounding claims.",
+    "evidence": "Research note line 16: M9 \"Page transcript excerpt 0:00–0:36 (not a Firecrawl transcript)\", and lines 145-147 summarise only 0:00-0:36. Sources, line 440: \"start low and climb, 0:57–1:05; benchmarks keep tasks fixed, 0:38–0:56; quote at 1:12–1:17\". `grep -rn \"surprised by what you get\" .scratch docs` finds nothing.",
+    "fix": "Paraphrase until a transcript is saved: \"His advice was simply to try a lower level and see what comes back.\" Limit the cited timestamps to 0:00-0:36, or re-verify against a transcript and save it under .scratch."
+   },
+   {
+    "severity": "medium",
+    "where": "How Matt and others use it, line 211: \"In his July 2026 walkthrough he was on Opus 4.8 at medium effort, and told viewers they don't need to copy his setup.\"",
+    "problem": "The claim is pinned to M6mYodf0dJM at 9:03-9:14, a video whose transcript isn't on this machine. The repo's research places 'Opus 4.8 at medium' in a different video, Matt's June 2026 /teach demo, and has nothing for 'don't need to copy his setup'.",
+    "evidence": ".scratch/course-rewrite/research/start-here.md:109: \"He used Opus 4.8 at medium effort for the demo (S6 6:41)\". S6 is \"Learn anything with the /teach skill\", https://www.youtube.com/watch?v=s5T5oQJcJ6U, 2026-06-08. _cross-lesson.md:183 says the same for the teach demo. S7 (M6mYodf0dJM) in start-here.md:14 lists timestamps only up to 7:40. The task brief says M6mYodf0dJM's transcript is not on this machine.",
+    "fix": "\"**No fixed recipe.** In his June 2026 /teach demo he ran Opus 4.8 at medium effort.\" Change source line 447 to the /teach video (s5T5oQJcJ6U, 2026-06-08, 6:41) and drop the 'copy his setup' clause unless a text source backs it."
+   },
+   {
+    "severity": "medium",
+    "where": "Final test spot-ultra-names, line 398: \"A dialog asks him to confirm a cloud review and shows his free runs.\"",
+    "problem": "The stem gives the answer away. It already says the dialog is a 'cloud review', and the right option (line 405) is \"He launched a cloud bug review, which isn't ultracode.\"",
+    "evidence": "Lines 398 and 405 as quoted. The writing guide's Questions section: \"no wording tells\" and \"Don't restate the defining phrase of the right answer in the prompt.\"",
+    "fix": "Stem: \"... he types `/code-review ultra`. A dialog asks him to confirm, showing his remaining free runs and an estimated cost. What went wrong?\" Right option: \"He started Claude Code's paid branch review, not ultracode.\" It is still not the longest option."
+   },
+   {
+    "severity": "low",
+    "where": "Models table, line 45: \"It's also what `default` gives you on paid plans\"; line 47: \"Opus in plan mode\"",
+    "problem": "The table uses `default` as if it were a known alias, but `default` gets no row or explanation. Plan mode appears in the table before line 50 explains it.",
+    "evidence": "Line 50 is the first explanation of plan mode. `default` appears nowhere else in the Lesson.",
+    "fix": "Line 45: \"It's also what you get out of the box on paid plans.\" Move line 50's plan mode sentence above the table, or add \"(a read-and-propose mode)\" to the opusplan cell."
+   },
+   {
+    "severity": "low",
+    "where": "Effort section, terminal Scene lines 87-99; line 52: \"`claude --model haiku` applies to that one launch\"; line 165: \"Launching with `claude --effort ultracode`\"",
+    "problem": "The Scene puts `$` before both the shell command (`$ claude`) and lines typed inside Claude Code (`$ /effort low`, `$ ultrathink: ...`). The `claude --...` flags in the prose don't say they're typed in the terminal, not at Claude Code's prompt. A Visitor who barely uses a terminal can't tell which is which.",
+    "evidence": "Line 87 `$ claude`, followed by lines 90-99 `$ /effort low`, `$ /effort`, `$ ultrathink: ...`, `$ /effort auto`, `$ /model`.",
+    "fix": "Add to the caption at line 89: \"From here on you type at Claude Code's prompt, not the shell.\" Line 52: \"Starting it from your terminal with `claude --model haiku` applies to that one launch.\""
+   },
+   {
+    "severity": "low",
+    "where": "Ultracode section, line 165: \"press Tab on the Ultracode toggle in the `/effort` slider\"",
+    "problem": "The step is incomplete. Pressing Tab only flips the toggle; Enter is needed to apply it.",
+    "evidence": "https://code.claude.com/docs/en/model-config: \"In the `/effort` slider, press `Tab` to flip the **Ultracode** toggle, then `Enter` to apply it\".",
+    "fix": "\"... or in the `/effort` slider press Tab to flip the Ultracode toggle, then Enter.\""
+   },
+   {
+    "severity": "low",
+    "where": "Ultracode section, line 167: \"It also skips the \"Large workflow\" warning\"; line 165: \"the setting `\"ultracode\": true`\"; spot-ultracode-left-on, line 386",
+    "problem": "The Lesson mentions the 'Large workflow' warning as if the reader already knew it. It also refers to 'the setting' and 'her settings' without saying where settings live.",
+    "evidence": "Neither term is explained anywhere in the Lesson. The workflows docs: the warning appears \"When a workflow schedules more than 25 agents, or its projected token total passes 1.5 million\".",
+    "fix": "\"It also skips the 'Large workflow' warning (the flag Claude Code shows when a run plans many agents)\"; \"the setting `\"ultracode\": true` in your settings file (`~/.claude/settings.json`)\"."
+   },
+   {
+    "severity": "low",
+    "where": "Try it yourself, steps 2-5 and the final checklist item, lines 233-263",
+    "problem": "Small gaps for a first-timer: how to close `/status` (Esc), how to move along the `/effort` slider (arrow keys), and that changing effort mid-conversation may show a cache warning to confirm. The last checklist item (line 263) expects a new `claude` session, but no step starts one.",
+    "evidence": "https://code.claude.com/docs/en/model-config: you can run /effort \"once you confirm the cache warning, if Claude Code shows one\". Step 8 ends with `/exit`, and line 263 says \"A new `claude` session starts at your old level\".",
+    "fix": "Step 2: \"... `/status` to double-check the model (Esc closes it).\" Step 5: \"If Claude Code warns about the cache, confirm.\" Step 8: \"... then type `/exit`, run `claude` again to check the last box, and `/exit`.\""
+   },
+   {
+    "severity": "low",
+    "where": "Try it yourself, step 8, line 254: \"Press Esc if anything runs longer than you want, then type `/exit`.\"",
+    "problem": "Esc interrupts Claude's turn but doesn't stop a background workflow. On /exit, Claude Code may offer 'Move to background and exit', which keeps the run going.",
+    "evidence": "https://code.claude.com/docs/en/workflows: \"If you exit Claude Code while a workflow is running and agent view is on, the exit dialog offers `Move to background and exit` ... If you choose `Exit and stop tasks` instead ... the run stops\".",
+    "fix": "\"Press Esc if a reply runs longer than you want (stop a workflow in `/workflows`). Then type `/exit`, and if it asks, choose to stop tasks.\""
+   },
+   {
+    "severity": "low",
+    "where": "line 54 \"deserves the strongest model\"; line 319 \"Your strongest model to grill\"; line 300 \"Your strongest everyday model\"; line 48 `best` \"You always want the top model\"",
+    "problem": "The wording drifts. 'Strongest model' could mean Fable (the `best` alias), while the cheat sheet means Opus. A reader may grill on Fable, which can bill usage credits.",
+    "evidence": "Lines as quoted. Line 46 reserves Fable for \"The hardest, longest work\".",
+    "fix": "Use \"your strongest everyday model (usually `opus`)\" at lines 54 and 319."
+   },
+   {
+    "severity": "low",
+    "where": "Fast mode section, line 201: \"**`/code-review ultra`** sounds related but isn't.\"",
+    "problem": "It's unclear what 'related' refers to: the sentence follows the fast mode paragraphs, but the intended contrast is with ultracode.",
+    "evidence": "Lines 197-199 are about fast mode; line 201 only names ultracode at its end.",
+    "fix": "\"**`/code-review ultra`** sounds like ultracode but isn't.\""
+   },
+   {
+    "severity": "low",
+    "where": "Checkpoint ultracode-one-task, line 191; Checkpoint diagnose-ceiling, line 152",
+    "problem": "Two Checkpoint distractors depend on material the reader hasn't reached. `/code-review ultra` is explained only in the next section, and the feedback that fast mode \"only works on Opus\" relies on the fast mode section, which comes later.",
+    "evidence": "Line 201 first explains `/code-review ultra`, and line 197 first covers fast mode's model limits. Both are after the Checkpoints.",
+    "fix": "Replace line 191 with a misconception from the ultracode section, for example \"Type `claude --effort ultracode` in the same session.\" Cut \"Fast mode only works on Opus, and\" from the line 153 feedback."
+   },
+   {
+    "severity": "low",
+    "where": "Site story, line 287: \"two different tools that share a short name\"",
+    "problem": "The glossary lists 'tool' under Skill's 'Avoid' terms, and one of the two things here is Matt's Skill.",
+    "evidence": "GLOSSARY.md:21: \"_Avoid_: Command, tool, plugin\".",
+    "fix": "\"a Built-in command and a Skill that share a short name\"."
+   },
+   {
+    "severity": "low",
+    "where": "Various: line 24 \"the prompt gets the blame\"; line 68 and line 80 \"thinking\"; line 160 \"a 500-file migration\"; line 184 and line 338 \"API route\"; line 207 \"Nate Herk\"; line 289 \"the redesign and the Main flow Lesson\"",
+    "problem": "Smaller jargon a newcomer meets without a gloss: prompt, thinking (in the AI sense), migration, API route, who Nate Herk is, and which redesign.",
+    "evidence": "None of these is explained at first use in the Lesson.",
+    "fix": "Add short clauses: \"the prompt (what you type to the agent)\"; \"thinking (reasoning it does before it answers)\"; \"a 500-file migration (moving every file to a new library)\"; \"the API route (the server code that receives the comment)\"; \"an interview on Nate Herk's YouTube channel\"; \"the site's redesign and its Main flow Lesson ([The main flow](/learn/main-flow))\"."
+   }
+  ],
+  "acc-sources": [
+   {
+    "severity": "high",
+    "where": "Site story, \"it should also teach when to use what model for building and what effort / should be used and when should ultra code be used\" (lines 280-283)",
+    "problem": "The Site story quotes the author's \"very first message\" to the agent, but nothing in the repo holds this text. Only a session log could back it, so under the repo-facts-only rule it has to go.",
+    "evidence": "A search across every commit for the phrase finds it only in this Lesson's own drafts: `for c in $(git rev-list --all); do git grep -l -i \"what model for building\" $c; done` returns only content/lessons/19-models-effort-ultracode.md (at c1d7896, 0ecacb3, 56b9d54, 0c47797, 4137eaf). The old grilling Lesson quotes the first message with gaps and doesn't include this request: `git show d21fc2c:content/lessons/01-grilling.md` lines 25-28 (\"/grilling i want to built a small site ... plus a comment box on each lesson saved in Neon.\"). No PR body (gh pr view 1-10) or .scratch note holds it either.",
+    "fix": "Cut the indented quote and the sentence that introduces it. Open with the repo fact instead (01-grilling.md lines 45-46): \"This Lesson was part of the plan from the first grilling: we agreed on 11 Lessons, one per Skill plus \\\"Start here\\\" and this one.\""
+   },
+   {
+    "severity": "high",
+    "where": "Site story, \"In that same grilling I opened `/effort`, looked at the slider, and cancelled. The agent then suggested a small \\\"Built with: Opus 5.5 · effort high · ultracode off\\\" box on every Lesson.\" (line 285)",
+    "problem": "The repo backs two things here: the decision against a per-Lesson box, and the author opening `/effort` and cancelling. It doesn't back the rest: that the `/effort` look happened during the grilling, that the agent was the one who suggested the box, or the box's exact wording (\"Built with: Opus 5.5 · effort high · ultracode off\"). Those details could only come from a log.",
+    "evidence": "`git show d21fc2c:content/lessons/01-grilling.md` line 46: \"| Model/effort box on every lesson | No | Writing it down doesn't teach it. Lesson 10 does. |\". `git show d21fc2c:content/lessons/10-models-effort-ultracode.md` line 57: \"/effort          (opened it, then cancelled: I was just looking)\", with no mention of when. `grep -rn \"Built with: Opus\" .scratch` and `git log --all --format=%B | grep -i \"Built with\"` both return nothing.",
+    "fix": "Replace with: \"I said no to a model-and-effort box on every Lesson: writing it down doesn't teach it, so one Lesson about the dials would do. Later I opened `/effort`, looked, and cancelled.\""
+   },
+   {
+    "severity": "high",
+    "where": "Site story, \"The next day, for the redesign and the Main flow Lesson, ultracode was on. So when I typed `/mattpocock-skills:implement-spec`, the build ran as a workflow I could watch in `/workflows`, and I asked whether it could \\\"expedite the process by spinning more subagents in the dynamic workflow\\\". Partway through I set `/effort` to medium, and as the code review finished I dropped it to low. Both times Claude Code said the level was saved...\" (line 289), and \"A day later I was the one turning effort down.\" (line 291)",
+    "problem": "Almost every claim in this paragraph rests on a session log alone: ultracode being on, the build running as a dynamic workflow watched in `/workflows`, the quoted \"expedite\" prompt, the two `/effort` changes, and Claude Code's \"saved as your default\" replies. Line 291 depends on the same facts. The repo says only that the redesign was built with `/implement-spec`, by subagents on parallel worktrees. Workflows aren't mentioned anywhere, and the 1.3.1 implement-spec Skill uses subagents, not dynamic workflows. The repo also names the Skill as `/implement-spec`, not `/mattpocock-skills:implement-spec`.",
+    "evidence": "PR #9 body (`gh pr view 9 --repo SiddharthMuramkar/idea-to-shipped --json body`): \"Built with the Main flow itself: grilling, `/to-spec`, `/to-tickets`, then `/implement-spec`, with 5 tickets on parallel worktrees and `/code-review` on both axes plus a fix-up.\" Nothing about ultracode, workflows or effort. `git show d21fc2c:content/lessons/11-main-flow.md` lines 108-124 describe helper agents in worktrees, again with no workflow or effort. `git log --all --format=%B | grep -i -E \"ultracode|/effort|dynamic workflow|expedite\"` returns nothing, and so does `grep -rn -i -e expedite -e \"ultracode on\" -e \"effort to medium\" -e \"dropped it to low\" .scratch`. ~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/implement-spec/SKILL.md:27 says \"Use **implementer subagents** to implement each ticket, each in its own worktree\".",
+    "fix": "Cut line 289 and the sentence \"A day later I was the one turning effort down.\" To keep a next-day beat, use only what PR #9 says: \"The next day I built the redesign with `/implement-spec`: helper agents built five tickets in parallel worktrees.\" Then end line 291 with: \"My first version of this Lesson had a rule-of-thumb table that put grilling on high and the final review on max, more than Matt recommends. The line I wrote back then still holds: higher isn't always better, so match the dial to how hard the problem is.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Checkpoint diagnose-ceiling, option \"Turn on fast mode so the retries come back quicker.\", feedback \"Fast mode only works on Opus, and it changes speed, not capability.\" (lines 152-153)",
+    "problem": "The scenario starts on Sonnet. Per the docs, and per the Lesson's own line 197 (\"turning it on from another model switches you to Opus\"), running `/fast` on Sonnet moves you to Opus. That is the same change as the right answer, \"Switch to a bigger model, like `opus`\". So the feedback misstates what fast mode does, contradicts the Lesson, and leaves this distractor partly defensible.",
+    "evidence": "https://code.claude.com/docs/en/fast-mode: \"If your current model doesn't support fast mode, Claude Code switches to Opus\". Lesson line 197: \"turning it on from another model switches you to Opus\".",
+    "fix": "Swap the distractor for one with no side effect, for example: \"- [ ] Run `/clear` and send the same prompt again.\" with feedback \"  > A fresh window helps when the context is cluttered, but it had what it needed. Same model, same ceiling.\" To keep a fast-mode distractor instead, use the feedback \"  > It would move you to Opus, but at a premium price and only as a side effect. Make the model change on purpose with `/model`.\""
+   },
+   {
+    "severity": "low",
+    "where": "Ultracode section, \"press Tab on the Ultracode toggle in the `/effort` slider\" (line 165)",
+    "problem": "The docs say Tab flips the toggle and Enter then applies it. A reader who only presses Tab may think ultracode is already on.",
+    "evidence": "https://code.claude.com/docs/en/model-config (Adjust effort level): \"In the `/effort` slider, press `Tab` to flip the **Ultracode** toggle, then `Enter` to apply it\". https://code.claude.com/docs/en/workflows says the same.",
+    "fix": "\"...or open the `/effort` slider, press Tab to flip the Ultracode toggle, then Enter.\""
+   },
+   {
+    "severity": "low",
+    "where": "Try it, step 3: \"Look at the levels and the Ultracode toggle\" (line 234)",
+    "problem": "On a Pro plan, dynamic workflows start switched off, and the docs say the toggle is removed from `/effort` while workflows are off. A Pro reader won't see the toggle in step 3. The instruction to enable Dynamic workflows in `/config` only comes in step 7.",
+    "evidence": "https://code.claude.com/docs/en/workflows: \"On Pro, turn them on from the Dynamic workflows row in `/config`.\" and \"When workflows are disabled: ... the **Ultracode** toggle is removed from `/effort`\".",
+    "fix": "Step 3: \"Type `/effort`. Look at the levels and, if it's there, the Ultracode toggle (on a Pro plan it appears once Dynamic workflows is on in `/config`). Move to `low` and press `s` (this session only).\""
+   },
+   {
+    "severity": "low",
+    "where": "Model or effort?, \"Thariq Shihipar, who works on Claude Code at Anthropic\" (line 122); How Matt and others use it, \"Thariq Shihipar (Anthropic, September 2026)\" (line 217)",
+    "problem": "The cited post doesn't state his role or employer. It only lists him as the author of a claude.dev engineering post.",
+    "evidence": "https://claude.dev/blog/spending-your-effort/ (2026-09-25) names Thariq Shihipar as author and gives no role. Everything else in both lines checks out against the post: interview, then implement on low, review, then verify on high; low 1.5 min vs max 67 min on the same vague fitness-tracker prompt; \"increasing effort tends to reduce failures due to missing edgecases ... but does not fix when the model has the wrong approach\".",
+    "fix": "\"Thariq Shihipar, writing on Anthropic's claude.dev blog, found the same...\". Or cite a source that states his role."
+   },
+   {
+    "severity": "low",
+    "where": "Sources, \"[Your effort level is STILL TOO HIGH](...), Matt Pocock, 2026-10-13.\" (line 441) and \"[Using Claude Code: Spending your effort](...), Thariq Shihipar, 2026-09-25\" (line 439)",
+    "problem": "The writing guide asks for the timestamps used on every video and a read date on web pages. The October short has no timestamps, and the Thariq entry has no read date. The facts themselves check out: the short's English captions at 1:08-1:15 say \"I use Opus 5.5 on medium, and I'm debating even moving to low.\" (published 2026-10-13, 74 s).",
+    "evidence": ".scratch/course-rewrite/writing-guide.md, Sources: \"Videos: title, URL, publish date, and the timestamps you used. Docs pages: ... read 2026-10-23.\" The YouTube video details for JgEsphDAXnY give a publish date of 2026-10-13T11:33:13Z.",
+    "fix": "Line 441: \"..., Matt Pocock, 2026-10-13 (effort too high for most coding, 0:49-1:08; Opus 5.5 on medium, 1:08-1:15).\" Line 439: \"..., Thariq Shihipar, 2026-09-25, read 2026-10-23 (his low-then-high loop and timings).\""
+   }
+  ]
+ },
+ "revise": {
+  "summary": "I revised /Users/Muramkar/code/idea-to-shipped/content/lessons/19-models-effort-ultracode.md and touched no other file. The Site story is now built only from repo facts: the old grilling Lesson's decisions table, .scratch/lesson-site/spec.md:17 and :58, the old Lessons 10 and 7 at d21fc2c, and the Claude Opus 5.5 co-author trailers. The session-log material is gone: the quoted first message, the 'Built with' box wording, ultracode or workflows during /implement-spec, the 'expedite' prompt and the effort changes. 'Model or effort?' now lists its three checks in the order you ask them (task, then effort, then model), and the flow Scene, its captions and the skipped-tests question agree with that order. Five Final test questions are new or rewritten: predict-session-only (checks /model and the s key), scenario-worth-paying (checks when fast mode and /code-review ultra are worth paying for), sequence-reading-a-miss (no cost ranking now), spot-max-everywhere and the grill-then-build options. predict-ultrathink and spot-ultra-names are gone, and fast mode is no longer used as a filler distractor. Claude Code facts were rechecked against the official docs: Tab then Enter for the Ultracode toggle, Pro needing Dynamic workflows on before the toggle shows, which item x stops in /workflows, the auto-mode approval, the exit dialog and the cache warning. Matt's habits are paraphrased from text-backed sources only (the October short, the X post, the July short at 0:00–0:36, and the /teach demo for Opus 4.8 at medium). Terms like ticket, spec, auto mode, script, prompt, thinking, API route and Git are now explained where they first appear, and the grilling and implement docs pages, pinned to 49dd158, are cited.",
+  "fixed": [
+   "high reader: Site story rewritten from repo facts only (the old grilling decisions table, lesson-site spec.md:17/:58, the old Lesson 10 and Code review Lesson at d21fc2c, the commit trailers); everything only a session log could back is cut",
+   "high acc-sources: the quoted 'very first message' is cut; the box now opens with the 11-Lesson decision and the spec's Lesson list",
+   "high acc-sources: the agent-suggested 'Built with: ...' box detail is cut; it now says only that I said no to a per-Lesson model/effort box, and separately that I opened /effort and cancelled",
+   "high acc-sources: the next-day paragraph (ultracode on, workflow in /workflows, 'expedite' quote, effort to medium then low, 'saved' replies) and 'A day later I was the one turning effort down' are cut",
+   "high acc-skills: no longer claims /implement-spec ran as a dynamic workflow (implement-spec/SKILL.md:17,27,32 describes subagents in worktrees)",
+   "high acc-skills: the verbatim first-message quote and the exact box contents are cut",
+   "high quiz: diagnose-ceiling's fast-mode distractor (which would switch Sonnet to Opus) is replaced with 'Reword the prompt and send it again on Sonnet'; the stem now says the request was clear",
+   "medium acc-sources: diagnose-ceiling's false fast-mode feedback is gone with that option",
+   "medium reader: the flow Scene caption no longer files 'a file it never opened' under the task; it now says 'a key fact nobody gave it and it couldn't find', and the effort check says 'skip a file it could have found'",
+   "medium reader: the three bullets are reordered (task, effort, model), marked as asked in this order, and followed by why: you can only blame the model once the task was clear and the work was done",
+   "medium reader: Try it no longer promises a shorter low answer; step 5 and the checklist compare how long Claude worked and say the gap can be slight",
+   "medium reader: Try it step 3 says the Ultracode toggle appears on Pro only after the /config change",
+   "medium reader: ticket is defined at first use",
+   "medium reader: spec is defined at first use",
+   "medium reader: auto mode is defined (the permission mode new sessions start in, where a second model reviews actions)",
+   "medium reader: added predict-session-only (s versus a saved default) and scenario-worth-paying (when fast mode or /code-review ultra pays off), so goals 1 and 4 are checked",
+   "medium reader: /workflows text now says x stops whatever is selected, so select the run itself; Try it step 7 and the chat Scene caption match",
+   "medium reader: the terminal Scene no longer calls its output 'Claude Code's real reply'; the output is shortened and the caption follows the docs",
+   "medium reader: the Nate Herk interview claim is replaced by the October 2026 short (0:49–1:15) plus the same-day X post; the interview is dropped from sources",
+   "medium reader: the unbacked 'just try a lower effort level...' quote is replaced by a paraphrase of the July short, cited at 0:00–0:36 only",
+   "medium reader: the Opus 4.8 at medium claim is moved to the June 2026 /teach demo (s5T5oQJcJ6U 6:41); 'don't need to copy his setup' and the M6mYodf0dJM source are dropped",
+   "medium reader: spot-ultra-names, whose stem gave the answer away, is removed",
+   "medium quiz: sequence-reading-a-miss is rewritten as three diagnostic questions in order; the feedback no longer depends on a cost ranking",
+   "medium quiz: the ambiguous spot-ultra-names is replaced by scenario-worth-paying",
+   "medium quiz: spot-max-everywhere is rewritten with a fresh situation (Ravi's book-club site), no shared 'should have' phrasing, and no absolute distractors",
+   "medium quiz: scenario-grill-then-build options rewritten so justification clauses are mixed and the right one says 'strong everyday model'",
+   "medium quiz: predict-ultrathink (bare right option) is replaced by predict-session-only",
+   "medium quiz: the goal on saved versus session-only switching is now checked by predict-session-only",
+   "medium quiz: the goal on when paid options are worth it is now checked by scenario-worth-paying",
+   "low reader: the `default` mention is replaced by 'what you get out of the box'; plan mode is explained inside the opusplan cell",
+   "low reader: the terminal Scene caption separates the shell from Claude Code's prompt; the claude --model and --effort flags say 'from your terminal'",
+   "low reader + acc-sources: the Ultracode toggle step is now Tab then Enter",
+   "low reader: the 'Large workflow' warning is glossed and the settings file path (~/.claude/settings.json) is given",
+   "low reader: Try it adds Esc to close /status, arrow keys, confirming the cache warning, and a rerun of claude for the last check",
+   "low reader: Try it step 8 says Esc doesn't stop a workflow and to choose to stop tasks on /exit",
+   "low reader: 'strongest model' becomes 'strongest everyday model, usually opus' in the body and Cheat sheet",
+   "low reader: the line now reads '/code-review ultra sounds like ultracode but isn't'",
+   "low reader: ultracode-one-task's /code-review ultra distractor is replaced by 'Restart with claude --effort ultracode'; the fast-mode feedback that relied on later material is gone",
+   "low reader: the Site story says 'a Built-in command and a Skill', not 'tools'",
+   "low reader: prompt, thinking, migration, API route and Git are glossed; the Nate Herk and redesign mentions are gone",
+   "low quiz: the scenario-skipped-tests stem says the prompt named the API route; opusplan and 're-name the route' replace weak distractors",
+   "low quiz: fast mode is removed as a filler distractor from diagnose-ceiling, outage-hunt, skipped-tests, migration-day and max-everywhere",
+   "low quiz: migration-day distractors changed (keyword for one task, /model fable) so it no longer mirrors the Checkpoint",
+   "low quiz: the outage-hunt right option no longer copies the Cheat sheet; the Cheat sheet says 'a subtle bug'",
+   "low quiz: the diagnose-ceiling ultrathink feedback now says it adds deeper reasoning on one turn, not an effort boost",
+   "low acc-sources: Thariq is described as writing on claude.dev, not by role",
+   "low acc-sources: sources now carry timestamps for both shorts and a read date for Thariq's post",
+   "low acc-skills: the grilling docs (weak or low-effort models shrink the interview) and the implement docs (split a long ticket rather than raise effort) are paraphrased and cited, pinned to 49dd158"
+  ],
+  "deferred": [],
+  "lowsDeferred": 1,
+  "declined": [
+   {
+    "problem": "quiz medium: effort-low-means key 'more questions to you' (and body line 'Claude would rather ask you than dig on its own') said to be unsupported by the cited sources",
+    "reason": "The Lesson's cited Anthropic blog (https://claude.com/blog/claude-model-and-effort-level-in-claude-code, July 7, 2026) says nearly this: at lower effort Claude would rather ask you for more context than spend tokens working it out on its own. The answer key and body line stay as they are."
+   },
+   {
+    "problem": "acc-skills high fix suggestion: add 'That's ordinary sub-agents, not a dynamic workflow' about the /implement-spec run",
+    "reason": "I didn't add this. The repo doesn't record whether ultracode was on in that session, so saying it was not a workflow would also be a claim the repo can't back. The implement-spec beat is left out of the Site story instead."
+   }
+  ],
+  "words": 2799,
+  "lintClean": true,
+  "testsPassed": true
+ },
+ "rounds": {}
+}

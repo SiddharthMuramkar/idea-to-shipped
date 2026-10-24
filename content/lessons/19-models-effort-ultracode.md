@@ -19,11 +19,11 @@ Claude Code has four dials that decide how much brain, time and money go into ea
 
 ## Why it matters
 
-Claude Code is Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal. The AI underneath is a **model**, and you choose which one, and how hard it works on each turn. Every choice spends tokens, the small chunks of text that AI usage is measured and billed in. On a subscription they eat into your usage limits; if you pay per use, they cost money; either way they cost time.
+Claude Code is Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal. The AI underneath is a **model**, and you choose which one, and how hard it works on each turn. Every choice spends tokens, the small chunks of text that AI usage is measured and billed in. On a subscription they eat into your usage limits; if you pay per use, they cost money.
 
-The tempting move is to turn everything up. Someone picks the strongest model and the highest effort "because the project matters". Then a one-line style fix to a comment box takes ten minutes, the weekly limit runs out by Wednesday, and the answers get worse, not better: the agent overthinks and changes things nobody asked for. The opposite mistake happens too: a small, fast model gets a subtle bug, fails confidently three times, and the prompt gets the blame.
+The tempting move is to turn everything up. Someone picks the strongest model and the highest effort "because the project matters". Then a one-line style fix to a comment box takes ten minutes, the weekly limit runs out by Wednesday, and the answers get worse, not better: the agent overthinks and changes things nobody asked for. The opposite mistake happens too: a small, fast model gets a subtle bug, fails confidently three times, and the prompt (what you typed) gets the blame.
 
-Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code (short instruction files the agent loads when you type their name, or when a task fits; see [Skills](/learn/skills)), puts it bluntly: most people's ==effort level is too high==. Anthropic's own guidance is to use the default effort for most tasks, and to change a dial deliberately, not out of habit. This Lesson teaches no Skill. It teaches the dials every Skill runs on:
+Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code (short instruction files the agent loads when you type their name, or when a task fits; see [Skills](/learn/skills)), puts it bluntly: most people's ==effort level is too high==. Anthropic's own guidance is to use the default effort for most tasks, and when a result disappoints, to check what you gave Claude before touching a dial. This Lesson teaches no Skill. It teaches the dials every Skill runs on:
 
 | Dial | What it decides | How you set it |
 |---|---|---|
@@ -42,16 +42,16 @@ You pick a model by **alias**, a short name that points at the newest version:
 |---|---|---|
 | `haiku` | Haiku 5.5 | Simple, quick tasks you can describe exactly |
 | `sonnet` | Sonnet 5.5 | Everyday coding |
-| `opus` | Opus 5.5 | Complex reasoning. It's also what `default` gives you on paid plans |
+| `opus` | Opus 5.5 | Complex reasoning. It's also what you get out of the box on paid plans |
 | `fable` | Fable 5.1 | The hardest, longest work: root-cause hunts, outages, architecture |
-| `opusplan` | Opus in plan mode, then Sonnet to carry out the plan | You plan first and want a cheaper builder |
+| `opusplan` | Opus in plan mode (where it only reads and proposes until you approve), then Sonnet to carry out the plan | You plan first and want a cheaper builder |
 | `best` | Fable where your account has it, otherwise Opus | You always want the top model |
 
-Plan mode is the Claude Code mode where the agent only reads and proposes a plan until you approve it. Fable is never the out-of-the-box default: you pick it on purpose, and on some plans it bills to **usage credits** (paid usage on top of your plan), asking you first. Aliases move when new models ship, and other cloud providers can lag behind; to pin one exact version, use its full name, like `claude-opus-5-5`.
+Fable is never the out-of-the-box default: you pick it on purpose, and on some plans it bills to **usage credits** (paid usage on top of your plan), asking you first. Aliases move when new models ship; to pin one exact version, use its full name, like `claude-opus-5-5`.
 
-**Switching.** Type `/model` to open the picker. The detail that catches people: ==`/model` saves your choice as the default for new sessions== (a session is one Claude Code conversation, from starting `claude` until you clear it or quit). Pressing Enter on a row, or typing `/model sonnet` directly, switches and saves. Press `s` on a row instead to switch for this session only. `claude --model haiku` applies to that one launch, and `/status` shows what you're on. Helper agents that inherit your model follow the switch too.
+**Switching.** Type `/model` to open the picker. The detail that catches people: ==`/model` saves your choice as the default for new sessions== (a session is one Claude Code conversation, from starting `claude` until you clear it or quit). Pressing Enter on a row, or typing `/model sonnet` directly, switches and saves. Press `s` on a row instead to switch for this session only. Starting Claude Code from your terminal with `claude --model haiku` applies to that one launch, and `/status` shows what you're on.
 
-Matt's rule of thumb: grilling (an interview where the agent questions you about your plan; see [Grilling](/learn/grilling)) leans on what the model learned in training, so it deserves the strongest model. Building from a clear ticket mostly follows what's already in front of the agent, so a cheaper model often does fine. Anthropic adds subtle bugs, unfamiliar territory and architecture decisions to the big-model list.
+Matt's rule of thumb: grilling (an interview where the agent questions you about your plan; see [Grilling](/learn/grilling)) leans on what the model learned in training, so it deserves your strongest everyday model, usually `opus`. Building from a clear ticket (a short written description of one small piece of work, usually cut from a bigger plan) mostly follows what's already in front of the agent, so a cheaper model often does fine. The grilling Skill's own docs warn that on weaker models or low effort, the interview tends to shrink to a couple of questions and an outline. Anthropic adds subtle bugs, unfamiliar territory and architecture decisions to the big-model list.
 
 ```checkpoint model-saves-default
 You need one quick rename, so you type `/model haiku`, do it, and quit. What model does tomorrow's new session start on?
@@ -65,7 +65,7 @@ You need one quick rename, so you type `/model haiku`, do it, and quit. What mod
 
 ## Effort: how much work each turn gets
 
-Effort is more than thinking time. It sets how much work Claude does before it comes back to you: how long it reasons, how many files it reads, whether it runs the tests (automated checks of the code) and double-checks. At low effort you get a starting point sooner, and Claude would rather ask you than dig on its own. At high effort it verifies more, tests more edge cases (unusual inputs that tend to break code) and makes more choices for you.
+Effort is more than thinking time (the reasoning a model does before it answers). It sets how much work Claude does before it comes back to you: how long it reasons, how many files it reads, whether it runs the tests (automated checks of the code) and double-checks. At low effort you get a starting point sooner, and Claude would rather ask you than dig on its own. At high effort it verifies more, tests more edge cases (unusual inputs that tend to break code) and makes more choices for you.
 
 The levels are `low`, `medium`, `high`, `xhigh` and `max`. Opus, Sonnet and Haiku 5.5 start at **medium**; most other models start at high. Anthropic reports that Opus 5.5 on medium matches or beats Opus 5 on high, so if you're coming from Opus 5, don't carry your old level over.
 
@@ -77,18 +77,18 @@ The levels are `low`, `medium`, `high`, `xhigh` and `max`. Opus, Sonnet and Haik
 | `xhigh` | Deeper reasoning, at a higher token spend |
 | `max` | Hard problems Claude works through alone, like a security review |
 
-`max` lasts for the current session only, shows diminishing returns and tends to overthink. On the 5.5 and Fable models you can't switch thinking off; the model decides at each step how much to think, guided by effort.
+`max`, the deepest level, lasts for the current session only, shows diminishing returns and tends to overthink. On the 5.5 and Fable models you can't switch thinking off; the model decides at each step how much to think, guided by effort.
 
-For one hard question, put the word `ultrathink` anywhere in your prompt: Claude reasons harder ==on that turn only==, and your setting doesn't change. Phrases like "think hard" are ordinary text, not keywords. Skills and helper agents can also carry their own `effort` setting, which applies while they run.
+For one hard question, put the word `ultrathink` anywhere in your prompt: Claude reasons harder ==on that turn only==, and your setting doesn't change. Phrases like "think hard" are ordinary text, not keywords.
 
 ```scene terminal
 title: Setting the dials in a session (illustrative)
-# The session header names your model and its effort. On Opus 5.5 you start at medium unless you've saved something else.
+# Start Claude Code from your terminal. The session header names your model and its effort: on Opus 5.5 you start at medium unless you've saved something else.
 $ claude
 Opus 5.5 with medium effort
-# Typing a level by name sets it and saves it for new sessions too. This is Claude Code's real reply.
+# From here on you type at Claude Code's prompt, not the shell. Typing a level by name sets it and saves it as your default for new sessions too.
 $ /effort low
-Set effort level to low (saved as your default for new sessions): Quick, straightforward implementation with minimal overhead
+Effort set to low (saved as your default)
 # For this session only, open the slider instead, choose a level and press s.
 $ /effort
 # One tricky question? The keyword buys deeper reasoning for this turn, and your level stays put.
@@ -113,13 +113,13 @@ You drop effort to low for a change to a recipe site. Compared with high, what s
 
 ## Model or effort? Reading a bad result
 
-When Claude gets something wrong, resist reaching for every dial. Anthropic's July 2026 guide gives a simple test:
+When Claude gets something wrong, resist reaching for every dial. Anthropic's July 2026 guide says to look first at what you gave Claude, and only then ask whether it didn't try hard enough or didn't know enough. That gives three questions, ==asked in this order==:
 
-- **It had what it needed, clearly tried, and was still wrong.** That's the model's ceiling. Pick a bigger model.
-- **It skipped a file, didn't run the tests or gave up halfway.** It didn't do the work. Raise effort.
-- **The request was vague, or the key file never came up.** No dial fixes that. Fix the task: add the context, write the rule into `CLAUDE.md` (the file of standing instructions Claude reads every session), or grill a clear plan first.
+- **Was the request vague, or did it lack a fact it couldn't find?** No dial fixes that. Fix the task: add the context, write the rule into `CLAUDE.md` (the file of standing instructions Claude reads every session), or grill a clear plan first.
+- **Did it skip a file it could have found, skip the tests or stop halfway?** It didn't do the work. Raise effort.
+- **Did it have what it needed, clearly try, and still get it wrong?** That's the model's ceiling. Pick a bigger model.
 
-Thariq Shihipar, who works on Claude Code at Anthropic, found the same in his own tests: more effort fixed missed edge cases, not a wrong approach. Matt adds the flip side: ==better information lowers the effort you need==, so a well-grilled ticket can often run on medium, or even low.
+You can only blame the model once you know the task was clear and the work was done. Thariq Shihipar, writing on claude.dev, found something similar in his own tests: more effort fixed missed edge cases, not a wrong approach, and once Claude had a detailed spec (a written plan of what to build), the levels gave much closer results. Matt's docs for his implement Skill make the point from the task side: if one ticket keeps running long, split it rather than raising effort.
 
 ```scene flow
 title: Which dial does this failure need?
@@ -131,11 +131,11 @@ node: effort | No: raise effort | side
 node: model | Yes to both: pick a bigger model
 # Something came back wrong. Before you touch a dial, ask why.
 at: miss
-# First: did it have the context? A vague request or a file it never opened is a problem with the task.
+# First: did it have the context? A vague request, or a key fact nobody gave it and it couldn't find, is a problem with the task.
 at: context
-# If not, no model or effort level fixes it. Add the files, write the rule down, or grill a clear plan.
+# If not, no model or effort level fixes it. Add the context, write the rule down, or grill a clear plan.
 at: task
-# Second: did it do the work, or skip a file, skip the tests, stop halfway?
+# Second: did it do the work, or skip a file it could have found, skip the tests, stop halfway?
 at: work
 # If it cut corners, raise effort, or put ultrathink in that one prompt.
 at: effort
@@ -144,27 +144,27 @@ at: model
 ```
 
 ```checkpoint diagnose-ceiling
-You're on Sonnet. Claude read the right files, ran the tests and checked its work, but its fix for a time-zone bug is wrong for the second time. What do you change?
+You're on Sonnet. Your request described a time-zone bug clearly, and Claude read the right files, ran the tests and checked its work. Its fix is still wrong, for the second time. What do you change?
 - [ ] Raise effort to max and ask again.
   > It already did the work. More effort fixes skipped steps, not a ceiling.
 - [ ] Add `ultrathink` to the same prompt.
-  > That's a one-turn effort boost, so it's the same fix as raising effort.
-- [ ] Turn on fast mode so the retries come back quicker.
-  > Fast mode only works on Opus, and it changes speed, not capability.
+  > That asks for deeper reasoning on one turn. It helps with skipped steps, not with a ceiling.
+- [ ] Reword the prompt and send it again on Sonnet.
+  > The task wasn't the problem: it was clear, and Claude did the work. Rewording won't raise Sonnet's ceiling.
 - [x] Switch to a bigger model, like `opus`.
   > Right. It had what it needed and clearly tried. That's the model's ceiling, so pick a more capable one.
 ```
 
 ## Ultracode: many agents instead of one
 
-Normally Claude works through a task turn by turn, and every result lands in its context window (its working memory for the conversation, measured in tokens; see [The context window](/learn/context-window)). A **dynamic workflow** works differently. Claude writes a short script, and the script runs many sub-agents (helper agents, each with its own fresh context window), from a handful to hundreds, in the background. The script holds the plan and the in-between results, so only the final answer comes back to your conversation, and it can have agents check each other's findings first. It's built for jobs one conversation can't hold: auditing every file, a 500-file migration, research cross-checked across sources.
+Normally Claude works through a task turn by turn, and every result lands in its context window (its working memory for the conversation, measured in tokens; see [The context window](/learn/context-window)). A **dynamic workflow** works differently. Claude writes a short script (a small program), and the script runs many sub-agents (helper agents, each with its own fresh context window), up to hundreds, in the background. The script holds the plan and the in-between results, so only the final answer comes back to your conversation, and it can have agents check each other's findings first. It's built for jobs one conversation can't hold: auditing every file, a 500-file migration (updating every file to a new library).
 
 **Ultracode** is how you opt in to workflows. It's ==a setting, not an effort level==: it runs at whatever effort you've set. Two ways to use it:
 
-- **One task:** put the word `ultracode` in your prompt, or simply ask for "a workflow". Claude Code highlights the keyword (Option+W, or Alt+W, dismisses it). It only counts in prompts you type yourself.
-- **The whole session:** type `/effort ultracode`, or press Tab on the Ultracode toggle in the `/effort` slider. Claude then decides which tasks deserve a workflow. Turn it off with `/effort ultracode off`. Launching with `claude --effort ultracode` turns it on *and* sets effort to `xhigh`; the setting `"ultracode": true` turns it on for every session.
+- **One task:** put the word `ultracode` in your prompt, or simply ask for "a workflow". Claude Code highlights the keyword (Option+W, or Alt+W, dismisses it).
+- **The whole session:** type `/effort ultracode`, or open the `/effort` slider, press Tab to flip the Ultracode toggle, then Enter. Claude then decides which tasks deserve a workflow. Turn it off with `/effort ultracode off`. Starting from your terminal with `claude --effort ultracode` turns it on *and* sets effort to `xhigh`; the setting `"ultracode": true` in your settings file (`~/.claude/settings.json`) turns it on for every session.
 
-With it on, one request can become several workflows in a row: one to understand the code, one to change it, one to check it. That's more tokens and more time on every task, so you reach your plan limits sooner. It also skips the "Large workflow" warning, and in auto mode the approval before the first run. Turn it on for the big job, then off. Watch any run with `/workflows`, which shows each agent's tokens; press `x` there to stop it. On a Pro plan, switch on Dynamic workflows in `/config` first. If the Ultracode toggle is missing, workflows are off or your model has no `xhigh` level.
+With it on, one request can become several workflows in a row: one to understand the code, one to change it, one to check it. That's more tokens and more time on every task, so you reach your plan limits sooner. It also skips some safety checks, including the "Large workflow" warning (shown when a run plans many agents or tokens) and, in auto mode, the approval before your first workflow. Auto mode is the permission mode new sessions start in, where a second model reviews Claude's actions instead of asking you about each one. Turn ultracode on for the big job, then off. `/workflows` shows each run's agents and their tokens; `x` there stops whatever is selected, so select the run itself, not one agent, to stop it all. On a Pro plan, switch on Dynamic workflows in `/config` first. If the Ultracode toggle is missing, workflows are off or your model has no `xhigh` level.
 
 ```scene chat
 title: One task as a workflow, on this site's Lessons (illustrative)
@@ -174,47 +174,47 @@ you: ultracode: check every Lesson file for links to /learn/ pages that don't ex
 agent: I'll run this as a workflow in three phases: **list** the Lesson files, **check** each file's links with one agent per file, then **verify** every broken link with a second agent before reporting.
 # Claude Code shows the phases and asks before starting (in auto mode, only before your first workflow ever).
 you: *Yes, run it* (picked from the approval menu)
-# It runs in the background, so you keep working. The progress view lists each phase, its agents and their token use; x there stops it.
+# It runs in the background, so you keep working. The progress view lists each phase, its agents and their token use; x on the run stops it.
 you: `/workflows`
 # One report comes back. The per-file results stayed in the script, so your context window holds only the summary.
 agent: Checked 20 Lesson files, and a second agent confirmed each finding. 2 broken links, listed below with line numbers. No files changed.
 ```
 
 ```checkpoint ultracode-one-task
-You want one audit of every API route to run as a workflow, without changing anything else about the session. What do you do?
-- [ ] Type `/effort max`, then ask for the audit.
-  > Effort is how much work each turn gets. It doesn't create workflows, and max is overkill for the rest of the session.
+You want one audit of every API route (the server code that answers requests) to run as a workflow, without changing anything else about the session. What do you do?
+- [ ] Type `/effort xhigh`, then ask for the audit.
+  > Effort is how much work each turn gets. It doesn't create workflows, and it stays raised for the rest of the session.
 - [ ] Type `/effort ultracode`, then ask for the audit.
   > That works, but it changes the session: Claude keeps planning workflows for later tasks until you turn it off.
 - [x] Start that one prompt with the word `ultracode`.
   > Right. The keyword opts one task in and leaves your settings alone.
-- [ ] Type `/code-review ultra` to launch the audit.
-  > That's a cloud bug review of your branch's changes, not a general workflow.
+- [ ] Restart with `claude --effort ultracode`, then ask for the audit.
+  > That turns ultracode on for the whole session, and sets effort to `xhigh` too.
 ```
 
 ## Fast mode, and a review called "ultra"
 
 **Fast mode** (`/fast`) runs the same Opus model up to 2.5 times faster, at a higher price per token. Quality doesn't change. It works on Opus 5.5, Opus 5 and Opus 4.8 only; turning it on from another model switches you to Opus, and a ↯ icon shows it's on. On subscription plans it's paid from usage credits only, and it stays on for future sessions until you turn it off.
 
-The catch is timing. The first time you turn it on in a conversation, you pay the full fast-mode price, once, for everything already in that conversation. Two hours in, that's a lot. So ==switch it on at the start==, for live debugging or quick back-and-forth where you wait on every reply, and leave it off for long runs you won't watch.
+The catch is timing. The first time you turn it on in a conversation, you pay the full fast-mode price, once, for everything already in that conversation. So ==switch it on at the start==, for live debugging or quick back-and-forth where you wait on every reply, and leave it off for long runs you won't watch.
 
-**`/code-review ultra`** sounds related but isn't. Claude Code's Built-in `/code-review` (it ships with Claude Code; it isn't a Skill) is a bug hunt you can run at an effort level, like `/code-review max`. Its `ultra` level uploads the changes on your branch (your line of work in Git) to an isolated machine in the cloud, where a fleet of reviewer agents hunts for bugs, and every finding is reproduced and verified before it's reported. It takes about 15–25 minutes, gives Pro and Max accounts three free runs (once, not monthly), then costs roughly $5–$25 in usage credits per review, and it only starts when you type it. It isn't ultracode, and it isn't Matt's code-review Skill, which you reach with `/mattpocock-skills:code-review` (see [Code review](/learn/code-review)).
+**`/code-review ultra`** sounds like ultracode but isn't. Claude Code's Built-in command `/code-review` (not a Skill) is a bug hunt you can run at an effort level, like `/code-review max`. Its `ultra` level uploads your project to an isolated machine in the cloud, where a fleet of reviewer agents hunts for bugs in the changes on your branch (your line of work in Git, the tool that tracks a project's history), and every finding is reproduced and verified before it's reported. It takes about 15–25 minutes, gives Pro and Max accounts three free runs (once, not monthly), then costs roughly $5–$25 in usage credits per review, and it only starts when you type it. It earns that price on a risky change just before you merge, not on every small edit. It isn't Matt's code-review Skill either, which you reach with `/mattpocock-skills:code-review` (see [Code review](/learn/code-review)).
 
 ## How Matt and others use it
 
 **Matt Pocock:**
 
-- **Medium effort, maybe lower.** In an October 2026 interview with Nate Herk, he said he runs Opus 5.5 on medium, is thinking about low, and that most people use far too much effort. Three days earlier he put "Your effort level is too high" at the top of a list of common mistakes on X.
-- **Start low, then climb.** In a July 2026 short he suggested starting Opus or Fable at the lowest effort you have and raising it only if needed: benchmark charts keep the task fixed, but you can make yours clearer. His advice: "just try a lower effort level. You'll be surprised by what you get." He repeated the message in a second short in October.
+- **Medium effort, maybe lower.** In an October 2026 short he said he runs Opus 5.5 on medium, is weighing low, and that even high is more than most coding needs. The same day he put "Your effort level is too high" at the top of a list of common mistakes on X.
+- **Exploring doesn't need effort.** In a July 2026 short he said most people get better value from a lower level, because opening files to explore a codebase doesn't need deep reasoning.
 - **Effort per task, not per session.** His AI Coding Dictionary (September 2026) says to raise effort for the genuinely hard part and drop it for the routine work around it.
-- **A big model to grill, a cheaper one to build.** In May 2026 he called too weak a model a common grilling failure, because grilling relies on what the model learned in training. At an April 2026 workshop he built with Sonnet and reviewed with Opus.
-- **No fixed recipe.** In his July 2026 walkthrough he was on Opus 4.8 at medium effort, and told viewers they don't need to copy his setup.
+- **Grill on the stronger model.** In May 2026 he called too weak a model a common grilling failure, because grilling relies on what the model learned in training. At an April 2026 workshop he built with Sonnet and reviewed with Opus.
+- **Below the default, even on older models.** In his June 2026 demo of his `/teach` Skill he ran Opus 4.8 at medium, one step under its default of high.
 
 We found nothing from Matt on ultracode or fast mode as of October 2026.
 
 **Others:**
 
-- **Thariq Shihipar** (Anthropic, September 2026) has Claude interview him about a spec, implements on low, reviews it, then verifies on high. In his tests, the same vaguely described app took 1.5 minutes on low and 67 minutes on max.
+- **Thariq Shihipar** (claude.dev, September 2026) has Claude interview him about a spec, implements on low, reviews the result, then verifies on high. In his tests, the same vaguely described app took 1.5 minutes on low and 67 minutes on max.
 - **A Reddit user** in July 2026 grilled on Opus 5 at medium and implemented on Sonnet 5 at medium.
 
 ## Try it yourself
@@ -230,37 +230,37 @@ cd dials
 claude
 ```
 
-2. Read the session header at the top: it names your model and its effort. Type `/status` to double-check the model.
-3. Type `/effort`. Look at the levels and the Ultracode toggle, move to `low` and press `s` (this session only).
-4. Send this, and notice how long it takes:
+2. Read the session header at the top: it names your model and its effort. Type `/status` to double-check the model, then press Esc to close it.
+3. Type `/effort`. Look at the levels and, if you see it, the Ultracode toggle (on a Pro plan it only appears after the `/config` change in step 7). Move to `low` with the arrow keys and press `s` (this session only).
+4. Send this, and notice how long Claude works before answering:
 
 ```text
 In five bullets, plan a one-page site for a book club. Don't create any files.
 ```
 
-5. Type `/effort` again, choose `high`, press `s`, and send the same prompt. Compare the two answers.
+5. Type `/effort` again, choose `high`, press `s`, and send the same prompt. If Claude Code warns about the cache, confirm. Claude can see its first answer, so compare how long it worked, not how long the reply is.
 6. Now send:
 
 ```text
 ultrathink: which of those bullets is the riskiest, and why?
 ```
 
-7. Optional, and it uses noticeably more tokens. On a Pro plan, first turn on Dynamic workflows in `/config`. Then send the prompt below, approve the plan, open `/workflows` to watch, and press `x` there if it grows.
+7. Optional, and it uses noticeably more tokens. On a Pro plan, first turn on Dynamic workflows in `/config`. Then send the prompt below, and approve the plan if asked. Open `/workflows` to watch, and if its token count climbs past what you'd spend, select the run and press `x`.
 
 ```text
 ultracode: write three different one-paragraph pitches for the book club site in parallel, then have another agent pick the best. Don't create any files.
 ```
 
-8. Press Esc if anything runs longer than you want, then type `/exit`.
+8. Press Esc if a reply runs longer than you want (a workflow is stopped in `/workflows` instead). Type `/exit`, and if it asks about running tasks, choose to stop them. Run `claude` once more to check the last box, then `/exit` again.
 
 **It's working if:**
 
 - [ ] You could name your model and effort without guessing.
 - [ ] The header said low effort after step 3, and high after step 5.
-- [ ] The low answer came back sooner and shorter than the high one.
-- [ ] `ultrathink` was highlighted in your prompt, and the header still said high afterwards.
-- [ ] (Optional) The workflow showed its phases before it ran, and appeared in `/workflows`.
-- [ ] A new `claude` session starts at your old level, because you pressed `s` both times.
+- [ ] The high run worked longer before answering. On a prompt this small the gap can be slight; effort shows most on work that reads files and runs tests.
+- [ ] After the `ultrathink` answer, the header still said high effort.
+- [ ] (Optional) The workflow appeared in `/workflows`, with its phases and their agents.
+- [ ] The new `claude` session started at your old level, because you pressed `s` both times.
 
 If your default ever changes by accident, `/effort auto` clears your saved level.
 ````
@@ -268,27 +268,18 @@ If your default ever changes by accident, `/effort auto` clears your saved level
 ## Common mistakes
 
 - **Max, or even high, for everything.** Slower, pricier and prone to overthinking. Start at the default and raise effort for the hard part only.
-- **Bringing your Opus 5 level to Opus 5.5.** Start at medium.
 - **Typing `/model haiku` for one quick job,** then finding tomorrow's session on Haiku. Use `s` in the picker.
 - **Raising effort to rescue a vague task.** Fix the task instead; see Model or effort? above.
 - **Leaving ultracode on for routine work,** or thinking it's a level above max.
 - **Turning on fast mode deep into a conversation,** or expecting it on Sonnet or Haiku.
-- **Writing "think hard"** and expecting a keyword. Only `ultrathink` counts.
 - **Mixing up the "ultras" and the reviews:** `/code-review ultra` is a paid cloud bug hunt, ultracode is a setting, and Matt's review is `/mattpocock-skills:code-review`.
 
 ```site-story
-This Lesson exists because I asked for it. My very first message to the agent, the long one that started the grilling for this site, carried this request near the end:
+This Lesson was in the plan from the first grilling. We agreed on 11 Lessons, one per Skill plus "Start here" and this one, and the site's first spec put "Models, effort & ultracode" last. In the same grilling I said no to a model-and-effort box on every Lesson: writing it down doesn't teach it, so one Lesson about the dials would do.
 
-    it should also teach when to use what model for building and what effort
-    should be used and when should ultra code be used and with which effort
+**The first build ran on Opus 5.5 at the session's default effort,** and the commits credit Claude Opus 5.5 as co-author. At one point I opened `/effort`, looked at the slider, and cancelled: I was just looking. For review I ran Claude Code's Built-in `/code-review max` in the background, and separately Matt's `/mattpocock-skills:code-review` over everything since the first commit: a Built-in command and a Skill that share a short name.
 
-In that same grilling I opened `/effort`, looked at the slider, and cancelled. The agent then suggested a small "Built with: Opus 5.5 · effort high · ultracode off" box on every Lesson. I said no: noting it down wouldn't teach me anything, so one Lesson about the dials would do.
-
-**The first build ran on Opus 5.5 at the default effort,** and the commits credit Claude Opus 5.5 as co-author. Near the end of that build I ran Claude Code's Built-in `/code-review max` in the background, then Matt's `/mattpocock-skills:code-review`: two different tools that share a short name.
-
-**The next day, for the redesign and the Main flow Lesson, ultracode was on.** So when I typed `/mattpocock-skills:implement-spec`, the build ran as a workflow I could watch in `/workflows`, and I asked whether it could "expedite the process by spinning more subagents in the dynamic workflow". Partway through I set `/effort` to medium, and as the code review finished I dropped it to low. Both times Claude Code said the level was saved as my default for new sessions.
-
-My first version of this Lesson had a rule-of-thumb table that put grilling on high and the final review on max. A day later I was the one turning effort down. The line I wrote back then: higher isn't always better, so match the dial to how hard the problem is.
+My first version of this Lesson had a rule-of-thumb table that put grilling on high effort and the final review on max, more than Matt recommends today. The line I wrote under it still holds: higher isn't always better, so match the dial to how hard the problem is.
 ```
 
 ## Cheat sheet
@@ -297,7 +288,7 @@ My first version of this Lesson had a rule-of-thumb table that put grilling on h
 |---|---|
 | Everyday work | Leave the defaults: Opus 5.5 on medium |
 | Routine edits you can describe exactly | `sonnet` or `haiku`, or `low` effort |
-| Grilling, review, a strange bug | Your strongest everyday model |
+| Grilling, review, a subtle bug | Your strongest everyday model, usually `opus` |
 | Huge, ambiguous, hours-long work | `fable`, picked on purpose |
 | It skipped steps | Raise effort, or `ultrathink` for one turn |
 | It clearly tried and was still wrong | A bigger model |
@@ -306,55 +297,55 @@ My first version of this Lesson had a rule-of-thumb table that put grilling on h
 | One big sweep as a workflow | Start the prompt with `ultracode` |
 | A session of big sweeps | `/effort ultracode`, later `/effort ultracode off` |
 | Live debugging where speed matters | `/fast`, at the start of the conversation |
-| A deep bug review before merging | `/code-review ultra`: cloud, paid after 3 free runs |
+| A risky change before merging | `/code-review ultra`: cloud, paid after 3 free runs |
 
 ## Final test
 
 ```test scenario-grill-then-build
 You're about to grill a fuzzy idea for a recipe site, then hand the finished tickets to an agent to build one by one. Following Matt's habit, how do you split the models?
-- [ ] Haiku to grill, since it's only conversation, and Opus to build the tickets.
-  > Backwards. Grilling leans on what the model learned in training to raise things you missed, so it needs the strongest model.
-- [ ] Fable for both, because the strongest model can never be the wrong choice.
+- [ ] A small, fast model to grill, and your strongest one for the tickets.
+  > Backwards. Grilling leans on what the model learned in training to raise things you missed, so it gets the stronger model.
+- [ ] `fable` for both, so neither step is short of brainpower.
   > Fable costs the most and may bill usage credits. Building from clear tickets doesn't need it.
-- [x] Your strongest model to grill, and a cheaper one to build.
+- [x] A strong everyday model to grill, and a cheaper one to build.
   > Right. Grilling relies on the model's own knowledge; building from a clear ticket mostly uses what's already in context.
-- [ ] The same model for both, since models only differ in speed.
-  > Models differ in capability, not just speed. That's why the choice matters at all.
+- [ ] One mid-sized model for both, so the two steps stay consistent.
+  > The steps lean on different things: grilling on the model's own knowledge, building on the ticket.
 ```
 
 ```test scenario-outage-hunt
 Checkout has failed for a small share of users for two days. Nobody knows where to look, and the investigation will run for hours across several services. Which model fits best?
-- [x] `fable`, picked on purpose.
+- [x] `fable`, switched to for this investigation.
   > Right. Fable is aimed at the hardest, longest work, like root-cause investigations and outages. It's never the default, so you choose it.
 - [ ] `haiku`, so each attempt comes back quickly.
   > Haiku is for simple tasks you can describe exactly. This is the opposite.
 - [ ] `opusplan`, since the work needs a lot of planning.
   > `opusplan` just means Opus in plan mode and Sonnet afterwards. It splits planning from building; it isn't for the hardest problems.
-- [ ] Your current model, with fast mode switched on.
-  > Fast mode makes Opus answer faster, not think better.
+- [ ] `sonnet`, the everyday coding model, with effort on high.
+  > This is far from everyday work. More effort can't lift Sonnet past its ceiling on a problem this hard.
 ```
 
 ```test scenario-skipped-tests
-You asked for a fix to the comment form's length limit. Claude changed one file, never opened the API route that also checks the length, and didn't run the tests. You're on Opus 5.5 at low. What's the best change?
+You asked for a fix to the comment form's length limit. Claude changed one file, never opened the API route your prompt named, and didn't run the tests. You're on Opus 5.5 at low. What's the best change?
 - [ ] Switch to Fable.
   > A bigger model helps when it tried and still failed. Here it didn't do the work.
 - [x] Raise effort to medium or high.
-  > Right. Skipping a file and not running the tests are signs it didn't try hard enough. Effort sets how much it reads and checks.
-- [ ] Turn on fast mode.
-  > Faster answers, same amount of work.
-- [ ] Switch to Haiku, which follows short instructions more literally.
-  > A smaller model won't read or check more. The problem was effort, not instructions.
+  > Right. Skipping a file it was pointed at and not running the tests are signs it didn't try hard enough. Effort sets how much it reads and checks.
+- [ ] Switch to `opusplan`, so Opus plans the fix first.
+  > Planning on Opus doesn't make the build step read or check more. The problem was effort.
+- [ ] Name the API route in the prompt again, and resend at low.
+  > Your prompt already named it, so the context was there. It didn't do the work.
 ```
 
 ```test scenario-migration-day
-Today you're migrating 400 files to a new API, and nearly every request will be a big sweep. You want Claude to plan workflows on its own all day. What do you type?
-- [ ] `/effort max`
+Today you're migrating 400 files to a new API, and nearly every request will be a big sweep. You want Claude to plan workflows on its own all day. What do you do?
+- [ ] Type `/effort max`.
   > That's how much work each turn gets. It doesn't create workflows.
-- [ ] `/code-review ultra`
-  > That's a cloud bug review of your changes, not a way of working.
-- [ ] `/fast`
-  > Fast mode is about speed and price, not many agents.
-- [x] `/effort ultracode`
+- [ ] Start the first prompt with `ultracode`.
+  > The keyword opts in that one task. The rest of the day would run turn by turn.
+- [ ] Type `/model fable`.
+  > A bigger model still works turn by turn. Workflows come from ultracode, not the model.
+- [x] Type `/effort ultracode`.
   > Right. It turns ultracode on for the session at your current effort, so Claude decides which tasks deserve a workflow. Turn it off before routine work.
 ```
 
@@ -370,16 +361,28 @@ You're about to spend an hour live-debugging a flaky sign-up form with Claude on
   > Fast mode only works on Opus models.
 ```
 
+```test scenario-worth-paying
+This week Claude will spend two hours overnight tidying the code while you sleep, and on Friday you'll merge a risky change to how the site stores Comments. You have usage credits. Where is paying extra worth it?
+- [ ] Fast mode for the overnight tidy-up, so it's done sooner.
+  > Nobody is waiting on those replies, so you'd pay more per token for speed you never use.
+- [ ] Fast mode for the Comments change, switched on halfway through.
+  > Switching on halfway costs more than at the start, and speed doesn't make a risky change safer.
+- [ ] `/code-review ultra` after every small edit this week.
+  > After the free runs each review costs roughly $5–$25 and takes 15–25 minutes. Save it for the risky change.
+- [x] `/code-review ultra` on the Comments change before Friday.
+  > Right. A cloud review that verifies every finding earns its price before a risky merge. Fast mode pays off only when you wait on every reply.
+```
+
 ```test spot-max-everywhere
-Jo sets effort to max in every session "because this project matters". Replies take ages, the weekly limit runs out early, and simple edits come back with extra changes nobody asked for. What's the mistake?
-- [ ] Max should have been paired with fast mode to make it quick.
-  > That costs even more, and the work is still overthought.
-- [ ] Jo should have used `xhigh`, which is always better than max.
-  > It isn't always better, and it's still far more than everyday work needs.
-- [x] Max on everyday work makes it overthink and burn tokens.
+Ravi starts every session at max and runs every task on his book-club site at it: renaming a variable, fixing a typo, summarising one file. Each takes minutes, the weekly limit is gone by Thursday, and a typo fix arrives with two "improvements" nobody asked for. Spot the mistake.
+- [ ] Ravi picked max when `xhigh` is the strongest level.
+  > `max` is the deepest level; `xhigh` sits below it. Both are far more than routine edits need.
+- [ ] Ravi left ultracode off, so the edits couldn't run in parallel.
+  > Ultracode would add workflows and tokens on top. The overthinking comes from the level.
+- [x] Ravi gave routine edits the deepest level, so it overthought them.
   > Right. Start at the default (medium on the 5.5 models) and raise effort only for the genuinely hard part.
-- [ ] Jo should have switched to Haiku, since effort only matters on big models.
-  > Effort applies to Haiku 5.5 too, and a smaller model doesn't fix the overthinking.
+- [ ] Ravi kept max but should have switched to Haiku, which can't overthink.
+  > Haiku at max still overthinks routine edits. The level is the problem, not the model.
 ```
 
 ```test spot-ultracode-left-on
@@ -389,61 +392,50 @@ On Monday Priya put `"ultracode": true` in her settings for a big audit. By Thur
 - [x] Ultracode stayed on, so everyday tasks became workflows.
   > Right. With it on, Claude plans workflows for substantive tasks, often several per request. Turn it on for the big job, then off.
 - [ ] She should have used `/code-review ultra` for the audit instead.
-  > That's a paid bug review of a change, not an audit tool, and it doesn't explain her limit.
+  > That's a paid bug review of a change, not a way to run an audit, and it doesn't explain her limit.
 - [ ] Workflows don't count toward plan limits, so something else used them up.
   > They do count, and a workflow can use far more tokens than doing the task in conversation.
 ```
 
-```test spot-ultra-names
-Sam wants a big audit done by many agents, so he types `/code-review ultra`. A dialog asks him to confirm a cloud review and shows his free runs. What went wrong?
-- [ ] Nothing; that's how you turn ultracode on.
-  > Ultracode is turned on with `/effort ultracode`, or with the keyword in a prompt.
-- [ ] He needed `/code-review max` instead, which runs workflows locally.
-  > That's the same bug hunt at max effort, still a review of his changes.
-- [ ] He needed `/mattpocock-skills:code-review` instead.
-  > Matt's Skill reviews a change against standards and a spec. It isn't a way to run many agents on an audit.
-- [x] He launched a cloud bug review, which isn't ultracode.
-  > Right. `/code-review ultra` reviews his branch in the cloud and can cost credits. For a workflow, put `ultracode` in the prompt.
-```
-
 ```test sequence-reading-a-miss
-Claude's fix came back wrong. You work through the possible causes in order, and each one points to a different fix. Which order of fixes is right?
-- [ ] bigger model → more effort → fix the task
-  > Backwards. A bigger model can't rescue a vague task, and it's the priciest change, so it comes last.
-- [ ] more effort → fix the task → bigger model
-  > Raising effort first spends tokens before you know whether the task itself was the problem.
-- [x] fix the task → more effort → bigger model
-  > Right. Did it have what it needed? If not, fix the task. Did it do the work? If not, raise effort. Only then is it the model's ceiling.
-- [ ] fix the task → bigger model → more effort
-  > If it skipped steps, a cheaper effort change comes before a bigger model.
+Claude's fix to a book club's sign-up form came back wrong. Before you touch a dial, you ask three questions in turn. Which order lets each answer point to the right fix?
+- [x] Was the task clear? → Did it do the work? → Is the model capable enough?
+  > Right. Fix a vague task first, then check it did the work. Only a clear task, fully worked and still wrong, points to a bigger model.
+- [ ] Did it do the work? → Was the task clear? → Is the model capable enough?
+  > If the task was vague, more effort just digs harder in the wrong place. Check the task first.
+- [ ] Is the model capable enough? → Did it do the work? → Was the task itself clear?
+  > You can't call it the model's ceiling until you know it had what it needed and did the work.
+- [ ] Was the task clear? → Is the model capable enough? → Did it do the work?
+  > You only reach the model's ceiling once you know it did the work. A skipped file or test points to effort first.
 ```
 
-```test predict-ultrathink
-You're on medium effort and start one prompt with `ultrathink`. Claude reasons longer on that answer. What effort does your next, ordinary prompt get?
-- [x] Medium, as before.
-  > Right. `ultrathink` applies to one turn and doesn't change your effort setting.
-- [ ] High, because ultrathink raised the level by one step.
-  > It never changes the level; it adds an instruction for that turn only.
-- [ ] Max, until you type `/effort auto` to clear it.
-  > Nothing was saved, so there's nothing to clear.
-- [ ] It depends on whether you also wrote "think hard".
-  > "think hard" is ordinary text, not a keyword.
+```test predict-session-only
+You're on Opus 5.5, the model your paid plan gives you out of the box. For one tricky afternoon you open `/model`, highlight Fable and press `s`. What does tomorrow's new session start on?
+- [ ] Fable, because every pick in the `/model` picker is saved.
+  > Enter saves your pick, and so does typing `/model fable`. `s` keeps it to this session.
+- [x] Opus 5.5, because `s` didn't change your default.
+  > Right. `s` switches for this session only, so tomorrow starts on Opus 5.5 again.
+- [ ] Sonnet 5.5, because session-only picks fall back to the everyday model.
+  > Nothing falls back to Sonnet. A new session starts on your default, Opus 5.5 here.
+- [ ] Fable, as long as you still have usage credits.
+  > Credits decide whether Fable bills extra, not whether it's saved. `s` didn't save it.
 ```
 
 ```sources
-- [Model configuration](https://code.claude.com/docs/en/model-config), Claude Code docs (aliases, `/model` saving your default, effort levels and defaults, `ultrathink`, the ultracode setting), read 2026-10-23 against Claude Code 2.1.309.
-- [Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows), Claude Code docs (the `ultracode` keyword, `/effort ultracode`, cost, `/workflows`, limits), read 2026-10-23.
+- [Model configuration](https://code.claude.com/docs/en/model-config), Claude Code docs (aliases, `/model` saving your default, effort levels and defaults, the Ultracode toggle, `ultrathink`), read 2026-10-23 against Claude Code 2.1.309.
+- [Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows), Claude Code docs (the `ultracode` keyword, `/effort ultracode`, cost, approval per permission mode, `/workflows` keys, Pro setup), read 2026-10-23.
+- [Choose a permission mode](https://code.claude.com/docs/en/permission-modes), Claude Code docs (auto mode and its classifier), read 2026-10-23.
 - [Speed up responses with fast mode](https://code.claude.com/docs/en/fast-mode), Claude Code docs (models, usage credits, the one-time charge mid-conversation), read 2026-10-23.
 - [Find bugs with ultrareview](https://code.claude.com/docs/en/ultrareview), Claude Code docs (`/code-review ultra`: duration, free runs, pricing), read 2026-10-23.
-- [Choosing a Claude model and effort level in Claude Code](https://claude.com/blog/claude-model-and-effort-level-in-claude-code), Anthropic blog, 2026-07-07 (model vs effort, read 2026-10-23).
-- [Using Claude Code: Spending your effort](https://claude.dev/blog/spending-your-effort/), Thariq Shihipar, 2026-09-25 (his low-then-high loop and timings).
-- [Your effort level is TOO DAMN HIGH](https://www.youtube.com/shorts/iQb3F9UzBR4), Matt Pocock, 2026-07-15 (start low and climb, 0:57–1:05; benchmarks keep tasks fixed, 0:38–0:56; quote at 1:12–1:17).
-- [Your effort level is STILL TOO HIGH](https://www.youtube.com/watch?v=JgEsphDAXnY), Matt Pocock, 2026-10-13.
+- [Choosing a Claude model and effort level in Claude Code](https://claude.com/blog/claude-model-and-effort-level-in-claude-code), Anthropic blog, 2026-07-07 (check the context first, then model vs effort; what effort changes), read 2026-10-23.
+- [Using Claude Code: Spending your effort](https://claude.dev/blog/spending-your-effort/), Thariq Shihipar, 2026-09-25 (his low-then-high loop, timings, edge cases vs wrong approach, detailed spec), read 2026-10-23.
+- [grilling docs page](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/docs/productivity/grilling.md) ("It ran out of questions and started building") and [implement docs page](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/docs/engineering/implement.md) ("One ticket burned 150k tokens"): pinned to mattpocock-skills 1.3.1, read 2026-10-24.
+- [Your effort level is STILL TOO HIGH](https://www.youtube.com/watch?v=JgEsphDAXnY), Matt Pocock, 2026-10-13 (even high is overkill for most coding, 0:49–1:09; Opus 5.5 on medium, weighing low, 1:09–1:15).
 - [Matt Pocock on X: "Some mistakes you might be making"](https://x.com/mattpocockuk/status/2109973273924579720), 2026-10-13.
-- [Matt Pocock: The Most Valuable Skill to Learn in the Age of AI](https://www.youtube.com/watch?v=Z8lf5oWKfj0), Nate Herk interview, 2026-10-16 (Opus 5.5 on medium, considering low, 32:03–32:30).
+- [Your effort level is TOO DAMN HIGH](https://www.youtube.com/shorts/iQb3F9UzBR4), Matt Pocock, 2026-07-15 (lower effort is better value, exploring doesn't need it, benchmark charts, 0:00–0:36).
 - [Effort](https://www.aihero.dev/ai-coding-dictionary/effort), Matt Pocock's AI Coding Dictionary, 2026-09-24, read 2026-10-23.
 - [9 Things People Get Wrong With My /grill-* skills](https://www.youtube.com/watch?v=UzMNBN6xLLA), Matt Pocock, 2026-05-25 (too weak a model for grilling, a cheaper one for implementation, 8:41–10:23).
 - [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock at AI Engineer, 2026-04-24 (Sonnet implements, Opus reviews, 1:32:33–1:32:40).
-- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (Opus 4.8 on medium, no need to copy his setup, 9:03–9:14).
+- [Learn anything with the /teach skill](https://www.youtube.com/watch?v=s5T5oQJcJ6U), Matt Pocock, 2026-06-08 (Opus 4.8 at medium effort, 6:41).
 - [r/ClaudeCode: Matt Pocock tutorials thread](https://www.reddit.com/r/ClaudeCode/comments/1v90akt/), 2026-07-28 (Opus 5 medium to grill, Sonnet 5 medium to implement).
 ```

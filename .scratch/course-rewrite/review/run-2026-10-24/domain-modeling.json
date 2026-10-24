@@ -1,0 +1,232 @@
+{
+ "slug": "domain-modeling",
+ "review": {},
+ "revise": {
+  "summary": "I revised /Users/Muramkar/code/idea-to-shipped/content/lessons/05-domain-modeling.md and no other file. Both gates pass: the lint prints no ERROR lines at 2,800 words, and the course test runs 14 tests for this Lesson with all passing. The Lesson had been teaching against its own glossary rule. Its bad Comment example and its chat Scene both leaned on the \"can't be edited\" rule, and the Scene wrote a behaviour rule into the Comment entry. The bad example now uses a display-order decision instead. I rebuilt the Scene so it shows all four moves as domain-modeling SKILL.md:44-62 describes them: a clash with the glossary, a naming question that settles **Flag** before it is written down, an invented scenario, and a code check that happens because you state how something works. Context-hygiene advice now follows ask-matt:38 everywhere: no `/clear` or `/compact` until `/to-spec` and `/to-tickets` have run. The glossary sample is now quoted word for word from the site's first GLOSSARY.md (commit 4f849b9). \"Opus 5\" is gone, and the wait-what history now cites the changelog entry for 1.2.0, #751. In the Site story, a claim only a session log could back (\"before I knew the Skill\") is cut, and the Phase change is now backed by PR #10 (7934668) and the lesson-engine spec; every other line rests on old Lesson files, commits 6fdb4ae and 1262b31, d21fc2c, the specs' \"Read first\" lines, or the current glossary. The Final test question sequence-files-appear now has a fresh prompt, a /to-spec misconception in place of the old d, and a right answer of 90 characters as readers see it against 94 (94 against 98 in the raw Markdown). I also rewrote several other questions so they test transfer and have exactly one right answer.",
+  "fixed": [
+   "reader high (Try step 1): the folder is now book-club-docs, so it no longer clashes with Grilling's book-club; still one command per line",
+   "reader high and acc-skills medium (Try permissions): the advice on permission prompts (Yes for GLOSSARY.md and docs/adr/, No for other files) moved to step 5; step 9 now says only wrap up, Esc and /exit; the fallback line asks about a declined prompt first",
+   "acc-skills high and reader medium (Scene against the glossary rule): the bad Comment entry now uses 'show the newest first' as its decision; Q2 is now a naming question; only Flag is written; no behaviour rule goes into the Comment entry",
+   "acc-skills medium (Flag written but never settled; four moves): Q2 settles Flag with report under _Avoid_ before it is written; the user states something about the code and the agent checks it (SKILL.md:58); the recap names all four moves",
+   "acc-skills medium, reader medium and acc-sources low (Check both halves loaded): now two signals. No question numbers or recommendations means grilling didn't load; settled words that never reach GLOSSARY.md mean domain-modeling didn't",
+   "acc-skills medium and reader medium (/to-spec before any /clear): the body, Common mistakes, Cheat sheet and spot-assumed-saved feedback now say no /clear or /compact until /to-spec (and /to-tickets), per ask-matt:38",
+   "acc-skills medium and acc-sources low (demo save line): now says he asked it to save near the end though the Skill says write as you go (6BB6exR8Zd8 5:37-5:52 and 11:21)",
+   "acc-sources medium, acc-skills low and reader low (glossary sample): verbatim header, description and Visitor entry from the first GLOSSARY.md (4f849b9), with its real ## Discussion heading; the text notes the template uses ## Language",
+   "acc-sources medium (Opus 5): removed; wait-what is dated to version 1.2.0 (August 2026) and its 'real cure' line is cited to CHANGELOG #751",
+   "quiz medium and reader medium (earns-an-adr): the right answer now shows a real trade-off (the council's system over the app's own database, to skip a data audit); option b's feedback now says one missing test is enough; options a and d no longer reuse the body's date-library and TypeScript examples",
+   "quiz medium and acc-skills low (spot-assumed-saved): right answer is now '/clear left the rest behind', not 'erased'",
+   "Task item 4 and quiz medium (sequence-files-appear): the new prompt no longer gives away the order; d is now a /to-spec misconception; the right answer is shorter than option a by both measures",
+   "quiz medium (why-not-surprising): the prompt no longer states the right answer's defining phrase; the template wording is now plain",
+   "quiz medium (spot-recipe-entry): new shape (a good first sentence, then storage and decisions); JSON removed; option d's feedback fixed; the right answer no longer wrongly implies the _Avoid_ line must go",
+   "quiz medium (scenario-no-docs-repo): the right answer no longer copies the body sentence; option a is no longer a strawman",
+   "reader medium (three tests used before named): the table names the three tests at first use",
+   "reader medium (unexplained terms): short clauses for Markdown, library, TypeScript, Timeout, the model's thinking, re-pitch, Git, the API endpoint, the Git change, and both meanings of Phase; endpoints and frameworks replaced with plain words; 'refactored' became 'changed'; /to-tickets and tickets are now defined at first use",
+   "reader medium (leading word): the wait-what text's opening is quoted (under 15 words); the first word, 'Wait', is named; 'that' is explained",
+   "reader lows: step 2 says don't press Enter; step 6 says when to peek; the recap names the four moves; the 'merged the two' sentence is cut; the first Skill definition covers model-invoked Skills; the ADR filename example is real; Considered Options and /compact are introduced in the body; the 'own section' line is made concrete; 'three-line' became 'tiny ... one paragraph'",
+   "acc-sources lows: the spec claim is now 'Read first' lines near the top; ADR-FORMAT.md is its own source item, so each quote has its own source; 'or course' added",
+   "acc-skills lows: the Scene's code check now follows SKILL.md:58; 'both halves at once' replaces 'only then trims'; 'None of these files need setting up first'; the one-day-build line is dropped (it clashed with ask-matt:85); CHANGELOG #751 is listed under 1.2.0",
+   "quiz lows: the scenario-new-words prompt no longer hands over the answer; scenario-glossary-missing option b replaced (the old one was ruled out by the prompt itself); Late fee distractor now has an _Avoid_ line; spot-adr-pile uses a 12-hour clock instead of date-fns; where-it-lands prompt and feedback fixed; the why-shared-words right answer now answers the premise",
+   "Site story repo check: cut 'before I knew the Skill' (only a log could back it); 'every file renumbered' became 'the Lessons were renumbered' (start-here kept 00); the Phase change is cited to 7934668 and the lesson-engine spec; the #847 line now gives the poster's proposed fix; the Scott Logic and #847 details checked against the live pages"
+  ],
+  "deferred": [],
+  "lowsDeferred": 1,
+  "declined": [
+   {
+    "problem": "quiz low: wait-what-reply option c's feedback argues about scope ('often bigger than one sentence') instead of the need for context",
+    "reason": "The installed docs say the same thing, almost word for word: docs/productivity/wait-what.md:19 'What lost you is usually bigger than one paragraph, so the agent decides how far back to go.' The feedback is accurate, so I kept it; only option a was lengthened, so the right answer is strictly shorter."
+   }
+  ],
+  "words": 2800,
+  "lintClean": true,
+  "testsPassed": true
+ },
+ "rounds": {
+  "r1": {
+   "checks": {
+    "quiz": [
+     {
+      "severity": "medium",
+      "where": "Final test: scenario-new-words line 345 (\"`/grill-with-docs`\"), scenario-glossary-missing line 359, scenario-lost-reply line 367 (\"`/wait-what`\"), scenario-no-docs-repo line 385, why-not-surprising line 445",
+      "problem": "Wording tell: the shortest option is the right one in 5 of the 10 Final test questions, including all 4 scenario- questions. A Visitor who just picks the shortest option gets 50% without reading anything, against 25% by chance. The lint only stops the right answer being the longest, so shortening the right answers swapped one tell for another. In scenario-new-words it's worse: all three wrong options use the same shape, \"`/x`, <reason>\", and the right one is the only bare name.",
+      "evidence": "Rendered lengths (backticks and asterisks stripped), right answer first: scenario-new-words 16 vs 46/61/48; scenario-glossary-missing 45 vs 56/51/69; scenario-lost-reply 10 vs 13/38/45; scenario-no-docs-repo 63 vs 70/75/73; why-not-surprising 42 vs 48/49/45. In the other five questions the right answer isn't the shortest. Writing guide, Questions: \"no wording tells.\"",
+      "fix": "Line 345: \"- [x] `/grill-with-docs`, with your rough idea after it\" (47 against 46/61/48). Line 367: \"- [x] `/wait-what`, straight after that reply\" (37 against 13/38/45). Line 385: \"- [x] Type `/grill-with-docs` and have it interview you about the existing code.\" (72 against 70/75/73; raw 74 against raw 77, so the lint still passes). Line 443: \"- [ ] Yes, and add Tailwind to `GLOSSARY.md` too.\" (41, so the right answer at 42 is no longer the shortest). Line 359: see the scenario-glossary-missing finding."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-glossary-missing, option a line 355 (\"The glossary is written in one go when the session ends.\") and right option c line 359 (\"Only grilling loaded; domain modeling didn't.\")",
+      "problem": "The Lesson's own story about Matt undermines the answer key. In 'How Matt and others use it' it says that in his demo domain modeling clearly ran (it flagged a clash with his glossary), yet the terms were only saved when he asked near the end. So a sharp reader, twenty minutes in with no file, can argue for option a (the agent is saving the terms up). On that reading the keyed answer, \"domain modeling didn't load\", is false. The prompt gives nothing that tells 'not loaded' apart from 'loaded but saving up'.",
+      "evidence": "Lesson line 235: \"He still asked it to save near the end, though the Skill says to write as you go\". Research note .scratch/course-rewrite/research/domain-modeling.md:118: \"He then asked it to save what they had into the glossary\". The same note's open questions mention \"file-writing being skipped inside orchestration layers\". domain-modeling/SKILL.md:62: \"Don't batch these up\" (the Skill's design, not a guarantee of what happens). Lesson line 206 says words that \"never reach\" the glossary mean domain modeling didn't load, but twenty minutes in nobody can know they never will.",
+      "fix": "Replace option a (line 355) with a misconception that Matt's demo doesn't support: \"- [ ] The glossary is only created once enough terms pile up.\" Feedback: \"There's no threshold. The file is created with the first settled term and grows one term at a time.\" Option c (line 359): \"- [x] Only grilling loaded; the domain-modeling half didn't.\" Feedback: \"Right. Numbered rounds show grilling is running, but nothing is writing terms down. Ask which Skills loaded, or type `/domain-modeling` yourself. (If it did load but is saving terms up, as in Matt's demo, ask it to write them now.)\" Lengths: a 55, b 51, c 54, d 69, so the right answer is neither the shortest nor the longest."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test spot-recipe-entry, prompt line 390 (\"**Recipe**: A dish's ingredients ... _Avoid_: Dish, post.\") and right-answer feedback line 394",
+      "problem": "A spot- question should hold exactly one mistake, and this entry holds two. Besides the intended one (drifting into storage and decisions), it lists \"Dish\" under _Avoid_ but then defines Recipe as \"A dish's ingredients\". That uses the avoided word, with a different meaning, inside its own definition. The right-answer feedback then says to keep both: \"Keep the first sentence and the `_Avoid_` line\". That teaches the Visitor that using an avoided word in a definition is fine, which goes against \"One word per thing\".",
+      "evidence": "Lesson line 104: \"**Be opinionated.** One word per thing; the rejected synonyms go under `_Avoid_`.\" setup-matt-pocock-skills/domain.md:43: \"Don't drift to synonyms the glossary explicitly avoids.\" GLOSSARY-FORMAT.md:27: \"When multiple words exist for the same concept, pick the best one and list the others under `_Avoid_`.\"",
+      "fix": "Line 390: change \"_Avoid_: Dish, post.\" to \"_Avoid_: Post, article.\" No other change is needed; the feedback on line 394 is then accurate."
+     },
+     {
+      "severity": "low",
+      "where": "Final test spot-assumed-saved, options a and b (lines 415-418)",
+      "problem": "This question overlaps both a Checkpoint and the previous Lesson. Options a (make it an ADR) and d (make it a glossary term) repeat the where-it-lands Checkpoint's distractors (lines 80 and 76), with near-identical feedback. Option b and its feedback are almost word for word from Grilling's spot-cleared-early. A Visitor who has done the Checkpoint and Grilling can answer it from memory.",
+      "evidence": "Line 418: \"`/to-spec` writes from a grilled conversation. Run first, it has nothing to write from.\" 04-grilling.md line 404: \"`/to-spec` writes from the grilled conversation. Run first, it would have no decisions to write from.\" Line 416 (\"A refund window is easy to change, so it fails the ADR tests\") repeats line 81 (\"'Metric only' is easy to reverse, so it doesn't qualify\"). Writing guide: \"no Checkpoint duplicates a Final test question.\"",
+      "fix": "Option a: \"- [ ] He should have typed `/compact` instead, which keeps every decision.\" Feedback: \"A summary keeps the gist, not every detail like a 30-day window. No `/compact` either until `/to-spec` has run.\" Option b: \"- [ ] The new ADR should have listed his other decisions under Consequences.\" Feedback: \"Consequences is an optional section for non-obvious effects of that one decision, not a store for the rest.\" Lengths 66 and 70, against the right answer's 73. Keep option d."
+     },
+     {
+      "severity": "low",
+      "where": "Final test spot-adr-pile, prompt line 402 (\"Round the button corners\") and right option a line 403 (\"Most of those fail the three tests\")",
+      "problem": "The right answer is the only hedged option (\"Most of those\"); the others are absolute (\"all\", \"Each\", \"They belong\"). Hedging like this is a classic tell. Also, \"Round the button corners\" reuses the button-styling example from the earns-an-adr Checkpoint (line 152, \"Make the submit button green\"), which tests recognition rather than transfer.",
+      "evidence": "Line 403: \"Most of those fail the three tests, so they shouldn't be ADRs.\" Line 405: \"They should all be merged...\"; line 407: \"Each ADR needed...\"; line 409: \"They belong in...\".",
+      "fix": "Line 402: replace \"Round the button corners\" with \"Sort habits A to Z\". Line 403: \"- [x] Choices like these fail the three tests, so they aren't ADRs.\" (61 characters, against 54/69/62)."
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint wait-what-reply, option c feedback line 225",
+      "problem": "Option c (\"Only the last sentence, reworded in simpler language\") is half right: plain wording is part of what /wait-what asks for. The feedback argues about how much gets re-pitched (\"often bigger than one sentence\") but never names what the option actually lacks, which is the missing context the Skill asks for.",
+      "evidence": "productivity/wait-what/SKILL.md:7: \"Re-pitch that: give me a little bit of context, talk in ASD-STE100 Simplified Technical English\".",
+      "fix": "Line 225: \"  > Simpler words are part of it, but rewording one sentence adds nothing you missed. The re-pitch must give a little context, and the agent decides how far back to go.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test scenario-no-docs-repo, prompt line 378 (\"You join a three-year-old repo\")",
+      "problem": "The premise weakens the keyed answer. Someone who has just joined is the person least able to say \"what each thing really is\" (line 386), so a sharp reader can doubt that being interviewed beats having the agent draft the glossary. The body's advice (line 205, \"Existing project, no docs?\") assumes it's your own project.",
+      "evidence": "Line 386 feedback: \"It reads the code, asks what each thing really is, and writes each settled term as you go.\" grilling/SKILL.md:28: \"The _decisions_ are the user's\".",
+      "fix": "Line 378: \"You've worked in your team's three-year-old repo for a year, but it has no `GLOSSARY.md` and no ADRs. People use \\\"ticket\\\", \\\"case\\\" and \\\"job\\\" loosely for what might be one thing. You want a trustworthy glossary before planning any feature. What's the best move?\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test why-not-surprising, prompt line 438 and right-answer feedback line 446 (\"Hard to reverse and a real trade-off\")",
+      "problem": "The prompt says the team weighed two other options but gives no reason for choosing Tailwind; it just came with the template. Test 3 needs a pick \"for specific reasons\", so a strict reader can say it fails the trade-off test too, which makes the feedback's \"a real trade-off\" an unsupported claim. (The keyed answer is still the only right option.)",
+      "evidence": "domain-modeling/ADR-FORMAT.md:35: \"there were genuine alternatives and you picked one for specific reasons\". Lesson line 140: \"chosen between for specific reasons\".",
+      "fix": "Line 438: \"A team picks Tailwind (a styling library) for a new app. Swapping it out later would mean restyling every page, and they kept it over two other options because it's faster to write. It came with the starter template they built the app from, and nearly every app built from that template uses it. Should the agent offer an ADR?\""
+     }
+    ],
+    "reader": [
+     {
+      "severity": "medium",
+      "where": "## The idea: grilling plus a paper trail, files Scene, lines 60-63: `title: What a session adds to this site's repo (illustrative)` / `# Before you start, the repo holds code and Lessons...` / `+ content/lessons/04-grilling.md` / `+ src/comments/comments.ts`",
+      "problem": "The two files that already exist before the session are written with `+`, and `+` renders with a green ADDED badge. So the picture tells the reader the session adds a Lesson file and comments.ts. That contradicts the step's own caption (\"Before you start\") and the Scene's title (\"What a session adds\"). A reader comparing the badges with the prose can't tell which files the Skill really creates.",
+      "evidence": ".scratch/course-rewrite/contract-v1.md:18 \"files: `+ path` added / `~ path` changed\". src/lessons/scenes.ts:181 maps \"+\" to change \"added\". src/app/learn/[slug]/scene.tsx:224 renders `<span className=\"file-badge file-badge--added\">added</span>`, and src/app/globals.css:2104-2107 hides only the other badge, so the ADDED badge shows on both rows. Lesson line 61: \"Before you start, the repo holds code and Lessons. No docs exist, and none are needed.\"",
+      "fix": "Delete lines 61-63 and the caption on line 64. Open the Scene with this step:\n# No docs exist before you start, and none are needed. The first term is settled (\"Visitor\": anyone reading the site), and only now is GLOSSARY.md created.\n+ GLOSSARY.md\nKeep the rest of the Scene as it is."
+     },
+     {
+      "severity": "medium",
+      "where": "## A session, step by step, chat Scene, lines 178-180: `agent: I checked \\`src/comments\\`: there's no hide button, and nothing hides a Comment today. So hiding is new? ➡️ Yes.` / `# Nothing is left to ask...` / `you: Yes, it's new.`",
+      "problem": "The worked example asks a question with no ❓ number, and the user answers it in free words. Twenty-five lines later, line 206 teaches the reader that \"Questions without ❓ numbers and ➡️ recommendations mean grilling didn't load\". So the Scene shows the very symptom the Lesson calls a failure, with grilling loaded. Also, the caption \"Nothing is left to ask\" comes before the user has answered that open question.",
+      "evidence": "productivity/grilling/SKILL.md:8 \"Ask the whole frontier in one round: number each question and give your recommended answer.\" grilling/SKILL.md:13 gives the format \"❓ **Q1** - **<question title>**: ...\". Lesson line 206 (Check both halves loaded). content/lessons/04-grilling.md:257 It's working if: \"Each round arrives as numbered questions (❓ Q1, ❓ Q2…), each with its own ➡️ recommendation.\"",
+      "fix": "Replace lines 178-180 with:\nagent: ❓ **Q4** - **Hiding**: I checked `src/comments`: there's no hide button, and nothing hides a Comment today. So hiding is new? ➡️ Yes.\nyou: 4 yes.\n# Nothing is left to ask. No decision passed all three tests, so there's no ADR.\nKeep line 181 (the agent's summary) under that caption."
+     },
+     {
+      "severity": "medium",
+      "where": "## Try it yourself, step 1 (lines 248-255: `mkdir book-club-docs` ... `claude`, then straight to `/grill-with-docs` at step 4). Also ## Your part, line 205 (\"Existing project, no docs? Type `/grill-with-docs help me document my repo`\") and ## Cheat sheet, line 330 (\"| Start a change in a repo | `/grill-with-docs <your rough idea>` |\")",
+      "problem": "The Try makes a new repo and starts `/grill-with-docs` without the one-time `/setup-matt-pocock-skills`. The Cheat sheet sends any repo straight to `/grill-with-docs`. But the Skills and The main flow Lessons tell the same reader to run setup once per repo before any other engineering Skill. A reader who did those Lessons doesn't know whether to run it here, and this Lesson never says it can be skipped. It contradicts other Lessons and the course facts.",
+      "evidence": "content/lessons/03-skills.md:157: \"you run it ==once per repo, before any other engineering Skill==, in an empty folder or an old project.\" content/lessons/12-main-flow.md:59: \"In a repo, that's `/grill-with-docs`, after a one-time `/setup-matt-pocock-skills`.\" content/lessons/12-main-flow.md:340: \"| A new repo | `/setup-matt-pocock-skills`, once |\". writing-guide.md, Facts the whole course agrees on: \"`/setup-matt-pocock-skills` once per repo first.\" The Try still works without setup: domain-modeling/SKILL.md:40 creates GLOSSARY.md and docs/adr/ lazily and reads nothing setup writes. The Lesson just has to say so.",
+      "fix": "Append to Try step 1: \"This practice repo skips `/setup-matt-pocock-skills`, because `/grill-with-docs` doesn't need what it records. In a real repo, run it once first (see [Skills](/learn/skills)).\" Change Cheat sheet line 330 to: \"| Start a change in a repo | `/grill-with-docs <your rough idea>`, after a one-time `/setup-matt-pocock-skills` |\". The Lesson is already at 2,800 words, so delete Common mistakes line 295 (\"**Using `GLOSSARY.md` as a spec.** Trim it before you think about splitting it.\"), which repeats line 204, to offset the extra words."
+     },
+     {
+      "severity": "medium",
+      "where": "## Why it matters, line 28: \"Matt's `/grill-with-docs` Skill writes both during a grilling session.\" Also ## The idea, line 55: \"don't `/clear` (the Built-in command that empties the conversation)\"",
+      "problem": "A cold reader meets two terms before they are explained. (1) \"Grilling session\" is used on line 28 but defined only on line 36 (\"A grilling session is an interview...\"). Line 11's \"grills you\" doesn't explain it either. (2) \"Built-in command\" is a capitalised glossary term that the Lesson uses but never explains. The Lesson insists that a Skill is not a command, so the reader needs to know what a Built-in command is.",
+      "evidence": "Lesson lines 11, 28, 36 and 55. GLOSSARY.md:35-37: \"**Built-in command**: A command that comes with Claude Code itself, such as `/clear` or `/compact`. Not a Skill\". writing-guide.md, pilot review: \"Define ... any mode you mention at first use, in a clause\".",
+      "fix": "Line 28: \"Matt's `/grill-with-docs` Skill writes both while the agent interviews you.\" Line 55: \"So don't `/clear` (a Built-in command, one that comes with Claude Code rather than a Skill, which empties the conversation) or `/compact` (which swaps it for a summary) before then; ...\""
+     },
+     {
+      "severity": "low",
+      "where": "## Try it yourself, It's working if, lines 284-285: \"with no tables, pages or decisions\" / \"It challenged a fuzzy word, such as whether \\\"people\\\" and \\\"members\\\" are the same.\"",
+      "problem": "A newcomer judging the result can't tell what \"tables\" and \"pages\" mean here: Markdown tables, database tables, web pages or book pages. \"Challenged a fuzzy word\" also borrows the name of move 1 (Challenge against the glossary) for move 2 (Sharpen fuzzy words). An empty repo has no glossary to challenge against.",
+      "evidence": "Lesson lines 42-43 name the moves \"Challenge against the glossary\" and \"Sharpen fuzzy words\". Line 108 lists what's banned as \"No database details, web addresses, tool names, decisions or to-do notes.\"",
+      "fix": "Line 284: \"- [ ] Each entry is a bold term, what it *is* in a sentence or two, and an `_Avoid_:` line, with no database details, web addresses or decisions.\" Line 285: \"- [ ] It sharpened a fuzzy word, such as whether \\\"people\\\" and \\\"members\\\" are the same.\""
+     },
+     {
+      "severity": "low",
+      "where": "## The glossary, line 118: \"so rename an old one with `git mv CONTEXT.md GLOSSARY.md`.\"",
+      "problem": "A reader who barely uses Git isn't told where to type this (the terminal, inside the repo folder). The rename also skips the map file, which Matt's changelog says to rename too.",
+      "evidence": "mattpocock-skills 1.3.1 CHANGELOG.md:33: \"If you have an existing `CONTEXT.md` (or `CONTEXT-MAP.md`) from before this change, `git mv` it to the new name\".",
+      "fix": "\"...so rename an old one: in your terminal, inside the repo, run `git mv CONTEXT.md GLOSSARY.md` (and `git mv CONTEXT-MAP.md GLOSSARY-MAP.md` if you have a map).\""
+     },
+     {
+      "severity": "low",
+      "where": "## How Matt and others use it, line 234: \"codebase, `/grill-with-docs`; no codebase, `/grill-me`. He'd pick the docs version even for a brand-new project\"",
+      "problem": "To a cold reader this reads as self-contradictory: a brand-new project has no codebase, so the rule says `/grill-me`, yet the next sentence says the docs version. \"Codebase\" also appears nowhere else. The rest of the Lesson draws the line at a repo (lines 207 and 331, \"No repo: `/grill-me`\").",
+      "evidence": "Transcript 6BB6exR8Zd8, 14:05-14:25: \"really early on a project, I'd still probably recommend using Grill with Docs\", then \"when you have a code base, use Grill with Docs\". ask-matt/SKILL.md:19: \"Start here whenever you are **working in a working directory**\". Lesson lines 207 and 331.",
+      "fix": "\"- **A repo means the docs version.** His rule in the May 2026 video introducing it: in a project folder, `/grill-with-docs`; with none, `/grill-me`. That holds even for a brand-new, nearly empty project, since that's when shared words get set.\""
+     },
+     {
+      "severity": "low",
+      "where": "## When a reply loses you, line 214: \"It re-pitches \\\"that\\\" (whatever lost you)\" and \"the model obeys by cutting words\". Also Checkpoint wait-what-reply feedback, line 225 (\"It re-pitches \\\"that\\\"\"), and Final test scenario-lost-reply feedback, line 370 (\"so the model clips words\")",
+      "problem": "The quoted \"that\" points at Skill wording the Lesson never shows: line 212 quotes only the first sentence. \"The model\" is used nowhere else; the Lesson otherwise says \"the agent\" (or \"the AI\"). A cold reader can't tell what \"that\" refers to or whether the model and the agent are different things. Quoting \"Re-pitch that\" would be a second quote from wait-what SKILL.md, which breaks the one-quote-per-source rule, so the fix is to paraphrase.",
+      "evidence": "productivity/wait-what/SKILL.md:7: \"Wait, I don't understand where you've got to here. Re-pitch that: ...\". Lesson line 212 quotes only the first sentence. Line 22 introduces \"an AI\", and the Lesson says \"the agent\" from then on.",
+      "fix": "Line 214: \"\\\"Be concise\\\" is about the output, and the agent obeys by cutting words, which loses you further. ... It re-pitches whatever lost you, and the agent decides how far back to go.\" Line 225: \"  > It re-pitches whatever lost you, and the agent decides how far back to go. What lost you is often bigger than one sentence.\" Line 370: \"  > That's about the output, so the agent clips words. Shorter, but you're still lost.\""
+     },
+     {
+      "severity": "low",
+      "where": "## The glossary, line 88: \"The template files terms under `## Language`; this site's first glossary used its own headings.\" Also ## Decision records, line 134: \"The template is a short title plus one to three sentences\"",
+      "problem": "\"The template files terms\" is a garden-path sentence: \"template files\" reads as a noun until \"terms\" makes \"files\" a verb. \"The template\" has also not been introduced, so a newcomer doesn't know that the Skill ships its own format files.",
+      "evidence": "domain-modeling/GLOSSARY-FORMAT.md:5-14 (the template, with `## Language`). domain-modeling/ADR-FORMAT.md:9-13 (the ADR template).",
+      "fix": "Line 88: \"Matt's template, which the Skill follows, puts the terms under `## Language`; this site's first glossary used its own headings.\" Line 134: \"Matt's template is a short title plus one to three sentences: the context, the decision and why.\""
+     }
+    ],
+    "accuracy": [
+     {
+      "severity": "medium",
+      "where": "Intro line 11 (\"keep them in files every later session reads\"), callout line 31 (\"the next session starts with your words\"), The glossary line 116 (\"`/setup-matt-pocock-skills`, just records where it lives\"), Final test why-shared-words feedback line 452 (\"so every session, reply and new file uses it\")",
+      "problem": "The Lesson says every later session reads GLOSSARY.md, as if Claude Code loaded it automatically. It doesn't. Claude Code loads CLAUDE.md at the start of a session. GLOSSARY.md is read only by Skills whose instructions say to read it, or by sessions that a CLAUDE.md pointer sends there, and /setup-matt-pocock-skills writes that pointer. The Lesson calls this setup step trivial (\"just records where it lives\"), and the Try it never runs setup. So in the reader's own book-club repo, a later plain session is never told to read the glossary.",
+      "evidence": "setup-matt-pocock-skills/SKILL.md:84-99 (the CLAUDE.md \"## Agent skills\" block: \"### Domain docs ... See `docs/agents/domain.md`\"); setup-matt-pocock-skills/domain.md:5-8 (\"Before exploring, read these\": GLOSSARY.md ...); to-spec/SKILL.md:13 and to-tickets/SKILL.md:21 (these Skills read it because their instructions say so). In video 6BB6exR8Zd8 at 7:02-7:25, Matt says grill-with-docs knows to look for the file, \"but I also add a context pointer\" into CLAUDE.md. The course's own How coding agents work Lesson, line 188: Claude Code reads CLAUDE.md at the start of each session.",
+      "fix": "Line 11: \"Settle your project's words once, while the agent grills you, and keep them in a file that later sessions and Skills can read.\" Line 31: \"Write a word down the moment you agree on it, and later sessions can start from your words instead of guessing at them.\" Line 116, second half: \"...reuse the glossary's words, and the one-time setup Skill, `/setup-matt-pocock-skills`, adds a pointer to it in `CLAUDE.md` (the file Claude Code reads at the start of every session), so every session knows to look there.\" Line 452: \"Right. The glossary fixes one word per thing, so sessions, Skills and new files can all use it, and a search finds everything.\""
+     },
+     {
+      "severity": "low",
+      "where": "The idea, files Scene, lines 61-63 (\"# Before you start, the repo holds code and Lessons...\" + content/lessons/04-grilling.md, + src/comments/comments.ts)",
+      "problem": "In a files Scene, `+` means \"A file was added\". So under the title \"What a session adds to this site's repo\", the first step shows the session adding a Lesson file and the comments module. The session doesn't create either file.",
+      "evidence": "docs/authoring-lessons.md:299 (\"`+ path` | A file was added\"). The Lesson's title (line 60) says the Scene shows what a session adds.",
+      "fix": "Delete the first step (lines 61-63) and merge its caption into the next one: \"# Before you start, no docs exist, and none are needed. The first term is settled (\"Visitor\": anyone reading the site). Only now is GLOSSARY.md created.\" followed by `+ GLOSSARY.md`."
+     },
+     {
+      "severity": "low",
+      "where": "Final test spot-recipe-entry, stem line 390 (\"**Recipe**: A dish's ingredients ... _Avoid_: Dish, post\") and right-answer feedback line 394 (\"Keep the first sentence and the `_Avoid_` line\")",
+      "problem": "The model entry's definition uses \"dish\", a word its own `_Avoid_` line rejects. The right answer's feedback then tells the reader to keep both, which goes against the Lesson's \"Be opinionated\" rule (line 104).",
+      "evidence": "GLOSSARY-FORMAT.md:27: pick the best word \"and list the others under `_Avoid_`\". The Lesson's line 104 says one word per thing.",
+      "fix": "Change the stem's last part to \"_Avoid_: Post, method.\" Nothing else needs to change."
+     },
+     {
+      "severity": "low",
+      "where": "How Matt and others use it, line 241 (\"They proposed putting the status line at the top, the part an agent reliably reads.\")",
+      "problem": "The discussion's author asked for the status line to be mandatory and at the top. ADR-FORMAT already puts Status at the top, as optional frontmatter, and line 146 already tells the reader to mark Status \"at the top\". Without \"mandatory\", the proposal reads like something the Skill already does.",
+      "evidence": "github.com/mattpocock/skills/discussions/847 (CodeMarr, 2026-08-13): \"Would you make the status line mandatory and at the top of the file?\". ADR-FORMAT.md:21: \"**Status** frontmatter ... useful when decisions are revisited\" (listed under Optional sections).",
+      "fix": "\"They proposed making the Status line mandatory, at the top of every ADR, the part an agent reliably reads.\""
+     },
+     {
+      "severity": "low",
+      "where": "A session, step by step, chat Scene line 178 (\"I checked `src/comments`: there's no hide button\")",
+      "problem": "The Scene is set in this site's repo, but the comment box isn't in src/comments. That folder holds only the server-side comments module (comments.ts, limits.ts). The box is src/app/learn/[slug]/discussion.tsx. Looking in src/comments for a button checks the wrong place, which weakens the \"check the code\" move the Scene is showing.",
+      "evidence": "`ls src/comments` lists comments.ts and limits.ts. src/app/learn/[slug]/discussion.tsx:7-9 says \"The Discussion band at the end of a Lesson ... lists the Lesson's Comments and posts new ones\".",
+      "fix": "\"agent: I checked the comment box (`src/app/learn/[slug]/discussion.tsx`) and `src/comments`: there's no hide button, and nothing hides a Comment today. So hiding is new? ➡️ Yes.\""
+     },
+     {
+      "severity": "low",
+      "where": "Site story, line 319 (\"Every spec here has a \"Read first\" line pointing the agent at `GLOSSARY.md` and the ADRs\")",
+      "problem": "This slightly overstates what the repo holds. The newest spec's Read first line names GLOSSARY.md but only ADR 0004, not the ADRs.",
+      "evidence": ".scratch/course-rewrite/spec.md:5: \"Read first: `GLOSSARY.md` (...) and `docs/adr/0004` (Slugs never change).\" The other three specs point at ADR ranges: .scratch/lesson-site/spec.md:8 and .scratch/main-flow-and-redesign/spec.md:5 at 0001–0004, .scratch/lesson-engine/spec.md:5 at 0001–0007.",
+      "fix": "\"Every spec here has a \"Read first\" line pointing the agent at `GLOSSARY.md` and the ADRs it needs, ...\""
+     }
+    ]
+   },
+   "fix": {
+    "applied": [
+     "accuracy (GLOSSARY.md isn't auto-loaded): intro line now says 'keep them in a file that later sessions and Skills can read'. Big-idea callout now says 'later sessions can start from your words'. The glossary paragraph now says /setup-matt-pocock-skills 'leaves a pointer in CLAUDE.md (the file Claude Code reads at the start of every session), so every session knows where to look' (setup SKILL.md:84-99, domain.md:5-8). why-shared-words feedback now says 'so sessions, Skills and new files can all use it'.",
+     "files Scene: removed the pre-existing content/lessons/04-grilling.md and src/comments/comments.ts rows, which showed a false ADDED badge. The Scene now opens with one step, 'No docs exist before you start, and none are needed. The first term is settled (...), and only now is GLOSSARY.md created.' + GLOSSARY.md. It has 4 steps, still inside the 4-8 rule.",
+     "chat Scene: the code-check question is now a numbered round, '❓ **Q4** - **Hiding**: ... So hiding is new work for this change? ➡️ Yes.', and the reply is 'you: 4 yes.'. The caption 'Nothing is left to ask...' now comes after that answer and before the summary. The question is worded as a scope decision because grilling says facts are the agent's job.",
+     "setup contradiction: Try step 1 now says the practice repo skips /setup-matt-pocock-skills because /grill-with-docs doesn't need what it records, and to run it once first in a real repo (link to [Skills](/learn/skills)). Added a Cheat sheet row '| A new repo | `/setup-matt-pocock-skills`, once |', matching The main flow's cheat sheet. Deleted the Common mistakes bullet 'Using GLOSSARY.md as a spec...' to offset the words, since Your part and The glossary already cover it.",
+     "cold-reader terms: 'during a grilling session' became 'while the agent interviews you'. The /clear and /compact sentence now defines the term at first use: 'two Built-in commands: ones that come with Claude Code itself, not Skills'.",
+     "shortest-option tell: scenario-new-words right answer is now '`/grill-with-docs`, with your rough idea after it'. scenario-lost-reply is now '`/wait-what`, straight after that reply'. scenario-no-docs-repo now ends 'about the existing code'. In why-not-surprising, wrong option c is now 'Yes, and add Tailwind to `GLOSSARY.md`.' (37 shown, 39 raw), so the right answer (42) is not the shortest by either count. The checker's 'too' version (43 raw) still left it shortest in raw Markdown. Checked with a script: in every Checkpoint and Final test question, the right answer is now neither the shortest nor the longest, in both raw and shown length.",
+     "scenario-glossary-missing: option a is now 'The glossary is only created once enough terms pile up.', with feedback that there's no threshold. Right option c is now 'Only grilling loaded; the domain-modeling half didn't.', and its feedback adds the 'saving terms up, as in Matt's demo' note. Lengths a55/b51/c54/d69.",
+     "spot-recipe-entry: changed '_Avoid_: Dish, post.' to '_Avoid_: Post, article.' so the entry's only flaw is the intended drift into storage and decisions, and the right-answer feedback is now accurate."
+    ],
+    "declined": [],
+    "words": 2845,
+    "lintClean": true,
+    "testsPassed": true
+   }
+  }
+ }
+}

@@ -1,0 +1,387 @@
+{
+ "slug": "triage",
+ "review": {},
+ "revise": {
+  "summary": "I revised /Users/Muramkar/code/idea-to-shipped/content/lessons/14-triage.md and edited no other file. The needs-info to needs-triage move is now accurate: the Skill doesn't watch for replies, so your next triage run lists the reply and you move the issue back (triage/SKILL.md:45 and :62). That fix runs through the transitions list, the flow Scene and a rewritten predict-reporter-replies. The Site story and the to-tickets paragraph now use only repo facts. The v1 tickets were made from \"write the spec\", and ticket 02 started as `ready-for-human` (4f849b9). `/to-tickets` labels its tickets `ready-for-agent` \"unless instructed otherwise\" (to-tickets/SKILL.md:63). The bulk-listing claim, the \"required step\" claim, the `.out-of-scope/` date and the #477 timestamps were each checked against the 1.3.1 files, the transcript or gh api, and corrected. I rebuilt five quiz items, defined the terms the reader lens flagged, and made the Try exercise workable from zero (setup approval, what to do for 02 and 03, where to see what it wrote). The cheat sheet commands now start with `/triage`. Both gates pass at 2,835 words; I trimmed repeated text to make room for the definitions.",
+  "fixed": [
+   "reader-0 / quiz-0 / acc-sources-2 / acc-skills-3 (high): the needs-info to needs-triage move no longer reads as automatic; transitions bullet, flow caption and predict-reporter-replies rewritten (new right answer and distractor b, id kept)",
+   "acc-sources-0 / acc-skills-0 (high): Site story and the to-tickets paragraph rewritten to repo facts (4f849b9: five v1 tickets ready-for-agent, ticket 02 ready-for-human); /to-tickets now 'unless you tell it otherwise'; dropped the unbacked 'each ticket file says ready-for-agent from the start'",
+   "acc-skills-1: 'a required step before any brief' became 'the normal flow runs that check before any brief'; quick override now says it applies the state directly; cheat sheet row now 'Looking at one item'",
+   "acc-skills-2: spot-bulk-listing right answer no longer says the listing leaves out comments; the docs anecdote is framed as 'in that setup'; Common mistake now says read each issue in full",
+   "acc-sources-1: .out-of-scope/ source fixed to 'in use since 2026-04-28 (new-skills.md added 2026-10-06)', confirmed with gh api",
+   "quiz-1: sequence-one-item now has four five-step orderings, each wrong one with a single error, about a fresh scenario",
+   "quiz-2: spot-bulk-listing now has a new symptom (re-asked questions) and new distractors, one of them about the attention buckets",
+   "quiz-3: scenario-needs-human right answer is now a card-reader bug instead of echoing the body's 'design decision, testing by hand'",
+   "quiz-4: scenario-hard-bug right option is now parallel to the distractors",
+   "quiz-5 / reader-11: replaced the joke distractor in vague-report-question with 'Which part of the search code do you think is failing?'",
+   "reader-1 / acc-skills-6: Try step 8 says to say go ahead, answer as owner, not answer 02's notes, and reject 03; checklist no longer expects triage to spot the README line",
+   "reader-2: setup step says to approve drafts and file creation; step 9 limits 'No' to out-of-step requests and shows how to read what it wrote (## Comments)",
+   "reader-3 / acc-skills-8: says where the category goes on a local tracker; Scene and checklist now record a category too",
+   "reader-4: cheat sheet rows now start with /triage; #42 is explained (issue number, or the file number like 01 on a local tracker); notes that later messages in the same session carry on with it",
+   "reader-5: defined GitHub, Markdown, Git, /grill-with-docs, AFK runner, model-invoked, status 200/404, types/function signatures, acceptance criteria, CLAUDE.md, plan mode and the PR check; 'Workflows' became 'GitHub automations'; dropped 'engineering Skills'",
+   "reader-6: added a clause separating issue comments from Visitors' Comments; files Scene caption now says 'closing note to the issue under ## Comments'",
+   "acc-skills-4 (low): chat Scene now uses the 'not enough detail' verdict, not 'failed to reproduce'",
+   "acc-skills-5 / quiz-12 (low): spot-no-verify feedback no longer says a failed reproduction means needs-info",
+   "acc-skills-7 (low): callout now says a brief is for an agent or for a person",
+   "acc-skills-9 (low): bullet 'A PR closes the loop' cut to save words (it no longer uses the /retro phrase)",
+   "acc-sources-3 (low): the four SKILL.md example requests are paraphrased or shown as typed commands, not quoted",
+   "acc-sources-4 / reader-7 (low): PR triage now says GitHub or GitLab only",
+   "acc-sources-5 (low): 'worked through the bugs one by one' became 'started on the bugs, beginning with #477 (3:04–4:48)'",
+   "reader-9 (low): the brief example is now clearly hypothetical, and the 200 quirk is past tense ('showed', 'answered'), so it doesn't contradict Diagnosing bugs",
+   "reader-10 (low): removed 'oldest first' from the checklist; dropped the delete-the-folder line (no portable command)",
+   "reader-12 (low): one-line promise no longer uses 'brief'; files Scene caption names GLOSSARY.md as the project's word list",
+   "quiz-6 (low): testable-criterion option b no longer gives away the line-number answer to spot-brief-paths",
+   "quiz-7 (low): 'redundancy check' became 'already-built check'; weak option b became ready-for-human; right answer no longer echoes the body",
+   "quiz-9 (low): state-conflict right answer no longer copies the body sentence",
+   "quiz-10 (low): who-starts-triage option c became a permission-prompt misconception",
+   "quiz-11 (low): new distractors for scenario-own-tickets d (AI disclaimer) and spot-brief-paths c (name the reporter)",
+   "extra (accuracy): paraphrased three phrases that ran 9–14 words close to the AI Hero docs; concept-match right answer no longer echoes the body"
+  ],
+  "deferred": [],
+  "lowsDeferred": 2,
+  "declined": [
+   {
+    "problem": "reader-8 (low): the afk.sh line says it picks up what triage labelled ready-for-agent, overnight, which supposedly goes beyond the source",
+    "reason": "Discussion #1136 (fetched with gh api graphql) is titled 'afk.sh: chaining /implement over ready-for-agent tickets overnight, one fresh session per ticket', and its body says 'once /triage has labelled a batch ready-for-agent'. Both claims are in the source, so I kept them, shortened."
+   }
+  ],
+  "words": 2835,
+  "lintClean": true,
+  "testsPassed": true
+ },
+ "rounds": {
+  "r1": {
+   "checks": {
+    "quiz": [
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-quick-override: \"Yesterday you discussed issue #31 with its reporter at length, and you're sure it's fully specified\" (line 382); option c and its feedback \"That works, but you'd re-argue decisions you've already made\" (lines 387-388)",
+      "problem": "The prompt never says the claim was checked. It only says you talked to the reporter. Two other places in the Lesson teach that a ready-for-agent brief resting on the reporter's word is the failure: Matt's \"Make it check, not believe\" and spot-no-verify. So a sharp reader can argue that the full look in option c, whose own feedback concedes \"That works\", is the correct move and the quick override is only the risky fast one. Option c's premise also contradicts the body. If the discussion is in the issue's comments, triage reads it and does not re-ask, so \"answer every grilling question again\" and \"re-argue decisions\" describe something the Lesson says never happens.",
+      "evidence": "Lesson line 126: \"It reads the whole issue, comments and earlier triage notes included, so it never re-asks a settled question.\" Line 265: \"he felt it was trusting the reporter too much... In 1.3.1, the normal flow runs that check before any brief.\" Lines 430/437: spot-no-verify's key is \"Nobody verified the claim before the brief was written.\" ~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/triage/SKILL.md:70 says \"Parse any prior triage notes so you don't re-ask resolved questions\". SKILL.md:90 says the quick override does \"trust them and apply the role directly ... Skip grilling.\"",
+      "fix": "Prompt: \"Yesterday you reproduced the bug in issue #31 yourself, and the reporter answered your last question in the issue's comments. You're sure it's ready for an agent. What's the fastest correct move?\" Option c: \"`/triage Let's look at #31` and let it run every step again.\" Feedback: \"That works, but it re-reads, re-checks and re-recommends what you already know. The quick override skips all that.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-hard-bug: \"Triage reproduced it... You want the root cause found now. Which Skill do you reach for?\" (line 370)",
+      "problem": "The answer is given away. The prompt repeats the When-to-reach table row word for word (a confirmed bug plus a root cause you need), and the right option is the only Skill whose name says \"bugs\". `/grill-with-docs` and `/to-tickets` are not believable choices for a bug hunt. The question also checks none of the four goals: no goal mentions `/diagnosing-bugs` or how far triage's verification goes.",
+      "evidence": "Lesson line 102: \"| A confirmed bug whose root cause you need | `/diagnosing-bugs` |\". Line 335: \"Expecting a root cause... For a stubborn bug, use `/diagnosing-bugs`.\" Goals at lines 14-17 don't mention it. writing-guide.md:60 says \"the Final test checks the goals\". writing-guide.md:118 says \"Don't restate the defining phrase of the right answer in the prompt.\"",
+      "fix": "Replace it with a question for goal 4 that no question tests yet (a rejected bug versus .out-of-scope/):\n```test scenario-rejected-bug\nOn a bus-timetable site, a reporter says the page layout breaks. Triage confirms it happens only when one ad-blocking browser extension rewrites the page, and you decide not to fix it. What does triage do?\n- [ ] Writes `.out-of-scope/ad-blocker-layout.md`, links it from a comment, then closes.\n  > That folder is for rejected enhancements. A rejected bug gets an explanation, not a file.\n- [x] Closes it as `wontfix` with a polite comment explaining why.\n  > Right. A rejected bug is explained and closed; nothing goes into `.out-of-scope/`.\n- [ ] Marks it `ready-for-human`, since only a person can install the extension.\n  > You've decided not to fix it, so nobody needs to build or test anything.\n- [ ] Marks it `needs-info` and asks the reporter to uninstall the extension.\n  > Triage already confirmed the cause and you've made the call. Close it and say why.\n```\n(SKILL.md:84: \"Rejected (bug): give a polite explanation, then close.\")"
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, spot-no-verify: \"turned a report into a `ready-for-agent` brief straight from the reporter's description\" (line 430); options at lines 431, 433, 435, 437",
+      "problem": "There are two wording tells. First, the prompt states the answer: \"straight from the reporter's description\" plus \"a bug that turned out not to exist\" already means nobody checked, and option d says exactly that. Second, all three wrong options share \"should have\" (\"It should have been\", \"should have grilled\", \"Sam should have used\"), and only the right one, \"Nobody verified the claim...\", breaks the pattern. Distractor c (`/to-tickets`) is also weak.",
+      "evidence": "Lesson lines 431, 433, 435 all use \"should have\". Line 437 is \"Nobody verified the claim before the brief was written.\" Step 3 heading at line 128: \"Verify the claim\".",
+      "fix": "```test spot-no-verify\nSam typed `/triage Move #12 to ready-for-agent` on a bug report and had it write a brief from the report. Overnight, an AFK agent spent hours and found the code already handled that case correctly. What went wrong?\n- [ ] Sam should have chosen `ready-for-human`, since bugs always need a person.\n  > Plenty of bugs suit an agent. The problem is that nobody checked this one was real.\n- [ ] The AFK agent should have asked the reporter for steps before starting.\n  > An AFK agent works with nobody to ask. The check belongs in triage, before the label goes on.\n- [ ] Sam should have used `/to-tickets` instead of `/triage`.\n  > `/to-tickets` splits your own spec. A report from someone else is triage's job.\n- [x] Sam should have had the bug reproduced before any brief.\n  > Right. The normal flow reproduces a bug before any brief; a quick override skips that, so use it only on a claim you've already checked.\n```"
+     },
+     {
+      "severity": "medium",
+      "where": "goals, \"read an issue's two roles, one category and one state, and say where it can move next\" (line 15); Final test predict-reporter-replies (line 466)",
+      "problem": "No Final test question asks the reader to read an issue's roles. The one-category-plus-one-state rule is tested only by the state-conflict Checkpoint (Checkpoints don't count). predict-reporter-replies covers the \"where next\" half, but it shows no labels and no fresh setting. It just asks the reader to recall the body's sentence and the flow Scene's caption for this exact move.",
+      "evidence": "Lesson line 52: \"When the reporter answers, a `needs-info` issue goes back to `needs-triage` for another look.\" Line 71, the flow Scene caption, shows the same move. Line 466 has no labels and no fresh context. writing-guide.md:119 says \"Every goal gets at least one Final test question\". writing-guide.md:118 says \"Questions test transfer, not recognition.\" SKILL.md:41 and SKILL.md:45 back the key.",
+      "fix": "```test predict-reporter-replies\nOn a bakery's tracker, issue #9 carries `bug` and `needs-info`. The customer replies with the exact order that failed. Under the Skill's state machine, which labels should #9 carry next?\n- [ ] `bug` and `ready-for-agent`, because the missing details have arrived.\n  > New details still have to be evaluated, and the claim verified, before anything is agent-ready.\n- [ ] `bug`, `needs-info` and `needs-triage`, until you've read the reply.\n  > Two states at once is the clash triage flags. An issue carries exactly one state.\n- [x] `bug` and `needs-triage`, to be evaluated again.\n  > Right. The category stays; the one state goes back to `needs-triage` for another look.\n- [ ] `needs-triage` alone, since the category is decided again from scratch.\n  > Every triaged issue keeps exactly one category alongside its one state.\n```"
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, spot-brief-paths, option b: \"It's too short; a brief needs at least a page of detail.\" (line 421)",
+      "problem": "This distractor is weak. Nothing in the Lesson suggests briefs have a length, so no reader holds this belief and it filters nobody. Also, the quoted sentence breaks two brief rules (procedural \"Open... and change\" and path/line), and \"Spot the mistake\" reads as if the whole brief were that one line.",
+      "evidence": "Lesson lines 171-174 list the brief rules: behaviour not procedure, names that last, checkable criteria, out-of-scope list. None of them is about length. The prompt at line 418 is nearly the Skill's own Bad example in skills/engineering/triage/AGENT-BRIEF.md:24 (\"Open src/types/skill.ts and add a schedule field on line 42\").",
+      "fix": "Prompt: \"One line of a triage brief for a to-do app reads: ... Spot the mistake.\" Replace option b with \"- [ ] It should name a date library, so the agent doesn't have to choose one.\" Feedback: \"That adds procedure. Briefs describe behaviour and let the agent choose how.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, sequence-one-item, options c \"Gather context → verify → grill if needed → apply the outcome → recommend\" (line 459) and d \"Recommend → gather context → ...\" (line 461)",
+      "problem": "Two of the three distractors are weak. Recommending before reading the issue (d) or after applying the outcome (c) goes against the Lesson's most repeated point, \"it recommends, then waits\". Only option a (grill before verify) is a misconception a real reader might hold. Option c also alone says \"apply the outcome\" where the others say \"apply outcome\".",
+      "evidence": "Lesson line 26 highlights \"it recommends, then waits\". Line 127: \"Recommend... Then it waits for you.\" SKILL.md:72-74 gives the order Recommend, wait for direction, then Verify.",
+      "fix": "c: \"- [ ] Gather context → verify → recommend → grill if needed → apply outcome\". Feedback: \"It recommends and waits for your go-ahead first; the reproduction comes after you say go.\" d: \"- [ ] Gather context → recommend → grill if needed → apply outcome → verify\". Feedback: \"Verifying after the outcome is too late: the brief would rest on an unchecked claim.\""
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint vague-report-question: \"Triage can't reproduce it and picks `needs-info`.\" (line 156)",
+      "problem": "\"Picks\" has triage making the call, which goes against \"it recommends, then waits\" and \"every call stays yours\". \"Can't reproduce\" also blurs two of the three verification results the Lesson keeps apart: failed, and not enough detail to try. A report of just \"search is broken\" is the second one.",
+      "evidence": "Lesson line 26: \"every call stays yours: ==it recommends, then waits==\". Line 128: \"confirmed..., failed, or not enough detail to try, the strongest sign of `needs-info`.\"",
+      "fix": "\"A report on a recipe app says only \\\"search is broken\\\". There's too little detail to try it, so triage recommends `needs-info` and you agree. Which question belongs in its Triage Notes?\""
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint state-conflict: \"one issue carries `bug`, `ready-for-human` and `needs-triage`\" (line 78)",
+      "problem": "It reuses the exact clashing pair from the body's example, so it tests recognition of that sentence, not transfer.",
+      "evidence": "Lesson line 49: \"An issue can't be \\\"ready for a human\\\" and \\\"not evaluated yet\\\" at once\".",
+      "fix": "Use a different pair: \"one issue carries `enhancement`, `needs-info` and `ready-for-agent`\". Option a becomes \"Keeps `ready-for-agent`, because it's the further along of the two states.\""
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint who-starts-triage: \"you type \\\"lots of new issues, can you triage them?\\\"\" (line 107)",
+      "problem": "The prompt nearly copies the body's example phrase two lines above, so it checks recall of that sentence.",
+      "evidence": "Lesson line 104: \"so \\\"can you triage these?\\\" won't start it.\"",
+      "fix": "\"In the morning you type \\\"please sort the new reports and label them\\\" with no slash anywhere. What happens?\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test, spot-bulk-listing, right option: \"It sorted them from the overview list, never reading each one in full.\" (line 443)",
+      "problem": "\"Overview list\" is not a term the Lesson uses. The body calls it \"the quick listing\" and \"the listing\", so a cold reader has to guess that the two mean the same thing.",
+      "evidence": "Lesson line 274: \"judged them all from the quick listing meant for picking one\". Line 333: \"Bulk passes from the listing.\"",
+      "fix": "\"- [x] It sorted them from the quick listing, never reading each one in full.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test, scenario-own-tickets, options (lines 359-366)",
+      "problem": "The right option is the only \"No\" against \"Yes:\", \"Yes:\" and \"Only...\", so a test-wise reader can pick it by shape alone. It also repeats the Lesson's phrase for this point (\"already ... `ready-for-agent`\"), which appears three times in the body.",
+      "evidence": "Line 93: \"`/to-tickets` marks its tickets `ready-for-agent`\". Line 101: \"Nothing: they're already `ready-for-agent`\". Line 331: \"`/to-tickets` output is already `ready-for-agent`.\" Options: 359 \"No need:\", 361 \"Yes:\", 363 \"Only...\", 365 \"Yes:\".",
+      "fix": "Replace option d with a wrong \"No\": \"- [ ] No: triage only works on GitHub, and these are local files.\" Feedback: \"Triage runs on a local Markdown tracker too. The reason to skip it is that the tickets are your own work.\""
+     }
+    ],
+    "reader": [
+     {
+      "severity": "high",
+      "where": "Try it yourself, prerequisites line 279 (\"You need Claude Code installed and signed in\") and step 5 prompt line 300 (\"Create count.sh, a bash script ... (bash count.sh notes.txt)\")",
+      "problem": "The whole exercise depends on running a bash script, and the Try it never mentions Windows. Picture a Windows reader with only Claude Code, the plugin and PowerShell. Claude Code then uses PowerShell as its shell, `bash count.sh` fails, and the checklist item \"For 01 it ran `count.sh` to reproduce the miscount\" (line 321) can't pass. That breaks the verify-before-brief step the exercise exists to show.",
+      "evidence": "https://code.claude.com/docs/en/setup says Git for Windows is recommended on native Windows \"so Claude Code can use the Bash tool. If Git for Windows is not installed, Claude Code uses PowerShell as the shell tool instead.\" Start here (00-start-here.md:35) asks for Git for Windows, but this Try it lists only Claude Code. The Wizard Lesson does handle it (15-wizard.md:258: \"PowerShell can't run bash scripts\").",
+      "fix": "Line 279: \"You need Claude Code installed and signed in (see [Start here](/learn/start-here)). On Windows you also need Git for Windows (git-scm.com), which lets Claude Code run the practice project's bash script. Allow 20 minutes.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Try it yourself, step 9, line 315: \"If it asks to do anything else, such as editing `count.sh`, choose No\"",
+      "problem": "Step 3 tells the reader to press Shift+Tab until plan mode is off, which can land them in Manual mode, where Claude Code asks before every file edit. Writing the brief for 01 means editing 01-wrong-count.md, and rejecting 03 means creating `.out-of-scope/...md`. Both are edits the reader is never told to allow (only the `count.sh` run and the 02 Triage Notes are). A literal reader follows \"anything else, choose No\" and blocks them, and checklist items 4, 6, 7 and 8 then fail.",
+      "evidence": "Lesson lines 295, 314, 315. Writing guide, course facts: \"Shift+Tab cycles Manual (`default`) → Accept edits → Plan → (Bypass / Auto when available)\". triage SKILL.md:79 and :85 (the brief is posted as a comment; a rejected enhancement writes to `.out-of-scope/`), issue-tracker-local.md:11 (comments go into the issue file).",
+      "fix": "Step 9: \"Let it write to the three report files and to `.out-of-scope/`. If it asks to change anything else, such as `count.sh`, choose No; if it's already changing it, press Esc. To see what it wrote, ask \"Show me 01-wrong-count.md\": its notes are at the bottom, under `## Comments`. Type `/exit` when you're done.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Why it matters, line 26: \"A Skill is a short instruction file the agent loads when you type its name\"",
+      "problem": "This is the Lesson's only definition of a Skill, and it says Skills load only when you type their name. Line 104 then says a model-invoked Skill loads by itself when your words match its description, so the definition and line 104 disagree. Every other Lesson's definition includes the second route.",
+      "evidence": "04-grilling.md:24, 06-prototype.md:24, 08-tdd.md:24, 09-implement.md:22 and 12-main-flow.md:22 all say \"...when you type its name, like `/x`, or when a task matches its description\". GLOSSARY.md:20: \"Every Skill is either user-invoked or model-invoked.\" engineering/README.md:21-23 lists the model-invoked ones.",
+      "fix": "Line 26: \"A Skill is a short instruction file the agent loads when you type its name, like `/triage`, or, for some Skills, when your request matches what it's for; [Skills](/learn/skills) covers the details.\""
+     },
+     {
+      "severity": "medium",
+      "where": "The idea, line 51 (\"A new, unlabelled issue normally goes to `needs-triage` first\"), flow Scene lines 66-70, and chat Scene line 150 (\"The file now records **bug** as its category and `Status: needs-info`\")",
+      "problem": "The two Scenes show the same kind of Visitor report taking different paths. The flow Scene takes it from Unlabelled to needs-triage and then to needs-info, matching the prose. The chat Scene takes unlabelled 01 straight to needs-info and never mentions needs-triage. A cold reader can't tell whether the chat skipped a required step or whether the prose's rule is wrong.",
+      "evidence": "triage SKILL.md:45: \"an unlabeled issue normally goes to `needs-triage` first\". Lesson line 264 shows Matt's first pass stopping at needs-triage. The chat Scene, lines 139-150, goes from \"Unlabelled (2)\" to `Status: needs-info` in one look.",
+      "fix": "Line 51: \"- A new, unlabelled issue normally goes to `needs-triage` first, and from there to one of the other four. A quick first pass can stop at `needs-triage`; a full look at one issue usually makes both moves in one sitting, as in the chat below.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test spot-no-verify, right-answer feedback, line 438: \"Right. Triage reproduces a bug before any brief.\" Also line 43 (table: \"Fully specified, with a brief attached\") and line 153 / line 386 (quick override)",
+      "problem": "The Lesson also teaches the quick override, which applies `ready-for-agent` on your word and then offers to write a brief (lines 153 and 386). That path writes a brief with no reproduction, so the unqualified \"before any brief\" contradicts the Lesson. If you decline the brief, the override also leaves a `ready-for-agent` issue with no brief, which contradicts the table's definition at line 43. Lines 209 and 265 already scope the rule correctly (\"normal flow\"); this feedback line doesn't.",
+      "evidence": "triage SKILL.md:90: \"trust them and apply the role directly ... Skip grilling. If moving to `ready-for-agent` without a grilling session, ask whether they want to write an agent brief.\" SKILL.md:35: the state is defined only as \"fully specified, ready for an AFK agent\".",
+      "fix": "Line 438: \"Right. When triage looks at an item, it reproduces a bug before any brief. A failed attempt would have shown up then, before an agent spent the night on it.\" Line 43: \"Fully specified, ready for an agent to build unattended (normally with a brief attached)\". Line 153, add: \"Because it trusts you, it doesn't reproduce anything first.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-own-tickets, lines 357-367 (\"You've grilled a newsletter feature, then run `/to-spec` and `/to-tickets` ... A teammate suggests a `/triage` pass\")",
+      "problem": "This repeats another Lesson's Checkpoint almost word for word: the same newsletter feature, a friend or teammate proposing triage on fresh `/to-tickets` output, and the same \"everything must be triaged\" distractor. A reader who did Spec + tickets recognises the question and doesn't have to transfer anything, which the writing guide forbids (\"Questions test transfer, not recognition. Use a fresh situation\").",
+      "evidence": "07-spec-and-issues.md:195-203, Checkpoint triage-these: \"`/to-tickets` has just written four tickets for your newsletter feature. A friend says: 'Run `/triage` over them first, to be safe.'\" Its option a, \"Yes: every new issue should go through triage before an agent builds it\", matches this test's option b, \"Yes: nothing should reach an agent without a triage pass first.\"",
+      "fix": "Make it a sorting decision: \"Your tracker holds six new items: four tickets `/to-tickets` wrote from your own grilled plan for a bakery's order page, plus a bug report and a feature idea a customer emailed in, which you pasted in as issues. Which go through `/triage`?\" Options: [ ] \"All six: nothing should reach an agent without a triage pass.\" / [x] \"Only the two pasted ones, because someone else sent them.\" / [ ] \"Only the four tickets, so triage can check your own plan first.\" / [ ] \"Only the customer's bug report, since triage is built for bugs.\" Keep the existing feedback ideas, and run lint to confirm the right answer isn't the longest."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-hard-bug, stem line 370: \"You want the root cause found now. Which Skill do you reach for?\"",
+      "problem": "The stem repeats the exact phrase the Lesson attaches to the right answer, so the reader can match words instead of reasoning: the table row reads \"A confirmed bug whose root cause you need | `/diagnosing-bugs`\" and Common mistakes reads \"Expecting a root cause ... use `/diagnosing-bugs`\". The writing guide forbids this: \"Don't restate the defining phrase of the right answer in the prompt.\"",
+      "evidence": "Lesson line 102 (table row), line 335 (Common mistakes), line 370 (stem).",
+      "fix": "Line 370: \"A Visitor reported that the comment box sometimes posts a Comment twice. Triage reproduced it, but only once in ten tries, and nobody can say what triggers it. You don't want anyone guessing at a fix. Which Skill do you reach for?\" Keep option d as \"`/diagnosing-bugs`, to hunt down what makes it post twice.\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, step 2, line 289: \"Type a slash and the word triage. If `triage` isn't in the list that pops up...\"",
+      "problem": "The step never says what to do with `/triage` once it's sitting in the prompt box. A first-timer may press Enter and start triage in an empty, unconfigured folder before setup, or carry on typing step 4 after it. The prototype Lesson's version of this check says \"(don't press Enter)\".",
+      "evidence": "06-prototype.md:238: \"Type a slash and the letters prot, and look at the menu that pops up (don't press Enter).\" triage SKILL.md:43 tells the user to run setup if no mapping exists.",
+      "fix": "\"2. Type a slash and the word triage, and look at the list that pops up (don't press Enter; then delete what you typed). If `triage` isn't in the list, type `/exit`, install Matt's Skills, then run `claude` again:\""
+     },
+     {
+      "severity": "low",
+      "where": "Agent brief section, line 172 (\"Never file paths or line numbers\"), example brief lines 187 and 200-201 (`/learn/<slug>`, `GET /learn/nope`), line 209, and the Try checklist line 322",
+      "problem": "A reader who barely knows a terminal will take `/learn/nope` for a file path, right after being told briefs never contain file paths. The practice brief for 01 will almost certainly name `count.sh` too, so the reader may think it failed. `GET` is also never explained.",
+      "evidence": "Lesson lines 172, 187, 200-201, 209 (\"There's no 'open this file' and no line number\"), 322.",
+      "fix": "Line 209, add: \"Web addresses like `/learn/nope` are fine: they're what a Visitor types, not where the code lives.\" Lines 200-201: \"Visiting /learn/nope returns 404...\" / \"Visiting /learn/grilling still returns 200\". Line 322: \"...and no line numbers (naming `count.sh` is fine: it's the command people run).\""
+     },
+     {
+      "severity": "low",
+      "where": "Lines 55 and 91 (\"GitHub or GitLab\"), 91 (\"every open-source repo\"), 176 and 338 (\"v1\"), 338 (\"connecting GitHub, Vercel and Neon\")",
+      "problem": "A cold reader meets terms that are never explained. GitHub gets a clause at line 22; GitLab, open-source, v1, Vercel and Neon get none.",
+      "evidence": "Lesson text at the lines given; grep finds no explaining clause anywhere in the Lesson.",
+      "fix": "Line 55: \"on GitHub or GitLab (a similar code-hosting site)\". Line 91: \"every open-source repo (code anyone can read and contribute to) he maintains\". Line 176: \"accepted, for the first version,\". Line 338: \"the first tickets started as `ready-for-agent`, apart from one `ready-for-human` step only I could do (connecting GitHub, Vercel and Neon: the code host, the web host and the database)\"."
+     },
+     {
+      "severity": "low",
+      "where": "Big-idea callout line 29 (\"Every item ends with a brief ..., specific questions for the reporter, or a closed issue\") and verify step line 128 (\"not enough detail to try, the strongest sign of `needs-info`\")",
+      "problem": "Two small overstatements. The callout leaves out items that stay at `needs-triage`, which Matt's own first pass at line 264 does and the Skill allows. Line 128 calls insufficient detail \"the strongest\" sign of needs-info, but the Skill only says \"a strong\" one.",
+      "evidence": "triage SKILL.md:86: \"`needs-triage`: apply the role. Optional comment if there's partial progress.\" SKILL.md:74: \"insufficient detail (a strong `needs-info` signal)\". Lesson line 264: \"He had it give each a category and `needs-triage`\".",
+      "fix": "Line 29: \"Triage itself writes no code. Each item it finishes ends with a brief (for an agent, or for a person), specific questions for the reporter, or a closed issue with the reason on record; until then it waits at `needs-triage`.\" Line 128: \"...or not enough detail to try, a strong sign of `needs-info`.\""
+     }
+    ],
+    "accuracy": [
+     {
+      "severity": "low",
+      "where": "Final test `spot-no-verify`, right-answer feedback, line 438: \"Right. Triage reproduces a bug before any brief.\"",
+      "problem": "The feedback states as an absolute rule that triage always reproduces a bug before any brief. The Skill's quick override can write a brief with no verification at all. Elsewhere the Lesson is careful to say \"normal flow\" (lines 209 and 265) and \"Looking at one item\" (cheat sheet, line 350). Only this answer key drops that limit.",
+      "evidence": "~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/triage/SKILL.md:90: \"trust them and apply the role directly ... Skip grilling. If moving to `ready-for-agent` without a grilling session, ask whether they want to write an agent brief.\" The Lesson's own line 153 says the same: \"For `ready-for-agent`, it asks whether you want a brief written.\"",
+      "fix": "Line 438: \"  > Right. When triage looks at an item, it reproduces a bug before any brief. A failed attempt would have shown up then, before an agent spent the night on it.\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, It's working if, line 325: \"Every note it wrote starts with the AI-triage disclaimer.\"",
+      "problem": "The Skill requires the disclaimer only on comments and issues it posts to the tracker. The `.out-of-scope/` file it writes for report 03 follows the knowledge-base format, which starts with a `# Concept Name` heading and has no disclaimer. A reader who counts that file as \"a note it wrote\" would mark a correct run as a failure.",
+      "evidence": "triage/SKILL.md:13: \"Every comment or issue posted to the issue tracker during triage **must** start with this disclaimer\". triage/OUT-OF-SCOPE.md:23-26: the file format starts with \"# Dark Mode\" and then prose, with no disclaimer line.",
+      "fix": "\"- [ ] Every comment it added under `## Comments` starts with the AI-triage disclaimer.\""
+     },
+     {
+      "severity": "low",
+      "where": "## Why it matters, big-idea callout, line 29: \"Every item ends with a brief (for an agent, or for a person), specific questions for the reporter, or a closed issue with the reason on record.\"",
+      "problem": "\"Every item\" overstates it. In the Skill, `needs-triage` is also a valid outcome. The Lesson itself shows Matt ending his first pass with all nine issues at `needs-triage` (line 264). And a quick override to `ready-for-agent` can end with no brief if you decline one (line 153). The callout readers will remember most contradicts two other passages of the same Lesson.",
+      "evidence": "triage/SKILL.md:86: \"`needs-triage`: apply the role. Optional comment if there's partial progress.\" triage/SKILL.md:90: the quick override only asks \"whether they want to write an agent brief\". Lesson line 264: \"He had it give each a category and `needs-triage`\".",
+      "fix": "\"Triage itself writes no code. A fully triaged item ends with a brief (for an agent, or for a person), specific questions for the reporter, or a closed issue with the reason on record; anything still undecided waits in `needs-triage`.\""
+     },
+     {
+      "severity": "low",
+      "where": "## When to reach for it, and when not, line 93: \"When the idea is yours, Matt's Main flow ... goes `/grill-with-docs` ... → `/to-spec` → `/to-tickets`.\"",
+      "problem": "This presents the Main flow as always passing through `/to-spec` and `/to-tickets`. The course facts route small work straight from `/grill-with-docs` to `/implement`, and use `/to-spec` → `/to-tickets` only for builds that take more than one session.",
+      "evidence": ".scratch/course-rewrite/writing-guide.md, Facts the whole course agrees on: \"Matt's Main flow: `/grill-with-docs` → ... → small: `/implement` here; multi-session: `/to-spec` → `/to-tickets` → `/implement` per ticket\". ask-matt/SKILL.md:24-28: the \"Branch: is this a multi-session build?\" Yes/No split.",
+      "fix": "\"It is **not** for your own plans. When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) starts with `/grill-with-docs` (the agent interviews you about your idea) and, for a build too big for one session, goes on to `/to-spec` → `/to-tickets`.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test `scenario-quick-override`, stem line 382 and option c with feedback, lines 387-388: \"`/triage Let's look at #31`, then answer every grilling question again.\" / \"That works, but you'd re-argue decisions you've already made.\"",
+      "problem": "The stem doesn't say where the long discussion took place. If it happened in the issue's comments, the Skill reads them and doesn't ask settled questions again, which is what the Lesson teaches at line 126 (\"so it never re-asks a settled question\"). Option c and its feedback assume triage would ask everything again, which contradicts that. The right answer stays b, but the distractor teaches the opposite of the body.",
+      "evidence": "triage/SKILL.md:70: \"Parse any prior triage notes so you don't re-ask resolved questions.\" triage/SKILL.md:112: \"Don't re-ask resolved questions.\" Lesson line 126: \"It reads the whole issue, comments and earlier triage notes included, so it never re-asks a settled question.\"",
+      "fix": "Stem: \"Yesterday you talked issue #31 through with its reporter on a call, and you're sure it's fully specified. What's the fastest correct move?\" Feedback for c: \"  > That works, but none of yesterday's call is on the issue, so you'd re-argue decisions you've already made. The quick override exists for exactly this.\""
+     }
+    ]
+   },
+   "fix": {
+    "applied": [
+     "high, Windows/bash (Try it prerequisites): added a line saying Windows readers also need Git for Windows (git-scm.com) so Claude Code can run the practice project's bash script, matching Start here and the setup docs.",
+     "medium, step 9 told readers to refuse any other prompt, which blocked the brief and the .out-of-scope/ file: moved the permission guidance into step 8, before the triage runs. It now says to choose Yes to run count.sh or to write to the three issue files or .out-of-scope/, and No to anything else such as changing count.sh (Esc if it's already changing it). Step 9 now only covers viewing the notes and /exit.",
+     "medium, the Skill definition in Why it matters: it now says a Skill loads when you type its name, like /triage, or, for some Skills, when your request matches what the Skill is for. This agrees with the model-invoked paragraph and the other Lessons.",
+     "medium, flow Scene vs chat Scene: the state-machine bullet now says a quick first pass can stop at needs-triage, and a full look at one issue can make both moves at once, as in the session below. I wrote 'can', not 'usually', because SKILL.md doesn't say how often.",
+     "medium, the quick override vs 'before any brief': the table row for ready-for-agent now reads 'Fully specified, ready for an agent to build unattended (normally with a brief attached)'. The Quick override paragraph adds 'It doesn't reproduce anything first, so use it on claims you've already checked.' The unqualified spot-no-verify feedback was replaced (see the spot-no-verify line).",
+     "medium, scenario-own-tickets repeated the Spec + tickets Checkpoint: replaced it with a sorting question in a fresh setting, new id scenario-which-to-triage. A climbing gym's tracker has four /to-tickets tickets plus a bug report and a feature idea a member emailed in. The right answer is (a) 'Only the two pasted ones...', which is the shortest option. Feedback ideas kept.",
+     "medium, scenario-hard-bug answer given away and no goal checked: replaced it with scenario-rejected-bug for goal 4 (a bus-timetable layout bug caused by an ad-blocker, which you decide not to fix). The answer is (b), close as wontfix with a polite explanation and no .out-of-scope/ file, per SKILL.md:84.",
+     "medium, scenario-hard-bug stem repeated the table's defining phrase: resolved by the replacement above, so that stem no longer exists.",
+     "medium, scenario-quick-override: the stem now says you reproduced the bug yourself and the reporter answered in the comments. Option c now reads '`/triage Let's look at #31` and let it run every step again', and its feedback says it re-reads, re-checks and re-recommends what you already know. That drops the false premise that triage re-asks settled questions.",
+     "medium, spot-no-verify tells: new stem in which Sam uses the quick override and has a brief written. Every option now shares the 'should have' pattern. The weak /to-tickets distractor became 'Sam should have had triage grill him before writing the brief' (grilling vs verification is a real misconception). The right feedback is scoped to the normal flow and says the quick override skips the check.",
+     "medium, predict-reporter-replies: rewritten to read labels on a bakery's issue #9 (bug + needs-info, the customer replies) and ask which labels it should carry next. The answer is (c) 'bug and needs-triage'. The distractors cover two states at once and a dropped category. It now checks goal 2's roles half. Id kept, since the question still asks the same thing.",
+     "medium, spot-brief-paths weak 'a page of detail' distractor: the prompt now reads 'One line of a triage brief...'. Option b became 'It should spell out the code to write, so the agent can't get it wrong.', with feedback about procedure. I didn't use the checker's 'name a date library', because the testable-criterion Checkpoint already has a date-library option and the Final test shouldn't test recognition of it.",
+     "medium, sequence-one-item weak distractors: c is now 'Gather context → verify → recommend → grill if needed → apply outcome' and d is now 'Gather context → recommend → grill if needed → apply outcome → verify', with the suggested feedback. All four options are now the same length; ties pass both the lint and the test."
+    ],
+    "declined": [],
+    "words": 2913,
+    "lintClean": true,
+    "testsPassed": true
+   }
+  },
+  "r2": {
+   "checks": {
+    "quiz": [
+     {
+      "severity": "medium",
+      "where": "Final test, right options across the block: scenario-quick-override b \"`/triage Move #31 to ready-for-agent.`\" (line 385), predict-reporter-replies c \"`bug` and `needs-triage`, to be evaluated again.\" (line 471), spot-no-verify d (line 437), scenario-rejected-bug b (line 373), spot-brief-paths a (line 419), scenario-which-to-triage a (line 359)",
+      "problem": "The lint only stops the right answer being the longest, and the fixes overcorrected. The right answer is now strictly the shortest option in 6 of the 10 Final test questions, and ties in sequence-one-item; the who-starts-triage Checkpoint does the same. In three questions the gap is large. Picking the shortest option scores 6/10 with no knowledge at all, and a little knowledge settles the rest. That is a wording tell.",
+      "evidence": "Option lengths in raw characters (python over the test fences): which-to-triage right a=57 vs 61/61/63; rejected-bug right b=60 vs 71/74/82; quick-override right b=38 vs 60/63/87; spot-brief-paths right a=53 vs 65/68/71; spot-no-verify right d=56 vs 62/71/74; predict-reporter-replies right c=48 vs 68/70/71; sequence-one-item all four 69. Only already-built (c=66), needs-human (d=69) and bulk-listing (a=70) have a right answer in the middle. The round-1 fix note even calls 'the shortest option' a plus for scenario-which-to-triage.",
+      "fix": "Lengthen the right answers with the widest gaps to mid-range. Each one below passes both the lint (raw) and course.test.ts (rendered) checks. quick-override b: \"`/triage Move #31 to ready-for-agent.` and accept its offer of a brief.\" (71/69 vs a 87), with feedback \"Right. Triage trusts you, says what it will change and applies it without grilling. Say yes to the brief: an AFK agent builds from it.\" predict-reporter-replies c: \"`bug` and `needs-triage`, so you evaluate it again with the reply.\" (66/62). spot-no-verify d: \"Sam should have had triage check the bug was real before the brief.\" (67; this also drops the Lesson's repeated 'before any brief' phrase). spot-brief-paths a: \"It points to a file and a line number, and both will soon go stale.\" (67). rejected-bug b, if that question is kept: \"Closes it as `wontfix`, with a comment explaining why you won't fix it.\" (71/69; this also drops 'polite', which echoes the Lesson's 'A rejected bug gets a polite explanation')."
+     },
+     {
+      "severity": "medium",
+      "where": "Goals, \"decide which closed requests belong in `.out-of-scope/`\" (line 17), against Final test scenario-rejected-bug (lines 369-379) and scenario-already-built (lines 393-403)",
+      "problem": "Goal 4 asks the reader to decide which closed requests go into `.out-of-scope/`. Both Final test questions on it have the same answer: close it with a comment, and write no file. Each has the `.out-of-scope/` option as a wrong distractor. No Final test question has a rejected enhancement, the one case that does get a file. A reader who thinks triage never writes to `.out-of-scope/`, or who simply avoids any option that mentions it, passes both. The concept-match Checkpoint tests matching an existing file, not deciding to write one, and Checkpoints don't count towards goals.",
+      "evidence": "triage/SKILL.md:83-85 lists three wontfix shapes: already implemented (no file), rejected bug (polite explanation), rejected enhancement (write to .out-of-scope/). OUT-OF-SCOPE.md:86 says to write there only when an enhancement is rejected. The Lesson teaches all three (lines 225-231), plus 'too busy is a delay' (line 228). The Final test checks only the two 'no file' branches.",
+      "fix": "Replace scenario-rejected-bug with a sorting question that keeps the rejected bug as a distractor (stated as a bug, which also removes the category ambiguity reported separately). The right answer stays at b, so the a/b/c/d spread is unchanged:\n```test scenario-which-out-of-scope\nFour requests on a bus-timetable site end up closed or set aside this week. Which one gets a file in `.out-of-scope/`?\n- [ ] A bug report about a layout glitch that only one ad-blocker causes, which you won't fix.\n  > A rejected bug gets a polite explanation and is closed. The folder is only for rejected enhancements.\n- [x] A request for live bus positions, ruled out because the site only shows timetables.\n  > Right. It's a rejected enhancement with a lasting reason, so it gets one file for the idea, and later requests join its Prior requests.\n- [ ] A request to download timetables as a PDF, which the Download button already does.\n  > Already built: close it with a pointer to the button. Recording a built feature as rejected would mislead later duplicate checks.\n- [ ] A request for a route planner you'd like but have no time for yet.\n  > That's a delay, not a rejection. 'No time yet' isn't a lasting reason, so nothing goes in the folder.\n```\n(Raw lengths 88/83/82/66: the right answer is neither the longest nor the shortest.)"
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-rejected-bug stem: \"a reporter says the page layout breaks. Triage confirms it happens only when one ad-blocking browser extension rewrites the page, and you decide not to fix it\" (line 370)",
+      "problem": "The answer depends entirely on whether this is a bug or an enhancement: a rejected bug gets no file, a rejected enhancement does. The stem never says which. A sharp reader can argue that the site works as designed and that supporting a third-party extension that rewrites the page is an improvement (an enhancement). On that reading, option a, writing `.out-of-scope/ad-blocker-layout.md`, is defensible, and it would also help match the next report of the same thing. Only the words 'breaks' and 'fix' point towards bug.",
+      "evidence": "The Lesson's category definitions (line 36): bug 'something is broken', enhancement 'a new feature or an improvement'. Lesson line 231: 'Only rejected enhancements go here. A rejected bug gets a polite explanation and is closed.' triage/SKILL.md:84-85 makes the outcome depend on the category.",
+      "fix": "If the question is kept rather than replaced by the sorting question in the `.out-of-scope/` finding, name the category in the stem: \"On a bus-timetable site, triage labels a report `bug` and confirms it: the page layout breaks, but only when one ad-blocking browser extension rewrites the page. You decide not to fix it. What does triage do?\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test, scenario-already-built stem: \"Triage's already-built check finds a working Print button on every recipe page.\" (line 394)",
+      "problem": "The stem names the answer's category ('already-built'), and that word maps one-to-one onto the cheat sheet row 'Already built | `wontfix`, pointing to where it lives; nothing in `.out-of-scope/`' (line 353). The reader doesn't have to recognise that a working Print button means the request is already built; they only recall the row. The writing guide says not to restate the right answer's defining phrase in the prompt.",
+      "evidence": "Writing guide, Lessons from the pilot review: 'Don't restate the defining phrase of the right answer in the prompt.' Lesson lines 126, 231 and 353 all use 'already built' as the label for this outcome.",
+      "fix": "Stem: \"On a recipe site, someone asks for a printable version of each recipe. Searching the code, triage finds a working Print button on every recipe page. What's the right outcome?\" In option d's feedback, change 'The already-built check answered the question.' to 'Triage's search already answered the question.'"
+     },
+     {
+      "severity": "low",
+      "where": "Final test, spot-brief-paths stem: \"Open src/lib/tasks.ts and change line 88 so the due date uses the user's time zone.\" (line 418)",
+      "problem": "A spot- question should contain exactly one mistake, but this line has two. It names a path and a line number, and it is also procedural ('Open … and change …'). It is almost the Skill's own Bad example under 'Behavioral, not procedural'. Only the path/line fault is offered as an answer, so the key holds, but a reader hunting for 'the' mistake sees two.",
+      "evidence": "triage/AGENT-BRIEF.md:24, under 'Behavioral, not procedural': 'Bad: \"Open src/types/skill.ts and add a schedule field on line 42\"'. AGENT-BRIEF.md:15-16 covers paths and line numbers separately.",
+      "fix": "Make the line behavioural so that only the path/line fault remains: \"One line of a triage brief for a to-do app reads: 'Due dates should use the user's time zone (see src/lib/tasks.ts, line 88).' Spot the mistake.\" Options and feedback can stay as they are."
+     },
+     {
+      "severity": "low",
+      "where": "Final test, scenario-needs-human stem: \"Which of these reports should end up `ready-for-human` rather than `ready-for-agent`?\" (line 406)",
+      "problem": "The words 'rather than `ready-for-agent`' frame the question as a choice between those two states. Options b (an `.out-of-scope/` match, so wontfix) and c (a vague report, so needs-info) belong to neither, so the frame alone rules them out and leaves a against d.",
+      "evidence": "Option b's feedback says it ends as `wontfix`; option c's says `needs-info`. Neither is a ready- state, so neither fits the comparison the stem sets up.",
+      "fix": "Stem: \"Which of these reports should end up `ready-for-human`?\" No other change is needed, since each feedback already names where the option does belong."
+     },
+     {
+      "severity": "low",
+      "where": "Final test, scenario-quick-override option a: \"Write \\\"please move #31 to ready-for-agent\\\" in plain words and wait for triage to start.\" (line 383)",
+      "problem": "This distractor re-tests the who-starts-triage Checkpoint (line 106), whose answer is that plain words never load `/triage`. Anyone who did the Checkpoint rules a out at once, so the question is effectively a choice between three options.",
+      "evidence": "Checkpoint who-starts-triage (lines 106-116) and option a's feedback (line 384), 'Plain words can't start a user-invoked Skill', teach the same point. Writing guide: 'no Checkpoint duplicates a Final test question'.",
+      "fix": "Use a misconception the Lesson sets up but no Checkpoint tests: \"`/to-tickets` on #31, since the tickets it makes come out `ready-for-agent`.\" (76 raw / 72 rendered, still longer than the lengthened right answer), with feedback \"`/to-tickets` cuts a plan of your own into new tickets. #31 already exists; the quick override just moves it.\""
+     },
+     {
+      "severity": "low",
+      "where": "Goals, \"run a `/triage` session: list what needs attention, take one item…\" (line 16)",
+      "problem": "No Final test question checks the 'list what needs attention' part of goal 3: the three buckets, oldest first, then you pick. The other parts of goal 3 are covered by sequence-one-item, scenario-quick-override, spot-no-verify and spot-bulk-listing. The listing appears only in spot-bulk-listing's d feedback and in the Try it.",
+      "evidence": "None of the ten test fences (lines 357-475) asks about the attention buckets. They are taught at line 122 and in the chat Scene at line 139.",
+      "fix": "The Final test already has 10 questions, the maximum, so trim the goal to what is tested: \"You'll be able to run a `/triage` session: take one item from recommendation through verification to an outcome, or move it yourself with a quick override.\""
+     }
+    ],
+    "accuracy": [
+     {
+      "severity": "medium",
+      "where": "Try it yourself, step 8: \"At a permission prompt, choose Yes to run `count.sh` or to write to the three issue files or `.out-of-scope/`. Choose No to anything else\" (line 314)",
+      "problem": "This permission rule (the round-1 fix) is too narrow for the verification it asks for. Report 01 (line 301) gives no file, only \"My file has two lines and ten words\". To reproduce it, the agent has to make a two-line, ten-word input, usually a small test file, or run `wc -w` to compare. Both count as \"anything else\", so a reader told to choose No refuses the reproduction. A plain No also stops the turn, and step 8 never says what to type next. The checklist item \"For 01 it ran `count.sh` to reproduce the miscount\" (line 321) can then fail, most likely for a reader in Manual mode, which How coding agents work invites. In auto mode few prompts appear, so it often works anyway.",
+      "evidence": "triage/SKILL.md:74: \"For a bug, reproduce it from the reporter's steps.\" Lesson line 301: the 01 report supplies no file. content/lessons/01-how-agents-work.md:120: \"A plain No (or Esc) stops the turn, and the agent waits for your next message.\" The same Lesson (line 118) shows readers how to switch to Manual mode, where every write and most commands prompt.",
+      "fix": "Replace the two sentences with: \"At a permission prompt, choose Yes to anything that reads files, runs `count.sh` or `wc`, makes a small test file to try the script on, or writes to the three issue files or `.out-of-scope/`. Choose No if it tries to change `count.sh` (press Esc if it's already changing it), then type \"Don't fix it; carry on with the triage.\"\""
+     },
+     {
+      "severity": "medium",
+      "where": "When to reach for it, and when not: \"When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) goes `/grill-with-docs` ... → `/to-spec` → `/to-tickets`.\" (line 93), and \"Both end as an issue marked `ready-for-agent`\" (line 95)",
+      "problem": "This says the Main flow always runs through `/to-spec` and `/to-tickets`. The course facts and GLOSSARY.md say the Main flow splits work into a spec and tickets only when it's too big for one session; small work goes from grilling straight to `/implement`, with no ticket at all. The Main flow Lesson teaches that fork and names the heavy road for a light job as a mistake. A cold reader learns the opposite here.",
+      "evidence": "GLOSSARY.md, Main flow: \"grill the idea, split it into a spec and tickets if it's too big for one session, then implement and review it.\" writing-guide.md, Facts: \"small: `/implement` here; multi-session: `/to-spec` → `/to-tickets` → `/implement` per ticket\". content/lessons/12-main-flow.md:27: \"The heavy road for a light job. A one-button change goes through a spec, five tickets...\"; 12-main-flow.md:287 (a small idea goes to `/implement` with no spec or tickets).",
+      "fix": "Line 93: \"When the idea is yours, Matt's Main flow (the path most work takes, from idea to shipped) starts with `/grill-with-docs` (the agent interviews you about your idea). If the work is too big for one session, it goes on to `/to-spec` → `/to-tickets`.\" Line 95: \"So there are two lanes, yours and other people's, and they ==meet at the same label==. When your own work becomes tickets, both lanes end as an issue marked `ready-for-agent`, which ...\""
+     },
+     {
+      "severity": "low",
+      "where": "Big-idea callout: \"Every item ends with a brief (for an agent, or for a person), specific questions for the reporter, or a closed issue with the reason on record.\" (line 29)",
+      "problem": "The Lesson itself says a quick first pass can stop at `needs-triage` (line 51), and Matt's first pass in the video left all nine issues there. SKILL.md lists `needs-triage` as one of the step-5 outcomes too. \"Every item ends with\" leaves out that outcome.",
+      "evidence": "triage/SKILL.md:86: \"`needs-triage`: apply the role. Optional comment if there's partial progress.\" Lesson line 51 and line 264 (\"He had it give each a category and `needs-triage`\").",
+      "fix": "\"Triage itself writes no code. An item it finishes ends with a brief (for an agent, or for a person), specific questions for the reporter, or a closed issue with the reason on record; one it only sorts waits at `needs-triage`.\""
+     },
+     {
+      "severity": "low",
+      "where": "Why it matters: \"someone must decide if each is worth building, really a bug, and reproducible (0:00–0:31)\" (line 26)",
+      "problem": "The paraphrase drifts from the video. Matt lists checking whether you need to reproduce a report, not whether it is reproducible.",
+      "evidence": "MzWIIlx0Gpc auto-captions (/Users/siddharth/Developer/trying/.handoff/transcripts/MzWIIlx0Gpc.json), 0:19–0:22: \"to figure out if it's a bug report, to see if you need to reproduce it\".",
+      "fix": "\"someone must decide if each is worth building, whether it's really a bug, and whether it needs reproducing (0:00–0:31)\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, step 9: \"ask \"Show me 01-wrong-count.md\": its notes are at the bottom, under `## Comments`\" (line 315)",
+      "problem": "Report 01 should end with an agent brief, not Triage Notes. Triage Notes are what 02 gets (needs-info). The checklist then asks the reader to judge \"The brief for 01\", so \"its notes\" points them at the wrong thing.",
+      "evidence": "triage/SKILL.md:79 (`ready-for-agent`: post an agent brief) and :81 (`needs-info`: post triage notes). Lesson lines 322–323.",
+      "fix": "\"To see what it wrote, ask \"Show me 01-wrong-count.md\": the agent brief is at the bottom, under `## Comments` (02 holds the Triage Notes).\""
+     },
+     {
+      "severity": "low",
+      "where": "`.out-of-scope/` section: \"Triage reads every file in the folder while gathering context, so a request for a night theme matches `dark-mode.md`.\" (line 229)",
+      "problem": "The \"so\" makes reading every file the reason a night theme matches dark mode. The match comes from comparing ideas, not keywords; reading the folder only makes the comparison possible.",
+      "evidence": "OUT-OF-SCOPE.md:72–75: read all files in `.out-of-scope/`; \"Matching is by concept similarity, not keyword: \"night theme\" matches `dark-mode.md`\".",
+      "fix": "\"Triage reads every file in the folder while gathering context and compares ideas, not words, so a request for a night theme matches `dark-mode.md`.\""
+     },
+     {
+      "severity": "low",
+      "where": "Flow Scene caption: \"Your next triage run lists the reply and sends the issue back for another look.\" (line 71), against the prose \"the issue moves back when you look at it\" (line 52)",
+      "problem": "The caption reads as if the listing run moves the issue. The prose two paragraphs earlier says the move happens only when you look at the issue. The two should agree.",
+      "evidence": "Lesson lines 52 and 71. triage/SKILL.md:58–66: the listing only shows the needs-info-with-replies bucket and lets the maintainer pick; SKILL.md:110–112: re-reading the notes and replies happens when the issue is taken up.",
+      "fix": "Caption: \"The reporter replies with exact steps. Your next triage run lists the reply; you pick the issue, and it goes back for another look.\""
+     }
+    ]
+   }
+  }
+ }
+}

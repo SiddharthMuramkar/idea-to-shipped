@@ -1,0 +1,309 @@
+{
+ "slug": "main-flow",
+ "review": {},
+ "revise": {
+  "summary": "I revised /Users/Muramkar/code/idea-to-shipped/content/lessons/12-main-flow.md and no other file. The Lesson now tells one 4-step story everywhere: the chat Scene runs /implement, /tdd, /code-review and /pr inside step 3 and puts /retro at step 4, matching ask-matt SKILL.md:15-34. I checked every claim against the 1.3.1 Skill files, which changed several: /improve-codebase-architecture grills your pick itself and rejoins at /to-spec, a cleared /wayfinder map can go straight to /implement if the effort turned out small, and mid-Phase /handoff is allowed for a side task. I also added an October 2026 warning that /implement's inner review can misfire (issues #1215 and #1277, both still open) and rewrote phrases that were near-copies of SKILL.md sentences. On the quiz side, five questions got fresh scenarios, a 15th question (scenario-unsteered-check) now covers the subagent choice, and right answers are spread 5/5/5/5 across a to d. Every Site story claim is backed by the old Lesson at d21fc2c, PR #9's body or .scratch/main-flow-and-redesign/issues/03. I kept the M6mYodf0dJM quote: an English auto-generated transcript, not a machine-translated one, is at /Users/siddharth/Developer/trying/.handoff/transcripts/M6mYodf0dJM.en.json and has the exact words. The running text is 2,894 words: under the 3,000 limit but above the 2,800 aim.",
+  "fixed": [
+   "reader HIGH: 'nearing the Smart zone' read backwards; now 'the end of the Smart zone' in the context-hygiene bullet, Try step 5, the Final test prompt and the router reply",
+   "reader HIGH: scenario-near-smart-zone looked mid-Phase; the Phases paragraph now says the line is fuzzy on purpose and finishing one grilling topic can count (PHASE-BOUNDARIES.md:3), the prompt says the membership questions are done at about 140k tokens, and the feedback names the boundary",
+   "reader HIGH: Site story 'v1 build' read as the same PR; the heading is now 'Before that PR, I'd built the site's first version, one Lesson per step', the column is 'The first version', and 'once per issue' is now 'once per ticket'",
+   "reader MEDIUM: Fork A /handoff seemed to contradict question 3; question 3 now names the prototype detour as its side-task case, and Fork A says to point the grilling session at the returned file (ask-matt:20-23). I didn't use the suggested 'a prototype lives in its own folder', because prototype SKILL.md:21 says to put prototype code next to the code it's for",
+   "reader MEDIUM: 'dumb zone' was first met in a Scene; the prose now defines it",
+   "reader MEDIUM: /compact and 'Phase boundary' were used before being explained; both now get a clause at first use",
+   "reader MEDIUM: the Esc/No stop instruction only came in step 6; it's now in step 3, and step 6 just says sketch and /exit",
+   "reader MEDIUM: the 'once you've built one' script line was ambiguous; rewritten from BsJGo1wFTvQ 1:08-3:23 (the script is what he recommends but takes patience to set up, so /implement-spec is the easier start for AFK work)",
+   "reader MEDIUM: triage labels and briefs were unexplained; labels are glossed with needs-info and ready-for-agent, and /triage is described as 'checks and tags each issue, writes a brief clear enough for /implement'",
+   "quiz HIGH / acc-skills MEDIUM: the 'only two moves mid-Phase' rule clashed with the side-task /handoff answer; the body, the mid-phase Checkpoint feedback and question 3 now separate the work in hand from a separate side task (PHASE-BOUNDARIES.md:5,32)",
+   "quiz MEDIUM: predict-plain-words now asks 'What can you count on?' and its right answer is 'Neither Skill starts, so you'll still have to type both names'",
+   "quiz MEDIUM: scenario-side-task now uses a broken password-reset link instead of a naming problem, which /domain-modeling covers",
+   "quiz MEDIUM + reader MEDIUM + acc-skills MEDIUM: next-ticket now gives 115k tokens, so Continue fails question 1; option c's feedback and the meter caption ('starts from an empty window too') are reworded",
+   "quiz MEDIUM: scenario-near-smart-zone option a is now the primary-source case ('payments needs the membership answers word for word'), and question 1 gains the near-limit exception from ask-matt:40",
+   "quiz MEDIUM: chain-rule was recall; it's now a fresh case where /triage writes a brief and can't start /implement, and its feedback notes that /triage does pull in /grilling (triage SKILL.md:76)",
+   "quiz MEDIUM: goal 2 had no subagent answer; added scenario-unsteered-check (at a boundary, about 135k tokens, an unsteered link check, so a subagent)",
+   "quiz MEDIUM: scenario-needs-seeing reused another Lesson's example; it's now a library-holds rule (the logic branch of /prototype), and 'ungrillable' is gone",
+   "quiz MEDIUM + acc-skills MEDIUM: '/wayfinder never straight into /implement' was overstated; now 'unless the effort turned out small' (ask-matt:54), with 'a big map' in Common mistakes and 'For an effort this size' in spot-map-to-implement",
+   "acc-sources MEDIUM: the Eberhardt caveat merged two points; now 'tailor the Skills to your project, and don't hand your judgement to the agent, or the steps turn into ritual', and 'real bugs' is now 'a few bugs' (checked against the post)",
+   "acc-skills HIGH: the Lesson implied /implement's inner review always works; added the October 2026 caveat (review runs before the commit, and the short name can reach the Built-in, per implement SKILL.md:15-17 and issues #1215 and #1277), changed the Site story 'Today' cell, reframed the afk.sh bullet as /implement's own review calls with /tdd never running (checked in Discussion #1136, 2026-09-29), and added both issues to sources",
+   "acc-skills MEDIUM: /improve-codebase-architecture grills the pick itself (SKILL.md:62-66); the Upkeep paragraph, scenario-spare-afternoon and the Cheat sheet now rejoin at /to-spec, or /grill-with-docs if it needs more shaping",
+   "acc-skills MEDIUM: cut 'can't roll on into the next ticket' (implement takes a spec or a set of tickets)",
+   "Lesson-specific: the chat Scene now numbers steps 1-3, then 'Still step 3' for the build, /tdd, /code-review and /pr, then 4 for /retro, matching the map and ask-matt",
+   "Copyright: rephrased five near-copies of ask-matt sentences (the /retro description, the diagnosing-bugs follow-up, the wayfinder collapse, the router's compact line, the flaky-test feedback); the remaining overlaps are all under 10 words",
+   "lows fixed: first-use glosses (plugin, Git, state model, steering files, test-first, committed, Codex, plan and auto mode, background agent, decision tickets, SKILL.md); comment box replaced by tag filters; 'shadows' replaced by 'takes the name'; review halves, styling instead of CSS, 'some blocking others', 'automated tests'; Try step 2, checklist wording and closing line; chat caption; agent-may-start is now a /wizard scenario; spot-triaged prompt no longer hands over the answer; fork-b-recipe drops 'in the same conversation'; someone-else-knows uses /grill-with-docs; sequence-boundary-questions now sits in a case; afk.sh source title; undated Smart zone source; 'Two names clash'; the subagent wording in 'Why that order'; the flow caption makes /pr conditional"
+  ],
+  "deferred": [],
+  "lowsDeferred": 2,
+  "declined": [],
+  "words": 2894,
+  "lintClean": true,
+  "testsPassed": true
+ },
+ "rounds": {
+  "r1": {
+   "checks": {
+    "quiz": [
+     {
+      "severity": "medium",
+      "where": "Final test `scenario-spare-afternoon`, right option \"`/improve-codebase-architecture`, then `/to-spec` on the decision.\" (line 519) and its feedback \"the decision joins the Main flow at `/to-spec`\" (line 520); the same claim is in Upkeep (line 193, \"Take the decision into `/to-spec`, or into `/grill-with-docs` if it needs more shaping\") and the Cheat sheet (line 355)",
+      "problem": "The answer key teaches `/to-spec` as the place where the architecture survey rejoins the Main flow. The top-trust source, which the sources block cites for 'codebase health', says it rejoins at `/grill-with-docs`. Goal 4 is precisely 'say where it rejoins', so the Final test rewards the version the cited source doesn't support. The stem also echoes the body's defining phrase: \"a free afternoon\" and \"tangled for the agent to work in\" against line 193's \"When you have a spare moment\" and \"easier for agents to work in\".",
+      "evidence": "/Users/Muramkar/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/ask-matt/SKILL.md:60 says picking a deepening opportunity gives an idea \"you can take into the main flow at `/grill-with-docs`\". .scratch/course-rewrite/research/main-flow.md:44 agrees: \"Its findings re-enter the flow at /grill-with-docs.\" content/lessons/16-architecture.md:137, :286 and :356 offer \"`/grill-with-docs` or `/to-spec`\", so the course itself never settles on `/to-spec` alone.",
+      "fix": "Line 519: \"- [x] `/improve-codebase-architecture`, then `/grill-with-docs`.\" (58 chars, so not the longest; the others are 64, 72 and 45). Line 520: \"  > Right. It surveys the code and grills you on the spot you pick, and Matt's router sends the idea that comes out into the Main flow at `/grill-with-docs`.\" Stem, line 516: \"No feature is planned this week, and lately the agent bounces between six small files to change one recipe rule. What fits, and where does its result go?\" Line 193: \"Take the idea it gives you into `/grill-with-docs`, where Matt's router sends it, or straight to `/to-spec` if that grilling already settled it.\" Line 355: \"| A spare afternoon | `/improve-codebase-architecture`, then `/grill-with-docs` |\"."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test `scenario-near-smart-zone`, feedback on option d \"`/to-tickets` now, before the window gets any fuller.\": \"Tickets come from a spec, and the payments decisions don't exist yet.\" (line 416)",
+      "problem": "The feedback says, as a general rule, that tickets come from a spec. That's false about the Skill: `/to-tickets` can cut up a plan, a spec or the current conversation. A reader would learn a wrong Skill behaviour. The real reason the option is wrong is the second half of the sentence.",
+      "evidence": "/Users/Muramkar/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/to-tickets/SKILL.md:3 (description: \"Break a plan, spec, or the current conversation into a set of tracer-bullet tickets\"), :9 and :17 (\"Work from whatever is already in the conversation context\"). The engineering/README.md entry for to-tickets says \"Break any plan, spec, or conversation\". The Lesson's own chain-rule feedback (line 180) says `/to-tickets` is \"for cutting up your own plans\".",
+      "fix": "Line 416: \"  > The payments decisions don't exist yet, and in the Main flow the tickets come after `/to-spec`.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Question set as a whole: the right option is the shortest. Examples: fork-b-recipe line 83 (31 chars against 56/45/33), someone-else-knows line 199, scenario-fits-one-session line 363 (40 against 62/56/57), scenario-step-away line 385 (17 against 42/45/53), scenario-side-task line 425, spot-retro-next-day line 445 (56 against 73/70/67), predict-plain-words line 461, spot-triaged-own-tickets line 487, spot-map-to-implement line 493",
+      "problem": "Lint bans a longest right answer, and the revision went the other way: in 9 of the 18 questions that aren't sequences, the right option is strictly the shortest, and it ties for shortest in a tenth (scenario-agent-may-start). Chance would be about 1 in 4. In the Final test, always picking the shortest option scores about 8 of 15. That's a wording tell. Two of those right options also restate the body's own sentence: line 493 \"merge at `/to-spec`, not `/implement`\" against line 191, and line 487 \"already agent-ready\" against line 189's \"born agent-ready\".",
+      "evidence": "I ran a length script over the Lesson's options (raw text, as lint-lesson.mjs:134 measures it). Shortest-right ids: fork-b-recipe, someone-else-knows, scenario-fits-one-session, scenario-step-away, scenario-side-task, spot-retro-next-day, predict-plain-words, spot-triaged-own-tickets, spot-map-to-implement; scenario-agent-may-start ties at 9. `node .scratch/course-rewrite/tools/lint-lesson.mjs` passes, because it only checks for the longest.",
+      "fix": "Even out the lengths so the right option is neither the longest nor the shortest. Each of these is measured and lint-safe. fork-b-recipe line 83: \"- [x] `/to-spec`, then `/to-tickets`, in this conversation.\" (53, against 56/45/33). spot-map-to-implement line 493: \"- [x] Its decisions go to `/to-spec` first, not `/implement`.\" (55, against 56/57/53). spot-triaged-own-tickets line 487: \"- [x] Tickets that `/to-tickets` writes are agent-ready already.\" (58, against 58/63/55). spot-retro-next-day: shorten distractor b (line 447) to \"- [ ] `/retro` only works after `/diagnosing-bugs`.\" (45). scenario-step-away: \"- [x] `/implement-spec`, on the spec\" (30) and \"- [ ] `/implement`, naming all nine\" (29). scenario-fits-one-session line 363: \"- [x] `/implement`, in this same conversation, straight away.\" (55). Re-run the length check after these edits."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test `scenario-agent-may-start`, stem: \"the agent reaches a step only you can do: copying a secret key from a payment provider's dashboard into the project\" (line 468)",
+      "problem": "The stem restates the body's one-line definition of `/wizard` almost word for word, so the reader matches phrases instead of applying the who-can-start rule. The writing guide bans this outright: \"Don't restate the defining phrase of the right answer in the prompt.\"",
+      "evidence": "Line 195: \"`/wizard` scripts the steps only a human can do, like pasting secrets from a dashboard\". Stem, line 468: \"a step only you can do: copying a secret key from a payment provider's dashboard\". The answer key itself is right: /Users/Muramkar/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/wizard/SKILL.md:1-4 has no disable-model-invocation, while handoff, to-questionnaire and triage all set it to true.",
+      "fix": "Line 468: \"While `/implement` builds a ticket on your book-club site, it needs a webhook signing key that sits behind your login on the payment provider's site, saved to `.env` and to your CI secrets. Which Skill might the agent start on its own?\" Keep the options and feedback as they are."
+     },
+     {
+      "severity": "medium",
+      "where": "Final test `scenario-unsteered-check`, stem: \"You've just finished building your recipe site's tag filters: a Phase boundary. ... a job that needs no steering from you. What fits?\" (line 528)",
+      "problem": "The stem hands over the deciding fact. \"Needs no steering\" is the body's test for the subagent branch, word for word, and the id itself says it (\"unsteered\"). The reader doesn't have to judge whether a link check can run AFK, which is the transfer the question exists to test. Labelling the moment \"a Phase boundary\" also does work the reader should do.",
+      "evidence": "Line 140: \"a job tight enough to run with no steering ... Send it to a subagent\". The stem at line 528 says \"a job that needs no steering from you\". The right option's feedback (line 536) repeats \"needs no steering\". /Users/Muramkar/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/ask-matt/PHASE-BOUNDARIES.md:36 supports the key.",
+      "fix": "Line 528: \"You've just finished building your recipe site's tag filters. `/context` shows about 135k tokens, and you'll want this conversation afterwards to write up the PR. Before that, you want every page's links checked and a list of any that are broken. What fits?\" The feedback can stay."
+     },
+     {
+      "severity": "low",
+      "where": "Final test `scenario-flaky-failure`, stem: \"fails about one run in five, and nobody can see why\" (line 504)",
+      "problem": "The stem echoes the on-ramp's own label, which points straight at `/diagnosing-bugs`.",
+      "evidence": "Line 190: \"**Something's broken and you can't see why → `/diagnosing-bugs`.**\" The stem at line 504 says \"nobody can see why\".",
+      "fix": "Line 504: \"On your recipe site, one of the automated tests fails about one run in five, and re-running it usually makes it pass. What's the route?\""
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint `mid-phase`, stem: \"What does the Phase boundary advice say to do?\" (line 146); right option \"Carry on, or split what's left between subagents.\" (line 153)",
+      "problem": "The stem asks for recall of the advice, not a decision. The right option is the body's sentence at line 133 (\"carry on, or hand what's left to subagents\"), so it's recognised rather than reasoned.",
+      "evidence": "Line 133: \"Mid-Phase, the work in hand has two moves: carry on, or hand what's left to subagents\". The source is ask-matt/PHASE-BOUNDARIES.md:5.",
+      "fix": "Line 146: \"Halfway through building a ticket, the conversation is cluttered with test output, and two of the five functions are still unwritten. What now?\""
+     },
+     {
+      "severity": "low",
+      "where": "Goal 4 (line 17) against the Final test: `spot-triaged-own-tickets` (line 479) and `scenario-step-away` option c \"`/triage`, so each ticket becomes agent-ready\" (line 389)",
+      "problem": "Goal 4 asks the reader to pick `/triage` and say where it rejoins the Main flow (its briefs go to `/implement`). No Final test question has `/triage` as the right pick or asks where its briefs go; only the Checkpoint `chain-rule` touches that. Meanwhile two Final test questions check the same fact: don't triage `/to-tickets` output.",
+      "evidence": "ask-matt/SKILL.md:46 says triage \"produces agent-ready issues, which **`/implement`** later picks up\". The answer to line 389 and the answer to line 487 rest on the same fact, as their feedback shows (line 390: \"`/to-tickets` output is already agent-ready\"; line 488: \"born agent-ready\").",
+      "fix": "Rework the spot question so it checks the rejoin point: \"Sam ran `/triage` on a pile of Visitor bug reports, then typed `/to-spec` on each agent-ready brief before building it. Spot the mistake.\" Right option: \"- [x] A ready brief from `/triage` can go straight to `/implement`.\" Feedback: \"  > Right. Triage's briefs are written for `/implement` to pick up; a spec adds a step they don't need.\" Leave scenario-step-away's option c to cover the don't-triage-your-own-tickets fact."
+     },
+     {
+      "severity": "low",
+      "where": "Checkpoint `fork-b-recipe` (lines 77-87) and Final test `scenario-fits-one-session` (lines 359-369)",
+      "problem": "The Final test question mirrors the Checkpoint. The stem has the same shape (\"you've grilled X ... What do you type next?\") and the four options are the same families: `/implement`; `/clear` then something; `/to-spec` then `/to-tickets`; `/implement-spec`. A Visitor who did the Checkpoint has already seen the option set, so the Final test item mostly checks recall of it.",
+      "evidence": "Lines 79-86 and lines 361-368 use the same four option families; only which one is right changes.",
+      "fix": "In scenario-fits-one-session, swap two of the mirrored distractors for new misconceptions. Line 361: \"- [ ] `/to-tickets` alone, so the change is split into one-session tickets.\" with feedback \"  > Tickets exist to spread a build over sessions. This one fits the room you have.\" Line 365: \"- [ ] `/handoff`, then `/implement` it in a fresh session.\" with feedback \"  > Nothing is travelling, and the fresh session would work from a summary instead of the decisions themselves.\" Lengthen the right option to \"`/implement`, in this same conversation, straight away.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test `sequence-boundary-questions`, stem: \"In what order does Matt's tree have you consider the options?\" (line 432)",
+      "problem": "The body never calls the five questions a \"tree\". The word first appears in this stem, and later in one feedback line (534), so a cold reader has to guess what \"Matt's tree\" refers to.",
+      "evidence": "`grep -n -i tree content/lessons/12-main-flow.md` finds only line 314 (\"worktree\"), line 432 and line 534. The section heading is \"Phase boundaries: five choices, in order\", and line 135 says \"ask these in order\".",
+      "fix": "Line 432: \"... and stop to decide what to do with the session. In what order should you consider the options?\" Or name the list a tree once at line 135: \"At a boundary, walk this tree of questions in order. The first yes wins.\""
+     }
+    ],
+    "reader": [
+     {
+      "severity": "high",
+      "where": "Try it yourself, step 4: \"Now say the idea is a full meal planner with a database, too big for one session. Same question.\" (line 273)",
+      "problem": "The prompt describes the big idea with the exact phrase that the router and the wayfinder Skill use for `/wayfinder`. `/ask-matt` may well send the Visitor to `/wayfinder` instead of `/grill-with-docs` → `/to-spec` → `/to-tickets`. Then the checklist fails (\"The first two answers start with `/grill-with-docs`\", \"The big idea goes `/to-spec` → `/to-tickets` …\"). The Lesson's own test for wayfinder (line 191) is whether you can plan it in one sitting, and the prompt never says that.",
+      "evidence": "ask-matt/SKILL.md:52 \"A huge, foggy effort: a greenfield project or a huge feature build, too big for one session → `/wayfinder`\"; wayfinder/SKILL.md:3 description \"Plan a huge chunk of work (more than one agent session can hold)\" and :7 \"A loose idea has arrived, too big for one agent session\"; engineering/README.md wayfinder line \"(more than one agent session can hold)\". Lesson line 191: \"A huge, foggy effort you can't even plan in one sitting → `/wayfinder`\". Writing guide, pilot lessons: \"the split is whether you can *plan* it in one sitting, not whether *building* takes one session.\"",
+      "fix": "Replace the step 4 prompt with: `Now say the idea is a full meal planner with a database. I can describe all of it today, but building it will take several sessions. Same question.`"
+     },
+     {
+      "severity": "medium",
+      "where": "The map, in order: \"Fork B ==isn't about how important the work is==; it's about whether the build fits in the room this session has left.\" (line 47); flow Scene caption \"it fits the room this session has left\" (line 65); Checkpoint fork-b-recipe feedback \"would push one window deep past its best\" (line 80)",
+      "problem": "Fork B's test depends on the context window: the idea that a session has limited working memory that fills up. The Lesson only explains that at line 91. A cold Visitor meets \"the room this session has left\" and \"one window\" without knowing what they mean, and then has to answer a Checkpoint on it.",
+      "evidence": "First explanation of the context window is line 91: \"Everything in a session lives in the agent's ==context window==: its working memory, measured in tokens…\". Lines 47, 65 and 80 come before it. The lens requires a clause at first use for \"context window\".",
+      "fix": "Line 47: \"…it's about whether the build fits in the room this session has left: the agent's working memory (its context window), which fills as you work and is covered in the next section.\" Line 80: \"Four or five sessions of work would overfill one session's working memory, far past where it reasons well.\""
+     },
+     {
+      "severity": "medium",
+      "where": "The map, in order, Fork A: \"`/handoff` out (it writes a file a fresh session can read), `/prototype` in that fresh session, then `/handoff` back what you learned and point your grilling session at that file.\" (line 37)",
+      "problem": "The Lesson never says how to open a fresh session while keeping the grilling session alive. A Visitor who barely uses a terminal will likely type `/clear` to get a \"fresh session\", and that throws away the very grilling the Lesson says must stay unbroken. It also never says how to \"point your grilling session at that file\".",
+      "evidence": "The Prototype Lesson spells this out (content/lessons/06-prototype.md:157): \"The fresh session is just `claude` started in a second terminal window while the first stays open; you paste in the file's path and ask it to read the file.\" Main-flow has no equivalent. handoff/SKILL.md:8 saves the file to the OS temp folder, so the Visitor needs its path.",
+      "fix": "\"Those take the prototype detour: `/handoff` out (it writes a file a fresh session can read and gives you its path), start `claude` in a second terminal window so the grilling stays open in the first, and run `/prototype` there on that file. When it's answered, `/handoff` back what you learned, and in the first window ask the agent to read the new file.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Phase boundaries, question 4: \"Send it to a subagent and leave this session alone.\" (line 140)",
+      "problem": "Goal 2 and Final test scenario-unsteered-check both need the Visitor to \"give the check to a subagent\", but the Lesson never says how. There's no Skill and no Built-in command for it, and nothing says plain words work.",
+      "evidence": "Lesson line 140 has no how-to. The Context window Lesson does give one (content/lessons/02-context-window.md:127): \"you can ask: 'Use a subagent to find every file that calls `getLessonBySlug`.'\" The Final test at line 535 has the right answer \"Give the check to a subagent; this window stays as it is.\"",
+      "fix": "\"…like an automated review. Ask for a subagent in plain words, such as \"Use a subagent to check every page's links and report back\", and leave this session alone.\""
+     },
+     {
+      "severity": "medium",
+      "where": "The map, in order: \"`/implement` builds test-first with `/tdd`…\" (line 43); Cheat sheet \"`/tdd`, `/code-review` and `/pr` run for you\" (line 349); How Matt and others use it: \"`/tdd` had never run… Their fix: name the Skills in full.\" (line 242)",
+      "problem": "These contradict each other. The body and Cheat sheet promise that `/tdd` runs inside `/implement`, then the Lesson reports 173 sessions where it never ran. The October 2026 caveat at line 45 covers only the review, so the Visitor gets no way to notice a skipped `/tdd` or fix it. \"Name the Skills in full\" doesn't say what to type or where.",
+      "evidence": "implement/SKILL.md:11 \"Call the Skill tool with \"tdd\" where possible, at pre-agreed seams.\" (\"where possible\", so it isn't guaranteed). Lesson line 45 mentions only the review misfiring. content/lessons/09-implement.md:223 says the same script \"now names each Skill in full\". Course facts: plain words can start a model-invoked Skill.",
+      "fix": "Line 43: \"`/implement` is told to build test-first with `/tdd` where it can…\". Line 45: \"In October 2026 these inner calls could misfire: one developer's logs showed `/tdd` never loading, and the review could run before the work is committed or reach Claude Code's own `/code-review`. If no failing test appears before the code, say \"use the tdd Skill\" (it's model-invoked, so plain words start it). If no Standards and Spec sections come back, let `/implement` commit, then type `/mattpocock-skills:code-review`.\" Line 242: \"Their fix: their script's prompt now writes each Skill's full name.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Context hygiene: \"`/retro` runs in the session it reviews, before you clear. If you've already cleared, point it at that session's log.\" (line 97); also line 41, Final test sequence-multi-session feedback \"then look back on the build\" (line 402), spot-retro-next-day feedback (line 446)",
+      "problem": "There are two problems a Visitor would hit. (1) In the ticket-by-ticket road the Lesson teaches, you `/clear` after every ticket, so \"the session it reviews\" can only be one ticket's session, yet the Lesson talks about `/retro` reviewing \"the build\". (2) \"Point it at that session's log\" assumes the Visitor knows where logs are. They don't need to: `/retro` searches for them itself once you name the session.",
+      "evidence": "retro/SKILL.md:13 \"Read the primary sources for the session the user specifies. This may mean searching through session logs on this machine. If the user doesn't specify a session, default to the current one.\" Lesson line 237: Matt says run it \"on a sample of sessions\". The meter Scene (lines 109–116) shows a `/clear` after each ticket.",
+      "fix": "Line 97: \"**`/retro` runs in the session it reviews, before you clear.** In a ticket-by-ticket build, that's a messy ticket's own session, before the `/clear` after it. If you've already cleared, tell it which session to look at, such as \"last night's build in this folder\": it can search the session logs Claude Code keeps on your computer.\" Line 402: \"…then a fresh session per ticket; then look back on a session from the build.\" Line 446: \"…or tell it which session to review.\""
+     },
+     {
+      "severity": "medium",
+      "where": "On-ramps, upkeep and side roads: \"Take the decision into `/to-spec`, or into `/grill-with-docs` if it needs more shaping.\" (line 193); Cheat sheet \"`/improve-codebase-architecture`, then `/to-spec`\" (line 355); Final test scenario-spare-afternoon right answer \"then `/to-spec` on the decision\" and its feedback \"the decision joins the Main flow at `/to-spec`\" (lines 519–520)",
+      "problem": "The router gives a different merge point from the Lesson. A Visitor who asks `/ask-matt` (which the Try it teaches them to do) is told `/grill-with-docs`, while the Lesson and its Final test say `/to-spec`. The Lesson's research note agrees with the router.",
+      "evidence": "ask-matt/SKILL.md:60 \"picking one _generates an idea_ you can take into the main flow at `/grill-with-docs`.\" .scratch/course-rewrite/research/main-flow.md:44 \"Its findings re-enter the flow at `/grill-with-docs`.\" improve-codebase-architecture/SKILL.md has no step after its grilling loop (lines 62–71).",
+      "fix": "Line 193: \"Your pick is a new idea: take it into the Main flow at `/grill-with-docs`, as `/ask-matt` says, or straight into `/to-spec` in the same session if the survey's grilling already settled it.\" Cheat sheet: \"`/improve-codebase-architecture`, then `/grill-with-docs`\". Test right option: \"`/improve-codebase-architecture`, then the Main flow with its pick.\" Feedback: \"Right. It surveys the code and grills you on the spot you pick, and that idea joins the Main flow at `/grill-with-docs`.\""
+     },
+     {
+      "severity": "medium",
+      "where": "Context hygiene: \"`/ask-matt` puts the line at about 150k tokens on today's best models, as a rule of thumb.\" (line 91)",
+      "problem": "This is where `/ask-matt` first appears, and the Visitor isn't told what it is. Its explanation (\"a router\") only comes at line 211, three sections later.",
+      "evidence": "A search of the Lesson finds no mention of `/ask-matt` before line 91 except the goals. Line 211: \"`/ask-matt` is a router: describe where you are, and it names the next Skill…\"",
+      "fix": "\"Matt's router Skill, `/ask-matt` (it tells you which Skill to type next; more below), puts the line at about 150k tokens…\""
+     },
+     {
+      "severity": "medium",
+      "where": "Final test scenario-step-away: \"You'd rather step away than drive each ticket yourself, and you haven't set up a script to loop them.\" (line 384)",
+      "problem": "This is a wording tell. The question stem repeats the Cheat sheet's own labels for the two choices (\"Tickets ready, you drive\" and \"Tickets ready, you step away\"), so the Visitor can match the words without understanding the idea. The writing guide forbids restating the right answer's defining phrase in the question.",
+      "evidence": "Cheat sheet lines 347–348: \"| Tickets ready, you drive | `/implement`, `/clear`, next ticket |\" / \"| Tickets ready, you step away | `/implement-spec` |\". Writing guide, pilot lessons: \"Don't restate the defining phrase of the right answer in the prompt.\"",
+      "fix": "Stem: \"Your spec has nine tickets, some blocking others. It's Friday evening, you want the whole spec built on one branch by Monday without typing anything per ticket, and this repo has no script for looping tickets. What do you type?\""
+     },
+     {
+      "severity": "low",
+      "where": "Try it yourself, intro and step 1: \"You need Claude Code installed and signed in…\" then `git init` (lines 247–254)",
+      "problem": "Git isn't listed as a prerequisite, but step 1 runs `git init`. A Visitor with only Claude Code installed will see \"git is not recognized\" on Windows or a Command Line Tools install prompt on macOS. The router only needs a folder anyway.",
+      "evidence": "Start here (content/lessons/00-start-here.md:35) treats Git as a separate install. The Architecture Lesson's Try it says \"plus Git, the tool that tracks a project's history (check with `git --version`)\". ask-matt/SKILL.md:19 keys on \"working in a working directory\", not on a Git repo.",
+      "fix": "\"You need Claude Code installed and signed in, plus Git (check with `git --version`); see [Start here](/learn/start-here).\" Or drop the `git init` line."
+     },
+     {
+      "severity": "low",
+      "where": "Phase boundaries, question 5: \"`/compact`, with an instruction about what's next, such as \"next we QA the tag filters\".\" (line 141)",
+      "problem": "It doesn't show where the instruction goes. A Visitor may type `/compact` and then send the instruction as a separate message, which loses the steering.",
+      "evidence": "PHASE-BOUNDARIES.md:38 \"Pass it an instruction (`/compact we're going to QA this area`)\". The writing guide's course facts give \"`/compact` focus on X\".",
+      "fix": "\"Otherwise, `/compact`, with what's next on the same line, such as `/compact next we QA the tag filters`.\""
+     },
+     {
+      "severity": "low",
+      "where": "The map, in order, Fork A: \"`/prototype` in that fresh session\" (line 37); Cheat sheet line 344",
+      "problem": "Visitors are told to type `/prototype` here, but the name clash with a hidden Built-in that can catch it only comes 130 lines later. A Visitor acting on the map may hit the Built-in and not know why.",
+      "evidence": "Lesson line 169: \"A hidden Built-in also takes the name `/prototype`, and `/mattpocock-skills:prototype` always works.\" Writing guide course facts: \"use `/mattpocock-skills:prototype` if the short name fails.\"",
+      "fix": "In Fork A: \"…`/prototype` (or `/mattpocock-skills:prototype` if the short name misfires) in that fresh session…\""
+     },
+     {
+      "severity": "low",
+      "where": "Whole Lesson: word budget (lint prints proseWords 2894; the cap is 3000)",
+      "problem": "The fixes above add words, and the Lesson is already 106 words from the lint ceiling, so it needs cuts. There's repetition to cut: the first three Common mistakes restate Why it matters word for word, `/clear` is glossed twice (lines 26 and 96), and \"committed (saved in Git)\" is glossed twice (lines 45 and 120).",
+      "evidence": "`node .scratch/course-rewrite/tools/lint-lesson.mjs content/lessons/12-main-flow.md` → {\"proseWords\":2894,…}. Writing guide: \"Common mistakes shouldn't restate a whole earlier section; point back to it in one line.\"",
+      "fix": "Replace Common mistakes bullets 1–3 (lines 299–301) with one: \"**The three wrong turns from \"Why it matters\".** Clearing before `/to-tickets`, the long road for a short job, waiting at a junction.\" Cut \"empties the conversation\" from line 96 (\"`/clear` (a Built-in command, part of Claude Code rather than a Skill). `/resume` can still reopen…\") and \"(saved in Git)\" from line 120."
+     },
+     {
+      "severity": "low",
+      "where": "Chat Scene caption: \"\"Just give me the sequence\" gets the short form.\" (line 215)",
+      "problem": "It suggests `/ask-matt` has a special short-form mode that this phrase triggers. Nothing in the Skill defines one, so a Visitor may think these are magic words.",
+      "evidence": "ask-matt/SKILL.md (all 97 lines) has no short form and no output mode. The research note only uses the phrase as a prompt (research/main-flow.md:110).",
+      "fix": "\"You type `/ask-matt` and say where you are. Asking for just the sequence keeps the answer short.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test scenario-unsteered-check: \"a job that needs no steering from you\" (line 528)",
+      "problem": "The stem repeats the defining phrase of the right answer's branch (question 4 at line 140: \"a job tight enough to run with no steering\"), so the subagent answer can be matched by its wording alone.",
+      "evidence": "Line 140: \"AFK means away from keyboard: a job tight enough to run with no steering\". Line 534 feedback: \"A job that needs no steering fits question 4.\"",
+      "fix": "Stem: \"Next you want every page's links checked: the agent can do it start to finish and just tell you which links are broken.\""
+     }
+    ],
+    "accuracy": [
+     {
+      "severity": "medium",
+      "where": "The map, in order, line 43: \"`/implement` builds test-first with `/tdd`\". The same claim appears in the flow Scene caption at line 69 (\"`/tdd` and `/code-review` run inside\") and the Cheat sheet at line 349 (\"`/tdd`, `/code-review` and `/pr` run for you\")",
+      "problem": "The Lesson says `/implement` always runs `/tdd`. In 1.3.1, `/implement` calls tdd only \"where possible, at pre-agreed seams\", and tdd won't write a test at a seam nobody confirmed. On the short road (Fork B 'No') there is no spec, so `/to-spec` never checked any seams with you. The Lesson's own Other developers bullet (line 242) then reports that `/tdd` never ran in 173 sessions, and nothing in the body explains why. Line 45 warns only that the review can misfire. A reader will expect test-first building that may never happen.",
+      "evidence": "implement/SKILL.md:11 'Call the Skill tool with \"tdd\" where possible, at pre-agreed seams.' tdd/SKILL.md:22 'Test only at pre-agreed seams. Before writing any test, write down the seams under test and confirm them with the user. No test is written at an unconfirmed seam.' to-spec/SKILL.md:15-17 (sketch the test seams, then check them with the user). Lesson line 242: '`/tdd` had never run'. In GitHub Discussion #1136, Warshoow's 2026-09-29 comment says '/tdd never ran once'. [Implement](/learn/implement) line 52 already teaches this weak spot.",
+      "fix": "Line 43: \"`/implement` drives `/tdd` (a failing check first, then the code that passes it; see [TDD](/learn/tdd)) where it can, at test seams agreed in advance. `/to-spec` checks those seams with you; on the short road, name them yourself when it asks. It closes with `/code-review`...\" At the end of line 45, add: \"The `/tdd` call can quietly not happen too, if no seams were agreed.\" Line 69 caption: \"`/tdd` (at the agreed seams) and `/code-review` run inside.\" Cheat sheet row: \"`/tdd` (at agreed seams), `/code-review` and `/pr` run for you\"."
+     },
+     {
+      "severity": "medium",
+      "where": "On-ramps, upkeep and side roads, line 187: \"Three on-ramps bring in work that isn't your own idea, then merge onto the Main flow\"",
+      "problem": "This is wrong for `/wayfinder`, the third on-ramp in the list. Wayfinder is for a loose idea too big and foggy to plan in one sitting, and that idea is usually your own (a greenfield project, a huge feature). ask-matt defines an on-ramp as a starting situation that generates work, not as work from someone else. A reader could decide a big idea of their own never belongs in `/wayfinder`.",
+      "evidence": "ask-matt/SKILL.md:44 'A starting situation that generates work, then merges onto the main flow.' ask-matt/SKILL.md:52 'A huge, foggy effort: a greenfield project or a huge feature build, too big for one session → /wayfinder'. wayfinder/SKILL.md:7 'A loose idea has arrived, too big for one agent session, and wrapped in fog'. The Lesson's own bullet at line 191 calls it 'A huge, foggy effort you can't even plan in one sitting'.",
+      "fix": "\"Three on-ramps start from a situation rather than a sharp idea you can plan in one sitting (a pile of reports, a bug, an effort too foggy to map), then merge onto the Main flow:\""
+     },
+     {
+      "severity": "medium",
+      "where": "Phase boundaries: five choices, in order, question 1, line 137: \"The one exception: near the end of the Smart zone, don't push on, even for a Phase that needs this one.\"",
+      "problem": "The exception is presented as part of Matt's ordered tree, but the tree has none. In PHASE-BOUNDARIES question 1, either condition alone makes the answer yes, including when the next phase needs this one as a primary source. The don't-push-on rule comes from ask-matt's Context hygiene section, and there it covers only the stretch before `/to-tickets`. The Lesson extends it to every Phase and credits it to the tree.",
+      "evidence": "PHASE-BOUNDARIES.md:21 'Two things make the answer yes: the next phase needs this phase as a primary source, or you have enough smart zone left (~150k tokens) for the next phase to fit.' (no exception). ask-matt/SKILL.md:40 'If a session approaches it before `/to-tickets`, don't push on degraded; `/compact` at the nearest phase boundary'.",
+      "fix": "Replace the last sentence of question 1 with: \"One limit sits over this question, from `/ask-matt`'s context rule rather than the tree itself: if you're near the end of the Smart zone before `/to-tickets`, don't push on, even when the next Phase needs this one. `/compact` at the boundary instead.\""
+     },
+     {
+      "severity": "low",
+      "where": "Flow Scene caption, line 73: \"Step 4: `/retro` looks back on the session and improves the agent's environment for next time.\"",
+      "problem": "This overstates what the Skill does. `/retro` suggests changes, ranked by severity, and you decide which to make. Matt says it is meant to keep a human in the loop. The body at line 41 gets this right with 'proposes fixes'.",
+      "evidence": "retro/SKILL.md:7 'You are suggesting improvements to the coding agent's environment'. retro/SKILL.md:25 'Present these candidates to the user, in order of severity.' In BsJGo1wFTvQ, Matt says retro is 'designed to be human in the loop'.",
+      "fix": "\"Step 4: `/retro` looks back on the session and suggests changes to the agent's environment for next time; you pick which to make.\""
+     },
+     {
+      "severity": "low",
+      "where": "Final test scenario-near-smart-zone, option d feedback, line 416: \"Tickets come from a spec, and the payments decisions don't exist yet.\"",
+      "problem": "The first clause is stated as a general rule, and it's false. `/to-tickets` can cut up a plan, a spec or the current conversation. Only on the Main flow does the spec come first.",
+      "evidence": "to-tickets/SKILL.md:9 'Break a plan, spec, or conversation into a set of tickets'. to-tickets/SKILL.md:17 'Work from whatever is already in the conversation context.'",
+      "fix": "\"On the Main flow the spec comes before the tickets, and the payments decisions don't exist yet.\""
+     },
+     {
+      "severity": "low",
+      "where": "Phase boundaries, question 3, line 139: \"...or a side task you fork off mid-Phase, like the prototype detour.\"",
+      "problem": "ask-matt gives a different reason for the prototype detour's `/handoff`: a prototype lives in its own directory, so it falls under 'new folder', not 'side task'. The Lesson files it under side task without noting what ask-matt says.",
+      "evidence": "ask-matt/SKILL.md:20 'bridged by **`/handoff`** in both directions (a prototype lives in its own directory, which is exactly what `/handoff` is for; see Phase boundaries)'. PHASE-BOUNDARIES.md:30-32 lists 'new directory' and 'side task' as separate reasons.",
+      "fix": "\"...a new folder or repo, a colleague, or a side task you fork off mid-Phase. The prototype detour fits two of these: `/ask-matt` says a prototype lives in its own folder, and it's forked off mid-grilling.\" Keep [Prototype](/learn/prototype) line 191 consistent with this."
+     },
+     {
+      "severity": "low",
+      "where": "The map, in order, step 3, line 40: \"`/implement-spec`, which hands the whole spec to subagents ... that build every unblocked ticket in parallel on one integration branch\"",
+      "problem": "The subagents don't build on the integration branch. Each one works in its own worktree on its own branch, and a merger subagent then lands each finished ticket on the integration branch. The Site story row at line 314 gets this right, so the two descriptions disagree.",
+      "evidence": "implement-spec/SKILL.md:27 'Use **implementer subagents** to implement each ticket, each in its own worktree on its own branch.' implement-spec/SKILL.md:32 'merge its work to the integration branch with a **merger subagent**.'",
+      "fix": "\"...hands the whole spec to subagents (helper agents, each with its own fresh memory). They build every unblocked ticket in parallel, each in its own copy of the repo, and each finished ticket is merged into one integration branch (a single shared line of work in Git).\""
+     },
+     {
+      "severity": "low",
+      "where": "Phase boundaries, line 133: \"the line is fuzzy on purpose: in a long grilling, finishing one whole topic can count.\"",
+      "problem": "The example is the reviser's own application of Matt's definition, but it reads as Matt's words. The source says only that the definition is fuzzy and that a phase ends when you think you're done with it. The Final test answer key for scenario-near-smart-zone (line 412, 'Finishing memberships is a Phase boundary') rests on this sentence.",
+      "evidence": "PHASE-BOUNDARIES.md:3 'The definition is fuzzy on purpose: a phase ends when you think *\"ok, we're done with that\"*.' Neither PHASE-BOUNDARIES.md nor ask-matt/SKILL.md mentions topics within a grilling.",
+      "fix": "\"...and the line is fuzzy on purpose. By that test, finishing one whole topic in a long grilling (memberships, say, before payments) can count as a boundary.\""
+     }
+    ]
+   },
+   "fix": {
+    "applied": [
+     "Issue 1 (/implement always runs /tdd): fixed. The map paragraph now says /implement is told to build test-first with /tdd 'where it can, at agreed seams' (defined in a clause). It adds that /to-spec checks the seams with you, and that on the short road you name them as you type /implement or it may just write the code. The flow Scene caption and the Cheat sheet row now say '/tdd (at the agreed seams)' and '(at agreed seams)'.",
+     "Issue 2 (the on-ramps are 'work that isn't your own idea'): fixed. The line now reads 'Three on-ramps start from a situation rather than a sharp idea you can plan in one sitting, then merge onto the Main flow'.",
+     "Issue 3 (the Phase-boundary exception credited to the tree): fixed. Question 1 now says the limit comes from /ask-matt's context rule, not the tree, and that it applies near the Smart zone's end before /to-tickets, even if the next Phase needs this one.",
+     "Issue 4 (high, Try it step 4 reads like a /wayfinder trigger): fixed. The prompt now says 'I can describe all of it today, but building it will take several sessions.'",
+     "Issue 5 (context window used before it's explained): fixed. Line 47 now glosses 'the room this session has left' as the agent's working memory (its context window), which fills as you work. The fork-b-recipe feedback now says the work would 'overfill one session's working memory, far past where it reasons well'.",
+     "Issue 6 (how to open the fresh prototype session): fixed. Fork A now says: start claude in a second terminal window so the grilling stays open in the first, give it the file's path, type /prototype, then /handoff back and ask the first window to read the new file.",
+     "Issue 7 (no how-to for subagents): fixed. Question 4 now says to ask in plain words, e.g. \"use a subagent to review today's changes\". I picked an example that doesn't give away the link-check Final test question.",
+     "Issue 8 (the body contradicts the 173-session report): fixed. The October 2026 paragraph now covers /tdd never loading as well as the review misfiring. It gives the remedy: ask for \"the tdd Skill\" in plain words, since the agent can start that one. The Other developers bullet now says 'the script's prompt now names each Skill in full, like mattpocock-skills:tdd' (from research/_community-and-changes.md).",
+     "Issue 9 (/retro in a ticket-by-ticket build, and pointing it at logs): fixed. The context-hygiene bullet now says that in a ticket-by-ticket build it's a messy ticket's session. Already cleared? Type /retro with the session you mean: it searches the logs Claude Code keeps on your computer (retro SKILL.md step 2). The sequence-multi-session feedback now says 'look back on a session from the build'. The spot-retro-next-day feedback now says 'tell it which session to review'.",
+     "Issue 10 (where architecture work rejoins the Main flow): fixed. Upkeep now says the pick gives you an idea to take into the Main flow at /grill-with-docs, as /ask-matt says, or straight to /to-spec if that grilling already settled it. The Cheat sheet now says '/improve-codebase-architecture, then /grill-with-docs'.",
+     "Issue 11 (/ask-matt not explained at first use): fixed. It now reads \"Matt's router Skill, /ask-matt (it tells you which Skill to type next; more below)\".",
+     "Issue 12 (scenario-step-away stem echoes the Cheat sheet labels): fixed. The new stem: Friday evening, the whole spec built on one branch by Monday, nothing typed per ticket, no looping script.",
+     "Issue 13 (scenario-spare-afternoon key and stem): fixed. The right option is now '/improve-codebase-architecture, then /grill-with-docs.', and the feedback says Matt's router sends the idea to /grill-with-docs. The new stem ('No feature is planned this week... six small files that keep drifting apart') avoids both the body's wording and the Cheat sheet's 'spare afternoon'. The /retro distractor's feedback now explains it on its own terms.",
+     "Issue 14 (\"Tickets come from a spec\" is false as a general rule): fixed. The near-smart-zone feedback now reads \"The payments decisions don't exist yet, and in the Main flow the tickets come after /to-spec.\" I also scoped the same claim in the sequence-multi-session feedback to 'In the Main flow'.",
+     "Issue 15 (the right option is often the shortest): fixed. In all 9 flagged questions the right option is now neither shortest nor longest, by both raw and visible length (fork-b-recipe, someone-else-knows, scenario-fits-one-session, scenario-step-away, scenario-side-task, spot-retro-next-day, predict-plain-words, spot-triaged-own-tickets, spot-map-to-implement). For spot-triaged-own-tickets and spot-map-to-implement I also reworded the right options so they no longer repeat the body's phrases 'already agent-ready' and 'merge at /to-spec'. Ties remain only in the two sequence questions and the one-word scenario-agent-may-start, where equal lengths can't be avoided.",
+     "Issue 16 (scenario-agent-may-start stem restates /wizard's definition): fixed. The new stem is a key on the payment provider's website, behind your login, saved into the project's .env file. Options and feedback unchanged.",
+     "Issue 17 (scenario-unsteered-check stem gives away the answer): fixed. I removed 'a Phase boundary' and 'a job that needs no steering'; the stem now asks for every page's links checked and a list of broken ones. Id and feedback kept.",
+     "Word budget: the fixes added about 200 words, so to stay under 3000 I trimmed elsewhere without losing anything a question relies on. Cuts: the setup sentence, the /retro step's examples, the 'Six questions' aside, a Colin clause, the duplicate mid-Phase side-task sentence, the router paragraph, the quirk line, the /research line and the quality-not-size sentence."
+    ],
+    "declined": [],
+    "words": 2977,
+    "lintClean": true,
+    "testsPassed": true
+   }
+  }
+ }
+}

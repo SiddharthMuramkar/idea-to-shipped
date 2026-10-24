@@ -1,0 +1,240 @@
+{
+ "slug": "retro",
+ "review": {
+  "acc-sources": [
+   {
+    "severity": "high",
+    "where": "Steering files, and why Matt never runs `/init`: line 140 \"their contents go into the context window of every session in the repo\"; Checkpoint `globality`, line 163-164: \"`AGENTS.md` is the same idea under another name: it loads in every session too.\"",
+    "problem": "The Lesson says CLAUDE.md and AGENTS.md both load into every session. In Claude Code that's false whenever a CLAUDE.md exists: by default it then reads only CLAUDE.md. The Checkpoint's scenario is a project that has a CLAUDE.md, so its feedback teaches a wrong fact about which file loads. It also contradicts How coding agents work, which gets this right. This site's own setup shows it: its CLAUDE.md has to point the agent to AGENTS.md, because AGENTS.md doesn't load on its own.",
+    "evidence": "https://code.claude.com/docs/en/memory#agents-md (read 2026-10-24): table row \"An AGENTS.md and a CLAUDE.md or CLAUDE.local.md in your working directory or above it | Your CLAUDE.md files only\"; and \"By default, Claude reads AGENTS.md only when you have no CLAUDE.md in your working directory or above it.\" content/lessons/01-how-agents-work.md:196: \"Claude Code reads it only when there's no `CLAUDE.md`.\" This repo's CLAUDE.md:17: \"See `AGENTS.md`, and read the guides...\" (a pointer, not an @import).",
+    "fix": "Line 140: \"`CLAUDE.md` is a steering file: its contents go into the context window of every session in the repo. `AGENTS.md` is the same idea under a name other agents read too; Claude Code reads it instead only when there's no `CLAUDE.md`.\" Checkpoint `globality`: option D (\"loads less often\") is now half-true, since with a CLAUDE.md present AGENTS.md doesn't load at all. Replace it with \"- [ ] Put them at the top of `CLAUDE.md`, where the agent reads first.\" and the feedback \"  > Position doesn't change the cost. Wherever they sit, every session loads them.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Why it matters, line 24: \"An agent remembers nothing between sessions ... so nothing it learned the hard way carries over unless it's written into the repo\"",
+    "problem": "This contradicts Claude Code's docs as of 2026-10-23. Auto memory is on by default in local sessions. Claude writes notes about corrections to ~/.claude/projects/<project>/memory/, which is outside the repo, and MEMORY.md loads at the start of every session. So some lessons do carry over without being written into the repo. The real point is that this isn't reliable, and a note isn't a fix. How coding agents work hedges it more carefully: \"unless something was written to a file\".",
+    "evidence": "https://code.claude.com/docs/en/memory#enable-or-disable-auto-memory: \"Auto memory is on by default in local sessions.\" Same page, CLAUDE.md vs auto memory table: \"Loaded into | Every session | Every session (first 200 lines or 25KB)\"; \"Claude doesn't save something every session.\" content/lessons/01-how-agents-work.md:40: \"The next session remembers nothing of it unless something was written to a file.\"",
+    "fix": "\"Next session, the same struggles happen again. Each session starts with an empty context window (a session is one conversation, from starting `claude` until you clear it or quit). Claude Code's auto memory may save a note now and then, but only when it judges one worth keeping. Nothing reliably changes unless the fix is written into the repo: the project folder, tracked with Git, that it works in.\""
+   },
+   {
+    "severity": "medium",
+    "where": "A real retro, step by step, line 95: \"He ran it on one of his recent sessions.\"; Scene title line 98: \"Matt's retro on his own repo\"; chat line 100 `you: /retro`",
+    "problem": "The transcript doesn't support a single session in a single repo. Matt introduces the run as covering \"10 that I've currently got\". The findings also come from several projects: the release of his Skills repo, his animatics video drafts, the CLI for his course video manager, and a Wiki CLI. A bare `/retro` reviews only the current session, so the Scene's first line also suggests the wrong scope.",
+    "evidence": "BsJGo1wFTvQ transcript (local ASR, /Users/siddharth/Developer/trying/.handoff/transcripts/BsJGo1wFTvQ.json): 10:29-10:37 \"You run it on a coding agent session, either the current one or, you know, 10 that I've currently got\"; 11:23 \"why the 1.3.0 release was missing\"; 11:57 \"I use animatics to kind of create my videos\"; 12:13 \"A custom CLI that I've created for my course video manager wastes tokens\"; 12:20 \"Wiki, which is another custom CLI, is not on path\". The X post three days earlier (https://x.com/mattpocockuk/status/2105951409887949107, 2026-10-02): \"/retro read my last 10 coding agent sessions...\".",
+    "fix": "Line 95: \"...here is Matt's own, from the video where he launched the Skill in October 2026. He ran it over a batch of his recent sessions, across several of his projects.\" Scene title: \"Matt's retro on his recent sessions (paraphrased; his reply is illustrative)\". First caption: \"# Matt points the Skill at his recent sessions. It loads `/writing-for-agents`, then reads their records.\" Chat line: \"you: `/retro` look back over my recent sessions\"."
+   },
+   {
+    "severity": "medium",
+    "where": "The idea: fix the environment, not the code, line 57: \"So standards go in `CODING_STANDARDS.md`, which `/code-review` always reads when it exists.\" (also lines 118, 124, Final test `scenario-which-skill` line 336 and `sequence-retro-timing` lines 394-400)",
+    "problem": "Claude Code has a Built-in `/code-review`, a bug hunt for correctness. Typed bare, the name can run that instead of Matt's Skill. The course facts say Matt's Skill is always reachable as `/mattpocock-skills:code-review`. A cold reader who types `/code-review` expecting it to read `CODING_STANDARDS.md` may get the Built-in, and this Lesson never mentions the clash (0 occurrences of `mattpocock-skills:code-review`, while 10-code-review.md has 17).",
+    "evidence": "https://code.claude.com/docs/en/commands: \"`/code-review [low|medium|high|xhigh|max|ultra] ...` | Skill. Review the current diff ... for correctness bugs.\" writing-guide.md \"Facts the whole course agrees on\": \"Name clashes. Claude Code has its own Built-in `/code-review` ... Matt's Skill is always reachable as `/mattpocock-skills:code-review`.\" `grep -c mattpocock-skills:code-review content/lessons/17-retro.md` gives 0.",
+    "fix": "At line 57: \"The reviewer, like the one inside Matt's `/code-review` Skill (type `/mattpocock-skills:code-review`, since Claude Code's Built-in `/code-review` is a separate bug hunt), gets a diff...\". After that, the short name can stand."
+   },
+   {
+    "severity": "low",
+    "where": "Why it matters, line 28: \"which joined his main set in version 1.3 (September 2026)\"",
+    "problem": "The v1.3.0 tag points at a commit from 29 September, but the 1.3.0 GitHub release was only published on 4 October (Matt says in the video that the agent cut it late), and the launch video came out on 5 October. Line 95 then says he launched it in October. That reads as a small inconsistency.",
+    "evidence": "`gh release list --repo mattpocock/skills` gives \"v1.3.0 ... 2026-10-04T12:47:22Z\". `gh api repos/mattpocock/skills/commits/v1.3.0` gives a commit dated 2026-09-29. BsJGo1wFTvQ was published 2026-10-05 (YouTube video_details).",
+    "fix": "\"...which joined his main set in version 1.3 (released at the start of October 2026).\""
+   },
+   {
+    "severity": "low",
+    "where": "A real retro, Scene chat, line 108: \"a custom command-line tool returns far more tokens than the job needs\"",
+    "problem": "This goes further than the source. Matt only says the CLI \"wastes tokens\". Nothing in the video says what it returns.",
+    "evidence": "BsJGo1wFTvQ 12:13-12:20: \"A custom CLI that I've created for my course video manager wastes tokens. So, Retro looks at token inefficiency too.\"",
+    "fix": "\"agent: **4. Tool economy:** a custom command-line tool wastes tokens.\""
+   },
+   {
+    "severity": "low",
+    "where": "How Matt and others use it, line 204: \"said the agents find those docs and keep them up to date\"",
+    "problem": "The developer hedged (\"seem to be able to\"). The Lesson turns that into a firm claim.",
+    "evidence": "https://news.ycombinator.com/item?id=49948336 (gregwebs, 2026-10-03 22:18 UTC per the HN API): \"the agents seem to be able to find and use docs and keep them up to date.\"",
+    "fix": "\"...and said the agents seem to find those docs and keep them up to date.\""
+   },
+   {
+    "severity": "low",
+    "where": "Final test `spot-negation`, line 352-353: \"`AGENTS.md` is the same idea under another name, with no extra authority.\"",
+    "problem": "The feedback is true but misses the Claude Code fact a reader most needs. Dana's repo has a `CLAUDE.md`, so a line moved to `AGENTS.md` wouldn't be read at all by default.",
+    "evidence": "https://code.claude.com/docs/en/memory#when-claude-code-reads-agents-md: \"By default, Claude reads `AGENTS.md` only when you have no `CLAUDE.md`...\"",
+    "fix": "\"  > Claude Code reads `AGENTS.md` only when there's no `CLAUDE.md`, and a ban there backfires the same way.\""
+   }
+  ],
+  "acc-skills": [
+   {
+    "severity": "medium",
+    "where": "Steering files, and why Matt never runs `/init`: \"their contents go into the context window of every session in the repo\" (line 140); Checkpoint globality feedback \"`AGENTS.md` is the same idea under another name: it loads in every session too.\" (line 164)",
+    "problem": "The Lesson says Claude Code loads AGENTS.md into every session. It doesn't: Claude Code reads AGENTS.md only when there is no CLAUDE.md. That's false for any repo with both files, this site included, and it contradicts How coding agents work. retro's SKILL.md wording covers agents in general, so it doesn't back the Claude Code claim.",
+    "evidence": "https://code.claude.com/docs/en/memory: \"By default, Claude reads `AGENTS.md` only when you have no `CLAUDE.md` in your working directory or above it\". content/lessons/01-how-agents-work.md:196: \"Claude Code reads it only when there's no `CLAUDE.md`\". This repo has both files, and CLAUDE.md:17 only points to AGENTS.md (\"See `AGENTS.md`\"); it doesn't import it. retro SKILL.md:41 (\"pushed to the context window of any agent\") is written for agents in general.",
+    "fix": "Line 140: \"`CLAUDE.md` is a steering file: Claude Code puts its contents into the context window of every session in the repo. `AGENTS.md` is the same idea under a name other agents read; Claude Code reads it instead only when there's no `CLAUDE.md` (see [How coding agents work](/learn/how-agents-work)).\" Line 164 feedback: \"> In Claude Code, `AGENTS.md` is read only when there's no `CLAUDE.md`, and then it loads in every session just the same. Either way the lines are global.\""
+   },
+   {
+    "severity": "medium",
+    "where": "How Matt and others use it: \"`/retro` can look over a week of pull requests and reviews and propose the checks and standards\" (line 198)",
+    "problem": "This gives /retro a capability the 1.3.1 Skill doesn't have. The Skill reads the session record you name; it doesn't read pull requests or reviews. The claim comes from a talk given before retro shipped, and it is only paraphrased from machine-translated captions.",
+    "evidence": "skills/engineering/retro/SKILL.md:13: \"Read the primary sources for the session the user specifies. This may mean searching through session logs\". The talk is dated 2026-09-25 (Lesson sources, line 415). retro graduated in v1.3.0 (CHANGELOG.md:25), and the v1.3.0 tag commit is dated 2026-09-29T12:38:36Z (gh api repos/mattpocock/skills/commits/v1.3.0).",
+    "fix": "\"**He reviews the system, not just the code.** In a September 2026 talk on the pull-request bottleneck, just before `/retro` shipped, he argued you should never have to write the same review comment twice, and described looking back over a week of reviews for the checks and standards that would make the next one lighter. The 1.3.1 Skill reads session logs, so in practice you point it at the sessions behind those pull requests.\""
+   },
+   {
+    "severity": "medium",
+    "where": "Try it yourself, It's working if: \"Nothing it proposed makes `CLAUDE.md` longer\" (line 264); goals: \"and almost never a new `CLAUDE.md` line\" (line 15)",
+    "problem": "A correctly working /retro can fail this check. The Skill treats CLAUDE.md as the home for navigation pointers. In this exercise the obvious fix for \"See notes.md\" is a sharper pointer, which is longer, and a new navigation pointer is a valid Navigation candidate. The Lesson itself says navigation pointers earn a line (line 151). The docs' \"working if\" describes a trend over time, not a rule for every run.",
+    "evidence": "skills/engineering/retro/SKILL.md:41: CLAUDE.md/AGENTS.md \"should be used incredibly sparingly, usually only for **navigation pointers** to other files\". SKILL.md:17: Navigation, \"Would a **navigation pointer** make it easier?\". docs/engineering/retro.md:64: \"your `AGENTS.md` gets shorter over time, not longer\". writing-for-agents SKILL.md:12: \"sharpen the wording first\".",
+    "fix": "Line 264: \"- [ ] Nothing it proposed adds a rule or a description of the code to `CLAUDE.md` (a sharper `notes.md` pointer is fine), and nothing changed until you chose.\" Line 15: \"…a pointer for slow searching, and a new rule in `CLAUDE.md` almost never.\""
+   },
+   {
+    "severity": "medium",
+    "where": "The idea: fix the environment, not the code: \"which `/code-review` always reads when it exists\" (line 57)",
+    "problem": "This behaviour belongs to Matt's code-review Skill. Typed as plain `/code-review`, the name reaches Claude Code's Built-in bug hunt instead. A Visitor who types /code-review and expects CODING_STANDARDS.md to be read will get a different tool. The course facts and the Skills Lesson both say to type the full name.",
+    "evidence": "skills/engineering/code-review/SKILL.md:36: \"When `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it must be on the list.\" Writing guide, Facts, Name clashes: \"Claude Code has its own Built-in `/code-review` … Matt's Skill is always reachable as `/mattpocock-skills:code-review`.\" content/lessons/03-skills.md:333: \"Typing `/code-review` and expecting Matt's review. Type `/mattpocock-skills:code-review`.\"",
+    "fix": "\"So standards go in `CODING_STANDARDS.md`, which Matt's review Skill always reads when it exists. Type it as `/mattpocock-skills:code-review`, because plain `/code-review` is Claude Code's Built-in bug hunt (see [Skills](/learn/skills)).\""
+   },
+   {
+    "severity": "medium",
+    "where": "The idea: fix the environment, not the code: the findings table (lines 43–51), plus \"a quiet, expensive mistake can rank below a loud, cheap one\" (line 120)",
+    "problem": "The table copies the docs page's findings table row by row with light edits. Unquoted word runs reach 17 and 21 words across adjacent cells. Line 120 repeats an 11-word docs sentence word for word without quotation marks, and that source is already quoted once on line 55. The course rule says no pasted docs passages and everything outside one short quote in the author's own words.",
+    "evidence": "docs/engineering/retro.md:19–25 (the plugin's copy of aihero.dev/skills-retro). An n-gram comparison found shared runs of 21 words (\"md is large move its steering out into standards or checks a tool call was expensive for what it returned streamline\"), 17 words (\"a file it already reads it made a mistake a tool could have caught an automated check\") and 15 words (\"ci job the reviewer missed a judgement call mistake a rule in coding standards md\"). docs/engineering/retro.md:43 has the same wording as line 120: \"a quiet, expensive mistake can rank below a loud, cheap one\".",
+    "fix": "Rewrite the table in the author's own words, for example: | Searching dragged on | A navigation pointer, placed in a file the agent opens anyway | / | A slip a tool would have flagged | A check: lint, types, a test, a hook on commit, a CI job | / | A matter of taste got past review | A written rule in `CODING_STANDARDS.md` | / | A steering file (the repo's or your global one) has grown big | Its rules move out to standards or checks | / | One tool call burned far more tokens than it was worth | Make that tool cheaper, or swap it out | / | Lines that change nothing | Cut them (no-ops) | / | Information the agent had no way to see | More access: a dev-server log file, read-only access to a service |. Line 120: \"And the ranking can put a noisy but harmless slip above a silent, costly one.\""
+   },
+   {
+    "severity": "low",
+    "where": "Your part: \"`/retro` sees one session, so it can't tell you…\" (line 122) vs How Matt and others use it: \"asked `/retro` to read his last ten sessions\" (line 197)",
+    "problem": "Two lines of the Lesson disagree: one says retro sees one session, the other shows Matt pointing it at ten.",
+    "evidence": "skills/engineering/retro/SKILL.md:13: \"the session the user specifies\". docs/engineering/retro.md:39: \"It sees one session\". Lesson line 197 cites Matt's X post, in which he ran it over ten sessions.",
+    "fix": "\"**Prune checks yourself.** `/retro` judges the sessions you show it, not how its past proposals have fared since, so it can't tell you that last month's rule now fires on good code.\""
+   },
+   {
+    "severity": "low",
+    "where": "Intro: \"`/retro` reads them and turns each one into a fix for the repo\" (line 11); Why it matters: \"It looks back at a session and improves the agent's environment\" (line 28)",
+    "problem": "These lines say /retro makes the fixes. It only suggests them, and line 41 of the same Lesson says it stops after listing.",
+    "evidence": "skills/engineering/retro/SKILL.md:7: \"You are suggesting improvements to the coding agent's **environment**\". SKILL.md:25: \"Present these candidates to the user, in order of severity.\" docs/engineering/retro.md:5: \"It also only proposes.\"",
+    "fix": "Line 11: \"`/retro` reads them and proposes a fix in the repo for each one, so the next session doesn't trip over the same thing.\" Line 28: \"It looks back at a session and suggests improvements to the agent's ==environment==…\""
+   },
+   {
+    "severity": "low",
+    "where": "Findings table rows \"The reviewer missed a judgement-call mistake\" and \"`CLAUDE.md` or `AGENTS.md` is large\" (lines 47–48)",
+    "problem": "Both rows leave out part of the Skill. Coding standards can also remove or clarify an existing rule, not just add one. The Global AGENTS.md category also covers the user's global steering file, not just the repo's.",
+    "evidence": "skills/engineering/retro/SKILL.md:19: \"Should an existing rule be removed or clarified?\". SKILL.md:20: \"_Use when_ the AGENTS.md file is particularly large - in the repo OR the user's global scope.\"",
+    "fix": "Row 3: \"The reviewer missed a judgement-call mistake, or a standard is unclear | Add, clarify or remove a rule in `CODING_STANDARDS.md`\". Row 4: \"`CLAUDE.md` or `AGENTS.md` is large, in the repo or your global one | Move its steering out, into standards or checks\"."
+   },
+   {
+    "severity": "low",
+    "where": "Mechanical or judgement? (line 55) and Writing for agents bullets (lines 171, 173–176)",
+    "problem": "Several sentences closely paraphrase writing-for-agents SKILL.md and retro SKILL.md, keeping their order and many exact words without quotation marks. None reaches 15 copied words in a row, but together they read as transcription rather than the author's own words.",
+    "evidence": "writing-for-agents SKILL.md:81 \"When a sentence fails, delete the whole sentence rather than trim words from it\" vs line 174 \"When a sentence fails, delete the whole sentence rather than trimming words.\" SKILL.md:12 \"A skill's description is one; a line in `AGENTS.md` naming a doc is the same object\" vs line 171. SKILL.md:43 \"a document simply too long, even when every line is live and unique\" vs line 173. SKILL.md:81 \"a word too weak to beat the default\" vs line 175. retro SKILL.md:18 \"(no pre-commit hook and no CI job running its lint/typecheck/test command)\" vs line 55.",
+    "fix": "Rephrase each one, for example. Line 174: \"If a sentence fails, cut all of it; shaving words off a no-op leaves a shorter no-op.\" Line 55: \"A repo where nothing runs lint, types or tests on its own, neither a pre-commit hook nor a CI job, counts as a finding by itself.\" Line 171: \"A context pointer is a line the agent always sees that names something it can't see yet, and says when to go and get it.\""
+   },
+   {
+    "severity": "low",
+    "where": "Your part: \"Throw out any you can't link to a specific moment\" (line 120); Try it: \"each one points at a moment in this session\" (line 262) next to \"It flagged that nothing runs its checks automatically\" (line 263)",
+    "problem": "The missing-guardrail finding comes from the state of the repo, not from a moment in the session. A Visitor who applies line 120 strictly would throw out the very finding line 263 expects.",
+    "evidence": "skills/engineering/retro/SKILL.md:18: \"_Use when_ the agent made a mistake an automated check could have caught, or the repo has no guardrail at all.\"",
+    "fix": "Line 120: \"Throw out any you can't link to a specific moment in the session, or to a plain fact about the repo such as nothing running its checks.\" Line 262: \"…and each one points at a moment in this session or a fact about the repo.\""
+   },
+   {
+    "severity": "low",
+    "where": "A real retro, step by step (Scene chat): \"**1. Irreversible action:** the agent published a release before you'd picked a fix.\" (line 102), \"**3. Steering:**\" (line 106)",
+    "problem": "The Lesson has just taught seven named categories, and these labels match none of them. The phrase \"before you'd picked a fix\" also reads as if retro acted before you chose, which the Skill never does.",
+    "evidence": "skills/engineering/retro/SKILL.md:17–23 names the categories: Navigation, Automated checks, Coding standards, Global AGENTS.md, Tool economy, No-ops, Information access. SKILL.md:25 says retro only presents candidates.",
+    "fix": "Add a beat caption before candidate 1: \"# The agent words each candidate its own way; each still falls under one of the seven categories.\" If the video supports it, reword candidate 1 as \"the agent published a release without asking you first.\""
+   },
+   {
+    "severity": "low",
+    "where": "Try it, step 4 expected result: \"\\\"This project is written in JavaScript\\\" discoverable\" (line 259)",
+    "problem": "At step 4 the practice folder holds only CLAUDE.md, so there's nothing yet for the agent to discover the language from. A careful writing-for-agents review may call the line a no-op or an unchecked claim instead, and the Visitor would think the exercise failed.",
+    "evidence": "writing-for-agents SKILL.md:79: a document that restates the environment is a cache, \"earning its load only when the lookup is expensive\". At step 4, steps 1–3 have created only CLAUDE.md (lines 212–235).",
+    "fix": "\"…\\\"This project is written in JavaScript\\\" something the agent can find out for itself, or a no-op…\""
+   },
+   {
+    "severity": "low",
+    "where": "Final test scenario-style-drift: \"its layout and naming don't match the pages around it\" (line 309)",
+    "problem": "Naming conventions are often mechanical (a fixed pattern a linter can enforce), so \"naming\" makes the clean judgement-call reading of this question less clear.",
+    "evidence": "skills/engineering/retro/SKILL.md:19: a mechanical violation (\"a fixed syntactic pattern, a banned API, an import shape, a file-location rule\") gets a deterministic check. Only \"genuine **judgement calls** (cross-file consistency, \\\"matches the surrounding style,\\\" …)\" go to CODING_STANDARDS.md.",
+    "fix": "\"A new page on a recipe site works, but its layout and tone don't match the pages around it, and the reviewer let it through.\""
+   },
+   {
+    "severity": "low",
+    "where": "Checkpoint reviewer-has-room: \"Your team keeps a 900-line list of coding rules.\" (line 82)",
+    "problem": "The stem doesn't say the rules are judgement calls. By retro's own rule, the mechanical ones should become checks, which partly supports the \"lint check\" distractor that the feedback rejects.",
+    "evidence": "skills/engineering/retro/SKILL.md:19: \"Default to building the check over writing the rule. Reserve `CODING_STANDARDS.md` for genuine **judgement calls**\".",
+    "fix": "\"Your team keeps a 900-line list of judgement-call rules (consistency across files, matching the house style). By `/retro`'s reasoning, where do those rules do the most good?\""
+   },
+   {
+    "severity": "low",
+    "where": "Don't confuse it with its neighbours: \"`/improve-codebase-architecture` improves the code's structure, working from the code alone\" (line 124)",
+    "problem": "The Skill doesn't change the code. It lists deepening opportunities in an HTML report and then grills you on the one you pick. It also reads the commit history, GLOSSARY.md and ADRs, not just the code.",
+    "evidence": "skills/engineering/improve-codebase-architecture/SKILL.md:3: \"Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.\" SKILL.md:23: \"walk back a good stretch of the commit history (`git log --oneline`)\". SKILL.md:25: \"Read the project's domain glossary (`GLOSSARY.md`) and any ADRs\".",
+    "fix": "\"`/improve-codebase-architecture` surveys the code and its recent history for structural improvements, then grills you through the one you pick (see [Architecture](/learn/architecture)). `/retro` works from a session's history and improves the environment.\""
+   }
+  ]
+ },
+ "revise": {
+  "summary": "I revised content/lessons/17-retro.md against the 1.3.1 retro and writing-for-agents SKILL.md files, the Claude Code memory, commands and sessions docs, and the local transcripts of BsJGo1wFTvQ, 9tmsq-Gvx6g and -QFHIoCo-Ko. The accuracy fixes: AGENTS.md is now described as read only when there's no CLAUDE.md, auto memory is acknowledged, every use of Matt's reviewer names /mattpocock-skills:code-review, /retro is described as proposing fixes (not making them), the PR-talk claim no longer gives retro a pull-request-reading power, and the findings table and the close paraphrases are rewritten in the author's own words. Matt's Scene now matches the transcript: a batch of sessions, no category-like labels, 'ran a release without asking'. The Try it now works from zero: Node.js prerequisite with a check, what to do when /retro is listed, a plan-mode check, how to spot the writing-for-agents load, and a checklist that a correct run can't fail. The Final test grew to 10 with scenario-earns-a-line (goal 3), fresh cases replace the body's own examples in repeat-mistake and spot-negation, and the right answers are no longer reliably the shortest. Goal 4 was narrowed to what the Final test checks. The 2,911 words are trimmed to fit, with a repo-only Site story.",
+  "fixed": [
+   "acc-sources high: AGENTS.md no longer said to load in every session; Steering section and globality Checkpoint say Claude Code reads it only when there's no CLAUDE.md; globality option d replaced with a position distractor",
+   "acc-sources medium: Why it matters now acknowledges Claude Code auto memory and says nothing *reliably* carries over unless written into the repo",
+   "acc-sources medium: Matt's Scene reframed as a retro over a batch of recent sessions (intro line, title, first caption, you: line), per BsJGo1wFTvQ 10:27-10:37",
+   "acc-sources medium: code-review name clash explained at first use (type /mattpocock-skills:code-review; plain /code-review can run the Built-in bug hunt); full name used in which-skill, sequence options and Common mistakes",
+   "acc-sources low: 1.3 date now 'released in early October 2026' (v1.3.0 release 2026-10-04), consistent with the October launch video",
+   "acc-sources low: Scene tool-economy line now just 'wastes tokens'",
+   "acc-sources low: HN developer now 'the agents seem to find those docs'",
+   "acc-sources low: spot-negation option d feedback now states Claude Code reads AGENTS.md only when there's no CLAUDE.md",
+   "acc-skills medium: AGENTS.md loading fixed (same as above)",
+   "acc-skills medium: PR-bottleneck bullet no longer claims /retro reads pull requests; adds that the 1.3.1 Skill reads sessions, so you point it at the sessions behind them",
+   "acc-skills medium: Try checklist no longer fails a correct run ('no new CLAUDE.md rule for a slip a check could catch; a sharper notes.md pointer is fine'); goal 2 reworded to 'a new rule in CLAUDE.md almost never'",
+   "acc-skills medium: code-review clash fixed (same as above)",
+   "acc-skills medium: findings table rewritten in own words with a Category column; the copied 'quiet, expensive mistake' sentence rephrased; n-gram check shows no unquoted run of 11+ words from SKILL.md, docs or transcripts",
+   "acc-skills low: Prune bullet no longer says retro 'sees one session' (it judges the sessions you show it)",
+   "acc-skills low: intro and Why it matters say /retro proposes/suggests fixes, not makes them",
+   "acc-skills low: table rows now include clarify/remove a standard and the user's personal steering file",
+   "acc-skills low: close paraphrases of writing-for-agents and retro SKILL.md rephrased (context pointer, sprawl, no-ops, weak leading word, guardrail sentence); docs tip paragraph dropped",
+   "acc-skills low: tracing rule now allows 'a plain fact about the repo' (Your part, Try step 8, checklist, untraceable-candidate feedback)",
+   "acc-skills low: Scene candidates lose category-like labels; candidate 1 is 'published a release without asking you first' (BsJGo1wFTvQ 11:25-11:27); caption says each is worded for what happened",
+   "acc-skills low: Try checklist accepts 'something the agent can find out (or a no-op)' for the JavaScript line, and notes notes.md doesn't exist",
+   "acc-skills/quiz low: scenario-style-drift 'layout and naming' changed to 'layout and tone'",
+   "acc-skills/quiz low: reviewer-has-room stem now says judgement-call rules; option d feedback adjusted",
+   "acc-skills low: improve-codebase-architecture no longer said to work 'from the code alone'; now 'hunts for structural improvements to the code'",
+   "quiz medium: untraceable-candidate feedback (a, d) no longer teaches an absolute session-only rule",
+   "quiz medium: scenario-which-skill option a feedback now gives the right reason (little to work from with nothing gone wrong)",
+   "quiz medium: goal coverage: added scenario-earns-a-line (navigation pointer vs discoverable/mechanical/no-op lines) for goal 3 and pointers; goal 4 narrowed to pointers, no-ops and positive phrasing",
+   "quiz medium: spot-negation now a fresh case (jargon in error messages), not the body's long-comments example",
+   "quiz medium: scenario-repeat-mistake now a fresh mechanical case (a dropped library, moment), right answer a lint rule; memory-note feedback says 'caught next time'",
+   "quiz medium: shortest-right-answer tell removed: lengthened right answers in reviewer-has-room, untraceable-candidate, no-op-test, scenario-cleared-session, spot-automated-retro, predict-weak-pointer; every right answer is shorter than at least one wrong option by both measures",
+   "quiz low: spot-automated-retro weak distractors replaced (auto-delete checks; standards only), right answer reworded so it doesn't echo the prompt",
+   "quiz low: predict-stale-init weak distractors replaced (forgot between sessions; CLAUDE.md too short)",
+   "quiz low: sequence-retro-timing prompt now 'gets the most out of /retro'; option d feedback explains the extra step; option a now /compact, so the right answer is strictly shorter than one option",
+   "reader high: code-review clash (same as above)",
+   "reader high: Try step 2 now says type without Enter, delete it if /retro is listed, otherwise /exit and install",
+   "reader high: Try prerequisites add Node.js with a node --version check; step 6 explains what a test is",
+   "reader medium: Try checklist items fixed (JavaScript line, moment-or-repo-fact, no new CLAUDE.md rule)",
+   "reader medium: plan-mode check added as step 3, with a gloss; stop instructions moved to the top of the Try block",
+   "reader medium: checklist says what the writing-for-agents load looks like, with a fallback question",
+   "reader medium: Your part shows how to point /retro at an old session, with an example prompt",
+   "reader medium: 'steering files' and 'lint rules' glossed at first prose use",
+   "reader medium: 'the reviewer' glossed in Why it matters; AGENTS.md introduced in the table row",
+   "reader medium: package manager, Git, commit, push, uncommitted and git status glossed",
+   "reader medium: /pr and pull request glossed in Your part",
+   "reader low: tool call glossed in the table; tokens no longer used before they're defined",
+   "reader low: body CLAUDE.md sentence cut so only the Site story gives the site's details",
+   "reader low: 1.3 date vs October launch reconciled",
+   "reader low: leading words glossed (tight = fast and repeatable, red = fails); tracer bullet dropped",
+   "reader low: 'flex with the task' reworded",
+   "Overrides: Site story now holds only repo facts (CLAUDE.md is 17 lines, its 'Agent skills' block matches setup-matt-pocock-skills' template, no .github/.husky, lint and test scripts in package.json); dropped the claim drawn from the untranscribed gaDdrDdczO4 (rename reason now from the docs page) and its source; sources add Claude Code memory/commands/sessions docs and improve-codebase-architecture SKILL.md, all mattpocock links pinned to 49dd158"
+  ],
+  "deferred": [],
+  "lowsDeferred": 1,
+  "declined": [
+   {
+    "problem": "acc-sources medium (Scene scope): suggested intro text 'across several of his projects'",
+    "reason": "Applied the batch-of-sessions fix but left out 'several projects'. The transcript says 'this particular repo' for the guardrail finding (BsJGo1wFTvQ 11:39-11:43), so a multi-project claim isn't clearly supported."
+   },
+   {
+    "problem": "acc-skills low (Scene labels): suggested caption 'each still falls under one of the seven categories'",
+    "reason": "Not added. Candidate 1, the unasked release, doesn't map cleanly onto any of the seven categories in retro SKILL.md:17-23, so the caption would over-claim. Dropping the labels removes the mismatch instead."
+   }
+  ],
+  "words": 2911,
+  "lintClean": true,
+  "testsPassed": true
+ },
+ "rounds": {}
+}
