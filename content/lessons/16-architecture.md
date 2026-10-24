@@ -21,13 +21,13 @@ Agents write code fast, and fast code gets messy fast. Learn the words for judgi
 
 Claude Code is Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal. Ask it for a feature and it makes the change in front of it, without thinking about the whole codebase (all the code in a project) unless something makes it. So each change adds a little oddness: a second copy of a rule, a helper that only passes things along. Matt Pocock, a developer and teacher, calls this drift ==software entropy==, and says agents speed it up. Left alone, a codebase becomes what he calls a "ball of mud", where every change is slow and risky. He publishes a popular set of Skills for Claude Code: short instruction files the agent loads when you type their name, or when a task matches their description.
 
-Matt's architecture Skills draw on John Ousterhout's book *A Philosophy of Software Design*, which defines complexity as whatever makes a system hard to understand and change. It hurts agents too: an agent starts every session (one Claude Code conversation) knowing nothing about your project. If understanding one idea means opening twelve tiny files, it may miss one, and its next change makes things worse. Good structure also makes good tests possible (small programs that check the code does what it should), and tests are how the agent checks its work: as Matt argued in an April 2026 talk, better feedback means better code.
+Matt's architecture Skills draw on John Ousterhout's book *A Philosophy of Software Design*, which defines complexity as whatever makes a system hard to understand and change. It hurts agents too: an agent starts every session (one Claude Code conversation) knowing nothing about your project. If understanding one idea means opening twelve tiny files, it may miss one, and its next change makes things worse. Good structure also makes tests (small programs that check the code works) easier to write, and they're how the agent checks its work: better feedback, Matt argued in an April 2026 talk, means better code.
 
 This Lesson covers two Skills. `/codebase-design` gives you and the agent an exact vocabulary for the shape of code. `/improve-codebase-architecture` uses it to survey a codebase and hand you places to improve. You don't need to write code to use either. You need to judge.
 
 ## The words
 
-Every term below comes from the `/codebase-design` Skill, which tells the agent to use them exactly. The examples come from this site's real files.
+Every term below comes from the `/codebase-design` Skill, which tells the agent to use them exactly. The examples are this site's real files.
 
 - A **module** is anything with a front door and code behind it, at any size: a function (a named chunk of code that does one job), a file, a whole package of files. This site's Lessons module, `src/lessons/lessons.ts`, is one.
 - Its **interface** is everything a caller (the code that uses it) must know to use it correctly: the names, plus rules like call order, errors and required settings. The Lessons module's interface is mainly four functions: `listLessons`, `getLesson`, `getQuestions` and `lessonExists`.
@@ -38,7 +38,7 @@ Every term below comes from the `/codebase-design` Skill, which tells the agent 
 
 Depth pays twice. Callers get **leverage**: one implementation does the work for every page and test that uses it. Maintainers get **locality**: changes, bugs and checking concentrate in one place, so ==fix it once, fixed everywhere==.
 
-The Skill bans looser words, "component", "service", "API" and "boundary": a design conversation gets much shorter when you and the agent mean exactly the same thing by "seam".
+The Skill bans looser words, "component", "service", "API" and "boundary": design talk gets much shorter when you and the agent mean the same thing by "seam".
 
 ```checkpoint shallow-library
 A library app has a `Book` module with fourteen functions: `getTitle`, `setTitle`, `getAuthor`, `setAuthor`, and so on. Each is a single line that reads or writes one field. Which word fits it best?
@@ -60,12 +60,12 @@ The vocabulary comes with four principles. Two are tests you can run in your hea
 
 **One adapter means a hypothetical seam; two adapters mean a real one.** Don't cut a seam until something actually varies across it. The Lessons module is built by `lessonsFrom(dir)`, which takes the folder to read as an input. The live site passes the real `content/lessons` folder; the tests pass folders of fake Lessons. Two adapters, so the seam is real, which is why those tests were easy to write.
 
-The comments module talks to the database directly, and only one thing fills that slot: the real Postgres database (the database software this site uses). Even the tests use a real copy, a choice recorded in an ADR (a short decision record kept in the repo, the project's folder with its history tracked by Git). A swappable "database seam" there would be plumbing with nothing to swap.
+The comments module talks to Postgres (the database software this site uses) directly. A setting picks the live database or, in the tests, a separate real copy. A seam where a fake database could plug in would have one adapter, plumbing with nothing to swap: an ADR (a short decision record kept in the repo, the project's folder with its history tracked by Git) keeps the tests on real Postgres.
 
 The other two principles shape what you build:
 
 - **The interface is the test surface.** Tests go through the same front door as callers. If you need to test past it, poking at the parts inside, the module is probably the wrong shape. After deepening a module, test at its new interface and delete the old tests on the pieces inside: replace, don't layer.
-- **Depth belongs to the interface, not the implementation.** Inside, a deep module can be built from small parts, even with private internal seams its own tests use. Callers never see them.
+- **Depth belongs to the interface, not the implementation.** Inside, a deep module can be built from small parts, even private internal seams where its own tests plug in a stand-in while still calling the front door. Callers never see them.
 
 ```scene flow
 title: Judging this site's code with the vocabulary
@@ -83,27 +83,27 @@ at: comments
 at: lessons
 # lessonsFrom(dir) has two adapters, the real folder and the fake test folders, so this seam is real.
 at: seam
-# The database has one adapter, the real one. One adapter is a hypothetical seam, so add nothing.
+# A seam for swapping in a fake database would have one adapter, because ADR 0003 keeps the tests on real Postgres. One adapter is a hypothetical seam, so add nothing.
 at: db
 # The verdict: each piece is the right shape for now, so nothing needs to change.
 at: verdict
 ```
 
 ```checkpoint real-seam
-Your app sends email through one provider. Which fact would justify putting an `EmailSender` seam in front of it?
-- [x] Tests plug in a fake sender; the live app uses the real one.
-  > Right. That's two adapters, so something really varies across the seam.
-- [ ] You might switch to a different email provider one day.
-  > "Might" is one adapter today: a hypothetical seam. Add it when the second adapter actually exists.
-- [ ] The email code is long, and a seam would split it into tidier files.
-  > Seams are about what varies, not about length or file layout. A long module can still be deep.
-- [ ] A clear name like `EmailSender` makes the code read more nicely.
+Lee puts an `EmailSender` seam in front of the app's only email provider, "in case we switch one day". Nothing else plugs into it, not even in the tests. What does the one-adapter-or-two rule say?
+- [x] Hold off: with one adapter, it's a hypothetical seam.
+  > Right. Nothing varies across it yet. Add it when a second adapter, such as a test fake, actually exists.
+- [ ] Keep it: switching providers one day will be easier with it in place.
+  > "One day" is still one adapter today. Add the seam when the second adapter really exists.
+- [ ] Keep it: a clear name like `EmailSender` makes the code read better.
   > A good name helps, but it doesn't make a seam. Only a second adapter does.
+- [ ] Hold off until the email code is long enough to split into files.
+  > Seams are about what varies, not about length or file layout. A long module can still be deep.
 ```
 
 ## Two Skills, two jobs
 
-`/codebase-design` is a **reference**: the vocabulary and principles above, plus two deeper files. One explains how to test a deepened module depending on what it talks to. The other, "design it twice", sends three or more sub-agents (helper agents, each with a fresh memory) to design radically different interfaces for the same module, then compares them and recommends one.
+`/codebase-design` is a **reference**: the vocabulary and principles above, plus two deeper files. One explains how to test a deepened module depending on what it talks to. The other, "design it twice", sends three or more sub-agents (helper agents, each with a fresh memory) to design radically different interfaces for the same module, then compares them.
 
 It's **model-invoked**: you can type `/codebase-design`, or the agent can load it on its own when a design task fits. `/tdd` (Matt's Skill for building test-first) and `/improve-codebase-architecture` both lean on it.
 
@@ -118,7 +118,7 @@ You end a session by asking for a note for tomorrow. It says: "Next session: run
 - [ ] Your effort setting (how hard the model thinks) was too low.
   > Effort changes how hard the model thinks. The real gap is that nothing told it when to stop.
 - [x] It's vocabulary with no steps or end, so the agent made its own.
-  > Right. The note should name a driver Skill, such as `/grill-with-docs`, and let it use the vocabulary.
+  > Right. The note should name a driver Skill with steps and an end, such as `/grill-with-docs`, and say to use the `/codebase-design` words: the agent can load that reference itself.
 - [ ] Re-reading the repo before designing is simply its normal process.
   > Its main file has no steps or end. That's exactly why the agent improvised one.
 ```
@@ -128,9 +128,9 @@ You end a session by asking for a note for tomorrow. It says: "Next session: run
 Here is what `/improve-codebase-architecture` does, in order:
 
 1. **Scope first.** Improving code only pays off if someone changes it again. If you name a direction (a module, a folder, a pain point), it takes it. If not, it reads the commit history (`git log`, the list of saved changes) for ==hot spots==, the files that keep changing, and looks there first. If nothing stands out, it widens the search.
-2. **Read the project's own words.** It reads `GLOSSARY.md` (the project's agreed terms) and the relevant ADRs, so its cards say "the Comment module", not invented names. It only suggests something an ADR rules out when the friction is real, and flags the clash on that card.
+2. **Read the project's own words.** It reads `GLOSSARY.md` (the project's agreed terms) and the relevant ADRs, so its suggestions say "the Comment module", not invented names. It suggests something an ADR rules out only when the problem is worth reopening that decision, and flags the clash.
 3. **Explore.** A sub-agent walks the code noting friction, such as one idea spread across many small modules, shallow modules, or code that's hard to test. The deletion test filters the list.
-4. **Write a report.** One self-contained web page goes to your computer's temp folder (a place for throwaway files) as `architecture-review-<timestamp>.html`, so nothing lands in your project. It opens the page and tells you its full path. Each candidate card shows the files, the problem, the solution, the benefits in terms of locality and leverage (and tests), a before-and-after diagram, and a badge: `Strong`, `Worth exploring` or `Speculative`. Benefits may be headed "Wins", and a second tag, like `in-process`, names the kind of dependency; it can wait. A Top recommendation closes the report.
+4. **Write a report.** One web page goes to your computer's temp folder (a place for throwaway files) as `architecture-review-<timestamp>.html`, so nothing lands in your project. It opens the page and tells you its full path. Each candidate (a place it suggests deepening) gets a card: the files, the problem, the solution, the benefits in terms of locality and leverage (and tests), a before-and-after diagram, and a badge: `Strong`, `Worth exploring` or `Speculative`. Benefits may be headed "Wins", and a second tag, like `in-process`, names the kind of dependency. A Top recommendation closes the report.
 5. **Stop and ask.** No designs yet: it asks which candidate you'd like to explore.
 6. **Grill one.** On your pick, it runs the grilling Skill: rounds of numbered questions with recommended answers, about the module's new shape, what sits behind the seam and which tests survive. New terms go into `GLOSSARY.md` as they settle. Turn a candidate down for a lasting reason and it offers to record an ADR, so future surveys don't suggest it again.
 
@@ -170,7 +170,7 @@ In his April 2026 video on de-slopping a codebase, Matt calls agents excellent t
 
 - **Pick, don't rubber-stamp.** Choose the candidate yourself and answer the grilling properly. A badge is the agent's opinion.
 - **"Design the interface, delegate the implementation."** That's Matt's rule from his April 2026 talk: you own each module's front door, and the agent can own what's behind it, checked by tests at the interface. Not for critical code like finance, though.
-- **One candidate per session.** These decisions need taste, Matt said in March 2026, and a report, a grilling and later edits together fill the context window (the agent's working memory, which gets less sharp as it fills). The rest become tickets.
+- **One candidate per session.** These decisions need taste, Matt said in March 2026, and a report, a grilling and later edits together fill the context window (the agent's working memory, which gets less sharp as it fills). Others worth doing (`Strong` or `Worth exploring`) can become tickets.
 - **Give it a direction.** Before a big build, Matt's docs on AI Hero (his teaching site) suggest pointing it at the spec and asking "how can we make this change easy?"
 - **Don't wait for "it's fine".** It exists to find things. If every card is `Speculative`, it found nothing worth doing.
 - **Know the neighbours.** One broken thing: [Diagnosing bugs](/learn/diagnosing-bugs). An effort too big to plan in one sitting: [Wayfinder](/learn/wayfinder). If a bug fix finds no good seam to test it at, come back here.
@@ -180,18 +180,18 @@ In his April 2026 video on de-slopping a codebase, Matt calls agents excellent t
 **Matt Pocock:**
 
 - **Often.** About weekly, or after a burst of features, in March 2026; every couple of days by his April 2026 video. His README (the front page of his Skills repo) now says every few days.
-- **A live run.** In that April video he switched off auto mode (where Claude Code approves routine actions itself), saying it misbehaves in flows where a human answers questions. The survey found six candidates on his own app. He picked one where an ordering rule had two separate implementations, in the browser code and the server code, that could drift apart: a locality win. To save time he let the agent accept its own recommendations, though normally he'd answer each one carefully. Next, he said, the result becomes a ticket (through what are now `/to-spec` and `/to-tickets`) for an agent to build unattended.
+- **A live run.** In that April video he switched off auto mode (where Claude Code approves routine actions itself), saying it misbehaves in flows where a human answers questions. The survey found six candidates on his own app. He picked one where an ordering rule was written twice, in the browser code and the server code, and could drift apart: a locality win. To save time he let the agent accept its own recommendations; normally he'd answer each carefully. Next, he said, the result becomes a ticket (through what are now `/to-spec` and `/to-tickets`) for an agent to build unattended.
 - **Legacy code first.** Before changing an old codebase, he recommends starting here, to find the seams where tests can go.
 
 **Other developers:**
 
-- One user loved the survey but found the grilling crowded it out: each run became a long interview about one idea (GitHub issue #274, May 2026). In 1.3.1 the report comes first, and the Try it prompt below insists on it.
-- A counterpoint: in an October 2026 test on a 20,000-line program in the Go language, a judge shown the reports unlabelled ranked a one-paragraph prompt slightly above the Skill, which was cheaper and faster. That prompt copied the Skill's report format, and there were only two runs each: one data point, but a fair reminder that a Skill is a well-written prompt, not magic.
+- One user loved the survey but found the grilling crowded it out: each run became a long interview about one idea (GitHub issue #274, May 2026). In 1.3.1 the report comes first; the Try it prompt insists on it.
+- A counterpoint: in an October 2026 test on a 20,000-line program in the Go language, a judge shown the reports unlabelled ranked a one-paragraph prompt that copied the Skill's report format slightly above the Skill. Two runs each is one data point, but a fair reminder that a Skill is a well-written prompt, not magic.
 
 ## Try it yourself
 
 ````try
-You need Claude Code installed and signed in (see [Start here](/learn/start-here)), plus Git (check with `git --version`).
+You need Claude Code installed and signed in (see [Start here](/learn/start-here)), plus Git: type `git --version` to check. If it's missing, a Mac offers to install it; on Windows, install Git for Windows from git-scm.com, then open a new terminal.
 
 1. Copy this site's public repo and start Claude Code in it. If it asks whether you trust the folder, choose Yes.
 
@@ -225,7 +225,7 @@ claude plugin install mattpocock-skills@claude-plugins-official
 
 **It's working if:**
 
-- [ ] The warm-up called the Lessons module deep, and said `lessonsFrom(dir)` is a real seam: the real `content/lessons` folder plus the tests' folders of fake Lessons.
+- [ ] The warm-up said whether the Lessons module is deep and how many adapters `lessonsFrom(dir)` has. This Lesson counts two; if yours says one, ask why and weigh its reason.
 - [ ] The report's path, which the agent printed, is outside `idea-to-shipped`, and `git status` says `nothing to commit, working tree clean`.
 - [ ] The cards use the site's words (Lesson, Comment, Slug) and the vocabulary (module, interface, seam, adapter), never "component" or "service".
 - [ ] Every card has files, a problem, a solution, benefits, a before-and-after diagram and a badge, and the report ends with a Top recommendation.
@@ -240,10 +240,10 @@ If the page looks unstyled, or some diagrams show as raw code, something blocked
 - **Running `/codebase-design` as the whole task.** Ask it a question with an end, or let a driver Skill use it.
 - **Letting the survey become a refactor.** If the agent starts editing after you agree, press Esc. The Main flow builds the decision.
 - **Mistaking tidy folders for depth.** Matt's docs are firm: depth is about the interface, whatever the folders look like.
-- **The rest is covered above:** loose words like "component", several candidates in one session, tidying code nobody touches, and a seam with one adapter.
+- **The rest is above:** loose words, several candidates at once, tidying code nobody touches, one-adapter seams.
 
 ```site-story
-**The deepening move came from a review.** My two-axis `/mattpocock-skills:code-review` of the whole site (one reviewer for standards, one for the spec) listed judgement calls, including the comment length limits written in two places and the comments route checking input itself. PR #7 (a pull request, or proposed change) fixed both. The check that posted data is the right shape moved out of the route into `postComment`, and the limits moved into one file, `src/comments/limits.ts`. So the comments module now does all the checking behind the same two functions, and the route finally matches its own comment: it only speaks HTTP, the language of web requests. More behaviour behind the same two functions is depth; one home for the limits is locality.
+**The deepening move came from a review.** My two-axis `/mattpocock-skills:code-review` of the whole site (one reviewer for standards, one for the spec) listed judgement calls, including the comment length limits written in two places and the comments route checking input itself. PR #7 (a pull request, or proposed change) fixed both. The shape check on posted data moved out of the route into `postComment`, and the limits moved into one file, `src/comments/limits.ts`. Now the route only speaks HTTP (the language of web requests), as its own comment says. More checking behind the same two functions is depth; one home for the limits is locality.
 
 **The seam has a name in the plan.** The spec for the site's redesign calls the Lessons module "the one seam", tested through its public functions with small folders of fake Lessons.
 
@@ -306,8 +306,8 @@ Halfway through a `/tdd` session, you and the agent disagree about whether a new
 Kai deletes the app's `PaymentGateway` interface, calling it "a pass-through". The live app plugged Stripe (a payment service) into it, and the tests plugged in a fake that records charges without taking money. Spot the mistake.
 - [ ] His call was right: with one adapter in the live app, it's just plumbing.
   > A test fake counts as an adapter. The live one plus the test one is the usual pair that makes a seam real.
-- [ ] It should have been renamed a boundary, since Stripe sits outside the app.
-  > The vocabulary bans "boundary". The name was never the problem.
+- [ ] He was wrong, because code that handles money always needs a seam.
+  > What the code handles doesn't make a seam real. The two adapters, Stripe and the test fake, do.
 - [x] Two adapters filled it, so it was a real seam worth keeping.
   > Right. The real gateway and the test fake both plug in there. Without it, the tests need real Stripe.
 - [ ] The deletion test backs him, because the live app still runs without it.
@@ -315,15 +315,15 @@ Kai deletes the app's `PaymentGateway` interface, calling it "a pass-through". T
 ```
 
 ```test spot-carried-on
-Sam runs the survey and agrees with the top candidate after two rounds of grilling. The agent then starts editing five files in the same session. What should Sam have done?
+Sam runs the survey and, after two rounds of grilling, agrees with the top candidate. The agent replies "Great, starting the refactor" and begins editing five files in the same session. What should Sam do?
 - [ ] Let it finish, since agreeing with the candidate was approval to build.
   > Agreeing settles a design, not a go-ahead to build. The survey should end with a decision, not a code change.
-- [x] Stop it, and take the decision into the Main flow.
-  > Right. The Skill's job ends at the decision; building isn't one of its steps. Press Esc, then carry the decision into `/to-spec` or `/grill-with-docs`.
+- [x] Press Esc, and carry what was agreed into `/to-spec`.
+  > Right. The Skill's job ends at the decision; building isn't one of its steps. A spec, then tickets, builds it.
 - [ ] Ask it to do the other candidates too, while it has the report open.
   > One candidate per session. Several at once fill the context window with reports, grilling and edits.
-- [ ] Commit the HTML report first, so the edits can point back to it.
-  > The report is a temp file. Carry the decision forward, not the file.
+- [ ] Let it go on, but ask it to run the tests after each file it edits.
+  > Tests check the edits, but they're still a build nobody planned. The building comes later, through a spec and tickets.
 ```
 
 ```test spot-layered-tests
@@ -354,11 +354,11 @@ Ana's survey report has four cards, every one badged `Speculative`. Feeling the 
 In what order does `/improve-codebase-architecture` work when you name no direction?
 - [ ] Ask you which module to explore → explore → report → grill
   > With no direction it doesn't ask first: it reads the history for hot spots. You choose after the report.
-- [ ] Explore every folder evenly → report → grill on its top pick
-  > It starts from the hot spots, and it grills only on the candidate you pick, not its own favourite.
+- [ ] Explore every folder evenly → write the report → pick its top card → grill it
+  > It starts from the hot spots, and it grills only on the candidate you pick, not its own top card.
 - [x] Find hot spots → explore → report → grill the one you pick
   > Right. Scope, explore, report and stop; the grilling runs only on the candidate you chose.
-- [ ] Write the report → refactor the `Strong` cards → grill on the rest
+- [ ] Find hot spots → write the report → refactor the `Strong` cards → grill the rest
   > Building isn't one of its steps, and it grills only on the one candidate you pick.
 ```
 
@@ -370,20 +370,20 @@ A `priceFor(cart)` function holds the tax rules, discounts and rounding. The car
   > Right. Complexity that reappears across callers means the module was concentrating it. That's depth doing its job.
 - [ ] It's an adapter, so the deletion test doesn't apply to it.
   > An adapter fills a seam. Nothing is being swapped here, and the deletion test works on any module.
-- [ ] It should be split into four, one copy per caller.
-  > That's the opposite of locality. Four copies of the tax rules means four places to fix every bug.
+- [ ] It's a seam, since four callers plug into it.
+  > Callers use a module through its front door; adapters are what plug in at a seam. Nothing is swapped behind `priceFor`.
 ```
 
 ```test why-locality
-Before a deepening, fixing a rounding bug meant hunting through five files that each rounded prices their own way. Now there's one place to look and one place to change. Which benefit of depth is that?
-- [x] Locality, which maintainers get
-  > Right. Change, bugs and checking now live in one place, so a fix there is a fix everywhere.
-- [ ] Leverage, which callers get
+Before a deepening, fixing a rounding bug meant hunting through five files that each rounded prices their own way. Now there's one place to look and one place to change. Which term from the vocabulary names that gain?
+- [x] Locality
+  > Right. Change, bugs and checking now live in one place, so a fix there is a fix everywhere. It's what maintainers get.
+- [ ] Leverage
   > Leverage is what callers get: more capability per thing they learn. This is about where a maintainer has to look and change.
 - [ ] A real seam, since prices now pass through one spot
   > A seam is where adapters can be swapped. Nothing is being swapped here.
-- [ ] Depth in the implementation, since the module now holds more code
-  > Depth is measured at the interface, not by how much code sits inside. What the maintainer feels here is locality.
+- [ ] Depth in the implementation, since more code sits inside
+  > Depth is measured at the interface, not by how much code sits inside.
 ```
 
 ```sources

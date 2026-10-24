@@ -13,13 +13,13 @@ Everything to know before your first Lesson: what this course teaches, what to i
 ```goals
 - You'll be able to say what this course teaches and which of its four Parts to turn to for a given problem.
 - You'll be able to set up Claude Code with the native installer, an eligible plan, a terminal and git, and know when you'd need Node.js.
-- You'll be able to use a Lesson's Checkpoints, its Final test and its dated sources.
+- You'll be able to use a Lesson's Checkpoints as you read, and its dated sources to spot a renamed Skill.
 - You'll be able to start `/teach` in a folder of its own to learn a side topic over several sessions.
 ```
 
 ## What this course is
 
-This is a course on working with a coding agent: an AI that reads your files, runs commands and writes code while you steer. The agent is Claude Code, Anthropic's coding agent, which runs in your terminal (the window where you type commands). The steering comes from Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code. A Skill is a short instruction file the agent loads when you type its name, like `/grill-me`, or, for some Skills, when your request matches what it's for.
+This is a course on working with a coding agent: an AI that reads your files, runs commands and writes code while you steer. The agent is Claude Code, Anthropic's coding agent, which runs in your terminal (the window where you type commands). The method comes from Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code. A Skill is a short instruction file the agent loads when you type its name, like `/grill-me`, or, for some Skills, when your request matches what it's for.
 
 It's for you if you've ==never coded with an agent==.
 
@@ -30,7 +30,7 @@ The worked example throughout is ==this site==, built with these same Skills.
 ## What you need
 
 - **A computer and a terminal.** A recent Mac, Windows or Linux machine with 4 GB of RAM or more. Use Terminal on a Mac, PowerShell on Windows, any terminal app on Linux.
-- **Claude Code, from the native installer**, which keeps itself up to date. On a Mac, Linux or WSL (Linux running inside Windows): `curl -fsSL https://claude.ai/install.sh | bash`. In Windows PowerShell: `irm https://claude.ai/install.ps1 | iex`. Then open a new terminal window and run `claude --version`.
+- **Claude Code, from the native installer**, which keeps itself up to date. On a Mac, Linux or WSL (Linux running inside Windows): `curl -fsSL https://claude.ai/install.sh | bash`. In Windows PowerShell: `irm https://claude.ai/install.ps1 | iex`. Then open a new terminal window and run `claude --version`. Still not found? Follow the fix the installer printed under "Setup notes", then open another window.
 - **An eligible plan:** ==a paid Pro, Max, Team or Enterprise plan==, or a Claude Console account (Anthropic's developer account, paid with credits you buy in advance). The free claude.ai plan doesn't include Claude Code. Running `claude` starts a session: one conversation with the agent, until you quit or clear it.
 - **Git**, which saves snapshots of a project so you can compare and undo changes. Most of the course happens in a repo: a folder git tracks. On Windows, install Git for Windows (git-scm.com), which also lets Claude Code use Bash, a common command shell. On Linux, use your package manager.
 - **Node.js is optional.** Claude Code doesn't need this JavaScript tool. You'd only use it to run this site's code, or for a second way of installing Matt's Skills that this course doesn't use.
@@ -39,7 +39,7 @@ The worked example throughout is ==this site==, built with these same Skills.
 title: Setting up on a Mac (illustrative)
 # Install Claude Code with the native installer. It shows no progress while it downloads, so give it a minute.
 $ curl -fsSL https://claude.ai/install.sh | bash
-# Open a new terminal window, then check it. A version number means it worked.
+# Open a new terminal window, then check it. A version number means it worked. If it's still not found, follow the fix the installer printed under "Setup notes", then open another window.
 $ claude --version
 2.1.309 (Claude Code)
 # Check git too. If it's missing, your Mac offers to install it.
@@ -59,7 +59,7 @@ The installer has just finished. You type `claude --version` and get "command no
 - [ ] Install Node.js, then run the installer again.
   > Claude Code's native installer doesn't need Node, so that isn't the problem.
 - [x] Open a new terminal window and try again.
-  > Right. The docs say to check in a new window first. If it's still missing, the installer's folder isn't on your PATH (the list of folders your terminal searches for commands). The installer doesn't change PATH itself: the "Setup notes" it prints give the fix, and the install troubleshooting docs explain it.
+  > Right. The window you installed from keeps the PATH it started with (the list of folders your terminal searches for commands), so the docs say to check in a new window first. If it's still missing, the installer's folder isn't on your PATH. The installer doesn't change PATH itself, but the "Setup notes" it prints give the fix.
 - [ ] Reinstall it with a different installer.
   > Don't reinstall yet. First rule out the old window, then check the installer's Setup notes about PATH.
 - [ ] Log in first, then run the version check again.
@@ -84,13 +84,13 @@ A Lesson's Site story box says the author typed `/grilling` to start. The teachi
   > They aren't equal. The story can show a choice the author made before knowing better. The teaching is what to do now.
 - [x] `/grill-with-docs`, since the teaching is the current advice.
   > Right. The teaching is what to do now. The story sits in its own box so you can tell what happened from what to do.
-- [ ] `/grilling`, since the Site story shows the steps in more detail.
-  > Detail isn't the point. The story records one past run, mistakes included. The teaching is what to do now.
+- [ ] Both, one after the other, so you follow the story and the teaching.
+  > No need. `/grill-with-docs` already runs the `/grilling` interview, and writes docs as it goes. The teaching is the one to follow.
 ```
 
 ## The four Parts
 
-The 20 Lessons sit in four Parts. Read them in order the first time, because each builds on the ones before.
+The 20 Lessons sit in four Parts. Read them in order the first time.
 
 - **Part 1, Foundations:** how an agent works, why its working memory fills up and its work slips in a long session, and what a Skill is. [Start here](/learn/start-here), [How coding agents work](/learn/how-agents-work), [The context window](/learn/context-window), [Skills](/learn/skills).
 - **Part 2, The main flow:** Matt's path from idea to shipped code, step by step (this section's Scene walks through it), then the whole map. [Grilling](/learn/grilling), [Domain modeling](/learn/domain-modeling), [Prototype](/learn/prototype), [Spec + tickets](/learn/spec-and-issues), [TDD](/learn/tdd), [Implement](/learn/implement), [Code review](/learn/code-review), [PR + ship](/learn/pr-and-ship), [The main flow](/learn/main-flow).
@@ -131,7 +131,7 @@ A few weeks in, the comment box on your own project saves some comments and sile
 - [ ] Triage
   > Triage sorts a pile of incoming reports and requests. You have one problem you can't explain.
 - [ ] Code review
-  > Code review checks a finished change against your coding standards and the spec. Here something misbehaves and nobody knows why, so the first job is finding the cause.
+  > Code review checks a finished change against your coding standards and, when there is one, the spec. Here something misbehaves and nobody knows why, so the first job is finding the cause.
 - [ ] Models, effort & ultracode
   > A stronger model or more effort won't tell you why comments vanish. First you need the cause, and that's what Diagnosing bugs is for.
 ```
@@ -166,13 +166,13 @@ In his June 2026 video, Matt learns to solve a Rubik's Cube with it, opening a s
 ```checkpoint teach-next-session
 Last week you ran `/teach` in `~/learn-git` and finished a lesson on commits. Today you open a fresh session. How do you carry on?
 - [ ] In `~/learn-git`, paste last week's lesson so it remembers you.
-  > No need. Everything it knows about you is already saved in the folder's files.
+  > Pasting doesn't start `/teach`: only typing its name does. And its files already hold what you've learned.
 - [ ] Start from scratch, because `/clear` erased everything it knew.
   > `/clear` empties the conversation, not the folder. The mission, lessons and learning records are still there.
 - [ ] Make a new empty folder, since each session needs a fresh workspace.
   > The opposite: one workspace per topic, reused every session. A new folder starts from zero, with no mission or records.
-- [x] In `~/learn-git`, type `/teach` and tell it where you're stuck.
-  > Right. It reads its own files, sees what you've learned, and plans the next lesson around what you tell it.
+- [x] In `~/learn-git`, type `/teach`, as its files hold your progress.
+  > Right. It reads its own files, sees what you've learned and plans the next lesson. Tell it where you're stuck, as Matt does.
 ```
 
 ## Try it yourself
@@ -268,7 +268,7 @@ Two hours into one long session, the agent's answers get sloppier and it starts 
 - [ ] Part 3, When things go wrong
   > Part 3 is for problems in your project: a stubborn bug, a pile of incoming requests, steps only a human can do. This one is about how the agent itself works.
 - [ ] Part 4, Level up
-  > Level up builds on everything before it. Why a long session goes downhill is a foundation, so it comes first, in Part 1.
+  > Part 4 covers choosing models, but even the best model slips as a long session fills its working memory. Why that happens is a foundation, in Part 1.
 ```
 
 ```test scenario-free-plan
@@ -302,17 +302,17 @@ Halfway through a Lesson, a Checkpoint asks something you're not sure about. Wha
 - [ ] Reread the whole Lesson from the top before you answer.
   > A Checkpoint sits right after the idea it checks, so the section just above is all you need.
 - [ ] Jump to the Final test, since only it shows the answers.
-  > Every Checkpoint shows its own answer and why each option is right or wrong.
-- [x] Guess, then read why each option is right or wrong.
-  > Right. Checkpoints never count, so a guess is free, and the feedback on every option shows what you missed.
+  > Every Checkpoint has its own answer box, with feedback on each option.
+- [x] Answer it anyway, then read the feedback on every option.
+  > Right. Checkpoints never count, so a wrong answer costs nothing, and the feedback shows what you missed.
 ```
 
 ```test scenario-teach-folder
 You're building a recipe site in `~/recipes` and want to spend the next two weeks learning SQL properly. Where do you run `/teach`?
-- [x] In a new empty folder, such as `~/learn-sql`.
+- [x] In a new empty folder, so lesson files stay out of your code.
   > Right. One topic per workspace, outside your project. Its mission, lessons and records live there between sessions.
 - [ ] In `~/recipes`, so it can learn from your real code.
-  > It would turn your project folder into a teaching workspace, mixing lesson files in with your code. Even to learn a codebase, Matt starts the learner in a separate workspace and points it at the code.
+  > It would turn your project folder into a teaching workspace, mixing lesson files in with your code. Even for learning a codebase, Matt suggests starting the learner in a separate workspace and pointing it at the code.
 - [ ] Nowhere, since asking in your recipe session works just as well.
   > Asking in passing suits one explanation. Two weeks of learning that builds session by session is what `/teach` is for.
 - [ ] In your home folder, so every project you have can use it.
@@ -324,7 +324,7 @@ A blog post from spring 2026 says Matt's bug-hunting Skill starts when you type 
 - [ ] Bug-hunting Skills only start on their own, never by typing.
   > Any of Matt's Skills starts when you type its name, and some can also start on their own. The name in the post is out of date.
 - [ ] That Skill only starts inside a git repo.
-  > Where you are doesn't hide a Skill's name. `/teach` works, so the Skills are loaded; this name is out of date.
+  > Matt's Skills come as a plugin, which works in any folder. `/teach` works, so they're loaded; this name is out of date.
 - [x] Matt has renamed that Skill since the post was written.
   > Right. Matt renames Skills, so check a source's date. This course uses the 1.3.1 names, where that Skill is `/diagnosing-bugs`.
 - [ ] That Skill needs a higher plan, such as Max.

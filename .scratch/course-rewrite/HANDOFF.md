@@ -2,7 +2,67 @@
 
 Start here if you're picking up the course PR ("PR B") on a new machine. Everything you need is on GitHub. Branch `course-20-lessons` is `main` plus this folder.
 
-## Paused mid-revision on 2026-10-24 (read this first)
+## Paused again on 2026-10-24, second session (read this first)
+
+The user ran out of weekly usage and stopped the run so another Claude Code account can finish it. Everything is pushed to `course-20-lessons`. **No PR is open yet.** The goal is unchanged: finish the revision, run the reviews, open the PR against `main`, and the user squash-merges after checking the Vercel preview.
+
+**State at the stop:**
+- All 20 Lessons pass the draft lint (no `ERROR`). `npm run test:content` passes 410 of 410.
+- This session ran the resume workflow (`tools/resume-workflow.js`) for about an hour: 53 checkers and 12 fixers finished. Their edits to 14 Lesson files are committed.
+- 10 fixers were stopped mid-run. 4 of them had already edited their file: `context-window`, `grilling`, `pr-and-ship` and `architecture`. Those edits pass both gates and are committed, but each of those fixes is incomplete. The next fixer gets the same issue list and checks the Lesson first.
+- The video transcripts are on the user's Mac, in `/Users/siddharth/Developer/trying/.handoff/transcripts/`, not in git. `M6mYodf0dJM` has an English copy (`.en.json`). `LlgiOCmFG_w` and `gaDdrDdczO4` are Arabic only, so paraphrase them unless a text source backs the exact words.
+
+**The records:** `review/run-2026-10-24b/<slug>.json`, one per Lesson. Each holds:
+- `next`: where to resume, and why;
+- `applied` and `declined`: the full history from both runs, so checkers don't re-raise what a fixer already rejected;
+- `pending`: the serious issues not fixed yet, which the next fixer starts from;
+- `rounds`: this run's raw checks and fixes;
+- `earlierRecord`: the path of the first run's record.
+
+**Where each Lesson stopped** (the `next` field):
+
+| Next step | Lessons |
+|---|---|
+| fix round 1 (`pending`), then check rounds 2 and 3 | architecture |
+| check round 2, then round 3 | retro, wayfinder, models-effort-ultracode |
+| fix round 2 (`pending`), then check round 3 | context-window, domain-modeling, prototype, spec-and-issues, main-flow, diagnosing-bugs, triage |
+| check round 3 | how-agents-work, implement |
+| accuracy check round 3, then fix (`pending` holds round 3's quiz and reader issues) | code-review, skills |
+| fix round 3 (`pending`) | start-here, tdd, wizard, grilling, pr-and-ship |
+
+**How to carry on:**
+
+1. **Set up.** Pull `course-20-lessons` into a fresh worktree. Copy `.env.local` and `.env.test.local` from `/Users/siddharth/Developer/trying/`; never print them. Run `npm ci`, `npx next typegen` and `npm run test:content`.
+2. **Finish the per-Lesson rounds.** Open `tools/resume-workflow.js` and set `REPO` to your checkout. On another machine, also change `SKILLS_DIR` and `TRANSCRIPTS`. Then run the Workflow tool with `scriptPath` set to that file and `args` set to the contents of `tools/resume-workflow-args.json`, passed as JSON, not as a string.
+
+   For each Lesson, the script picks up at its `start`. It loops check (accuracy, reader and quiz) → fix, up to check round 3, and every last round's highs and mediums still get a fix. That's about 70 agents.
+
+   When the run finishes, write the new rounds into the records from the run's `journal.jsonl`, matching each agent's `started` label to its `result` by `agentId`. Run the lint on all 20 plus `npm run test:content`, commit per Part (`00`–`03`, `04`–`12`, `13`–`15`, `16`–`19`) with explicit paths, and push.
+3. **Second workflow: the course-wide pass, the per-Part code review and the fixes.**
+   - *Review* (one barrier, all read-only), 13 agents:
+     - three course critics:
+       - consistency: the `COURSE_LENSES` text in `tools/revision-workflow.js`;
+       - coverage and links: the same place;
+       - quotes and Site stories: every quote under 15 words with one per source, the transcript rule above, every Site story claim backed by a repo fact, and external links that resolve;
+     - for each of the four Parts, the two axes of the 1.3.1 `code-review` SKILL.md (`~/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.3.1/skills/engineering/code-review/SKILL.md`, smell baseline included):
+       - fixed point `main`, diff `git diff main...HEAD -- <the Part's exact Lesson files>`;
+       - Standards: `writing-guide.md`, `contract-v1.md`, `docs/authoring-lessons.md` and `GLOSSARY.md`;
+       - Spec: `spec.md` plus the Part's ticket, plus ticket 02 for grilling;
+     - the two axes once more over the branch outside the Lessons: `course-lint.ts` and its tests, `course.test.ts`, the authoring guide, the README, `unsplash.ts` and the photos.
+       - Spec is `spec.md` plus ticket 07.
+       - Tell the Spec reviewer that the lint rules and the `PENDING_REWRITE` removal were planned steps 5 and 6 below, not scope creep.
+   - *Fix:* group the issues by Lesson in plain code. For each Lesson, a fixer checks each issue is real (the 1.3.1 SKILL.md wins), fixes every real high and medium, and declines the rest with a reason. A verifier then checks the edits and the gates. Repeat while the verifier still reports a high or medium, at most 3 times. One code fixer handles any non-Lesson findings at the end.
+   - *Record:* one agent per Part ticket (03–06) ticks the checklist and adds `## Comments` with one line per Lesson (rounds run, fixed, declined and why, lows left with the record's path) and the review outcome. Then it sets `Status: resolved`.
+4. **Finish.**
+   - Ticket 07: tick what's done. Mark the obsolete items with a line each: the PR A, engine-preview and merge-sync items are superseded by PR #10; `photos` Scenes wait for engine ticket 08; the README screenshot is of grilling, which is unchanged.
+   - Commit and push.
+   - Run the full gate: `npx next typegen`, `npx tsc --noEmit`, `npm run lint`, `npm run test:content`, `npm test` (the only lane on the Neon `test` branch) and `npm run build`.
+   - Render check: `.claude/launch.json` (git-ignored, in the old `pocock-website-cleanup-a6439c` worktree) runs `npm run start` on port 3100 after the build. Check start-here, grilling and main-flow at 375 px and at desktop width, and that all 20 `/learn/<slug>` pages return 200.
+   - Write the PR body with the `mattpocock-skills:pr` Skill, then run `gh pr create --base main --head course-20-lessons`. Open it ready, not draft: the user squash-merges after checking the preview.
+
+**Still out of this PR:** quizzes and grading (tickets 02 and 05), Scene stepping (04), the `photos` Scene (08), and the README Features section, to revisit when those ship. The lows get logged in the tickets, not fixed.
+
+## Paused mid-revision on 2026-10-24, first session
 
 The user paused the work to carry on from another machine. Everything is pushed: pull `course-20-lessons`.
 

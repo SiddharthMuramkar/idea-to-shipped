@@ -30,7 +30,7 @@ The agent's old answer to that wall was a numbered list in the chat: "1. Go to t
 Matt Pocock, a developer and teacher, publishes a popular set of Skills for Claude Code. A Skill is a short instruction file the agent loads when you type its name or when a task matches its description ([Skills](/learn/skills) covers them). His answer to this wall is `/wizard`: when a job needs a human, the agent writes ==a script that guides you through it== instead of a list.
 
 ```callout big-idea
-The agent writes the wizard; you run it. Keys you type into the running script go straight to `.env` on your machine, or to GitHub, and never pass through the model.
+The agent writes the wizard; you run it. Keys you type into the script go straight to a private file on your machine (`.env`) or to GitHub, never through the model.
 ```
 
 ## The idea: you're the hands, the script is the guide
@@ -61,10 +61,8 @@ You're adding email alerts to a site. Four jobs are on the list. Which one belon
 
 ## How the agent builds one: four steps
 
-The Skill gives the agent four steps.
-
 1. **Scope the procedure.** It reads your repo (your project folder, tracked by Git, the tool that saves, or commits, each change into a shared history) before asking you anything: the `.env` files, `.env.example` (a shared file listing the names of the values `.env` needs, with no real values), the README (the project's front-page guide), config files, and the CI workflow files under `.github/workflows/`. Every secret or variable those workflows read is a value the wizard has to capture. For a migration, it works out where things stand, where they should end up, and which steps between can't be undone. Then it shows you the ordered stages and the values each produces, for you to add, drop or reorder. Every value needs three answers: where you get it, where it's written, and whether it's secret.
-2. **Map each stage's journey.** For each stage it writes the exact path a stranger could follow, like "Dashboard → Developers → API keys → Reveal test key → copy". Where it doesn't know the current screen or command, it must say so and ask you or check the docs. It never invents clicks.
+2. **Map each stage's journey.** For each stage it writes the exact path a stranger could follow, like "Dashboard → Developers → API keys → Reveal test key → copy". Where it doesn't know the current screen or command, it must say so and ask you or check the docs rather than invent clicks. Its memory can still be stale.
 3. **Author the wizard.** It copies `template.sh` and writes one stage per step, in dependency order (a stage that needs another's result comes after it). The bar: open the page before asking for its value, hide the typing for anything secret, ask for a yes before anything irreversible, and keep each stage to one task that fits on one screen, since every stage starts by clearing it.
 4. **Verify and hand off.** It runs `bash -n` (a syntax check that doesn't run the script) and `shellcheck` (a tool that spots common shell-script mistakes) if you have it. It never runs the wizard itself, because the script opens browsers and waits for a human. Instead it traces it on paper: every value lands where step 1 said, and every GitHub secret name matches the name CI reads. Then it tells you how to run it.
 
@@ -222,7 +220,7 @@ Don't use a wizard to decide *what* to build. That's `/grill-with-docs`, where t
 
 - **Colin Eberhardt**, CTO of Scott Logic, rebuilt one of his apps with Matt's Skills (19 October 2026). He asked in plain words for help setting up Supabase (a hosted database service), and the agent reached for `/wizard` itself. The script then sent him to pages that no longer existed. His verdict: "the shell script has no escape hatch".
 - **A Codex user** (Codex is OpenAI's coding agent) generated a wizard for a production cleanup. A review caught, before anything ran, that the banner's re-run promise was false for that job (issue #1310, October 2026, open).
-- **A team on Windows laptops** asked for PowerShell scripts (Windows' own terminal language) instead of bash (issue #954). It was closed as not planned: the template is bash by design. The maintainer suggested one line in CLAUDE.md (a file of standing instructions the agent reads every session) asking for PowerShell wizards, or, if you copied the Skills in with npx, editing your copy of the template. Without either, run the bash wizard in Git Bash or WSL.
+- **A team on Windows laptops** asked for PowerShell scripts (Windows' own terminal language) instead of bash (issue #954). It was closed as not planned: the template is bash by design. The maintainer suggested one line in CLAUDE.md (a file of standing instructions the agent reads every session) asking for PowerShell wizards, or, if you installed the Skills as editable copies, editing your copy of the template.
 
 ## Try it yourself
 
@@ -274,7 +272,7 @@ rm .env.practice
 **It's working if:**
 
 - [ ] You saw the stages and their values, and were asked to confirm, before any script existed.
-- [ ] The agent checked the script (`bash -n`, and `shellcheck` if you have it, which may flag one line in the template's library: a known issue to leave alone) but didn't run the wizard.
+- [ ] The agent checked the script (`bash -n`, and `shellcheck` if you have it, which may flag a few lines in the template's library: known, leave them alone) but didn't run the wizard.
 - [ ] Each stage cleared the screen and showed "Stage n/3".
 - [ ] In stage 1, the stars page opened before you were asked for the number.
 - [ ] Your typing was invisible for the key.
@@ -287,7 +285,7 @@ rm .env.practice
 
 - **Editing the library above the `STAGES` marker.** Checks specific to one job belong in that job's stages.
 - **Expecting it to know your accounts.** It reads your repo, not the service. If a key isn't saved in `.env`, it sends you to fetch it, even if you created it last week.
-- **Forgetting `.gitignore`.** The template writes `.env` but doesn't stop Git from saving it. Check that `.env*` is listed in `.gitignore`, the file of things Git ignores (projects made with Next.js, a popular web framework, list it already).
+- **Forgetting `.gitignore`.** The template writes `.env` but doesn't stop Git from saving it. Check that `.gitignore`, the file of things Git ignores, covers every `.env` file with real values but not the shared `.env.example`.
 - **The rest are in Running it:** running it with `!`, following stale clicks, trusting re-runs on a cutover, committing a one-off wizard.
 
 ```site-story
@@ -327,11 +325,11 @@ The ticket (a written-up task) was "Connect GitHub, Vercel and Neon": logins and
 ## Final test
 
 ```test scenario-credentials-wall
-Halfway through building a booking app, the agent needs a key from a calendar service you've signed up for. It can't log in to your account. What should it do?
+The agent has written all it can of a booking app's calendar sync. To run, the code needs a key from a calendar service you've signed up for, and the agent can't log in to your account. What should it do?
 - [ ] List the dashboard steps in the chat and ask you to paste the key back.
   > That's the old habit the Skill replaced: the steps scroll away, and the pasted key lands in the model's context.
-- [ ] Put in a placeholder key so the build can carry on.
-  > A placeholder only postpones the wall: the code can't really run until the real key exists, and only you can get it. Propose the wizard now.
+- [ ] Put in a placeholder key and report the feature as done.
+  > A made-up key can't make the code really run, and only you can get the real one. Say so and propose a wizard.
 - [x] Propose a wizard, starting with the stages and values it needs.
   > Right. The Skill is model-invoked so the agent can reach for it at exactly this kind of wall, and the stage list doubles as its proposal.
 - [ ] Stop and wait until you type `/wizard` yourself.
@@ -339,22 +337,22 @@ Halfway through building a booking app, the agent needs a key from a calendar se
 ```
 
 ```test scenario-agent-can-do
-The agent works in your terminal, where you're signed in to GitHub's `gh` tool. Its setup plan includes a wizard stage: "Create a new GitHub repo in the browser." What do you say?
-- [x] "Do that one yourself; keep the wizard for the rest."
-  > Right. Your `gh` login lets the agent create the repo itself, and if the agent can do a step, it should. Wizards are only for steps that genuinely need your hands.
+Your project deploys with a hosting company's command-line tool, which can also create new sites. The agent used it this morning to deploy for you. Now its setup plan includes a wizard stage: "Create a staging site (a private test copy) in the hosting dashboard." What do you say?
+- [x] "You can make that with the tool; drop the stage."
+  > Right. The tool already works for the agent, so it can create the site itself, and if the agent can do a step, it should. Wizards are only for steps that genuinely need your hands.
 - [ ] "Fine. Every setup step belongs in the wizard, so nothing gets missed."
   > The Skill says the opposite: don't use a wizard for steps the agent can perform itself.
-- [ ] "Keep it: steps that touch your GitHub account are yours to take."
-  > Your `gh` login already lets the agent do this one. Wizards are for steps it can't take.
-- [ ] "Keep it, but have the agent write the exact clicks for that stage."
-  > Precise clicks don't fix the real problem: the agent can create the repo itself, so it shouldn't be a stage.
+- [ ] "Keep it: anything in my hosting account is mine to do."
+  > Whose account it is doesn't decide it: the agent can already use the tool with your login.
+- [ ] "Drop it; I'll paste my dashboard password so you can sign in."
+  > The tool already works for the agent, so it needs no password, and anything pasted in the chat joins the model's context.
 ```
 
 ```test scenario-not-for-deciding
-In your app's repo, you haven't decided whether the app should take payments at all, or which provider you'd use. Which Skill do you reach for first?
+Matt's Skills are already set up in your app's repo, but you haven't decided whether the app should take payments at all, or which provider you'd use. Which Skill do you reach for?
 - [ ] `/wizard`, so it can walk you through a provider's sign-up.
   > A wizard carries out a procedure you've already chosen. It doesn't help you choose.
-- [x] `/grill-with-docs`, so the agent questions you first.
+- [x] `/grill-with-docs`, so the agent questions you until it's clear.
   > Right. Deciding what to build is a grilling job. A wizard comes later, if a manual step turns up.
 - [ ] `/implement`, building a version with each provider.
   > Building before deciding wastes the work you throw away. Agree on what to build first.
@@ -376,12 +374,12 @@ Your app reads a database password on your laptop, and your GitHub Actions tests
 
 ```test scenario-keep-or-delete
 Every new developer on your team must set up the same five services before the app runs. Your wizard for that job just worked. What do you do with it?
-- [ ] Delete it: wizards are always one-run scripts.
+- [ ] Delete it: a wizard is built for one run.
   > One run is the default, not a rule. This setup path will be needed again.
 - [x] Commit it and link it from the README.
   > Right. A repeatable setup path belongs in the repo, so whoever comes next runs it instead of explaining the setup to an agent again.
-- [ ] Turn it into a Skill so the agent rewrites it each time.
-  > Re-explaining the job every time is what the script saves you from. Keep the script.
+- [ ] Paste its steps into the README for teammates to follow.
+  > That's the numbered list again: teammates follow it by hand and it goes out of date. Commit the script and link it from the README instead.
 - [ ] Keep it in a scratch folder on your own laptop only.
   > Teammates can't run a script they can't see.
 ```
@@ -404,10 +402,10 @@ While the agent scoped a wizard, Raj pasted his live payment key into the chat "
   > The hidden prompt protects only what's typed into the script. The pasted copy is already in the conversation.
 - [x] That key is now exposed, whatever the wizard does with it.
   > Right. Anything pasted into the chat joins the model's context and goes to the provider's servers, and it can't be taken back, so make a new key and delete the old one. Describe values while scoping; type them only into the script.
-- [ ] He should have used a visible prompt for the key instead.
-  > Hidden typing is right for secrets. The mistake happened earlier, in the chat.
-- [ ] The wizard should have asked for the key before scoping began.
-  > Scoping comes before any script exists, and it never needs real values. Describe them instead.
+- [ ] Only the format leaked, since he said it was just an example.
+  > Saying why you pasted it changes nothing: the whole key is in the model's context and on the provider's servers.
+- [ ] Typing it into the wizard afterwards sent it to the chat again.
+  > The wizard isn't connected to the model, so the hidden prompt added nothing. The leak was the paste.
 ```
 
 ```test spot-edited-library
@@ -456,6 +454,7 @@ Stage 3 of your 4-stage wizard opens a page that doesn't match its clicks. Stage
 - [An honest review of Matt Pocock's Skills framework](https://blog.scottlogic.com/2026/10/19/an-honest-review-of-matt-pococks-skills.html), Colin Eberhardt, Scott Logic, 2026-10-19 (the Supabase wizard; "the shell script has no escape hatch"), read 2026-10-24.
 - [Issue #1310: fixed resumability banner is unsafe for stateful cutovers](https://github.com/mattpocock/skills/issues/1310), opened 2026-10-20, open when read 2026-10-24.
 - [Issue #954: PowerShell instead of bash on Windows](https://github.com/mattpocock/skills/issues/954), opened 2026-08-25, closed as not planned 2026-10-07 (maintainer: bash by design; ask for PowerShell in CLAUDE.md or edit your copy of the template).
+- [Issue #1295: template.sh prompt hits SC1087](https://github.com/mattpocock/skills/issues/1295), opened 2026-10-18, open when read 2026-10-24 (shellcheck flags one library line, plus notes for helpers a wizard doesn't call).
 - [Issue #963: open_url fails to open a browser on Windows Git Bash](https://github.com/mattpocock/skills/issues/963), opened 2026-08-26, open when read 2026-10-24 (a false "couldn't open a browser" warning).
 - This site: `.scratch/lesson-site/issues/02-accounts-and-environments.md`, the old journal Lesson `content/lessons/04-wizard.md` at commit d21fc2c, and [PR #1](https://github.com/SiddharthMuramkar/idea-to-shipped/pull/1) (commit c226730, 2026-10-21: `vercel-dev` in the spec and ADR 0002; the first production deploy).
 ```

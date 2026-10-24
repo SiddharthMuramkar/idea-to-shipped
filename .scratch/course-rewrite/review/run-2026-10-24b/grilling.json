@@ -1,0 +1,225 @@
+{
+  "slug": "grilling",
+  "next": {
+    "round": 3,
+    "step": "fix",
+    "why": "fix round 2 and check round 3 done; its round 3 fixer was stopped mid-run (some edits may already be in the file)"
+  },
+  "applied": [
+    "r1: accuracy medium (prototype folder): rewrote the 'Spot the questions talking can't settle' bullet so it no longer says the prototype gets its own folder. It now goes in order: /handoff first, then claude started in the same folder from a second terminal window (so the prototype's tokens stay out of the interview), then /prototype, then a second /handoff back. This follows prototype/SKILL.md rule 1 and the Prototype Lesson.",
+    "r1: accuracy medium (session length): line 61 now says Matt's AI Hero docs put a plan anywhere from three questions to fifty, in my own words rather than the page's. The spot-passive option a feedback now says 'Matt's docs say some plans need fifty questions' instead of the false ceiling 'up to forty-six'. Checked against aihero.dev/skills-grilling.",
+    "r1: reader high (copying): replaced both near-verbatim AI Hero /grill-me sentences. Line 163 now reads 'Saying \"I don't know\" is fine too. Often it means you need to see a prototype before you can decide.' Line 168 now reads 'And begin the grilling in a new conversation, before the agent has drafted any plan of its own.' The page's one quote is still only at line 161.",
+    "r1: reader medium (CSS before its definition): the definition 'CSS (the code that styles a page)' moved into the chat Scene caption before the CSS line, and line 164 now just says 'you handed over CSS and file names'.",
+    "r1: reader medium (/handoff mechanics): the same bullet now says /handoff writes a summary to a file and tells you where it is, that you ask the new session to read it, and that a second /handoff writes the answer to a new file for the first window to read. The vague fallback became the 'unknown skill' sign plus /mattpocock-skills:prototype, and the bullet now ends with a link to [Prototype](/learn/prototype). I left out the suggested fix's 'own folder' sentence because it contradicts the accuracy issue and the prototype Skill.",
+    "r1: reader medium (~/.claude/CLAUDE.md): the opt-out paragraph now says the file is in your home folder at ~/.claude/CLAUDE.md. It gives two easy ways: ask Claude Code to add the line, or type /memory and pick the user file, which is created if it doesn't exist (checked against code.claude.com/docs/en/memory). 'Built-in command' is defined there at first use, so I cut the now-repeated definition from the /clear callout. Common mistakes now says 'add a line to your global CLAUDE.md'.",
+    "r1: reader medium + quiz medium (scenario-overwhelmed tell, two issues): new prompt 'Grilling a running club's website, round 1 brings nine questions at once and you lose track halfway. You want smaller rounds in every grilling session from now on, not just this one. What do you do?' Options, order and [x] are unchanged. Option b's feedback now explains why CLAUDE.md works (it is read every session). I used a running club because recipe and plant-swap are already used by other questions. The Site story parenthetical is cut down to '(Big rounds are normal.)'.",
+    "r1: reader medium (line 54 copy and non sequitur): replaced the near-copy of grilling/SKILL.md:26 and the unclear 'clash' sentence with 'The agent picks each round by judgement, so once in a while one of your answers changes another question from the same round. If you spot that, say so, and it reopens that branch next round.'",
+    "r1: quiz high (who-can-start gives the answer away): removed the reasons from all three options (now just `/grill-me`, `/grill-with-docs`, `/grilling`) and moved the reasoning into the feedback. Order and [x] are unchanged, and the right answer is not the longest.",
+    "r1: quiz medium (steer-details recognition): new plant-swap prompt (button colours, fonts, page file names; who can list plants and what's out of v1). The right option d is now 'Hand those details to it and steer it to your priorities.' (57 characters, against 64 for a), so it no longer echoes the Scene's 'decide ... using best practice' or line 164's wording. Its feedback is reworded to match.",
+    "r1: quiz medium (scenario-overwhelmed option c feedback): now 'Plan mode rushes the agent toward a plan, so it asks less, not in smaller rounds.' This no longer contradicts lines 168/179 or the AI Hero docs.",
+    "r1: quiz medium (the 'should' tell across the spot- questions): reworded the distractors as statements of what went wrong. spot-passive a 'The session ran too long: an hour is more than grilling needs.', b 'Answering whole rounds in one reply rushed Lee's choices.'; spot-asked-for-fact b 'It's too detailed for round 1, which is only for big decisions.', c 'It offers one guess instead of listing every language it might be.'; spot-cleared-early a '`/to-spec` ran too late; it belonged before the grilling.', d 'Splitting the questions into rounds scattered her answers.' The d feedback is updated to fit ('Rounds follow the design tree, and all her answers sat in one conversation until `/clear` emptied it.'). No right answer is the longest option by either measure.",
+    "r2: quiz medium (sequence-multi-session, option a feedback): confirmed against to-tickets/SKILL.md:3,9,17 and engineering/README.md, which say /to-tickets can split a plan, a spec or the conversation, so the old reason (a spec has to exist first) was false. New feedback: 'Backwards. In the Main flow `/to-tickets` splits the finished spec into tickets, so `/to-spec` comes first.' The order follows ask-matt/SKILL.md:25. Option text, order and [x] are unchanged. The same wording in 07-spec-and-issues.md:352/386 is outside my file, so I left it for that Lesson's agent.",
+    "r2: quiz medium (spot-passive, weak distractor b): the prompt now says 'Lee spent an hour grilling a new feature, answering each round in one reply and taking every ➡️ recommendation as written. Now Lee dislikes what got built. Spot the mistake.' Each option now points at something in the prompt. Options, order and [x] are unchanged; the right answer (c, 57 characters) is still shorter than a (62).",
+    "r2: quiz medium (frontier-wait, hedge tell on the right option): option a changed from 'Until voting is settled, the vote count may never matter.' to 'It only matters if members vote, and that's still undecided.' It means the same thing but no longer hedges with 'may never'. It is 60 characters against 78 for option b, so it is not the longest. Feedback, order and [x] are unchanged."
+  ],
+  "declined": [
+    {
+      "problem": "acc-skills low (optional part): replace 'editing' in the flow Scene with a clearly independent question, because with no accounts 'who may edit' is a live question",
+      "reason": "Kept the Scene as it is. Whether comments can be edited at all doesn't hang off accounts; only who may edit does, and the confirm-summary feedback now covers that follow-up. The finding's main point (the 'always waits' wording) is fixed."
+    },
+    {
+      "problem": "acc-sources medium (Reddit): keep the 2026-06-03 date only if confirmed",
+      "reason": "Reddit can't be fetched from here (Firecrawl and WebFetch both refused). The research note's S15 gives 2026-06-03, and the reviewer saw '5mo ago' on 2026-10-23, which is consistent. I kept the date and changed nothing else."
+    },
+    {
+      "problem": "reader medium (/handoff mechanics), the part of the suggested fix that keeps 'The prototype gets its own folder and a fresh session'",
+      "reason": "This contradicts the accuracy issue, which I confirmed. prototype/SKILL.md:21 puts prototype code next to the code it is for. The Prototype Lesson starts the fresh session in the same folder (06-prototype.md:157, 270) and treats /handoff as a side task forked off mid-work (06-prototype.md:187). Only ask-matt says 'its own directory'. I applied the rest of that fix (what /handoff does, reading the file, the second /handoff back, the 'unknown skill' sign) and say 'in the same folder'."
+    }
+  ],
+  "pending": [
+    {
+      "severity": "medium",
+      "where": "The idea: a tree of decisions, asked in rounds, line 54: \"Your answers then settle some branches, the frontier moves outward, and the next round asks what those answers unlocked.\" (the same problem, smaller, in the Try it checklist, line 261: \"No question in a round needed another question in the same round answered first.\")",
+      "problem": "Line 54 is a near-copy of one 16-word sentence from Matt's AI Hero /grilling page. It is not in quotation marks, and only three words are swapped. The rule is that everything except attributed quotes is in the author's own words, and round 1 already rewrote two near-copied AI Hero /grill-me sentences as a copying problem. This sentence was in the shipped Lesson (main:content/lessons/01-grilling.md:47) and got through both earlier rounds. Line 261 is a 13-word near-copy of the same page's 'It's working if' list.",
+      "evidence": "https://www.aihero.dev/skills-grilling ('What it does', updatedAt 2026-08-24): \"Your answers settle decisions, the frontier moves outward, and the next round asks what that unblocked.\" A difflib token match (python, run in a mktemp dir) finds 13 of those 16 words in the same order in line 54, including the identical 10-word run 'the frontier moves outward and the next round asks what'. The same page's 'It's working if' list has \"Nothing in a round needs another question in the same round answered first.\", against line 261 \"No question in a round needed another question in the same round answered first.\" (12 of 13 words). Precedent: seed applied r1 'reader high (copying): replaced both near-verbatim AI Hero /grill-me sentences'.",
+      "fix": "Line 54: replace the sentence with \"Each answer settles a branch or two. Questions that were waiting on those branches can now be asked, and they make up the next round.\" Line 261: \"- [ ] Questions in the same round didn't depend on each other (if one did, you said so, and it came back next round).\" This also removes the clash between line 261 and line 54's 'once in a while one of your answers changes another question from the same round'.",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, scenario-overwhelmed, option a feedback: \"A cap would leave branches of the tree unvisited, which defeats the purpose.\" (line 360)",
+      "problem": "The reason given for option a goes against the Lesson's own advice. Line 61 says \"There's no limit; to stop early, say 'let's wrap up'\", and Try it step 7 (line 252) tells the reader to wrap up after two or three rounds, which also leaves branches unvisited. A cold reader is told that stopping early is fine and then that it \"defeats the purpose\". The real reason a is wrong is different: the prompt asks for smaller rounds, and a cap on the whole session doesn't make any round smaller.",
+      "evidence": "Lesson line 61: \"There's no limit; to stop early, say \\\"let's wrap up\\\".\" Line 252 (Try it step 7): \"After two or three rounds, type: \\\"Let's wrap up. Summarise what we decided and what's out of scope.\\\"\" Line 358 prompt: \"You want smaller rounds in every grilling session from now on\". Research note .scratch/course-rewrite/research/grilling.md:57 (from aihero.dev/skills-grill-me): \"There is no question cap, by design. To stop early, say so in plain words (\\\"wrap up\\\").\" Option text, order and [x] can stay as they are (the brief freezes them); only the feedback line changes.",
+      "fix": "Replace line 360 with: \"  > A total cap doesn't make rounds smaller: round 1 could still bring nine at once. You can already end a session early by saying \\\"let's wrap up\\\".\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, test scenario-ungrillable, option d \"Detour through `/prototype`, then bring the answer back.\" (line 353) against option c \"Keep describing both layouts in more detail until one of them feels right.\" (line 351)",
+      "problem": "Wording tell. The right option is the only one that names a Skill, and it reuses the Lesson's own phrases (\"Detour through\" from line 166, \"then come back\" from the table at line 109). Options a and b both begin by asking or accepting \"the agent\" and name no Skill. Option c is already ruled out by the prompt, which says you've \"tried to describe both twice and still can't choose\". A test-wise reader can pick d in a course about Skills without understanding ungrillable questions.",
+      "evidence": "Options at lines 347, 349, 351 and 353: only d contains a backticked Skill name. Line 166: \"Detour through a quick throwaway build\". Line 109: \"`/prototype` (a quick throwaway build you can look at), then come back\". The prompt at line 346 already rules out c. to-spec/SKILL.md:7 says /to-spec does not interview the user and only synthesizes what is already known, so the replacement below cannot become a second right answer. (I did not use /wayfinder as the replacement: wayfinder/SKILL.md:78 has prototype tickets for 'how should it look' questions, which would let a sharp reader defend it.)",
+      "fix": "Reword option c only (position, order and [x] unchanged; 64 characters against d's 56): \"- [ ] Leave it open for now and let `/to-spec` settle the layout later.\" with feedback \"  > `/to-spec` writes down decisions you've already made; it doesn't make new ones. This one needs something you can look at.\"",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, test spot-cleared-early, option c \"The grilling session was too short to be useful.\" (line 407) and option a \"`/to-spec` ran too late; it belonged before the grilling.\" (line 403)",
+      "problem": "Weak distractors. The prompt's own facts rule out two of the three: it says the spec \"misses half her decisions\", so the decisions existed (which rules out c), and a spec written before any grilling would have had none of them (which rules out a). The question then comes down to b against d, and d points at nothing the prompt mentions. Option c's feedback also claims something the Lesson never supports (\"Forty-five minutes is plenty.\"), even though the prompt calls it a big feature and line 61 says there is no limit.",
+      "evidence": "Prompt at line 402: \"Priya grilled a big feature for 45 minutes, typed `/clear` to free up space ... misses half her decisions.\" Line 61: \"a plan can need as few as three questions or as many as fifty ... There's no limit\". Line 408: \"Forty-five minutes is plenty.\" Line 186 teaches that a filling window makes the model reason less sharply, and Priya cleared \"to free up space\". 'Too much to fit' is therefore the tempting misconception. It stays wrong because /clear had emptied the window before /to-spec ran (to-spec/SKILL.md:7 works from the current conversation).",
+      "fix": "Reword option c only (position, order and [x] unchanged; the right option b stays shorter): \"- [ ] Forty-five minutes of answers was too much for `/to-spec` to fit in one spec.\" with feedback \"  > Length wasn't the problem: `/clear` had already emptied the conversation, so none of those answers reached `/to-spec`.\"",
+      "lens": "quiz"
+    }
+  ],
+  "rounds": {
+    "r2": {
+      "fix": {
+        "applied": [
+          "quiz medium (sequence-multi-session, option a feedback): confirmed against to-tickets/SKILL.md:3,9,17 and engineering/README.md, which say /to-tickets can split a plan, a spec or the conversation, so the old reason (a spec has to exist first) was false. New feedback: 'Backwards. In the Main flow `/to-tickets` splits the finished spec into tickets, so `/to-spec` comes first.' The order follows ask-matt/SKILL.md:25. Option text, order and [x] are unchanged. The same wording in 07-spec-and-issues.md:352/386 is outside my file, so I left it for that Lesson's agent.",
+          "quiz medium (spot-passive, weak distractor b): the prompt now says 'Lee spent an hour grilling a new feature, answering each round in one reply and taking every ➡️ recommendation as written. Now Lee dislikes what got built. Spot the mistake.' Each option now points at something in the prompt. Options, order and [x] are unchanged; the right answer (c, 57 characters) is still shorter than a (62).",
+          "quiz medium (frontier-wait, hedge tell on the right option): option a changed from 'Until voting is settled, the vote count may never matter.' to 'It only matters if members vote, and that's still undecided.' It means the same thing but no longer hedges with 'may never'. It is 60 characters against 78 for option b, so it is not the longest. Feedback, order and [x] are unchanged."
+        ],
+        "declined": [],
+        "words": 2858,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    "r3": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "The idea: a tree of decisions, asked in rounds, line 54: \"Your answers then settle some branches, the frontier moves outward, and the next round asks what those answers unlocked.\" (the same problem, smaller, in the Try it checklist, line 261: \"No question in a round needed another question in the same round answered first.\")",
+            "problem": "Line 54 is a near-copy of one 16-word sentence from Matt's AI Hero /grilling page. It is not in quotation marks, and only three words are swapped. The rule is that everything except attributed quotes is in the author's own words, and round 1 already rewrote two near-copied AI Hero /grill-me sentences as a copying problem. This sentence was in the shipped Lesson (main:content/lessons/01-grilling.md:47) and got through both earlier rounds. Line 261 is a 13-word near-copy of the same page's 'It's working if' list.",
+            "evidence": "https://www.aihero.dev/skills-grilling ('What it does', updatedAt 2026-08-24): \"Your answers settle decisions, the frontier moves outward, and the next round asks what that unblocked.\" A difflib token match (python, run in a mktemp dir) finds 13 of those 16 words in the same order in line 54, including the identical 10-word run 'the frontier moves outward and the next round asks what'. The same page's 'It's working if' list has \"Nothing in a round needs another question in the same round answered first.\", against line 261 \"No question in a round needed another question in the same round answered first.\" (12 of 13 words). Precedent: seed applied r1 'reader high (copying): replaced both near-verbatim AI Hero /grill-me sentences'.",
+            "fix": "Line 54: replace the sentence with \"Each answer settles a branch or two. Questions that were waiting on those branches can now be asked, and they make up the next round.\" Line 261: \"- [ ] Questions in the same round didn't depend on each other (if one did, you said so, and it came back next round).\" This also removes the clash between line 261 and line 54's 'once in a while one of your answers changes another question from the same round'."
+          },
+          {
+            "severity": "low",
+            "where": "The idea, rule 2, line 59: \"It isn't over until the frontier is empty and you say so.\" Against line 61 \"to stop early, say \\\"let's wrap up\\\"\", Try it step 7 (line 252) and the Cheat sheet row \"Done | Frontier empty, and you confirm the summary\" (line 315)",
+            "problem": "Rule 2 makes an empty frontier a condition for ending. Two lines later the Lesson tells you to stop early, and the Try it wraps up after two or three rounds. In Matt's docs, your confirmation is what ends the Skill, and an early wrap-up is the intended control, so the rule as written is stricter than the source.",
+            "evidence": "grilling/SKILL.md:30 (done when the frontier is empty; do not act until the user confirms). aihero.dev/skills-grilling FAQ 'It ran out of questions and started building': \"The skill is finished when you say the understanding is shared, not when the frontier empties.\" FAQ 'Can I cap the number of questions?': tell it to wrap up, or stop and accept the plan where it stands.",
+            "fix": "Rule 2: \"2. **It isn't over until you say so.** Left alone, it keeps going until the frontier is empty: every branch gets visited and nothing is silently assumed. Then it asks you to confirm that you share an understanding, and it doesn't act until you do.\" Cheat sheet row: \"| Done | You confirm the summary (normally once the frontier is empty) |\""
+          },
+          {
+            "severity": "low",
+            "where": "The idea, line 61: \"Matt's docs on AI Hero (his teaching site) say a plan can need as few as three questions or as many as fifty, and his own sessions usually run to about twenty.\"",
+            "problem": "The sentence credits 'about twenty' to the AI Hero docs, but that figure comes from the July 2026 video. 'As many as fifty' also reads as a ceiling. The docs give fifty as an example and call 46 questions an ordinary session.",
+            "evidence": "aihero.dev/skills-grilling FAQ: \"Some plans need three questions and some need fifty\" (no typical count). /Users/siddharth/Developer/trying/.handoff/transcripts/M6mYodf0dJM.en.json 9:42-9:46: \"Usually mine end up being about sort of 20 questions depending on the size of it\". aihero.dev/skills-grill-me: \"Forty-six questions across four rounds is an ordinary session.\"",
+            "fix": "\"How long does that take? It varies: Matt's docs on AI Hero (his teaching site) say some plans need three questions and some need fifty, and in his July 2026 walkthrough he said his own usually run to about twenty. There's no limit; to stop early, say \\\"let's wrap up\\\".\""
+          },
+          {
+            "severity": "low",
+            "where": "Your half of the interview, 'Spot the questions talking can't settle', line 166: \"First type `/handoff`, a Skill that writes a summary of the conversation to a file and tells you where it is.\"",
+            "problem": "The Skill says where to save the file (the OS temp folder, not the project). It never says the agent will report the path. The Prototype Lesson hedges this same step, so this bullet promises more than the source and its companion Lesson do. The sources block doesn't cite the handoff Skill either.",
+            "evidence": "handoff/SKILL.md:8 (save to $TMPDIR, else /tmp, %TEMP% on Windows, not the current workspace); nothing in the file says to show the path. content/lessons/06-prototype.md:270: \"copy the file path it shows (if none, ask where it saved the file)\". The sources block (lines 437-452) has no handoff SKILL.md entry.",
+            "fix": "\"First type `/handoff`, a Skill that writes a summary of the conversation to a file in your computer's temp folder (copy the path it shows; if there's none, ask where it saved the file).\" Add to sources: \"- [handoff SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/handoff/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.\""
+          },
+          {
+            "severity": "low",
+            "where": "Your half of the interview, opt-out paragraph, line 170: \"The easy way: ask Claude Code to add the line for you.\"",
+            "problem": "Claude Code's docs say a 'remember this' request goes to auto memory, and that you get the line into CLAUDE.md by asking for that file by name. Asked loosely inside a project, the line can land in auto memory or the project's CLAUDE.md. Then it covers only that project, not 'every grilling session from now on' as scenario-overwhelmed (line 358) promises.",
+            "evidence": "https://code.claude.com/docs/en/memory ('View and edit with /memory'): \"When you ask Claude to remember something ... Claude saves it to auto memory. To add instructions to CLAUDE.md instead, ask Claude directly, like \\\"add this to CLAUDE.md,\\\" or edit the file yourself via /memory.\"",
+            "fix": "\"The easy way: ask Claude Code to \\\"add this line to my global CLAUDE.md at ~/.claude/CLAUDE.md\\\".\""
+          },
+          {
+            "severity": "low",
+            "where": "Which grilling Skill to type, line 103: \"and offers a short decision record (an ADR) for the rare choice that's hard to reverse\"",
+            "problem": "This gives one of three conditions as if it were the whole test. domain-modeling offers an ADR only when all three hold: the choice is hard to reverse, surprising without context, and the result of a real trade-off. A reader will expect an ADR for every hard-to-reverse choice.",
+            "evidence": "domain-modeling/SKILL.md:66-74 ('Offer ADRs sparingly': only offer when all three are true; if any is missing, skip the ADR).",
+            "fix": "\"and offers a short decision record (an ADR) only for the rare choice that's hard to reverse, would puzzle a future reader, and came from a real trade-off.\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-overwhelmed, option a feedback: \"A cap would leave branches of the tree unvisited, which defeats the purpose.\" (line 360)",
+            "problem": "The reason given for option a goes against the Lesson's own advice. Line 61 says \"There's no limit; to stop early, say 'let's wrap up'\", and Try it step 7 (line 252) tells the reader to wrap up after two or three rounds, which also leaves branches unvisited. A cold reader is told that stopping early is fine and then that it \"defeats the purpose\". The real reason a is wrong is different: the prompt asks for smaller rounds, and a cap on the whole session doesn't make any round smaller.",
+            "evidence": "Lesson line 61: \"There's no limit; to stop early, say \\\"let's wrap up\\\".\" Line 252 (Try it step 7): \"After two or three rounds, type: \\\"Let's wrap up. Summarise what we decided and what's out of scope.\\\"\" Line 358 prompt: \"You want smaller rounds in every grilling session from now on\". Research note .scratch/course-rewrite/research/grilling.md:57 (from aihero.dev/skills-grill-me): \"There is no question cap, by design. To stop early, say so in plain words (\\\"wrap up\\\").\" Option text, order and [x] can stay as they are (the brief freezes them); only the feedback line changes.",
+            "fix": "Replace line 360 with: \"  > A total cap doesn't make rounds smaller: round 1 could still bring nine at once. You can already end a session early by saying \\\"let's wrap up\\\".\""
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, steps 2 and 3: \"Type a slash and the word grill.\" (line 237) and \"press Shift+Tab until it changes. Any other mode is fine.\" (line 243)",
+            "problem": "There are two places where a reader starting from zero can get stuck. Step 2 doesn't say to leave Enter alone. Pressing Enter on the open menu runs whichever Skill is highlighted, with no idea attached, before the reader has reached step 4. Step 3 gives only Shift+Tab. On some native Windows setups that key does nothing, so a PowerShell user who does see \"plan mode on\" can't follow the step. Other Lessons already give both safeguards.",
+            "evidence": "https://code.claude.com/docs/en/interactive-mode (keyboard shortcuts table): \"Shift+Tab, or Alt+M on Windows when the Node or Bun runtime doesn't enable VT input mode | Cycle permission modes\". content/lessons/01-how-agents-work.md:108: \"(on Windows, if that changes nothing, press Alt+M)\". content/lessons/05-domain-modeling.md:254: \"Type a slash and the word grill without pressing Enter\".",
+            "fix": "Step 2: \"Type a slash and the word grill, without pressing Enter. If `grill-me` is in the list that pops up, ...\". Step 3: \"Check that plan mode is off: if you see \\\"plan mode on\\\" under the prompt box, press Shift+Tab until it changes (on Windows, if that changes nothing, press Alt+M). Any other mode is fine.\""
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, It's working if: \"No question in a round needed another question in the same round answered first.\" (line 261), against The idea: \"once in a while one of your answers changes another question from the same round\" (line 54)",
+            "problem": "The checklist makes a pass/fail test out of something the body calls an occasional, normal event that you fix by speaking up. If it happens once in the practice run, the reader will decide the Skill didn't work, although line 54 says this is expected and tells them what to do.",
+            "evidence": "Line 54: \"The agent picks each round by judgement, so once in a while one of your answers changes another question from the same round. If you spot that, say so, and it reopens that branch next round.\" Line 261 has no such allowance. grilling/SKILL.md:26 states the aim (\"A question whose answer depends on another question still open in this round belongs to a _later_ round\"), and the research note (S6, line 50) records that the frontier comes from the agent's judgement and isn't computed.",
+            "fix": "Line 261: \"- [ ] Questions that built on an answer mostly waited for a later round; if one came too early, you said so and it came back next round.\""
+          },
+          {
+            "severity": "low",
+            "where": "Your half of the interview, bullet \"Spot the questions talking can't settle\": \"In a second terminal window, start `claude` in the same folder\" (line 166)",
+            "problem": "A reader who barely uses a terminal doesn't know that a new terminal window opens in the home folder, not the project folder. Nothing in this bullet, or anywhere above it, shows how to move into a folder. The Lesson doesn't show `cd` until the Try it block, 70 lines later. As written the reader can't do \"in the same folder\".",
+            "evidence": "Line 166 as quoted. `cd` first appears at line 233 (Try it step 1). The Prototype Lesson leaves out the same step (06-prototype.md:157: \"The fresh session is just `claude` in a second terminal window\"), so a reader who follows the link won't find it there either.",
+            "fix": "\"Open a second terminal window, `cd` into the same folder (the one you started the first `claude` in), run `claude`, ask it to read that file, then type `/prototype` ...\""
+          },
+          {
+            "severity": "low",
+            "where": "Your half of the interview, opt-out paragraph: \"If whole rounds feel like too much, there's a supported opt-out. Add one line to your global `CLAUDE.md` ...\" (line 170)",
+            "problem": "The paragraph is aimed at a reader who is overwhelmed now, but the only fix it gives works from the next session on, because CLAUDE.md is read when a session starts. That reader edits the file in the middle of a grilling and the next round is just as big. The quick way to get smaller rounds now, just asking in the chat, appears only in the Site story (line 284). The Final test (scenario-overwhelmed, \"not just this one\") assumes the reader knows that route.",
+            "evidence": "https://code.claude.com/docs/en/memory: \"Claude reads them at the start of every session.\" Lesson line 170 says the same: \"a file of standing instructions the agent reads at the start of every session\". Site story line 284: \"I said \\\"one or two at a time please\\\", and it adapted.\" Line 358: \"in every grilling session from now on, not just this one\".",
+            "fix": "Start the paragraph with: \"If whole rounds feel like too much, say so in the chat (\\\"one or two at a time, please\\\") and the agent adapts for this session. For every session from now on, there's a supported opt-out: add one line to your global `CLAUDE.md` ...\" Keep the rest as it is."
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Final test, test scenario-ungrillable, option d \"Detour through `/prototype`, then bring the answer back.\" (line 353) against option c \"Keep describing both layouts in more detail until one of them feels right.\" (line 351)",
+            "problem": "Wording tell. The right option is the only one that names a Skill, and it reuses the Lesson's own phrases (\"Detour through\" from line 166, \"then come back\" from the table at line 109). Options a and b both begin by asking or accepting \"the agent\" and name no Skill. Option c is already ruled out by the prompt, which says you've \"tried to describe both twice and still can't choose\". A test-wise reader can pick d in a course about Skills without understanding ungrillable questions.",
+            "evidence": "Options at lines 347, 349, 351 and 353: only d contains a backticked Skill name. Line 166: \"Detour through a quick throwaway build\". Line 109: \"`/prototype` (a quick throwaway build you can look at), then come back\". The prompt at line 346 already rules out c. to-spec/SKILL.md:7 says /to-spec does not interview the user and only synthesizes what is already known, so the replacement below cannot become a second right answer. (I did not use /wayfinder as the replacement: wayfinder/SKILL.md:78 has prototype tickets for 'how should it look' questions, which would let a sharp reader defend it.)",
+            "fix": "Reword option c only (position, order and [x] unchanged; 64 characters against d's 56): \"- [ ] Leave it open for now and let `/to-spec` settle the layout later.\" with feedback \"  > `/to-spec` writes down decisions you've already made; it doesn't make new ones. This one needs something you can look at.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, test spot-cleared-early, option c \"The grilling session was too short to be useful.\" (line 407) and option a \"`/to-spec` ran too late; it belonged before the grilling.\" (line 403)",
+            "problem": "Weak distractors. The prompt's own facts rule out two of the three: it says the spec \"misses half her decisions\", so the decisions existed (which rules out c), and a spec written before any grilling would have had none of them (which rules out a). The question then comes down to b against d, and d points at nothing the prompt mentions. Option c's feedback also claims something the Lesson never supports (\"Forty-five minutes is plenty.\"), even though the prompt calls it a big feature and line 61 says there is no limit.",
+            "evidence": "Prompt at line 402: \"Priya grilled a big feature for 45 minutes, typed `/clear` to free up space ... misses half her decisions.\" Line 61: \"a plan can need as few as three questions or as many as fifty ... There's no limit\". Line 408: \"Forty-five minutes is plenty.\" Line 186 teaches that a filling window makes the model reason less sharply, and Priya cleared \"to free up space\". 'Too much to fit' is therefore the tempting misconception. It stays wrong because /clear had emptied the window before /to-spec ran (to-spec/SKILL.md:7 works from the current conversation).",
+            "fix": "Reword option c only (position, order and [x] unchanged; the right option b stays shorter): \"- [ ] Forty-five minutes of answers was too much for `/to-spec` to fit in one spec.\" with feedback \"  > Length wasn't the problem: `/clear` had already emptied the conversation, so none of those answers reached `/to-spec`.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, test scenario-overwhelmed, option a feedback \"A cap would leave branches of the tree unvisited, which defeats the purpose.\" (line 360)",
+            "problem": "The reason given contradicts the Lesson, which approves of stopping early (and so of leaving branches unvisited). It also skips the two real reasons the option fails the prompt: asking applies to this session only, and a cap on the total doesn't make a round any smaller.",
+            "evidence": "Line 61: \"There's no limit; to stop early, say \\\"let's wrap up\\\".\" Try it step 7 (line 252) has the Visitor wrap up after two or three rounds. Prompt at line 358: \"You want smaller rounds in every grilling session from now on, not just this one.\" Round 1 already brought nine questions.",
+            "fix": "\"  > That only lasts this session, and a cap on the total doesn't shrink a round: round 1 still brought nine.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, test spot-asked-for-fact, option c feedback \"Multiple choice is fine in grilling, but the format isn't the problem: you shouldn't be asked this at all.\" (line 398)",
+            "problem": "The feedback still answers the option as it read before round 1 (\"It should be multiple choice\"). The option now says that offering one guess is the fault. The feedback defends listing choices instead of saying that one recommended answer is the normal format. It also brings in \"multiple choice\", which the Lesson never teaches.",
+            "evidence": "Option at line 397: \"It offers one guess instead of listing every language it might be.\" grilling/SKILL.md:8: \"number each question and give your recommended answer\". grep for 'multiple choice' in 04-grilling.md finds only line 398.",
+            "fix": "\"  > One recommended answer per question is the normal format, so that isn't the problem: you shouldn't be asked this at all.\""
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint steer-details, option a feedback \"That's grilling forever. \\\"Nothing silently assumed\\\" means nothing gets guessed behind your back, not that you must rule on every detail.\" (line 175)",
+            "problem": "A sharp reader can argue for option a from rule 1 (\"Decisions ... always come to you\"), not only from rule 2. The feedback answers rule 2 but never explains how handing details over fits with decisions always coming to you, so the right option d can look like it breaks rule 1.",
+            "evidence": "Line 58: \"Decisions, like \\\"should comments be editable?\\\", always come to you.\" grilling/SKILL.md:28: \"The _decisions_ are the user's: put each to them and wait.\" The right option at line 180 is \"Hand those details to it and steer it to your priorities.\"",
+            "fix": "\"  > That's grilling forever. Decisions do come to you, but \\\"decide those yourself\\\" is an answer too, and nothing is guessed behind your back once you've handed it over.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, test scenario-repo-change, prompt \"You're in your project's repo, planning a feature that should fit in one session.\" (line 334)",
+            "problem": "This tests recognition, not transfer. The prompt restates the table row at line 108 with no fresh situation, so the reader matches 'repo' to the row. This was raised in round 2 as a low and is still unchanged.",
+            "evidence": "Line 108: \"In a project folder: any change you can plan in one sitting ... | `/grill-with-docs`\". Writing guide, Lessons from the pilot review: \"Questions test transfer, not recognition. Use a fresh situation\".",
+            "fix": "Reword the prompt only (options, order and [x] unchanged): \"You're in the repo for your bakery's ordering site, planning a 'collect in store' option that should take one session to build. Which Skill is the best place to start?\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, test scenario-no-repo, option c feedback \"Right. It's the stateless interview for anything, anywhere, code or not.\" (line 328)",
+            "problem": "\"Anywhere\" goes too far, and the very next question's feedback contradicts it: inside a project folder the Lesson says `/grill-with-docs` is the better choice.",
+            "evidence": "Line 336 (scenario-repo-change, option a feedback): \"In a repo, there's a better option.\" ask-matt/SKILL.md:19: use /grill-me when there's no working directory; /grill-with-docs is the better one whenever a repo is there. The table at lines 107-108 says the same.",
+            "fix": "\"  > Right. It's the stateless interview: it saves nothing, so it suits a plan with no project folder, code or not.\""
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/grilling.json"
+}

@@ -37,7 +37,7 @@ Matt Pocock, a developer and teacher who publishes a popular set of Skills for C
 - your `CLAUDE.md`, a file of standing instructions for the project
 - notes Claude Code saved for itself in earlier sessions in this project (auto memory, on by default)
 - the names and one-line descriptions of your Skills (a Skill's full text loads only when it's used, and Skills only you can start keep even their descriptions out)
-- the names of tools from MCP servers, plug-ins that connect the agent to other services (their full details load only when used)
+- the names of tools from MCP servers, connectors that link the agent to other services (their full details load only when used)
 
 **What fills it as you work:** every message, every file the agent reads, every command's output and the text of every Skill it loads. File reads are usually the biggest cost.
 
@@ -58,10 +58,10 @@ The total is about 205k of 1M, nearly all of it conversation. The system prompt 
 
 ```checkpoint startup-tokens
 You open a brand-new session in a project and type nothing. `/context` already shows about 20k tokens used. Where did they come from?
-- [x] Instructions and tool lists loaded at startup.
+- [x] Instructions, tool lists and saved notes loaded at startup.
   > Right. The system prompt, tools, `CLAUDE.md`, any auto-memory notes and Skill descriptions are in the window before you type a word.
-- [ ] Your last session, which Claude Code carries over so you don't start cold.
-  > Each session starts without the previous conversation. That's exactly why handoffs and `CLAUDE.md` exist.
+- [ ] Your whole last conversation, which Claude Code reloads so you don't start cold.
+  > A new session starts without the previous conversation; only short auto-memory notes carry over. That's why handoffs and `CLAUDE.md` exist.
 - [ ] Every file in the project, which the agent reads in advance.
   > Files enter the window only when the agent reads them, as you work.
 - [ ] Your token usage so far this month.
@@ -103,7 +103,7 @@ fill: 19% | End of ticket 2, about 190k
 
 ```checkpoint quality-not-size
 `/context` says 17% of a 1M window is used. The agent has started ignoring a naming rule you set early on, and it has re-broken a test it fixed an hour ago. What's the best explanation?
-- [ ] Claude Code has quietly dropped your early messages to save space.
+- [ ] Past the Smart zone, Claude Code quietly drops your early messages.
   > With 83% of the window free, nothing has been cut. Your early messages are all still there.
 - [x] It has drifted past the Smart zone; free space doesn't help.
   > Right. About 170k tokens is past Matt's rule of thumb, whatever the window size. Quality drops long before the window fills.
@@ -256,7 +256,7 @@ Which of these is a job for `/handoff`?
 ## Try it yourself
 
 ````try
-You need Claude Code installed and signed in. Step 1 uses Git, the tool that tracks and copies code projects: type `git --version` to check you have it. If it isn't found, install it (see [Start here](/learn/start-here)), or skip step 1: on [the site's GitHub page](https://github.com/SiddharthMuramkar/idea-to-shipped) choose Code, then Download ZIP, unzip it, and open your terminal in the unzipped folder (the one with `src` inside).
+You need Claude Code installed and signed in. Step 1 uses Git, the tool that tracks and copies code projects (type `git --version` to check). If it isn't found, install it (see [Start here](/learn/start-here)), or skip step 1: on [the site's GitHub page](https://github.com/SiddharthMuramkar/idea-to-shipped) choose Code, then Download ZIP, and unzip it. In your terminal, type `cd` and a space, drag the folder with `src` inside onto the window, and press Enter.
 
 1. In your terminal, copy this site's code and go into it:
 
@@ -265,14 +265,14 @@ git clone https://github.com/SiddharthMuramkar/idea-to-shipped
 cd idea-to-shipped
 ```
 
-2. The last step uses Matt's Skills. If you haven't installed them, do it now. Then start Claude Code, and choose Yes if it asks whether you trust this folder:
+2. Step 9 uses Matt's Skills, so install them if you haven't. Then start Claude Code, choosing Yes if it asks whether you trust this folder:
 
 ```sh
 claude plugin install mattpocock-skills@claude-plugins-official
 claude
 ```
 
-3. Type `/context`. Note the total used, the Messages and Free space rows, and which row is biggest.
+3. Type `/context`. Note the total used, the Messages row, and the biggest row of used tokens (not Free space or the buffer).
 4. Fill the window on purpose. Type this, then `/context` again (if it asks permission to read files, choose Yes):
 
 ```text
@@ -294,7 +294,7 @@ Press Esc to stop the agent at any point, and type `/exit` when you're done.
 
 **It's working if:**
 
-- [ ] You can name the biggest row in your first `/context`.
+- [ ] You can name the biggest used row in your first `/context`.
 - [ ] Messages grew clearly in step 4, and much less in step 8.
 - [ ] `/btw` answered without Messages growing.
 - [ ] After `/compact`, Messages dropped, and the agent named the comments file from its summary without reading anything.
@@ -337,23 +337,23 @@ Press Esc to stop the agent at any point, and type `/exit` when you're done.
 An hour into a session, the agent contradicts a decision you made together earlier. `/context` shows Messages 150k, System tools 16k, Skills 10k, System prompt 4k and Free space 787k. Which row is the one to shrink, and how?
 - [ ] Free space: use it up before reaching for `/clear`.
   > Free space isn't headroom. About 180k is used, past Matt's rule of thumb, and quality has already slipped.
-- [ ] Skills: uninstall most of your Skills.
+- [ ] Skills: uninstall most of them at the next Phase boundary.
   > 10k is small, and it's the same in every session. The big row is elsewhere.
 - [x] Messages: shrink it at the next Phase boundary.
   > Right. The conversation is nearly all of the total, and contradicting its own context is a classic sign. Let Matt's tree pick clear, hand off or compact.
-- [ ] System tools: switch off Claude Code's built-in tools.
+- [ ] System tools: switch off the built-in ones.
   > That's a fixed startup cost, and the agent needs those tools to work.
 ```
 
-```test scenario-find-callers
-You're grilling a change to a recipe site and need to know which files call `formatServings`. There are about forty candidate files, and all you need is the list of paths. What do you do?
-- [ ] Ask the agent to read them all here, so it knows them firsthand.
-  > Forty files of raw text would eat your Smart zone, and you only need the list.
-- [x] Have a subagent do the search and send back a short report.
-  > Right. The reading happens in the helper's own window; only the short report lands in yours. Grilling does the same on its own when a question needs a fact.
-- [ ] Type `/clear` first, so there's room for the search.
+```test scenario-mid-phase-reading
+You're grilling a change to a recipe site. One question turns on whether any of about forty files rounds servings in a way that breaks with fractions, and checking means reading each one. Once you know, you won't look at those files again this Phase. What do you do?
+- [ ] Ask the agent to read all forty here, so it knows them firsthand.
+  > Forty files of raw code would eat your Smart zone, and you'll never need that text again.
+- [x] Have a subagent read them and send back a short report.
+  > Right. The reading happens in the helper's own window; only the conclusion lands in yours. Grilling does the same on its own when a question needs a fact.
+- [ ] Type `/clear` first, so there's room for the reading.
   > That throws away the grilling to make room for work a helper could do elsewhere.
-- [ ] Type `/compact` first, then search.
+- [ ] Type `/compact` first, then do the reading.
   > Compacting mid-Phase loses the thread, and the forty reads still land in your window afterwards.
 ```
 
@@ -381,16 +381,16 @@ In a repo, you've finished `/grill-with-docs` and `/to-spec` for a multi-session
   > Nothing is travelling, so a handoff file buys nothing that `/compact` doesn't.
 ```
 
-```test scenario-switch-harness
-You've spent the morning in Claude Code on a photo-gallery site. This afternoon you want to finish the feature in Codex, a different coding agent. What carries the work across?
-- [ ] `/compact`, then open Codex.
-  > A compacted summary lives inside the Claude Code session. Codex can't see it.
-- [ ] A subagent, told to finish it in Codex.
-  > A subagent runs inside Claude Code and reports back there. It doesn't move your work to another tool.
-- [ ] Nothing: Codex can read Claude Code's conversation.
-  > Each harness sees only its own sessions. That's why a file is needed.
-- [x] `/handoff`, then point Codex at the file.
-  > Right. Switching harness is one of the four reasons. The markdown file travels where a summary can't.
+```test scenario-afk-review
+You've finished building a CSV export for a book-club site, at about 140k tokens. Before QA, the diff should be checked against the spec, and you'll be at lunch while that runs. Which move does Matt's tree pick?
+- [ ] `/compact`, then run the review in this session.
+  > Question 4 comes before 5: a job that needs no steering can run in its own window and leave yours as it is.
+- [ ] `/clear`, then run the review in this session.
+  > QA still needs the build's reasoning, so this context isn't irrelevant. Clearing drops it.
+- [ ] `/handoff` the review to a fresh session.
+  > Nothing is travelling: same tool, same folder, same person.
+- [x] A subagent, which reports back when done.
+  > Right. At 140k you're near the Smart zone's edge, so you can't continue, and the context still matters. A review you needn't steer runs AFK in a fresh window, and your session stays as it was for QA.
 ```
 
 ```test spot-rule-in-chat
@@ -409,8 +409,8 @@ Early in a long session, Sam told the agent "don't touch anything in the payment
 Deep into a long session, Raj's agent keeps naming files the old way, though he set a new rule early on. So he pastes in the team's whole 40-page style guide, "so it can't miss it". Spot the mistake.
 - [x] He should shrink the window at the next Phase boundary.
   > Right. Past the Smart zone, more tokens make it worse. Start a smaller window at a boundary, and put the rule in `CLAUDE.md`.
-- [ ] He should switch to a model with a bigger window.
-  > Window size isn't the limit; the Smart zone is. A bigger window just holds more dumb zone.
+- [ ] He should switch to a bigger-window model at the next Phase boundary.
+  > Window size isn't the limit; the Smart zone is. A bigger window just holds more dumb zone, whenever you switch.
 - [ ] He should have the agent repeat the rule after every edit.
   > Still adding tokens. The model can see the rule; its attention is spread too thin to keep hold of it.
 - [ ] He should let auto-compact run first, then paste it.
@@ -430,15 +430,15 @@ Ana finishes building a search box at 60k tokens. Next she'll check it by hand w
 ```
 
 ```test spot-handoff-file
-Before sending a half-built feature to a colleague, Dev reads the file `/handoff` wrote, as Matt advises. It's long, because it copies in the whole 300-line spec, word for word. Spot the mistake.
-- [ ] It should boil the spec down to a paragraph.
-  > Still a copy, just a lossy one. The spec already lives in its own file, so the handoff should point there.
-- [x] It should point to the spec by its path, not copy it.
+Before sending a half-built feature to a colleague, Dev reads the file `/handoff` wrote, as Matt advises. It has a summary of where the work stands and why, a suggested-skills section, `[removed]` where an API key was, and the whole 300-line spec from the repo pasted in. Spot the mistake.
+- [ ] The suggested-skills section: the colleague can pick their own Skills.
+  > That section is part of every handoff file: it tells the next agent which Skills to load.
+- [x] The pasted spec: the colleague needs only a path or link to it.
   > Right. A handoff file refers to specs, tickets and commits by path or link instead of copying them, so it stays short.
-- [ ] It should keep the spec and drop its suggested-skills section.
-  > That section tells the next agent which Skills to load. The copied spec is what makes the file long.
-- [ ] It should keep the spec and cut the summary of the work.
-  > Where the work stands, why, and what comes next are the core of the file. The copied spec is the part that doesn't belong.
+- [ ] The removed key: the colleague will need it to run the code.
+  > Keys, passwords and personal details are taken out on purpose. The colleague gets their own key another way.
+- [ ] The summary of the work: the colleague can read the diff instead.
+  > Where the work stands, why, and what comes next are the core of the file. A diff doesn't carry the why.
 ```
 
 ```test sequence-prototype-detour

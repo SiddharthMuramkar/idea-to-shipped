@@ -41,7 +41,7 @@ You pick a model by **alias**, a short name that points at the newest version:
 | Alias | Today it means | Reach for it when |
 |---|---|---|
 | `haiku` | Haiku 5.5 | Simple, quick tasks you can describe exactly |
-| `sonnet` | Sonnet 5.5 | Everyday coding |
+| `sonnet` | Sonnet 5.5 | Everyday coding, cheaper than Opus |
 | `opus` | Opus 5.5 | Complex reasoning. It's also what you get out of the box on paid plans |
 | `fable` | Fable 5.1 | The hardest, longest work: root-cause hunts, outages, architecture |
 | `opusplan` | Opus in plan mode (where it only reads and proposes until you approve), then Sonnet to carry out the plan | You plan first and want a cheaper builder |
@@ -79,7 +79,7 @@ The levels are `low`, `medium`, `high`, `xhigh` and `max`. Opus, Sonnet and Haik
 
 `max`, the deepest level, lasts for the current session only, shows diminishing returns and tends to overthink. On the 5.5 and Fable models you can't switch thinking off; the model decides at each step how much to think, guided by effort.
 
-For one hard question, put the word `ultrathink` anywhere in your prompt: Claude reasons harder ==on that turn only==, and your setting doesn't change. Phrases like "think hard" are ordinary text, not keywords.
+For one turn that needs deeper reasoning, put the word `ultrathink` anywhere in your prompt: Claude reasons harder ==on that turn only==, and your effort setting doesn't change. It's still the same model, no smarter than before. Phrases like "think hard" are ordinary text, not keywords.
 
 ```scene terminal
 title: Setting the dials in a session (illustrative)
@@ -137,18 +137,18 @@ at: context
 at: task
 # Second: did it do the work, or skip a file it could have found, skip the tests, stop halfway?
 at: work
-# If it cut corners, raise effort, or put ultrathink in that one prompt.
+# If it cut corners, raise effort: effort sets how much Claude reads, runs and checks.
 at: effort
 # It had everything, clearly tried, and was still wrong. That's the model's ceiling: switch to a bigger one.
 at: model
 ```
 
 ```checkpoint diagnose-ceiling
-You're on Sonnet. Your request described a time-zone bug clearly, and Claude read the right files, ran the tests and checked its work. Its fix is still wrong, for the second time. What do you change?
+You're on Sonnet. Your request described a time-zone bug clearly, and Claude read the right files, ran the tests and checked its work. Both of its fixes take the same wrong approach. What do you change?
 - [ ] Raise effort to max and ask again.
-  > It already did the work. More effort fixes skipped steps, not a ceiling.
+  > It already did the work. More effort catches skipped steps and missed edge cases, not a wrong approach.
 - [ ] Add `ultrathink` to the same prompt.
-  > That asks for deeper reasoning on one turn. It helps with skipped steps, not with a ceiling.
+  > That asks Sonnet for deeper reasoning on one turn, but it's still Sonnet. After real work, a wrong approach is its ceiling.
 - [ ] Reword the prompt and send it again on Sonnet.
   > The task wasn't the problem: it was clear, and Claude did the work. Rewording won't raise Sonnet's ceiling.
 - [x] Switch to a bigger model, like `opus`.
@@ -182,13 +182,13 @@ agent: Checked 20 Lesson files, and a second agent confirmed each finding. 2 bro
 
 ```checkpoint ultracode-one-task
 You want one audit of every API route (the server code that answers requests) to run as a workflow, without changing anything else about the session. What do you do?
-- [ ] Type `/effort xhigh`, then ask for the audit.
+- [ ] Type `/effort xhigh` first.
   > Effort is how much work each turn gets. It doesn't create workflows, and it stays raised for the rest of the session.
-- [ ] Type `/effort ultracode`, then ask for the audit.
+- [ ] Type `/effort ultracode` first.
   > That works, but it changes the session: Claude keeps planning workflows for later tasks until you turn it off.
-- [x] Start that one prompt with the word `ultracode`.
+- [x] Put the word `ultracode` in your request.
   > Right. The keyword opts one task in and leaves your settings alone.
-- [ ] Restart with `claude --effort ultracode`, then ask for the audit.
+- [ ] Restart Claude Code with `claude --effort ultracode`.
   > That turns ultracode on for the whole session, and sets effort to `xhigh` too.
 ```
 
@@ -286,11 +286,12 @@ My first version of this Lesson had a rule-of-thumb table that put grilling on h
 
 | Situation | Dial |
 |---|---|
-| Everyday work | Leave the defaults: Opus 5.5 on medium |
+| Everyday work | Leave the defaults (Opus 5.5 on medium), or `sonnet` to spend less |
 | Routine edits you can describe exactly | `sonnet` or `haiku`, or `low` effort |
 | Grilling, review, a subtle bug | Your strongest everyday model, usually `opus` |
 | Huge, ambiguous, hours-long work | `fable`, picked on purpose |
-| It skipped steps | Raise effort, or `ultrathink` for one turn |
+| It skipped steps | Raise effort |
+| One question needs deeper reasoning | `ultrathink` in that prompt |
 | It clearly tried and was still wrong | A bigger model |
 | The task was vague | Fix the task, not a dial |
 | Switch for this session only | `/model` or `/effort`, then `s` |
@@ -321,7 +322,7 @@ Checkout has failed for a small share of users for two days. Nobody knows where 
   > Haiku is for simple tasks you can describe exactly. This is the opposite.
 - [ ] `opusplan`, since the work needs a lot of planning.
   > `opusplan` just means Opus in plan mode and Sonnet afterwards. It splits planning from building; it isn't for the hardest problems.
-- [ ] `sonnet`, the everyday coding model, with effort on high.
+- [ ] `sonnet`, with effort raised to high.
   > This is far from everyday work. More effort can't lift Sonnet past its ceiling on a problem this hard.
 ```
 
@@ -362,27 +363,27 @@ You're about to spend an hour live-debugging a flaky sign-up form with Claude on
 ```
 
 ```test scenario-worth-paying
-This week Claude will spend two hours overnight tidying the code while you sleep, and on Friday you'll merge a risky change to how the site stores Comments. You have usage credits. Where is paying extra worth it?
+This week Claude will spend two hours overnight tidying the code while you sleep, and on Friday you'll merge a change that rewrites how every Comment is saved to the database. You have usage credits. Where is paying extra worth it?
 - [ ] Fast mode for the overnight tidy-up, so it's done sooner.
   > Nobody is waiting on those replies, so you'd pay more per token for speed you never use.
 - [ ] Fast mode for the Comments change, switched on halfway through.
-  > Switching on halfway costs more than at the start, and speed doesn't make a risky change safer.
+  > Switching on halfway costs more than at the start, and speed doesn't make a big change safer.
 - [ ] `/code-review ultra` after every small edit this week.
-  > After the free runs each review costs roughly $5–$25 and takes 15–25 minutes. Save it for the risky change.
+  > After the free runs each review costs roughly $5–$25 and takes 15–25 minutes. Save it for the big change.
 - [x] `/code-review ultra` on the Comments change before Friday.
-  > Right. A cloud review that verifies every finding earns its price before a risky merge. Fast mode pays off only when you wait on every reply.
+  > Right. A cloud review that verifies every finding earns its price on a change this big, just before you merge. Fast mode pays off only when you wait on every reply.
 ```
 
 ```test spot-max-everywhere
-Ravi starts every session at max and runs every task on his book-club site at it: renaming a variable, fixing a typo, summarising one file. Each takes minutes, the weekly limit is gone by Thursday, and a typo fix arrives with two "improvements" nobody asked for. Spot the mistake.
+Ravi starts every session at max and runs every task on his book-club site at it: renaming a variable, fixing a typo, summarising one file. Each takes several minutes, he runs out of usage mid-week, and a typo fix comes back with a rewritten paragraph he didn't want. Spot the mistake.
 - [ ] Ravi picked max when `xhigh` is the strongest level.
   > `max` is the deepest level; `xhigh` sits below it. Both are far more than routine edits need.
 - [ ] Ravi left ultracode off, so the edits couldn't run in parallel.
   > Ultracode would add workflows and tokens on top. The overthinking comes from the level.
 - [x] Ravi gave routine edits the deepest level, so it overthought them.
   > Right. Start at the default (medium on the 5.5 models) and raise effort only for the genuinely hard part.
-- [ ] Ravi kept max but should have switched to Haiku, which can't overthink.
-  > Haiku at max still overthinks routine edits. The level is the problem, not the model.
+- [ ] Ravi used too big a model; Haiku at max would handle these edits fine.
+  > Haiku at max still overthinks routine edits and burns tokens. The level is the problem, not the model.
 ```
 
 ```test spot-ultracode-left-on
@@ -410,15 +411,15 @@ Claude's fix to a book club's sign-up form came back wrong. Before you touch a d
 ```
 
 ```test predict-session-only
-You're on Opus 5.5, the model your paid plan gives you out of the box. For one tricky afternoon you open `/model`, highlight Fable and press `s`. What does tomorrow's new session start on?
-- [ ] Fable, because every pick in the `/model` picker is saved.
-  > Enter saves your pick, and so does typing `/model fable`. `s` keeps it to this session.
-- [x] Opus 5.5, because `s` didn't change your default.
-  > Right. `s` switches for this session only, so tomorrow starts on Opus 5.5 again.
-- [ ] Sonnet 5.5, because session-only picks fall back to the everyday model.
-  > Nothing falls back to Sonnet. A new session starts on your default, Opus 5.5 here.
+On Monday you type `/model sonnet`. On Tuesday, for one tricky afternoon, you open `/model`, highlight Fable and press `s`, then quit. What does Wednesday's new session start on?
+- [ ] Fable, because it was the last model you picked.
+  > `s` switches for one session only and leaves your saved default alone.
+- [ ] Opus 5.5, because a session-only pick resets you to the plan default.
+  > Nothing resets. `s` leaves your last saved choice in place, and Monday's typed switch saved Sonnet.
+- [x] Sonnet, because Monday's typed switch is still your saved default.
+  > Right. Typing `/model sonnet` saved Sonnet; `s` on Fable lasted for Tuesday only.
 - [ ] Fable, as long as you still have usage credits.
-  > Credits decide whether Fable bills extra, not whether it's saved. `s` didn't save it.
+  > Credits decide whether Fable bills extra, not whether it's saved.
 ```
 
 ```sources
@@ -436,6 +437,6 @@ You're on Opus 5.5, the model your paid plan gives you out of the box. For one t
 - [Effort](https://www.aihero.dev/ai-coding-dictionary/effort), Matt Pocock's AI Coding Dictionary, 2026-09-24, read 2026-10-23.
 - [9 Things People Get Wrong With My /grill-* skills](https://www.youtube.com/watch?v=UzMNBN6xLLA), Matt Pocock, 2026-05-25 (too weak a model for grilling, a cheaper one for implementation, 8:41–10:23).
 - [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock at AI Engineer, 2026-04-24 (Sonnet implements, Opus reviews, 1:32:33–1:32:40).
-- [Learn anything with the /teach skill](https://www.youtube.com/watch?v=s5T5oQJcJ6U), Matt Pocock, 2026-06-08 (Opus 4.8 at medium effort, 6:41).
+- [Learn anything with the /teach skill](https://www.youtube.com/watch?v=s5T5oQJcJ6U), Matt Pocock, 2026-06-08 (Opus 4.8 at medium effort, 7:06–7:08).
 - [r/ClaudeCode: Matt Pocock tutorials thread](https://www.reddit.com/r/ClaudeCode/comments/1v90akt/), 2026-07-28 (Opus 5 medium to grill, Sonnet 5 medium to implement).
 ```

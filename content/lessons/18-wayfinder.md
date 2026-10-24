@@ -23,12 +23,12 @@ Claude Code is Anthropic's coding agent: an AI that reads your files, runs comma
 
 Most planning with Matt's Skills happens in one grilling session with `/grill-with-docs`: the agent interviews you until you both want the same thing, noting the project's terms as it goes (see [Grilling](/learn/grilling)). For a bigger build, `/to-spec` then turns the decisions into a spec, a written description of what to build and why. That works because the whole plan fits in one session: a single Claude Code conversation. Everything in a session lives in the agent's context window, its working memory, measured in tokens (small chunks of text). As the window fills, the model reasons less sharply. Matt calls the part where it still thinks clearly the Smart zone: about 150k tokens on today's best models, as a rule of thumb.
 
-Now picture a bigger idea: every Lesson on this site in Spanish as well as English. You can name where you want to end up. The route is another matter. What does the site's framework offer for serving pages in two languages? Does a Spanish Lesson keep its English Slug, the permanent name its comments point at? How should a language switcher look? Is machine translation good enough? Some of those need someone to read documentation, one needs a picture, and one needs a native speaker. A single grilling session can't hold all that. You'd run out of Smart zone, or hit a question nobody in the conversation can answer.
+Now picture a bigger idea: every Lesson on this site in Spanish as well as English. You can name where you want to end up. The route is another matter. What does the site's framework offer for serving pages in two languages? Does a Spanish Lesson keep its English Slug, the permanent name its comments point at? How should a language switcher look? Is machine translation good enough? Some need someone to read documentation, one needs a picture, and one needs a native speaker. A single grilling session can't hold all that: you'd run out of Smart zone, or hit a question nobody in the conversation can answer.
 
 Matt hit the same wall. In his July 2026 video on the Skill, he said single-session planning made him ==shrink what he built to fit the AI==. His fix is `/wayfinder`: plan the effort across many sessions, as a map.
 
 ```callout big-idea
-Wayfinder plans; it doesn't build. It clears the decisions between you and a plan, one session at a time, then hands off to the Main flow, the path most work takes from idea to shipped.
+Wayfinder plans; by default it doesn't build. It clears the decisions between you and a plan, one session at a time, then hands off to the Main flow, the path most work takes from idea to shipped.
 ```
 
 ## The idea: a map with fog on it
@@ -56,7 +56,7 @@ Use the words in GLOSSARY.md, the project's dictionary. Slugs never change (deci
 
 The map is ==an index, not a store==. Each decision lives in exactly one place, its ticket. Decisions so far gets one line per closed ticket: a gist and a link. That keeps the map small enough to load at the start of every session. Open tickets aren't listed on it at all; the agent finds them by looking.
 
-The tickets are **decision tickets**: child issues of the map, each holding one question small enough to settle in one session. They carry only a `wayfinder:<type>` label (a `Type:` line on this site), never a triage label (a status tag like `ready-for-agent` that marks a build ticket as ready), because they're decisions, not building work. Some block others: "Does a Spanish Lesson keep its English Slug?" can't be settled until someone has read how the framework serves languages. The **frontier** is every ticket that's open, unblocked and unclaimed: what you can take right now. A blocked ticket joins it once all its blockers are closed.
+The tickets are **decision tickets**: child issues of the map, each holding one question small enough to settle in one session. They carry only a `wayfinder:<type>` label (a `Type:` line on this site), never a triage label (a status tag like `ready-for-agent` that marks a build ticket as ready), because they're decisions, not building work. Some block others: "Does a Spanish Lesson keep its English Slug?" can't be settled until someone has read how the framework serves languages. The **frontier** is every ticket that's open, unblocked and unclaimed (no session has marked it as taken yet): what you can take right now. A blocked ticket joins it once all its blockers are closed.
 
 Two more rules decide where a thought goes:
 
@@ -121,20 +121,20 @@ You start `/wayfinder` with a loose idea, and it charts in six steps:
 title: Charting a Spanish course for this site (illustrative)
 # You type the Skill and a loose idea. Only you can start it.
 you: `/wayfinder` I'd like every Lesson in Spanish as well as English. I can't see the route yet.
-# It reads the repo and the tracker doc, then settles the destination first. Each question carries its recommendation after ➡️, and "yes" accepts it.
+# It reads the repo and its tracker notes (`docs/agents/issue-tracker.md`, which say where the map and tickets go), then settles the destination first. Each question carries its recommendation after ➡️, and "yes" accepts it.
 agent: ❓ **Q1** - **Destination**: Should this map end in a spec, written by `/to-spec` once every decision is made? ➡️ Yes.
 you: 1 yes.
 # A breadth-first round fans out across the whole idea.
 agent: ❓ **Q2** - **Scope**: Should other languages stay out of this effort? ➡️ Yes. ❓ **Q3** - **Comments**: Should Visitors' comments stay untranslated? ➡️ Yes.
 you: 2 yes, 3 yes.
 # It writes the map, then the tickets it can phrase sharply, and wires the blocking links in a second pass.
-agent: Created the map and four tickets: *What does Next.js, the site's framework, offer for serving pages by language?* (research), *Does a Spanish Lesson keep its English Slug?* (grilling, blocked by the Next.js ticket), *How should the language switcher look?* (prototype) and *Ask a Spanish speaker to read one machine-translated Lesson* (task).
+agent: Created the map and five tickets: *What does Next.js, the site's framework, offer for serving pages by language?* (research), *Does a Spanish Lesson keep its English Slug?* (grilling, blocked by the Next.js ticket), *How should the language switcher look?* (prototype), *Ask a Spanish speaker to read one machine-translated Lesson* (task) and *Is machine translation good enough for the Lessons?* (grilling, blocked by the task).
 # What it can't phrase yet goes into the fog. What you ruled out goes out of scope.
 agent: Not yet specified: how translated Final test questions keep their permanent ids. Out of scope: other languages, translating comments.
 # The research ticket goes to a background agent straight away.
 agent: Started a research agent on the Next.js ticket. Its findings go on a throwaway `research/language-routing` branch, pushed but never merged.
 # Then it stops. Charting resolves nothing by hand.
-agent: Charting done. The research agent is already on the Next.js ticket, so takeable now: *How should the language switcher look?* and *Ask a Spanish speaker to read one machine-translated Lesson*. Start a fresh session with `/wayfinder .scratch/spanish-lessons/map.md`.
+agent: Charting done. A research agent is already working the Next.js ticket in the background. The other open, unblocked tickets are *How should the language switcher look?* and *Ask a Spanish speaker to read one machine-translated Lesson*. Start a fresh session with `/wayfinder .scratch/spanish-lessons/map.md` once the research lands, or name one of those two.
 ```
 
 ## Every session after: one ticket
@@ -151,12 +151,13 @@ Then it stops. ==Never more than one ticket per session==, research tickets asid
 
 ```scene files
 title: One ticket worked on this site's Markdown tracker (illustrative)
-# After charting: the map, plus one file per ticket with a Type line, and a Blocked by line on the one that waits.
+# After charting: the map, plus one file per ticket with a Type line, and a Blocked by line on the two that wait.
 + .scratch/spanish-lessons/map.md
 + .scratch/spanish-lessons/issues/01-language-routing.md
 + .scratch/spanish-lessons/issues/02-slug-for-spanish-lessons.md
 + .scratch/spanish-lessons/issues/03-language-switcher.md
 + .scratch/spanish-lessons/issues/04-native-speaker-check.md
++ .scratch/spanish-lessons/issues/05-machine-translation-quality.md
 # The research agent finishes in the background. The Next.js ticket gets a pointer to its findings and Status: resolved, and its gist goes into Decisions so far.
 ~ .scratch/spanish-lessons/issues/01-language-routing.md
 ~ .scratch/spanish-lessons/map.md
@@ -167,7 +168,7 @@ title: One ticket worked on this site's Markdown tracker (illustrative)
 # One line goes into Decisions so far: the ticket's name, a link and a one-line gist.
 ~ .scratch/spanish-lessons/map.md
 # Your answer made a patch of fog sharp, so it graduates into a new ticket and leaves Not yet specified. Then the session stops.
-+ .scratch/spanish-lessons/issues/05-final-test-ids-in-spanish.md
++ .scratch/spanish-lessons/issues/06-final-test-ids-in-spanish.md
 ~ .scratch/spanish-lessons/map.md
 ```
 
@@ -216,7 +217,7 @@ Start a session and type `/to-spec` with the map's path or link. A fresh session
 2. Writes one Markdown file, citing where each claim came from.
 3. Saves it where the repo already keeps notes, or somewhere sensible, and tells you where.
 
-The file is raw material. Take it into `/grill-with-docs` or a wayfinder ticket, where you still make the decision. Keep the question narrow: "research how browsers decide where a printed page breaks; official docs only" beats "research printing". Matt's docs on AI Hero, his teaching site, offer a handy line: research gathers facts with a short shelf life, while a decision you'll keep belongs in grilling.
+The file is raw material. Take it into `/grill-with-docs` or a wayfinder ticket, where you still make the decision. Keep the question narrow: "research how browsers decide where a printed page breaks; official docs only" beats "research printing". AI Hero, Matt's teaching site, puts it neatly: research gathers short-lived facts, while a decision you'll keep belongs in grilling.
 
 ## To-questionnaire: ask the one person who knows
 
@@ -260,7 +261,7 @@ You type `/to-questionnaire` because only your accountant knows how to handle ta
 ## Try it yourself
 
 ````try
-You need Claude Code installed and signed in (see [Start here](/learn/start-here)). You'll use a copy of this site's repo, which is already set up for wayfinder. Allow about 25 minutes.
+You need Claude Code installed and signed in, plus Git (see [Start here](/learn/start-here); check Git with `git --version`). You'll use a copy of this site's repo, which is already set up for wayfinder. Press Esc to stop the agent at any point. At a permission prompt, choose Yes for files under `.scratch/`, and No for anything unexpected. Allow about 25 minutes.
 
 1. Clone the repo (download your own copy) and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
 
@@ -276,7 +277,7 @@ claude
 claude plugin install mattpocock-skills@claude-plugins-official
 ```
 
-3. Check that plan mode is off (in plan mode Claude Code only reads and proposes, so it couldn't write the map): if you see "plan mode on" under the prompt box, press Shift+Tab until it changes.
+3. Check that plan mode is off (plan mode only reads and proposes, so it couldn't write the map): if you see "plan mode on" under the prompt box, press Shift+Tab until it changes.
 4. **A no-fog check.** Type this and answer its questions briefly:
 
 ```text
@@ -289,9 +290,9 @@ claude plugin install mattpocock-skills@claude-plugins-official
 /wayfinder I want this site to work as a printed book too: every Lesson laid out for paper, with a PDF download for each Part. Destination: a spec, written with /to-spec once the map clears. Don't push any branch: this is a practice copy.
 ```
 
-6. Answer the destination question, then the breadth-first round, by number. A background research agent may still try to push its `research/…` branch. That fails, since you can't write to this repo, and that's fine. If a GitHub sign-in window opens, close it.
+6. Answer the destination question, then the breadth-first round, by number. A research agent may still try to push its `research/…` branch. That fails harmlessly, since you can't write to this repo; close any GitHub sign-in window that opens.
 7. When it stops, ask: `Show me the new map.md and every file in its issues folder.`
-8. Optional: type `/clear`, then `/wayfinder` followed by the map's path, and work one ticket. Press Esc to stop anything you didn't expect, and type `/exit` when you're done.
+8. Optional: once any research agent has reported back, type `/clear`, then `/wayfinder` followed by the map's path, and work one ticket. Type `/exit` when you're done.
 
 **It's working if:**
 
@@ -354,8 +355,8 @@ In your repo you want recipe search with filters for diet, cooking time and ingr
   > Right. Planning fits in one sitting, so grill it, then turn the multi-session build into a spec with `/to-spec` and tickets with `/to-tickets`.
 - [ ] `/wayfinder`, because the build spans several sessions
   > The line is planning, not building. A build that takes several sessions can still be planned in one sitting.
-- [ ] `/to-questionnaire`, so someone else settles the details
-  > You already know what you want. A questionnaire is for answers that live in someone else's head.
+- [ ] `/implement`, since you already know what you want
+  > A three-session build needs a spec and tickets first, and those are written from a grilled conversation. Grill it, then `/to-spec` and `/to-tickets`.
 - [ ] `/research`, to read up on how search filters work
   > Nothing here waits on an outside fact. You can decide it by talking.
 ```
@@ -373,11 +374,11 @@ Grilling a ticket-booking app, you hit a decision that waits on one fact: does y
 ```
 
 ```test scenario-someone-elses-head
-Planning the bakery's ordering system stalls: only the head of operations knows how the delivery vans are scheduled, and nothing about it is written down. What do you reach for?
+Planning the bakery's ordering system stalls: only Priya, the head of operations, knows how the delivery vans are scheduled, and nothing about it is written down. What do you reach for?
 - [ ] `/grill-with-docs`, to talk the van schedule through with the agent
   > You're the one who doesn't know. Interviewing you about the subject only produces guesses.
-- [x] `/to-questionnaire`, to write her questions to fill in
-  > Right. The knowledge is in her head, so it asks you who she is and what you need back, then writes questions aimed at the gap.
+- [x] `/to-questionnaire`, to write Priya questions on the van schedule
+  > Right. The knowledge is in Priya's head, so it asks you who Priya is and what you need back, then writes questions aimed at the gap.
 - [ ] `/research`, to send a background agent after the schedule
   > Research reads documents, and nothing about the vans is written down. It's in one person's head.
 - [ ] `/wayfinder`, to chart the van schedule as a map of tickets
@@ -403,20 +404,20 @@ While charting a map for a school's new booking site, the agent creates a ticket
 - [ ] It's too big: split it into one task per form field.
   > Smaller slices of building are still building. A task only unblocks a decision.
 - [ ] It needs a `ready-for-agent` label so `/implement` picks it up.
-  > Map tickets carry only `wayfinder:` labels. They're decisions, never implementation work.
+  > Map tickets carry only `wayfinder:` labels. Unless the Notes say otherwise, they're decisions, not implementation work.
 - [ ] It belongs in Not yet specified until it's sharper.
   > It's sharp enough. It's the wrong kind of thing for the map.
 ```
 
 ```test spot-scope-as-fog
-Charting a map whose Destination is "a spec for online ordering at the bakery's twelve shops", the agent writes this under Not yet specified: "A loyalty-points scheme, which we agreed to leave for a later project." Spot the mistake.
+Charting a map whose Destination is "a spec for a members' area on a climbing gym's site", the agent writes this under Not yet specified: "A members' shop, which we agreed to leave for a later project." Spot the mistake.
 - [ ] It should be a ticket, since it's already phrased clearly.
   > A ticket is a question on the way to the destination. This is off the route altogether.
 - [ ] It should go in Decisions so far, as a decision you made.
   > Decisions so far gets one line per closed ticket. Ruling something out isn't a step on the route.
 - [x] It belongs under Out of scope, since you ruled it out.
   > Right. Not yet specified holds fog on the way to the destination. Work you've ruled beyond it goes under Out of scope and never graduates.
-- [ ] It's fine there; it can graduate into tickets once ordering is settled.
+- [ ] It's fine there; it can graduate into tickets once the members' area is settled.
   > Fog graduates because it's on the route. This was ruled beyond the destination, so it only comes back as a fresh effort.
 ```
 
@@ -441,7 +442,7 @@ In a repo, you type `/wayfinder Rename the Submit button on the contact form to 
 - [ ] It charts the map anyway and starts research agents.
   > With nothing unknown, there's nothing to chart or research.
 - [ ] It renames the button, since the way is clear.
-  > Wayfinder plans; it doesn't build. It leaves the next step to you.
+  > It plans rather than builds, and with no fog it stops and leaves the next step to you.
 ```
 
 ```test predict-frontier

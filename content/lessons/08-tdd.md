@@ -89,16 +89,16 @@ Take this site's comment API. Its route handler (the function that runs when the
 | The route handler, called with a real request against a real test database | What a Visitor gets back: status codes, error messages, broken JSON (garbled request data), whether the Comment is saved | How the comment box shows those errors |
 | The comments module's `postComment` function, one layer down | The rules, and whether the Comment is saved | Status codes, broken JSON and what a Visitor sees |
 
-The higher seam catches more per test, and this site's API tests all use it. Matt's `to-spec` Skill, which writes a spec (a written description of what to build), has the same instinct: prefer existing seams, pick the highest one you can, ideally just one. In the full Main flow (the path most work takes, from idea to shipped), you agree the seams while `/to-spec` writes the spec. Later, `/implement`, the Skill that builds the work, calls `tdd` at those seams, so there's little left to confirm.
+The higher seam catches more per test, and this site's API tests use it. Matt's `to-spec` Skill, which writes a spec (a written description of what to build), has the same instinct: prefer existing seams (ones tests already use), the highest you can, ideally one. In the full Main flow (the path most work takes, from idea to shipped), you agree the seams while `/to-spec` writes the spec. Later, `/implement`, the Skill that builds the work, calls `tdd` at those seams, so there's little left to confirm.
 
 ```checkpoint skipped-seam
 You type `/tdd` and ask for a "save a recipe to favourites" feature. The agent's first reply is a new test file, already run and failing. What has it skipped?
 - [x] Getting your OK on which boundary to test.
   > Right. No test is written at a seam you haven't agreed. Press Esc and ask for its proposed seams, with what each catches and misses.
-- [ ] Writing the code before the test.
-  > Test first is the loop working. The problem is the step before it.
-- [ ] Writing two or three tests before running any.
-  > That would be the start of a batch. One test, run and seen red, is the loop working; what it missed comes before any test.
+- [ ] Writing the test before any of the code.
+  > It did: its first reply was the test, before any code. That's the loop working.
+- [ ] Seeing the new test fail before any code.
+  > It did: the test has already run and failed. That's red, as it should be.
 - [ ] Checking the runner with a test that passes.
   > A test you've only seen pass proves nothing. Starting red is right; the missing step comes before any test.
 ```
@@ -112,7 +112,7 @@ title: Adding a no-links rule to the comment API (illustrative)
 # You type the Skill and the behaviour you want.
 you: `/tdd` Comments can't contain links in v1. Reject any Comment whose body or name contains `http://` or `https://`, with a clear error.
 # Before any test exists, it proposes seams, each with what it catches and misses, and waits.
-agent: I read GLOSSARY.md and the existing tests. Proposed seams: **1. The `POST /api/comments` route** (existing seam): catches what a Visitor gets back; misses how the comment box shows it. **2. The comments module's `postComment`** (new seam): catches the rule and the save; misses status codes and what a Visitor sees. Which should we test?
+agent: I read GLOSSARY.md and the existing tests. Proposed seams: **1. The `POST /api/comments` route** (existing seam: the API tests use it): catches what a Visitor gets back; misses how the comment box shows it. **2. The comments module's `postComment`** (new seam: no tests there yet): catches the rule and the save; misses status codes and what a Visitor sees. Which should we test?
 # You pick the seam. That's a decision for you, not a detail.
 you: 1, the route.
 # Red: one test, run before any code changes. It fails for the right reason.
@@ -191,18 +191,18 @@ Your gym app's sign-up charges the first month through a payment service and sen
 
 ## When to reach for it
 
-Reach for `/tdd` when there's a concrete behaviour with an input and an output you can observe: a validation rule, a calculation, a transformation, what an API returns. `tdd` is a model-invoked Skill: you can type `/tdd`, and the agent may also load it on its own when you ask to build something test-first.
+Reach for `/tdd` when there's a concrete behaviour with an input and an output you can observe: a validation rule, a calculation, a transformation, what an API returns. `tdd` is a model-invoked Skill: you can type `/tdd`, and the agent may load it on its own when you ask to build something test-first.
 
 | Your situation | Reach for |
 |---|---|
 | A behaviour with clear inputs and outputs | `/tdd` |
-| You're not sure yet what should happen | `/grill-with-docs` first, where the agent questions you until the plan is settled (see [Grilling](/learn/grilling)), then `/to-spec` |
+| You're not sure yet what should happen | `/grill-with-docs` first, where the agent questions you until the plan is settled (see [Grilling](/learn/grilling)), then `/implement` (small) or `/to-spec` (multi-session) |
 | The real question is the interface's shape | `/codebase-design` |
 | A spec or tickets (small tasks sized for one session) you want built | `/implement` per ticket, or `/implement-spec` for the whole spec; both drive `tdd` |
 | Styling, settings, code that only connects other pieces | Probably no test: check it by eye |
 | A browser test for a feature that doesn't exist yet | Not first: it makes the loop too slow |
 
-The fifth row is your call: the Skill has rules for where tests go, but none for whether a change is worth testing at all (issue #746 asked for that and was closed as not planned). A test of a colour or a setting has no independent answer to check, so it just restates the code.
+The fifth row is your call: the Skill has rules for where tests go, but none for whether a change is worth testing (issue #746 asked for that and was closed as not planned). A test of a colour or a setting has no independent answer to check, so it just restates the code.
 
 The last row is about browser tests, which open a real browser and click through a page. They're slow, so Matt's docs say they come after the behaviour works. The Skill won't stop the agent writing one first, so write that rule into your project's `CLAUDE.md`, a file of standing instructions the agent reads at the start of every session.
 
@@ -320,13 +320,13 @@ You're adding discount codes to a shop's checkout with `/tdd`. The agent propose
 ```
 
 ```test scenario-clock
-Your to-do app hides tasks finished more than 30 days ago. You're writing the test "a task finished 31 days ago is hidden". What should the test fake?
+Your to-do app stamps a task with the current time when you tick it off, and hides tasks finished more than 30 days ago. You're writing the test "a task finished 31 days ago is hidden". What should the test fake?
 - [ ] The to-do module's own filter function.
   > That's your code, the thing under test. Fake it and the test checks nothing.
 - [ ] Nothing: create a task and wait 31 days.
   > Real waiting makes the test useless. Time is a boundary you're allowed to fake.
 - [ ] The database, so the test needn't set up a real one.
-  > A real test database is preferred where you can have one. The database isn't what makes 31 days hard; time is.
+  > A real test database is preferred, and faking it doesn't help: the app takes the finish time from the clock, so the clock is what the test must control.
 - [x] The clock, passed in so the test can set "today".
   > Right. Time is a system boundary. Pass the clock in and the test can jump 31 days in a millisecond.
 ```
@@ -345,7 +345,7 @@ A teammate who learned TDD years ago watches your `/tdd` run and says the agent 
 
 ```test scenario-tickets
 You've settled a feature with `/grill-with-docs`, written a spec with `/to-spec` and split it into four tickets with `/to-tickets`. What do you type to build the first ticket?
-- [x] `/implement`, which calls `tdd` at the agreed seams
+- [x] `/implement`, naming the ticket
   > Right. `/implement` runs the session, drives `tdd` for the ticket, then closes out with a review.
 - [ ] `/tdd` for the tests, then `/implement` for the code
   > That splits the loop in two. `/implement` already calls `tdd`, so each test and its code arrive together, one slice at a time.

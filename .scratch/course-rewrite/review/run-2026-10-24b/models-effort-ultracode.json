@@ -1,0 +1,230 @@
+{
+  "slug": "models-effort-ultracode",
+  "next": {
+    "round": 2,
+    "step": "check",
+    "why": "check round 1 and its fix done"
+  },
+  "applied": [
+    "r1: accuracy medium (ultrathink offered for skipped steps): the flow Scene caption now reads 'If it cut corners, raise effort: effort sets how much Claude reads, runs and checks.' The Cheat sheet row is now 'It skipped steps | Raise effort', with a new row 'One question needs deeper reasoning | `ultrathink` in that prompt'. The diagnose-ceiling ultrathink feedback no longer says it helps with skipped steps. Checked against the research note's model-config summary: ultrathink asks for deeper reasoning on one turn, and the effort sent to the API stays the same.",
+    "r1: accuracy medium (wrong /teach timestamp): the source now says '(Opus 4.8 at medium effort, 7:06–7:08)'. Checked in s5T5oQJcJ6U.json: 426s 'model I'm using here is Opus 4.8 with', 428s 'medium effort, by the way'.",
+    "r1: reader medium (ultrathink given two jobs): the Effort section now says 'For one turn that needs deeper reasoning... your effort setting doesn't change. It's still the same model, no smarter than before.' So ultrathink can't be read as a fix for a model's ceiling, which matches the line 'Nothing in your prompt makes it smarter'. The flow caption and Cheat sheet changes (see the first line) remove the skipped-steps job.",
+    "r1: reader medium (which model is the everyday one): the alias table now says '`sonnet` | Sonnet 5.5 | Everyday coding, cheaper than Opus'. The Cheat sheet says 'Leave the defaults (Opus 5.5 on medium), or `sonnet` to spend less'. The scenario-outage-hunt option is now '`sonnet`, with effort raised to high.' (37 chars), so the right answer (44) is still shorter than the opusplan option (51).",
+    "r1: quiz medium (diagnose-ceiling has two defensible distractors): the stem now says 'Both of its fixes take the same wrong approach.', which is the case Thariq says effort doesn't fix. The effort feedback is now 'More effort catches skipped steps and missed edge cases, not a wrong approach.' The ultrathink feedback is now 'That asks Sonnet for deeper reasoning on one turn, but it's still Sonnet. After real work, a wrong approach is its ceiling.' The options are unchanged; the right one is still at d and is not the longest.",
+    "r1: quiz medium (ultracode-one-task wording tell): the options are parallel now, with no shared ', then ask for the audit.' and no echo of 'one'. They read 'Type `/effort xhigh` first.' / 'Type `/effort ultracode` first.' / [x] 'Put the word `ultracode` in your request.' / 'Restart Claude Code with `claude --effort ultracode`.' The right answer is shorter than d by both measures, and the feedback is kept.",
+    "r1: quiz medium (predict-session-only nearly duplicates the Checkpoint): it is now a transfer case that combines both behaviours. On Monday you type `/model sonnet`; on Tuesday you press `s` on Fable, then quit; what does Wednesday's session start on? The right answer is 'Sonnet, because Monday's typed switch is still your saved default.' (66 chars), against 'Opus 5.5... plan default' (69). The id is kept because the question still tests saved versus session-only. The right answer moved from b to c (positions are now badccabdadcbac).",
+    "r1: quiz medium (spot-max-everywhere): option d is now 'Ravi used too big a model; Haiku at max would handle these edits fine.' It no longer says 'should have' and has no flat absolute. Its feedback adds 'and burns tokens'. The stem tail no longer replays the body's example: 'Each takes several minutes, he runs out of usage mid-week, and a typo fix comes back with a rewritten paragraph he didn't want.' The right answer (66) is still shorter than d (70).",
+    "r1: quiz medium (scenario-worth-paying stem says 'risky'): the stem now describes the change instead, 'a change that rewrites how every Comment is saved to the database'. The feedback says 'big change' rather than 'risky change'. The right feedback is now 'earns its price on a change this big, just before you merge.'"
+  ],
+  "declined": [
+    {
+      "problem": "quiz medium: effort-low-means key 'more questions to you' (and body line 'Claude would rather ask you than dig on its own') said to be unsupported by the cited sources",
+      "reason": "The Lesson's cited Anthropic blog (https://claude.com/blog/claude-model-and-effort-level-in-claude-code, July 7, 2026) says nearly this: at lower effort Claude would rather ask you for more context than spend tokens working it out on its own. The answer key and body line stay as they are."
+    },
+    {
+      "problem": "acc-skills high fix suggestion: add 'That's ordinary sub-agents, not a dynamic workflow' about the /implement-spec run",
+      "reason": "I didn't add this. The repo doesn't record whether ultracode was on in that session, so saying it was not a workflow would also be a claim the repo can't back. The implement-spec beat is left out of the Site story instead."
+    },
+    {
+      "problem": "reader medium: 'the best model' in the Grilling Lesson (content/lessons/04-grilling.md line 215) clashes with this Lesson's `best` alias, which means Fable.",
+      "reason": "The suggested fix is in content/lessons/04-grilling.md, and this task allows edits only to 19-models-effort-ultracode.md. The clash is real: line 215 reads '...so it deserves the best model; building can use a cheaper one. (See [Models, effort & ultracode]...)'. But this Lesson already gives the right guidance in both its body and its Cheat sheet: 'your strongest everyday model, usually `opus`'. The agent editing 04-grilling.md should change 'the best model' to 'your strongest everyday model (usually `opus`)'."
+    }
+  ],
+  "pending": [],
+  "rounds": {
+    "r1": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "Model or effort? Reading a bad result: flow Scene caption \"If it cut corners, raise effort, or put ultrathink in that one prompt.\" (line 140); also Checkpoint diagnose-ceiling feedback \"It helps with skipped steps, not with a ceiling.\" (line 151) and Cheat sheet row \"It skipped steps | Raise effort, or `ultrathink` for one turn\" (line 293)",
+            "problem": "The Lesson offers ultrathink as a fix for skipped steps (a file it didn't open, tests it didn't run). The cited docs don't support that. Ultrathink only asks for deeper reasoning on one turn and leaves the effort sent to the API unchanged. The Lesson itself teaches that effort, not thinking, decides how many files Claude reads and whether it runs the tests. So a reader learns a remedy for skipped work that the sources don't back, and that clashes with the Lesson's own line \"Effort is more than thinking time\". The body (line 82) uses ultrathink correctly, for one hard question.",
+            "evidence": "https://code.claude.com/docs/en/model-config (read 2026-10-24), section \"Use ultrathink for one-off deep reasoning\": the keyword makes Claude Code add an in-context instruction for deeper reasoning on that turn, and the effort level sent to the API stays the same. Anthropic blog https://claude.com/blog/claude-model-and-effort-level-in-claude-code (July 7, 2026), under \"Effort: Claude didn't try hard enough\": raise the effort level when Claude skipped a file, didn't run the tests or didn't double-check. Neither source says ultrathink fixes skipped files or tests. Lesson line 68 also says effort covers how many files it reads and whether it runs the tests.",
+            "fix": "Line 140: \"# If it cut corners, raise effort: effort sets how much it reads, runs and checks.\" Line 151: \"  > That asks for deeper reasoning on one turn and leaves your effort as it was. Claude already did the work and was still wrong: that's a ceiling.\" Line 293: \"| It skipped steps | Raise effort |\", and add a row \"| One hard question | `ultrathink` in that prompt |\"."
+          },
+          {
+            "severity": "medium",
+            "where": "sources: \"[Learn anything with the /teach skill](https://www.youtube.com/watch?v=s5T5oQJcJ6U), Matt Pocock, 2026-06-08 (Opus 4.8 at medium effort, 6:41).\" (line 439), which backs line 211 \"he ran Opus 4.8 at medium\"",
+            "problem": "The timestamp is wrong. At 6:41 Matt is describing the agent's diagnosis of his Rubik's Cube progress, not his model or effort. A reader who checks the source at the cited time won't find the claim.",
+            "evidence": "/Users/siddharth/Developer/trying/.handoff/transcripts/s5T5oQJcJ6U.json segments: 6:41 \"It's now giving me a decent diagnosis\"; 7:06 \"model I'm using here is Opus 4.8 with\"; 7:08 \"medium effort, by the way.\" (jq over .data.alexandria[0].data.segments, start_ms 426000–428000).",
+            "fix": "Change the source to \"(Opus 4.8 at medium effort, 7:06–7:08)\"."
+          },
+          {
+            "severity": "low",
+            "where": "Fast mode, and a review called \"ultra\": \"Claude Code's Built-in command `/code-review` (not a Skill) is a bug hunt\" (line 201)",
+            "problem": "Claude Code's own docs label `/code-review` as a bundled **Skill**. A reader who follows the linked docs sees the opposite of \"(not a Skill)\". The course's point is that it isn't one of Matt's Skills, and the paragraph already says so at its end (\"It isn't Matt's code-review Skill either\"), so the parenthetical adds only the clash.",
+            "evidence": "https://code.claude.com/docs/en/commands (read 2026-10-24), the `/code-review [low|medium|high|xhigh|max|ultra] ...` row: tagged \"Skill\" and linked to skills.md#bundled-skills. The GLOSSARY.md Skill entry means \"One of Matt Pocock's Claude Code skills\".",
+            "fix": "\"Claude Code's Built-in command `/code-review`, which ships with Claude Code, is a bug hunt you can run at an effort level, like `/code-review max`.\" (drop \"(not a Skill)\")"
+          },
+          {
+            "severity": "low",
+            "where": "Cheat sheet: \"| A risky change before merging | `/code-review ultra`: cloud, paid after 3 free runs |\" (line 300)",
+            "problem": "Only Pro and Max accounts get the 3 free runs. On a Team or Enterprise plan, the Cheat sheet line promises free runs that the docs don't list. The body (line 201) gets this right.",
+            "evidence": "https://code.claude.com/docs/en/ultrareview, \"Pricing and free runs\": the table lists Pro and Max with 3 free runs each, a one-time allotment per account, then usage credits. No other plan is listed.",
+            "fix": "\"| A risky change before merging | `/code-review ultra`: cloud, paid (3 free runs on Pro and Max) |\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test spot-ultracode-left-on, right-answer feedback: \"With it on, Claude plans workflows for substantive tasks, often several per request.\" (line 393)",
+            "problem": "\"Often several per request\" overstates the docs, which say only that one request can turn into several workflows. The body (line 167) correctly says \"can\".",
+            "evidence": "https://code.claude.com/docs/en/workflows, \"Let Claude decide with ultracode\": with ultracode on, one request can become several workflows in a row (understand, change, verify).",
+            "fix": "\"  > Right. With it on, Claude plans workflows for substantive tasks, sometimes several per request. Turn it on for the big job, then off.\""
+          },
+          {
+            "severity": "low",
+            "where": "Model or effort? Reading a bad result: \"Thariq Shihipar, writing on claude.dev, found something similar in his own tests: more effort fixed missed edge cases, not a wrong approach\" (line 122)",
+            "problem": "The edge-cases-versus-wrong-approach finding comes from his read of Anthropic's Terminal-Bench 3.0 runs, not from his own three test builds. Only the detailed-spec finding comes from his own builds.",
+            "evidence": "https://claude.dev/blog/spending-your-effort/ (Sep 25, 2026): the post says its main lesson from the Terminal-Bench 3.0 results is that higher effort pays off on tasks with many hidden edge cases. A diagram there shows effort reducing missed-edge-case failures but not fixing a wrong approach. The spec result is in his own \"Highly specified build task\" section.",
+            "fix": "\"Thariq Shihipar, writing on claude.dev, found something similar: in benchmark runs, more effort fixed missed edge cases, not a wrong approach, and in his own builds, once Claude had a detailed spec (a written plan of what to build), the levels gave much closer results.\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "## Effort: how much work each turn gets, line 82 \"For one hard question, put the word `ultrathink`\" (also Scene caption line 94 \"One tricky question?\" on a bug at line 95); against ## Model or effort?, flow caption line 140 \"raise effort, or put ultrathink in that one prompt\", Checkpoint diagnose-ceiling lines 150-151, and Cheat sheet line 293 \"It skipped steps | Raise effort, or `ultrathink` for one turn\"",
+            "problem": "The Lesson gives ultrathink two different jobs. The Effort section and its Scene teach it as the tool for one hard or tricky question (shown on a bug). The flow, the Cheat sheet and the diagnose-ceiling feedback teach it as a fix for skipped steps, and say it can't help with a ceiling. The diagnose-ceiling stem is exactly one hard bug that Sonnet keeps getting wrong, so a reader who applies line 82 can defend the ultrathink option. The docs describe ultrathink as deeper reasoning on one turn, not as something that makes Claude read the file it skipped or run the tests.",
+            "evidence": "https://code.claude.com/docs/en/model-config, section \"Use ultrathink for one-off deep reasoning\": the keyword asks for deeper reasoning on that turn, Claude Code adds an in-context instruction, and the effort level sent to the API doesn't change. The Anthropic blog (claude.com/blog/claude-model-and-effort-level-in-claude-code, 2026-07-07) ties skipped files and tests to effort, and says model selection sets the fixed capability range. Inside the Lesson: line 82 \"For one hard question\" and line 94 \"One tricky question?\" against line 151 feedback \"It helps with skipped steps, not with a ceiling.\"",
+            "fix": "Line 82: \"For one turn that needs deeper reasoning, put the word `ultrathink` anywhere in your prompt: Claude reasons harder ==on that turn only==, and your setting doesn't change. It's still the same model, so it can't lift a model past its ceiling. Phrases like \\\"think hard\\\" are ordinary text, not keywords.\" Line 140: \"# If it cut corners, raise effort.\" Line 293: \"| It skipped steps | Raise effort |\" and add \"| One turn needs deeper reasoning | `ultrathink` in that prompt |\". Line 151: \"  > Deeper reasoning on one turn still runs on Sonnet. It can't lift Sonnet past its ceiling.\""
+          },
+          {
+            "severity": "medium",
+            "where": "## Models: alias table line 44 \"`sonnet` | Sonnet 5.5 | Everyday coding\" against line 54 \"your strongest everyday model, usually `opus`\", Cheat sheet line 289 \"Everyday work | Leave the defaults: Opus 5.5 on medium\", line 291, and scenario-outage-hunt option line 324 \"`sonnet`, the everyday coding model\"",
+            "problem": "The Lesson can't decide which model is the everyday one. The table and a Final test option call Sonnet the everyday coding model. The Cheat sheet says everyday work means leaving the default, Opus 5.5, and the body calls Opus your strongest everyday model. A cold reader can't tell whether to switch to Sonnet for normal work. The earlier fix that changed \"strongest model\" to \"strongest everyday model, usually opus\" caused this clash.",
+            "evidence": "Docs (code.claude.com/docs/en/model-config, alias table): sonnet is for \"daily coding tasks\" and opus for \"complex reasoning tasks\"; the default-model section says Pro, Max, Team, Enterprise and the Anthropic API default to Opus 5.5. Both facts are true, but the Lesson states them side by side without reconciling them. Seed `reviseFixed`: \"low reader: 'strongest model' becomes 'strongest everyday model, usually opus' in the body and Cheat sheet\".",
+            "fix": "Line 44: \"| `sonnet` | Sonnet 5.5 | Everyday coding, for less than Opus |\". Line 289: \"| Everyday work | Leave the defaults (Opus 5.5 on medium), or `sonnet` to spend less |\". Line 324: \"- [ ] `sonnet`, with effort raised to high.\" The right answer then still isn't the longest option, because the opusplan option is longer."
+          },
+          {
+            "severity": "medium",
+            "where": "## Models, line 54 \"your strongest everyday model, usually `opus`\" and line 48 \"`best` | Fable where your account has it, otherwise Opus\"; against content/lessons/04-grilling.md line 215 \"so it deserves the best model\", which links here",
+            "problem": "This contradicts another Lesson. The Grilling Lesson says grilling deserves \"the best model\" and sends the reader here. This Lesson teaches `best` as an alias that picks Fable, and says grilling deserves the strongest everyday model, usually opus, keeping Fable for outages and architecture. A reader who follows the link can conclude that grilling means `/model best`, which means Fable and possibly usage-credit billing.",
+            "evidence": "`sed -n 215p content/lessons/04-grilling.md` shows: \"...so it deserves the best model; building can use a cheaper one. (See [Models, effort & ultracode](/learn/models-effort-ultracode).)\" This Lesson, line 48: \"`best` | Fable where your account has it, otherwise Opus\"; line 50: Fable \"on some plans it bills to usage credits\". Transcript UzMNBN6xLLA.json at 520-603s (8:40-10:03): Matt says people use \"too dumb a model\" for grilling; he doesn't say Fable or `best`.",
+            "fix": "In content/lessons/04-grilling.md line 215, replace \"so it deserves the best model\" with \"so it deserves your strongest everyday model (usually `opus`)\". No change in this Lesson."
+          },
+          {
+            "severity": "low",
+            "where": "## Try it yourself, step 5, line 241 \"send the same prompt ... Claude can see its first answer\"; checklist line 260 \"The high run worked longer before answering.\"",
+            "problem": "The comparison is confounded. On the second run the low-effort answer is already in context, so the high run can just restate it quickly and the checkbox fails, which makes a beginner think effort did nothing. The cache-warning clause also can't appear on the default model.",
+            "evidence": "Lesson line 241 admits \"Claude can see its first answer\". https://code.claude.com/docs/en/prompt-caching, \"Changing effort level\": on Opus 5.5, Sonnet 5.5, Haiku 5.5 and Fable 5.1, with an API key or a Claude subscription, changing effort keeps the cache and Claude Code applies the new level without asking.",
+            "fix": "Step 5: \"Type `/effort` again, choose `high`, press `s`, and send the same prompt with *running club* in place of *book club*. Compare how long Claude worked, not how long the reply is.\" (This drops the cache sentence and the \"can see its first answer\" sentence.)"
+          },
+          {
+            "severity": "low",
+            "where": "## Ultracode, line 167 \"On a Pro plan, switch on Dynamic workflows in `/config` first.\"",
+            "problem": "A Pro reader is told the two ways to use ultracode (lines 164-165) before learning that neither works until a setting is changed. `/config` is also never explained.",
+            "evidence": "https://code.claude.com/docs/en/workflows, top note: dynamic workflows are on all paid plans, and on Pro you turn them on from the Dynamic workflows row in /config. Lesson order: bullets at lines 164-165, prerequisite at the end of line 167.",
+            "fix": "Move the sentence to just before the bullets and change line 162's ending to: \"...it runs at whatever effort you've set. On a Pro plan, first switch on Dynamic workflows in `/config` (Claude Code's settings menu). Then there are two ways to use it:\". Delete the sentence from line 167."
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint ultracode-one-task, line 186 feedback \"it stays raised for the rest of the session\"",
+            "problem": "This feedback says less than the truth, and it pulls against goal 1/2's saved-versus-session lesson. Typing `/effort xhigh` saves the level as your default for new sessions, not just for this session, as the Lesson's own Scene says at line 89.",
+            "evidence": "https://code.claude.com/docs/en/model-config, \"Adjust effort level\": a level typed after /effort is saved as your default and applies in later sessions. Lesson Scene line 89: \"Typing a level by name sets it and saves it as your default for new sessions too.\"",
+            "fix": "Line 186: \"  > Effort is how much work each turn gets. It doesn't create workflows, and typing a level saves it as your default too.\""
+          },
+          {
+            "severity": "low",
+            "where": "Sources, line 439 \"(Opus 4.8 at medium effort, 6:41)\"; body line 211",
+            "problem": "The timestamp is wrong. At 6:41 the video is still describing the diagnosis; Matt names the model and effort about 25 seconds later.",
+            "evidence": "`jq -r '.data.alexandria[0].data.segments[] | \"\\(.start_ms/1000|floor) \\(.text)\"' /Users/siddharth/Developer/trying/.handoff/transcripts/s5T5oQJcJ6U.json` shows 401s (6:41) \"It's now giving me a decent diagnosis\", then 426s (7:06) \"model I'm using here is Opus 4.8 with\" and 428s \"medium effort\". The other timestamps match their transcripts: UzMNBN6xLLA at 8:40 and -QFHIoCo-Ko at 1:32:33.",
+            "fix": "Line 439: \"(Opus 4.8 at medium effort, 7:06)\"."
+          },
+          {
+            "severity": "low",
+            "where": "Opening promise line 11 \"Claude Code has four dials\"; dial table line 33 \"The same Opus model\"",
+            "problem": "A cold reader meets \"Claude Code\" in the first sentence, but it isn't defined until line 22. They meet \"Opus\" in the dial table before the alias table says it's a model.",
+            "evidence": "Line 11 is the first use of Claude Code; the definition is at line 22, \"Claude Code is Anthropic's coding agent: ...\". Line 33 uses Opus; the alias table at line 45 introduces it. The writing guide's pilot-review notes say to define Claude Code at first use.",
+            "fix": "Line 11: \"Claude Code, Anthropic's coding agent, has four dials that decide...\". Line 22: \"It's an AI that reads your files, runs commands and writes code from your terminal.\" Line 33: \"| Fast mode | The same Opus model (the big one, below), answering faster at a higher price | `/fast` |\"."
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Model or effort? Reading a bad result, Checkpoint diagnose-ceiling: stem \"Your request described a time-zone bug clearly ... Its fix is still wrong, for the second time\" (line 147); option b feedback \"It helps with skipped steps, not with a ceiling.\" (line 151)",
+            "problem": "A sharp reader can argue for two of the distractors. (1) Option a (raise effort). The Lesson's own effort table puts `high` on \"Bugs in existing code, and work with likely edge cases\" (line 76). Thariq's finding, quoted in the same section, is that more effort fixed missed edge cases (line 122). A time-zone fix that keeps failing is the classic missed-edge-case bug. (2) Option b (ultrathink). The Lesson says to use `ultrathink` \"for one hard question\" (line 82), and this is a hard question. b's feedback also says ultrathink \"helps with skipped steps\", which no cited source supports.",
+            "evidence": "model-config docs (https://code.claude.com/docs/en/model-config, read 2026-10-24), section \"Use ultrathink for one-off deep reasoning\": the keyword requests deeper reasoning on that turn, Claude Code adds an in-context instruction, and the effort level sent to the API is unchanged. The docs say nothing about it making Claude read more files or run tests. The Anthropic blog (claude.com/blog/claude-model-and-effort-level-in-claude-code, July 7, 2026) ties skipped files, skipped tests and skipped double-checks to effort only. Lesson line 122: \"more effort fixed missed edge cases, not a wrong approach\".",
+            "fix": "Make the miss a wrong approach, which is the case Thariq says effort doesn't fix. Stem: \"You're on Sonnet. Your request described a time-zone bug clearly, and Claude read the right files, ran the tests and checked its work. Both of its fixes take the same wrong approach. What do you change?\" Option a feedback: \"It already did the work. More effort catches skipped steps and missed edge cases, not a wrong approach.\" Option b feedback: \"That asks the same model for deeper reasoning on one turn. It already had what it needed and did the work, so the limit is what Sonnet knows.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Ultracode: many agents instead of one, Checkpoint ultracode-one-task, options at lines 185, 187, 189, 191",
+            "problem": "Wording tell. All three wrong options end with the same clause, \", then ask for the audit.\", and the right option is the only one without it. The right option also repeats the stem's \"one\" (\"one audit\" becomes \"that one prompt\"). A reader can find the odd one out without knowing anything about ultracode.",
+            "evidence": "a: \"Type `/effort xhigh`, then ask for the audit.\" b: \"Type `/effort ultracode`, then ask for the audit.\" d: \"Restart with `claude --effort ultracode`, then ask for the audit.\" c (right): \"Start that one prompt with the word `ultracode`.\"",
+            "fix": "Make the options parallel and drop the shared clause. a: \"Type `/effort xhigh` first.\" b: \"Type `/effort ultracode` first.\" c (right): \"Put the word `ultracode` in the audit prompt.\" (45 chars) d: \"Restart Claude Code with `claude --effort ultracode`.\" (53 chars, so the right option is still not the longest). Keep the current feedback."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test predict-session-only (lines 412-422) against Checkpoint model-saves-default (lines 56-64)",
+            "problem": "The Final test question nearly duplicates the Checkpoint. Both stems end with the same question (\"What [model] does tomorrow's new session start on?\"), and the Checkpoint's right-answer feedback gives the Final test's answer away. A reader can pass by remembering that feedback, without applying anything to a new case.",
+            "evidence": "Checkpoint line 61: \"To switch for one session only, open `/model` and press `s` on the row.\" Final test line 413 asks about opening `/model`, highlighting Fable and pressing `s`, then what tomorrow's session starts on. writing-guide.md, Questions: \"Don't reuse a Checkpoint as a Final test question\". Pilot lessons: \"no Checkpoint duplicates a Final test question\" and \"Questions test transfer, not recognition.\"",
+            "fix": "Turn the Final test question into a transfer case that combines both behaviours. Stem: \"On Monday you type `/model sonnet`. On Tuesday, for one tricky afternoon, you open `/model`, highlight Fable and press `s`, then quit. What does Wednesday's new session start on?\" Options: \"Fable, because it was the last model you picked.\" > \"`s` switches for one session only and leaves your saved default alone.\" / \"Opus 5.5, because a session-only pick resets you to the plan default.\" > \"Nothing resets. `s` leaves your last saved choice in place, and Monday's typed switch saved Sonnet.\" / [x] \"Sonnet, because Monday's typed switch is still your saved default.\" > \"Right. Typing `/model sonnet` saved Sonnet; `s` on Fable lasted for Tuesday only.\" / \"Fable, as long as you still have usage credits.\" > \"Credits decide whether Fable bills extra, not whether it's saved.\" The right option (66 chars) is not the longest (69)."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test spot-max-everywhere, option d \"Ravi kept max but should have switched to Haiku, which can't overthink.\" (line 384); stem (line 377)",
+            "problem": "An earlier fix didn't fully hold. The seed says this question was rewritten with \"no shared 'should have' phrasing, and no absolute distractors\", but option d still uses \"should have\" and a flat absolute, \"can't overthink\". The absolute marks d as wrong at a glance. The stem also replays the Why it matters example: limit gone mid-week, and changes \"nobody asked for\" word for word. So the question checks recall of the body's sentence, not transfer.",
+            "evidence": "Lesson line 24: \"the weekly limit runs out by Wednesday ... the agent overthinks and changes things nobody asked for\". Line 377: \"the weekly limit is gone by Thursday, and a typo fix arrives with two \"improvements\" nobody asked for\". Seed applied list: \"spot-max-everywhere is rewritten with ... no shared 'should have' phrasing, and no absolute distractors\".",
+            "fix": "Option d: \"Ravi used too big a model; Haiku at max would handle these edits fine.\" (70 chars, so it stays longer than the right option's 66) > \"Haiku at max still overthinks routine edits and burns tokens. The level is the problem, not the model.\" Stem tail: \"Each takes several minutes, he runs out of usage mid-week, and a typo fix comes back with a rewritten paragraph he didn't want. Spot the mistake.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Final test scenario-worth-paying, stem \"on Friday you'll merge a risky change to how the site stores Comments\" (line 365)",
+            "problem": "The stem uses the Lesson's own trigger phrase for the right answer. The body and the Cheat sheet both say `/code-review ultra` pays off on \"a risky change\" before merging, so the word \"risky\" points straight at option d. The reader never has to judge for themselves that the change is risky.",
+            "evidence": "Line 201: \"It earns that price on a risky change just before you merge\". Cheat sheet line 300: \"A risky change before merging | `/code-review ultra`\". writing-guide.md, pilot lessons: \"Don't restate the defining phrase of the right answer in the prompt.\" ultrareview docs (https://code.claude.com/docs/en/ultrareview): best for \"pre-merge confidence on substantial changes\".",
+            "fix": "Describe the change and leave the label out. Stem: \"This week Claude will spend two hours overnight tidying the code while you sleep, and on Friday you'll merge a change that rewrites how every Comment is saved to the database. You have usage credits. Where is paying extra worth it?\" Option d feedback: \"Right. A cloud review that verifies every finding earns its price on a change this big, just before you merge. Fast mode pays off only when you wait on every reply.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test scenario-skipped-tests, right option \"Raise effort to medium or high.\" (line 332)",
+            "problem": "The right option is the only hedged one: it names two levels where every distractor names one move. Hedging is a known tell for the right answer.",
+            "evidence": "The other options are single moves: \"Switch to Fable.\", \"Switch to `opusplan` ...\", \"Name the API route ... resend at low.\" The blog (claude.com/blog/claude-model-and-effort-level-in-claude-code): raising effort \"is most relevant if you selected an effort level below the model's default\", and the Lesson gives that default as medium.",
+            "fix": "[x] \"Raise effort to `medium`, the default.\" > \"Right. Skipping a file it was pointed at and not running the tests are signs it didn't try hard enough. Effort sets how much it reads and checks; `high` also suits a bug in existing code.\""
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint ultracode-one-task, option a feedback \"it stays raised for the rest of the session\" (line 186)",
+            "problem": "The feedback understates what typing a level does. Typing `/effort xhigh` saves xhigh as the default for new sessions, as the Lesson's own terminal Scene says. The feedback implies the change ends with the session.",
+            "evidence": "Lesson line 89: \"Typing a level by name sets it and saves it as your default for new sessions too.\" model-config docs: a level typed after `/effort` saves it \"as your default and apply it in later sessions\".",
+            "fix": "\"Effort is how much work each turn gets. It doesn't create workflows, and typing a level saves it as your default for new sessions too.\""
+          },
+          {
+            "severity": "low",
+            "where": "goals, \"You'll be able to set effort with `/effort`, say what it changes, ...\" (line 15)",
+            "problem": "No Final test question checks the first part of this goal, setting effort with `/effort`: typing a level versus pressing `s` in the slider, or `/effort auto`. The other two parts are covered by skipped-tests, spot-max-everywhere and the sequence question. `/effort` appears in the Final test only as `/effort max` and `/effort ultracode`, which are options in an ultracode question.",
+            "evidence": "Final test ids: scenario-grill-then-build, scenario-outage-hunt, scenario-skipped-tests, scenario-migration-day, scenario-live-debug, scenario-worth-paying, spot-max-everywhere, spot-ultracode-left-on, sequence-reading-a-miss, predict-session-only. None asks how to set or save an effort level. writing-guide.md, Shape: goals are \"each checkable by the Final test\".",
+            "fix": "Trim the goal to what is tested: \"You'll be able to say what effort changes, and tell from a bad result whether to raise effort, pick a bigger model or fix the task.\" Setting effort with `/effort` stays taught in the body and the Try it."
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint ultracode-one-task option b feedback (line 188) against Final test scenario-migration-day (lines 340-350)",
+            "problem": "The Checkpoint still gives away the Final test answer. Its feedback on `/effort ultracode` (\"Claude keeps planning workflows for later tasks until you turn it off\") is the exact reasoning migration-day asks for. The earlier fix changed migration-day's distractors, but the two questions still turn on the same choice, keyword versus `/effort ultracode`, asked in reverse. The migration-day stem also borrows the Cheat sheet row label \"big sweeps\" (line 298).",
+            "evidence": "Seed applied: \"migration-day distractors changed ... so it no longer mirrors the Checkpoint\". Line 341: \"nearly every request will be a big sweep. You want Claude to plan workflows on its own all day.\" Line 298: \"A session of big sweeps | `/effort ultracode`\".",
+            "fix": "Shorten the Checkpoint b feedback so it doesn't state the session-wide answer: \"That changes more than this one task, which you said you didn't want.\" In the migration-day stem, replace \"nearly every request will be a big sweep\" with \"most requests will touch dozens of files at once\"."
+          }
+        ]
+      },
+      "fix": {
+        "applied": [
+          "accuracy medium (ultrathink offered for skipped steps): the flow Scene caption now reads 'If it cut corners, raise effort: effort sets how much Claude reads, runs and checks.' The Cheat sheet row is now 'It skipped steps | Raise effort', with a new row 'One question needs deeper reasoning | `ultrathink` in that prompt'. The diagnose-ceiling ultrathink feedback no longer says it helps with skipped steps. Checked against the research note's model-config summary: ultrathink asks for deeper reasoning on one turn, and the effort sent to the API stays the same.",
+          "accuracy medium (wrong /teach timestamp): the source now says '(Opus 4.8 at medium effort, 7:06–7:08)'. Checked in s5T5oQJcJ6U.json: 426s 'model I'm using here is Opus 4.8 with', 428s 'medium effort, by the way'.",
+          "reader medium (ultrathink given two jobs): the Effort section now says 'For one turn that needs deeper reasoning... your effort setting doesn't change. It's still the same model, no smarter than before.' So ultrathink can't be read as a fix for a model's ceiling, which matches the line 'Nothing in your prompt makes it smarter'. The flow caption and Cheat sheet changes (see the first line) remove the skipped-steps job.",
+          "reader medium (which model is the everyday one): the alias table now says '`sonnet` | Sonnet 5.5 | Everyday coding, cheaper than Opus'. The Cheat sheet says 'Leave the defaults (Opus 5.5 on medium), or `sonnet` to spend less'. The scenario-outage-hunt option is now '`sonnet`, with effort raised to high.' (37 chars), so the right answer (44) is still shorter than the opusplan option (51).",
+          "quiz medium (diagnose-ceiling has two defensible distractors): the stem now says 'Both of its fixes take the same wrong approach.', which is the case Thariq says effort doesn't fix. The effort feedback is now 'More effort catches skipped steps and missed edge cases, not a wrong approach.' The ultrathink feedback is now 'That asks Sonnet for deeper reasoning on one turn, but it's still Sonnet. After real work, a wrong approach is its ceiling.' The options are unchanged; the right one is still at d and is not the longest.",
+          "quiz medium (ultracode-one-task wording tell): the options are parallel now, with no shared ', then ask for the audit.' and no echo of 'one'. They read 'Type `/effort xhigh` first.' / 'Type `/effort ultracode` first.' / [x] 'Put the word `ultracode` in your request.' / 'Restart Claude Code with `claude --effort ultracode`.' The right answer is shorter than d by both measures, and the feedback is kept.",
+          "quiz medium (predict-session-only nearly duplicates the Checkpoint): it is now a transfer case that combines both behaviours. On Monday you type `/model sonnet`; on Tuesday you press `s` on Fable, then quit; what does Wednesday's session start on? The right answer is 'Sonnet, because Monday's typed switch is still your saved default.' (66 chars), against 'Opus 5.5... plan default' (69). The id is kept because the question still tests saved versus session-only. The right answer moved from b to c (positions are now badccabdadcbac).",
+          "quiz medium (spot-max-everywhere): option d is now 'Ravi used too big a model; Haiku at max would handle these edits fine.' It no longer says 'should have' and has no flat absolute. Its feedback adds 'and burns tokens'. The stem tail no longer replays the body's example: 'Each takes several minutes, he runs out of usage mid-week, and a typo fix comes back with a rewritten paragraph he didn't want.' The right answer (66) is still shorter than d (70).",
+          "quiz medium (scenario-worth-paying stem says 'risky'): the stem now describes the change instead, 'a change that rewrites how every Comment is saved to the database'. The feedback says 'big change' rather than 'risky change'. The right feedback is now 'earns its price on a change this big, just before you merge.'"
+        ],
+        "declined": [
+          {
+            "problem": "reader medium: 'the best model' in the Grilling Lesson (content/lessons/04-grilling.md line 215) clashes with this Lesson's `best` alias, which means Fable.",
+            "reason": "The suggested fix is in content/lessons/04-grilling.md, and this task allows edits only to 19-models-effort-ultracode.md. The clash is real: line 215 reads '...so it deserves the best model; building can use a cheaper one. (See [Models, effort & ultracode]...)'. But this Lesson already gives the right guidance in both its body and its Cheat sheet: 'your strongest everyday model, usually `opus`'. The agent editing 04-grilling.md should change 'the best model' to 'your strongest everyday model (usually `opus`)'."
+          }
+        ],
+        "words": 2823,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/models-effort-ultracode.json"
+}

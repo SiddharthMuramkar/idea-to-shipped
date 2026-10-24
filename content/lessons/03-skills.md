@@ -47,7 +47,7 @@ What makes Skills cheap is ==progressive disclosure==: the agent gets each part 
 
 1. **When a session starts,** the name and description of each Skill the agent is allowed to start go into the context window. A line or two each.
 2. **When the Skill runs,** because you typed its name or the agent decided your request fits, the whole `SKILL.md` loads. It then stays in the conversation; it isn't re-read on every turn.
-3. **Extra files in the folder** load only if the body sends the agent there. Matt's `tdd` Skill keeps its examples of good tests and its rules on mocking in two side files.
+3. **Extra files in the folder** load only if the body sends the agent there. Matt's test-first Skill, `tdd`, keeps examples of good tests and other advice in two side files.
 
 So a long body costs nothing until it runs, and many are short anyway: in that March video, Matt stressed that a Skill needn't be long to make a difference. The body of his `/grill-me` is one line telling the agent to load another Skill.
 
@@ -84,7 +84,7 @@ at: stays
 You add a personal Skill for formatting recipes: a two-line description, a 300-line body and three example files in its folder. You don't add any extra settings to its frontmatter. In a new session where nobody has mentioned recipes, what part of it is in the context window?
 - [ ] All of it, so the agent is ready the moment you need it.
   > Loading everything up front is exactly what progressive disclosure avoids. The body waits until the Skill runs.
-- [x] Only its name and description.
+- [x] Only its name and its two-line description.
   > Right. That's the first level. The body loads when the Skill runs, and the example files only when the body sends the agent to them.
 - [ ] Nothing at all until you type its name.
   > Not with default settings. Its name and description load when the session starts, so the agent can spot when a request fits. The next section shows the one setting that hides even those.
@@ -116,7 +116,7 @@ One side effect: because user-invoked Skills are hidden from the agent, it doesn
 You're writing a Skill that publishes your site to the internet. You want to run it yourself sometimes, but the agent must never decide to run it on its own. What do you add?
 - [ ] "Only when the user asks" at the end of its description.
   > The description is what the agent reads to decide when a Skill fits. Wording can nudge it, but it isn't a lock.
-- [ ] Nothing. Agents only run Skills when you type them.
+- [ ] Nothing. Agents only run Skills you type.
   > That's only true of user-invoked Skills. By default, the agent may start a Skill whenever your words match its description.
 - [x] `disable-model-invocation: true` in the frontmatter.
   > Right. It makes the Skill user-invoked: you can still type it, the agent can't start it, and its description stays out of the context window.
@@ -132,9 +132,9 @@ A plugin is a package that bundles Skills (and other add-ons) into one install. 
 claude plugin install mattpocock-skills@claude-plugins-official
 ```
 
-That's the whole install. The plugin goes in at user scope, for every project on your computer, and updates itself. Treat its files as read-only: each update replaces them, so any change you make there is lost. If Claude Code was already open, restart it or type `/reload-plugins`. Then type `/` to see the Skills. Each answers to its short name, like `/grill-me`, and its full name, `/mattpocock-skills:grill-me`. `/plugin` opens a panel where you can switch off or remove plugins.
+That's the whole install. The plugin goes in at user scope, for every project on your computer, and updates itself. Treat its files as read-only: each update replaces them, so any change you make there is lost. If Claude Code was already open, restart it or type `/reload-plugins`. Type `/` to see the Skills. Each answers to its full name, `/mattpocock-skills:grill-me`, and most to a short one, `/grill-me`. `/plugin` opens a panel where you can switch off or remove plugins.
 
-The other route is `npx skills@latest add mattpocock/skills`. It needs Node.js (a free program for running JavaScript tools, which brings `npx`), works with other agents too, like Cursor, and copies editable files that you own and update by hand. It asks which Skills you want (include `/setup-matt-pocock-skills`), which agents, and whether to install for one project or your whole computer. Matt used it in his July 2026 walkthrough, before the plugin existed: his whole computer, since he works solo, and project scope for teams, so everyone shares one set.
+The other route is `npx skills@latest add mattpocock/skills`. It needs Node.js (a free program for running JavaScript tools, which brings `npx`), works with other agents too, like Cursor, and copies editable files that you own and update by hand. It asks which Skills you want (include `/setup-matt-pocock-skills`), which agents, and whether to install for one project or your whole computer. Matt used it in his July 2026 walkthrough, before the plugin's release: his whole computer, since he works solo, and project scope for teams, so everyone shares one set.
 
 Pick one route. ==Install both and every Skill appears twice.==
 
@@ -165,7 +165,7 @@ Several of Matt's engineering Skills need three facts about your repo: where iss
 4. **Write.** `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, `docs/agents/triage-labels.md` if it asked about labels, and an `## Agent skills` block in `CLAUDE.md` that points at each file. With no `CLAUDE.md` it uses `AGENTS.md`; if neither exists, it asks which to create.
 5. **Report.** It names the Skills that will read these files.
 
-They're plain files in the repo, with no copy elsewhere on your computer: commit them, and everyone who clones the repo gets the same setup. They don't hold your preferences: "Ask me one question at a time" belongs in your own `CLAUDE.md`, which every Skill reads. Edit the `docs/agents/` files by hand later; run setup again to switch trackers, start over, or refresh them after a big update.
+They're plain files, kept only in the repo: commit them, and everyone who clones the repo (downloads a copy with Git) gets the same setup. They don't hold your preferences: "Ask me one question at a time" belongs in your own `CLAUDE.md`, which every Skill reads. Edit the `docs/agents/` files by hand later; run setup again to switch trackers, start over, or refresh them after a big update.
 
 ```scene chat
 title: Setting up a new practice repo with no remote (illustrative)
@@ -173,8 +173,8 @@ title: Setting up a new practice repo with no remote (illustrative)
 you: `/setup-matt-pocock-skills`
 # It explores first, then reports what's there and what's missing.
 agent: No Git remote, no CLAUDE.md or AGENTS.md, no GLOSSARY.md, no earlier setup. One small project, so single-context docs.
-# The tracker comes first, recommendation leading.
-agent: **Issue tracker.** With no remote, I'd suggest **local markdown**: issues as files under `.scratch/<feature>/`. Or GitHub, GitLab, or describe your own.
+# With no remote to match, it lists the options. GitHub is its default, so read before you accept.
+agent: **Issue tracker.** No remote, so nothing to match. GitHub (the default), GitLab, **local markdown** (issues as files under `.scratch/<feature>/`, good with no remote), or describe your own?
 you: Local markdown.
 # `/triage` is installed, so it asks exactly one label question.
 agent: Keep the default triage labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`)? Recommended: yes.
@@ -189,8 +189,8 @@ agent: Done. Skills like `/to-spec`, `/to-tickets` and `/triage` will now read `
 ```checkpoint tracker-other
 You're setting up a work repo. It lives on GitHub, but your team tracks every task in Linear and nobody uses GitHub Issues. Setup recommends GitHub. Best answer?
 - [ ] Accept GitHub; the Skills were designed for it.
-  > Setup recommends GitHub because of the remote, not because of where your team works. Tickets would land where nobody looks.
-- [ ] Local markdown, so tickets stay inside the repo.
+  > They were built with GitHub in mind, and setup proposes it because of your remote. But your team works in Linear, so tickets would land where nobody looks.
+- [ ] Local markdown, so tickets stay in the repo.
   > It needs no remote, but your team would never see tickets in `.scratch/`.
 - [ ] Skip it: the Skills will find Linear on their own.
   > They read `docs/agents/issue-tracker.md`. With nothing there, they don't know where tickets go.
@@ -236,9 +236,9 @@ You type `/ask-matt` and describe a bug report a friend filed. It answers that `
 
 ## When a short name is taken
 
-Claude Code ships Built-in commands of its own, and a few share names with Matt's Skills. The one you'll meet is `/code-review`. Claude Code's version is a bug hunt you can run at different effort levels (how hard it thinks), like `/code-review max`, and it also answers to `/review`. Matt's is a two-part review, checking the code against your project's standards and against the spec, each part run by its own helper agent. Type the short name and you get Claude Code's. Even the agent, calling a bare `code-review` itself, can land on Claude Code's.
+Claude Code ships Built-in commands of its own, and a few share names with Matt's Skills. The one you'll meet is `/code-review`. Claude Code's version is a bug hunt you can run at different effort levels (how hard it thinks), like `/code-review max`, and it also answers to `/review`. Matt's is a two-part review, checking the code against your project's standards and against the spec, each part run by its own helper agent. With the plugin, the short name gets you Claude Code's. Even the agent, calling a bare `code-review` itself, can land on Claude Code's.
 
-The fix is ==the full name==, which always reaches the plugin's Skill: `/mattpocock-skills:code-review`. A hidden part of Claude Code also answers to `/prototype`, so if that short name misbehaves, type `/mattpocock-skills:prototype`. Matt won't rename his Skills to dodge clashes, because tools add new names all the time. On the npx route the files are yours, so you can rename the folder and its `name:` line.
+The fix is ==the full name==, which always reaches the plugin's Skill: `/mattpocock-skills:code-review`. A hidden part of Claude Code also answers to `/prototype`, so if that short name misbehaves, type `/mattpocock-skills:prototype`. Matt won't rename his Skills to dodge clashes: tools keep adding names. On the npx route, Matt's copy takes over `/code-review`, and Claude Code's answers only to `/review`.
 
 ## How Matt and others use it
 
@@ -268,10 +268,11 @@ git init
 claude
 ```
 
-2. Type a slash and the word setup. If `setup-matt-pocock-skills` isn't in the list, type `/exit`, install the plugin, then run `claude` again:
+2. Type a slash and the word setup. If `setup-matt-pocock-skills` isn't in the list, clear the line, type `/exit`, and run:
 
 ```sh
 claude plugin install mattpocock-skills@claude-plugins-official
+claude
 ```
 
 3. Type `/setup-matt-pocock-skills`. Answer "Local markdown" for the tracker, "yes" to the default labels if it asks, and "CLAUDE.md" when it asks which file to create. Read the drafts before you agree.
@@ -321,10 +322,10 @@ Then type `/clear` and ask "what's in this repo?" again. The agent still answers
 - [ ] `CLAUDE.md` has an `## Agent skills` block pointing at each docs file.
 - [ ] Before the flag, a line naming repo-tour appeared after your plain question.
 - [ ] After the flag, no line named repo-tour, but typing its name still ran it.
-- [ ] `/ask-matt` named what to type next and stopped without touching any file.
+- [ ] `/ask-matt` named what to type next and stopped without changing any file.
 - [ ] Your `/` menu shows each of Matt's Skills once.
 
-If `docs/agents/triage-labels.md` is missing, setup skipped the label question. It partly checks the agent's list of Skills for `/triage`, where user-invoked ones never appear, so it can wrongly decide `/triage` is missing. That's harmless until you use `/triage`.
+If `docs/agents/triage-labels.md` is missing, setup skipped the label question: it can miss `/triage`, since user-invoked Skills are hidden from the agent. `/to-spec` and `/to-tickets` need the labels too, so type `/setup-matt-pocock-skills triage is installed`.
 ````
 
 ## Common mistakes
@@ -342,7 +343,7 @@ I ran `/setup-matt-pocock-skills` early, and its output is in this repo's very f
 
 My old journal Lessons record both reviews. To get Matt's two-part review, I typed `/mattpocock-skills:code-review`, reviewing everything since that first commit. Another time I typed `/code-review max`, which ran Claude Code's own bug hunt at maximum effort.
 
-They also record one slip. Asking for the PR that became the Main flow Lesson, I wrote "you can start grilling with docs" in plain words. The agent can't start a user-invoked Skill, so it ran `/grilling` and then `/domain-modeling`, the two halves `/grill-with-docs` is made of. Typing the name myself would have been one step.
+They also record one slip. Asking for the change that became the Main flow Lesson, I wrote "you can start grilling with docs" in plain words. The agent can't start a user-invoked Skill, so it ran `/grilling` and then `/domain-modeling`, the two halves `/grill-with-docs` is made of. Typing the name myself would have been one step.
 ```
 
 ## Cheat sheet
@@ -353,7 +354,7 @@ They also record one slip. Asking for the PR that became the Main flow Lesson, I
 | Other agents, or files you can edit | `npx skills@latest add mattpocock/skills` (never both routes) |
 | New repo | `/setup-matt-pocock-skills`, once, then commit what it wrote |
 | Not sure what's next | `/ask-matt` plus your situation |
-| Matt's code review | `/mattpocock-skills:code-review` |
+| Matt's code review (plugin) | `/mattpocock-skills:code-review` |
 | A user-invoked Skill, even one the agent calls missing | Type its name at the start of your message |
 | A standing preference | A line in your `CLAUDE.md` |
 | Your own Skill | `~/.claude/skills/<name>/SKILL.md` (you) or `.claude/skills/<name>/SKILL.md` (the repo) |
@@ -367,22 +368,22 @@ Months from now, your site's code has grown tangled and you have a free afternoo
   > The agent can't see the 16 user-invoked Skills, and the one you need is among them. It may even say it isn't installed.
 - [ ] Type `/code-review` and ask it to list what's messy.
   > Matt's review checks the changes since a starting point, not the whole codebase, and the short name reaches Claude Code's own review anyway.
-- [x] Type `/ask-matt` and describe the situation.
+- [x] Type `/ask-matt`, then describe the tidy-up in plain words.
   > Right. The router knows every Skill in the set and names the one to type next, here `/improve-codebase-architecture`.
 - [ ] Run `/setup-matt-pocock-skills` again so it lists your options.
   > Setup records the tracker, labels and docs layout. It doesn't route you anywhere.
 ```
 
 ```test scenario-review-clash
-You've finished a feature and type `/code-review`. You get back one list of possible bugs, with no Standards section and no Spec section. What do you type to get Matt's review?
-- [x] `/mattpocock-skills:code-review`
-  > Right. The short name reached Claude Code's own review. The full plugin name always reaches Matt's.
-- [ ] `/code-review max`, so it reviews harder
-  > That's Claude Code's own bug hunt again, just at maximum effort.
-- [ ] `/review`
-  > That's another name for Claude Code's own review, not Matt's.
-- [ ] `/ask-matt` and tell it to run the review
-  > The router would tell you about the Skill, but it never runs anything.
+You installed Matt's Skills as the plugin. Your own Skill, finish-up, ends with the line "Then run code-review on the changes." Twice now, the review that came back was one list of possible bugs, with no Standards or Spec section. What do you change?
+- [x] Use the full name, `mattpocock-skills:code-review`.
+  > Right. A bare code-review can land on Claude Code's own review, even when the agent makes the call. The full name always reaches Matt's.
+- [ ] Add max after code-review, so the review runs harder.
+  > That still reaches Claude Code's own bug hunt, just at maximum effort.
+- [ ] Write `claude-plugins-official:code-review`.
+  > That's the marketplace's name, from the install line. A Skill's full name starts with its plugin's name, mattpocock-skills.
+- [ ] Add `disable-model-invocation: true` to finish-up.
+  > The flag only stops the agent starting finish-up on its own. It doesn't change which review a call to code-review reaches.
 ```
 
 ```test scenario-not-installed
@@ -399,14 +400,14 @@ You installed the plugin yesterday. Today, after a long build, you write "ok, no
 
 ```test scenario-write-own
 You keep pasting the same five rules for changelog entries into every session. You want the agent to follow them whenever it updates a changelog (the file listing what changed in each release), in every project, without you having to remember. What do you make?
-- [ ] A Skill in the project's `.claude/skills/` with `disable-model-invocation: true`.
-  > That flag means only you can start it, so you'd still have to remember. And a project Skill reaches only one repo.
+- [ ] A Skill in the project's `.claude/skills/` with a clear description.
+  > The agent would load it at the right moments, but only in this one repo.
 - [x] A Skill in `~/.claude/skills/` with a clear description.
   > Right. A personal, model-invoked Skill reaches every project, and its description tells the agent when to load it.
-- [ ] A section in `docs/agents/`, written by setup.
-  > Setup writes the tracker, labels and docs layout. It doesn't take rules of your own.
-- [ ] An extra line in the plugin's copy of `/pr`.
-  > Plugin files are replaced on every update. And `/pr` shapes the description of a pull request (a proposed change), not changelog entries.
+- [ ] A Skill in `~/.claude/skills/` with `disable-model-invocation: true`.
+  > It would reach every project, but that flag means only you can start it, so you'd still have to remember.
+- [ ] A line in the project's `CLAUDE.md`.
+  > That reaches only this repo, and it sits in the context window on every turn, needed or not.
 ```
 
 ```test spot-both-routes
@@ -415,19 +416,19 @@ Sam has signed in to Claude Code on his new laptop. Then he (1) runs `claude plu
   > The plugin is a complete route on its own: it carries all 27 Skills and updates itself.
 - [x] Step 2, the npx install
   > Right. The plugin missed nothing, and the two routes are alternatives. With both, every Skill appears twice in his `/` menu.
-- [ ] Step 3, running setup in the repo
+- [ ] Step 3, running setup
   > Setup belongs here: once per repo, before the engineering Skills.
 - [ ] Step 4, starting with `/grill-with-docs`
   > In a repo, `/grill-with-docs` is the head of the Main flow.
 ```
 
 ```test spot-chained-skills
-Kai writes a personal Skill, ship-it, with `disable-model-invocation: true`. Its body says: run `/to-spec`, then `/to-tickets`, then `/tdd` on each ticket. He types its name. The agent reaches `/tdd` fine but never starts `/to-spec` or `/to-tickets`. Spot the mistake.
+Kai writes a personal Skill, ship-it, with `disable-model-invocation: true`. Its body says: run `/to-spec`, then `/to-tickets`, then build with `/tdd`. He types its name. The agent builds with `/tdd` fine but never starts `/to-spec` or `/to-tickets`. Spot the mistake.
 - [ ] The flag on ship-it stops it from starting any other Skill.
   > The flag only stops the agent from starting ship-it itself. A user-invoked Skill can still pull in model-invoked ones, which is why `/tdd` ran.
 - [ ] He needed the full names, like `/mattpocock-skills:to-spec`.
   > Full names get you past a name clash. They don't change who is allowed to start a Skill.
-- [ ] A personal Skill can't reach Skills that came in a plugin.
+- [ ] A personal Skill can't reach plugin Skills.
   > Where a Skill lives decides who gets it, not what it can call. `/tdd` came from the plugin and ran fine.
 - [x] It chains user-invoked Skills, which only Kai can start.
   > Right. A Skill can call model-invoked ones like `/tdd`, never a user-invoked one. Kai has to type `/to-spec` and `/to-tickets` himself.
@@ -441,7 +442,7 @@ Lee wanted `/implement` to close each ticket when it finished. He opened the plu
   > Setup records the tracker, labels and docs layout. It doesn't protect edits to Skill files.
 - [x] He should have put the line in his own `CLAUDE.md`.
   > Right. Plugin files aren't his: the plugin updates itself, and each update brings fresh copies, so the edit was lost. A line in his own `CLAUDE.md` survives every update.
-- [ ] He needed to install the plugin at project scope.
+- [ ] He needed the plugin at project scope.
   > Scope changes where the plugin is available. An update still replaces its files.
 ```
 
@@ -471,7 +472,7 @@ A friend refuses to install Matt's 27 Skills: "That much text will fill my conte
 
 ```test why-clone-needs-setup
 A friend clones your repo, installs Matt's Skills and types `/to-tickets`. It tells her to run `/setup-matt-pocock-skills` first, though you ran it weeks ago and chose local markdown. What's the likeliest reason?
-- [ ] Setup saved its answers in your plugin's folder, not hers.
+- [ ] Setup saved its answers in your plugin folder.
   > Setup writes nothing into the plugin. Its answers are plain files in the repo.
 - [ ] Setup has to run once per computer, as well as once per repo.
   > It runs once per repo. Once committed, its files reach every clone.

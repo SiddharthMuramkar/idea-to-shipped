@@ -81,7 +81,7 @@ at: done
 
 ```checkpoint frontier-wait
 You're grilling a book-club site. Round 1 asks "Should members vote on next month's book?" Why doesn't it also ask "How many votes does each member get?"
-- [x] Until voting is settled, the vote count may never matter.
+- [x] It only matters if members vote, and that's still undecided.
   > Right. It hangs off a question that's still open, so it waits for round 2, or is never asked if the answer is no.
 - [ ] The agent asks the easy questions first and saves the detailed ones for later.
   > Difficulty doesn't set the order. Dependencies do: a question waits only if it hangs off one that's still open.
@@ -379,7 +379,7 @@ Round 2 asks three numbered questions, each with a ➡️ recommendation. You ag
 ```
 
 ```test spot-passive
-Lee spent an hour grilling a new feature, took every ➡️ recommendation exactly as written, and now dislikes what got built. Spot the mistake.
+Lee spent an hour grilling a new feature, answering each round in one reply and taking every ➡️ recommendation as written. Now Lee dislikes what got built. Spot the mistake.
 - [ ] The session ran too long: an hour is more than grilling needs.
   > Session length varies a lot; Matt's docs say some plans need fifty questions.
 - [ ] Answering whole rounds in one reply rushed Lee's choices.
@@ -413,7 +413,7 @@ Priya grilled a big feature for 45 minutes, typed `/clear` to free up space, the
 ```test sequence-multi-session
 You're in a repo, planning a feature that will take several sessions. Which order is right?
 - [ ] `/grill-with-docs` → confirm the summary → `/to-tickets` → `/to-spec`
-  > Tickets are cut from the spec, so the spec has to exist first.
+  > Backwards. In the Main flow `/to-tickets` splits the finished spec into tickets, so `/to-spec` comes first.
 - [ ] `/to-spec` → `/grill-with-docs` → confirm the summary → `/to-tickets`
   > `/to-spec` writes from a grilled conversation. Before the grilling, there are no decisions for it to write from.
 - [ ] `/grill-with-docs` → confirm the summary → `/implement` in this same session

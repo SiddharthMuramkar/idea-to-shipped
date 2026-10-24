@@ -1,0 +1,236 @@
+{
+  "slug": "wayfinder",
+  "next": {
+    "round": 2,
+    "step": "check",
+    "why": "check round 1 and its fix done"
+  },
+  "applied": [
+    "r1: MED accuracy (Scene line 137, research ticket shown as off the frontier): rewrote the last agent line. It now says a research agent is working the Next.js ticket in the background, lists the other open, unblocked tickets, and says to start a fresh `/wayfinder` session once the research lands or to name one of those two. Charting no longer implies a claim it never makes (SKILL.md:67, 69, 115).",
+    "r1: MED reader (same Scene, plus the Try step 8 hazard): fixed the frontier contradiction with the line above. Step 8 now starts 'once any research agent has reported back', so a second session can't pick up the research ticket and run it again. The sub-agents doc says background results reach Claude as a completion notification. The issue's 'marked it Status: claimed' wording was not used: see declined.",
+    "r1: MED accuracy and MED reader (the task ticket blocked nothing on the worked map): the chat Scene now creates five tickets. The fifth is *Is machine translation good enough for the Lessons?* (grilling, blocked by the task). The files Scene adds 05-machine-translation-quality.md, its caption now reads 'a Blocked by line on the two that wait', and the graduated ticket is renumbered 06-final-test-ids-in-spanish.md. The takeable list is unchanged, because the new ticket is blocked.",
+    "r1: HIGH reader (Try needs Git but never said so): the Try intro now says 'plus Git (see Start here; check Git with `git --version`)'. Start here already covers the Mac and Windows installs, and this matches the phrasing in 16-architecture.",
+    "r1: MED reader (callout said wayfinder never builds): the callout now reads 'Wayfinder plans; by default it doesn't build.' The spot-build-ticket option c feedback now reads 'Unless the Notes say otherwise, they're decisions, not implementation work.' The predict-no-fog option d feedback no longer says flatly that it doesn't build.",
+    "r1: MED reader (Esc only in the last step, nothing about permission prompts): the Try intro now says to press Esc to stop the agent at any point, and at a permission prompt to choose Yes for files under `.scratch/` and No for anything unexpected. The Esc sentence came out of step 8.",
+    "r1: MED reader (the chat Scene's 'tracker doc' was never explained): the caption now says the agent reads 'its tracker notes (`docs/agents/issue-tracker.md`, which say where the map and tickets go)'.",
+    "r1: MED reader (frontier defined with 'unclaimed' before claims are explained): added '(no session has marked it as taken yet)' to the frontier definition.",
+    "r1: HIGH quiz (spot-scope-as-fog gave away the scenario-foggy-effort answer): moved it to a climbing gym's members' area, with 'A members' shop' as the out-of-scope item, and changed option d to '...once the members' area is settled'. Its feedback and other options are unchanged, and it keeps its id.",
+    "r1: MED quiz (scenario-someone-elses-head had a 'her' tell): the prompt now names Priya, and the key reads '`/to-questionnaire`, to write Priya questions on the van schedule', so every option mentions the van schedule. The feedback says 'Priya's head' and 'who Priya is'. The key is still shorter than option a by both measures.",
+    "r1: MED quiz (weak /to-questionnaire distractor in scenario-plan-vs-build): replaced it with '`/implement`, since you already know what you want', with feedback that a three-session build needs a spec and tickets from a grilled conversation first. The key is still shorter than option b.",
+    "r1: Word budget: the additions pushed the count to 2,860, so I cut wording to bring it back to 2,839. The cuts: step 6's push note, the AI Hero line in Research, a sentence join in Why it matters, the plan-mode clause, and the Try intro wording."
+  ],
+  "declined": [
+    {
+      "problem": "Issue 4's suggested Scene wording, 'Started a research agent on the Next.js ticket and marked it `Status: claimed`'.",
+      "reason": "In wayfinder/SKILL.md:115 (charting step 5), the agent starts the research subagents and records their findings on a branch, with no claim or assign step. Claims belong only to the work-through mode (SKILL.md:123; issue-tracker.md:29). Showing charting claim a ticket would teach behaviour the Skill doesn't have. Issue 4's real problem, the frontier contradiction and the step 8 hazard, was fixed with issue 1's wording and a wait-for-research condition in step 8. For that condition I wrote 'once any research agent has reported back' instead of the issue's 'its row under the prompt box disappears'."
+    },
+    {
+      "problem": "Issue 3's full suggested sentence for the Git requirement, about 40 extra words with the install steps for Mac and Windows.",
+      "reason": "Start here already gives those install steps, and the Lesson defines Git at line 38. A shorter line that points to Start here and gives `git --version` fixes the high in a few words, matches 16-architecture, and keeps the Lesson under 2,850 words."
+    }
+  ],
+  "pending": [],
+  "rounds": {
+    "r1": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "Session one: chart the map, chat Scene, last agent line: \"The research agent is already on the Next.js ticket, so takeable now: ...\" (line 137)",
+            "problem": "The Scene says the research ticket is off the frontier because a research agent is working on it. Under the Skill, only a claim takes a ticket off the frontier, and charting never claims research tickets. Right after charting, the open, unclaimed Next.js ticket 01 is still on the frontier, and since first by number wins, an unnamed `/wayfinder` session would take it and redo the research. This also contradicts the Lesson's own claim-first Checkpoint, which teaches that a claim is what takes a ticket off the frontier. This wording came in with the round-0 LOW fix 'Scene says why the research ticket isn't takeable'.",
+            "evidence": "wayfinder/SKILL.md:67 \"That assignee _is_ the claim: an open, unassigned ticket is unclaimed.\"; SKILL.md:69 frontier = \"the open, unblocked, unclaimed children\"; SKILL.md:115 (chart step 5) spins up the research subagent and captures findings on a branch, but has no claim or assign step; docs/agents/issue-tracker.md:28 \"Frontier: scan ... for files that are open, unblocked, and unclaimed; first by number wins.\" and :29 \"Claim: set `Status: claimed`\". Lesson line 177: \"A claimed ticket is off the frontier\".",
+            "fix": "Replace line 137 with: \"agent: Charting done. A research agent is already working the Next.js ticket in the background. The other open, unblocked tickets are *How should the language switcher look?* and *Ask a Spanish speaker to read one machine-translated Lesson*. Start a fresh session with `/wayfinder .scratch/spanish-lessons/map.md` once the research lands, or name one of those two.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Session one chat Scene, line 131: \"Created the map and four tickets: ... *Ask a Spanish speaker to read one machine-translated Lesson* (task)\"; map Not yet specified (lines 50-51, 133); Four kinds section, line 89: \"It's there only because a decision waits on it\"",
+            "problem": "The worked map has a `task` ticket that no decision on the map waits on. No ticket and no fog entry is about whether machine translation is good enough, even though line 26 lists that as an open question. So the example breaks the rule the Lesson states at line 89 and the Skill states: a task belongs on the map only because it unblocks a decision. A reader could come away thinking a task can stand on its own.",
+            "evidence": "wayfinder/SKILL.md:80: a task is \"Manual work that must happen before a _decision_ can be made\" and it \"earns its place by unblocking a decision, not by delivering the destination\". The Lesson's map (lines 41-55) and Scene captions (lines 131, 133) list only the Final test ids question as fog, and the only Blocked by link is grilling ticket 02 on research ticket 01 (lines 131, 154).",
+            "fix": "Line 131: change \"four tickets\" to \"five tickets\" and end the list with \"... *Ask a Spanish speaker to read one machine-translated Lesson* (task) and *Is machine translation good enough for the Lessons?* (grilling, blocked by the Spanish-speaker task).\" Files Scene: add `+ .scratch/spanish-lessons/issues/05-machine-translation-quality.md` after line 159, change the line 154 caption to \"...and a Blocked by line on the two that wait.\", and renumber the graduated ticket at line 170 to `06-final-test-ids-in-spanish.md`. Line 137's takeable list stays the same, because the new ticket is blocked."
+          },
+          {
+            "severity": "low",
+            "where": "Session one, step 2, line 114: \"A second, breadth-first round fans out across everything\"; Try it, step 6, line 292: \"Answer the destination question, then the breadth-first round, by number.\"",
+            "problem": "The Skill runs a second grilling, breadth-first, and a grilling keeps asking rounds until its frontier is empty. Naming the destination is also a full grilling, not one question. 'A round' and 'the destination question' tell a Try reader to expect exactly one exchange for each, so they may stop answering too early or think something broke when more rounds come.",
+            "evidence": "wayfinder/SKILL.md:111 \"Call the Skill tool twice, for 'grilling' and 'domain-modeling', to pin down what this map is finding its way to\"; SKILL.md:112 \"Grill again, **breadth-first** this time\"; grilling/SKILL.md:26 \"Recompute the frontier and ask the next round.\" and :30 \"The session is done when the frontier is empty\".",
+            "fix": "Line 114: \"A second grilling, breadth-first this time, fans out across everything instead of going deep on one thread.\" Line 292: \"Answer the destination questions, then the breadth-first rounds, by number, until it moves on to writing the map.\""
+          },
+          {
+            "severity": "low",
+            "where": "Common mistakes, line 315: \"If a duplicate background agent appears (a known issue Matt won't fix), ask the agent to stop it.\"",
+            "problem": "The duplicate is a nested agent that the background research agent started, not one your session started. The Lesson's own sources say to watch the background task list and stop the duplicate yourself. 'Ask the agent to stop it' rests on the main agent being able to reach and stop that nested agent, and no cited source says it can.",
+            "evidence": "AI Hero /research page (updated 2026-08-24): \"After you invoke the skill, watch your background task list and stop the duplicate.\" mattpocock/skills issue #530 body (gh issue view 530): \"Both had to be stopped manually.\"",
+            "fix": "\"If a duplicate background agent appears (a known issue Matt won't fix), watch your background tasks and stop the duplicate yourself.\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "high",
+            "where": "Try it yourself, intro paragraph: \"You need Claude Code installed and signed in (see [Start here](/learn/start-here)).\" (line 263), with step 1's `git clone` (line 268) and the `!git status` check (line 303)",
+            "problem": "The exercise needs Git but never says so. A reader with only Claude Code, the plugin and a terminal fails at step 1. On Windows PowerShell, `git` is not recognised. On a fresh Mac, `git` opens an install prompt the Lesson doesn't mention. The `!git status` check and the research branches also need Git.",
+            "evidence": "https://code.claude.com/docs/en/setup: Native Windows \"Requires: None; Git for Windows is optional\", and \"If Git for Windows is not installed, Claude Code uses PowerShell as the shell tool instead.\" So Claude Code on Windows can run without Git. Other revised Lessons state the requirement. 01-how-agents-work.md:271 says \"plus git. Type `git --version` to check: if it's missing, a Mac offers to install it; on Windows, install Git for Windows from git-scm.com\". 06-prototype.md:224 says \"plus Git\". 02-context-window.md:258 gives a `git --version` check. 18-wayfinder.md:263 says neither.",
+            "fix": "Replace line 263 with: \"You need Claude Code installed and signed in (see [Start here](/learn/start-here)), plus Git, the tool that copies and tracks code projects: type `git --version` to check. If it's missing, a Mac offers to install it; on Windows, install Git for Windows from git-scm.com, then open a new PowerShell window. You'll use a copy of this site's repo, which is already set up for wayfinder. Allow about 25 minutes.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Session one: chart the map, chat Scene: the last two agent lines, \"Started a research agent on the Next.js ticket...\" (line 135) and \"The research agent is already on the Next.js ticket, so takeable now: ...\" (line 137)",
+            "problem": "The Scene disagrees with the Lesson's own frontier rule. The Lesson defines the frontier as every ticket that's open, unblocked and unclaimed (line 59). The Next.js research ticket is all three: no claim is ever recorded on it. Yet the Scene leaves it out of what you can take. This also creates a hazard in Try step 8. If the reader runs `/wayfinder <map>` while the research agent is still running, the first frontier ticket by number can be that research ticket. The new session would then claim it and research it a second time.",
+            "evidence": "Lesson line 59: \"The **frontier** is every ticket that's open, unblocked and unclaimed\". Lesson line 145: on this site a claim is a `Status: claimed` line. docs/agents/issue-tracker.md:28 says \"Frontier: scan ... for files that are open, unblocked, and unclaimed; first by number wins\". wayfinder/SKILL.md:115 (charting step 5) starts the research subagents but records no claim. SKILL.md:67 says a session claims \"first, before any work, so concurrent sessions skip it\".",
+            "fix": "Line 135: \"agent: Started a research agent on the Next.js ticket and marked it `Status: claimed`, so no other session takes it. Its findings go on a throwaway `research/language-routing` branch, pushed but never merged.\" Line 137: \"agent: Charting done. Takeable now: *How should the language switcher look?* and *Ask a Spanish speaker to read one machine-translated Lesson*. Start a fresh session with `/wayfinder .scratch/spanish-lessons/map.md`.\" In Try step 8, start with: \"Optional: once the research agent has finished (its row under the prompt box disappears), type `/clear`...\""
+          },
+          {
+            "severity": "medium",
+            "where": "Why it matters (line 26), Four kinds of decision ticket (line 89), chat Scene \"Created the map and four tickets\" (line 131), files Scene caption \"a Blocked by line on the one that waits\" (line 154)",
+            "problem": "The worked example breaks two of its own rules. Line 89 says a task \"is there only because a decision waits on it\". The Spanish map's task, *Ask a Spanish speaker to read one machine-translated Lesson*, blocks nothing. The decision it should unblock, \"Is machine translation good enough?\" (listed at line 26), is missing from the map: it is neither a ticket nor in Not yet specified. Line 63's Fog-or-ticket rule says a question that sharp is a ticket even when blocked. A cold reader comparing the Scene with the prose can't see why this task belongs on the map.",
+            "evidence": "wayfinder/SKILL.md:80: a task \"earns its place by unblocking a decision, not by delivering the destination\". Lesson line 63: \"If you can already put the question sharply, it's a ticket, even if it's blocked.\" The map example's Not yet specified (lines 50-51) and Scene line 133 list only the Final test ids. Files Scene line 154 says only one ticket has a Blocked by line, and that is the Slug ticket.",
+            "fix": "Line 131: \"agent: Created the map and five tickets: *What does Next.js, the site's framework, offer for serving pages by language?* (research), *Does a Spanish Lesson keep its English Slug?* (grilling, blocked by the Next.js ticket), *How should the language switcher look?* (prototype), *Ask a Spanish speaker to read one machine-translated Lesson* (task) and *Is machine translation good enough for Lessons?* (grilling, blocked by the task).\" Line 154: \"...with a Type line, and a Blocked by line on the two that wait.\" Insert `+ .scratch/spanish-lessons/issues/05-machine-translation.md` after line 159. Rename line 170 to `+ .scratch/spanish-lessons/issues/06-final-test-ids-in-spanish.md`."
+          },
+          {
+            "severity": "medium",
+            "where": "Callout after Why it matters: \"Wayfinder plans; it doesn't build.\" (line 31); spot-build-ticket option c feedback: \"They're decisions, never implementation work.\" (line 406)",
+            "problem": "There is a contradiction inside the Lesson. The big-idea callout and the feedback say flatly that wayfinder never builds. Line 93 says a map's Notes \"can override that and bring the building in\", and Common mistakes (line 310) repeats that exception. A reader who remembers the callout will distrust a map whose Notes carry the build. The same reader may also miss the Lesson's own advice to check the Notes.",
+            "evidence": "wayfinder/SKILL.md:13: \"Wayfinder is **planning** by default ... An effort can override this in its **Notes**, carrying execution into the map itself\". Lesson line 93: \"A map's Notes can override that and bring the building in, so check the Notes of any map you didn't chart.\" Lesson line 310: \"unless its Notes say the map carries the build.\"",
+            "fix": "Line 31: \"Wayfinder plans; by default it doesn't build. It clears the decisions between you and a plan, one session at a time, then hands off to the Main flow, the path most work takes from idea to shipped.\" Line 406: \"  > Map tickets carry only `wayfinder:` labels. Unless the Notes say otherwise, they're decisions, not implementation work.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Try it yourself: Esc appears only in step 8, \"Press Esc to stop anything you didn't expect\" (line 294); steps 4-6 (lines 280-292)",
+            "problem": "The only instruction for stopping the agent comes in the last, optional step. The step most likely to edit a file is the footer check in step 4: if the agent skips the question and starts changing `src/`, the reader hasn't yet been told about Esc. The block never says what to do at a permission prompt. A background research agent's prompts appear in the reader's own session, so a reader can meet one with no guidance.",
+            "evidence": "writing-guide.md:117: Try blocks must say \"how to stop it (Esc, or choose No at a permission prompt)\". https://code.claude.com/docs/en/sub-agents: \"When a background subagent reaches a tool call that needs permission, Claude Code surfaces the prompt in your main session and names the subagent that is asking.\" 17-retro.md:206 puts this in the Try intro: \"To stop the agent at any point, press Esc, or choose No at a permission prompt.\"",
+            "fix": "Add to the end of the intro paragraph (line 263): \"To stop the agent at any point, press Esc. If it asks permission to create or edit files under `.scratch/`, choose Yes; for anything else you didn't ask for, choose No.\" Change step 8 to: \"Optional: type `/clear`, then `/wayfinder` followed by the map's path, and work one ticket. Type `/exit` when you're done.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Session one: chart the map, chat Scene caption: \"It reads the repo and the tracker doc, then settles the destination first.\" (line 124)",
+            "problem": "A cold reader meets \"the tracker doc\" here with no explanation. Before this point the Lesson never says that a repo has a document telling the agent where tickets live. The file is named only later, in the Site story (line 319) and the sources.",
+            "evidence": "grep for \"tracker doc\" and \"issue-tracker\" in 18-wayfinder.md finds line 124 (first use, no gloss), line 319 (Site story) and line 471 (sources). wayfinder/SKILL.md:25 says the agent consults \"the tracker doc's 'Wayfinding operations' section\", so the step is real but goes unexplained.",
+            "fix": "Line 124: \"# It reads the repo and its tracker notes (`docs/agents/issue-tracker.md`, which say where the map and tickets go), then settles the destination first. Each question carries its recommendation after ➡️, and \"yes\" accepts it.\""
+          },
+          {
+            "severity": "medium",
+            "where": "The idea: a map with fog on it: \"The **frontier** is every ticket that's open, unblocked and unclaimed: what you can take right now.\" (line 59)",
+            "problem": "The frontier is defined using \"unclaimed\" before the Lesson says what a claim is. Claiming is explained 86 lines later, at line 145. A Visitor can't apply the definition, or answer the claim-first Checkpoint and predict-frontier, on a first read of this paragraph.",
+            "evidence": "18-wayfinder.md:59 is the first occurrence of \"claim\" in any form. The explanation is at line 145: \"**Claims** the ticket before any work, so another session running in parallel skips it. ... on this site it's a `Status: claimed` line\".",
+            "fix": "Line 59: \"The **frontier** is every ticket that's open, unblocked and unclaimed (no session has marked it as taken yet): what you can take right now.\""
+          },
+          {
+            "severity": "low",
+            "where": "The idea, map example Notes: \"Slugs never change (decision record docs/adr/0004).\" (line 45)",
+            "problem": "A cold reader may think the map's own Notes already answer its Slug ticket, \"Does a Spanish Lesson keep its English Slug?\". That makes the example look self-contradictory.",
+            "evidence": "Lesson line 45 (Notes) and line 131 (the grilling ticket \"Does a Spanish Lesson keep its English Slug?\", blocked by research). docs/adr/0004-comments-reference-lessons-by-permanent-slug.md exists, so the Note can be reworded and still point at it.",
+            "fix": "Line 45: \"Use the words in GLOSSARY.md, the project's dictionary. Comments point at a Lesson's Slug (decision record docs/adr/0004).\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, scenario-outside-fact: \"Grilling a ticket-booking app, you hit a decision...\" (line 364)",
+            "problem": "In a Lesson where \"ticket\" means a tracker item, \"ticket-booking app\" (event tickets) adds needless confusion. \"Grilling an app\" is also odd, since you grill a plan, not an app.",
+            "evidence": "Lesson line 38 glosses tickets as tracked items. Lines 59-107 use \"ticket\" only for tracker items. Line 364 uses it for something you sell.",
+            "fix": "Line 364: \"Planning a concert-booking app with `/grill-with-docs`, you hit a decision that waits on one fact: does your payment provider's API allow partial refunds? You'd like to keep answering the other questions meanwhile. What do you reach for?\""
+          },
+          {
+            "severity": "low",
+            "where": "How Matt and others use it, under \"Other developers\": \"AI Hero's wayfinder page (updated August 2026) reports a 27-ticket map...\" (line 257)",
+            "problem": "Line 219 tells the reader that AI Hero holds Matt's docs, \"his teaching site\". Line 257 then lists the same page under \"Other developers\". The page's advice is Matt's. Only the 27-ticket report comes from a user.",
+            "evidence": "Lesson line 219: \"Matt's docs on AI Hero, his teaching site\". https://www.aihero.dev/skills-wayfinder, Common questions: the 27-ticket complaint \"is verbatim from a user report\", followed by the page's own advice.",
+            "fix": "Move it into Matt's list as: \"- **His docs' warning.** AI Hero's wayfinder page (updated August 2026) quotes a user whose 27-ticket map went stale by its thirteenth ticket. It advises one bounded piece of the product per map, plenty of prototypes, and one ticket at a time even when the frontier allows more, since parallel grilling sessions repeat questions.\" Then delete line 257."
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself checklist: \"(Step 8) It set `Status: claimed` before working, added an `## Answer`, set `Status: resolved`...\" (line 304)",
+            "problem": "By the end of step 8 the ticket says `Status: resolved`, so the claim has been overwritten. A first-time reader isn't told where to look to confirm that the claim came before any work.",
+            "evidence": "docs/agents/issue-tracker.md:29-30: the claim sets `Status: claimed`, and the resolve step then sets `Status: resolved` on the same line. Lesson line 304 asks the reader to confirm the earlier state but gives no way to do it.",
+            "fix": "Line 304: \"- [ ] (Step 8) Before asking you anything, it edited the ticket to `Status: claimed` (scroll up to see that edit). By the end the ticket has an `## Answer` and `Status: resolved`, Decisions so far has one new line, and it stopped.\""
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "high",
+            "where": "Final test, spot-scope-as-fog, prompt: \"Charting a map whose Destination is 'a spec for online ordering at the bakery's twelve shops'\" (line 412)",
+            "problem": "This question gives away the answer to scenario-foggy-effort (line 340). That question asks which Skill you type first for the same bakery's online ordering, and the key is `/wayfinder`. spot-scope-as-fog then says the agent is charting a wayfinder map for that exact effort. The two questions sit in the same Final test band, so a reader unsure about the first question can read the answer off the seventh. This new problem came in with the earlier fix that swapped spot-many-tickets for spot-scope-as-fog.",
+            "evidence": "Line 340: \"A bakery with twelve shops wants online ordering with delivery slots ... Which Skill do you type first?\" (key c, `/wayfinder`). Line 412: \"Charting a map whose Destination is 'a spec for online ordering at the bakery's twelve shops'\". src/app/learn/[slug]/question.tsx:88-124: FinalTest renders every `test` question as a card in one <ol> on the page (\"N questions on everything above\"), so all ten are visible together.",
+            "fix": "Move spot-scope-as-fog to a different effort. Prompt: \"Charting a map whose Destination is 'a spec for a members' area on a climbing gym's site', the agent writes this under Not yet specified: 'A members' shop, which we agreed to leave for a later project.' Spot the mistake.\" Option d: \"It's fine there; it can graduate into tickets once the members' area is settled.\" Keep its feedback and the other options as they are."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-someone-elses-head, options (lines 377-383): \"`/to-questionnaire`, to write her questions to fill in\"",
+            "problem": "Wording tell. All three wrong options mention \"the van schedule\" or \"the schedule\". The right option is the only one that doesn't, and the only one that points at the person who knows (\"her\"). The prompt never names or genders the head of operations, so \"her\" appears only in the right option. The previous round's fix (\"options now share one phrasing\") didn't fully hold.",
+            "evidence": "Line 377: \"to talk the van schedule through with the agent\". Line 381: \"to send a background agent after the schedule\". Line 383: \"to chart the van schedule as a map of tickets\". Line 379 (key): \"to write her questions to fill in\". Line 376: \"only the head of operations knows\", with no name or pronoun. The seed's reviseFixed entry: \"scenario-someone-elses-head options now share one phrasing\".",
+            "fix": "Prompt: \"Planning the bakery's ordering system stalls: only Priya, the head of operations, knows how the delivery vans are scheduled, and nothing about it is written down. What do you reach for?\" Options: a \"`/grill-with-docs`, to talk the van schedule through with the agent\"; b (key) \"`/to-questionnaire`, to write Priya questions on the van schedule\"; c \"`/research`, to send a background agent after the van schedule\"; d \"`/wayfinder`, to chart the van schedule as a map of tickets\". The key stays shorter than option a. In b's feedback, change \"her head\" and \"who she is\" to \"Priya's head\" and \"who Priya is\"."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-plan-vs-build, option c: \"`/to-questionnaire`, so someone else settles the details\" (line 357)",
+            "problem": "Weak distractor. The prompt says \"You could describe exactly what you want in five minutes\", so no reader would hand the details to someone else. It is not a real misconception for this situation. The tempting mistake when you already know what you want is to skip planning and build straight away. The Lesson's Main flow material rules that out for a multi-session build.",
+            "evidence": "Line 352: \"You could describe exactly what you want in five minutes, but building it will take three sessions.\" Line 358 feedback admits it: \"You already know what you want.\" Writing guide, Questions: \"Distractors are real misconceptions.\" Writing guide, Facts, Main flow: \"small: `/implement` here; multi-session: `/to-spec` → `/to-tickets` → `/implement` per ticket\".",
+            "fix": "Replace option c with \"`/implement`, since you already know what you want\" (49 chars, shorter than option b). Feedback: \"> A three-session build needs a spec and tickets first, and those are written from a grilled conversation. Grill it, then `/to-spec` and `/to-tickets`.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, predict-frontier, prompt: \"`03-catering-budget.md` says `Blocked by: 04` and has no `Status:` line\" (line 448)",
+            "problem": "The prompt points out the missing Status line only for 03, which is the answer, and says nothing about 01's status. That extra detail singles out the right file before the reader works out the frontier.",
+            "evidence": "Line 448 lists 01 with only \"Blocked by: 03\", 02 with \"Status: claimed\", 03 with \"Blocked by: 04 and has no Status: line\", and 04 with \"Status: resolved\". The key is d (03).",
+            "fix": "State it once for the whole folder: \"... `03-catering-budget.md` says `Blocked by: 04`. `04-venue-shortlist.md` says `Status: resolved`. No other file has a `Status:` line. You run `/wayfinder` on the map without naming a ticket. Which file does it take?\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, sequence-whole-effort, option d feedback: \"skipping `/to-spec` loses the linked detail\" (line 432)",
+            "problem": "The feedback claims more than the Lesson and ask-matt support. They say the linked detail is lost when you point `/implement` straight at the map. Option d goes from the map to `/to-tickets`, and neither source says that loses linked detail.",
+            "evidence": "Lesson line 209: \"Pointing `/implement` straight at the map skips the spec and loses the linked detail\". ask-matt/SKILL.md:54: \"Looping the map straight into `/implement` skips that collapse and throws the linked detail away\".",
+            "fix": "\"> Charting takes a session of its own, each ticket gets its own session, and a cleared map goes to `/to-spec` first, which collapses its linked decisions into one spec.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, scenario-outside-fact, prompt: \"Grilling a ticket-booking app, you hit a decision that waits on one fact\" (line 364)",
+            "problem": "The prompt uses \"fact\", which echoes the Lesson's key phrase for `/research` (cheat sheet \"An outside fact\", goal 4 \"send an outside fact to `/research`\"). That gives a hint where the reader should have to judge that the answer is written down. Also, \"ticket-booking app\" uses \"ticket\" in a second sense in a Lesson where tickets are tracker items.",
+            "evidence": "Line 334: \"| An outside fact | `/research`: primary sources, one cited file |\". Line 17 (goal 4): \"send an outside fact to `/research`\". Line 364: \"Grilling a ticket-booking app, you hit a decision that waits on one fact\".",
+            "fix": "\"Grilling a concert-booking app, you hit a decision that waits on one thing you don't know: does your payment provider's API allow partial refunds? You'd like to keep answering the other questions meanwhile. What do you reach for?\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, scenario-outside-fact, option b: \"`/prototype`, to build a refund screen\" (line 367)",
+            "problem": "Weak distractor. Nobody would expect a screen to answer what an API allows. The question is really about the background agent (\"keep answering the other questions meanwhile\"), and a better distractor would test that.",
+            "evidence": "Line 368 feedback: \"A screen won't tell you what the API allows. That's a fact to look up.\" The Lesson teaches on line 213 that research runs as \"a helper that works alongside your session, so you keep going while it reads\".",
+            "fix": "Replace b with \"Pause the grilling and read the provider's docs yourself\". Feedback: \"> That stops every other question while you read, and you wanted to keep going. `/research` reads in the background while you answer.\""
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint grill-the-send, option c feedback: \"The answers you need live in the accountant's head, not in any document.\" (line 238)",
+            "problem": "A sharp reader can argue with this feedback, because tax rules are written down in public guidance. It also misses why the option is wrong: running `/research` first wouldn't change the actual fault, which is the agent interviewing you about the subject.",
+            "evidence": "Line 232: \"The agent starts asking you detailed questions about tax rules. What's gone wrong?\" to-questionnaire/SKILL.md:9: \"Interview the user only about the _send_\".",
+            "fix": "\"> Research would only change what you know. The fault is that it's interviewing you about the subject at all.\""
+          }
+        ]
+      },
+      "fix": {
+        "applied": [
+          "MED accuracy (Scene line 137, research ticket shown as off the frontier): rewrote the last agent line. It now says a research agent is working the Next.js ticket in the background, lists the other open, unblocked tickets, and says to start a fresh `/wayfinder` session once the research lands or to name one of those two. Charting no longer implies a claim it never makes (SKILL.md:67, 69, 115).",
+          "MED reader (same Scene, plus the Try step 8 hazard): fixed the frontier contradiction with the line above. Step 8 now starts 'once any research agent has reported back', so a second session can't pick up the research ticket and run it again. The sub-agents doc says background results reach Claude as a completion notification. The issue's 'marked it Status: claimed' wording was not used: see declined.",
+          "MED accuracy and MED reader (the task ticket blocked nothing on the worked map): the chat Scene now creates five tickets. The fifth is *Is machine translation good enough for the Lessons?* (grilling, blocked by the task). The files Scene adds 05-machine-translation-quality.md, its caption now reads 'a Blocked by line on the two that wait', and the graduated ticket is renumbered 06-final-test-ids-in-spanish.md. The takeable list is unchanged, because the new ticket is blocked.",
+          "HIGH reader (Try needs Git but never said so): the Try intro now says 'plus Git (see Start here; check Git with `git --version`)'. Start here already covers the Mac and Windows installs, and this matches the phrasing in 16-architecture.",
+          "MED reader (callout said wayfinder never builds): the callout now reads 'Wayfinder plans; by default it doesn't build.' The spot-build-ticket option c feedback now reads 'Unless the Notes say otherwise, they're decisions, not implementation work.' The predict-no-fog option d feedback no longer says flatly that it doesn't build.",
+          "MED reader (Esc only in the last step, nothing about permission prompts): the Try intro now says to press Esc to stop the agent at any point, and at a permission prompt to choose Yes for files under `.scratch/` and No for anything unexpected. The Esc sentence came out of step 8.",
+          "MED reader (the chat Scene's 'tracker doc' was never explained): the caption now says the agent reads 'its tracker notes (`docs/agents/issue-tracker.md`, which say where the map and tickets go)'.",
+          "MED reader (frontier defined with 'unclaimed' before claims are explained): added '(no session has marked it as taken yet)' to the frontier definition.",
+          "HIGH quiz (spot-scope-as-fog gave away the scenario-foggy-effort answer): moved it to a climbing gym's members' area, with 'A members' shop' as the out-of-scope item, and changed option d to '...once the members' area is settled'. Its feedback and other options are unchanged, and it keeps its id.",
+          "MED quiz (scenario-someone-elses-head had a 'her' tell): the prompt now names Priya, and the key reads '`/to-questionnaire`, to write Priya questions on the van schedule', so every option mentions the van schedule. The feedback says 'Priya's head' and 'who Priya is'. The key is still shorter than option a by both measures.",
+          "MED quiz (weak /to-questionnaire distractor in scenario-plan-vs-build): replaced it with '`/implement`, since you already know what you want', with feedback that a three-session build needs a spec and tickets from a grilled conversation first. The key is still shorter than option b.",
+          "Word budget: the additions pushed the count to 2,860, so I cut wording to bring it back to 2,839. The cuts: step 6's push note, the AI Hero line in Research, a sentence join in Why it matters, the plan-mode clause, and the Try intro wording."
+        ],
+        "declined": [
+          {
+            "problem": "Issue 4's suggested Scene wording, 'Started a research agent on the Next.js ticket and marked it `Status: claimed`'.",
+            "reason": "In wayfinder/SKILL.md:115 (charting step 5), the agent starts the research subagents and records their findings on a branch, with no claim or assign step. Claims belong only to the work-through mode (SKILL.md:123; issue-tracker.md:29). Showing charting claim a ticket would teach behaviour the Skill doesn't have. Issue 4's real problem, the frontier contradiction and the step 8 hazard, was fixed with issue 1's wording and a wait-for-research condition in step 8. For that condition I wrote 'once any research agent has reported back' instead of the issue's 'its row under the prompt box disappears'."
+          },
+          {
+            "problem": "Issue 3's full suggested sentence for the Git requirement, about 40 extra words with the install steps for Mac and Windows.",
+            "reason": "Start here already gives those install steps, and the Lesson defines Git at line 38. A shorter line that points to Start here and gives `git --version` fixes the high in a few words, matches 16-architecture, and keeps the Lesson under 2,850 words."
+          }
+        ],
+        "words": 2839,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/wayfinder.json"
+}

@@ -1,0 +1,267 @@
+{
+  "slug": "retro",
+  "next": {
+    "round": 2,
+    "step": "check",
+    "why": "check round 1 and its fix done"
+  },
+  "applied": [
+    "r1: accuracy+reader medium (Try steps 5-6, duplicate issues): swapped the steps. The small job (function plus test) is now step 5 and the /writing-for-agents review of CLAUDE.md is step 6, so code exists when the review asks whether the JavaScript line is discoverable. Step 7 is still '/retro' in the same session. The checklist now reads 'the JavaScript line discoverable (or a no-op)', which matches the review prompt's own label and cuts 5 words.",
+    "r1: reader medium (Try prerequisites): Git is now a prerequisite, with Start here linked for both installs. The block checks with git --version and node --version ('doesn't print a number' also covers the Mac install dialog), says to install Node.js's LTS installer from nodejs.org, then open a new terminal. 'at any point' cut to save words.",
+    "r1: reader medium (type check/test not glossed): the paragraph after the findings table now opens 'A type check confirms the code's pieces fit together; a test runs code and checks the answers.' The later test gloss in the Try step was removed to keep the word count level.",
+    "r1: reader medium (Smart-zone bullet contradicts run-before-clear): the bullet is now just '**Already cleared?**' plus the unchanged fresh-session example. This matches ask-matt SKILL.md and the course fact, and cuts 16 words.",
+    "r1: reader medium (/setup-matt-pocock-skills unexplained in the Site story): added '(Matt's once-per-repo setup Skill)', kept 'in the shape that' because no commit shows the Skill wrote the file, and changed 'the Skill' to '/retro', since two Skills are now named. Net 0 words. The repo facts still hold: CLAUDE.md is 17 lines, package.json has lint and test scripts, and there is no .github or .husky folder.",
+    "r1: quiz medium (spot-negation had two mistakes): the ban now lives in Dana's error-messages Skill, which the agent loads whenever it writes an error message. That is a home the Lesson accepts, so the ban is the only mistake. Option c is now 'A Skill is read only once, when it's installed.' with new feedback. Options a, b and d are unchanged, and the id is kept.",
+    "r1: quiz medium (reviewer-has-room duplicated scenario-style-drift): the Checkpoint's example judgement call is now 'when a function has grown big enough to split', no longer pages matching their neighbours.",
+    "r1: quiz medium (scenario-style-drift wording tell): option d now names the reviewer too ('Nothing: the reviewer can't judge taste, so no file can capture it.'), with feedback saying that judging taste is the reviewer's job and CODING_STANDARDS.md is where it reads the rules.",
+    "r1: quiz medium (scenario-which-skill defensible distractor): option a is now '/retro, because it reads files rather than sessions.', a false reason, and its feedback opens 'It's the other way round: it reads a session's record.'",
+    "r1: quiz medium (spot-automated-retro wording tell): the right option now uses the same form as the others: 'He should have judged each proposal before it went into the repo.'",
+    "r1: quiz medium (predict-stale-init remedies posing as diagnoses): c and d are now causes a reader might believe ('The rename wiped an index /init built...', 'The file is too short to list every file, so the agent guesses.'), each with corrective feedback.",
+    "r1: quiz medium (goal 1 'not your code' untested): scenario-repeat-mistake option d is now 'A commit that strips moment out of the new code.', with feedback that /retro changes the environment, not today's code.",
+    "r1: Checked every question's right answer with a script: it is shorter than at least one wrong option both in raw Markdown and in visible text. Question ids unchanged, since every question keeps its meaning. 4 Checkpoints and 10 Final test questions, as before."
+  ],
+  "declined": [
+    {
+      "problem": "acc-sources medium (Scene scope): suggested intro text 'across several of his projects'",
+      "reason": "Applied the batch-of-sessions fix but left out 'several projects'. The transcript says 'this particular repo' for the guardrail finding (BsJGo1wFTvQ 11:39-11:43), so a multi-project claim isn't clearly supported."
+    },
+    {
+      "problem": "acc-skills low (Scene labels): suggested caption 'each still falls under one of the seven categories'",
+      "reason": "Not added. Candidate 1, the unasked release, doesn't map cleanly onto any of the seven categories in retro SKILL.md:17-23, so the caption would over-claim. Dropping the labels removes the mismatch instead."
+    },
+    {
+      "problem": "quiz medium (predict-stale-init): the stem's 'written by /init' next to 'renamed two files' echoes the body sentence, so it tests recall",
+      "reason": "Only the option fix was applied. The issue's own fix changes only options c and d. The stem is a fresh case (Mo, a teammate's rename), and those two words are what make the question answerable. All four options now name a plausible cause, so the question needs reasoning, not grammar-matching."
+    },
+    {
+      "problem": "quiz medium (scenario-which-skill), optional part: reword option c to avoid 'because an agent reads that file'",
+      "reason": "Not applied. It was marked optional, and the suggested rewording ('the reference for any file like this') echoes the Lesson's defining phrase just as much. The current reason is short, true, and doesn't repeat the stem."
+    }
+  ],
+  "pending": [],
+  "rounds": {
+    "r1": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "Try it yourself, steps 5–6 and the first 'It's working if' item: \"the JavaScript line something the agent can find out (or a no-op)\" (lines 234–243, 256)",
+            "problem": "The `/writing-for-agents` review in step 5 runs before step 6 writes any code. At that point the folder holds only `CLAUDE.md` and `.git`, so \"This project is written in JavaScript.\" can't be found by looking yet. By the Skill's own rule, a careful review could rightly say to keep the line for now. The checklist would then mark a correct run as failed.",
+            "evidence": "writing-for-agents SKILL.md:79 says a restated fact earns its place when the agent \"cannot find [it] by looking\", and the one-file lookups go to the environment (`package.json`, config files, directory layout). In step 5 none of these exist: step 1 makes an empty folder with `git init`, step 4 adds only CLAUDE.md, and the first code comes in step 6 (\"Write a JavaScript function...\").",
+            "fix": "Swap steps 5 and 6, so the small job (function plus test) comes first and the `/writing-for-agents` review comes second, still before `/retro`. Keep \"In the same session, before anything else, type: /retro\" as the next step. If you'd rather keep the order, reword the checklist to: \"...the JavaScript line something the agent can find out once there's code (or a no-op; 'keep it until there's code' is also fair, since the folder is empty)...\"."
+          },
+          {
+            "severity": "low",
+            "where": "How Matt and others use it, third bullet: \"The 1.3.1 Skill reads sessions, not pull requests, so you point it at the sessions behind them.\" (line 195)",
+            "problem": "This sets a firmer limit than the Skill does, and Matt's own talk describes pointing retro at a PR with its session, or at a week of PRs and reviews. SKILL.md only says to read the primary sources for the session the user names. It never rules out a pull request as one of those sources.",
+            "evidence": "retro SKILL.md:13: \"Read the primary sources for the session the user specifies. This may mean searching through session logs on this machine.\" LlgiOCmFG_w.ar.json around 20:41–20:55 (machine translation): it can be one agent session, a PR with its session, or all the PRs and reviews from the past week.",
+            "fix": "\"The 1.3.1 Skill is written around session records, so point it at the sessions behind those reviews.\""
+          },
+          {
+            "severity": "low",
+            "where": "Writing for agents, Progressive disclosure bullet: \"The failure is sprawl: a file too long even when every line is true.\" (line 172)",
+            "problem": "This misreads the source. The SKILL defines sprawl as a file too long even when every line is live (still relevant) and unique. 'True' is a different property, so a reader could think sprawl is about accuracy.",
+            "evidence": "writing-for-agents SKILL.md:43: \"Sprawl is the failure mode here: a document simply too long, even when every line is live and unique.\" SKILL.md:80 defines relevance and staleness separately.",
+            "fix": "\"The failure is sprawl: a file too long even when every line is still relevant and says something new.\""
+          },
+          {
+            "severity": "low",
+            "where": "Why it matters, second paragraph: \"A session is one conversation... and each one starts blank.\" (line 24)",
+            "problem": "This clashes with the next sentences and with the docs. `CLAUDE.md` and auto memory load into every session, so a session doesn't start blank. It starts with a fresh context window that already holds those files.",
+            "evidence": "code.claude.com/docs/en/memory: \"Each Claude Code session begins with a fresh context window\". Its table lists both CLAUDE.md and auto memory under \"Loaded into: Every session (first 200 lines or 25KB)\" for auto memory. The Lesson's own line 26 says CLAUDE.md \"loads into every session\".",
+            "fix": "\"A session is one conversation, from starting `claude` until you clear it or quit, and each one starts with a fresh context window.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test, scenario-earns-a-line, option c feedback: \"where a check can fail and a sentence can't\" (line 346)",
+            "problem": "This reuses, without quotation marks, the AI Hero docs sentence the Lesson already quotes on line 55. The words are nearly the same. The rule allows one quote per source and everything else in the author's own words.",
+            "evidence": "docs/engineering/retro.md:29 (the AI Hero retro page source): \"because a check can fail and a sentence in a standards file can't.\" The Lesson quotes this at line 55 and echoes it at line 346.",
+            "fix": "\"That's mechanical, so it belongs in a pre-commit hook that blocks the commit when tests fail; a line in `CLAUDE.md` can only ask.\""
+          },
+          {
+            "severity": "low",
+            "where": "Sources, CHANGELOG entry: \"(`retro` graduates in 1.3.0, released 2026-10-04; writing-great-skills renamed in 1.2.0, 2026-08-05)\" (line 416)",
+            "problem": "The dates are right, but the cited CHANGELOG doesn't hold them. Its version headings have no dates; the dates come from the GitHub releases. The AI Hero writing-for-agents page also gives a different rename version (v1.1), so the rename date should rest on a source that actually states it.",
+            "evidence": "`grep -n '^## ' CHANGELOG.md` in the 1.3.1 plugin cache shows plain \"## 1.3.0\" and \"## 1.2.0\" with no dates. `gh release list --repo mattpocock/skills` gives v1.3.0 2026-10-04 and v1.2.0 2026-08-05. CHANGELOG.md:148 puts the rename in 1.2.0, while docs/productivity/writing-for-agents.md:7 and :35 say \"until v1.1\" and \"renamed in v1.1\".",
+            "fix": "Append to the source line: \"release dates from the [GitHub releases](https://github.com/mattpocock/skills/releases) page, read 2026-10-23 (the AI Hero docs page says v1.1; the CHANGELOG puts the rename in 1.2.0)\"."
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "Try it yourself, prerequisites paragraph, \"You need Claude Code installed and signed in ... and Node.js\" (line 206); step 1 `git init` (line 213)",
+            "problem": "Step 1 runs `git init`, but the prerequisites never mention Git. A Visitor who starts from zero (only Claude Code, the plugin and a terminal) gets \"git is not recognized\" in PowerShell, or a Command Line Tools install dialog on a Mac. Also, after a Windows Visitor installs Node.js, the open PowerShell window doesn't see `node` until a new window is opened, so `claude` started from that window can't run the step 6 test.",
+            "evidence": "Line 206 lists only Claude Code and Node.js, but line 213 is `git init`. 00-start-here.md:35 treats Git as a separate install (\"On Windows, install Git for Windows (git-scm.com)\"). The sibling Try blocks list it: 16-architecture.md:194 \"plus Git (check with `git --version`)\" and 01-how-agents-work.md:271. 09-implement.md:228 also adds \"install Node.js (the LTS installer from nodejs.org), then open a new terminal\". Retro's version leaves out the new-terminal step.",
+            "fix": "Replace line 206 with: \"You need Claude Code installed and signed in (see [Start here](/learn/start-here)), Git (type `git --version`; if it isn't found, install it as Start here shows) and Node.js, which runs JavaScript outside a browser: if `node --version` gives an error, install the LTS version from nodejs.org, then open a new terminal window. Allow 15 minutes. To stop the agent at any point, press Esc, or choose No at a permission prompt.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Try it yourself, step 5 (line 234-238) run before step 6 (line 240), and the checklist item \"the JavaScript line something the agent can find out (or a no-op)\" (line 256)",
+            "problem": "The /writing-for-agents review in step 5 runs while the folder holds only CLAUDE.md and .git. There is no .js file and no package.json yet, so \"This project is written in JavaScript.\" can't be found by looking. A correct review can then call it a fact worth keeping for now, and the checklist would mark that correct run as a failure.",
+            "evidence": "writing-for-agents SKILL.md:79: keep in a document only \"what the agent cannot find by looking\" and leave lookups to the environment. In an empty folder that lookup finds nothing. The Lesson's own order is step 4 create CLAUDE.md (line 224), step 5 review (line 234), step 6 write the function (line 240), so no code exists at review time.",
+            "fix": "Swap steps 5 and 6 so code exists before the review. New step 5: \"Give it a small job: a function plus a test. If it asks permission to create files or run its test, choose Yes.\" followed by the word-count prompt. New step 6: \"Now review the steering file with the reference:\" followed by the unchanged /writing-for-agents prompt. Step 7: \"Then, in the same session, type:\" `/retro`. The checklist can stay as it is."
+          },
+          {
+            "severity": "medium",
+            "where": "The idea, table row \"A check: lint, a type check, a test, a commit hook, a CI job\" (line 46); \"runs lint, types or tests\" (line 55); Checkpoint untraceable-candidate \"the wrong test command\" (line 128)",
+            "problem": "\"Type check\" is never explained anywhere in the Lesson. \"Test\" is used at lines 46, 55 and 128 but only explained at line 240, inside the Try block. A Visitor who has never used a coding agent meets both as one of the main kinds of fix, with no clause at first use.",
+            "evidence": "Line 53 explains commit hook, CI, commit and push right after the table, but not type check or test. The first gloss of test is line 240: \"a test (a few lines of code that check the function gives the right answers)\". Other Lessons gloss type checks at first use: 09-implement.md:42 \"Typechecks (quick automatic checks that the code fits together)\" and 10-code-review.md:101 \"the type checker (which catches values of the wrong kind)\".",
+            "fix": "Start line 53 with: \"A type check confirms the code's pieces fit together, and a test is a few lines of code that check other code gives the right answers.\" Keep the rest of line 53 as it is. To keep the word count level, shorten step 6 (line 240) to \"Give it a small job: a function plus a test.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Your part, \"**Already cleared, or past the Smart zone** (roughly the first 150k tokens, where the model still thinks clearly)? In a fresh session, type `/retro`...\" (line 119)",
+            "problem": "This bullet tells the reader to move /retro to a fresh session once a session is past the Smart zone. That contradicts the bullet just above (line 118), the course fact, the Main flow Lesson and the Final test. Long builds often pass 150k tokens, so the reader gets two different instructions for the most common case. No cited source gives the Smart-zone condition.",
+            "evidence": "ask-matt SKILL.md:38: \"Run `/retro` in the session it's looking back on, before you clear; after clearing, point it at that session's log instead\" (nothing about the Smart zone). The writing guide's \"Facts the whole course agrees on\": \"Run `/retro` in the session it reviews, before `/clear`.\" 12-main-flow.md:97 gives the same rule with only \"Already cleared?\" as the exception. aihero.dev/skills-retro: \"in the same session or pointed at that session's log\". The research note .scratch/course-rewrite/research/retro.md has no Smart-zone source (grep for zone/150k/fresh finds nothing). The Lesson's own sequence-retro-timing question (line 403) marks retro-then-clear as right.",
+            "fix": "Replace the bullet with: \"- **Already cleared?** In a fresh session, type `/retro` followed by the session you mean, for example `/retro my previous session in this repo, where the agent couldn't find the config file`. It searches the logs for it.\" This also saves about 15 words."
+          },
+          {
+            "severity": "medium",
+            "where": "Site story, \"the \"Agent skills\" block in the shape `/setup-matt-pocock-skills` writes\" (line 274)",
+            "problem": "`/setup-matt-pocock-skills` appears only here and is never explained. A cold reader doesn't know it is Matt's one-time setup Skill, so \"the shape it writes\" means nothing to them.",
+            "evidence": "grep -n \"setup-matt\" content/lessons/17-retro.md returns only line 274. The writing guide asks for every term to be explained at or before first use, in a clause. Per the engineering README, setup-matt-pocock-skills will \"Configure this repo for the engineering skills ... Run once per repo.\"",
+            "fix": "\"...and most of it is the \"Agent skills\" block that `/setup-matt-pocock-skills` (the Skill you run once per repo to set up Matt's Skills) writes.\""
+          },
+          {
+            "severity": "low",
+            "where": "Steering files, \"`/retro` sharpens the old rule of thumb (a correction you've made twice is a candidate line): a mechanical repeat mistake becomes a check, a judgement call goes to `CODING_STANDARDS.md`, and only what neither can hold goes in `CLAUDE.md`.\" (line 152)",
+            "problem": "This repeats the routing already given in goal 2, line 55, the flow Scene, Common mistakes and the Cheat sheet. The Lesson is at 2,911 prose words against a 3,000 limit (guide target 2,300-2,800), and the fixes above add about 40 words. \"The old rule of thumb\" also doesn't say whose rule it is.",
+            "evidence": "node .scratch/course-rewrite/tools/lint-lesson.mjs content/lessons/17-retro.md prints proseWords 2911. The rule of thumb comes from 01-how-agents-work.md:205 (\"from Matt's dictionary\").",
+            "fix": "\"So what earns a line? Mostly ==navigation pointers==, plus the rare fact that's both undiscoverable and relevant to every session. The rule of thumb from [How coding agents work](/learn/how-agents-work), a correction made twice is a candidate line, now has a filter: only what a check or `CODING_STANDARDS.md` can't hold goes in `CLAUDE.md`.\""
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, step 7 \"In the same session, before anything else, type: /retro\" (line 246)",
+            "problem": "/retro may search the session logs, which sit outside the practice folder. If Claude Code asks permission to read them, the only advice this Try has given is to choose No to stop the agent (line 206), so a cautious beginner may refuse.",
+            "evidence": "retro SKILL.md:13: \"This may mean searching through session logs on this machine.\" The Lesson's line 39 puts those logs under `~/.claude/projects/`. Steps 4 and 6 tell the reader to choose Yes for their prompts; step 7 says nothing.",
+            "fix": "\"7. In the same session, before anything else, type `/retro`. If it asks to read its session log (a file under `.claude/projects` in your home folder), choose Yes.\""
+          },
+          {
+            "severity": "low",
+            "where": "Try checklist, \"Right after you sent `/retro`, a line mentioning writing-for-agents showed that Skill loading. If you see none, ask...\" (line 258)",
+            "problem": "Step 5 already loads /writing-for-agents in this same session, and step 4 can trigger it too, because it's model-invoked for CLAUDE.md edits. So /retro may not show a fresh load line. The agent's answer to the fallback question (\"yes, earlier\") then leaves the box neither clearly ticked nor failed.",
+            "evidence": "retro SKILL.md:11 says to call the Skill tool with writing-for-agents. writing-for-agents SKILL.md:3 is triggered when \"modifying AGENTS.md or CLAUDE.md\". Lesson step 5 (line 237) types /writing-for-agents explicitly.",
+            "fix": "\"- [ ] When you sent `/retro`, a line mentioning writing-for-agents showed that Skill loading, or the agent said it already had it from the earlier review. If you see neither, ask: \"Did you load the writing-for-agents skill?\"\""
+          },
+          {
+            "severity": "low",
+            "where": "Your part, \"so run `git status` (it lists what changed) afterwards.\" (line 122)",
+            "problem": "A Visitor who barely uses Git learns how to spot uncommitted changes but not what to do about them.",
+            "evidence": "gh issue view 1311 --repo mattpocock/skills, title: \"after retro, changes are proposed and implemented but then the commit is forgotten\". The Lesson stops at running git status.",
+            "fix": "\"...so run `git status` (it lists what changed) afterwards, and if it lists files, ask the agent to commit them.\""
+          },
+          {
+            "severity": "low",
+            "where": "Writing for agents, \"It's model-invoked, so the agent picks it up on its own when you create or edit a Skill...\" (line 168)",
+            "problem": "\"Picks it up on its own\" reads as a guarantee. A model-invoked Skill is one the agent can start, not one it always starts. Try step 4 then has the reader expect an automatic load that may not happen.",
+            "evidence": "GLOSSARY.md, Model-invoked Skill: \"A Skill the agent can start by itself when your request matches what the Skill is for\". writing-for-agents SKILL.md:3 description: \"Use when creating or editing skills, or modifying AGENTS.md or CLAUDE.md.\"",
+            "fix": "\"It's model-invoked, so the agent can pick it up on its own when you create or edit a Skill or change `CLAUDE.md` or `AGENTS.md`, and you can type it yourself.\""
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Final test, spot-negation, line 352: \"Dana added \\\"Don't use technical jargon in error messages.\\\" to `CLAUDE.md`\", and option b feedback line 356",
+            "problem": "The spot- question holds two of the Lesson's mistakes, not one. Dana adds a `CLAUDE.md` line because of a repeat mistake, and that is the Lesson's first Common mistake. The ban is the second. The right answer's feedback then offers a positive `CLAUDE.md` line as the fix, which quietly approves the placement. Two questions earlier in the same Final test, that placement is called \"the reflex `/retro` resists\".",
+            "evidence": "Line 266 (Common mistakes): \"**A `CLAUDE.md` line for every repeat mistake.** Mechanical slips get a check; judgement calls go to the reviewer's standards.\" Goal 2 (line 15): \"a new rule in `CLAUDE.md` almost never\". scenario-repeat-mistake option a feedback (line 294): \"That's the reflex `/retro` resists.\" spot-negation line 352: \"After the agent kept filling error messages with developer jargon, Dana added ... to `CLAUDE.md`\". Line 356 feedback: \"'Write every error message in words a customer would use' states the target\", with no change of file. retro SKILL.md:19 sends judgement calls to `CODING_STANDARDS.md`, and SKILL.md:41 says `CLAUDE.md` should be used \"incredibly sparingly\".",
+            "fix": "Move the line into a home the Lesson accepts (line 150: steering preferences belong in Skills), so the ban is the only mistake. Stem: \"Dana's `error-messages` Skill, which the agent loads whenever it writes an error message, says \\\"Don't use technical jargon.\\\" Since she added that line, the messages mention stack traces and status codes even more. Spot the mistake.\" Replace option c with \"- [ ] A Skill is read only once, when it's installed.\" and feedback \"  > It loads each time a task matches its description, so the agent did see the line.\" Keep options a, b and d and their feedback as they are."
+          },
+          {
+            "severity": "medium",
+            "where": "Checkpoint reviewer-has-room, line 82: \"judgement-call rules, such as keeping new pages consistent with old ones\" vs Final test scenario-style-drift, line 304: \"its layout and tone don't match the pages around it\"",
+            "problem": "The Checkpoint nearly duplicates a Final test question. Both use the same judgement call (new pages matching the old ones) and both have the same answer (the reviewer and its `CODING_STANDARDS.md`). The Checkpoint's feedback even says \"That's why standards live in `CODING_STANDARDS.md`.\" A reader who has done the Checkpoint gets scenario-style-drift for free.",
+            "evidence": "Writing guide, Questions: \"Don't reuse a Checkpoint as a Final test question.\" Line 86: \"Right. The reviewer has the least context pressure ... That's why standards live in `CODING_STANDARDS.md`.\" Line 305/306: \"[x] A rule in `CODING_STANDARDS.md`, which the reviewer reads.\" / \"'Match the surrounding pages' is a judgement call\".",
+            "fix": "Give the Checkpoint a different judgement call. Line 82: \"Your team keeps a 900-line list of judgement-call rules, such as when a component has grown big enough to split. By `/retro`'s reasoning, where do those rules do the most good?\""
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-style-drift, lines 304-305: stem \"and the reviewer let it through\"; right option \"A rule in `CODING_STANDARDS.md`, which the reviewer reads.\"",
+            "problem": "Wording tell. The stem names the reviewer, and the right answer is the only option that does. A reader can pick it by matching the word without knowing the mechanical-or-judgement split.",
+            "evidence": "Options at lines 305, 307, 309 and 311: only a contains \"reviewer\". Lens rule: the right option must not echo the prompt.",
+            "fix": "Have a distractor name the reviewer too, using a real misconception. Replace option d (lines 311-312) with \"- [ ] Nothing: the reviewer can't judge taste, so no file can capture it.\" and feedback \"  > Judging taste is exactly the reviewer's job, and `CODING_STANDARDS.md` is where it reads the rules.\" (67 characters, longer than the right answer's 58, so the lint still passes.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-which-skill, line 329: \"`/retro`, because it judges steering files.\"",
+            "problem": "A sharp reader can defend the distractor, because its stated reason is true by the Lesson's own teaching. The Lesson's table gives `/retro` two categories that judge steering files (Global AGENTS.md, No-ops). It also says `/retro` loads `/writing-for-agents` on every run, so it applies the same rules. Only the general advice to skip it after a smooth session rules it out. The right option's reason, \"because an agent reads that file\", also repeats the Lesson's defining phrase for writing-for-agents (\"any document an agent reads\", line 168 and goal 4).",
+            "evidence": "Line 48: \"Global AGENTS.md | `CLAUDE.md` or its twin ... has grown big | Move its rules\". Line 50: \"No-ops | Steering lines that change nothing | Cut them\". Line 38: \"Loads `/writing-for-agents` ... on every run.\" retro SKILL.md:22: \"No-ops: look for instructions in steering files that don't modify the agent's behavior.\" Line 333: \"[x] `/writing-for-agents`, because an agent reads that file.\"",
+            "fix": "Give option a a reason that is actually false: \"- [ ] `/retro`, because it reads files rather than sessions.\" with feedback \"  > It's the other way round: it reads a session's record. With nothing gone wrong, it has little to work from and mostly proposes rules nobody needed.\" (54 characters, shorter than the right answer's 56.) Optionally reword c to \"- [x] `/writing-for-agents`, the reference for any file like this.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, spot-automated-retro, lines 365-371",
+            "problem": "Wording tell. All three wrong options use the \"should have\" form (\"The script should also have ...\", \"He should have kept ...\", \"He should have told ...\"). The right option is the only one in another form (\"Nobody judged the proposals ...\"), so it stands out without any reasoning.",
+            "evidence": "Line 365: \"The script should also have deleted...\"; line 367: \"He should have kept `/retro` to standards...\"; line 369: \"He should have told it to edit `CLAUDE.md`...\"; line 371: \"[x] Nobody judged the proposals before they were built into the repo.\"",
+            "fix": "Put the right option in the same form: \"- [x] He should have judged each proposal before it went into the repo.\" (65 characters, shorter than options a at 70 and c at 68.) Keep the feedback as it is."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, predict-stale-init, line 376 \"What's going on?\" with options c (line 381) \"`/init` must be rerun after every rename to keep the file fresh.\" and d (line 383) \"`CLAUDE.md` is too short; it needs a full map of every file.\"",
+            "problem": "The stem asks for a diagnosis, but c and d are remedies. Only a and b answer \"what's going on\", so two distractors can be dropped on grammar alone. The stem also puts \"written by `/init`\" next to \"renamed two files\", which is the body's own sentence. It tests recall more than reasoning.",
+            "evidence": "Body line 148: \"Notes naming specific files rot the moment you rename one.\" Options c and d are phrased as \"must be rerun\" and \"it needs\", which are prescriptions.",
+            "fix": "Turn c and d into causes the reader might believe. c: \"- [ ] The rename wiped an index `/init` built, so search now fails.\" with feedback \"  > `/init` builds no index; it only writes a starter `CLAUDE.md`, and that file still names the old files.\" d: \"- [ ] The file is too short to list every file, so the agent guesses.\" with feedback \"  > Length isn't it. A fuller map would go stale faster; what's there now names files that are gone.\" (61 and 63 characters; option a at 74 is still the longest.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Goals line 14, \"what `/retro` changes (the agent's environment, not your code)\", and the Final test as a whole (lines 289-409)",
+            "problem": "The first half of goal 1, the Lesson's big idea, is not checked by any Final test question. No question offers fixing the code as a wrong answer, so a reader who thinks `/retro` patches bugs is never caught. Every placement question already assumes the fix goes into the environment.",
+            "evidence": "Callout at line 31: \"`/retro` doesn't fix the bug the agent shipped.\" No Final test option proposes a code fix: the options are `CLAUDE.md`, `CODING_STANDARDS.md`, lint, memory, Skills, logs and command orders. Writing guide: \"the Final test checks the goals.\"",
+            "fix": "In scenario-repeat-mistake, replace option d (lines 299-300) with \"- [ ] A commit that strips `moment` out of the new code.\" and feedback \"  > That fixes today's code, not the gap that let it in. `/retro` changes the environment, so the next slip gets caught.\" (50 characters; option b at 60 is still the longest.)"
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint reviewer-has-room, lines 85 and 87: \"With the reviewer, which only reads a diff, not the whole codebase.\" and \"Split across both, so each agent enforces half of them.\"",
+            "problem": "The right option says the reviewer \"only reads a diff\", yet the question is about the reviewer reading 900 lines of rules. code-review also hands its standards sub-agent the standards files. Option c (\"enforces half of them\") is not a misconception anyone holds, so it is a throwaway.",
+            "evidence": "code-review SKILL.md:65: the Standards sub-agent prompt includes \"The list of standards-source files you found in step 3\". retro SKILL.md:33: \"it receives a diff, so no exploration needed\".",
+            "fix": "Option b: \"- [x] With the reviewer, which starts from a diff instead of exploring.\" Option c: \"- [ ] In each feature's spec, so the builder has them while it plans.\" with feedback \"  > That still loads the whole list onto the builder, the agent under the most pressure, and copies it into every spec.\" (Option a at 74 characters is still the longest.)"
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint untraceable-candidate, line 128 \"Nothing in the session involved comments.\" and right option line 135 \"nothing in the session or the repo backs it\"",
+            "problem": "The stem rules out the session but says nothing about the repo, yet the right answer also claims the repo gives no support. The Lesson accepts \"a plain fact about the repo\" as backing, so a careful reader can't confirm half of the key.",
+            "evidence": "Line 121: \"Throw out any you can't link to a specific moment in the session, or to a plain fact about the repo\". Line 136 feedback repeats the rule about the repo.",
+            "fix": "Stem: \"... Number four says \\\"Add more comments to improve readability.\\\" Nothing in the session involved comments, and the code is already well commented. What do you do with it?\""
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint no-op-test, line 178: \"Be careful and think about edge cases.\"",
+            "problem": "\"Be careful\" is the textbook weak leading word, the same as the Lesson's \"be thorough\". For that case writing-for-agents prescribes a stronger word, not deletion. The key holds only because no option offers a stronger word, and the right answer's feedback has to patch this with \"reach for a stronger leading word\".",
+            "evidence": "writing-for-agents SKILL.md:81: \"a word too weak to beat the default (_be thorough_ ...) is a no-op, and the fix is a stronger word (_relentless_), not a different technique.\" Lesson line 174: \"A word too feeble to beat the default, like *be thorough*, is itself a no-op; reach for a stronger one\".",
+            "fix": "Use a no-op that isn't a leading word: \"A Skill you're writing contains the line \\\"Make sure the code you write works correctly.\\\" ...\", and keep the options. In option b, change the trimmed form to \"Trim it to \\\"Make sure the code works\\\" to save tokens.\""
+          }
+        ]
+      },
+      "fix": {
+        "applied": [
+          "accuracy+reader medium (Try steps 5-6, duplicate issues): swapped the steps. The small job (function plus test) is now step 5 and the /writing-for-agents review of CLAUDE.md is step 6, so code exists when the review asks whether the JavaScript line is discoverable. Step 7 is still '/retro' in the same session. The checklist now reads 'the JavaScript line discoverable (or a no-op)', which matches the review prompt's own label and cuts 5 words.",
+          "reader medium (Try prerequisites): Git is now a prerequisite, with Start here linked for both installs. The block checks with git --version and node --version ('doesn't print a number' also covers the Mac install dialog), says to install Node.js's LTS installer from nodejs.org, then open a new terminal. 'at any point' cut to save words.",
+          "reader medium (type check/test not glossed): the paragraph after the findings table now opens 'A type check confirms the code's pieces fit together; a test runs code and checks the answers.' The later test gloss in the Try step was removed to keep the word count level.",
+          "reader medium (Smart-zone bullet contradicts run-before-clear): the bullet is now just '**Already cleared?**' plus the unchanged fresh-session example. This matches ask-matt SKILL.md and the course fact, and cuts 16 words.",
+          "reader medium (/setup-matt-pocock-skills unexplained in the Site story): added '(Matt's once-per-repo setup Skill)', kept 'in the shape that' because no commit shows the Skill wrote the file, and changed 'the Skill' to '/retro', since two Skills are now named. Net 0 words. The repo facts still hold: CLAUDE.md is 17 lines, package.json has lint and test scripts, and there is no .github or .husky folder.",
+          "quiz medium (spot-negation had two mistakes): the ban now lives in Dana's error-messages Skill, which the agent loads whenever it writes an error message. That is a home the Lesson accepts, so the ban is the only mistake. Option c is now 'A Skill is read only once, when it's installed.' with new feedback. Options a, b and d are unchanged, and the id is kept.",
+          "quiz medium (reviewer-has-room duplicated scenario-style-drift): the Checkpoint's example judgement call is now 'when a function has grown big enough to split', no longer pages matching their neighbours.",
+          "quiz medium (scenario-style-drift wording tell): option d now names the reviewer too ('Nothing: the reviewer can't judge taste, so no file can capture it.'), with feedback saying that judging taste is the reviewer's job and CODING_STANDARDS.md is where it reads the rules.",
+          "quiz medium (scenario-which-skill defensible distractor): option a is now '/retro, because it reads files rather than sessions.', a false reason, and its feedback opens 'It's the other way round: it reads a session's record.'",
+          "quiz medium (spot-automated-retro wording tell): the right option now uses the same form as the others: 'He should have judged each proposal before it went into the repo.'",
+          "quiz medium (predict-stale-init remedies posing as diagnoses): c and d are now causes a reader might believe ('The rename wiped an index /init built...', 'The file is too short to list every file, so the agent guesses.'), each with corrective feedback.",
+          "quiz medium (goal 1 'not your code' untested): scenario-repeat-mistake option d is now 'A commit that strips moment out of the new code.', with feedback that /retro changes the environment, not today's code.",
+          "Checked every question's right answer with a script: it is shorter than at least one wrong option both in raw Markdown and in visible text. Question ids unchanged, since every question keeps its meaning. 4 Checkpoints and 10 Final test questions, as before."
+        ],
+        "declined": [
+          {
+            "problem": "quiz medium (predict-stale-init): the stem's 'written by /init' next to 'renamed two files' echoes the body sentence, so it tests recall",
+            "reason": "Only the option fix was applied. The issue's own fix changes only options c and d. The stem is a fresh case (Mo, a teammate's rename), and those two words are what make the question answerable. All four options now name a plausible cause, so the question needs reasoning, not grammar-matching."
+          },
+          {
+            "problem": "quiz medium (scenario-which-skill), optional part: reword option c to avoid 'because an agent reads that file'",
+            "reason": "Not applied. It was marked optional, and the suggested rewording ('the reference for any file like this') echoes the Lesson's defining phrase just as much. The current reason is short, true, and doesn't repeat the stem."
+          }
+        ],
+        "words": 2899,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/retro.json"
+}

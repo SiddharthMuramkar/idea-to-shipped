@@ -19,7 +19,7 @@ Know what really happens between the sentence you type and the code that appears
 
 ## Why it matters
 
-Claude Code is Anthropic's coding agent: an AI that works in your terminal, reads your project's files, runs commands and writes code. You type one sentence, say "the comment box test is failing, fix it" (a test is a small program that checks your code still works), and your screen fills with lines you didn't write: a read, a search, a shell command (a command run in the terminal), an edit, another command. A few minutes later it says it's done.
+Claude Code is Anthropic's coding agent: Claude, their AI, working in your terminal, reading your project's files, running commands and writing code. You type one sentence, say "the comment box test is failing, fix it" (a test is a small program that checks your code still works), and your screen fills with lines you didn't write: a read, a search, a shell command (a command run in the terminal), an edit, another command. A few minutes later it says it's done.
 
 If you don't know what those lines are, you either approve every request unread or panic and stop it halfway. Either way you aren't steering. Worse, you can't tell a real result from a confident sentence: an agent can write "I ran the tests and they pass" without having run anything.
 
@@ -30,14 +30,14 @@ Matt Pocock, a developer and teacher who publishes a popular set of Skills for C
 Three words do most of the work.
 
 - **The model** is the AI itself (Claude). It does one thing: text in, text out. On its own it can't open a file, run a command or remember your last message.
-- **The harness** is everything wrapped around the model that lets it act: the tools it can call, the system prompt (standing instructions sent with every request), the permission checks, and the management of its context window. The context window is everything the model can see at once. It's measured in tokens, the small chunks of text AI usage is counted in; see [The context window](/learn/context-window). Claude Code is a harness. So is the claude.ai website, whose tools (web search, say) can't touch your files. That's why ==the same model behaves differently== in each: same brain, different hands.
+- **The harness** is everything wrapped around the model that lets it act: the tools it can call, the system prompt (standing instructions sent with every request), the permission checks, and the management of its context window. The context window is everything the model can see at once. It's measured in tokens, the small chunks of text AI usage is counted in; see [The context window](/learn/context-window). Strictly, Claude Code is the harness; with Claude inside, it's a coding agent. So is the claude.ai website, whose tools (web search, say) can't touch your files. That's why ==the same model behaves differently== in each: same brain, different hands.
 - **The agent** is the two together, taking turns with you.
 
 The model acts through **tool calls**. A tool call is a line of structured text naming a tool and what to pass it: run this command, read this file. The model writes it and stops. Claude Code reads the call, checks it against your permission settings, runs it if allowed, and sends the output back to the model as a **tool result**. The model reads the result and decides the next step. That cycle is ==the agent loop==, and it repeats until the model answers with words instead of another call.
 
 One **turn** is your message plus everything the agent does before it hands control back, often dozens of tool calls.
 
-Two things follow. First, if no tool call happened, nothing happened, whatever the reply says. Second, ==every session starts blank==. A session is one Claude Code conversation, from starting `claude` until you quit or type `/clear` (a Built-in command that empties the conversation and leaves your files alone). The next session remembers nothing of it unless something was written to a file, by you or by Claude Code in notes it keeps for itself. In January 2026 Matt pictured a colleague who forgets everything about the project each time they commit (save a version of the project with git, the tool most projects use to record every change).
+Two things follow. First, if no tool call happened, nothing happened, whatever the reply says. Second, ==every session starts blank==. A session is one Claude Code conversation, from starting `claude` until you quit or type `/clear` (a Built-in command that empties the conversation and leaves your files alone). The next session remembers nothing of it unless something was written to a file, by you or by Claude Code in notes it keeps for itself. In January 2026 Matt pictured a colleague who forgets everything each time they commit (save a version of the project with git, the tool most projects use to record every change).
 
 ```scene flow
 title: One request, many trips round the loop (illustrative)
@@ -93,7 +93,7 @@ Three keys let you watch and steer mid-loop. **Ctrl+O** opens the transcript, sh
 
 ```checkpoint manual-runs-free
 You're in Manual mode. Which of these tool calls runs without stopping for your approval?
-- [x] Reading a file inside your project folder.
+- [x] Searching every file in the project for the word `signup`.
   > Right. Reads and searches inside the project never ask: they can't change anything.
 - [ ] Editing a single line of a file it has just read.
   > Edits ask in Manual mode, however small.
@@ -119,7 +119,7 @@ Since Claude Code 2.1.283, ==new sessions start in auto mode== unless your organ
 
 When a mode does ask, you get a permission prompt: allow the call, or choose No. A plain No (or Esc) stops the turn, and the agent waits for your next message. To steer it instead, move to No, press Tab, type a few words ("no, use the existing helper") and press Enter: the model reads your refusal as a tool result and changes course. If a harmless prompt keeps coming back, add an allow rule with `/permissions` (a rule that lets one kind of call through without asking). A deny rule does the opposite: it blocks one kind of call in every mode.
 
-Picking a mode is a trade. Too tight and you approve on autopilot; Anthropic's best-practices guide warns: "After the tenth approval you're clicking through rather than reviewing." Matt's AI Coding Dictionary calls that rubber-stamping: the interruptions without the protection. Too loose and the agent does things you'd have wanted to see first. The same dictionary sketches a ladder that loosens as trust grows: plan mode first, Manual for delicate edits, Accept edits once it has shown it understands, Bypass only for unattended runs in a sealed-off container. (Matt himself now does the planning by grilling; see below.) Switching modes never resets the conversation.
+Picking a mode is a trade. Too tight and you approve on autopilot; Anthropic's best-practices guide warns: "After the tenth approval you're clicking through rather than reviewing." Matt's AI Coding Dictionary calls that rubber-stamping: the interruptions without the protection. Too loose and the agent does things you'd have wanted to see first. The same dictionary sketches a ladder that loosens with trust: plan mode first, Manual for delicate edits, Accept edits once it has shown it understands, Bypass only for unattended runs in a sealed-off container. (Matt now plans by having the agent interview him; see below.) Switching modes never resets the conversation.
 
 ```callout watch-out
 Bypass permissions (what the `--dangerously-skip-permissions` option turns on) runs every tool call without asking. The docs say to use it only in sealed-off containers or virtual machines. On your own laptop, auto mode or a few allow rules cut the prompts and keep the safety net.
@@ -128,7 +128,7 @@ Bypass permissions (what the `--dangerously-skip-permissions` option turns on) r
 ```checkpoint fresh-session-edits
 You start Claude Code in a new folder, ask for a small script, and it creates the file without asking you. Nothing is broken. What's going on?
 - [ ] It's in Bypass permissions, which every session starts in.
-  > Bypass is never the starting mode; you have to turn it on.
+  > Bypass is never the built-in starting mode; you'd have to turn it on yourself.
 - [x] New sessions start in auto mode; Shift+Tab reaches Manual.
   > Right. Auto mode lets edits inside your project through without asking; the classifier checks riskier actions, such as shell commands. One Shift+Tab takes you to Manual, which asks before edits.
 - [ ] Creating new files never needs permission, in any mode.
@@ -167,7 +167,7 @@ you: 2
 agent: *Claude Code's permission prompt:* edit `src/app/learn/[slug]/page.tsx`? Yes · No
 ```
 
-**Matt changed his mind about plan mode, and you should know both halves.** In January 2026 he used it for almost everything, even small bug fixes, refining each plan with the agent before it built anything. Two lines in his instruction file shaped his plans: be extremely concise, and end with a list of unresolved questions. By April 2026 he'd stopped. On X he wrote that it "creates a plan FAR too eagerly and usually asks you zero questions", when planning should get you on the same wavelength, not produce a document nobody reads. He still plans heavily, but by being interviewed with his grilling Skills, with plan mode off; see [Grilling](/learn/grilling).
+**Matt changed his mind about plan mode, and you should know both halves.** In January 2026 he used it for almost everything, even small bug fixes, refining each plan before the agent built anything. Two lines in his instruction file shaped his plans: be extremely concise, and end with a list of unresolved questions. By April 2026 he'd stopped. On X he wrote that it "creates a plan FAR too eagerly and usually asks you zero questions", when planning should get you on the same wavelength, not produce a document nobody reads. He still plans heavily, but by being interviewed with his grilling Skills, with plan mode off; see [Grilling](/learn/grilling).
 
 So use plan mode when you want the agent to look before it touches anything, on a change you've already decided. When you haven't decided *what* to build yet, grill first: let the agent interview you until the decisions are made.
 
@@ -210,8 +210,8 @@ You want the agent to sum up each change in one sentence, but only in this repo,
   > That file is shared through git, so your teammates would get your preference too.
 - [ ] Your global `~/.claude/CLAUDE.md`.
   > That file is yours, but it applies to every project, and you want this only here.
-- [ ] Your first message in each session in this repo.
-  > Chat doesn't carry over: every session starts blank, and even within one, `/compact` can boil it away. A file is reloaded for you.
+- [ ] An `AGENTS.md` file in the project folder.
+  > Like the project's `CLAUDE.md`, it's shared through git, so your teammates would get it too. And Claude Code reads it only when there's no `CLAUDE.md`.
 - [x] `CLAUDE.local.md` in the project folder.
   > Right. It applies only in this project, and since you keep it out of git, it's yours alone.
 ```
@@ -263,7 +263,7 @@ Permissions and rewind work as a pair. Rewind covers the agent's file edits, so 
 **Others**
 
 - **Anthropic's best practices:** correct course early with Esc, Esc Esc or "undo that". After two failed corrections, `/clear` and start again with a better prompt, because failed attempts clutter the context window.
-- **Plan mode versus grilling:** AI Coding Daily compared `/grill-me` with plan mode in April 2026, and a Hacker News commenter reported reaching for `/grill-me` more and more instead of plan mode.
+- **Plan mode versus grilling:** AI Coding Daily compared `/grill-me` with plan mode in April 2026, and a Hacker News commenter reported increasingly reaching for `/grill-me` instead of plan mode.
 
 ## Try it yourself
 
@@ -279,7 +279,7 @@ claude
 ```
 
 2. Look under the prompt box. It probably says "auto mode on". Press Shift+Tab (Alt+M on some Windows setups) until it says "manual mode on".
-3. Watch the loop without changing anything. Type the prompt below and press Enter. While it works, press Ctrl+O to see each tool call (Ctrl+O again to go back). If it asks to run a command that only reads or searches, choose Yes. If it asks to change anything, move to No, press Tab, type `carry on without changing anything` and press Enter (a plain No would stop it).
+3. Watch the loop without changing anything. Type the prompt below and press Enter. While it works, press Ctrl+O to see each tool call (Ctrl+O again to go back). If it asks to run a command or change anything, move to No, press Tab, type `carry on without changing anything` and press Enter (a plain No would stop it).
 
 ```text
 Without changing anything, find where Lesson pages are loaded from Markdown and explain the flow in five bullets.
@@ -308,13 +308,13 @@ Plan how to add a "Back to top" link at the end of each Lesson page. Keep it sma
 
 ## Common mistakes
 
-- **Rubber-stamping prompts.** If you click Yes without reading, switch to a looser mode or add allow rules instead, so that you choose what runs freely.
+- **Rubber-stamping prompts.** If you click Yes without reading, switch to a looser mode or add allow rules instead, so you choose what runs freely.
 - **Believing a claim with no tool call behind it.** "I ran the tests" means nothing if Ctrl+O shows no test run.
 - **Expecting it to remember yesterday.** Put what must carry over in `CLAUDE.md`, or in a file the next session reads.
 - **Accepting a plan that asked you nothing.** That's Matt's complaint about plan mode. Read the plan, and choose "No, keep planning" wherever it guessed.
 
 ```site-story
-This site's `CLAUDE.md` is 17 lines, and it arrived with the very first commit. Most of it is the "Agent skills" block in the shape `/setup-matt-pocock-skills` writes: where the issue tracker lives (to-do files under `.scratch/`), the labels for sorting issues, and where the glossary (the project's word list) and decision records go. The rest points the agent at `AGENTS.md`, a note about the newer version of Next.js (the framework this site is built on). Nothing in it describes the code; the agent reads the code for that.
+This site's `CLAUDE.md` is 17 lines, and it arrived with the very first commit. Most of it is the "Agent skills" block in the shape that Matt's repo-setup Skill, `/setup-matt-pocock-skills`, writes: where the issue tracker lives (to-do files under `.scratch/`), the labels for sorting issues, and where the glossary (the project's word list) and decision records go. The rest points the agent at `AGENTS.md`, a note about the newer version of Next.js, this site's framework. Nothing in it describes the code; the agent reads the code for that.
 
 The blank-session rule also shaped how this course was rebuilt. The engine that draws Scenes and questions was built in one session while the Lessons were written in another. They didn't share a context window, so the engine session wrote its rules down in a contract file, and every Lesson follows it. Before I moved the course to a new Mac, I committed `HANDOFF.md`: where the drafts are, the plan, and how I work. The work on the new machine picked up from that file.
 ```
@@ -355,7 +355,7 @@ Ana asked the agent to fix a failing test and run the whole set of tests. It rep
   > Plan mode blocks edits until you approve a plan. It doesn't run your tests for you.
 - [ ] She should have asked again, because a second reply would show the output.
   > Another reply is just more words. Only a tool call actually runs the tests.
-- [x] She took the reply's word without checking for a test-run tool call.
+- [x] She should have checked the transcript for an actual test run.
   > Right. A tool call is text the harness must run. Ctrl+O shows whether a test run happened; no call, no run, whatever the reply says.
 - [ ] She should have switched to Accept edits, which shows each test result.
   > Accept edits only changes which actions ask first. It doesn't run or show anything extra.
@@ -374,7 +374,7 @@ You've cloned a friend's project you've never seen. You want the agent to study 
 ```
 
 ```test scenario-style-tweaks
-You're adjusting a site's spacing and fonts, and you'll review every change with `git diff` (git's list of what changed) afterwards. You're tired of approving each edit, but you still want to be asked before it installs anything, runs a script or commits to git. Which mode?
+You're adjusting a site's spacing and fonts: dozens of small changes to its style files. You're tired of saying yes to each one, but you still want to be asked before it installs anything, runs a script or commits to git. Which mode?
 - [ ] Bypass permissions
   > That runs every command without asking too, and it's for isolated containers only.
 - [ ] Plan

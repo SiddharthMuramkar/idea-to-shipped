@@ -50,7 +50,7 @@ Matt Pocock, a developer and teacher, publishes a popular set of Skills for Clau
 | No-ops | Steering lines that change nothing | Cut them |
 | Information access | Information the agent couldn't see | More access: an app's log saved to a file, read-only access to a service |
 
-A pre-commit hook runs checks every time you commit (save a snapshot of your changes in Git); CI, short for continuous integration, runs them on a server every time you push (send your commits to a shared copy, say on GitHub).
+A type check confirms the code's pieces fit together; a test runs code and checks the answers. A pre-commit hook runs checks every time you commit (save a snapshot of your changes in Git); CI, short for continuous integration, runs them on a server every time you push (send your commits to a shared copy, say on GitHub).
 
 **Mechanical or judgement?** Before it proposes any rule, `/retro` sorts the mistake. A ==mechanical== one follows a fixed pattern: a banned function, the wrong import, a file in the wrong folder, the wrong package manager. That gets an automated check, because, as Matt's docs put it, "a check can fail and a sentence in a standards file can't." Only genuine judgement calls, like "matches the surrounding style", become written rules. A repo where no hook or CI job runs lint, types or tests is a finding by itself. If a check exists but nothing runs it, the finding is to wire it up.
 
@@ -79,7 +79,7 @@ at: pick
 ```
 
 ```checkpoint reviewer-has-room
-Your team keeps a 900-line list of judgement-call rules, such as keeping new pages consistent with old ones. By `/retro`'s reasoning, where do those rules do the most good?
+Your team keeps a 900-line list of judgement-call rules, such as when a function has grown big enough to split. By `/retro`'s reasoning, where do those rules do the most good?
 - [ ] In `CLAUDE.md`, so the builder follows them from the first line it writes.
   > The builder is already juggling exploring, coding and debugging. Hundreds of rules on top get followed unevenly.
 - [x] With the reviewer, which only reads a diff, not the whole codebase.
@@ -116,7 +116,7 @@ Every candidate pointed at something real, and Matt's first move was to argue wi
 ## Your part: when to run it, and how to judge the list
 
 - **Run it before you clear.** `/clear`, a Built-in command (one that comes with Claude Code), empties the working context, where the struggles live. So run `/retro` in the session it reviews. In Matt's Main flow, his path from idea to shipped, it's the last step, after the code review and `/pr`, the Skill that writes a pull request's description (a pull request asks to merge your changes into the main project; see [The main flow](/learn/main-flow)).
-- **Already cleared, or past the Smart zone** (roughly the first 150k tokens, where the model still thinks clearly)? In a fresh session, type `/retro` followed by the session you mean, for example `/retro my previous session in this repo, where the agent couldn't find the config file`. It searches the logs for it.
+- **Already cleared?** In a fresh session, type `/retro` followed by the session you mean, for example `/retro my previous session in this repo, where the agent couldn't find the config file`. It searches the logs for it.
 - **Pick sessions worth learning from:** ones that were harder than they should have been. After `/diagnosing-bugs` (Matt's Skill for hard bugs) fixes one, run `/retro` in the same session to ask what would have prevented it (see [Diagnosing bugs](/learn/diagnosing-bugs)). After a smooth session, skip it: you'll mostly get rules nobody needed.
 - **Trace every candidate, and question the order.** Throw out any you can't link to a specific moment in the session, or to a plain fact about the repo, such as nothing running its checks. Late in a long session, the agent can forget mid-session struggles and pad the categories with generic advice. And the ranking can put a noisy but harmless slip above a silent, costly one.
 - **Build what you accept like any other change.** A new check is code: try it on the repo before it blocks anyone's work. One bug report on Matt's repo says accepted changes were left uncommitted, so run `git status` (it lists what changed) afterwards.
@@ -203,7 +203,7 @@ A Skill you're writing contains the line "Be careful and think about edge cases.
 ## Try it yourself
 
 ````try
-You need Claude Code installed and signed in (see [Start here](/learn/start-here)), and Node.js, which runs JavaScript outside a browser: type `node --version` in your terminal, and if that gives an error, install it from nodejs.org. Allow 15 minutes. To stop the agent at any point, press Esc, or choose No at a permission prompt.
+You need Claude Code installed and signed in, and Git ([Start here](/learn/start-here) covers both), plus Node.js, which runs JavaScript outside a browser. If `git --version` or `node --version` doesn't print a number, install what's missing (for Node.js, the LTS installer from nodejs.org), then open a new terminal. Allow 15 minutes. To stop the agent, press Esc, or choose No at a permission prompt.
 
 1. Make a practice folder, turn it into a Git repo and start Claude Code. If it asks whether you trust this folder, choose Yes.
 
@@ -231,16 +231,16 @@ Don't use var.
 See notes.md.
 ```
 
-5. Review it with the reference:
-
-```text
-/writing-for-agents Review CLAUDE.md line by line. Label each line as a context pointer, a no-op, a copy of something discoverable, or a prohibition, and suggest a better wording or home for each. Report only; leave the file unchanged.
-```
-
-6. Give it a small job: a function plus a test (a few lines of code that check the function gives the right answers). If it asks permission to create files or run its test, choose Yes.
+5. Give it a small job: a function plus a test. If it asks permission to create files or run its test, choose Yes.
 
 ```text
 Write a JavaScript function that counts the words in a string, with a test that runs on Node's built-in test runner.
+```
+
+6. Review `CLAUDE.md` with the reference:
+
+```text
+/writing-for-agents Review CLAUDE.md line by line. Label each line as a context pointer, a no-op, a copy of something discoverable, or a prohibition, and suggest a better wording or home for each. Report only; leave the file unchanged.
 ```
 
 7. In the same session, before anything else, type:
@@ -253,7 +253,7 @@ Write a JavaScript function that counts the words in a string, with a test that 
 
 **It's working if:**
 
-- [ ] The review called "Write clean, readable code" a no-op, the JavaScript line something the agent can find out (or a no-op), "Don't use var" a prohibition or a job for a lint rule, and "See notes.md" a weak pointer: it never says when to read the file, which doesn't exist.
+- [ ] The review called "Write clean, readable code" a no-op, the JavaScript line discoverable (or a no-op), "Don't use var" a prohibition or a job for a lint rule, and "See notes.md" a weak pointer: it never says when to read the file, which doesn't exist.
 - [ ] The review left `CLAUDE.md` unchanged.
 - [ ] Right after you sent `/retro`, a line mentioning writing-for-agents showed that Skill loading. If you see none, ask: "Did you load the writing-for-agents skill?"
 - [ ] Its candidates came most severe first, and each one points at a moment in this session or a plain fact about the repo.
@@ -271,7 +271,7 @@ Write a JavaScript function that counts the words in a string, with a test that 
 - **Typing plain `/code-review` for Matt's reviewer.** Type `/mattpocock-skills:code-review`.
 
 ```site-story
-Not used on this site yet. The project's `CLAUDE.md` is 17 lines, almost all pointers, and most of it is the "Agent skills" block in the shape `/setup-matt-pocock-skills` writes. And `package.json` has `lint` and `test` scripts, but no CI job or pre-commit hook runs them, which the Skill counts as a finding in itself.
+Not used on this site yet. The project's `CLAUDE.md` is 17 lines, almost all pointers, mostly an "Agent skills" block in the shape that `/setup-matt-pocock-skills` (Matt's once-per-repo setup Skill) writes. And `package.json` has `lint` and `test` scripts, but no CI job or pre-commit hook runs them, which `/retro` counts as a finding in itself.
 ```
 
 ## Cheat sheet
@@ -296,8 +296,8 @@ On a recipe site, the agent keeps adding `moment`, a date library the team dropp
   > Standards are for judgement calls. A banned library is a fixed pattern a tool can catch.
 - [x] A lint rule that fails whenever code uses `moment`.
   > Right. It's mechanical, so it gets an automated check, run by a pre-commit hook or a CI job.
-- [ ] A memory note so the agent remembers next session.
-  > `/retro` isn't a memory system. It changes the environment so the mistake gets caught next time.
+- [ ] A commit that strips `moment` out of the new code.
+  > That fixes today's code, not the gap that let it in. `/retro` changes the environment, so the next slip gets caught.
 ```
 
 ```test scenario-style-drift
@@ -308,8 +308,8 @@ A new page on a recipe site works, but its layout and tone don't match the pages
   > No tool can judge whether a page matches its neighbours. Checks are for fixed patterns.
 - [ ] A paragraph in `CLAUDE.md` describing the house style.
   > That loads into every session, including ones that never touch pages, and lands on the builder instead of the reviewer.
-- [ ] Nothing: style is a matter of taste, so no file can capture it.
-  > Judgement calls are exactly what `CODING_STANDARDS.md` is for.
+- [ ] Nothing: the reviewer can't judge taste, so no file can capture it.
+  > Judging taste is exactly the reviewer's job, and `CODING_STANDARDS.md` is where it reads the rules.
 ```
 
 ```test scenario-cleared-session
@@ -326,8 +326,8 @@ Yesterday's session went badly: the agent kept failing to find a config file. Yo
 
 ```test scenario-which-skill
 No session went wrong, but before a teammate joins you want to check whether your 40-line `CLAUDE.md` pulls its weight. Which Skill fits?
-- [ ] `/retro`, because it judges steering files.
-  > `/retro` looks back over a session. With nothing gone wrong, it has little to work from and mostly proposes rules nobody needed.
+- [ ] `/retro`, because it reads files rather than sessions.
+  > It's the other way round: it reads a session's record. With nothing gone wrong, it has little to work from and mostly proposes rules nobody needed.
 - [ ] `/mattpocock-skills:code-review`, because the file is in the repo.
   > It checks a diff against standards and a spec, not how well a steering file is written.
 - [x] `/writing-for-agents`, because an agent reads that file.
@@ -349,13 +349,13 @@ You're pruning a teammate's `CLAUDE.md`. Which line earns its place there?
 ```
 
 ```test spot-negation
-After the agent kept filling error messages with developer jargon, Dana added "Don't use technical jargon in error messages." to `CLAUDE.md`. Now the messages mention stack traces and status codes even more. Spot the mistake.
+Dana's `error-messages` Skill, which the agent loads whenever it writes an error message, says "Don't use technical jargon." Since she added that line, the messages mention stack traces and status codes even more. Spot the mistake.
 - [ ] The line should be in capitals so the agent takes it seriously.
   > Emphasis doesn't help. The ban itself keeps jargon in the agent's attention.
 - [x] The ban names the unwanted behaviour instead of the wanted one.
   > Right. Negation backfires. "Write every error message in words a customer would use" states the target and never mentions jargon.
-- [ ] `CLAUDE.md` is only read once, when the project is created.
-  > It's loaded at the start of every session.
+- [ ] A Skill is read only once, when it's installed.
+  > It loads each time a task matches its description, so the agent did see the line.
 - [ ] The rule belongs in `AGENTS.md`, which the agent obeys more strictly.
   > Claude Code reads `AGENTS.md` only when there's no `CLAUDE.md`, and a ban there backfires the same way.
 ```
@@ -368,7 +368,7 @@ Ravi set up a script that runs `/retro` after every session and accepts everythi
   > Mechanical slips belong in checks. The trouble was that nothing got judged.
 - [ ] He should have told it to edit `CLAUDE.md` instead of adding checks.
   > Steering lines would cost every session. The real problem was accepting everything unseen.
-- [x] Nobody judged the proposals before they were built into the repo.
+- [x] He should have judged each proposal before it went into the repo.
   > Right. Unjudged, it chases false positives and drifts the repo. Matt runs it by hand on a sample of sessions and picks what to build.
 ```
 
@@ -378,10 +378,10 @@ Mo's `CLAUDE.md` was written by `/init` months ago. Last week a teammate renamed
   > Exploring would find the new names. Something it reads every session still points to the old ones.
 - [x] The generated file still names the old files, so it now misleads.
   > Right. Notes about specific files rot as soon as the code changes. Matt's fix is to delete what `/init` wrote and let the agent explore the code itself.
-- [ ] `/init` must be rerun after every rename to keep the file fresh.
-  > That spends tokens keeping a copy up to date, and the file still loads into every session. Matt deletes it instead.
-- [ ] `CLAUDE.md` is too short; it needs a full map of every file.
-  > A fuller map just goes stale faster. Notes naming files rot on every rename.
+- [ ] The rename wiped an index `/init` built, so search now fails.
+  > `/init` builds no index; it only writes a starter `CLAUDE.md`, and that file still names the old files.
+- [ ] The file is too short to list every file, so the agent guesses.
+  > Length isn't it. A fuller map would go stale faster; what's there now names files that are gone.
 ```
 
 ```test predict-weak-pointer

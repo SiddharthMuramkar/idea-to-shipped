@@ -204,7 +204,7 @@ On a book-club site, you type `/pr` on a finished, reviewed branch and press Ent
 
 What it won't do: open the PR (the agent does that with `gh` when you ask), sort through review comments, follow your repo's own PR template (a file GitHub uses to pre-fill new PR descriptions; settle any clash in `CLAUDE.md`), label the body as AI-written, or split a huge PR. And if a Mermaid diagram looks like raw text in your terminal, nothing's broken: GitHub draws it.
 
-When the work ships as a PR, `/pr` comes between review and the retrospective in [The main flow](/learn/main-flow): `/implement`, `/code-review`, `/pr`, then `/retro` (a look back at the session). Among Matt's Skills, only `/implement-spec`, which builds a whole spec in one run, opens a PR by itself: a draft (marked not ready for review) that it marks ready when the work is done, and only if your issue tracker (where tickets live) closes work through PRs or you ask. See [Implement](/learn/implement).
+When the work ships as a PR, `/pr` comes between review and the retrospective in [The main flow](/learn/main-flow): `/implement`, `/mattpocock-skills:code-review`, `/pr`, then `/retro` (a look back at the session). Among Matt's Skills, only `/implement-spec`, which builds a whole spec in one run, opens a PR by itself: a draft (marked not ready for review) that it marks ready when the work is done, and only if your issue tracker (where tickets live) closes work through PRs or you ask. See [Implement](/learn/implement).
 
 ```checkpoint door-lasting-fix
 On your project, the agent keeps calling database migrations "two-way: just revert". You've corrected it in three separate sessions. What's the lasting fix?
@@ -310,7 +310,7 @@ I typed nothing special to ship v1. The agent opened each PR with `gh pr create`
 
 **I proved the copies are separate.** I posted a Comment on the preview, then checked the real site. It wasn't there. And migrations ship themselves: the preview build migrates the copy, the merge migrates production. Nobody has to remember to run them by hand.
 
-**My PR bodies, read against the template today.** My early bodies (PRs #2 to #7) were bullet lists of what changed, most with steps for checking it on the preview. Of those, PR #7 came closest: a failing ("red") test reproducing `.trim is not a function`, then 20 passing tests. PR #8, the README, had all three sections: a file-tree diff, a before and an after, and Merge Danger with a door and a one-word blast radius ("none"). PR #9, merged the next day, slipped back. It had an Evidence heading and a door line, but its Evidence had no before. It opened with passing checks (tests, a style check, a type check, a build): "vitest (24), eslint, `tsc --noEmit` and `next build` pass." It had no Summary visual and no blast radius. The PRs don't show whether the agent loaded `/pr` for #9. PR #10 went back to the full shape, and that's the one I now ask for.
+**My PR bodies, read against the template today.** My early bodies (PRs #2 to #7) were bullet lists of what changed, most with steps for checking it on the preview. Of those, PR #7 came closest: a failing ("red") test reproducing `.trim is not a function`, then 20 passing tests. PR #8, the README, had all three sections: a file-tree diff, a before and an after, and Merge Danger with a door and a one-word blast radius ("none"). PR #9, merged the next day, slipped back. It had an Evidence heading and a door line, but no before. Its Evidence opened with passing checks (tests, a style check, a type check, a build): "vitest (24), eslint, `tsc --noEmit` and `next build` pass." It had no Summary visual and no blast radius. The PRs don't show whether the agent loaded `/pr` for #9. PR #10 went back to the full shape, and that's the one I now ask for.
 ```
 
 ## Cheat sheet
@@ -342,7 +342,7 @@ You've reviewed a branch and you're about to type "open a PR for this". Do you n
 ```
 
 ```test scenario-visual-evidence
-A PR makes the Comment box fit on narrow phone screens. The agent can take screenshots in your setup. What's the strongest Evidence?
+A PR makes the Comment box fit on narrow phone screens. In your setup, the agent can open the page in a browser at any width and capture what it shows. What's the strongest Evidence?
 - [ ] A layout test that failed at phone width before the fix and passes now.
   > Good evidence, but for a change you can see it ranks below screenshots. A picture shows the box really fits.
 - [ ] A shaped diff of the styling code (CSS) that changed.
@@ -361,8 +361,8 @@ A PR changes the wording on one button. The agent wrote both the code and the bo
   > Right. A small two-way door gets a light look, not a slow read. The skim is still how you check the call, since the agent that wrote the code made it.
 - [ ] None: a two-way door can be merged unread.
   > The call comes from the agent that wrote the code. A quick look is how you catch a "two-way" that isn't.
-- [ ] Block it until the team writes screenshot tests.
-  > That's out of proportion for a wording change that a revert undoes.
+- [ ] Ask the agent if it's sure, and merge if it says yes.
+  > That has the agent grade its own call a second time. Your quick skim is the independent check.
 ```
 
 ```test scenario-stale-body
@@ -431,21 +431,21 @@ On a recipe site set up like this one, a PR's migration renames the `ingredients
   > Reverting the code doesn't undo what a migration did to the database. That's what can make it a one-way door.
 - [x] The merge already ran the migration on the real database.
   > Right. Merging deploys production, and that build migrates the real database. Check the preview first, while a mistake only hits its copy.
-- [ ] Nothing: production waits until someone has tested the preview.
-  > Nothing waits. Merging to `main` deploys production straight away, migration included.
+- [ ] The preview already migrated the real database, so merging first changed nothing.
+  > Each preview migrates its own database branch. Only the merge's production build touches the real one, which is why you test the preview first.
 - [ ] Squash and merge skips migrations, so Sam must run this one by hand.
   > Squashing only combines the commits. The production build still runs the migration.
 ```
 
 ```test sequence-review-body-ship
 A small feature for a recipe site set up like this one is ready to build. Which order matches the advice in this Lesson?
-- [ ] branch → build → `/pr` writes the body → `/code-review` → open the PR → test the preview → squash and merge
+- [ ] branch → build → `/pr` writes the body → `/mattpocock-skills:code-review` → open the PR → test the preview → squash and merge
   > The body should describe a diff that's already been reviewed. If the review changes the code, this body is out of date before anyone reads it.
-- [ ] branch → build → `/code-review` → open the PR → test the preview → squash and merge → `/pr` writes the body
+- [ ] branch → build → `/mattpocock-skills:code-review` → open the PR → test the preview → squash and merge → `/pr` writes the body
   > The body is for the reviewer, so it has to exist before anyone reviews or merges the PR.
-- [x] branch → build → `/code-review` → `/pr` writes the body → open the PR → test the preview → squash and merge
+- [x] branch → build → `/mattpocock-skills:code-review` → `/pr` writes the body → open the PR → test the preview → squash and merge
   > Right. Review, then describe, then test on the copy. The merge is the last step and the only one that touches production.
-- [ ] build on `main` → `/code-review` → branch → `/pr` writes the body → open the PR → test the preview → squash and merge
+- [ ] build on `main` → `/mattpocock-skills:code-review` → branch → `/pr` writes the body → open the PR → test the preview → squash and merge
   > `/implement` commits to whatever branch you're on, so building first puts the work on `main`. Branch before you build.
 ```
 

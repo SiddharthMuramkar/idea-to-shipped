@@ -1,0 +1,257 @@
+{
+  "slug": "code-review",
+  "next": {
+    "round": 3,
+    "step": "check",
+    "lenses": [
+      "accuracy"
+    ],
+    "why": "fix round 2 done; check round 3 has quiz and reader, accuracy was stopped"
+  },
+  "applied": [
+    "r1: high (accuracy) sub-agents finding their own sources: SKILL.md steps 2-3 come before step 4, so the main agent does the finding. Changed the Standards section opening to 'Before it starts the reviewers, the Skill searches the repo ... and hands that list to the Standards reviewer'. Changed the Spec list intro to 'Before it starts the reviewers, the Skill also looks for the spec in this order, then hands it to the Spec reviewer:'. The no-spec line now reads 'it doesn't start the Spec reviewer, and the report says \"no spec available\"' (SKILL.md:32, 74). The body now agrees with the flow Scene, the brief paragraph and the why-two-reviewers feedback.",
+    "r1: medium (accuracy) 19 tests: confirmed 12 in route.test.ts and 7 in lessons.test.ts at 1262b31^, none for the comment box. Now reads 'When the comment box under each Lesson went live, all 19 of the site's tests passed.'",
+    "r1: medium (accuracy) 'first review': 1262b31^:content/lessons/07-code-review.md shows `/code-review max` was typed first. Now reads 'this site's first review with Matt's Skill'.",
+    "r1: medium (accuracy) Site story 'over the whole branch': d21fc2c 11-main-flow.md and the PR #9 body don't back it. Now reads 'On a later build, the review inside `/implement-spec` found about 15 problems, ...'.",
+    "r1: medium (accuracy) Cheat sheet /retro row: now says to run it before you `/clear`, or to point it at the old session's log, and links [Retro](/learn/retro). This matches the course fact and 17-retro.md. I didn't use the suggested 'on the build session': the docs page (docs/engineering/code-review.md:96) says retro acts when any session shows the review missing something, so naming one session would be a new claim.",
+    "r1: high (reader) and high (quiz) spot-uncommitted gave its answer away and held two mistakes: replaced it with the quiz fix. Ana now types `/clear` before re-running, the report flags the same three problems, and the right option is 'She should have committed the fixes first.', the same 'should have' form as the others. Kept the id; docs code-review.md:81 backs the key.",
+    "r1: medium (reader) 'session' was used before it was defined: the definition '(one Claude Code conversation)' moved to its first use in the Spec section, and the repeat in Your part is cut.",
+    "r1: medium (reader) /implement, /implement-spec and /tdd weren't explained: added clauses for '`/implement`, Matt's Skill that builds the work in a spec or ticket' and '`/implement-spec`, which builds a whole spec's tickets with helper agents'. The /tdd row now reads 'Nothing is written yet, and you want it built test-first (a failing test, then the code)'. To pay for the words I cut the repeated 'it may be the Built-in review that answers' from the watch-out callout; the paragraph above already says it.",
+    "r1: medium (reader) a Standards finding cited a ticket: the chat Scene now says the endpoint was checking each comment itself 'instead of leaving that to the comments module'. The Site story says the same, which the repo backs: PR #7 moved the checks into the comments module.",
+    "r1: medium (quiz) why-two-reviewers feedback against the body: fixed by the body change in the first line; the feedback is unchanged.",
+    "r1: medium (quiz) predict-wrong-feature: the stem now says 'The code is tidy, well named and in line with the repo's ADRs' instead of saying Standards found nothing. Option c's feedback now reads 'this code is built well'.",
+    "r1: medium (quiz) scenario-new-findings: the stem now has one finding citing a `CODING_STANDARDS.md` rule and three possible smells. The right option is 'Check each citation, fix what holds up, then stop.' and d is 'Treat them all as hard violations...', each with new feedback. Kept the id.",
+    "r1: medium (quiz) spot-hard-smell had two mistakes: replaced it with new id spot-overridden-smell. The finding is now labelled a judgement call that the ADR overrides; the right option is 'The ADR endorses the wrapper, so it shouldn't be raised.' and the distractors and feedback are new.",
+    "r1: medium (quiz) spot-same-session: cut 'into the same session' from the stem. All four options are now 'He should have...': run the tests once more, `/compact` (kept), the Built-in `/code-review`, and the right one, 'had a fresh agent review it'. New feedback for a and c.",
+    "r1: medium (quiz) Checkpoint which-review-answered: new stem ('a list of places the code could crash, with no mention of your spec'). The right option is 'The bare name reached the Built-in, so it hunted bugs.', the same 'X, so Y' shape as the others. New feedback for a, b and c.",
+    "r1: medium (quiz) scenario-bug-hunt: c is now '`/tdd`, since it writes a test for every possible bug first.'. The right option is 'Claude Code's Built-in `/code-review`, since it looks for breakage.' (67 raw, 65 visible, shorter than a's 73 and 71), and its feedback adds 'for a deeper pass'.",
+    "r1: I checked every question by both length measures: each right answer is shorter than at least one wrong option. Final test answer positions are now b d a c b a d c d c.",
+    "r2: medium (reader) Try it step 7: added 'If more than two start, press Esc and rerun it: that's a known bug, not your mistake.' This is backed by the 1.3.1 docs page docs/engineering/code-review.md:59-61, which calls sub-agents re-invoking /code-review a known open bug.",
+    "r2: medium (reader) clean session vs fresh sub-agents: 'Review from a clean session' now says the sub-agents start fresh anyway, but the agent you're talking to writes their briefs and passes on their reports, so if it did the building it brings the build's assumptions (SKILL.md:62-72, 78; docs:65). The workshop bullet now reads 'an agent reviewing at the end of its own long build session works in the dumb zone'. I checked this against the -QFHIoCo-Ko transcript at about 1:04:59, where Matt says the implementing agent would review in the dumb zone. I didn't introduce the undefined 'main agent' term. The three feedback lines (worst-per-axis a, why-two-reviewers b and d) now say 'The Skill', which matches the body's wording.",
+    "r2: medium (reader) undefined terms in the chat Scene: the Standards section body now lists `CLAUDE.md` (the instructions Claude Code loads into every session) with `AGENTS.md`, which both point at the Next.js docs (checked with git show 8e2ff32:CLAUDE.md), so the body agrees with the Scene. The Scene caption now explains that the comments module is the code that saves and reads comments (8e2ff32:src/comments/comments.ts). The Scene's 'test-first' now has the gloss '(a failing test, then the fix)'.",
+    "r2: medium (quiz) scenario-new-findings: the right option no longer copies the body's sentence word for word. It is now 'Check the cited rule, weigh the three smells, then move on.' (59 characters raw and visible, shorter than d at 66). The feedback adds 'so confirm it applies'. Kept the id.",
+    "r2: medium (accuracy) Built-in review and rules: the docs page https://code.claude.com/docs/en/code-review-local says the Built-in follows CLAUDE.md, so two feedback lines were wrong. scenario-fixed-point c's feedback now says the Built-in 'gives no Standards or Spec report'. scenario-new-findings b's feedback now says 'it hunts bugs, and doesn't check the change against your spec'. I also cut the Site story sentence 'One asks whether code matches your rules and spec; the other asks where it breaks.'",
+    "r2: low (accuracy, free) 'Type the full name' paragraph: now 'A bug list with no Standards or Spec sections means the Built-in review answered.' This allows for Matt's Skill stopping early with no sections (SKILL.md:19, 23).",
+    "r2: low (accuracy) Site story: 'everything built so far' is now 'everything built after it'. The three-dot diff leaves out the fixed point's own commit.",
+    "r2: low (accuracy) Colin Eberhardt line: now 'wrote in October 2026 that when he rebuilt a real app...'. The post gives a date but doesn't say when the rebuild happened.",
+    "r2: low (reader) removed 'the sure way' from the step-by-step intro and 'no fixed point' from Common mistakes. The Skill asks for a missing fixed point (SKILL.md:19), so leaving it out isn't a mistake.",
+    "r2: low (quiz, free) colour-picker-extra: the right option is now 'Under Spec, as scope creep beyond the due dates.', so it no longer has the only extra clause. spot-same-session: the right option is now 'He should have had a different agent do the review.', which no longer echoes 'fresh' and isn't the shortest. Goal 4 is narrowed to 'say when in your work to run a review', which sequence-review-ticket and spot-uncommitted check.",
+    "r2: Word budget: the Lesson started at 2,877, so every addition was paid for with cuts. Cut: the Site story takeaway line, which repeated the body's highlight; 'my 19 tests had never tried a number' in the Site story, which repeated the body; 'handing every finding to one fix-up sub-agent'; the PR-talk sentence about standards going to the reviewer, which repeated the Standards section's 'Matt's advice' line; the linter gloss, trimmed; and the two smell-definition sentences, merged. The total went from 2,877 to 2,843, and all option lengths pass by both raw and visible counts."
+  ],
+  "declined": [
+    {
+      "problem": "quiz medium (scenario-fixed-point): suggested new feedback saying that with no fixed point the Skill 'falls back on one already mentioned in the conversation, as in the Site story'",
+      "reason": "SKILL.md:19 says 'If they didn't specify one, ask for it.' The fallback is only in a session log, so it can't be taught or cited. I fixed the contradiction from the Site story side instead (it now says only what the repo holds: d21fc2c 07-code-review.md, 'What I typed: /mattpocock-skills:code-review', 'Starting point: 4f849b9') and kept the feedback."
+    },
+    {
+      "problem": "acc-skills low 6: suggested Site story clause 'the Skill should have asked; the agent skipped that because it had suggested one earlier'",
+      "reason": "The evidence is session log 8230810b entry 2781, which the Site story rule forbids. Dropped the claim instead."
+    },
+    {
+      "problem": "acc-skills low 7: suggested Scene source list taken from the session log's Standards brief (including docs/agents/domain.md)",
+      "reason": "What the real brief listed is LOG-only. The illustrative Scene lists AGENTS.md, CLAUDE.md, GLOSSARY.md and the four ADRs, which the repo held at 8e2ff32 (git ls-tree), and doesn't claim that list is verbatim."
+    },
+    {
+      "problem": "reader medium 9: suggested fix 'run `git add -A && git commit -m ...` yourself'",
+      "reason": "This conflicts with the one-command-per-line override (PowerShell 5.1 has no &&). Fixed the finding with plain words instead: ask the agent to 'commit these changes'."
+    },
+    {
+      "problem": "Suggested fix for the clean-session medium: introduce 'the main agent' in the body",
+      "reason": "I fixed the issue a cheaper way. The three feedback lines now say 'The Skill', which is how the body already names that actor (lines 87, 119, 150). The clean-session paragraph says 'the agent you're talking to'. This avoids a new term and costs fewer words in a Lesson that was over 2,850."
+    },
+    {
+      "problem": "low (reader): rewrite the /retro sentence in the Standards section to say it is user-invoked",
+      "reason": "This wasn't in the pending list, and the fix adds words while the Lesson was above 2,850. The current sentence isn't false, and the Retro Lesson covers the label."
+    },
+    {
+      "problem": "low (reader): Cheat sheet /retro row wording ('before you /clear' / 'old session's log')",
+      "reason": "This wasn't pending, and round 1 already chose this wording on purpose to match the course fact ('Run /retro in the session it reviews, before /clear'). The suggested rewrite is longer."
+    },
+    {
+      "problem": "low (reader): add 'git log --oneline' to 'Name the fixed point'",
+      "reason": "This wasn't pending, and it adds about 15 words while the Lesson was over the 2,850 threshold."
+    },
+    {
+      "problem": "low (quiz): predict-wrong-feature b feedback should name no category",
+      "reason": "Option b itself says 'missing pickup', and no pickup path exists at all, so 'missing' is the right category. The checker agrees b is the only defensible key. Changing only the feedback wouldn't remove the tension."
+    }
+  ],
+  "pending": [
+    {
+      "severity": "high",
+      "where": "Try it yourself, step 7: \"If more than two start, press Esc and rerun it: that's a known bug, not your mistake.\" (line 293)",
+      "problem": "The round-2 fix didn't hold. In an interactive terminal session, Claude Code starts sub-agents in the background by default, and Esc doesn't stop background sub-agents. A Visitor who sees reviewers multiplying (the case this sentence is for) presses Esc, and the agents keep running and spawning while using up their plan's usage. 'Rerun it' then starts the same fan-out again, in the same cluttered session. The Lesson never gives the key that does stop them.",
+      "evidence": "https://code.claude.com/docs/en/sub-agents, 'Which subagents run in the background': \"With nothing configured, a subagent that Claude spawns from your main conversation starts in the background\". For interactive terminal sessions, Claude can wait only if fork mode is turned off, and fork mode is \"on by default from Claude Code v2.1.302\" (the course facts pin Claude Code 2.1.309). The same page says that at a background sub-agent's permission prompt, Esc denies \"that one tool call without stopping the subagent\". https://code.claude.com/docs/en/interactive-mode: Esc is \"Stop the current response or tool call mid-turn\". `Ctrl+X Ctrl+K` is the key to \"Stop all running background subagents in this session\", and you \"Press twice within 3 seconds to confirm\". The bug itself is at 1.3.1 docs/engineering/code-review.md:59-61.",
+      "fix": "Replace the step's last sentence with: \"If more keep appearing, press Ctrl+X then Ctrl+K, and the same again within 3 seconds, to stop them all: that's a known bug, not your mistake. Then type `/clear` and run it again.\" (If you also apply the next finding, use the single combined step 7 given there.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, step 7: \"Now the real review. Watch for two sub-agents starting together.\" (line 293); step 8: \"Read the report\" (line 299); checklist: \"It started two sub-agents together, one per axis.\" (line 304)",
+      "problem": "A Visitor who has never used a coding agent doesn't know where a sub-agent shows up on screen, so they can't 'watch for' two of them, count them, or tick the checklist item. The reviewers also run in the background, so the prompt can come back before the report does. A beginner may take that as 'finished', or as 'stuck', and type `/exit` before step 8 has anything to read. And step 3 allows Manual mode ('Any other mode is fine'). In Manual mode a reviewer's `git diff` brings up a permission prompt that names the sub-agent, and nothing in step 7 says to approve it. Step 4's 'choose Yes' only covers creating files and committing.",
+      "evidence": "https://code.claude.com/docs/en/sub-agents says Claude Code shows sub-agents \"in the subagent panel below the prompt input\", with a \"(+N)\" count on any row that has spawned more. It also says \"A background subagent's results reach Claude as a completion notification in a later turn\", and a background sub-agent's permission prompt appears \"in your main session and names the subagent that is asking\". The Lesson has no word on the panel, the wait, or reviewer permission prompts (lines 286-299).",
+      "fix": "Step 7 (combined with the high finding above): \"7. Now the real review. Two sub-agent rows, one per axis, should appear together in the panel below the prompt box. They work in the background, so the prompt may come back before the report: wait for it. If a reviewer asks to run a `git` command, choose Yes. If more rows keep appearing, press Ctrl+X then Ctrl+K, and the same again within 3 seconds, to stop them all: that's a known bug, not your mistake. Then type `/clear` and run it again.\" The step grows by about 55 words. To pay for that, cut line 52's last sentence ('So the report never merges the two and never re-ranks findings across them.'), since line 170, the flow Scene and worst-per-axis all make that point. Also cut '; the 1.3.1 Skill only reports' at line 249, which repeats line 170.",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "The Standards axis: \"`CLAUDE.md` (the instructions Claude Code loads into every session)\" (line 87)",
+      "problem": "This is a regression from the round-2 CLAUDE.md gloss. 'Session' now first appears at line 87, but the round-1 fix put its definition at 'one Claude Code conversation' on line 134, 47 lines later. A cold reader meets the term before it's explained. The same sentence's list is also hard to parse: 'ADRs (...), the glossary in GLOSSARY.md, CLAUDE.md (...) and AGENTS.md, which both point...'. 'Both' follows a four-item list, so a reader can't tell which two files point at the Next.js docs.",
+      "evidence": "`grep -n -i session content/lessons/10-code-review.md` gives line 87 first, then line 134 with '(one Claude Code conversation)'. No earlier line (11-86) uses the word. Seed `applied` r1: \"the definition '(one Claude Code conversation)' moved to its first use in the Spec section\". `git show 8e2ff32:CLAUDE.md` confirms that CLAUDE.md and AGENTS.md are the two files pointing at the Next.js docs.",
+      "fix": "Line 87: \"Its rules live in ADRs (short decision records in `docs/adr/`) and the glossary in `GLOSSARY.md`, plus `CLAUDE.md` (the instructions Claude Code loads into every conversation) and `AGENTS.md`, which both point agents at the docs for Next.js, the web framework this site uses.\" This costs no extra words, and the session definition at line 134 stays where it is.",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test spot-same-session, right option d feedback: \"It was biased toward its own choices and deep in a full context window. Use `/mattpocock-skills:code-review` from a clean session, so fresh sub-agents do the reviewing.\" (line 427)",
+      "problem": "This feedback gives two wrong reasons, and the round-2 body fix made one of them worse. (1) 'Deep in a full context window' blames a full window, but the course fact and the Context window Lesson both say the dumb zone has nothing to do with how full the window is: an agent gets worse long before the window fills. (2) 'From a clean session, so fresh sub-agents do the reviewing' makes the clean session the reason the sub-agents are fresh. The round-2 body fix now says the opposite: the sub-agents start fresh anyway, and the clean session matters because the agent writing their briefs and passing on their reports shouldn't carry the build. So a reader who gets this question right is taught a reason the body has just corrected.",
+      "evidence": "writing-guide.md:76: \"The limit is about quality, not window size: current models have 1M-token windows, and a session can be in the dumb zone with most of the window free.\" content/lessons/02-context-window.md:79: \"The line has nothing to do with window size ... a session can slip into the dumb zone with over 80% of its window still free.\" 02-context-window.md:109: \"Quality drops long before the window fills.\" This Lesson, line 214: \"The sub-agents start fresh anyway, but the agent you're talking to writes their briefs and passes on their reports. If it did the building, it brings the build's assumptions.\" SKILL.md:62-72 and :78: the invoking agent writes both prompts and presents the reports. Line 29 of the body has the same 'is full of the build' framing.",
+      "fix": "Line 427: \"  > Right. It was biased toward its own choices, and three hours in it was likely past the Smart zone. Use `/mattpocock-skills:code-review` from a clean session, so neither the reviewers nor the agent briefing them built the code.\" Optional, for the same reason, line 29: \"...is crowded with the build, so it may be past the Smart zone and reason less sharply.\"",
+      "lens": "quiz"
+    }
+  ],
+  "rounds": {
+    "r2": {
+      "fix": {
+        "applied": [
+          "medium (reader) Try it step 7: added 'If more than two start, press Esc and rerun it: that's a known bug, not your mistake.' This is backed by the 1.3.1 docs page docs/engineering/code-review.md:59-61, which calls sub-agents re-invoking /code-review a known open bug.",
+          "medium (reader) clean session vs fresh sub-agents: 'Review from a clean session' now says the sub-agents start fresh anyway, but the agent you're talking to writes their briefs and passes on their reports, so if it did the building it brings the build's assumptions (SKILL.md:62-72, 78; docs:65). The workshop bullet now reads 'an agent reviewing at the end of its own long build session works in the dumb zone'. I checked this against the -QFHIoCo-Ko transcript at about 1:04:59, where Matt says the implementing agent would review in the dumb zone. I didn't introduce the undefined 'main agent' term. The three feedback lines (worst-per-axis a, why-two-reviewers b and d) now say 'The Skill', which matches the body's wording.",
+          "medium (reader) undefined terms in the chat Scene: the Standards section body now lists `CLAUDE.md` (the instructions Claude Code loads into every session) with `AGENTS.md`, which both point at the Next.js docs (checked with git show 8e2ff32:CLAUDE.md), so the body agrees with the Scene. The Scene caption now explains that the comments module is the code that saves and reads comments (8e2ff32:src/comments/comments.ts). The Scene's 'test-first' now has the gloss '(a failing test, then the fix)'.",
+          "medium (quiz) scenario-new-findings: the right option no longer copies the body's sentence word for word. It is now 'Check the cited rule, weigh the three smells, then move on.' (59 characters raw and visible, shorter than d at 66). The feedback adds 'so confirm it applies'. Kept the id.",
+          "medium (accuracy) Built-in review and rules: the docs page https://code.claude.com/docs/en/code-review-local says the Built-in follows CLAUDE.md, so two feedback lines were wrong. scenario-fixed-point c's feedback now says the Built-in 'gives no Standards or Spec report'. scenario-new-findings b's feedback now says 'it hunts bugs, and doesn't check the change against your spec'. I also cut the Site story sentence 'One asks whether code matches your rules and spec; the other asks where it breaks.'",
+          "low (accuracy, free) 'Type the full name' paragraph: now 'A bug list with no Standards or Spec sections means the Built-in review answered.' This allows for Matt's Skill stopping early with no sections (SKILL.md:19, 23).",
+          "low (accuracy) Site story: 'everything built so far' is now 'everything built after it'. The three-dot diff leaves out the fixed point's own commit.",
+          "low (accuracy) Colin Eberhardt line: now 'wrote in October 2026 that when he rebuilt a real app...'. The post gives a date but doesn't say when the rebuild happened.",
+          "low (reader) removed 'the sure way' from the step-by-step intro and 'no fixed point' from Common mistakes. The Skill asks for a missing fixed point (SKILL.md:19), so leaving it out isn't a mistake.",
+          "low (quiz, free) colour-picker-extra: the right option is now 'Under Spec, as scope creep beyond the due dates.', so it no longer has the only extra clause. spot-same-session: the right option is now 'He should have had a different agent do the review.', which no longer echoes 'fresh' and isn't the shortest. Goal 4 is narrowed to 'say when in your work to run a review', which sequence-review-ticket and spot-uncommitted check.",
+          "Word budget: the Lesson started at 2,877, so every addition was paid for with cuts. Cut: the Site story takeaway line, which repeated the body's highlight; 'my 19 tests had never tried a number' in the Site story, which repeated the body; 'handing every finding to one fix-up sub-agent'; the PR-talk sentence about standards going to the reviewer, which repeated the Standards section's 'Matt's advice' line; the linter gloss, trimmed; and the two smell-definition sentences, merged. The total went from 2,877 to 2,843, and all option lengths pass by both raw and visible counts."
+        ],
+        "declined": [
+          {
+            "problem": "Suggested fix for the clean-session medium: introduce 'the main agent' in the body",
+            "reason": "I fixed the issue a cheaper way. The three feedback lines now say 'The Skill', which is how the body already names that actor (lines 87, 119, 150). The clean-session paragraph says 'the agent you're talking to'. This avoids a new term and costs fewer words in a Lesson that was over 2,850."
+          },
+          {
+            "problem": "low (reader): rewrite the /retro sentence in the Standards section to say it is user-invoked",
+            "reason": "This wasn't in the pending list, and the fix adds words while the Lesson was above 2,850. The current sentence isn't false, and the Retro Lesson covers the label."
+          },
+          {
+            "problem": "low (reader): Cheat sheet /retro row wording ('before you /clear' / 'old session's log')",
+            "reason": "This wasn't pending, and round 1 already chose this wording on purpose to match the course fact ('Run /retro in the session it reviews, before /clear'). The suggested rewrite is longer."
+          },
+          {
+            "problem": "low (reader): add 'git log --oneline' to 'Name the fixed point'",
+            "reason": "This wasn't pending, and it adds about 15 words while the Lesson was over the 2,850 threshold."
+          },
+          {
+            "problem": "low (quiz): predict-wrong-feature b feedback should name no category",
+            "reason": "Option b itself says 'missing pickup', and no pickup path exists at all, so 'missing' is the right category. The checker agrees b is the only defensible key. Changing only the feedback wouldn't remove the tension."
+          }
+        ],
+        "words": 2843,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    "r3": {
+      "checks": {
+        "reader": [
+          {
+            "severity": "high",
+            "where": "Try it yourself, step 7: \"If more than two start, press Esc and rerun it: that's a known bug, not your mistake.\" (line 293)",
+            "problem": "The round-2 fix didn't hold. In an interactive terminal session, Claude Code starts sub-agents in the background by default, and Esc doesn't stop background sub-agents. A Visitor who sees reviewers multiplying (the case this sentence is for) presses Esc, and the agents keep running and spawning while using up their plan's usage. 'Rerun it' then starts the same fan-out again, in the same cluttered session. The Lesson never gives the key that does stop them.",
+            "evidence": "https://code.claude.com/docs/en/sub-agents, 'Which subagents run in the background': \"With nothing configured, a subagent that Claude spawns from your main conversation starts in the background\". For interactive terminal sessions, Claude can wait only if fork mode is turned off, and fork mode is \"on by default from Claude Code v2.1.302\" (the course facts pin Claude Code 2.1.309). The same page says that at a background sub-agent's permission prompt, Esc denies \"that one tool call without stopping the subagent\". https://code.claude.com/docs/en/interactive-mode: Esc is \"Stop the current response or tool call mid-turn\". `Ctrl+X Ctrl+K` is the key to \"Stop all running background subagents in this session\", and you \"Press twice within 3 seconds to confirm\". The bug itself is at 1.3.1 docs/engineering/code-review.md:59-61.",
+            "fix": "Replace the step's last sentence with: \"If more keep appearing, press Ctrl+X then Ctrl+K, and the same again within 3 seconds, to stop them all: that's a known bug, not your mistake. Then type `/clear` and run it again.\" (If you also apply the next finding, use the single combined step 7 given there.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Try it yourself, step 7: \"Now the real review. Watch for two sub-agents starting together.\" (line 293); step 8: \"Read the report\" (line 299); checklist: \"It started two sub-agents together, one per axis.\" (line 304)",
+            "problem": "A Visitor who has never used a coding agent doesn't know where a sub-agent shows up on screen, so they can't 'watch for' two of them, count them, or tick the checklist item. The reviewers also run in the background, so the prompt can come back before the report does. A beginner may take that as 'finished', or as 'stuck', and type `/exit` before step 8 has anything to read. And step 3 allows Manual mode ('Any other mode is fine'). In Manual mode a reviewer's `git diff` brings up a permission prompt that names the sub-agent, and nothing in step 7 says to approve it. Step 4's 'choose Yes' only covers creating files and committing.",
+            "evidence": "https://code.claude.com/docs/en/sub-agents says Claude Code shows sub-agents \"in the subagent panel below the prompt input\", with a \"(+N)\" count on any row that has spawned more. It also says \"A background subagent's results reach Claude as a completion notification in a later turn\", and a background sub-agent's permission prompt appears \"in your main session and names the subagent that is asking\". The Lesson has no word on the panel, the wait, or reviewer permission prompts (lines 286-299).",
+            "fix": "Step 7 (combined with the high finding above): \"7. Now the real review. Two sub-agent rows, one per axis, should appear together in the panel below the prompt box. They work in the background, so the prompt may come back before the report: wait for it. If a reviewer asks to run a `git` command, choose Yes. If more rows keep appearing, press Ctrl+X then Ctrl+K, and the same again within 3 seconds, to stop them all: that's a known bug, not your mistake. Then type `/clear` and run it again.\" The step grows by about 55 words. To pay for that, cut line 52's last sentence ('So the report never merges the two and never re-ranks findings across them.'), since line 170, the flow Scene and worst-per-axis all make that point. Also cut '; the 1.3.1 Skill only reports' at line 249, which repeats line 170."
+          },
+          {
+            "severity": "medium",
+            "where": "The Standards axis: \"`CLAUDE.md` (the instructions Claude Code loads into every session)\" (line 87)",
+            "problem": "This is a regression from the round-2 CLAUDE.md gloss. 'Session' now first appears at line 87, but the round-1 fix put its definition at 'one Claude Code conversation' on line 134, 47 lines later. A cold reader meets the term before it's explained. The same sentence's list is also hard to parse: 'ADRs (...), the glossary in GLOSSARY.md, CLAUDE.md (...) and AGENTS.md, which both point...'. 'Both' follows a four-item list, so a reader can't tell which two files point at the Next.js docs.",
+            "evidence": "`grep -n -i session content/lessons/10-code-review.md` gives line 87 first, then line 134 with '(one Claude Code conversation)'. No earlier line (11-86) uses the word. Seed `applied` r1: \"the definition '(one Claude Code conversation)' moved to its first use in the Spec section\". `git show 8e2ff32:CLAUDE.md` confirms that CLAUDE.md and AGENTS.md are the two files pointing at the Next.js docs.",
+            "fix": "Line 87: \"Its rules live in ADRs (short decision records in `docs/adr/`) and the glossary in `GLOSSARY.md`, plus `CLAUDE.md` (the instructions Claude Code loads into every conversation) and `AGENTS.md`, which both point agents at the docs for Next.js, the web framework this site uses.\" This costs no extra words, and the session definition at line 134 stays where it is."
+          },
+          {
+            "severity": "low",
+            "where": "The idea: \"Then it asks two separate questions about that diff. Matt calls them axes. One checks the work against its spec, or its ticket (one small, buildable piece of a spec).\" (line 44)",
+            "problem": "The prose gives one axis and stops. A cold reader is left asking what the other one checks until they reach the table. The sentence exists to define 'ticket', but it reads as unfinished.",
+            "evidence": "Lesson line 44 has no 'the other'. Standards only appears in the table on line 49.",
+            "fix": "\"Then it asks two separate questions about that diff, which Matt calls axes: one checks the work against your project's rules, the other against its spec, or its ticket (one small, buildable piece of a spec).\""
+          },
+          {
+            "severity": "low",
+            "where": "The Spec axis, item 1: \"`/setup-matt-pocock-skills` writes the note that tells it where that is.\" (line 121)",
+            "problem": "The Lesson never says what `/setup-matt-pocock-skills` is: a Skill, something run once, or something the Visitor should have done. Then Try it step 6 tells the Visitor to skip it if the agent suggests it, and a beginner can't judge whether skipping is safe.",
+            "evidence": "1.3.1 skills/engineering/setup-matt-pocock-skills/SKILL.md:3: \"Run once before first use of the other engineering skills.\" code-review SKILL.md:13 tells the agent to suggest it when no tracker is configured. Lesson line 287 says 'skip it'.",
+            "fix": "\"Matt's one-time setup Skill, `/setup-matt-pocock-skills`, writes the note that tells it where that is.\""
+          },
+          {
+            "severity": "low",
+            "where": "How Matt and others use it: \"(a pull request, or PR, is a proposed change that's reviewed before it joins the main branch)\" (line 248)",
+            "problem": "Three Final test stems depend on 'merge' ('Before merging', 'before merging', 'Raj merges'), and the Lesson never uses or explains the word in that sense. A Visitor who barely uses Git has to guess that merging means accepting the change into the main branch.",
+            "evidence": "`grep -n -i merg` finds the Git sense only at lines 359, 390 and 419 (the Final test). Lines 52 and 305 use 'merge' to mean blending the report. The PR gloss on line 248 says 'joins'.",
+            "fix": "\"(a pull request, or PR, is a proposed change that's reviewed before it's merged, or joined, into the main branch)\""
+          },
+          {
+            "severity": "low",
+            "where": "A session, step by step, chat Scene: \"`4f849b9` resolves, and the diff since it isn't empty.\" (line 193)",
+            "problem": "'Resolves' is Git jargon a cold reader won't know. The body (line 42) and the flow Scene caption (line 61) explain this check as 'exists', so the Scene's word doesn't match the prose.",
+            "evidence": "Line 42: \"it checks that the fixed point exists and the diff isn't empty\". Line 193 uses 'resolves'.",
+            "fix": "\"agent: `4f849b9` exists, and the diff since it isn't empty.\""
+          },
+          {
+            "severity": "low",
+            "where": "The idea: \"Before spending anything, it checks that the fixed point exists...\" (line 42), and the flow Scene caption \"before spending anything\" (line 61)",
+            "problem": "A beginner can't tell what would be spent: money, time or tokens. The point is that a typo costs nothing because no reviewers have started yet, and this phrasing leaves that unsaid.",
+            "evidence": "Lines 42 and 61. SKILL.md:23: a bad ref or empty diff 'should fail here, not inside two parallel sub-agents'.",
+            "fix": "Line 42: \"Before it starts any reviewers, it checks that the fixed point exists and the diff isn't empty, so a typo fails at once, in front of you.\" Line 61: \"...and that the diff isn't empty before starting any reviewers.\""
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Final test spot-same-session, right option d feedback: \"It was biased toward its own choices and deep in a full context window. Use `/mattpocock-skills:code-review` from a clean session, so fresh sub-agents do the reviewing.\" (line 427)",
+            "problem": "This feedback gives two wrong reasons, and the round-2 body fix made one of them worse. (1) 'Deep in a full context window' blames a full window, but the course fact and the Context window Lesson both say the dumb zone has nothing to do with how full the window is: an agent gets worse long before the window fills. (2) 'From a clean session, so fresh sub-agents do the reviewing' makes the clean session the reason the sub-agents are fresh. The round-2 body fix now says the opposite: the sub-agents start fresh anyway, and the clean session matters because the agent writing their briefs and passing on their reports shouldn't carry the build. So a reader who gets this question right is taught a reason the body has just corrected.",
+            "evidence": "writing-guide.md:76: \"The limit is about quality, not window size: current models have 1M-token windows, and a session can be in the dumb zone with most of the window free.\" content/lessons/02-context-window.md:79: \"The line has nothing to do with window size ... a session can slip into the dumb zone with over 80% of its window still free.\" 02-context-window.md:109: \"Quality drops long before the window fills.\" This Lesson, line 214: \"The sub-agents start fresh anyway, but the agent you're talking to writes their briefs and passes on their reports. If it did the building, it brings the build's assumptions.\" SKILL.md:62-72 and :78: the invoking agent writes both prompts and presents the reports. Line 29 of the body has the same 'is full of the build' framing.",
+            "fix": "Line 427: \"  > Right. It was biased toward its own choices, and three hours in it was likely past the Smart zone. Use `/mattpocock-skills:code-review` from a clean session, so neither the reviewers nor the agent briefing them built the code.\" Optional, for the same reason, line 29: \"...is crowded with the build, so it may be past the Smart zone and reason less sharply.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test sequence-review-ticket, right option c: \"Commit → `/clear` → review since `main` → fix, commit\" (line 436); Checkpoint which-review-answered, right option a: \"The bare name reached the Built-in, so it hunted bugs.\" (line 234)",
+            "problem": "In both questions the right option is the strictly shortest. Round 2 treated a shortest right answer as a tell and fixed spot-same-session, but these two are still left. In sequence-review-ticket the compressed 'fix, commit' makes c visibly shorter than the three fuller sequences, so a reader who knows lint blocks the longest option can lean short.",
+            "evidence": "Visible lengths: sequence-review-ticket a 60, b 60, c* 55, d 70 (raw 64, 64, 59, 72). which-review-answered a* 54, b 57, c 62, d 58. The round-2 quiz low in the seed (savedR2Lows) listed which-review-answered under the same pattern. That issue is in neither the applied list nor the declined list.",
+            "fix": "Line 436: \"- [x] Commit → `/clear` → review since `main` → fix them, commit\" (raw 64, visible 60: tied with a and b, shorter than d). Line 234: \"- [x] The bare name reached the Built-in review, so it hunted bugs.\" (61: longer than b and d, shorter than c's 62)."
+          },
+          {
+            "severity": "low",
+            "where": "Final test scenario-new-findings, right option c: \"Check the cited rule, weigh the three smells, then move on.\" (line 388)",
+            "problem": "The right option never says to act. 'Check the cited rule ... then move on' can read as 'look at it and leave it'. A careful reader who thinks a confirmed CODING_STANDARDS.md breach must be fixed finds that fixing appears only in d ('fix all four'). Only the feedback adds 'Act on what holds up'. The key still holds, but the option teaches less than the body's rule.",
+            "evidence": "Line 216: \"Check each citation, act on the ones that hold up, then stop.\" Line 341 (Cheat sheet): \"Check each citation and fix what holds up\". Line 389 (feedback): \"Act on what holds up, then move on.\" SKILL.md:66: documented-standard breaches \"can be hard\". Option d (line 390) is the only option that mentions fixing.",
+            "fix": "Line 388: \"- [x] Fix the rule breach if it holds, weigh the three smells, move on.\" This is 65 characters, still shorter than d's 66, and it avoids the earlier 'Check each citation' echo."
+          },
+          {
+            "severity": "low",
+            "where": "Final test spot-uncommitted, option c: \"Her fixed point should have been `HEAD`.\" (line 400) and the stem \"ran `/mattpocock-skills:code-review Review since main.` again\" (line 395), against scenario-fixed-point option b: \"`/mattpocock-skills:code-review Review since HEAD.`\" (line 374)",
+            "problem": "Two Final test questions, checked together on one page, use the same HEAD-versus-main misconception, and their feedback is nearly identical. spot-uncommitted's stem also shows scenario-fixed-point's right answer word for word, as what Ana typed. So one misconception is tested twice, and the second item is either free or a double penalty. Distractor c in spot-uncommitted adds nothing a reader hasn't already settled two questions earlier.",
+            "evidence": "Line 375: \"`HEAD` is your latest commit. Comparing it with itself gives an empty diff, and the review stops early.\" Line 401: \"`HEAD` against itself is an empty diff, and the review stops early.\" Line 372: the scenario-fixed-point key is \"`/mattpocock-skills:code-review Review since main.`\", the same string as the line 395 stem. GLOSSARY.md: the Final test's questions are \"checked together\".",
+            "fix": "Replace spot-uncommitted option c with a different real misconception that the body rules out at line 214: \"- [ ] She shouldn't have typed `/clear`, since it undid the edits.\" with feedback \"  > `/clear` empties the conversation; your files stay. The edits were on disk, just not in a commit, so the diff couldn't see them.\" That option is 58 visible characters. The right option b stays at 42, which isn't the shortest because d is 41."
+          },
+          {
+            "severity": "low",
+            "where": "Final test scenario-bug-hunt, option c feedback: \"`/tdd` builds new behaviour test-first. This code already exists; you want it inspected.\" (line 365)",
+            "problem": "The feedback doesn't name the real error in c (\"writes a test for every possible bug\"), and it narrows /tdd to new behaviour. The tdd Skill also fixes bugs test-first, and this same Lesson fixes the crash test-first in its chat Scene and its Site story. A reader who remembers that can find the feedback contradictory and may doubt the key.",
+            "evidence": "tdd SKILL.md:3: \"Use when the user wants to build features or fix bugs test-first\". tdd SKILL.md:21: \"Test only at pre-agreed seams ... You can't test everything\". This Lesson, line 203: \"Fix the crash test-first (a failing test, then the fix)\". Line 325: \"the crash, test-first\".",
+            "fix": "Line 365: \"  > `/tdd` writes tests only at seams you agree, to build or fix one behaviour at a time, not to sweep for every bug. This code already exists; you want it inspected.\""
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/code-review.json"
+}

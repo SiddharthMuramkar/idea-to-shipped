@@ -1,0 +1,205 @@
+{
+  "slug": "start-here",
+  "next": {
+    "round": 3,
+    "step": "fix",
+    "why": "fix round 2 and check round 3 done; fix round 3 never started"
+  },
+  "applied": [
+    "r1: command-not-found feedback (PATH reason, medium accuracy): the right option's feedback now says the docs advise checking in a new window first. If claude is still missing, the installer's folder isn't on PATH, and the installer doesn't change PATH itself: its \"Setup notes\" give the fix. Checked against troubleshoot-install, which says it \"prints the fix with that note but doesn't change PATH itself\". The reinstall option's feedback now points to the old window, then the Setup notes. spot-unneeded-step step 3 feedback now reads \"The docs say to check the install in a new window, and the version number proves it worked.\"",
+    "r1: command-not-found prompt (giveaway, medium): \"In the same terminal window\" is gone. It now reads \"The installer has just finished. You type `claude --version`...\" The id and answer are unchanged.",
+    "r1: command-not-found option d (weak distractor, medium): \"Upgrade to a higher plan\" is now \"Log in first, then run the version check again.\", with feedback that you log in the first time claude starts.",
+    "r1: How to read a Lesson (high) and its medium accuracy twin: the section now describes the site as it is built today (question.tsx, scene.tsx). Scenes have numbered captions to read in order, no longer 'build as you scroll'. Checkpoints: pick an answer, then open \"Show the answer\"; they never count. The Final test is questions on the goals: answer them all, then open the box under each one. The claims about the Check button, crowd answers, 80% pass, retries, Attempts and ticks are cut, and so is the cookie line. The Lesson can't hold or reorder tickets, and HANDOFF.md is off-limits, so this follows option (b). It departs from the brief's 'Scenes that move as you scroll' and '80% pass mark and retries'; revisit it when tickets 02, 04 and 05 ship, as HANDOFF already says for README Features.",
+    "r1: scenario-failed-final-test (high): replaced by a new question with a new id, scenario-unsure-checkpoint, about what to do when unsure at a Checkpoint. The right answer is d ('Guess, then read why each option is right or wrong.', 51 characters, the shortest). It still checks goal 3, and the a/b/c/d spread is unchanged.",
+    "r1: site-story-vs-teaching option d (weak distractor, medium): it is now \"`/grilling`, since the Site story shows the steps in more detail.\", with feedback that detail isn't the point.",
+    "r1: which-lesson-stubborn-bug option d (weak distractor, medium): \"How coding agents work\" is now \"Models, effort & ultracode\", with feedback that a stronger model won't find the cause and Diagnosing bugs will.",
+    "r1: teach-next-session (wording tell, medium): option a now names `~/learn-git` too ('In `~/learn-git`, paste last week's lesson so it remembers you.'), so the folder name no longer marks the right answer.",
+    "r1: scenario-which-part (medium): the Part 1 bullet now reads 'why its working memory fills up and its work slips in a long session'. That ties the question's symptom to Part 1. The id is unchanged.",
+    "r1: scenario-free-plan (medium): the prompt is rewritten. The friend has only used Claude's free chats in the browser, and the question is now 'Is anything missing?', so the body's sentence isn't repeated. Option a is now 'No, their chat account works once they log in', with feedback. The id is kept because the meaning is the same.",
+    "r1: scenario-teach-folder (wording tell, medium): the right option is now 'In a new empty folder, such as `~/learn-sql`.' It no longer echoes SQL or 'of its own', and it rules out a folder inside ~/recipes.",
+    "r1: scenario-renamed-skill (two premise mediums, the option-b feedback medium and the option-a/b feedback medium): the prompt now uses the slash name, unbackticked: 'says Matt's bug-hunting Skill starts when you type /diagnose. You type it, but no Skill by that name exists'. That fixes the plain-word trigger problem, since diagnosing-bugs/SKILL.md names \"diagnose\" as a trigger. Option a, which the prompt itself ruled out, is now 'Bug-hunting Skills only start on their own, never by typing.' Option b, along with its false 'same names' feedback, is now 'That Skill only starts inside a git repo.' The id is unchanged.",
+    "r1: Node.js bullet ('the other way' before any way is shown, medium): it now reads 'You'd only use it to run this site's code, or for a second way of installing Matt's Skills that this course doesn't use.' The spot-unneeded-step feedback matches. Try step 5 now says 'install Matt's Skills as a plugin (an add-on that updates itself)', which explains 'plugin' where the command appears.",
+    "r1: TDD/PR not expanded (medium): the build caption now says 'test-driven development: one small automated check...', and the PR caption says 'A pull request, or PR (...)'. The Part 2 bullet adds '(this section's Scene walks through it)', not 'the picture below', because on desktop the Scene sits beside the text.",
+    "r1: Flow Scene build caption contradicts itself (medium): the review now checks against 'your coding standards and, when there is one, the spec'. code-review/SKILL.md says the Spec sub-agent skips when there is no spec.",
+    "r1: Site story row 7 prefix unexplained (medium): it now reads '`/mattpocock-skills:code-review` (its full name: Claude Code has its own `/code-review`)'.",
+    "r1: Cheat sheet /ask-matt row (medium): it now reads 'Type `/ask-matt`, then your situation, in one message ([Skills](/learn/skills) covers it)', because ask-matt is user-invoked (disable-model-invocation: true).",
+    "r2: site-story-vs-teaching option d (quiz, medium): the second `/grilling` distractor is now a different misconception, 'Both, one after the other, so you follow the story and the teaching.' (68 chars; right c is 61/59, b is 69). Its feedback says `/grill-with-docs` already runs the `/grilling` interview and writes docs as it goes. grill-with-docs/SKILL.md calls grilling and domain-modeling.",
+    "r2: scenario-unsure-checkpoint right option (quiz medium plus reader medium, same problem): it no longer echoes the 'why each option is right or wrong' sentence. It now reads 'Answer it anyway, then read the feedback on every option.' (57 chars: a is 58, b 55, c 56, so it is neither longest nor shortest). Its feedback is reworded, and option c's feedback no longer repeats the body phrase. The id is kept.",
+    "r2: scenario-teach-folder right option a (quiz, medium, wording tell): now 'In a new empty folder, so lesson files stay out of your code.' (61 chars; c has 64, b 52). Every option now carries a reason clause, and the new reason rules out a folder inside ~/recipes. The id is kept.",
+    "r2: teach-next-session (quiz, medium): option a's feedback now says pasting doesn't start `/teach`, because only typing its name does (teach SKILL.md has disable-model-invocation: true), and that the files already hold your progress. Right option d now has a reason clause like the others: 'In `~/learn-git`, type `/teach`, as its files hold your progress.' (65/61 chars; c is 68). 'Tell it where you're stuck, as Matt does' moved into its feedback (s5T5oQJcJ6U 6:11-6:30).",
+    "r2: Goal 3 (quiz, medium, untested 'its Final test'): narrowed to 'You'll be able to use a Lesson's Checkpoints as you read, and its dated sources to spot a renamed Skill.' scenario-unsure-checkpoint and scenario-renamed-skill test it. The Final test stays at 6 questions.",
+    "r2: PATH guidance outside the closed Checkpoint (reader, medium): the What you need Claude Code bullet adds 'Still not found? Follow the fix the installer printed under \"Setup notes\", then open another window.' The Mac terminal Scene caption gets the same hint. The 'Read them in order' sentence loses 'because each builds on the ones before' to stay under the cap. Checked against troubleshoot-install (the installer reports the missing PATH entry under 'Setup notes:' and 'prints the fix with that note but doesn't change PATH itself') and setup ('the install directory isn't on your PATH yet'). Try step 1 already points to What you need, so it is unchanged.",
+    "r2: Low (free, accuracy): the command-not-found right feedback now says why a new window helps: the window you installed from keeps its old PATH. This is from troubleshoot-install.",
+    "r2: Low (free, consistency): the which-lesson-stubborn-bug Code review feedback now says 'and, when there is one, the spec', which matches the flow Scene and code-review SKILL.md.",
+    "r2: Low (free): the scenario-which-part Part 4 feedback now answers the 'choosing models' pull: even the best model slips as a long session fills its working memory.",
+    "r2: Low (free, accuracy): the scenario-renamed-skill option b feedback no longer says where you are can't hide a Skill. That is false for project Skills. It now says Matt's Skills come as a plugin, which works in any folder.",
+    "r2: Low (free, accuracy): the scenario-teach-folder option b feedback now says Matt 'suggests' a separate workspace for learning a codebase, instead of saying he does it. Transcript s5T5oQJcJ6U 10:04-10:43: 'I can imagine this skill being really useful in onboarding'.",
+    "r2: Low (zero words): the opening paragraph's 'The steering comes from Matt Pocock' is now 'The method comes from Matt Pocock', so it no longer clashes with 'while you steer'."
+  ],
+  "declined": [
+    {
+      "problem": "Low: Part 1 bullet should gloss 'working memory' as the context window (+3 prose words)",
+      "reason": "This low was only saved, not pending. Prose is at 1,395 of the 1,400 cap after the PATH fix, so it's left for a later round."
+    },
+    {
+      "problem": "Low: Try step 5 gaps (the trust prompt again, when to /exit, explaining ls and ~), about +25 prose words",
+      "reason": "This low was only saved, not pending. It would break the 1,400-word cap."
+    },
+    {
+      "problem": "Low: the Site story's last line should also say /to-spec then /to-tickets would replace row 3",
+      "reason": "This low was only saved, not pending. 'That order isn't Matt's Main flow' already covers the whole order, rows 6-7 differ too, and the words are needed for the cap."
+    },
+    {
+      "problem": "Low: the Site story should say 'a separate copy for my laptop, for tests, for each pull request and for the live site' (+6 words)",
+      "reason": "This low was only saved, not pending. It would push prose past 1,400."
+    },
+    {
+      "problem": "Low: the flow Scene build caption 'Either way, /implement' leaves out /implement-spec",
+      "reason": "This low was only saved, not pending. The checker marked it optional, and The main flow Lesson covers both routes."
+    }
+  ],
+  "pending": [
+    {
+      "severity": "medium",
+      "where": "Goals, goal 1: \"You'll be able to say what this course teaches and which of its four Parts to turn to for a given problem.\" (line 14)",
+      "problem": "No Final test question checks the first half of goal 1, \"say what this course teaches\". scenario-which-part (line 262) only checks which Part to turn to. No Checkpoint covers it either. Round 2 handled goal 3 the same way: it had an untested half (\"its Final test\") and was narrowed to match. Goal 1 still has that gap. The Final test already has 6 questions, the most Start here allows, so the fix has to be narrowing the goal, not adding a question.",
+      "evidence": "What each Final test question checks: scenario-which-part checks which Part (goal 1, second half). scenario-free-plan and spot-unneeded-step check goal 2. scenario-unsure-checkpoint and scenario-renamed-skill check goal 3. scenario-teach-folder checks goal 4. None asks what the course teaches (body line 22: \"a course on working with a coding agent ... his Skills are that process\"). Writing guide line 119: \"Every goal gets at least one Final test question\". Line 61: \"Final test: 8–10 questions (Start here 5–6 ...)\". Precedent in the seed's applied list: \"round 2: Goal 3 (quiz, medium, untested 'its Final test'): narrowed to ...\". Goals don't count towards prose words (lint-lesson.mjs:65 counts only prose and callout/try/site-story bodies), so this costs nothing against the 1,400 cap. I ran the lint on a temp copy with this change: no new errors.",
+      "fix": "Line 14: \"- You'll be able to say which of the course's four Parts to turn to for a given problem.\" (The opening paragraph and \"What this course is\" still teach what the course is. Only the goal is narrowed.)",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Checkpoint teach-next-session, prompt \"Last week you ran `/teach` in `~/learn-git` and finished a lesson on commits. Today you open a fresh session.\" (line 167), right option d \"In `~/learn-git`, type `/teach`, as its files hold your progress.\" (line 174)",
+      "problem": "The Checkpoint replays the files Scene's own example instead of a fresh situation. The Scene shows the same topic (git basics), the same first lesson (a commit), the same time gap (next week) and the same \"fresh session in the same folder\". The right option is a close paraphrase of the body's rule at line 162. A reader can answer by recognising the Scene's last caption and the sentence after it, without applying the idea. Rounds 1 and 2 both edited this question (folder name in option a, reason clause on d) but kept the Scene's example.",
+      "evidence": "Scene, line 147: \"You type `/teach git basics` in an empty folder.\" Line 152: \"lessons/0001-what-a-commit-is.html\". Line 158: \"Next week, in a fresh session in the same folder, `/teach` reads these files and plans lesson two.\" Line 162: \"To carry on later, open Claude Code in that folder and type `/teach` again. Its memory is in files\". Checkpoint line 167 and right option line 174 as quoted. Writing guide line 118: \"Questions test transfer, not recognition. Use a fresh situation ..., not the body's own example sentence.\"",
+      "fix": "Change the topic and keep the logic. Line 167: \"Last week you ran `/teach` in `~/learn-chess` and finished a lesson on how the knight moves. Today you open a fresh session. How do you carry on?\" Line 168: \"- [ ] In `~/learn-chess`, paste last week's lesson so it remembers you.\" Line 174: \"- [x] In `~/learn-chess`, type `/teach`, as its files hold your progress.\" Rendered lengths: a 63, b 61, c 68, d 63, so d is neither longest nor shortest, and the answer stays at position d. All four feedback lines still apply unchanged. A temp-copy lint run with this change shows no new errors.",
+      "lens": "quiz"
+    }
+  ],
+  "rounds": {
+    "r2": {
+      "fix": {
+        "applied": [
+          "site-story-vs-teaching option d (quiz, medium): the second `/grilling` distractor is now a different misconception, 'Both, one after the other, so you follow the story and the teaching.' (68 chars; right c is 61/59, b is 69). Its feedback says `/grill-with-docs` already runs the `/grilling` interview and writes docs as it goes. grill-with-docs/SKILL.md calls grilling and domain-modeling.",
+          "scenario-unsure-checkpoint right option (quiz medium plus reader medium, same problem): it no longer echoes the 'why each option is right or wrong' sentence. It now reads 'Answer it anyway, then read the feedback on every option.' (57 chars: a is 58, b 55, c 56, so it is neither longest nor shortest). Its feedback is reworded, and option c's feedback no longer repeats the body phrase. The id is kept.",
+          "scenario-teach-folder right option a (quiz, medium, wording tell): now 'In a new empty folder, so lesson files stay out of your code.' (61 chars; c has 64, b 52). Every option now carries a reason clause, and the new reason rules out a folder inside ~/recipes. The id is kept.",
+          "teach-next-session (quiz, medium): option a's feedback now says pasting doesn't start `/teach`, because only typing its name does (teach SKILL.md has disable-model-invocation: true), and that the files already hold your progress. Right option d now has a reason clause like the others: 'In `~/learn-git`, type `/teach`, as its files hold your progress.' (65/61 chars; c is 68). 'Tell it where you're stuck, as Matt does' moved into its feedback (s5T5oQJcJ6U 6:11-6:30).",
+          "Goal 3 (quiz, medium, untested 'its Final test'): narrowed to 'You'll be able to use a Lesson's Checkpoints as you read, and its dated sources to spot a renamed Skill.' scenario-unsure-checkpoint and scenario-renamed-skill test it. The Final test stays at 6 questions.",
+          "PATH guidance outside the closed Checkpoint (reader, medium): the What you need Claude Code bullet adds 'Still not found? Follow the fix the installer printed under \"Setup notes\", then open another window.' The Mac terminal Scene caption gets the same hint. The 'Read them in order' sentence loses 'because each builds on the ones before' to stay under the cap. Checked against troubleshoot-install (the installer reports the missing PATH entry under 'Setup notes:' and 'prints the fix with that note but doesn't change PATH itself') and setup ('the install directory isn't on your PATH yet'). Try step 1 already points to What you need, so it is unchanged.",
+          "Low (free, accuracy): the command-not-found right feedback now says why a new window helps: the window you installed from keeps its old PATH. This is from troubleshoot-install.",
+          "Low (free, consistency): the which-lesson-stubborn-bug Code review feedback now says 'and, when there is one, the spec', which matches the flow Scene and code-review SKILL.md.",
+          "Low (free): the scenario-which-part Part 4 feedback now answers the 'choosing models' pull: even the best model slips as a long session fills its working memory.",
+          "Low (free, accuracy): the scenario-renamed-skill option b feedback no longer says where you are can't hide a Skill. That is false for project Skills. It now says Matt's Skills come as a plugin, which works in any folder.",
+          "Low (free, accuracy): the scenario-teach-folder option b feedback now says Matt 'suggests' a separate workspace for learning a codebase, instead of saying he does it. Transcript s5T5oQJcJ6U 10:04-10:43: 'I can imagine this skill being really useful in onboarding'.",
+          "Low (zero words): the opening paragraph's 'The steering comes from Matt Pocock' is now 'The method comes from Matt Pocock', so it no longer clashes with 'while you steer'."
+        ],
+        "declined": [
+          {
+            "problem": "Low: Part 1 bullet should gloss 'working memory' as the context window (+3 prose words)",
+            "reason": "This low was only saved, not pending. Prose is at 1,395 of the 1,400 cap after the PATH fix, so it's left for a later round."
+          },
+          {
+            "problem": "Low: Try step 5 gaps (the trust prompt again, when to /exit, explaining ls and ~), about +25 prose words",
+            "reason": "This low was only saved, not pending. It would break the 1,400-word cap."
+          },
+          {
+            "problem": "Low: the Site story's last line should also say /to-spec then /to-tickets would replace row 3",
+            "reason": "This low was only saved, not pending. 'That order isn't Matt's Main flow' already covers the whole order, rows 6-7 differ too, and the words are needed for the cap."
+          },
+          {
+            "problem": "Low: the Site story should say 'a separate copy for my laptop, for tests, for each pull request and for the live site' (+6 words)",
+            "reason": "This low was only saved, not pending. It would push prose past 1,400."
+          },
+          {
+            "problem": "Low: the flow Scene build caption 'Either way, /implement' leaves out /implement-spec",
+            "reason": "This low was only saved, not pending. The checker marked it optional, and The main flow Lesson covers both routes."
+          }
+        ],
+        "words": 1395,
+        "lintClean": true,
+        "testsPassed": true
+      }
+    },
+    "r3": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "low",
+            "where": "Try it yourself, step 5: \"Answer its questions, then type `/exit`.\" (line 219), checked by \"`ls` in `~/learn-git` lists `MISSION.md`\" (line 225)",
+            "problem": "`/teach` writes MISSION.md only once it has a clear reason from you, so it can take more than one answer to get there. A beginner who types `/exit` after their first answer can find no MISSION.md and decide the exercise failed. Nothing in the step tells them to wait for the file to be saved.",
+            "evidence": "productivity/teach/SKILL.md:75: if MISSION.md isn't populated, the agent's first job is to question the user on why. productivity/teach/MISSION-FORMAT.md:29: \"Push back on vagueness. If the user cannot articulate why, interview them before writing anything.\" The checklist on line 225 assumes the file exists after `/exit`.",
+            "fix": "Line 219: \"Answer its questions until it saves your mission, then type `/exit`.\" This adds 5 words, bringing prose from 1,395 to exactly the 1,400 cap, so re-run section-words.mjs."
+          },
+          {
+            "severity": "low",
+            "where": "How to read a Lesson, Scenes bullet: \"\\\"Illustrative\\\" marks a made-up session that behaves like the real Skill.\" (line 72)",
+            "problem": "The label covers more than Skill sessions. This Lesson's own terminal Scene, \"Setting up on a Mac (illustrative)\" (line 39), runs no Skill: it shows the installer, git and `claude`. So the definition doesn't fit the first illustrative Scene the reader meets.",
+            "evidence": "Line 39: \"title: Setting up on a Mac (illustrative)\", with only `curl`, `claude --version`, `git --version`, `mkdir`, `cd`, `git init` and `claude` (lines 41-54). Line 147 (teach Scene) is the only Skill session labelled illustrative.",
+            "fix": "Line 72: \"\\\"Illustrative\\\" marks a made-up session that behaves like the real thing.\" (same word count)"
+          },
+          {
+            "severity": "low",
+            "where": "The four Parts, flow Scene, proto caption: \"takes a detour: a quick throwaway build with `/prototype`, and you bring back what you learned.\" (line 113)",
+            "problem": "In Matt's Main flow, `/handoff` bridges the prototype detour in both directions. The caption leaves it out, so it reads as if `/prototype` runs inside the same session. That is optional to fix, since it isn't false and the Prototype Lesson covers `/handoff`.",
+            "evidence": "engineering/ask-matt/SKILL.md:20-23: a prototype runs in its own directory, bridged by `/handoff` both ways (\"`/handoff` out, then open a fresh session\" ... \"`/handoff` back what you learned\"). The writing guide's course facts, line 82: \"(prototype detour via `/handoff`)\".",
+            "fix": "Line 113: \"# A question that talking can't settle, like how a page should look, takes a detour: `/handoff` to a fresh session for a throwaway `/prototype`, then `/handoff` back what you learned.\" (+2 words in the caption; check the prose cap if captions count)"
+          }
+        ],
+        "reader": [
+          {
+            "severity": "low",
+            "where": "Learn anything with `/teach`, files Scene, first caption: \"You type `/teach git basics` in an empty folder.\" (line 147)",
+            "problem": "The worked example doesn't follow the Lesson's own advice. Two paragraphs later the prose says there's no level check, so you should say what you already know in your first message, and the Try's prompt does exactly that. The Scene's learner says nothing about their level, so the picture and the advice point different ways.",
+            "evidence": "Line 164: \"There's no level check, so say what you already know in your first message\". Line 216 (Try prompt): \"/teach git basics. I've never used git.\" Line 147: \"# You type `/teach git basics` in an empty folder.\" Writing guide line 114: \"Worked examples must model the advice.\" Scene captions don't count toward prose (lint-lesson.mjs:65 counts only prose plus callout, try and site-story bodies), so the fix costs no budget.",
+            "fix": "Line 147: \"# In an empty folder you type `/teach git basics. I've never used git.` It asks why you want to learn, then writes your answer down as the mission.\""
+          },
+          {
+            "severity": "low",
+            "where": "What you need, terminal Scene caption \"Make an empty practice folder and turn it into a repo, one command per line.\" (line 48), with Try step 2 (lines 190-197) and the Cheat sheet row \"`cd` into your repo, then `claude`\" (line 255)",
+            "problem": "Two problems in one place. First, nothing ever says what `mkdir` and `cd` do. A Visitor who barely uses a terminal meets them in the Scene, in Try step 2 and in the Cheat sheet's \"`cd` into your repo\", which only works if you know `cd`. This is the one Lesson where a beginner could learn them, since other Lessons' Trys use them without a gloss. Second, the Scene shows the same `mkdir agent-practice`, `cd`, `git init`, `claude` steps that Try step 2 runs again. A reader who types along with the Scene gets an error at Try step 2: \"mkdir: agent-practice: File exists\" on a Mac, or New-Item's \"An item with the specified name ... already exists\" in PowerShell. A newcomer will read that as a failure.",
+            "evidence": "Lines 49-54 (Scene) and 193-196 (Try step 2) are the same four commands. Line 255: \"| Start a session | `cd` into your repo, then `claude` |\". No line glosses mkdir or cd. Other Lessons use them unexplained: 03-skills.md:265-266 (`mkdir skills-practice`, `cd skills-practice`), 05-domain-modeling.md:248-249, 06-prototype.md:229-230. Scene captions don't add to the 1,400-word prose count (lint-lesson.mjs:65).",
+            "fix": "Line 48: \"# Make an empty practice folder and turn it into a repo, one command per line: mkdir makes the folder, cd moves you into it, and git init starts tracking it. You'll run these in the Try below, so there's no need to type them now.\""
+          },
+          {
+            "severity": "low",
+            "where": "The four Parts, Part 1 bullet: \"why its working memory fills up and its work slips in a long session ... [The context window](/learn/context-window)\" (line 95)",
+            "problem": "I'm re-raising a declined low because its reason is wrong. The issue: the only place a reader meets \"context window\" is as a link title, and nothing ties it to the \"working memory\" in the same sentence. The writing guide lists context window among the terms that need a clause at first use. The reason given for declining was that prose is at 1,395 of the 1,400 cap, but the fix adds only 3 words, which fits: 1,398 by the local lint, or 1,393 by the repo's own count. The cap fails only above 1,400.",
+            "evidence": "`node .scratch/course-rewrite/tools/lint-lesson.mjs content/lessons/00-start-here.md` reports proseWords 1395. lint-lesson.mjs:69 errors only when `proseWords > maxW`, and maxW is 1400 for start-here (line 66). The repo's countWords (src/lessons/lessons.ts, run in a scratch vitest test outside the repo) gives 1390 for start-here, against src/lessons/course.test.ts:46 `\"start-here\": [900, 1400]`. \"(the context window)\" counts as 3 words under both counters. Writing guide line 109 lists context window as a term to define at first use.",
+            "fix": "Line 95: \"- **Part 1, Foundations:** how an agent works, why its working memory (the context window) fills up and its work slips in a long session, and what a Skill is. [Start here](/learn/start-here), [How coding agents work](/learn/how-agents-work), [The context window](/learn/context-window), [Skills](/learn/skills).\""
+          },
+          {
+            "severity": "low",
+            "where": "How to read a Lesson, Scenes bullet: \"\\\"Illustrative\\\" marks a made-up session that behaves like the real Skill.\" (line 72)",
+            "problem": "This Lesson's first Scene is \"Setting up on a Mac (illustrative)\". It installs Claude Code and checks git, and no Skill appears in it. A reader is told \"illustrative\" means a session that behaves like a real Skill, then sees the label on a Scene with no Skill. The definition is narrower than how the course uses the label.",
+            "evidence": "Line 39: \"title: Setting up on a Mac (illustrative)\". Its steps are the installer, `claude --version`, `git --version`, `mkdir`, `cd`, `git init` and `claude` (lines 41-54), with no Skill. Line 72 ties \"Illustrative\" to \"the real Skill\".",
+            "fix": "Line 72, last sentence (same word count): \"\\\"Illustrative\\\" marks a made-up session that behaves like the real thing.\""
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Goals, goal 1: \"You'll be able to say what this course teaches and which of its four Parts to turn to for a given problem.\" (line 14)",
+            "problem": "No Final test question checks the first half of goal 1, \"say what this course teaches\". scenario-which-part (line 262) only checks which Part to turn to. No Checkpoint covers it either. Round 2 handled goal 3 the same way: it had an untested half (\"its Final test\") and was narrowed to match. Goal 1 still has that gap. The Final test already has 6 questions, the most Start here allows, so the fix has to be narrowing the goal, not adding a question.",
+            "evidence": "What each Final test question checks: scenario-which-part checks which Part (goal 1, second half). scenario-free-plan and spot-unneeded-step check goal 2. scenario-unsure-checkpoint and scenario-renamed-skill check goal 3. scenario-teach-folder checks goal 4. None asks what the course teaches (body line 22: \"a course on working with a coding agent ... his Skills are that process\"). Writing guide line 119: \"Every goal gets at least one Final test question\". Line 61: \"Final test: 8–10 questions (Start here 5–6 ...)\". Precedent in the seed's applied list: \"round 2: Goal 3 (quiz, medium, untested 'its Final test'): narrowed to ...\". Goals don't count towards prose words (lint-lesson.mjs:65 counts only prose and callout/try/site-story bodies), so this costs nothing against the 1,400 cap. I ran the lint on a temp copy with this change: no new errors.",
+            "fix": "Line 14: \"- You'll be able to say which of the course's four Parts to turn to for a given problem.\" (The opening paragraph and \"What this course is\" still teach what the course is. Only the goal is narrowed.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Checkpoint teach-next-session, prompt \"Last week you ran `/teach` in `~/learn-git` and finished a lesson on commits. Today you open a fresh session.\" (line 167), right option d \"In `~/learn-git`, type `/teach`, as its files hold your progress.\" (line 174)",
+            "problem": "The Checkpoint replays the files Scene's own example instead of a fresh situation. The Scene shows the same topic (git basics), the same first lesson (a commit), the same time gap (next week) and the same \"fresh session in the same folder\". The right option is a close paraphrase of the body's rule at line 162. A reader can answer by recognising the Scene's last caption and the sentence after it, without applying the idea. Rounds 1 and 2 both edited this question (folder name in option a, reason clause on d) but kept the Scene's example.",
+            "evidence": "Scene, line 147: \"You type `/teach git basics` in an empty folder.\" Line 152: \"lessons/0001-what-a-commit-is.html\". Line 158: \"Next week, in a fresh session in the same folder, `/teach` reads these files and plans lesson two.\" Line 162: \"To carry on later, open Claude Code in that folder and type `/teach` again. Its memory is in files\". Checkpoint line 167 and right option line 174 as quoted. Writing guide line 118: \"Questions test transfer, not recognition. Use a fresh situation ..., not the body's own example sentence.\"",
+            "fix": "Change the topic and keep the logic. Line 167: \"Last week you ran `/teach` in `~/learn-chess` and finished a lesson on how the knight moves. Today you open a fresh session. How do you carry on?\" Line 168: \"- [ ] In `~/learn-chess`, paste last week's lesson so it remembers you.\" Line 174: \"- [x] In `~/learn-chess`, type `/teach`, as its files hold your progress.\" Rendered lengths: a 63, b 61, c 68, d 63, so d is neither longest nor shortest, and the answer stays at position d. All four feedback lines still apply unchanged. A temp-copy lint run with this change shows no new errors."
+          },
+          {
+            "severity": "low",
+            "where": "Final test scenario-which-part, prompt \"Two hours into one long session, the agent's answers get sloppier ...\" (line 263)",
+            "problem": "The prompt repeats the phrase that defines the right answer. \"one long session\" plus \"answers get sloppier\" matches the Part 1 bullet's \"its work slips in a long session\" (line 95), which round 1 added to tie this question to Part 1. A reader can match \"long session\" to the bullet without thinking about why. \"Two hours\" already says the session is long.",
+            "evidence": "Line 95: \"Part 1, Foundations: how an agent works, why its working memory fills up and its work slips in a long session\". Line 263: \"Two hours into one long session, the agent's answers get sloppier\". Writing guide line 118: \"Don't restate the defining phrase of the right answer in the prompt.\"",
+            "fix": "Line 263: \"Two hours into a single session, the agent's answers get sloppier and it starts contradicting decisions you settled at the start. You want to understand why. Which Part explains it?\" Options and feedback stay as they are."
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/start-here.json"
+}

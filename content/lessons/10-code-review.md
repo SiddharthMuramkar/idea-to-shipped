@@ -14,7 +14,7 @@ Before you trust code an agent wrote, send two fresh reviewers over it: one chec
 - You'll be able to explain the Standards and Spec axes, and why the report keeps them apart instead of giving one verdict.
 - You'll be able to start a review the reliable way: committed work, a named fixed point, and `/mattpocock-skills:code-review` rather than Claude Code's Built-in `/code-review`.
 - You'll be able to read the report: tell hard violations from judgement calls, sort Spec findings, and decide which ones to act on.
-- You'll be able to say where a review fits in your work, and when a different tool is the better reach.
+- You'll be able to say when in your work to run a review, and when a different tool is the better reach.
 ```
 
 ## Why it matters
@@ -84,9 +84,9 @@ A library app's ticket asked for "members can renew a loan once". The diff renew
 
 ## The Standards axis: your rules, then the smells
 
-Before it starts the reviewers, the Skill searches the repo for every file that says how code here should be written, and hands that list to the Standards reviewer. If a `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it's always on the list. This site has neither. Its rules live in ADRs (short decision records in `docs/adr/`), the glossary in `GLOSSARY.md`, and `AGENTS.md`, which points agents at the docs for Next.js, the web framework this site uses.
+Before it starts the reviewers, the Skill searches the repo for every file that says how code here should be written, and hands that list to the Standards reviewer. If a `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it's always on the list. This site has neither. Its rules live in ADRs (short decision records in `docs/adr/`), the glossary in `GLOSSARY.md`, `CLAUDE.md` (the instructions Claude Code loads into every session) and `AGENTS.md`, which both point agents at the docs for Next.js, the web framework this site uses.
 
-On top of whatever the repo documents, the reviewer always carries a **smell baseline**: twelve code smells from chapter 3 of *Refactoring*, Martin Fowler's classic book on restructuring code. A code smell is a surface sign that the design might be off. It isn't a bug; it's a hint. A few of the twelve:
+On top of whatever the repo documents, the reviewer always carries a **smell baseline**: twelve code smells from chapter 3 of *Refactoring*, Martin Fowler's classic book on restructuring code. A code smell is a hint that the design might be off, not a bug. A few of the twelve:
 
 - **Duplicated Code**: the same logic turns up in more than one place in the change.
 - **Mysterious Name**: a name that doesn't say what the thing does or holds.
@@ -98,7 +98,7 @@ Each smell comes with its fix: extract the shared code, rename it, gather what c
 1. **The repo overrides.** If your documented standards endorse something a smell would flag, the smell is dropped.
 2. **A smell is always a judgement call**, written as a possibility (possible Duplicated Code, say), ==never a hard violation==. Breaking a documented rule can be a hard violation; a smell can't.
 
-The Standards reviewer also skips anything your tooling already enforces, such as a linter (a program that flags style problems and common mistakes automatically) or the type checker (which catches values of the wrong kind).
+The Standards reviewer also skips anything your tooling already enforces, such as a linter (a program that flags common mistakes automatically) or the type checker (which catches values of the wrong kind).
 
 Matt's advice is to keep your rules in `CODING_STANDARDS.md`, which only the reviewer reads, so they don't weigh down the agent doing the building. Over time, `/retro` ([Retro](/learn/retro)) proposes new rules when a review misses a kind of mistake, or automatic checks for purely mechanical ones.
 
@@ -137,7 +137,7 @@ This axis is ==only as sharp as the spec==. A vague spec makes a vague review. T
 A to-do app's spec asks for due dates on tasks. The diff adds due dates and also a colour picker for each task. Where does the colour picker show up in the report?
 - [ ] Under Spec, as a missing or partial requirement.
   > Nothing is missing: due dates are there. The picker is something extra.
-- [x] Under Spec, as scope creep, quoting the spec.
+- [x] Under Spec, as scope creep beyond the due dates.
   > Right. Behaviour nobody asked for is scope creep, and the reviewer quotes the spec to show it wasn't requested.
 - [ ] Under Standards, as a hard violation.
   > Standards asks whether code follows the repo's rules. Whether a feature was requested is a Spec question.
@@ -172,7 +172,7 @@ Summary: findings per axis, and the worst issue within each axis.
 ```checkpoint worst-per-axis
 A review ends: "Standards: 3 findings, worst is a duplicated price calculation. Spec: 2 findings, worst is a missing refund button." A teammate asks why it doesn't just name the single worst problem overall. What's the reason?
 - [ ] Sub-agents can't read each other's reports to compare.
-  > The main agent reads both reports. It declines to rank them on purpose.
+  > The Skill reads both reports itself. It declines to rank them on purpose.
 - [ ] Spec findings always outrank Standards ones.
   > Neither axis outranks the other. Either one can hold the issue that matters most.
 - [ ] It saves tokens by skipping a final comparison step.
@@ -183,7 +183,7 @@ A review ends: "Standards: 3 findings, worst is a duplicated price calculation. 
 
 ## A session, step by step
 
-Here's this site's first review with Matt's Skill, run after the comment box went live. The findings are real; the wording is condensed, the summary line is illustrative, and your first line names the fixed point up front, the sure way.
+Here's this site's first review with Matt's Skill, run after the comment box went live. The findings are real; the wording is condensed, the summary line is illustrative, and the first line names the fixed point up front.
 
 ```scene chat
 title: Reviewing this site's first build (illustrative, from a real review)
@@ -193,29 +193,29 @@ you: `/mattpocock-skills:code-review` Review since 4f849b9.
 agent: `4f849b9` resolves, and the diff since it isn't empty.
 # It finds both sets of sources, then starts the two reviewers together.
 agent: Spec: `.scratch/lesson-site/spec.md` and its tickets. Standards: `AGENTS.md`, `CLAUDE.md`, `GLOSSARY.md` and four ADRs (no `CODING_STANDARDS.md` here), plus the smell baseline. Starting the Standards and Spec reviewers now.
-# The Standards report: no hard violations, only judgement calls. The endpoint is the code that receives each new comment.
+# The Standards report: no hard violations, only judgement calls. The endpoint is the code that receives each new comment; the comments module is the code that saves and reads them.
 agent: **Standards.** Hard violations: none. Judgement calls include the length limits living in two files, three names for one idea, and the endpoint checking each comment itself instead of leaving that to the comments module.
 # The Spec report quotes the spec for each finding.
 agent: **Spec.** Looks wrong: a number as a comment returns `500`, but the spec says "`400` + `{ error }` if invalid"; the home page's rows don't match the spec's wording. Not asked for: dates on comments, a "Loading…" message.
 # One summary line: a worst issue per axis, and no overall winner.
 agent: **Summary.** Standards: 0 hard violations, 7 judgement calls; worst is the endpoint doing its own checks. Spec: 4 findings; worst is the `500` crash.
 # You decide what to act on.
-you: Fix the crash test-first, move the checks into the comments module and share the limits. Leave the renames for now.
+you: Fix the crash test-first (a failing test, then the fix), move the checks into the comments module and share the limits. Leave the renames for now.
 ```
 
 ## Your part: commit, name it, read it
 
 **Commit first.** The diff runs from the fixed point to your latest commit, so work you haven't committed is invisible to it. If the agent just made changes, ask it to "commit these changes", review, then fix in a new commit. ==Commit before you review.==
 
-**Type the full name.** Claude Code has its own `/code-review`, a Built-in command (it ships with Claude Code itself, not with Matt's Skills). It's a bug hunt for things like unchecked empty values and race conditions (two actions colliding), with effort levels (how hard it thinks) such as `/code-review max` and a deep cloud version, `/code-review ultra`. With Matt's Skills installed as a plugin (a bundle that adds them all at once), the bare `/code-review` can land on the Built-in review, and Matt won't rename his Skill to dodge it. The sure way in is the full name, `/mattpocock-skills:code-review`. No Standards and Spec sections means the Built-in review answered.
+**Type the full name.** Claude Code has its own `/code-review`, a Built-in command (it ships with Claude Code itself, not with Matt's Skills). It's a bug hunt for things like unchecked empty values and race conditions (two actions colliding), with effort levels (how hard it thinks) such as `/code-review max` and a deep cloud version, `/code-review ultra`. With Matt's Skills installed as a plugin (a bundle that adds them all at once), the bare `/code-review` can land on the Built-in review, and Matt won't rename his Skill to dodge it. The sure way in is the full name, `/mattpocock-skills:code-review`. A bug list with no Standards or Spec sections means the Built-in review answered.
 
 **Name the fixed point.** For a whole branch, it's usually `main`. For one ticket, it's the commit just before the work started.
 
-**Review from a clean session.** The session that did the building carries all its assumptions. Review after `/clear` (a Built-in command that empties the conversation; your files and commits stay) or in a new session.
+**Review from a clean session.** The sub-agents start fresh anyway, but the agent you're talking to writes their briefs and passes on their reports. If it did the building, it brings the build's assumptions. Review after `/clear` (a Built-in command that empties the conversation; your files and commits stay) or in a new session.
 
 **Read findings as leads, not verdicts.** The Skill passes the reports on unchecked, so one can point at the wrong line or exaggerate the damage. Check each citation, act on the ones that hold up, then stop. A re-run always finds something new: each fix is new code, and judgement calls vary between runs.
 
-The Skill is model-invoked: the agent may start it when you say "review this branch since main" in plain words, though it can pick the Built-in review instead. `/implement`, Matt's Skill that builds the work in a spec or ticket, also calls it when it finishes. `/implement-spec`, which builds a whole spec's tickets with helper agents, calls it once over the whole branch, handing every finding to one fix-up sub-agent ([Implement](/learn/implement)). Both use the bare name, so they can get the Built-in review too.
+The Skill is model-invoked: the agent may start it when you say "review this branch since main" in plain words, though it can pick the Built-in review instead. `/implement`, Matt's Skill that builds the work in a spec or ticket, also calls it when it finishes. `/implement-spec`, which builds a whole spec's tickets with helper agents, calls it once over the whole branch ([Implement](/learn/implement)). Both use the bare name, so they can get the Built-in review too.
 
 | Your situation | Reach for |
 |---|---|
@@ -245,14 +245,14 @@ With Matt's plugin installed, you type `/code-review` and get back a list of pla
 
 **Matt Pocock:**
 
-- **Make it work, then make it good.** In his September 2026 talk on the pull-request bottleneck (a pull request, or PR, is a proposed change that's reviewed before it joins the main branch), he split the job in two: implementing makes code work, review makes it good. The implementing agent is busy exploring, editing and debugging, so he gives coding standards to the reviewer instead, which has far less to do.
+- **Make it work, then make it good.** In his September 2026 talk on the pull-request bottleneck (a pull request, or PR, is a proposed change that's reviewed before it joins the main branch), he split the job in two: implementing makes code work, review makes it good.
 - **Grow your own standards.** In the same talk he advised building your own standards with your team, not leaning on generic third-party review bots. He'd also like reviewers to commit their fixes, not just comment; the 1.3.1 Skill only reports.
-- **Review where it's smart.** At an April 2026 workshop he explained that a review at the end of a long build session happens in the dumb zone, past the Smart zone, so clear first. He builds with Sonnet and reviews with Opus (two Claude models; Opus is the stronger), because review is where he needs the smarts. ([Models, effort & ultracode](/learn/models-effort-ultracode) covers switching.)
+- **Review where it's smart.** At an April 2026 workshop he explained that an agent reviewing at the end of its own long build session works in the dumb zone, past the Smart zone, so clear first. He builds with Sonnet and reviews with Opus (two Claude models; Opus is the stronger), because review is where he needs the smarts. ([Models, effort & ultracode](/learn/models-effort-ultracode) covers switching.)
 - **At the end of every ticket.** In his July 2026 walkthrough, `/implement` ran the review by itself when a ticket was done. He clears between tickets, then runs one final review against the spec.
 
 **Other developers:**
 
-- Colin Eberhardt of Scott Logic rebuilt a real app with the Skills in October 2026, and reported that both axes caught a few bugs in the first build.
+- Colin Eberhardt of Scott Logic wrote in October 2026 that when he rebuilt a real app with the Skills, both axes caught a few bugs in the first build.
 - A developer running `/implement` unattended in a loop checked the transcripts of 173 sessions in September 2026: the bare name had reached the Built-in review 36 times, Matt's Skill 18. His loop now types the full names.
 - One reader, quoted in Matt's docs, called an agent reviewing its own work in the same session "confirmation bias with a slash command".
 
@@ -290,7 +290,7 @@ Create .scratch/reading-time/spec.md with three requirements for a readingTime(t
 /mattpocock-skills:code-review Review since nope.
 ```
 
-7. Now the real review. Watch for two sub-agents starting together.
+7. Now the real review. Watch for two sub-agents starting together. If more than two start, press Esc and rerun it: that's a known bug, not your mistake.
 
 ```text
 /mattpocock-skills:code-review Review since main. The spec is .scratch/reading-time/spec.md.
@@ -313,22 +313,20 @@ Create .scratch/reading-time/spec.md with three requirements for a readingTime(t
 - **Typing the bare `/code-review`** and getting the Built-in bug hunt instead of Matt's two axes.
 - **Treating a smell as a hard violation**, or acting on one your own docs allow.
 - **Expecting a Spec review without a spec.** You get "no spec available".
-- **Skipping the habits in Your part:** reviewing uncommitted work, no fixed point, reviewing in the session that wrote the code, and looping until it comes back clean.
+- **Skipping the habits in Your part:** reviewing uncommitted work, reviewing in the session that wrote the code, and looping until it comes back clean.
 
 ```site-story
-After the comment box went live, I typed `/mattpocock-skills:code-review`, starting from `4f849b9`, the site's very first commit, so it reviewed everything built so far.
+After the comment box went live, I typed `/mattpocock-skills:code-review`, starting from `4f849b9`, the site's very first commit, so it reviewed everything built after it.
 
 **Standards: 0 hard violations, 7 judgement calls.** The code followed all four ADRs and used Next.js correctly. The judgement calls included the comment length limits written in two places (change one, forget the other), the endpoint checking input itself instead of leaving it to the comments module, and three names for one idea: `order`, `number` and "position".
 
-**Spec: one real bug, plus small gaps.** Sending a number instead of text crashed the server with a `500`, where the spec promised a `400`. I confirmed it on the live site; my 19 tests had never tried a number. The home page's rows didn't match the spec's wording either, and there were extras nobody asked for, like dates on comments.
+**Spec: one real bug, plus small gaps.** Sending a number instead of text crashed the server with a `500`, where the spec promised a `400`. I confirmed it on the live site. The home page's rows didn't match the spec's wording either, and there were extras nobody asked for, like dates on comments.
 
 **I fixed it in one pull request, PR #7:** the crash, test-first (the new test failed first, with `.trim is not a function`), all input checks moved into the comments module, the limits in one shared file, and the home page and ADR wording. **I left alone on purpose:** renames, emoji counting as two characters, and a repeated error line.
 
-**The name clash, live.** Before Matt's review, I'd typed `/code-review max`: Claude Code's Built-in bug hunt at maximum effort, running in the background, not Matt's Skill. One asks whether code matches your rules and spec; the other asks where it breaks.
+**The name clash, live.** Before Matt's review, I'd typed `/code-review max`: Claude Code's Built-in bug hunt at maximum effort, running in the background, not Matt's Skill.
 
 On a later build, the review inside `/implement-spec` found about 15 problems, such as the home page calling Skills "commands", which the glossary rules out. One fix-up agent fixed them all.
-
-My takeaway: passing tests isn't the same as correct, and two separate reviewers find different kinds of problems.
 ```
 
 ## Cheat sheet
@@ -376,7 +374,7 @@ This morning you branched off `main` and made four commits for one feature. Ever
 - [ ] `/mattpocock-skills:code-review Review since HEAD.`
   > `HEAD` is your latest commit. Comparing it with itself gives an empty diff, and the review stops early.
 - [ ] `/code-review max`, the strongest setting.
-  > With the plugin installed, the bare name can reach Claude Code's Built-in bug hunt, which doesn't check your rules or your spec.
+  > With the plugin installed, the bare name can reach Claude Code's Built-in bug hunt, which gives no Standards or Spec report.
 - [ ] `/mattpocock-skills:code-review` on its own, so it can choose the branch.
   > It doesn't choose: with no fixed point, it asks you. Naming `main` up front saves a round trip.
 ```
@@ -386,9 +384,9 @@ You fixed every finding from a review and ran it again. This time it reports fou
 - [ ] Keep fixing and re-running until it comes back clean.
   > It never converges: fixes are new code, and judgement calls vary from run to run.
 - [ ] Switch to the Built-in review, which gives steadier results.
-  > A different tool answers a different question. It won't tell you whether the change follows your rules and spec.
-- [x] Check each citation, fix what holds up, then stop.
-  > Right. A cited rule can be a hard violation; smells are judgement calls. Every fix is new code, so another run will always find something. Act on what holds up, then move on.
+  > A different tool answers a different question: it hunts bugs, and doesn't check the change against your spec.
+- [x] Check the cited rule, weigh the three smells, then move on.
+  > Right. A cited rule can be a hard violation, so confirm it applies; smells are judgement calls. Every fix is new code, so another run will always find something. Act on what holds up, then move on.
 - [ ] Treat them all as hard violations and fix all four before merging.
   > Only a documented rule can make a finding hard. The three smells are judgement calls to weigh, not must-fixes.
 ```
@@ -425,7 +423,7 @@ After a three-hour build, Raj types: "Review your work against the spec." The ag
   > A summary keeps the same agent, still primed by its own choices. The reviewer needs to be one that didn't write the code.
 - [ ] He should have asked for the Built-in `/code-review`.
   > That's a bug hunt. It doesn't check the work against the spec, so it wouldn't flag a missing requirement.
-- [x] He should have had a fresh agent review it.
+- [x] He should have had a different agent do the review.
   > Right. It was biased toward its own choices and deep in a full context window. Use `/mattpocock-skills:code-review` from a clean session, so fresh sub-agents do the reviewing.
 ```
 
@@ -458,11 +456,11 @@ A teammate suggests a cheaper version of the review: one fresh sub-agent that ch
 - [ ] Nothing: one fresh agent is as independent as two.
   > It's fresh from the build, but not from itself. What it concludes on one axis sits in its context while it judges the other.
 - [ ] The smell baseline, which only a Standards sub-agent can hold.
-  > The main agent pastes the baseline into whatever brief it writes. Losing it isn't the risk.
+  > The Skill pastes the baseline into whatever brief it writes. Losing it isn't the risk.
 - [x] Independence: a verdict on one axis can sway the other.
   > Right. In two separate contexts, neither reviewer sees the other's reasoning, so a clean Standards pass can't soften a Spec gap, or the reverse.
 - [ ] Ticket lookup, since sub-agents can't reach an issue tracker.
-  > The main agent finds the spec and passes it in. That works the same with one reviewer or two.
+  > The Skill finds the spec itself and passes it in. That works the same with one reviewer or two.
 ```
 
 ```sources

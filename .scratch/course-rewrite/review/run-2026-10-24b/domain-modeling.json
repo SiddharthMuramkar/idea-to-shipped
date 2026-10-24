@@ -1,0 +1,280 @@
+{
+  "slug": "domain-modeling",
+  "next": {
+    "round": 2,
+    "step": "fix",
+    "why": "check round 2 done; its fixer was stopped before editing"
+  },
+  "applied": [
+    "r1: accuracy (GLOSSARY.md isn't auto-loaded): intro line now says 'keep them in a file that later sessions and Skills can read'. Big-idea callout now says 'later sessions can start from your words'. The glossary paragraph now says /setup-matt-pocock-skills 'leaves a pointer in CLAUDE.md (the file Claude Code reads at the start of every session), so every session knows where to look' (setup SKILL.md:84-99, domain.md:5-8). why-shared-words feedback now says 'so sessions, Skills and new files can all use it'.",
+    "r1: files Scene: removed the pre-existing content/lessons/04-grilling.md and src/comments/comments.ts rows, which showed a false ADDED badge. The Scene now opens with one step, 'No docs exist before you start, and none are needed. The first term is settled (...), and only now is GLOSSARY.md created.' + GLOSSARY.md. It has 4 steps, still inside the 4-8 rule.",
+    "r1: chat Scene: the code-check question is now a numbered round, '❓ **Q4** - **Hiding**: ... So hiding is new work for this change? ➡️ Yes.', and the reply is 'you: 4 yes.'. The caption 'Nothing is left to ask...' now comes after that answer and before the summary. The question is worded as a scope decision because grilling says facts are the agent's job.",
+    "r1: setup contradiction: Try step 1 now says the practice repo skips /setup-matt-pocock-skills because /grill-with-docs doesn't need what it records, and to run it once first in a real repo (link to [Skills](/learn/skills)). Added a Cheat sheet row '| A new repo | `/setup-matt-pocock-skills`, once |', matching The main flow's cheat sheet. Deleted the Common mistakes bullet 'Using GLOSSARY.md as a spec...' to offset the words, since Your part and The glossary already cover it.",
+    "r1: cold-reader terms: 'during a grilling session' became 'while the agent interviews you'. The /clear and /compact sentence now defines the term at first use: 'two Built-in commands: ones that come with Claude Code itself, not Skills'.",
+    "r1: shortest-option tell: scenario-new-words right answer is now '`/grill-with-docs`, with your rough idea after it'. scenario-lost-reply is now '`/wait-what`, straight after that reply'. scenario-no-docs-repo now ends 'about the existing code'. In why-not-surprising, wrong option c is now 'Yes, and add Tailwind to `GLOSSARY.md`.' (37 shown, 39 raw), so the right answer (42) is not the shortest by either count. The checker's 'too' version (43 raw) still left it shortest in raw Markdown. Checked with a script: in every Checkpoint and Final test question, the right answer is now neither the shortest nor the longest, in both raw and shown length.",
+    "r1: scenario-glossary-missing: option a is now 'The glossary is only created once enough terms pile up.', with feedback that there's no threshold. Right option c is now 'Only grilling loaded; the domain-modeling half didn't.', and its feedback adds the 'saving terms up, as in Matt's demo' note. Lengths a55/b51/c54/d69.",
+    "r1: spot-recipe-entry: changed '_Avoid_: Dish, post.' to '_Avoid_: Post, article.' so the entry's only flaw is the intended drift into storage and decisions, and the right-answer feedback is now accurate."
+  ],
+  "declined": [
+    {
+      "problem": "quiz low: wait-what-reply option c's feedback argues about scope ('often bigger than one sentence') instead of the need for context",
+      "reason": "The installed docs say the same thing, almost word for word: docs/productivity/wait-what.md:19 'What lost you is usually bigger than one paragraph, so the agent decides how far back to go.' The feedback is accurate, so I kept it; only option a was lengthened, so the right answer is strictly shorter."
+    }
+  ],
+  "pending": [
+    {
+      "severity": "medium",
+      "where": "Final test, why-shared-words, option d feedback: \"The agent has no memory between sessions.\" (line 455)",
+      "problem": "This says Claude Code has no memory between sessions, which is false. Its auto memory is on by default and is loaded into every session. Other Lessons teach this: How coding agents work (lines 40 and 198) and The context window (line 38). So this feedback contradicts both the Claude Code docs and the rest of the course. Line 22 (\"starts every session knowing nothing about your project\") leans the same way, but its next sentence (\"unless it's in a file the agent reads\") hedges it.",
+      "evidence": "https://code.claude.com/docs/en/memory: \"Each Claude Code session begins with a fresh context window. Two mechanisms carry knowledge across sessions: CLAUDE.md files ... Auto memory: notes Claude writes itself\"; \"Auto memory is on by default in local sessions\"; MEMORY.md is \"loaded at the start of every conversation\". content/lessons/01-how-agents-work.md:40: \"The next session remembers nothing of it unless something was written to a file, by you or by Claude Code in notes it keeps for itself.\" content/lessons/01-how-agents-work.md:198 and content/lessons/02-context-window.md:38 both describe auto memory, on by default.",
+      "fix": "Replace line 455 with: \"  > A new session doesn't reload old conversations. It knows only what's in the files it reads, like `CLAUDE.md` and its own auto-memory notes, and the glossary holds words, not conversations.\"",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Your part, \"Know when to skip it. No repo: `/grill-me`, the same interview with no files.\" (line 204); How Matt and others use it, \"whenever there's a repo\" (line 229); Cheat sheet, \"| No repo | `/grill-me` instead |\" (line 328)",
+      "problem": "Line 57 defines a repo as \"your project's folder, tracked with Git\". The Lesson then makes Git the test for choosing `/grill-me` over `/grill-with-docs`. Matt's rule is about a working directory, not about Git. A reader with a project folder that isn't under Git would be told to use `/grill-me`. Both ask-matt and the Grilling Lesson tell that reader to use `/grill-with-docs`. The Grilling Lesson was corrected for exactly this in an earlier accuracy round, so the two Lessons now give opposite advice.",
+      "evidence": "ask-matt/SKILL.md:19: \"Start here whenever you are **working in a working directory** ... (No working directory? Use `/grill-me` instead\". ask-matt/SKILL.md:85: /grill-me is for when you are \"not working in a working directory ... If you are in a working directory, use `/grill-with-docs` instead\". git show 7934668 (PR #10) commit message: \"Matt's split between /grill-with-docs and /grill-me is a working directory (a project folder), not 'a folder tracked with Git'.\" content/lessons/04-grilling.md:107-108: \"No project folder ... | `/grill-me`\" / \"In a project folder ... | `/grill-with-docs`\".",
+      "fix": "Line 204: \"- **Know when to skip it.** No project folder at all (Matt says working directory), like a talk or a plan: `/grill-me`, the same interview with no files. An effort too big to plan in one sitting starts with `/wayfinder` (Part 4).\" Line 229: \"... the first step of his Main flow (...) whenever you're working in a project folder (Matt calls it a working directory).\" Line 328: \"| No project folder | `/grill-me` instead |\". Line 231, which paraphrases the video's codebase rule, can stay as it is.",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, scenario-no-docs-repo, option b feedback: \"Setup only records where the domain docs live.\" (line 379)",
+      "problem": "Read literally, this says setup records nothing except the domain-docs location. It also records the issue tracker and, when triage is installed, the triage labels. The Skills Lesson teaches all three, so a reader who has done that Lesson gets a contradiction.",
+      "evidence": "setup-matt-pocock-skills/SKILL.md:9-13 lists three things: \"**Issue tracker** ... **Triage labels** ... **Domain docs**\". content/lessons/03-skills.md:157: \"Several of Matt's engineering Skills need three facts about your repo: where issues ... live; what the triage labels are called ...; and where the glossary ... and decision records ... go.\"",
+      "fix": "Replace line 379 with: \"  > Setup records where the glossary and ADRs will live (plus your issue tracker and labels), but it writes no glossary. The glossary itself is built term by term.\"",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, prerequisite line 243 (\"You need Claude Code installed and signed in (see [Start here](/learn/start-here)).\") and step 1, line 250 (`git init`)",
+      "problem": "The Try needs Git, but the prerequisite line only asks for Claude Code. A reader starting from zero (only Claude Code, the plugin and a terminal) hits a dead end at `git init`: on Windows PowerShell 'git' is not recognized, and on a Mac without Git a pop-up asks to install developer tools. Nothing says what to do next or whether to carry on.",
+      "evidence": "Lesson line 243 lists only Claude Code. Line 250 runs `git init`. Start here lists Git as a separate install (content/lessons/00-start-here.md:35: \"Git ... On Windows, install Git for Windows (git-scm.com)\") and admits it can be missing (00-start-here.md:45: \"Check git too. If it's missing, your Mac offers to install it.\"). The grilling Try (04-grilling.md:229-235) avoids the issue because it doesn't run `git init`.",
+      "fix": "Line 243: \"You need Claude Code installed and signed in, and Git (both covered in [Start here](/learn/start-here)).\" At the end of step 1 add: \"If `git init` says git isn't found, install Git (see [Start here](/learn/start-here)), open a new terminal window, then run `cd book-club-docs`, `git init` and `claude` again.\"",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "When a reply loses you, line 211 (\"the model obeys by cutting words\"); How Matt and others use it, line 231 (\"A codebase means the docs version ... codebase, `/grill-with-docs`; no codebase, `/grill-me`\"); Try step 6, line 268 (\"a leading `!` runs a shell command\")",
+      "problem": "A cold reader meets three terms the Lesson never explains. (1) \"The model\" appears only here, and in the name \"model-invoked\" at line 38. Everywhere else the Lesson says \"the agent\" or \"the AI\" (line 113), so a newcomer can't tell they're the same thing. (2) \"Codebase\" appears only at line 231. Its rule (\"no codebase, /grill-me\") also reads against the Lesson's own rule at line 204 (\"No repo: /grill-me\") and against the Try, which runs /grill-with-docs in an empty repo with no code. (3) The `!` clause explains a term with another unexplained one, \"shell\", for a reader who barely uses a terminal.",
+      "evidence": "grep of the Lesson: the first whole-word \"model\" is line 38 (model-invoked) and the only other use is line 211. \"codebase\" appears only at line 231 (line 204 uses \"No repo\"; Try lines 245-251 use an empty repo with /grill-with-docs). \"shell\" appears only at line 268. The writing guide (Voice) says: \"Explain every term at or before first use, in a clause\".",
+      "fix": "Line 211: \"'Be concise' is about the output, and the agent obeys by cutting words, which loses you further.\" Line 231: \"**A repo means the docs version.** His rule in the May 2026 video introducing it: in a repo, `/grill-with-docs`; with no repo, `/grill-me`. He'd pick the docs version even for a brand-new project with almost no code, since that's when shared words get set.\" Line 268: \"(a leading `!` runs a terminal command without leaving Claude Code)\".",
+      "lens": "reader"
+    },
+    {
+      "severity": "high",
+      "where": "Final test, why-shared-words, option d feedback: \"The agent has no memory between sessions.\" (line 455)",
+      "problem": "The feedback states something false about Claude Code. Claude Code has auto memory, which is on by default and loaded at the start of every session. Two earlier Lessons teach exactly that, so this line also contradicts them.",
+      "evidence": "https://code.claude.com/docs/en/memory says two mechanisms carry knowledge across sessions, CLAUDE.md files and auto memory, and that auto memory is on by default in local sessions and loaded into every session. content/lessons/01-how-agents-work.md:40 says the next session remembers nothing \"unless something was written to a file, by you or by Claude Code in notes it keeps for itself\". 01-how-agents-work.md:198 introduces auto memory. content/lessons/02-context-window.md:38 lists it as \"auto memory, on by default\". This Lesson's own body (line 22) gets it right: gone \"unless it's in a file the agent reads\".",
+      "fix": "Replace line 455 with: `  > Only files carry anything from one session to the next, and the glossary holds words, not past conversations.`",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, why-not-surprising, option b: \"No: a styling library is always easy to swap out.\" (lines 438-439)",
+      "problem": "The prompt itself rules this distractor out: it says swapping Tailwind \"would mean restyling every page\". Round 1 treated this same flaw, an option ruled out by the prompt, as something to fix (scenario-glossary-missing option b). It also leaves the right answer as the only option that names one of the three tests, which is a small tell.",
+      "evidence": "Line 435 says \"Swapping it out later would mean restyling every page\". Option b's own feedback (line 439) admits \"Here swapping it is costly\". Seed `reviseFixed` has \"scenario-glossary-missing option b replaced (the old one was ruled out by the prompt itself)\". Don't use \"fails a real trade-off\" as the new distractor: \"came with the template\" makes it arguable, and that would create a second defensible answer.",
+      "fix": "Replace option b and its feedback with:\n`- [ ] No: only databases and hosting earn ADRs, never a library.`\n`  > A library can qualify when swapping it is costly, as here. A different test fails.`\n(57 characters, so the right answer, at 42, is still neither the shortest nor the longest.)",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, spot-adr-pile, right option a: \"Most of those fail the three tests, so they shouldn't be ADRs.\" (line 400)",
+      "problem": "Wording tell: the right answer is the only hedged option (\"Most\"), while b, c and d are all absolute (\"all\", \"Each\", \"which holds\"). The hedge also clashes with the feedback, which says \"Each could be undone tomorrow\".",
+      "evidence": "Lines 400-407: a \"Most of those fail...\", b \"They should all be merged...\", c \"Each ADR needed...\", d \"They belong in GLOSSARY.md...\". Feedback at line 401: \"Each could be undone tomorrow, and nobody would wonder why.\" The brief's lens names \"the most hedged\" option as a tell.",
+      "fix": "Replace line 400 with `- [x] Decisions like these fail the three tests, so they aren't ADRs.` (63 characters; the others are 54, 69 and 64, so it is neither the longest nor the shortest). Keep the feedback as it is.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, spot-assumed-saved, option b: \"`/to-spec` should have run before `/grill-with-docs`.\" (lines 414-415)",
+      "problem": "Weak distractor. Nothing in the Lesson invites this mix-up, and the prompt already shows /to-spec running after the interview. Meanwhile the Lesson's real second misconception, that /compact would have kept everything, goes untested: the body and Common mistakes warn against /compact too.",
+      "evidence": "Line 55: \"don't run `/clear` ... or `/compact` (which swaps it for a summary)\". Line 293: \"No `/clear` or `/compact` until `/to-spec`...\". The course fact says /compact \"replaces the history with a summary\". Options a and d already repeat where-it-lands' two distractors (glossary term, ADR), so b is the only slot that could test something new.",
+      "fix": "Replace option b and its feedback with:\n`- [ ] He should have run \\`/compact\\` instead, which keeps every decision.`\n`  > A summary can drop details like this one. Keep the full conversation until \\`/to-spec\\` has run.`\n(66 characters; the right answer, at 75, is still not the longest, since a is 78.)",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Checkpoint earns-an-adr, option b: \"Make the submit button green, to match the school's colours.\" (lines 149-150)",
+      "problem": "Weak distractor: it fails all three tests at a glance, so it only narrows the choice. It also repeats the button-styling example that spot-adr-pile uses in the Final test (\"Round the button corners\").",
+      "evidence": "Line 149 against line 399 (\"Round the button corners\"). The Lesson's rule (line 139) is that missing any one test means no ADR. A distractor that passes one test and fails another would actually check that rule.",
+      "fix": "Replace option b and its feedback with:\n`- [ ] Hide marks from parents until the end of term, as the head asked.`\n`  > Surprising, perhaps, but it's a setting you could flip tomorrow, so it fails \"hard to reverse\". Missing one test means no ADR.`\n(65 characters; the right answer, at 81, is still neither the longest nor the shortest.)",
+      "lens": "quiz"
+    }
+  ],
+  "rounds": {
+    "r2": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "Final test, why-shared-words, option d feedback: \"The agent has no memory between sessions.\" (line 455)",
+            "problem": "This says Claude Code has no memory between sessions, which is false. Its auto memory is on by default and is loaded into every session. Other Lessons teach this: How coding agents work (lines 40 and 198) and The context window (line 38). So this feedback contradicts both the Claude Code docs and the rest of the course. Line 22 (\"starts every session knowing nothing about your project\") leans the same way, but its next sentence (\"unless it's in a file the agent reads\") hedges it.",
+            "evidence": "https://code.claude.com/docs/en/memory: \"Each Claude Code session begins with a fresh context window. Two mechanisms carry knowledge across sessions: CLAUDE.md files ... Auto memory: notes Claude writes itself\"; \"Auto memory is on by default in local sessions\"; MEMORY.md is \"loaded at the start of every conversation\". content/lessons/01-how-agents-work.md:40: \"The next session remembers nothing of it unless something was written to a file, by you or by Claude Code in notes it keeps for itself.\" content/lessons/01-how-agents-work.md:198 and content/lessons/02-context-window.md:38 both describe auto memory, on by default.",
+            "fix": "Replace line 455 with: \"  > A new session doesn't reload old conversations. It knows only what's in the files it reads, like `CLAUDE.md` and its own auto-memory notes, and the glossary holds words, not conversations.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Your part, \"Know when to skip it. No repo: `/grill-me`, the same interview with no files.\" (line 204); How Matt and others use it, \"whenever there's a repo\" (line 229); Cheat sheet, \"| No repo | `/grill-me` instead |\" (line 328)",
+            "problem": "Line 57 defines a repo as \"your project's folder, tracked with Git\". The Lesson then makes Git the test for choosing `/grill-me` over `/grill-with-docs`. Matt's rule is about a working directory, not about Git. A reader with a project folder that isn't under Git would be told to use `/grill-me`. Both ask-matt and the Grilling Lesson tell that reader to use `/grill-with-docs`. The Grilling Lesson was corrected for exactly this in an earlier accuracy round, so the two Lessons now give opposite advice.",
+            "evidence": "ask-matt/SKILL.md:19: \"Start here whenever you are **working in a working directory** ... (No working directory? Use `/grill-me` instead\". ask-matt/SKILL.md:85: /grill-me is for when you are \"not working in a working directory ... If you are in a working directory, use `/grill-with-docs` instead\". git show 7934668 (PR #10) commit message: \"Matt's split between /grill-with-docs and /grill-me is a working directory (a project folder), not 'a folder tracked with Git'.\" content/lessons/04-grilling.md:107-108: \"No project folder ... | `/grill-me`\" / \"In a project folder ... | `/grill-with-docs`\".",
+            "fix": "Line 204: \"- **Know when to skip it.** No project folder at all (Matt says working directory), like a talk or a plan: `/grill-me`, the same interview with no files. An effort too big to plan in one sitting starts with `/wayfinder` (Part 4).\" Line 229: \"... the first step of his Main flow (...) whenever you're working in a project folder (Matt calls it a working directory).\" Line 328: \"| No project folder | `/grill-me` instead |\". Line 231, which paraphrases the video's codebase rule, can stay as it is."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-no-docs-repo, option b feedback: \"Setup only records where the domain docs live.\" (line 379)",
+            "problem": "Read literally, this says setup records nothing except the domain-docs location. It also records the issue tracker and, when triage is installed, the triage labels. The Skills Lesson teaches all three, so a reader who has done that Lesson gets a contradiction.",
+            "evidence": "setup-matt-pocock-skills/SKILL.md:9-13 lists three things: \"**Issue tracker** ... **Triage labels** ... **Domain docs**\". content/lessons/03-skills.md:157: \"Several of Matt's engineering Skills need three facts about your repo: where issues ... live; what the triage labels are called ...; and where the glossary ... and decision records ... go.\"",
+            "fix": "Replace line 379 with: \"  > Setup records where the glossary and ADRs will live (plus your issue tracker and labels), but it writes no glossary. The glossary itself is built term by term.\""
+          },
+          {
+            "severity": "low",
+            "where": "A session, step by step, chat Scene Q4: \"I checked `src/comments`: there's no hide button\" (line 175)",
+            "problem": "The Scene is set in this site's repo. In that repo, `src/comments` holds only the data module, so a hide button could never be there. The comment box UI is in `src/app/learn/[slug]/discussion.tsx`. The conclusion (nothing hides a Comment today) is true, but the agent checks the wrong place. That models a weak version of the \"check the code\" move.",
+            "evidence": "`ls src/comments` returns only `comments.ts` and `limits.ts`. Grepping for comment UI finds `src/app/learn/[slug]/discussion.tsx`. domain-modeling/SKILL.md:58: \"When the user states how something works, check whether the code agrees.\"",
+            "fix": "\"agent: ❓ **Q4** - **Hiding**: I checked the comment box (`src/app/learn/[slug]/discussion.tsx`) and `src/comments`: there's no hide button, and nothing hides a Comment today. So hiding is new work for this change? ➡️ Yes.\""
+          },
+          {
+            "severity": "low",
+            "where": "The glossary, \"`/setup-matt-pocock-skills`, leaves a pointer in `CLAUDE.md`\" (line 113)",
+            "problem": "Setup edits `CLAUDE.md` only when that file already exists. If only `AGENTS.md` exists it edits that instead, and if neither exists it asks which one to create. The pointer itself goes to `docs/agents/domain.md`, and that file sends the agent to `GLOSSARY.md`. The Lesson simplifies all of this, slightly.",
+            "evidence": "setup-matt-pocock-skills/SKILL.md:76-78: \"If `CLAUDE.md` exists, edit it. Else if `AGENTS.md` exists, edit it. If neither exists, ask the user which one to create\". SKILL.md:97-99: \"### Domain docs ... See `docs/agents/domain.md`.\" domain.md:5-9: \"Before exploring, read these ... `GLOSSARY.md`\".",
+            "fix": "\"... leaves a pointer in `CLAUDE.md` (or `AGENTS.md`, if that's the file your repo uses), the file Claude Code reads at the start of every session, so every session knows where to look.\""
+          },
+          {
+            "severity": "low",
+            "where": "The glossary, \"Here's its start, trimmed to one entry:\" (line 85)",
+            "problem": "The sample shows the header, then `## Discussion` and Visitor. The real file's first section after the header is `## Course`, which starts with Lesson. So the sample is the header plus a later section, not the file's start.",
+            "evidence": "git show 4f849b9:GLOSSARY.md: lines 1-3 are the header and description, line 5 is `## Course`, line 7 is `**Lesson**:`, and `## Discussion` with Visitor only comes at lines 23-31.",
+            "fix": "\"Here's its header and one entry, from its Discussion section:\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "Try it yourself, prerequisite line 243 (\"You need Claude Code installed and signed in (see [Start here](/learn/start-here)).\") and step 1, line 250 (`git init`)",
+            "problem": "The Try needs Git, but the prerequisite line only asks for Claude Code. A reader starting from zero (only Claude Code, the plugin and a terminal) hits a dead end at `git init`: on Windows PowerShell 'git' is not recognized, and on a Mac without Git a pop-up asks to install developer tools. Nothing says what to do next or whether to carry on.",
+            "evidence": "Lesson line 243 lists only Claude Code. Line 250 runs `git init`. Start here lists Git as a separate install (content/lessons/00-start-here.md:35: \"Git ... On Windows, install Git for Windows (git-scm.com)\") and admits it can be missing (00-start-here.md:45: \"Check git too. If it's missing, your Mac offers to install it.\"). The grilling Try (04-grilling.md:229-235) avoids the issue because it doesn't run `git init`.",
+            "fix": "Line 243: \"You need Claude Code installed and signed in, and Git (both covered in [Start here](/learn/start-here)).\" At the end of step 1 add: \"If `git init` says git isn't found, install Git (see [Start here](/learn/start-here)), open a new terminal window, then run `cd book-club-docs`, `git init` and `claude` again.\""
+          },
+          {
+            "severity": "medium",
+            "where": "When a reply loses you, line 211 (\"the model obeys by cutting words\"); How Matt and others use it, line 231 (\"A codebase means the docs version ... codebase, `/grill-with-docs`; no codebase, `/grill-me`\"); Try step 6, line 268 (\"a leading `!` runs a shell command\")",
+            "problem": "A cold reader meets three terms the Lesson never explains. (1) \"The model\" appears only here, and in the name \"model-invoked\" at line 38. Everywhere else the Lesson says \"the agent\" or \"the AI\" (line 113), so a newcomer can't tell they're the same thing. (2) \"Codebase\" appears only at line 231. Its rule (\"no codebase, /grill-me\") also reads against the Lesson's own rule at line 204 (\"No repo: /grill-me\") and against the Try, which runs /grill-with-docs in an empty repo with no code. (3) The `!` clause explains a term with another unexplained one, \"shell\", for a reader who barely uses a terminal.",
+            "evidence": "grep of the Lesson: the first whole-word \"model\" is line 38 (model-invoked) and the only other use is line 211. \"codebase\" appears only at line 231 (line 204 uses \"No repo\"; Try lines 245-251 use an empty repo with /grill-with-docs). \"shell\" appears only at line 268. The writing guide (Voice) says: \"Explain every term at or before first use, in a clause\".",
+            "fix": "Line 211: \"'Be concise' is about the output, and the agent obeys by cutting words, which loses you further.\" Line 231: \"**A repo means the docs version.** His rule in the May 2026 video introducing it: in a repo, `/grill-with-docs`; with no repo, `/grill-me`. He'd pick the docs version even for a brand-new project with almost no code, since that's when shared words get set.\" Line 268: \"(a leading `!` runs a terminal command without leaving Claude Code)\"."
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, step 2, line 254 (\"If `grill-with-docs` isn't listed, type `/exit`, install Matt's Skills, then run `claude` again:\")",
+            "problem": "The colon comes straight after \"run `claude` again\", so a newcomer can read the code block that follows as the \"run claude again\" step. They may run only the install line and never restart Claude Code, or not realise the block goes in the terminal after /exit.",
+            "evidence": "Lines 254-258: the sentence ends \"then run `claude` again:\", and the next block is `claude plugin install mattpocock-skills@claude-plugins-official`. The grilling Lesson words the same step clearly (04-grilling.md:237: \"type `/exit`, run this in your terminal to install Matt's Skills, then run `claude` again:\").",
+            "fix": "\"If `grill-with-docs` isn't listed, delete what you typed, type `/exit`, run this in your terminal to install Matt's Skills, then run `claude` again:\""
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, fallback line 287 (\"No glossary? Check you didn't choose No at a permission prompt, then ask: \\\"Did you load grilling and domain-modeling?\\\"\")",
+            "problem": "The fallback leaves the reader stuck in the case the Lesson itself describes: both Skills loaded, but the agent is saving terms up instead of writing them as it goes. If the agent answers \"yes\", the reader has no next step. The yes/no wording also invites an agreeable \"yes\", where line 203 asks the open \"Which Skills did you load?\".",
+            "evidence": "Line 232: \"He still asked it to save near the end, though the Skill says to write as you go\". The Final test feedback at line 357 gives the missing step: \"If it did load but is saving terms up, as in Matt's demo, ask it to write them now.\" docs/engineering/grill-with-docs.md:52: \"ask the agent directly which skills it loaded.\"",
+            "fix": "\"No glossary? Check you didn't choose No at a permission prompt, then ask: \\\"Which Skills did you load?\\\" If both loaded, ask it to write the settled terms to `GLOSSARY.md` now; if not, type `/domain-modeling`.\""
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, It's working if, lines 281-282 (\"with no tables, pages or decisions\" / \"It challenged a fuzzy word\")",
+            "problem": "A newcomer checking their result can't tell which \"tables\" and \"pages\" are meant (Markdown tables, database tables, web pages, book pages). \"Challenged\" is the name of move 1 (Challenge against the glossary), but this practice repo starts with no glossary. What the reader will see is move 2, Sharpen fuzzy words. This round-1 low is still unfixed.",
+            "evidence": "Lines 42-43 name the moves \"Challenge against the glossary\" and \"Sharpen fuzzy words\". Try step 1 (lines 245-251) starts in an empty folder, so there is nothing to challenge against at first. Round-1 reader finding (run-2026-10-24/domain-modeling.json, rounds.r1.checks.reader, low) was neither applied nor declined.",
+            "fix": "Line 281: \"... and an `_Avoid_:` line, with no database tables, web pages or decisions.\" Line 282: \"It sharpened a fuzzy word, such as asking whether \\\"people\\\" and \\\"members\\\" are the same.\""
+          },
+          {
+            "severity": "low",
+            "where": "A session, step by step, chat Scene line 178 (\"No ADR: hiding is easy to undo.\") and line 175 (\"I checked `src/comments`: there's no hide button\")",
+            "problem": "The Scene's ADR verdict mixes up undoing an action in the app (unhiding a Comment) with reversing the decision, which is what the \"hard to reverse\" test is about. A cold reader could learn the test wrongly. Also, `src/comments` is an unexplained path and the wrong folder: in this site's repo it holds only the server-side module, while the comment box lives elsewhere.",
+            "evidence": "Line 135 defines the test: \"Hard to reverse. Changing your mind later costs real work.\" `ls src/comments` shows only comments.ts and limits.ts. The comment box is src/app/learn/[slug]/discussion.tsx.",
+            "fix": "Line 178: \"... Glossary: added **Flag**. No ADR: this rule is cheap to change later. Is that our shared understanding?\" Line 175: \"❓ **Q4** - **Hiding**: I checked the comment box's code: there's no hide button, and nothing hides a Comment today. So hiding is new work for this change? ➡️ Yes.\""
+          },
+          {
+            "severity": "low",
+            "where": "Common mistakes, line 293 (\"No `/clear` or `/compact` until `/to-spec`, and `/to-tickets` if you need it, have run.\") and Cheat sheet line 332 (\"no `/clear` or `/compact` until `/to-spec` (and `/to-tickets`)\")",
+            "problem": "Both lines leave out the small-change path that the body teaches, so a reader who builds a small change with /implement and never runs /to-spec is told, in effect, never to clear. That contradicts the body's own rule.",
+            "evidence": "Line 55: \"It lives only in the agent's context window ... until `/implement` builds it or `/to-spec` writes it into a spec.\" Line 205: \"Small change: `/implement` (Matt's Skill that builds it) right there.\"",
+            "fix": "Line 293: \"No `/clear` or `/compact` until `/implement` or `/to-spec` (and `/to-tickets`, if you need it) has used the conversation.\" Line 332: \"Stays in the conversation: no `/clear` or `/compact` until `/implement` or `/to-spec` (and `/to-tickets`) has used it\"."
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "high",
+            "where": "Final test, why-shared-words, option d feedback: \"The agent has no memory between sessions.\" (line 455)",
+            "problem": "The feedback states something false about Claude Code. Claude Code has auto memory, which is on by default and loaded at the start of every session. Two earlier Lessons teach exactly that, so this line also contradicts them.",
+            "evidence": "https://code.claude.com/docs/en/memory says two mechanisms carry knowledge across sessions, CLAUDE.md files and auto memory, and that auto memory is on by default in local sessions and loaded into every session. content/lessons/01-how-agents-work.md:40 says the next session remembers nothing \"unless something was written to a file, by you or by Claude Code in notes it keeps for itself\". 01-how-agents-work.md:198 introduces auto memory. content/lessons/02-context-window.md:38 lists it as \"auto memory, on by default\". This Lesson's own body (line 22) gets it right: gone \"unless it's in a file the agent reads\".",
+            "fix": "Replace line 455 with: `  > Only files carry anything from one session to the next, and the glossary holds words, not past conversations.`"
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, why-not-surprising, option b: \"No: a styling library is always easy to swap out.\" (lines 438-439)",
+            "problem": "The prompt itself rules this distractor out: it says swapping Tailwind \"would mean restyling every page\". Round 1 treated this same flaw, an option ruled out by the prompt, as something to fix (scenario-glossary-missing option b). It also leaves the right answer as the only option that names one of the three tests, which is a small tell.",
+            "evidence": "Line 435 says \"Swapping it out later would mean restyling every page\". Option b's own feedback (line 439) admits \"Here swapping it is costly\". Seed `reviseFixed` has \"scenario-glossary-missing option b replaced (the old one was ruled out by the prompt itself)\". Don't use \"fails a real trade-off\" as the new distractor: \"came with the template\" makes it arguable, and that would create a second defensible answer.",
+            "fix": "Replace option b and its feedback with:\n`- [ ] No: only databases and hosting earn ADRs, never a library.`\n`  > A library can qualify when swapping it is costly, as here. A different test fails.`\n(57 characters, so the right answer, at 42, is still neither the shortest nor the longest.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, spot-adr-pile, right option a: \"Most of those fail the three tests, so they shouldn't be ADRs.\" (line 400)",
+            "problem": "Wording tell: the right answer is the only hedged option (\"Most\"), while b, c and d are all absolute (\"all\", \"Each\", \"which holds\"). The hedge also clashes with the feedback, which says \"Each could be undone tomorrow\".",
+            "evidence": "Lines 400-407: a \"Most of those fail...\", b \"They should all be merged...\", c \"Each ADR needed...\", d \"They belong in GLOSSARY.md...\". Feedback at line 401: \"Each could be undone tomorrow, and nobody would wonder why.\" The brief's lens names \"the most hedged\" option as a tell.",
+            "fix": "Replace line 400 with `- [x] Decisions like these fail the three tests, so they aren't ADRs.` (63 characters; the others are 54, 69 and 64, so it is neither the longest nor the shortest). Keep the feedback as it is."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, spot-assumed-saved, option b: \"`/to-spec` should have run before `/grill-with-docs`.\" (lines 414-415)",
+            "problem": "Weak distractor. Nothing in the Lesson invites this mix-up, and the prompt already shows /to-spec running after the interview. Meanwhile the Lesson's real second misconception, that /compact would have kept everything, goes untested: the body and Common mistakes warn against /compact too.",
+            "evidence": "Line 55: \"don't run `/clear` ... or `/compact` (which swaps it for a summary)\". Line 293: \"No `/clear` or `/compact` until `/to-spec`...\". The course fact says /compact \"replaces the history with a summary\". Options a and d already repeat where-it-lands' two distractors (glossary term, ADR), so b is the only slot that could test something new.",
+            "fix": "Replace option b and its feedback with:\n`- [ ] He should have run \\`/compact\\` instead, which keeps every decision.`\n`  > A summary can drop details like this one. Keep the full conversation until \\`/to-spec\\` has run.`\n(66 characters; the right answer, at 75, is still not the longest, since a is 78.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Checkpoint earns-an-adr, option b: \"Make the submit button green, to match the school's colours.\" (lines 149-150)",
+            "problem": "Weak distractor: it fails all three tests at a glance, so it only narrows the choice. It also repeats the button-styling example that spot-adr-pile uses in the Final test (\"Round the button corners\").",
+            "evidence": "Line 149 against line 399 (\"Round the button corners\"). The Lesson's rule (line 139) is that missing any one test means no ADR. A distractor that passes one test and fails another would actually check that rule.",
+            "fix": "Replace option b and its feedback with:\n`- [ ] Hide marks from parents until the end of term, as the head asked.`\n`  > Surprising, perhaps, but it's a setting you could flip tomorrow, so it fails \"hard to reverse\". Missing one test means no ADR.`\n(65 characters; the right answer, at 81, is still neither the longest nor the shortest.)"
+          },
+          {
+            "severity": "low",
+            "where": "Final test, sequence-files-appear, prompt and right option b: \"You settle a first term early on, more terms later, and accept one ADR near the end\" / \"First term settled → ...\" (lines 423, 426)",
+            "problem": "The prompt still spells out the order of events, and the right option is the only one that opens by repeating it (\"First term settled\"). The round 1 fix note said the prompt no longer gives the order away, but it partly still does.",
+            "evidence": "Seed `reviseFixed`: \"the new prompt no longer gives away the order\". Line 423 lists the events in order, and line 426 starts with the same first event.",
+            "fix": "Line 423: `You run \\`/grill-with-docs\\` in a brand-new repo with no docs, and by the end you've agreed several terms and one ADR. Which sequence matches what appears on disk?`"
+          },
+          {
+            "severity": "low",
+            "where": "Final test, spot-recipe-entry prompt: \"Steps are stored in one database column, capped at 30; we dropped video in round 2.\" (line 387)",
+            "problem": "Mostly recall, not transfer. The bad entry repeats the body's worked example almost exactly (storage, a limit, and \"agreed in round 3\" at line 109), and the Checkpoint's Late fee option uses the same \"as agreed in round 3\" (line 121). After three uses, \"round N\" works as a cue.",
+            "evidence": "Line 109: \"A row in the comments table ... rejects bodies over 2,000 characters. We agreed in round 3 to show the newest first.\" Line 121: \"as agreed in round 3\". Line 387: \"we dropped video in round 2\".",
+            "fix": "Drop the \"round\" cue in the Final test: `...capped at 30, and video is left out for now. _Avoid_: Post, article.` Keep the right answer as it is."
+          },
+          {
+            "severity": "low",
+            "where": "Final test, scenario-no-docs-repo prompt: \"You join a three-year-old repo...\" (line 375)",
+            "problem": "A sharp reader could object that a newcomer is the worst person to be interviewed about what \"ticket\", \"case\" and \"job\" mean. That weakens the right answer, \"have it interview you\", and makes option a look more reasonable.",
+            "evidence": "Line 382, right option: \"have it interview you about the existing code\". grilling SKILL.md:28 says the decisions are the user's, which assumes the user can make them.",
+            "fix": "Line 375: `Your team's three-year-old repo has no \\`GLOSSARY.md\\` and no ADRs, and you know it well. People use \"ticket\", \"case\" and \"job\" loosely...`"
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint wait-what-reply, right option b: \"Clearer, with the missing step added, in your glossary's words.\" (line 219)",
+            "problem": "The right option repeats the Lesson's own phrasing: the body's \"fewer words *and* the step you missed ... using your GLOSSARY.md words\" (lines 209-211), and almost word for word the Try it check at line 285, \"came back clearer, not just shorter, in your glossary's words\".",
+            "evidence": "Lines 211, 219 and 285.",
+            "fix": "Line 219: `- [x] A plainer account that adds what you missed, in the project's terms.` (feedback unchanged)"
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint earns-an-adr, right option c: \"Keep marks in the council's system, not the app's database, to skip a data audit.\" (line 151)",
+            "problem": "\"The council's system\" (British local government) and \"a data audit\" aren't explained, so a cold or non-UK reader may not see why this is surprising, or what the trade-off is, until they read the feedback.",
+            "evidence": "Line 151. The feedback (line 152) has to supply the link: \"a lighter legal load\".",
+            "fix": "`- [x] Keep marks in the school district's records system, not the app's database, to avoid privacy paperwork.` (check the length: it must stay shorter than option d)"
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/domain-modeling.json"
+}

@@ -1,0 +1,359 @@
+{
+  "slug": "prototype",
+  "next": {
+    "round": 2,
+    "step": "fix",
+    "why": "check round 2 done; its fixer was stopped before editing"
+  },
+  "applied": [
+    "r1: high (Site story 'test-first'): replaced with 'Then the real page was built properly: the code that loads the Lessons got its tests written first, and the Discussion panel was checked by eye, as we'd agreed, with tests only on the comments code underneath.' This follows PR 2 (Lessons module built test-first, 7 tests), PR 5 and commit e771bac (panel checked by eye by agreement, the API has 12 tests). I used plain words instead of 'module', 'API' and 'preview'.",
+    "r1: medium (branch since deleted): added to 'What I'd do differently': 'And I'd keep the branch: it has since been deleted, so the pointers on issues 03 and 06 lead nowhere, and the commit survives only by its id, 8cdcfa1.' Checked: gh api activity shows branch_deletion of refs/heads/prototype/lesson-page (before 8cdcfa1) on 2026-10-23, and gh api commits/8cdcfa1 still returns the commit. I left out 'in a tidy-up' because no repo record gives a reason, and left out the #1020 tie-in to stay inside the word budget.",
+    "r1: medium x2 (logic path parks only the shell; winner-goes-where option b feedback): line 74 now says the block 'is copied into the real code, and the whole file, rules included, is parked in Git, where it still runs' (LOGIC.md:58). The capture bullet now says 'The whole logic file, or every variant plus the switcher, goes there'. Option a now reads 'The rules block is copied into the real code; the file goes onto a prototype/<name> branch.', with new feedback. Option b's feedback now says parking the whole file is right but is only half, because the rules never reach the real code.",
+    "r1: medium (Git branches before definition, line 40): changed to '(The Skill calls them branches, but they aren't Git branches, the separate lines of saved work explained below.)'",
+    "r1: medium (session used before definition): the capture bullet now says 'a later session (a new Claude Code conversation)', and the later definition in the detour section is shortened to 'everything in a session lives in...'.",
+    "r1: medium (Smart-zone limit overriding the whole list): changed to 'One limit sits over step 1: near the edge of the Smart zone, don't carry on, whatever the next step wants. Go on down the list; for planning you still need, that usually means /compact.' This matches PHASE-BOUNDARIES.md:19-23 and ask-matt SKILL.md:40. Also changed 'passes step 3' to 'lands on step 3'.",
+    "r1: medium (Stretch run the wrong way round): rewrote it to replace steps 4 to 6. In window one you paste the step 4 prompt without /prototype, ask to be grilled with nothing built, and run /handoff out (with a fallback if no path is shown). In window two you run cd book-loans, then claude, read the file, and do steps 5 and 6. A /handoff back follows, then steps 7 and 8 in window one, so the ls check still holds and no prototype tokens land in window one.",
+    "r1: medium (happy path / edge case jargon): added '(everything goes as planned)' and '(an unusual mix of moves)'.",
+    "r1: medium (unexplained names and jargon): 'an agent that builds it unattended, plugging it in and removing...'; 'The rules behind the screens get logic prototypes too'; 'In an October 2026 problem report on Matt's Skills' and 'A September 2026 report'; Site story 'after the site's hosting and database setup merged' and 'the piece of page code, VariantC'; 'test-first' is gone (see the first fix).",
+    "r1: medium (spot-handoff-misuse gives the answer away): new prompt with Priya and a band's gig-listing site, 'still well inside the Smart zone', and a fresh session 'in the same project', so exactly one answer is right. New options: [x] build it in the session that did the grilling / /clear instead / ask the agent to run /handoff / run /compact and build from its summary instead. Same id, same meaning, the right answer stays at a.",
+    "r1: medium (spot-colour-variants wording tell): all four options are now diagnoses of similar length: too few variants / [x] 'All three share one layout and differ only in styling.' / weren't tested / weren't put on a separate new route. Feedback reworded to match.",
+    "r1: medium (spot-verdict-only weak distractors and tell): new options a 'merged C's prototype code, so the agent could reuse it' and c 'put the verdict in a commit message instead of the ticket', each with feedback. Right answer d is now 'They should have recorded C's details on the ticket, not just its letter.' (73 characters, against 78 for the longest wrong option).",
+    "r1: medium (talk-or-build tell): right option is now 'Do the waitlist, late cancels and no-show fees still behave when they collide?' (80 characters, against 82).",
+    "r1: Word-budget trims so the fixes fit under 3,000: cut 'except while you're typing', shortened the switcher-bar description (checked against UI.md:81-88) and the fresh-session sentence in the detour section. Lengthened winner-goes-where option d by one word ('while') so the right answer is shorter by both measures (raw 93/96, visible 91/96)."
+  ],
+  "declined": [
+    {
+      "problem": "reader high (Try step 1): the suggested fix chains the setup with && into one line",
+      "reason": "The override says one command per line, because PowerShell 5.1 has no &&. I applied the substance (git init -b main, the git config hint) as separate lines."
+    },
+    {
+      "problem": "reader medium (detour travel): the suggested sentence says that in Matt's map the prototype 'lives in its own folder'",
+      "reason": "prototype/SKILL.md:21 and UI.md sub-shape A put prototype code next to the real code or on the real route, so the Lesson gives only the forked-side-task reason (PHASE-BOUNDARIES.md:32), as acc-skills advised."
+    },
+    {
+      "problem": "reader low (Site story 205k timing): check the session log and reword the timing",
+      "reason": "Override: Site stories cite only repo facts. The 205k figure exists only in the session log (research note A3), so it was cut, not reworded."
+    },
+    {
+      "problem": "quiz medium (scenario-logic-question): rename the id to predict-logic-question",
+      "reason": "The question keeps its meaning (what /prototype builds for a logic question), so the id stays. Keeping it also keeps 4 scenario- ids above the minimum of 3."
+    },
+    {
+      "problem": "quiz medium (why-no-tests): the suggested option d pairs tests with a real database",
+      "reason": "The same review called that pairing unbelievable. I used a more tempting real misconception instead: tests only for the kept rules block, which LOGIC.md:62 rules out ('Don't add tests')."
+    },
+    {
+      "problem": "high (Site story capture): drop 'pushed' and 'started by one command, npm run proto', because the commit is supposedly not in this repo",
+      "reason": "The commit is in the repo on GitHub, just not fetched on this machine. `gh api repos/SiddharthMuramkar/idea-to-shipped/commits/8cdcfa1` returns 8cdcfa11e77a…, titled 'Prototype: three lesson page layouts (throwaway, never merge)'. Its package.json diff adds \"proto\": \"echo '...Open http://localhost:3000/prototype/lesson...' && next dev\". GitHub's activity log shows branch_creation of refs/heads/prototype/lesson-page at that commit on 2026-10-21, which is the push. So 'pushed', the commit title and `npm run proto` all have repo backing and stay. I did fix the reader problem behind this issue (the branch can't be found on GitHub today) with the deletion sentence from the branch-deletion fix."
+    }
+  ],
+  "pending": [
+    {
+      "severity": "medium",
+      "where": "Site story, \"**What I'd do differently.** My record of everything I typed for the build has no `/handoff` in it.\", line 293",
+      "problem": "The repo has no \"record of everything I typed\". Only a session log could be one, and the overrides rule that out. The repo holds the old journal's per-Lesson \"What I typed\" notes, and they are selective, so the line overclaims what its source is. The substance (no `/handoff` in what was recorded) does hold. This was raised as a reader low in round 1 and was neither applied nor declined.",
+      "evidence": "`git show d21fc2c:content/lessons/05-prototype.md`: \"## What I typed\" lists only `/prototype`, yet the same file says \"**3. I picked C.**\", so the author typed more than the note records. `git grep -n -i handoff d21fc2c -- content/lessons/` finds only 11-main-flow.md:23, which describes Matt's practice, not something the author typed. The research note's source map (.scratch/course-rewrite/research/prototype.md:32) lists the only full record as A3, \"Author's Claude Code session log\".",
+      "fix": "\"**What I'd do differently.** None of the \\\"What I typed\\\" notes in my build journal mentions `/handoff`. Today I'd take Matt's detour: prototype in a fresh session, and hand back only the answer. And I'd keep the branch: …\" (rest unchanged)",
+      "lens": "accuracy"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, \"It's working if\" list: \"Asked whether the rules part of the file touches the page or its buttons, the agent says no.\" (line 266; steps at lines 251-258)",
+      "problem": "No step tells the reader to ask this question, and once the steps are done it can't be asked any more. Step 7 moves the HTML file onto prototype/book-loans, so main no longer has it (the line 268 check says `ls` shows \"no HTML file\"), and step 8 exits Claude Code. A reader who reads the list after finishing would have to restart `claude` and check out the branch to tick this box. The Lesson teaches neither.",
+      "evidence": "Steps 4-8 (lines 244-258) never mention the question. Line 268: \"`ls` shows `DECISION.md` but no HTML file\". Line 258: \"Type `/exit`\". The earlier round's fix (reviseFixed: \"script-block check replaced with a question you ask the agent\") rewrote the check but never added the asking step.",
+      "fix": "Step 6 (line 251): \"Run every walkthrough tab, then try to break the rules with free play: renew three times, renew an overdue book. If something surprises you, ask for a new button or scenario. Then ask whether the rules part touches the page.\" Checklist (line 266): \"- [ ] The agent said the rules part doesn't touch the page.\" (Net +1 word.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, step 7: \"Capture it (a DECISION.md file stands in for the ticket)\" and its prompt (lines 252-256); check at line 268",
+      "problem": "The Lesson says capture has three parts: the decision into the real code, the prototype onto a branch, and the answer on the ticket. Goal 3 asks for all three. The Try practises only the last two and never says why the first is skipped. The loaded Skill still tells the agent to fold the decision into the real code, so in an empty repo the agent may create a file nobody asked for, or ask the reader where the real code is. A cold reader can't answer that and wasn't told what to expect.",
+      "evidence": "Line 16 (goal 3): \"the decision into the real code, the prototype onto a `prototype/<name>` branch, the verdict and what it settled on the ticket\". Line 111: \"The decision goes into the real code. The logic block lifts in as it is\". prototype/SKILL.md:26: \"Fold any validated decision into the real code, then capture the prototype itself\". LOGIC.md:58: the validated module \"lifts into the real module\". The step 7 prompt asks only for the branch and DECISION.md.",
+      "fix": "Step 7 lead: \"Capture it (loans.js stands in for the real code, DECISION.md for the ticket):\". Prompt: \"We're done. Commit the prototype to a new prototype/book-loans branch that is never merged. Then switch back to main, copy the rules block into a new loans.js, write DECISION.md with the question, the verdict, what the prototype settled and a pointer to that branch, and commit both.\" Line 268: \"`git branch` lists `prototype/book-loans` and `* main`, and `ls` shows `DECISION.md` and `loans.js` but no HTML file.\" (+4 prose words; the prompt is in a code fence, which doesn't count.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Try it yourself, Stretch: \"It's working if each file is short, points at files rather than copying them, and the first lists the prototype Skill under suggested Skills.\" (line 270)",
+      "problem": "The first handoff can't pass the \"points at files\" check. It is written in a repo that holds only an empty commit, and the loan rules exist only in the conversation, so there is no file to point at. The file has to carry the rules itself. A reader who checks it against this list will think the step failed. Only the second file has something to point at: the HTML file.",
+      "evidence": "Step 1 (lines 228-233) makes an empty repo with `git commit --allow-empty`. The Stretch has the reader \"answer a question or two\" with \"don't build anything yet\" before the first `/handoff`. handoff/SKILL.md:12 says not to duplicate content \"already captured in other artifacts\" and to \"Reference them by path or URL instead\". That only applies to artifacts that exist, and here none do.",
+      "fix": "Replace the last sentence of line 270 with: \"It's working if both files are short, the first lists the prototype Skill under suggested Skills, and the second gives the HTML file's path, not its code.\" (+3 words.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Common mistakes: \"Merging it into main, or deleting it. Rewrite the winner; park the rest on `prototype/<name>`.\" (line 278); same idea in spot-merged-prototype feedback: \"Rewrite the winner into the real code, and park the rest on a never-merged branch.\" (line 380)",
+      "problem": "This contradicts the Lesson's own capture rules in two ways. First, \"park the rest\" says the winner stays off the branch, but the body and the Scene put every variant on it, winner included. Second, \"Rewrite the winner\" is wrong for the logic path, where the rules block is lifted in as it is, not rewritten. A reader following this bullet would leave the winning variant off the branch and would rewrite rules that were built to be lifted.",
+      "evidence": "Line 111: \"The logic block lifts in as it is, because it was written to be lifted.\" Line 112: \"The whole logic file, or every variant plus the switcher, goes there\". Scene line 148: \"All four variants and the switcher are committed to `prototype/test-results`\". UI.md:105: \"The full set of variants is the primary source, so it lands on the throwaway branch\". LOGIC.md:58: the module \"lifts into the real module\".",
+      "fix": "Line 278: \"- **Merging it into main**, or deleting it. Move the decision into the real code; park the whole prototype on `prototype/<name>`.\" Line 380: \"  > Right. Prototype code skips tests and error handling. Rewrite B into the real code, and park the whole prototype, B included, on a never-merged branch.\" (+5 prose words; Final test feedback isn't counted.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "How Matt and others use it: \"The rules behind the screens get logic prototypes too; the Skill then said to build a terminal app (8:53–9:50).\" (line 212)",
+      "problem": "\"Then\" is ambiguous. A cold reader can take it as \"next, the Skill said to build a terminal app\", which contradicts the logic path section (one HTML file). Nothing else in the body says the terminal app was the old behaviour. Only a Final test feedback line says so (line 316), and the reader sees it only after picking that option, which is a wrong answer.",
+      "evidence": "Line 65: \"the Skill builds ==a single HTML file==\". Line 315-316: option \"A small terminal app...\" with feedback \"That's what the logic path built before 1.2.0.\" Transcript n0VhIVtviC0.json 9:36-9:46: Matt reads the Skill's old wording about building a tiny interactive terminal app. CHANGELOG.md:116 (1.2.0, #763): the logic path now builds one self-contained file \"instead of a terminal app\". gh pr view 763 shows it merged 2026-08-05, after the 2026-07-23 video.",
+      "fix": "\"- **Not just screens.** The rules behind the screens get logic prototypes too; back then, before 1.2.0, the Skill built a terminal app (8:53–9:50).\" (+1 word.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "The detour: /handoff out and back: \"As it fills, the model reasons less sharply\" (line 155); also \"model-invoked Skill\" (line 47)",
+      "problem": "\"The model\" appears without any explanation. Everywhere else the Lesson says \"the agent\", so a cold reader can't tell whether the model is something separate that fills up. Other Lessons define the word at first use.",
+      "evidence": "grep shows \"model\" only at lines 47 and 155 in the body, neither defined. content/lessons/07-spec-and-issues.md:24 defines it: \"the model (the AI behind the agent)\". The writing guide's Voice section says: \"Explain every term at or before first use, in a clause\".",
+      "fix": "Line 155: \"As it fills, the agent reasons less sharply; Matt calls the clear-thinking part the Smart zone...\" (0 words.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Site story: \"**C, \"Side-by-side discussion\"**, the Lesson on the left and a sticky discussion panel on the right\" (line 287) and \"pushed and never merged\" (line 291)",
+      "problem": "Two terms are never explained: \"pushed\", which is Git jargon this Lesson never defines (though it defines commit, branch and merged), and \"sticky\", which is web jargon. A Visitor who barely uses Git won't know that \"pushed\" means sent to GitHub, and that is the point of the branch-deletion line two paragraphs later.",
+      "evidence": "grep: \"pushed\" appears only at line 291 and \"sticky\" first at line 287, neither defined. content/lessons/01-how-agents-work.md:228 defines it as \"a pushed commit (one sent to a site like GitHub)\".",
+      "fix": "Line 287: \"...the Lesson on the left and a sticky (always in view) discussion panel on the right.\" Line 291: \"...(throwaway, never merge)\", pushed to GitHub and never merged.\" (+5 words.)",
+      "lens": "reader"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, spot-colour-variants, right option b: \"All three share one layout and differ only in styling.\" (line 363)",
+      "problem": "The right option just restates the stem. The stem already says \"the same grid of recipe cards: one blue, one green, one with rounded corners\". The three wrong options each bring in something the stem never mentions (how many variants, tests, the route). So a reader who knows nothing can pick b because it is the only option that summarises the prompt. The r1 fix evened out the option lengths, but the right option still echoes the prompt.",
+      "evidence": "Stem, line 360: \"All three are the same grid of recipe cards: one blue, one green, one with rounded corners.\" Right option, line 363: \"All three share one layout and differ only in styling.\" Wrong options a, c and d (lines 361, 365, 367) talk about the number of variants, tests and a new route, none of which the stem describes. Common mistakes, line 276, uses the same words: \"Variants that differ only in colour\".",
+      "fix": "Put the details the wrong options test into the stem, so every option matches something there and matching is no longer a clue. Stem: \"Sam asked for UI variants of his site's existing recipe page. The agent built three on the real `/recipes` route, picked by `?variant=`, with no tests: a grid of recipe cards in blue, the same grid in green, and the grid again with rounded corners. Spot the mistake.\" Options: a \"They sit on the real `/recipes` route instead of a new prototype route of their own.\" > \"The real page is the preferred home: its data and header show problems an empty route hides.\" / [x] b \"Under the colours and corners, all three are the same layout.\" > (keep the current feedback) / c \"None of them had tests written for it before Sam looked.\" > \"Prototypes skip tests on purpose. That rule is being followed; it isn't the mistake.\" / d \"Three is too few; the Skill should have built five for more range.\" > \"Three is the default. Five copies of one grid would still be one grid.\" Visible lengths: 82, 61, 56, 66, so the right answer is not the longest and lint passes.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, spot-verdict-only, right option d: \"They should have recorded C's details on the ticket, not just its letter.\" (line 427)",
+      "problem": "The right option repeats the Site story's own sentence about the same variant letter. It also echoes the Scene comment \"not just the winner\". A reader can pick d by recognising the phrase \"recorded C ... not just the letter\" without applying anything. Fix r1 introduced this wording.",
+      "evidence": "Site story, line 291: \"Between them they recorded what C settled, not just the letter\". Scene comment, line 145: \"ask for what it settled, not just the winner.\" Right option, line 427: \"recorded C's details on the ticket, not just its letter.\" No wrong option borrows a phrase from the body like this.",
+      "fix": "Line 427: \"- [x] They should have listed every decision made inside C on the ticket as well.\" That is 75 visible characters, against 72, 78 and 75 for the wrong options, so it keeps the shared \"They should have\" opening and is not the longest. Keep the current feedback.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, scenario-detour-return, right option b: \"A second `/handoff` file, told to carry only the verdict and what you learned.\" (line 351)",
+      "problem": "The right option is a near-verbatim copy of the flow Scene's caption, so the question tests whether you remember the caption, not whether you can use the idea. The pet-sitting setting is new, but the answer is lifted from the body.",
+      "evidence": "Flow caption, line 173: \"a second `/handoff`, told to carry back only the verdict and the non-obvious lessons\". Right option, line 351: \"A second `/handoff` file, told to carry only the verdict and what you learned.\" Both share \"a second /handoff\", \"told to carry\" and \"only the verdict\".",
+      "fix": "Line 351: \"- [x] A `/handoff` from the prototype session: the verdict and what surprised you.\" (74 visible characters; the wrong options are 86, 88 and 83). Feedback: \"> Right. Written where the prototype ran, it carries just the answer, so the planning session reads one short file and carries on grilling.\"",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, sequence-detour, right option c (line 401), compared with options a, b and d (lines 397-403)",
+      "problem": "Option c is the only one with a `/handoff` back, and \"out and back\" is the Lesson's defining phrase for the detour. It appears in goal 4, in the section heading and in the right answer of scenario-detour-return two questions earlier (and the page shows every answer behind \"Show the answer\"). A reader can pick c by finding the word \"back\", without judging the order.",
+      "evidence": "Goal, line 17: \"run the prototype detour with `/handoff` out and back\". Heading, line 153: \"The detour: /handoff out and back\". Line 351 (scenario-detour-return answer): \"A second `/handoff` file\". In sequence-detour only c contains \"`/handoff` back\": a ends with a lone `/handoff`, b starts with one, and d has `/handoff` → `/prototype` with nothing coming back. docs/authoring-lessons.md: \"Every Checkpoint and Final test question shows a 'Show the answer' box\".",
+      "fix": "Replace d with a wrong order that also comes back: \"- [ ] `/grill-with-docs` → `/to-spec` → `/handoff` → `/prototype` (fresh session) → `/handoff` back → then `/to-tickets`\" (102 visible characters, so c at 99 stays shorter). Feedback: \"> The spec gets written while the question is still open, so the prototype's answer arrives too late to shape it. The spec comes once every question is settled.\" This matches line 177: \"With every question settled, the same session goes on to `/to-spec`\".",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test, why-no-tests, all options (lines 409-416)",
+      "problem": "Options a, c and d all say to write tests in some form. Only the right option b says skip them. A reader who remembers the two words \"no tests\" from rule 4 gets it at once, so the question checks recall of the rule, not whether the reader understands why there are no tests. The wrong options share a stance the right one lacks.",
+      "evidence": "a, line 409: \"Good idea: tests make the verdict...\"; c, line 413: \"Add some for the walkthrough tabs...\"; d, line 415: \"Write them for the rules block only...\"; b, line 411: \"Skip them...\". Rule 4, line 105: \"No tests\". LOGIC.md:62: \"Don't add tests.\" The earlier decline was about a different suggested option (tests paired with a real database), so this is not a re-raise.",
+      "fix": "Replace c with an option that says skip, for the wrong reason: \"- [ ] \\\"Skip them: the prototype gets deleted once it answers, so tests go too.\\\"\" > \"Skipping is right, but not for that reason: the prototype is parked on a branch, not deleted. Tests are skipped because a prototype exists to learn one thing fast, and the rules get tested once they're in the real code.\" Also lengthen b so it isn't the shortest: \"- [x] \\\"Skip them. Tests belong with the real code the rules move into, not here.\\\"\" Visible lengths with the quotation marks: a 78, b 75, c 73, d 70.",
+      "lens": "quiz"
+    },
+    {
+      "severity": "medium",
+      "where": "Final test as a whole: option lengths",
+      "problem": "Fixing the \"longest is right\" lint over-corrected. In 4 of the 10 Final test questions the right answer is the shortest option, and in a fifth it ties for shortest. A guesser who always picks the shortest option expects about 4.5 of 10 right, against 2.5 by chance, and every scenario- question has its right answer as the shortest or second shortest.",
+      "evidence": "Visible-text lengths (backticks stripped), right answer marked *: scenario-logic-question 89/84/*73/93; scenario-settled-design 67/85/73/*58; scenario-detour-return 86/*76/88/83; why-no-tests 78/*65/73/70; spot-colour-variants 66/*54/54/62. For comparison: scenario-ui-question *67 (shortest wrong 62); spot-handoff-misuse *62 (56); spot-verdict-only *73 (72); sequence-detour *99 (longest wrong 102).",
+      "fix": "In scenario-logic-question, shorten two wrong options so c (73) falls in the middle: a \"- [ ] Three layouts of the tracking page, flipped with `?variant=` and a bar.\" (69) and d \"- [ ] A real parcel-status feature with tests and the real database.\" (62), keeping their feedback. The why-no-tests and spot-colour-variants fixes above already move those right answers off the shortest spot. That leaves scenario-settled-design and scenario-detour-return as the only Final test questions where the right answer is the shortest.",
+      "lens": "quiz"
+    }
+  ],
+  "rounds": {
+    "r2": {
+      "checks": {
+        "accuracy": [
+          {
+            "severity": "medium",
+            "where": "Site story, \"**What I'd do differently.** My record of everything I typed for the build has no `/handoff` in it.\", line 293",
+            "problem": "The repo has no \"record of everything I typed\". Only a session log could be one, and the overrides rule that out. The repo holds the old journal's per-Lesson \"What I typed\" notes, and they are selective, so the line overclaims what its source is. The substance (no `/handoff` in what was recorded) does hold. This was raised as a reader low in round 1 and was neither applied nor declined.",
+            "evidence": "`git show d21fc2c:content/lessons/05-prototype.md`: \"## What I typed\" lists only `/prototype`, yet the same file says \"**3. I picked C.**\", so the author typed more than the note records. `git grep -n -i handoff d21fc2c -- content/lessons/` finds only 11-main-flow.md:23, which describes Matt's practice, not something the author typed. The research note's source map (.scratch/course-rewrite/research/prototype.md:32) lists the only full record as A3, \"Author's Claude Code session log\".",
+            "fix": "\"**What I'd do differently.** None of the \\\"What I typed\\\" notes in my build journal mentions `/handoff`. Today I'd take Matt's detour: prototype in a fresh session, and hand back only the answer. And I'd keep the branch: …\" (rest unchanged)"
+          },
+          {
+            "severity": "low",
+            "where": "Site story, \"I used it once, after the site's hosting and database setup merged and before the Lesson page existed.\", line 283",
+            "problem": "What merged before the prototype was PR #1, a rename of the database branch in the spec and ADR. The setup ticket itself (issue 02) was still open when the prototype was committed and was marked resolved only later, in PR #2. \"Setup merged\" is looser than the repo record.",
+            "evidence": "`gh pr view 1 --repo SiddharthMuramkar/idea-to-shipped`: title \"Use vercel-dev branch name from the Neon integration\", body \"Renames the laptop database branch … in the spec and ADR 0002 … Also the first PR: merging it triggers the first production deploy\", mergedAt 2026-10-21T08:00:27Z. 8cdcfa1's parent is 100f548 (that merge), committed 08:15:44Z. `git show 100f548:.scratch/lesson-site/issues/02-accounts-and-environments.md` reads \"Status: ready-for-human\". ae9ae38 (PR #2) is the commit that changes it to \"Status: resolved\".",
+            "fix": "\"I used it once, right after the site's first pull request merged and before the Lesson page existed. I typed the Skill's name with nothing after it.\""
+          },
+          {
+            "severity": "low",
+            "where": "The idea, \"Since version 1.2.0 of Matt's Skills, the answer goes into the real code and the prototype is parked in Git … as evidence.\", line 38",
+            "problem": "This says folding the answer into the real code started in 1.2.0. The changelog says the logic module already lifted into the real code before 1.2.0. What 1.2.0 changed is that the prototype is kept instead of deleted. Round 1 raised this as a low, and it was neither applied nor declined.",
+            "evidence": "CHANGELOG.md:116 (1.2.0, #763): \"The portable pure-logic module still lifts into the real code\". CHANGELOG.md:118: \"Throwaway no longer means deleted. Rather than being removed once it has answered its question, the prototype is captured … on a throwaway branch\".",
+            "fix": "\"It doesn't mean deleted. The answer has always gone into the real code; since version 1.2.0 of Matt's Skills, the prototype is also kept in Git (the tool that records a project's history) as evidence, not deleted.\""
+          },
+          {
+            "severity": "low",
+            "where": "Six rules, capture bullet, \"The prototype goes onto a branch named `prototype/<name>`\", line 112; Scene, \"All four variants and the switcher are committed to `prototype/test-results`\", line 148",
+            "problem": "Both lines present the `prototype/<name>` name as something the Skill does. The 1.3.1 prototype files the agent loads say only \"a throwaway branch\". The name comes from ask-matt and the docs page, which the agent doesn't load when it runs /prototype, so an unprompted agent may pick another name. The Try it works only because its prompt names the branch.",
+            "evidence": "prototype/SKILL.md:26 \"commit it to a throwaway branch, out of main\". UI.md:100 and :105 and LOGIC.md:58 say only \"the throwaway branch\". The pattern appears only in ask-matt/SKILL.md:87 (\"a `prototype/<name>` branch out of main\") and docs/engineering/prototype.md:30.",
+            "fix": "Line 112: \"The prototype goes onto a throwaway branch and is never merged (its commits never join `main`). Matt's docs call it `prototype/<name>`, but the Skill doesn't name it, so give the name when you ask for the capture.\" In the Scene, make the user line \"D wins. Capture it on `prototype/test-results`, and write down what each part of D settled.\""
+          },
+          {
+            "severity": "low",
+            "where": "The logic path, \"one small `<script>` block (the part of the file that holds the code), which never touches the page\", line 74",
+            "problem": "The aside tells a cold reader that all of the file's code is in the rules block. In the Skill, the page is a thin shell with its own inline code that calls into the rules block. Read with the aside, \"never touches the page\" can't be true: something has to run the buttons. The Try it checklist (line 266) then asks the Visitor to check exactly this split. Round 1 raised this as a low, and it was neither applied nor declined.",
+            "evidence": "LOGIC.md:37 \"One file, plain HTML/CSS/JS … everything inline\". LOGIC.md:33 \"The page calls into it; nothing flows the other direction.\" LOGIC.md:65 \"Keep the page as a thin shell over a pure module.\"",
+            "fix": "\"The rules themselves live in one small `<script>` block (one section of the file's code), kept apart from the page: the buttons call into it, and it never reaches back out to the page.\""
+          },
+          {
+            "severity": "low",
+            "where": "Final test spot-colour-variants, right-answer feedback, \"Ask for one redone without a card grid.\", line 364",
+            "problem": "In the stem, all three variants are the same card grid. Redoing one still leaves two identical grids, so the advice wouldn't fix the mistake the question is about. The Skill's \"redo one\" rule is for when two drafts come out alike.",
+            "evidence": "UI.md:54: \"If two drafts come out too similar, redo one with explicit 'do not use a card grid' guidance.\" Stem, line 360: \"All three are the same grid of recipe cards: one blue, one green, one with rounded corners.\"",
+            "fix": "\"  > Right. Variants must disagree about layout, hierarchy or the main control. Ask for two of them redone, each without a card grid.\""
+          }
+        ],
+        "reader": [
+          {
+            "severity": "medium",
+            "where": "Try it yourself, \"It's working if\" list: \"Asked whether the rules part of the file touches the page or its buttons, the agent says no.\" (line 266; steps at lines 251-258)",
+            "problem": "No step tells the reader to ask this question, and once the steps are done it can't be asked any more. Step 7 moves the HTML file onto prototype/book-loans, so main no longer has it (the line 268 check says `ls` shows \"no HTML file\"), and step 8 exits Claude Code. A reader who reads the list after finishing would have to restart `claude` and check out the branch to tick this box. The Lesson teaches neither.",
+            "evidence": "Steps 4-8 (lines 244-258) never mention the question. Line 268: \"`ls` shows `DECISION.md` but no HTML file\". Line 258: \"Type `/exit`\". The earlier round's fix (reviseFixed: \"script-block check replaced with a question you ask the agent\") rewrote the check but never added the asking step.",
+            "fix": "Step 6 (line 251): \"Run every walkthrough tab, then try to break the rules with free play: renew three times, renew an overdue book. If something surprises you, ask for a new button or scenario. Then ask whether the rules part touches the page.\" Checklist (line 266): \"- [ ] The agent said the rules part doesn't touch the page.\" (Net +1 word.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Try it yourself, step 7: \"Capture it (a DECISION.md file stands in for the ticket)\" and its prompt (lines 252-256); check at line 268",
+            "problem": "The Lesson says capture has three parts: the decision into the real code, the prototype onto a branch, and the answer on the ticket. Goal 3 asks for all three. The Try practises only the last two and never says why the first is skipped. The loaded Skill still tells the agent to fold the decision into the real code, so in an empty repo the agent may create a file nobody asked for, or ask the reader where the real code is. A cold reader can't answer that and wasn't told what to expect.",
+            "evidence": "Line 16 (goal 3): \"the decision into the real code, the prototype onto a `prototype/<name>` branch, the verdict and what it settled on the ticket\". Line 111: \"The decision goes into the real code. The logic block lifts in as it is\". prototype/SKILL.md:26: \"Fold any validated decision into the real code, then capture the prototype itself\". LOGIC.md:58: the validated module \"lifts into the real module\". The step 7 prompt asks only for the branch and DECISION.md.",
+            "fix": "Step 7 lead: \"Capture it (loans.js stands in for the real code, DECISION.md for the ticket):\". Prompt: \"We're done. Commit the prototype to a new prototype/book-loans branch that is never merged. Then switch back to main, copy the rules block into a new loans.js, write DECISION.md with the question, the verdict, what the prototype settled and a pointer to that branch, and commit both.\" Line 268: \"`git branch` lists `prototype/book-loans` and `* main`, and `ls` shows `DECISION.md` and `loans.js` but no HTML file.\" (+4 prose words; the prompt is in a code fence, which doesn't count.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Try it yourself, Stretch: \"It's working if each file is short, points at files rather than copying them, and the first lists the prototype Skill under suggested Skills.\" (line 270)",
+            "problem": "The first handoff can't pass the \"points at files\" check. It is written in a repo that holds only an empty commit, and the loan rules exist only in the conversation, so there is no file to point at. The file has to carry the rules itself. A reader who checks it against this list will think the step failed. Only the second file has something to point at: the HTML file.",
+            "evidence": "Step 1 (lines 228-233) makes an empty repo with `git commit --allow-empty`. The Stretch has the reader \"answer a question or two\" with \"don't build anything yet\" before the first `/handoff`. handoff/SKILL.md:12 says not to duplicate content \"already captured in other artifacts\" and to \"Reference them by path or URL instead\". That only applies to artifacts that exist, and here none do.",
+            "fix": "Replace the last sentence of line 270 with: \"It's working if both files are short, the first lists the prototype Skill under suggested Skills, and the second gives the HTML file's path, not its code.\" (+3 words.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Common mistakes: \"Merging it into main, or deleting it. Rewrite the winner; park the rest on `prototype/<name>`.\" (line 278); same idea in spot-merged-prototype feedback: \"Rewrite the winner into the real code, and park the rest on a never-merged branch.\" (line 380)",
+            "problem": "This contradicts the Lesson's own capture rules in two ways. First, \"park the rest\" says the winner stays off the branch, but the body and the Scene put every variant on it, winner included. Second, \"Rewrite the winner\" is wrong for the logic path, where the rules block is lifted in as it is, not rewritten. A reader following this bullet would leave the winning variant off the branch and would rewrite rules that were built to be lifted.",
+            "evidence": "Line 111: \"The logic block lifts in as it is, because it was written to be lifted.\" Line 112: \"The whole logic file, or every variant plus the switcher, goes there\". Scene line 148: \"All four variants and the switcher are committed to `prototype/test-results`\". UI.md:105: \"The full set of variants is the primary source, so it lands on the throwaway branch\". LOGIC.md:58: the module \"lifts into the real module\".",
+            "fix": "Line 278: \"- **Merging it into main**, or deleting it. Move the decision into the real code; park the whole prototype on `prototype/<name>`.\" Line 380: \"  > Right. Prototype code skips tests and error handling. Rewrite B into the real code, and park the whole prototype, B included, on a never-merged branch.\" (+5 prose words; Final test feedback isn't counted.)"
+          },
+          {
+            "severity": "medium",
+            "where": "How Matt and others use it: \"The rules behind the screens get logic prototypes too; the Skill then said to build a terminal app (8:53–9:50).\" (line 212)",
+            "problem": "\"Then\" is ambiguous. A cold reader can take it as \"next, the Skill said to build a terminal app\", which contradicts the logic path section (one HTML file). Nothing else in the body says the terminal app was the old behaviour. Only a Final test feedback line says so (line 316), and the reader sees it only after picking that option, which is a wrong answer.",
+            "evidence": "Line 65: \"the Skill builds ==a single HTML file==\". Line 315-316: option \"A small terminal app...\" with feedback \"That's what the logic path built before 1.2.0.\" Transcript n0VhIVtviC0.json 9:36-9:46: Matt reads the Skill's old wording about building a tiny interactive terminal app. CHANGELOG.md:116 (1.2.0, #763): the logic path now builds one self-contained file \"instead of a terminal app\". gh pr view 763 shows it merged 2026-08-05, after the 2026-07-23 video.",
+            "fix": "\"- **Not just screens.** The rules behind the screens get logic prototypes too; back then, before 1.2.0, the Skill built a terminal app (8:53–9:50).\" (+1 word.)"
+          },
+          {
+            "severity": "medium",
+            "where": "The detour: /handoff out and back: \"As it fills, the model reasons less sharply\" (line 155); also \"model-invoked Skill\" (line 47)",
+            "problem": "\"The model\" appears without any explanation. Everywhere else the Lesson says \"the agent\", so a cold reader can't tell whether the model is something separate that fills up. Other Lessons define the word at first use.",
+            "evidence": "grep shows \"model\" only at lines 47 and 155 in the body, neither defined. content/lessons/07-spec-and-issues.md:24 defines it: \"the model (the AI behind the agent)\". The writing guide's Voice section says: \"Explain every term at or before first use, in a clause\".",
+            "fix": "Line 155: \"As it fills, the agent reasons less sharply; Matt calls the clear-thinking part the Smart zone...\" (0 words.)"
+          },
+          {
+            "severity": "medium",
+            "where": "Site story: \"**C, \"Side-by-side discussion\"**, the Lesson on the left and a sticky discussion panel on the right\" (line 287) and \"pushed and never merged\" (line 291)",
+            "problem": "Two terms are never explained: \"pushed\", which is Git jargon this Lesson never defines (though it defines commit, branch and merged), and \"sticky\", which is web jargon. A Visitor who barely uses Git won't know that \"pushed\" means sent to GitHub, and that is the point of the branch-deletion line two paragraphs later.",
+            "evidence": "grep: \"pushed\" appears only at line 291 and \"sticky\" first at line 287, neither defined. content/lessons/01-how-agents-work.md:228 defines it as \"a pushed commit (one sent to a site like GitHub)\".",
+            "fix": "Line 287: \"...the Lesson on the left and a sticky (always in view) discussion panel on the right.\" Line 291: \"...(throwaway, never merge)\", pushed to GitHub and never merged.\" (+5 words.)"
+          },
+          {
+            "severity": "low",
+            "where": "Try it yourself, step 3: \"Type a slash and the letters prot... If no prototype Skill is listed, type `/exit`, run this, then run `claude` again\" (line 238)",
+            "problem": "The box still holds \"/prot\", so typing /exit gives \"/prot/exit\". Step 4 says \"Delete what you typed\", but step 3's /exit branch comes first.",
+            "evidence": "Line 238 vs line 244 (\"Delete what you typed, then paste this\").",
+            "fix": "\"If no prototype Skill is listed, delete what you typed, type `/exit`, run this, then run `claude` again:\" (+4 words.)"
+          },
+          {
+            "severity": "low",
+            "where": "The detour: \"The fresh session is just `claude` in a second terminal window, asked to read the file at that path.\" (line 157); flow caption line 171",
+            "problem": "A new terminal window opens in the home folder. A reader who follows the body in a real project would start the fresh session outside the project, and the prototype would land in the wrong place. Only the Stretch says to `cd book-loans` first.",
+            "evidence": "Line 270: \"In a second terminal window, run `cd book-loans`, then `claude`\". prototype/SKILL.md:21 says to put the prototype \"close to where it will actually be used\".",
+            "fix": "Line 157: \"The fresh session is just `claude`, run from the project folder in a second terminal window, asked to read the file at that path.\" Caption line 171: \"In a second terminal window, in the same folder, `claude` starts a fresh session.\" (+5 prose words.)"
+          },
+          {
+            "severity": "low",
+            "where": "The idea: \"(The Skill calls them branches, but they aren't Git branches, the separate lines of saved work explained below.)\" (line 40)",
+            "problem": "The trailing phrase reads as if it describes the paths: \"they ... the separate lines of saved work\". That muddles the Git-branch distinction the sentence exists to make.",
+            "evidence": "Line 40 as quoted. Git branches are defined at line 109.",
+            "fix": "\"(The Skill calls them branches, but they have nothing to do with Git branches, which come up below.)\" (0 words.)"
+          },
+          {
+            "severity": "low",
+            "where": "Word budget (whole Lesson)",
+            "problem": "The Lesson sits at 2976 of the 3000-word lint cap. The fixes above add about 30 prose words, which would push it past the cap and fail lint. They need offsets, and the Lesson has repetition to cut.",
+            "evidence": "`node .scratch/course-rewrite/tools/lint-lesson.mjs content/lessons/06-prototype.md` prints proseWords 2976. lint-lesson.mjs:69 errors when prose > maxW. Cuts counted with the lint's own words() function.",
+            "fix": "Cut: (1) line 38 to \"Since version 1.2.0, the prototype is parked in Git (the tool that records a project's history) as evidence.\" The callout and capture section already say the answer goes into the real code (−11). (2) The Cheat sheet row \"| It says \"unknown skill\" | `/mattpocock-skills:prototype` instead |\", already at line 47 and in Try step 4 (−5). (3) Line 151 to \"Your part: name the question, react, ask for a mix, call it, and ask what the winner settled.\" (−8). (4) Line 191's last sentence to \"Planning straight into building, with room left? Carry on: the build wants your reasoning word for word.\" (−6). With every fix in this list applied, the total comes to about 2977."
+          }
+        ],
+        "quiz": [
+          {
+            "severity": "medium",
+            "where": "Final test, spot-colour-variants, right option b: \"All three share one layout and differ only in styling.\" (line 363)",
+            "problem": "The right option just restates the stem. The stem already says \"the same grid of recipe cards: one blue, one green, one with rounded corners\". The three wrong options each bring in something the stem never mentions (how many variants, tests, the route). So a reader who knows nothing can pick b because it is the only option that summarises the prompt. The r1 fix evened out the option lengths, but the right option still echoes the prompt.",
+            "evidence": "Stem, line 360: \"All three are the same grid of recipe cards: one blue, one green, one with rounded corners.\" Right option, line 363: \"All three share one layout and differ only in styling.\" Wrong options a, c and d (lines 361, 365, 367) talk about the number of variants, tests and a new route, none of which the stem describes. Common mistakes, line 276, uses the same words: \"Variants that differ only in colour\".",
+            "fix": "Put the details the wrong options test into the stem, so every option matches something there and matching is no longer a clue. Stem: \"Sam asked for UI variants of his site's existing recipe page. The agent built three on the real `/recipes` route, picked by `?variant=`, with no tests: a grid of recipe cards in blue, the same grid in green, and the grid again with rounded corners. Spot the mistake.\" Options: a \"They sit on the real `/recipes` route instead of a new prototype route of their own.\" > \"The real page is the preferred home: its data and header show problems an empty route hides.\" / [x] b \"Under the colours and corners, all three are the same layout.\" > (keep the current feedback) / c \"None of them had tests written for it before Sam looked.\" > \"Prototypes skip tests on purpose. That rule is being followed; it isn't the mistake.\" / d \"Three is too few; the Skill should have built five for more range.\" > \"Three is the default. Five copies of one grid would still be one grid.\" Visible lengths: 82, 61, 56, 66, so the right answer is not the longest and lint passes."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, spot-verdict-only, right option d: \"They should have recorded C's details on the ticket, not just its letter.\" (line 427)",
+            "problem": "The right option repeats the Site story's own sentence about the same variant letter. It also echoes the Scene comment \"not just the winner\". A reader can pick d by recognising the phrase \"recorded C ... not just the letter\" without applying anything. Fix r1 introduced this wording.",
+            "evidence": "Site story, line 291: \"Between them they recorded what C settled, not just the letter\". Scene comment, line 145: \"ask for what it settled, not just the winner.\" Right option, line 427: \"recorded C's details on the ticket, not just its letter.\" No wrong option borrows a phrase from the body like this.",
+            "fix": "Line 427: \"- [x] They should have listed every decision made inside C on the ticket as well.\" That is 75 visible characters, against 72, 78 and 75 for the wrong options, so it keeps the shared \"They should have\" opening and is not the longest. Keep the current feedback."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, scenario-detour-return, right option b: \"A second `/handoff` file, told to carry only the verdict and what you learned.\" (line 351)",
+            "problem": "The right option is a near-verbatim copy of the flow Scene's caption, so the question tests whether you remember the caption, not whether you can use the idea. The pet-sitting setting is new, but the answer is lifted from the body.",
+            "evidence": "Flow caption, line 173: \"a second `/handoff`, told to carry back only the verdict and the non-obvious lessons\". Right option, line 351: \"A second `/handoff` file, told to carry only the verdict and what you learned.\" Both share \"a second /handoff\", \"told to carry\" and \"only the verdict\".",
+            "fix": "Line 351: \"- [x] A `/handoff` from the prototype session: the verdict and what surprised you.\" (74 visible characters; the wrong options are 86, 88 and 83). Feedback: \"> Right. Written where the prototype ran, it carries just the answer, so the planning session reads one short file and carries on grilling.\""
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, sequence-detour, right option c (line 401), compared with options a, b and d (lines 397-403)",
+            "problem": "Option c is the only one with a `/handoff` back, and \"out and back\" is the Lesson's defining phrase for the detour. It appears in goal 4, in the section heading and in the right answer of scenario-detour-return two questions earlier (and the page shows every answer behind \"Show the answer\"). A reader can pick c by finding the word \"back\", without judging the order.",
+            "evidence": "Goal, line 17: \"run the prototype detour with `/handoff` out and back\". Heading, line 153: \"The detour: /handoff out and back\". Line 351 (scenario-detour-return answer): \"A second `/handoff` file\". In sequence-detour only c contains \"`/handoff` back\": a ends with a lone `/handoff`, b starts with one, and d has `/handoff` → `/prototype` with nothing coming back. docs/authoring-lessons.md: \"Every Checkpoint and Final test question shows a 'Show the answer' box\".",
+            "fix": "Replace d with a wrong order that also comes back: \"- [ ] `/grill-with-docs` → `/to-spec` → `/handoff` → `/prototype` (fresh session) → `/handoff` back → then `/to-tickets`\" (102 visible characters, so c at 99 stays shorter). Feedback: \"> The spec gets written while the question is still open, so the prototype's answer arrives too late to shape it. The spec comes once every question is settled.\" This matches line 177: \"With every question settled, the same session goes on to `/to-spec`\"."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test, why-no-tests, all options (lines 409-416)",
+            "problem": "Options a, c and d all say to write tests in some form. Only the right option b says skip them. A reader who remembers the two words \"no tests\" from rule 4 gets it at once, so the question checks recall of the rule, not whether the reader understands why there are no tests. The wrong options share a stance the right one lacks.",
+            "evidence": "a, line 409: \"Good idea: tests make the verdict...\"; c, line 413: \"Add some for the walkthrough tabs...\"; d, line 415: \"Write them for the rules block only...\"; b, line 411: \"Skip them...\". Rule 4, line 105: \"No tests\". LOGIC.md:62: \"Don't add tests.\" The earlier decline was about a different suggested option (tests paired with a real database), so this is not a re-raise.",
+            "fix": "Replace c with an option that says skip, for the wrong reason: \"- [ ] \\\"Skip them: the prototype gets deleted once it answers, so tests go too.\\\"\" > \"Skipping is right, but not for that reason: the prototype is parked on a branch, not deleted. Tests are skipped because a prototype exists to learn one thing fast, and the rules get tested once they're in the real code.\" Also lengthen b so it isn't the shortest: \"- [x] \\\"Skip them. Tests belong with the real code the rules move into, not here.\\\"\" Visible lengths with the quotation marks: a 78, b 75, c 73, d 70."
+          },
+          {
+            "severity": "medium",
+            "where": "Final test as a whole: option lengths",
+            "problem": "Fixing the \"longest is right\" lint over-corrected. In 4 of the 10 Final test questions the right answer is the shortest option, and in a fifth it ties for shortest. A guesser who always picks the shortest option expects about 4.5 of 10 right, against 2.5 by chance, and every scenario- question has its right answer as the shortest or second shortest.",
+            "evidence": "Visible-text lengths (backticks stripped), right answer marked *: scenario-logic-question 89/84/*73/93; scenario-settled-design 67/85/73/*58; scenario-detour-return 86/*76/88/83; why-no-tests 78/*65/73/70; spot-colour-variants 66/*54/54/62. For comparison: scenario-ui-question *67 (shortest wrong 62); spot-handoff-misuse *62 (56); spot-verdict-only *73 (72); sequence-detour *99 (longest wrong 102).",
+            "fix": "In scenario-logic-question, shorten two wrong options so c (73) falls in the middle: a \"- [ ] Three layouts of the tracking page, flipped with `?variant=` and a bar.\" (69) and d \"- [ ] A real parcel-status feature with tests and the real database.\" (62), keeping their feedback. The why-no-tests and spot-colour-variants fixes above already move those right answers off the shortest spot. That leaves scenario-settled-design and scenario-detour-return as the only Final test questions where the right answer is the shortest."
+          },
+          {
+            "severity": "low",
+            "where": "Final test, spot-merged-prototype, feedback on d: \"park the rest on a never-merged branch\" (line 380); the same wording is in Common mistakes, line 278",
+            "problem": "\"The rest\" suggests the winning variant B stays off the branch. The Lesson and the Skill both say every variant, the winner included, plus the switcher goes onto the branch.",
+            "evidence": "Line 112: \"every variant plus the switcher, goes there\". Scene, line 148: \"All four variants and the switcher are committed to `prototype/test-results`\". UI.md:105: \"The full set of variants is the primary source, so it lands on the throwaway branch\".",
+            "fix": "Line 380: \"> Right. Prototype code skips tests and error handling. Rewrite the winner into the real code, and park the whole prototype, B included, on a never-merged branch.\" Line 278: \"Rewrite the winner; park the whole prototype on `prototype/<name>`.\""
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint compact-or-handoff, right option d: \"`/compact` with a note saying more QA (testing by hand) is coming.\" (line 201)",
+            "problem": "The right option is the only one with a gloss in brackets, and it is where the term QA first appears in the Lesson. That makes it look more carefully written than the wrong options. Meanwhile line 210, where Matt's QA story is told, uses QA with no gloss.",
+            "evidence": "A search for QA in the Lesson finds lines 201, 210 and 214 only, so its first use is inside the right option. None of options a, b or c (lines 195-199) has a gloss.",
+            "fix": "Line 201: \"- [x] `/compact`, with a note that a round of testing by hand comes next.\" (65 visible characters; b is 63 and the longest is 83). Line 210: \"with more QA (testing by hand) to come\"."
+          },
+          {
+            "severity": "low",
+            "where": "Checkpoint talk-or-build, feedback on c (line 58)",
+            "problem": "The feedback says the account question can be settled by talking but doesn't say why. The other three feedback lines each give a reason.",
+            "evidence": "Line 58: \"> That's a decision you can make by talking. Answer it in the interview.\" docs/authoring-lessons.md: \"Say *why* that option is right or wrong.\"",
+            "fix": "\"> A yes-or-no policy choice: there's no screen to see and no rules to push through cases. Settle it in the interview.\""
+          }
+        ]
+      }
+    }
+  },
+  "earlierRecord": ".scratch/course-rewrite/review/run-2026-10-24/prototype.json"
+}
