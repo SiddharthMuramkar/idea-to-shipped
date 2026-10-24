@@ -544,7 +544,7 @@ It needs no database and no `.env` file, so it runs anywhere, in a fresh clone, 
 | The header's `image` exists under `public/`. |
 | Once every Lesson has a `part`, `part` never goes down as `order` goes up. |
 
-**Checked on rewritten Lessons only.** These rules skip any slug listed in `PENDING_REWRITE` at the top of `course.test.ts`. That list starts with all 12 original Lessons, and each slug is removed as its rewrite lands. When it's empty, every Lesson meets the full bar.
+**Checked on each Lesson.** Every Lesson gets its own group of these checks, named after its slug, so a failure says which Lesson and which rule.
 
 | Rule | Limit |
 |---|---|

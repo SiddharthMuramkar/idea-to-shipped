@@ -18,22 +18,6 @@ import { allBlocks, countWords, courseHasParts, lessons, type Block, type Lesson
 
 const LESSONS_DIR = path.join(process.cwd(), "content/lessons");
 
-// Lessons still in their old journal form. The per-Lesson rules skip them;
-// each one leaves this list in the commit that rewrites it.
-const PENDING_REWRITE = new Set([
-  "start-here",
-  "domain-modeling",
-  "spec-and-issues",
-  "wizard",
-  "prototype",
-  "tdd",
-  "code-review",
-  "pr-and-ship",
-  "diagnosing-bugs",
-  "models-effort-ultracode",
-  "main-flow",
-]);
-
 // The 12 slugs the site launched with. Comments point at them (ADR 0004), so
 // they must never disappear, and each of them tells its Site story.
 const LEGACY_SLUGS = [
@@ -62,10 +46,9 @@ const DEFAULT_FINAL_TEST_SIZE: [number, number] = [8, 10];
 const WORD_RANGE: Record<string, [number, number]> = { "start-here": [900, 1400] };
 const DEFAULT_WORD_RANGE: [number, number] = [1800, 3000];
 
-// Collected up front so each rewritten Lesson gets its own describe block. A
-// broken course yields no Lessons here; "every Lesson file parses" says why.
+// Collected up front so each Lesson gets its own describe block. A broken
+// course yields no Lessons here; "every Lesson file parses" says why.
 const summaries: LessonSummary[] = await lessons.listLessons().catch(() => []);
-const rewritten = summaries.filter((lesson) => !PENDING_REWRITE.has(lesson.slug));
 
 function blocksOf<T extends Block["type"]>(lesson: Lesson, type: T) {
   return allBlocks(lesson).filter((block): block is Extract<Block, { type: T }> => block.type === type);
@@ -128,31 +111,9 @@ describe("the course", () => {
       .map((lesson) => `${lesson.slug}: ${lesson.image}`);
     expect(missing).toEqual([]);
   });
-
-  test("PENDING_REWRITE names only Lessons that exist", async () => {
-    const slugs = (await lessons.listLessons()).map((lesson) => lesson.slug);
-    expect([...PENDING_REWRITE].filter((slug) => !slugs.includes(slug))).toEqual([]);
-  });
-
-  // The guard on the list above: a Lesson that has a Part or any typed block
-  // has been rewritten, and staying on the list would hide it from every
-  // per-Lesson rule below.
-  test("PENDING_REWRITE names only Lessons still in their old journal form", async () => {
-    const rewrittenButPending: string[] = [];
-    for (const slug of PENDING_REWRITE) {
-      const lesson = await lessons.getLesson(slug);
-      if (!lesson) continue;
-      const typed = [...new Set(allBlocks(lesson).map((block) => block.type))].filter((type) => type !== "prose");
-      if (lesson.part !== null || typed.length > 0) {
-        const signs = [...(lesson.part !== null ? [`part ${lesson.part.number}`] : []), ...typed];
-        rewrittenButPending.push(`${slug} (has ${signs.join(", ")}): take it off PENDING_REWRITE`);
-      }
-    }
-    expect(rewrittenButPending).toEqual([]);
-  });
 });
 
-describe.each(rewritten)("Lesson $slug", ({ slug }) => {
+describe.each(summaries)("Lesson $slug", ({ slug }) => {
   test("belongs to a Part (part: 1 to 4 in the header)", async () => {
     expect((await load(slug)).part).not.toBeNull();
   });
