@@ -268,7 +268,7 @@ Permissions and rewind work as a pair. Rewind covers the agent's file edits, so 
 ## Try it yourself
 
 ````try
-You need Claude Code installed and signed in, plus git. Type `git --version` to check: if it's missing, a Mac offers to install it; on Windows, install Git for Windows from git-scm.com, then open a new PowerShell window. Nothing here needs Matt's Skills, and you'll rewind everything you change.
+You need Claude Code installed and signed in (see [Start here](/learn/start-here)), plus git. Type `git --version` to check: if it's missing, a Mac offers to install it; on Windows, install Git for Windows from git-scm.com, then open a new PowerShell window. Nothing here needs Matt's Skills, and you'll rewind everything you change.
 
 1. Get this site's code and start Claude Code in it. If it asks whether you trust the folder, choose Yes.
 
