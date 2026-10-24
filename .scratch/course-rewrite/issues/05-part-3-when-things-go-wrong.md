@@ -31,7 +31,7 @@ Every Lesson here passes the draft lint and `npm run test:content`. The revision
 - low (quiz, r2) Final test: Silly distractor: 'definitely ...
 - low (quiz, r2) Final test: This isn't a mistake the agent made.
 - low (quiz, r2) Final test: Goal 4 says 'decide when to reach for /diagnosing-bugs instead of /triage or a plain question'.
-- medium (review, standards) content/lessons/13-diagnosing-bugs.md: A cold reader meets 'permission prompt' here with no explanation.
+- [x] medium (review, standards) content/lessons/13-diagnosing-bugs.md: A cold reader meets 'permission prompt' here with no explanation. **Fixed** in 4c32dba: option c of pause-first reads "Choose No when it first asks permission to edit a file." (same meaning, so same id), and its feedback no longer says "prompt".
 - low (review, standards) All three Lessons: 13-diagnosing-bugs.md: All three Lessons are past the writing guide's word aim, and diagnosing-bugs is 23 words under the lint's hard ceiling.
 - low (review, standards) 13-diagnosing-bugs.md: Both steps have the reader type a slash and a word to check the menu.
 - low (review, standards) 13-diagnosing-bugs.md: Both sentences mean this site's Comments, but they use the lower-case word.
