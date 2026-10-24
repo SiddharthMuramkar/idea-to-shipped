@@ -60,12 +60,12 @@ The vocabulary comes with four principles. Two are tests you can run in your hea
 
 **One adapter means a hypothetical seam; two adapters mean a real one.** Don't cut a seam until something actually varies across it. The Lessons module is built by `lessonsFrom(dir)`, which takes the folder to read as an input. The live site passes the real `content/lessons` folder; the tests pass folders of fake Lessons. Two adapters, so the seam is real, which is why those tests were easy to write.
 
-The comments module talks to Postgres (the database software this site uses) directly. A setting picks the live database or, in the tests, a separate real copy. A seam where a fake database could plug in would have one adapter, plumbing with nothing to swap: an ADR (a short decision record kept in the repo, the project's folder with its history tracked by Git) keeps the tests on real Postgres.
+The comments module talks to Postgres (the database software this site uses) directly. A setting already picks the live database or, in the tests, a separate real copy. A new seam for a fake database would have one adapter, plumbing with nothing to swap: an ADR (a short decision record kept in the repo, the project's folder with its history tracked by Git) keeps the tests on real Postgres.
 
 The other two principles shape what you build:
 
 - **The interface is the test surface.** Tests go through the same front door as callers. If you need to test past it, poking at the parts inside, the module is probably the wrong shape. After deepening a module, test at its new interface and delete the old tests on the pieces inside: replace, don't layer.
-- **Depth belongs to the interface, not the implementation.** Inside, a deep module can be built from small parts, even private internal seams where its own tests plug in a stand-in while still calling the front door. Callers never see them.
+- **Depth belongs to the interface, not the implementation.** Inside, a deep module can hold small parts and even private internal seams, where its own tests plug in a stand-in yet still call the front door. Callers never see them.
 
 ```scene flow
 title: Judging this site's code with the vocabulary
@@ -90,12 +90,12 @@ at: verdict
 ```
 
 ```checkpoint real-seam
-Lee puts an `EmailSender` seam in front of the app's only email provider, "in case we switch one day". Nothing else plugs into it, not even in the tests. What does the one-adapter-or-two rule say?
+Lee plans an `EmailSender` seam in front of the app's only email provider, "in case we switch one day". Nothing else would plug into it, not even in the tests. What does the one-adapter-or-two rule say?
 - [x] Hold off: with one adapter, it's a hypothetical seam.
   > Right. Nothing varies across it yet. Add it when a second adapter, such as a test fake, actually exists.
-- [ ] Keep it: switching providers one day will be easier with it in place.
+- [ ] Add it: switching providers one day will be easier with it in place.
   > "One day" is still one adapter today. Add the seam when the second adapter really exists.
-- [ ] Keep it: a clear name like `EmailSender` makes the code read better.
+- [ ] Add it: a clear name like `EmailSender` makes the code read better.
   > A good name helps, but it doesn't make a seam. Only a second adapter does.
 - [ ] Hold off until the email code is long enough to split into files.
   > Seams are about what varies, not about length or file layout. A long module can still be deep.
