@@ -381,16 +381,16 @@ In a repo, you've finished `/grill-with-docs` and `/to-spec` for a multi-session
   > Nothing is travelling, so a handoff file buys nothing that `/compact` doesn't.
 ```
 
-```test scenario-afk-review
-You've finished building a CSV export for a book-club site, at about 140k tokens. Before QA, the diff should be checked against the spec, and you'll be at lunch while that runs. Which move does Matt's tree pick?
-- [ ] `/compact`, then run the review in this session.
+```test scenario-afk-translate
+You've finished building a CSV export for a book-club site, at about 140k tokens. Before QA, its 30 new error messages need translating into Spanish with the site's glossary, and you'll be at lunch while that runs. Which move does Matt's tree pick?
+- [ ] `/compact`, then translate them in this session.
   > Question 4 comes before 5: a job that needs no steering can run in its own window and leave yours as it is.
-- [ ] `/clear`, then run the review in this session.
+- [ ] `/clear`, then translate them in this session.
   > QA still needs the build's reasoning, so this context isn't irrelevant. Clearing drops it.
-- [ ] `/handoff` the review to a fresh session.
+- [ ] `/handoff` the translating to a fresh session.
   > Nothing is travelling: same tool, same folder, same person.
 - [x] A subagent, which reports back when done.
-  > Right. At 140k you're near the Smart zone's edge, so you can't continue, and the context still matters. A review you needn't steer runs AFK in a fresh window, and your session stays as it was for QA.
+  > Right. At 140k you're near the Smart zone's edge, so you can't continue, and the context still matters. A job you needn't steer runs AFK in a fresh window, and your session stays as it was for QA.
 ```
 
 ```test spot-rule-in-chat
