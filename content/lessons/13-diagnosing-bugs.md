@@ -184,8 +184,8 @@ You want to approve the agent's diagnosis before it starts fixing the bug. How d
   > It doesn't. Only the hypothesis list is shown to you, and even that doesn't block.
 - [x] Say so when you start: "check with me before fixing".
   > Right. The Skill has no pause before the fix, so say you want one when you invoke it.
-- [ ] Choose No at its first permission prompt for an edit.
-  > New sessions start in auto mode, where the agent stops asking for each step, so there may be no prompt at all. And its first edits are for the loop and probes, not the fix: saying No there stalls the diagnosis.
+- [ ] Choose No when it first asks permission to edit a file.
+  > New sessions start in auto mode, where the agent stops asking for each step, so it may not ask at all. And its first edits are for the loop and probes, not the fix: saying No there stalls the diagnosis.
 - [ ] Watch closely and press Esc, which stops it, when the fix starts.
   > By then it's already fixing, and you never got to approve the diagnosis.
 ```

@@ -52,7 +52,7 @@ Then it writes, but not everything:
 | A decision that passes three tests: hard to reverse, surprising without context, a real trade-off | A short decision record (an ADR) in `docs/adr/` |
 | Everything else you decided | Only the conversation |
 
-That last row is most of what you decide. It lives only in the agent's context window (its working memory for this conversation) until `/implement` builds it or `/to-spec` writes it into a spec, a written description of what to build. So before then, don't run `/clear` (which empties the conversation) or `/compact` (which swaps it for a summary), two Built-in commands: ones that come with Claude Code itself, not Skills. On a multi-session build, wait until `/to-tickets` has split the spec into tickets (small tasks of one session each).
+That last row is most of what you decide. It lives only in the agent's context window (its working memory for this conversation; see [The context window](/learn/context-window)) until `/implement` builds it or `/to-spec` writes it into a spec, a written description of what to build. So before then, don't run `/clear` (which empties the conversation) or `/compact` (which swaps it for a summary), two Built-in commands: ones that come with Claude Code itself, not Skills. On a multi-session build, wait until `/to-tickets` has split the spec into tickets (small tasks of one session each).
 
 None of these files need setting up first. `GLOSSARY.md` appears at the root of your repo (your project's folder, tracked with Git, a tool that records every change) when the first term is settled, and `docs/adr/` arrives with the first decision that earns a record. Plenty of sessions never create an ADR.
 
@@ -201,7 +201,7 @@ The agent proposes; you decide.
 - **Read the glossary now and then.** An unreviewed, agent-written glossary fills with confident claims that later sessions trust. If it bloats, type `/grill-with-docs make my GLOSSARY.md more concise and remove any implementation details from it`. Split it only once it's lean.
 - **Existing project, no docs?** Type `/grill-with-docs help me document my repo`, and expect a long interview.
 - **Check both halves loaded.** Questions without ❓ numbers and ➡️ recommendations mean grilling didn't load. Good rounds whose settled words never reach `GLOSSARY.md` mean domain modeling didn't. Ask "Which Skills did you load?", or type `/domain-modeling` yourself.
-- **Know when to skip it.** No project folder: `/grill-me`, the same interview with no files. An effort too big to plan in one sitting starts with `/wayfinder` (Part 4).
+- **Know when to skip it.** No project folder: `/grill-me`, the same interview with no files. An effort too big to plan in one sitting starts with `/wayfinder` ([Wayfinder](/learn/wayfinder)).
 - **Finish like any grilling.** Small change: `/implement` (Matt's Skill that builds it) right there. Multi-session build: `/to-spec`, check the spec against your answers, then `/to-tickets`, all in one conversation (see [Spec + tickets](/learn/spec-and-issues)).
 
 ## When a reply loses you

@@ -93,7 +93,7 @@ You're grilling a book-club site. Round 1 asks "Should members vote on next mont
 
 ## Which grilling Skill to type
 
-Some Skills only start when you type their name. Matt calls these ==user-invoked Skills==. Others, model-invoked Skills, can also be picked up by the agent on its own when a task fits their description. The grilling family uses both kinds.
+Some Skills only start when you type their name. Matt calls these ==user-invoked Skills==. Others, model-invoked Skills, can also be picked up by the agent on its own when a task fits their description. The grilling family uses both kinds; see [Skills](/learn/skills).
 
 - **`/grill-me` is user-invoked.** The whole Skill is one line telling the agent to load `grilling`, under a name the agent never starts by itself. It's **stateless**: it saves nothing to disk.
 - **`/grilling` is model-invoked.** It holds the whole technique described above. You can type it yourself, and the agent may also reach for it when you say something like "grill me on this plan". It's also the engine inside other Skills: `/grill-with-docs`, `/triage`, `/wayfinder` and `/improve-codebase-architecture` all run it.
@@ -183,7 +183,7 @@ You're grilling a plant-swap site. Two rounds in, most questions have been about
 
 ## What comes next
 
-When you confirm the summary, the decisions are sitting in the conversation, and everything in it lives in the agent's ==context window==: its working memory for that conversation, measured in tokens. As the window fills up, the model (the AI inside Claude Code that does the thinking; `/model` switches it) reasons less sharply. Matt calls the part where it still thinks clearly the Smart zone, and his Skills put it at about 150k tokens on today's best models, as a rule of thumb. Type `/context` to see how full yours is.
+When you confirm the summary, the decisions are sitting in the conversation, and everything in it lives in the agent's ==context window==: its working memory for that conversation, measured in tokens. As the window fills up, the model (the AI inside Claude Code that does the thinking; `/model` switches it) reasons less sharply. Matt calls the part where it still thinks clearly the Smart zone, and his Skills put it at about 150k tokens on today's best models, as a rule of thumb (see [The context window](/learn/context-window)). Type `/context` to see how full yours is.
 
 **Don't throw the decisions away.** The next step depends on the size of the work:
 

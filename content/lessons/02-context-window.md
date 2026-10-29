@@ -34,7 +34,7 @@ Matt Pocock, a developer and teacher who publishes a popular set of Skills for C
 **What's in it before you type anything:**
 
 - Claude Code's system prompt (its built-in instructions) and the list of tools it can use
-- your `CLAUDE.md`, a file of standing instructions for the project
+- your `CLAUDE.md`, a file of standing instructions for the project (see [How coding agents work](/learn/how-agents-work))
 - notes Claude Code saved for itself in earlier sessions in this project (auto memory, on by default)
 - the names and one-line descriptions of your Skills (a Skill's full text loads only when it's used, and Skills only you can start keep even their descriptions out)
 - the names of tools from MCP servers, connectors that link the agent to other services (their full details load only when used)
@@ -52,7 +52,7 @@ Type `/context` to see the breakdown. It's a Built-in command: it comes with Cla
 | MCP tools (details loaded only when used) | 4k |
 | Memory files (your `CLAUDE.md` and auto memory) | under 1k |
 | Free space | 762k |
-| Autocompact buffer (kept free for compacting) | 33k |
+| Autocompact buffer (kept free for compacting, or summarising, the conversation) | 33k |
 
 The total is about 205k of 1M, nearly all of it conversation. The system prompt and tools alone are about 20k, so even a plain setup starts there.
 
@@ -74,11 +74,11 @@ Answers don't stay equally good until the window is full. Each new token has to 
 
 Matt borrows a picture from Dex Horthy, who runs the company HumanLayer. Every session has a **Smart zone** at the start, where the model reasons sharply, and a dumb zone after it, where it gets sloppy, forgetful and confidently wrong. Same model, same tools, just more context.
 
-Where's the line? Matt's `ask-matt` Skill (his guide to which of his Skills fits your situation) puts the Smart zone at about 150k tokens on today's best models, as a rule of thumb. He has said 100k, 120k and 140k at other times. Treat it as a budget, not a law.
+Where's the line? Matt's `ask-matt` Skill (his guide to which of his Skills fits your situation) puts the Smart zone at about 150k tokens on today's best models, as a rule of thumb. He has said 100k to 140k at other times. Treat it as a budget, not a law.
 
 The line has nothing to do with window size. Current Claude models run with 1M-token windows by default, and a session can slip into the dumb zone with over 80% of its window still free. At an April 2026 workshop, Matt's take on 1M windows was that Claude Code had "shipped a lot more dumb zone": good for finding facts in huge documents, less good for coding. ==The Smart zone is your budget; the window size isn't.==
 
-**The signs** you've left it: the agent forgets an instruction from many turns ago, repeats a mistake it already fixed, or says something its own context contradicts. There's never an error message, so watch the count with `/context`, or with a status line (a line under the prompt box) showing tokens used, which Matt calls essential. To get one, type `/statusline` and describe what it should show.
+**The signs** you've left it: the agent forgets an instruction from many turns (message-and-reply rounds) ago, repeats a mistake it already fixed, or says something its own context contradicts. There's never an error message, so watch the count with `/context`, or with a status line (a line under the prompt box) showing tokens used, which Matt calls essential. To get one, type `/statusline` and describe what it should show.
 
 **The fix is removing context, not adding it.** Pasting the ignored instruction again, in capitals, adds tokens to a window that already holds too many. What works is a smaller window, using the moves below.
 
@@ -121,7 +121,7 @@ Like `/context`, `/clear`, `/compact` and `/btw` are Built-in commands, not Skil
 
 **`/compact`** replaces the conversation with a summary and carries on from there. You can steer what it keeps: `/compact focus on the API changes`. It can take a minute, it costs tokens, and it's lossy. In Matt's 2025 demo it shrank 77k tokens of messages to about 4k, keeping the intent and dropping the detail.
 
-**Auto-compact** is Claude Code compacting for you, on by default. It fires only when the window is nearly full: far into the dumb zone, when the model is least able to judge what to keep, as Thariq Shihipar of Anthropic points out. (`/autocompact` sets when it fires.) Idle compaction is newer: a conversation of 200k tokens or more, left untouched in your terminal for nearly an hour with your computer awake, gets compacted and marked with a line starting "Compacted while idle". Either way, ==a rule you only said in chat may not survive==. Put lasting rules in your project's main `CLAUDE.md`, which is reloaded from disk after every compaction.
+**Auto-compact** is Claude Code compacting for you, on by default. It fires only when the window is nearly full: far into the dumb zone, when the model is least able to judge what to keep, as Thariq Shihipar of Anthropic points out. (`/autocompact` sets when it fires.) Idle compaction is newer: a conversation of 200k tokens or more, left untouched for nearly an hour with your computer awake, gets compacted and marked with a line starting "Compacted while idle". Either way, ==a rule you only said in chat may not survive==. Put lasting rules in your project's main `CLAUDE.md`, which is reloaded from disk after every compaction.
 
 **`/btw`** asks a side question, like `/btw which file did we change first?`. It answers from what it knows and what's already in the conversation, without reading files or running commands, and the answer never joins the conversation.
 
@@ -147,7 +147,7 @@ A **Phase** is a chunk of work inside a session: the grilling (the agent intervi
 
 At the boundary, ask five questions in order. The first yes wins.
 
-1. **Can you continue?** Yes if the next Phase needs this one firsthand, or if it fits in the Smart zone you have left (the zone ends around 150k tokens used). Grilling into implementation is the classic yes: the build wants the reasoning itself, not a summary of it. Continuing costs nothing and loses nothing, but only while the agent is still sharp: near the Smart zone's edge, the next Phase would run in the dumb zone.
+1. **Can you continue?** Yes if the next Phase needs this one firsthand, or if it fits in the Smart zone you have left. Grilling into implementation is the classic yes: the build wants the reasoning itself, not a summary of it. Continuing costs nothing and loses nothing, but only while the agent is still sharp: near the Smart zone's edge, the next Phase would run in the dumb zone.
 2. **Is everything here irrelevant to what's next?** Then `/clear`. It's the cheapest move. But a mistake only goes one way: clear a context you still needed and the *why* behind your decisions is gone from the session you carry on in.
 3. **Does the work need to travel?** Then `/handoff` (next section).
 4. **Can the next task run without you?** Matt calls this AFK, away from keyboard. Send it to a subagent and leave your session untouched. Automated review of the diff (the changes you've made) is the usual case.
@@ -176,16 +176,16 @@ at: compact
 at: clear
 ```
 
-```checkpoint continue-first
-You've finished grilling a small change to a book-club site at about 35k tokens. Next you'll build it, in the same project folder, with you watching. What does Matt's tree say?
-- [ ] `/compact`, since it's the default.
-  > It's the default only after the four questions above it say no. Here the first one says yes.
-- [ ] `/clear`, since the decisions are made.
-  > The build needs the reasoning behind those decisions. Clearing drops the why from the session you build in.
-- [ ] `/handoff`, so the build starts from a clean brief.
-  > Nothing is travelling: same tool, same folder, same person.
-- [x] Carry on, since the build needs the grilling.
-  > Right. The next Phase needs this one firsthand, and there's plenty of Smart zone left. Continuing costs nothing.
+```checkpoint mid-phase-fork
+Halfway through building a reading-list page for a book-club site, you notice an unrelated bug in its sign-up form. The build isn't finished and you don't want to lose your place. What fits Matt's rules?
+- [ ] `/compact` now, then fix the bug before going back.
+  > Compacting mid-Phase makes the agent lose the thread of the build.
+- [ ] `/clear` now and fix the bug, then restart the build.
+  > That throws away the half-done build's reasoning for an unrelated job.
+- [ ] `/handoff` the build to a fresh session, then fix the bug here.
+  > The build isn't travelling. Its new session would work from a summary, and the bug would fill this window instead.
+- [x] `/handoff` the bug to a second session and keep building.
+  > Right. Forking a side task is the one handoff that fits mid-Phase, because your own context stays as it is.
 ```
 
 ## `/handoff`: when the work has to travel
@@ -196,7 +196,7 @@ It summarises the conversation into one markdown file (plain text with light for
 
 - sums up the unfinished work: where it stands, the reasons behind it and the next steps, aimed at the purpose you gave
 - includes a "suggested skills" section naming the Skills the next agent should load
-- points to specs, plans, decision records, tickets, commits and diffs by path or link instead of copying them in
+- points to specs, plans, decision records (why a choice was made), tickets, commits (Git's saved snapshots) and diffs by path or link instead of copying them in
 - has keys, passwords and personal details removed
 
 Matt's docs say what it buys is "portability, not compression". So it's narrow, and there are only ==four reasons to reach for it==:
@@ -208,7 +208,7 @@ Matt's docs say what it buys is "portability, not compression". So it's narrow, 
 
 Anything else, like moving from grilling to building in the same folder, isn't a handoff: go back to the tree.
 
-The fourth reason is the one people skip. You don't end your session; you hand a copy of what matters to a second agent and keep working. Matt's prototype detour works this way: `/handoff` out, `/prototype` (a quick throwaway build that answers one question) in a fresh session, then `/handoff` the answer back. See [Prototype](/learn/prototype).
+For the fourth, you don't end your session: you hand a copy of what matters to a second agent and keep working. Matt's prototype detour works this way: `/handoff` out, `/prototype` (a quick throwaway build that answers one question) in a fresh session, then `/handoff` the answer back. See [Prototype](/learn/prototype).
 
 Habits from Matt's docs: temporary folders get emptied, so if you won't open the next session soon, copy the file somewhere safe. Point the next session at the file's path; pasting the text into a terminal command can silently cut it short. Read it first and soften anything stated as fact that was only assumed; the next agent won't re-check. And if something will still be true next month, it belongs in `CLAUDE.md`, not a handoff.
 

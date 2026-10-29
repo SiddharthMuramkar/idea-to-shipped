@@ -34,7 +34,7 @@ Every Lesson here passes the draft lint and `npm run test:content`. The revision
 - low (quiz, r3) Final test: This tests recognition, not transfer.
 - low (quiz, r3) Final test: "Anywhere" goes too far, and the very next question's feedback contradicts it: inside a project folder the Lesson says `/grill-with-docs` is the better choice.
 - low (review, standards) grilling line 58: The Part spells one term two ways, Lesson to Lesson.
-- medium (review, spec) grilling: Part 2 Lessons teach the Smart zone, /clear, /compact and user-invoked vs model-invoked Skills, but only The main flow links The context window, and Grilling, TDD, Implement and Code review never link Skills.
+- [x] medium (review, spec) grilling: Part 2 Lessons teach the Smart zone, /clear, /compact and user-invoked vs model-invoked Skills, but only The main flow links The context window, and Grilling, TDD, Implement and Code review never link Skills. **Fixed** in 82411f4: The context window is linked from Grilling, Domain modeling, Prototype, Spec + tickets, Implement and Code review, and Skills from Grilling, TDD, Implement and Code review. Both "(Part 4)" become Wayfinder links. Declined parts: (1) turning inline words into links. Why: every Lesson link in the course uses the target's title as its text, so the links are short title links, as in the other Lessons. (2) Forward links from Grilling to Implement and Wayfinder. Why: user story 24 asks for links to the Lessons a Lesson builds on, and Grilling already links forward to the Part 2 Lessons.
 
 **domain-modeling**: pending issues of check round 2 fixed (lean finish). 17 fixes applied across this run and the resume run; 1 declined.
 - declined: quiz low: wait-what-reply option c's feedback argues about scope ('often bigger than one sentence') instead of the need for context Why: The installed docs say the same thing, almost word for word: docs/productivity/wait-what.md:19 'What lost you is usually bigger than one paragraph, so the agent decides how far back to go.' The feedback is accurate, so I kept it; only optio
@@ -90,7 +90,7 @@ Every Lesson here passes the draft lint and `npm run test:content`. The revision
 - low (quiz, r2) Final test: Phrasing tell.
 - low (quiz, r2) Final test: The key repeats the body's own example of the exception, line 186: "(...
 - low (quiz, r2) Final test: This overstates what code-review does.
-- medium (review, standards) spec-and-issues Final test scenario-fits-one-session: Possible Duplicated Code.
+- [x] medium (review, standards) spec-and-issues Final test scenario-fits-one-session: Possible Duplicated Code. **Fixed** in 82411f4: Implement's scenario-plan-in-chat is replaced by a new id, scenario-spec-hunt (a dark-mode toggle; the agent hunts for a spec file; the fix is saying the plan is in this conversation). Spec + tickets keeps its question, and The main flow keeps its Fork B one as capstone material.
 - low (review, standards) Site stories: spec-and-issues line 276: Possible Duplicated Code.
 - low (review, standards) spec-and-issues Final test `test scenario-two-agents`: Possible Mysterious Name.
 - low (review, spec) spec-and-issues: The parenthetical suggests setup writes its pointer to AGENTS.md whenever the repo has that file.
@@ -135,7 +135,7 @@ Every Lesson here passes the draft lint and `npm run test:content`. The revision
 - low (reader, r2) Try it yourself: The checklist asks the reader to confirm that "`main` still holds only the setup work".
 - low (reader, r2) Cheat sheet:: "Commit" reads as a step the reader must do.
 - low (reader, r2) Checkpoint ticket-still-open: `/triage` appears nowhere else in the Lesson, so a cold reader can't weigh this option.
-- medium (review, standards) implement: A cold reader meets 'the model' with no explanation.
+- [x] medium (review, standards) implement: A cold reader meets 'the model' with no explanation. **Fixed** in 82411f4: "the agent reasons less sharply" in Implement and in The main flow's Context hygiene.
 
 **code-review**: pending issues of check round 3 fixed (lean finish); round 3's accuracy check not run. 32 fixes applied across this run and the resume run; 10 declined.
 - declined: quiz medium (scenario-fixed-point): suggested new feedback saying that with no fixed point the Skill 'falls back on one already mentioned in the conversation, as in the Site story' Why: SKILL.md:19 says 'If they didn't specify one, ask for it.' The fallback is only in a session log, so it can't be taught or cited.
@@ -194,6 +194,6 @@ Every Lesson here passes the draft lint and `npm run test:content`. The revision
 - low (quiz, r2) Final test: This is recall, not transfer.
 - low (quiz, r2) Checkpoint mid-phase: Wording tell.
 - low (quiz, r2) Final test: The two feedbacks pull against each other.
-- medium (review, standards) main-flow: The main flow defines repo as a Git-tracked folder, then makes 'repo' the test for choosing `/grill-me` over `/grill-with-docs`.
-- medium (review, standards) main-flow Final test sequence-multi-session: Possible Duplicated Code.
+- [x] medium (review, standards) main-flow: The main flow defines repo as a Git-tracked folder, then makes 'repo' the test for choosing `/grill-me` over `/grill-with-docs`. **Fixed** in 82411f4: step 1, the flow Scene caption and the Cheat sheet now say project folder, per ask-matt 1.3.1 ("No working directory? Use `/grill-me`"). Paid for by trimming a token gloss (2,975 → 2,972 words).
+- [x] medium (review, standards) main-flow Final test sequence-multi-session: Possible Duplicated Code. **Fixed** in 82411f4: sequence-multi-session is replaced by a new id, sequence-map-with-detour (where Fork A's detour and Fork B's long road sit in the whole map), and scenario-near-smart-zone is dropped (14 questions; goal 2 is still covered by sequence-boundary-questions, scenario-side-task and scenario-unsteered-check). Declined part: the suggested key with `/clear` and `/retro` between tickets. Why: The main flow already tests those in the next-ticket Checkpoint and spot-retro-next-day, and Spec + tickets' sequence-multi-session places `/clear` after tickets.
 - low (review, standards) main-flow: The clause 'no spec has' drops its verb, so a cold reader stalls on the sentence that tells them what to do about seams on the short road.

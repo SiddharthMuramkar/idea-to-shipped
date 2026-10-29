@@ -58,7 +58,7 @@ Every Lesson here passes the draft lint and `npm run test:content`. The revision
 - low (review, standards) how-agents-work lines 88: Part 1 spells the term two ways.
 - low (review, standards) how-agents-work: The writing guide says to aim for 2,300–2,800 words, below the 3,000 lint cap, to leave margin.
 - low (review, standards) how-agents-work: The writing guide says video sources need the title, URL, publish date and the timestamps used.
-- medium (review, spec) how-agents-work: How coding agents work teaches sessions, tools, sub-agents, Built-in commands, auto memory and the three CLAUDE.md files.
+- [x] medium (review, spec) how-agents-work: How coding agents work teaches sessions, tools, sub-agents, Built-in commands, auto memory and the three CLAUDE.md files. **Fixed** in 0871210: The context window (CLAUDE.md bullet) and Skills (CLAUDE.md sentence) now link How coding agents work, and its Try block links Start here.
 - low (review, spec) how-agents-work: This Site story retells the HANDOFF.md move to a new machine.
 
 **context-window**: pending issues of check round 2 fixed (lean finish). 21 fixes applied across this run and the resume run; 1 declined.
@@ -77,8 +77,8 @@ Every Lesson here passes the draft lint and `npm run test:content`. The revision
 - low (quiz, r2) Final test spot-rule-in-chat: The logic is aimed at the wrong half.
 - low (quiz, r2) Final test spot-louder-rule: It reuses the quality-not-size Checkpoint's situation almost word for word (a naming rule set early on, now ignored).
 - low (quiz, r2) Final test spot-rule-in-chat: The scenario has a second Lesson-named mistake besides where the rule lives: running for hours and letting auto-compact pick the moment.
-- medium (review, standards) context-window: The Checkpoint and the Final test question test the same idea: at a boundary, question 1 says yes, so carry on.
-- medium (review, standards) context-window: A cold reader meets several terms before this Lesson explains them, or without it ever explaining them.
+- [x] medium (review, standards) context-window: The Checkpoint and the Final test question test the same idea: at a boundary, question 1 says yes, so carry on. **Fixed** in 0871210: continue-first is replaced by a new id, mid-phase-fork (mid-Phase, fork a side task with `/handoff`; `/compact` and `/clear` are wrong). Declined part: the suggested "110k mid-build, keep going" Checkpoint. Why: its wrong options (`/clear` or `/compact` mid-Phase) are the same as two options of the Final test's scenario-mid-phase-reading, so it would pre-answer that question.
+- [x] medium (review, standards) context-window: A cold reader meets several terms before this Lesson explains them, or without it ever explaining them. **Fixed** in 0871210: glossed compacting (the table row), turns, decision records and commits at first use. To pay for them, cut the repeated 150k figure under question 1, "The fourth reason is the one people skip" and "in your terminal" (2,943 → 2,946 words).
 
 **skills**: pending issues of check round 3 fixed (lean finish); round 3's accuracy check not run. 35 fixes applied across this run and the resume run; 7 declined.
 - declined: Lesson-specific note: the plain-words 'grilling with docs' slip and the author typing /mattpocock-skills:code-review were drafted from session logs and should be cut Why: The repo holds both, so I kept them, matched to the journal's wording.
