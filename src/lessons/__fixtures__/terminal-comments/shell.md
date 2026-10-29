@@ -2,9 +2,6 @@
 title: shell
 slug: shell
 order: 1
-image: /photos/x.jpg
-imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 ## Section

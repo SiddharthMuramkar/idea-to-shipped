@@ -3,9 +3,6 @@ title: Grilling
 slug: grilling
 order: 4
 part: 2
-image: /photos/grilling.jpg
-imageAlt: A woman in glasses takes notes while questioning a man across an office desk.
-imageCredit: Vitaly Gariev
 ---
 
 Before an agent writes a single line of code, let it interview you until you both want the same thing.

@@ -6,6 +6,25 @@ import { MAX_BODY, MAX_NAME } from "@/comments/limits";
 
 // The Discussion band at the end of a Lesson, after the Final test: lists
 // the Lesson's Comments and posts new ones through the comments API.
+//
+// Payload invariance — the wire shapes never vary with Lesson or state:
+// - The only prop is `lesson`, the Lesson Slug from the page. It is
+//   never typed, edited, or stored in form state, so every request for
+//   a mounted Discussion names the same Lesson.
+// - Load is always GET /api/comments?lesson=<encodeURIComponent(lesson)>
+//   and expects Comment[] ({ id, name, body, createdAt }, newest first
+//   by server order); submit is always POST /api/comments with header
+//   content-type: application/json and body exactly
+//   JSON.stringify({ lesson, name, body }) — those three keys, `lesson`
+//   from the prop and `name`/`body` as typed. No other field is sent,
+//   whatever the Lesson, comment count, or loading/posting state.
+// - maxLength on the two fields comes from MAX_NAME / MAX_BODY in
+//   @/comments/limits, the same constants the API checks; the server
+//   still trims and re-validates, so the client cap is a convenience,
+//   never the authority. A successful POST returns one Comment, which
+//   is prepended and clears `body` only (`name` is kept); any failure
+//   ({ error } or unreachable) shows the error and leaves the list
+//   untouched. Comments cannot be edited or deleted from here.
 export function Discussion({ lesson }: { lesson: string }) {
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -46,17 +65,25 @@ export function Discussion({ lesson }: { lesson: string }) {
   }
 
   return (
-    <section className="discussion" aria-label="Discussion" data-reveal>
+    <section className="discussion" aria-label="Discussion">
       <h2>Discussion{comments ? ` · ${comments.length}` : ""}</h2>
 
       <form className="comment-form" onSubmit={submit}>
+        <label className="visually-hidden" htmlFor="comment-name">
+          Name (optional)
+        </label>
         <input
+          id="comment-name"
           placeholder="Name (optional)"
           value={name}
           maxLength={MAX_NAME}
           onChange={(e) => setName(e.target.value)}
         />
+        <label className="visually-hidden" htmlFor="comment-body">
+          Leave a comment
+        </label>
         <textarea
+          id="comment-body"
           placeholder="Leave a comment…"
           rows={3}
           value={body}

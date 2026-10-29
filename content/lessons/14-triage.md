@@ -3,9 +3,6 @@ title: Triage
 slug: triage
 order: 14
 part: 3
-image: /photos/triage.jpg
-imageAlt: Black-and-white photo of postal workers sorting letters into wall-mounted cubby-holes.
-imageCredit: Library of Congress
 ---
 
 When bug reports and requests pile up from other people, triage sorts each one into written instructions an AI agent can build from, a precise question for the reporter, or a closed report with the reason written down.

@@ -1,7 +1,8 @@
+<!-- Favicon: literal hexes are required (SVG cannot read CSS vars as an icon). They must match the Press tokens in globals.css: ink #1c1b18, accent #1d5d78, paper #edeae3. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#1E3FCC"/>
-  <circle cx="9.5" cy="22.5" r="3.5" fill="#FFB020"/>
-  <g fill="none" stroke="#FFFFFF" stroke-width="3.4">
+  <rect width="32" height="32" fill="#1c1b18"/>
+  <circle cx="9.5" cy="22.5" r="3.5" fill="#1d5d78"/>
+  <g fill="none" stroke="#edeae3" stroke-width="3.4">
     <path d="M13 19 21.5 10.5"/>
     <path d="M15 9h8v8" stroke-linejoin="miter"/>
   </g>

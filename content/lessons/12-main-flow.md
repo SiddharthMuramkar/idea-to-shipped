@@ -3,9 +3,6 @@ title: The main flow
 slug: main-flow
 order: 12
 part: 2
-image: /photos/main-flow.jpg
-imageAlt: An aerial view of a large highway interchange at sunset with ramps looping over one another.
-imageCredit: Denys Nevozhai
 ---
 
 One map for the whole course: which Skill to type next, from a rough idea to merged code, and what to do with the conversation between steps.

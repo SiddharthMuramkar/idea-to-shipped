@@ -6,19 +6,46 @@ import { Icon } from "./icons";
 // step is in the HTML and visible, so with no JavaScript the picture is
 // complete and a screen reader reads all of it.
 //
-// The contract with the scene stepper (ticket 04):
+// The contract with the scene stepper (lesson-engine ticket 04, deferred):
 // - Steps are numbered from 1, in caption order. Step 0 is the empty frame.
 // - Every item carries data-step="<n>": the step that adds it. Items added by
 //   the last step carry data-new, the "just arrived" highlight.
-// - Caption cards are <li data-step="<n>"> in .scene-steps, in the text
+// - Caption rows are <li data-step="<n>"> in .scene-steps, in the reading
 //   column. The figure and its captions share one .scene-run wrapper.
-// - The stepper sets data-stepper="on" and data-active-step on the figure,
-//   and only then may CSS hide items whose step is past the active one (with
-//   opacity, never display or visibility), and pin the stage at a fixed
-//   height. Without it the stage takes its full height (globals.css). Kind-specific state it updates:
-//   flow nodes' data-state and aria-current, files rows' data-change, the
-//   meter's --fill, data-zone and the reading marked data-current, and the
-//   terminal command marked data-cursor.
+// - Press builds no stepper: no CSS hides items by step and nothing pins.
+//   The hooks above stay so a future stepper (under ADR 0007) can still set
+//   data-stepper="on" / data-active-step on the figure and update the
+//   kind-specific state: flow nodes' data-state and aria-current, files
+//   rows' data-change, the meter's --fill, data-zone and the reading marked
+//   data-current, and the terminal command marked data-cursor.
+//
+// Final-state invariants (what the markup below guarantees):
+// - SceneRun is the only export: <div class="scene-run" data-scene-run>
+//   wrapping SceneFigure, then <ol class="scene-steps"> whose
+//   <li class="scene-step" data-step="<n>"> rows carry the step number
+//   again in .scene-step-num and the caption as captionHtml.
+// - SceneFigure is <figure id data-scene="<kind>" data-steps="<count>">
+//   (plus data-zone on a meter with a zone: "smart" at or below the zone,
+//   "dumb" strictly past it), a <figcaption id="<id>--title"> title
+//   (DEFAULT_TITLES when the Scene has none), and .scene-frame around
+//   the kind body. Meter gauges point aria-labelledby at that title id.
+// - Every kind flattens steps with itemsOf (1-based, caption order) and
+//   renders all items at once: chat messages and terminal lines flag the
+//   last step with data-new; the terminal also flags its last command
+//   with data-cursor and sets --chars. Flow nodes carry data-node,
+//   data-step (first reached), data-at (every landing) and data-state
+//   (current = last visit, else done/idle) with aria-current="step" on
+//   current only; an edge is data-drawn once both ends are reached, at
+//   the later first-reached step. Files collapse to one row per path in
+//   first-appearance order: data-step is the first step, data-change the
+//   latest change, data-changes the full "step:change" history, and
+//   data-new when any change lands in the last step. The meter renders
+//   only its last reading as --fill / aria-valuenow (an all-empty Scene
+//   falls back to 0 / "Empty", never a crash), with every reading kept
+//   as a notch and list row and only the last marked data-current.
+// - Flags use `flag`: present as "" when on, omitted when off. Nothing
+//   here reads step state back; changing a Scene means changing its
+//   steps in the Lesson source, not patching this output.
 
 type SceneOf<K extends Scene["kind"]> = Extract<Scene, { kind: K }>;
 
@@ -145,7 +172,12 @@ function FlowNodeBox({ node, state }: { node: FlowNode; state: FlowState }) {
       <span className="flow-mark" aria-hidden="true">
         <Icon name="check" />
       </span>
-      <span className="flow-label">{label}</span>
+      <span className="flow-node-text">
+        {state.firstReached.has(id) && (
+          <span className="flow-when">Step {state.firstReached.get(id)}</span>
+        )}
+        <span className="flow-label">{label}</span>
+      </span>
     </div>
   );
 }
@@ -341,17 +373,13 @@ function SceneFigure({ scene, id }: { scene: Scene; id: string }) {
   );
 }
 
-// A Scene where it was written: its stage, then its step captions as an
-// ordered list of cards. From 1080px the wrapper steps aside (display:
-// contents) so the stage can take the Section's right-hand column; below
-// that, the stage pins above the captions and only across them.
+// A Scene where it was written, in the reading column: its figure, then its
+// step captions as an ordered list explaining the complete picture.
 export function SceneRun({ scene, id }: { scene: Scene; id: string }) {
   return (
     <div className="scene-run" data-scene-run>
-      <div className="stage stage--scene">
-        <SceneFigure scene={scene} id={id} />
-      </div>
-      <ol className="scene-steps" aria-label={`${titleOf(scene)}, step by step`} data-reveal-children>
+      <SceneFigure scene={scene} id={id} />
+      <ol className="scene-steps" aria-label={`${titleOf(scene)}, step by step`}>
         {scene.steps.map((step, i) => (
           <li key={i} className="scene-step" data-step={i + 1}>
             <span className="scene-step-num" aria-hidden="true">

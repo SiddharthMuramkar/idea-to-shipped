@@ -3,9 +3,6 @@ title: Start here
 slug: start-here
 order: 0
 part: 1
-image: /photos/start-here.jpg
-imageAlt: A wooden desk with a brass lamp beside an open balcony door overlooking the sea at dawn.
-imageCredit: Ruben Aster
 ---
 
 Everything to know before your first Lesson: what this course teaches, what to install, and how to read a page here.

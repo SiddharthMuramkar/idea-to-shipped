@@ -3,9 +3,6 @@ title: Prototype
 slug: prototype
 order: 6
 part: 2
-image: /photos/prototype.jpg
-imageAlt: A hand with a pen points at hand-drawn mobile app wireframes spread across a table.
-imageCredit: Amélie Mourichon
 ---
 
 When talking can't settle a question, have the agent build a quick throwaway version you can click, then keep the answer and park the code.

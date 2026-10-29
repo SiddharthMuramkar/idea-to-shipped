@@ -2,9 +2,6 @@
 title: sections
 slug: sections
 order: 1
-image: /photos/x.jpg
-imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 Before any heading.

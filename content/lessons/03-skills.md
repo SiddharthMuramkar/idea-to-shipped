@@ -3,9 +3,6 @@ title: Skills
 slug: skills
 order: 3
 part: 1
-image: /photos/skills.jpg
-imageAlt: Wrenches, pliers and screwdrivers hang in neat rows on a dark pegboard.
-imageCredit: Anton Savinov
 ---
 
 A Skill is a small instruction file your coding agent (an AI that reads and changes your project for you) loads only when it's needed. Install Matt Pocock's set once, set up each project once, and learn which Skills only you can start.
