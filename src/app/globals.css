@@ -1,101 +1,55 @@
-/* ==========================================================================
-   PRESS — globals.css — the whole look of the site lives in this one file.
-   --------------------------------------------------------------------------
-   One reading column (680px) on warm paper, serif text, hairline rules
-   instead of cards and bands. Light and dark follow the system; print is
-   always light. No component hard-codes a colour: everything below reads
-   the tokens. The base style of everything is its final state — nothing
-   is hidden until JavaScript runs, and nothing moves.
+/* The whole look of the site lives in this one file. */
 
-   FILE MAP — search for the section mark (for example §6) to jump here.
-   §1  TOKENS ...... colour, font, spacing and measure custom properties
-   §2  BASE ........ box-sizing reset, html and body defaults, selection
-   §3  TYPE ........ headings, dek, links, code, lists, tables
-   §4  FORMS ....... inputs, the one solid button, helper classes, column
-   §5  SHELL ....... site header and footer (root layout chrome)
-   §6  HOME ........ journal index: parts, lesson rows, Main flow stages
-   §7  LESSON PAGE . Lesson kicker/hero, Section titles and numbering
-   §8  PROSE ....... rendered markdown inside the prose class
-   §9  BOXES ....... goals, callouts, Your turn, Site story, sources
-   §10 SCENES ...... static figures: §10a chat, §10b terminal,
-                     §10c flow, §10d files, §10e meter
-   §11 QUESTIONS ... Checkpoints, then §11b the Final test
-   §12 DISCUSSION .. comments and Previous/Next navigation
-   §13 ACCESS ...... forced-colours and reduced-motion queries
-   §14 PRINT ....... always-light print rules, no chrome
-
-   TOKEN GLOSSARY (light values; dark swaps colours only — see §1)
-   --paper — #edeae3 — page background; never lighten toward white
-   --wash — #f8f6f0 — quiet raised background (scenes, hovers, big idea)
-   --ink — #1c1b18 — primary text; also the solid-button background
-   --muted — #59564e — secondary text, small labels, list markers
-   --rule — #d6d0bf — hairline dividers and borders
-   --accent — #1d5d78 — links, focus ring, current-state accents
-   --good — #256b3f — correct and passed wording, goal ticks
-   --good-wash — #e6f2ea — copied and correct wash background
-   --bad — #9c3a28 — wrong and error wording
-   --bad-wash — #f8e8e4 — error and dumb-zone wash background
-   --serif — Source Serif 4 stack — all text on the site
-   --mono — JetBrains Mono stack — code and aligned labels only
-   --space-2xs to --space-2xl — 0.25rem to 4rem spacing scale
-   --measure — 680px — the one reading-column width (see MEASURE)
-   --header-h — 3.5rem — sticky header height; scroll offset uses it
-   Font inputs named --font-source-serif and --font-jetbrains-mono are
-   set on the html element by the root layout and are only consumed
-   here through the --serif and --mono tokens above.
-   Scene-local props named zone, fill and at are set inline per Scene
-   and are only consumed by the meter (§10e); they are not globals.
-
-   INVARIANTS — do not break these when editing this file
-   MEASURE — one column only. The measure token caps the reading column
-     and the header and footer inners; no other fixed page width exists.
-   STILLNESS — base state is final state. Scenes render complete and
-     in-flow; the only transitions are 120ms colour fades (buttons,
-     options, lesson rows). Pre-rendered state toggles that show one of
-     two wordings (meter dumb label, file badge) are not reveals.
-   TOKEN DISCIPLINE — outside the token definitions (§1), the print
-     swap (§14) and the forced-colours query (§13), colour is always a
-     var() token reference; dark mode changes token values, never the
-     component selectors that consume them.
-   STATE IN WORDS — correct, current and done are never colour alone;
-     ticks, aria-current in markup and answer wording carry them too.
-
-   HOW TO NAVIGATE — every section header below names its selector
-   families in bare class words so plain text search finds them, and
-   notes the invariant that governs the section. To retheme, edit §1;
-   to restyle one component area, edit only its own section.
-   ========================================================================== */
-
-/* ==========================================================================
-   §1 TOKENS — all custom properties (colour, type, spacing, measure)
-   Families: the ten colour props, the serif and mono font props, the
-   space scale, the measure and the header height. Defined once here;
-   the dark swap further below redefines the ten colour props only.
-   Invariant: TOKEN DISCIPLINE (FILE MAP). Never lighten the paper
-   token toward white to fix contrast — darken the foreground instead.
-   ========================================================================== */
+/* Design tokens: every colour, font, size and gap below comes from here. */
 :root {
-  /* The new paper: this site's own. Not #ffffff (the old template white),
-     not #fffef9 (the course.css model's paper), not #faf8f4 (the cream
-     considered and rejected). Never lighten it toward white to fix
-     contrast — darken the foreground instead. */
-  --paper: #edeae3;
-  --wash: #f8f6f0;
-  --ink: #1c1b18;
-  --muted: #59564e;
-  --rule: #d6d0bf;
-  --accent: #1d5d78;
-  --good: #256b3f;
-  --good-wash: #e6f2ea;
-  --bad: #9c3a28;
-  --bad-wash: #f8e8e4;
+  /* Colour. Blue is the brand; navy is for dark bands and the footer;
+     amber is the one accent, used sparingly (numbers, highlights, focus). */
+  --blue: #1e3fcc;
+  --blue-dark: #142c94;
+  --navy: #0a1433;
+  --navy-raised: #131f48;
+  --amber: #ffb020;
+  --ink: #0d1526;
+  --text: #1c2333;
+  --muted: #5b6475;
+  --line: #dde1ea;
+  --bg: #ffffff;
+  --bg-soft: #f3f5fb;
+  --on-dark: #ffffff;
+  --on-dark-muted: #b9c2dc;
+  --error: #b00020;
+  /* Right answers and added files. At least 4.5:1 on white and on --bg-soft. */
+  --good: #0f7a3d;
+  --good-soft: #e4f3ea;
+  /* Tints for cards and states. Amber is only ever a background behind ink
+     text, never text on white. */
+  --blue-soft: #edf1fd;
+  --amber-soft: #fff3d4;
+  --warm: #faf6ee;
+  --line-strong: #c4cad8;
+  /* Links on navy: light enough for 4.5:1. */
+  --link-on-dark: #a9bcff;
+  /* Code on navy, the Site story's label, and the terminal Scene's window. */
+  --code-on-dark: #e3e8f8;
+  --warm-label: #7a5000;
+  --term-bg: #0b1230;
+  --term-bar: #141d45;
+  --term-text: #d6ddf5;
+  --term-output: #aab4d4;
+  --term-dot-red: #ff6b5f;
+  --term-dot-green: #3fbf6f;
 
-  /* Type. Source Serif 4 for all text, JetBrains Mono for code only
-     (plus labels/numerals that must align). Loaded in layout.tsx. */
-  --serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
-  --mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* Type. Inter for reading, Inter Tight for the bold headings. */
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-heading: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --text-sm: 0.875rem;
+  --text-lg: 1.2rem;
+  --display-1: clamp(2.4rem, 1.5rem + 4vw, 4.75rem);
+  --display-2: clamp(1.8rem, 1.3rem + 2.2vw, 3rem);
+  --display-3: clamp(1.5rem, 1.25rem + 1vw, 2rem);
 
-  /* Spacing and the one measure. */
+  /* Spacing. */
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-s: 0.75rem;
@@ -103,38 +57,28 @@
   --space-l: 1.5rem;
   --space-xl: 2.5rem;
   --space-2xl: 4rem;
-  --measure: 680px;
-  --header-h: 3.5rem;
+  --space-3xl: 6rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --page-max: 1240px;
+  --read-max: 720px;
+  /* A Lesson page is wider, to fit a stage beside the text. */
+  --lesson-max: 1440px;
+  --text-col: 44rem;
 
-  color-scheme: light dark;
+  /* Shape. Photos and cards stay square; buttons are pills. */
+  --radius-pill: 999px;
+  --shadow-soft: 0 6px 24px rgb(10 20 51 / 0.1), 0 1px 2px rgb(10 20 51 / 0.06);
+  --header-h: 4.5rem;
+  /* The Lesson section bar's height, under the header (ticket 04 sets it). */
+  --lesson-bar-h: 0rem;
 }
 
-/* Dark — the same ten colour props with dark values (the course
-   model palette), under the dark system scheme. Type, spacing, the
-   measure and the header height are scheme-independent and are
-   intentionally not repeated here. Print overrides again in §14. */
-@media (prefers-color-scheme: dark) {
+@media (max-width: 560px) {
   :root {
-    --paper: #171614;
-    --wash: #22201d;
-    --ink: #e8e5dd;
-    --muted: #a29f96;
-    --rule: #35332e;
-    --accent: #86bdd7;
-    --good: #78c596;
-    --good-wash: #1b2a20;
-    --bad: #e9937f;
-    --bad-wash: #2f1f1b;
+    --header-h: 3.75rem;
   }
 }
 
-/* ==========================================================================
-   §2 BASE — reset and document defaults
-   Families: universal box-sizing, the html and body elements, and the
-   selection style. Serif body text on the paper token starts here.
-   Invariant: STILLNESS starts here (FILE MAP) — the body base style
-   is the final rendered state; nothing below waits for script.
-   ========================================================================== */
 *,
 *::before,
 *::after {
@@ -142,178 +86,108 @@
 }
 
 html {
-  font-size: 18px;
-  -webkit-text-size-adjust: 100%;
   scroll-padding-top: calc(var(--header-h) + var(--space-m));
 }
 
+html,
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--serif);
-  font-optical-sizing: auto;
-  line-height: 1.6;
-  font-feature-settings: "kern", "liga", "onum";
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--paper);
+  background: var(--amber);
+  color: var(--ink);
 }
 
-/* ==========================================================================
-   §3 TYPE — element typography shared by every page
-   Families: kicker and eyebrow labels, h1, h2 and h3 headings, the
-   dek, paragraphs, links, strong text, the one focus-visible ring,
-   code, pre and kbd, lists, the hr rule and tables.
-   Invariant: serif for all text; mono only through code, pre and kbd
-   (TOKEN GLOSSARY). One focus ring serves every interactive element.
-   ========================================================================== */
-
-/* The small-caps recipe: kickers, labels and table heads. */
-.kicker,
-.eyebrow {
-  font-size: 0.75rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0 0 0.4rem;
+/* Bold type, site-wide: headings at 750–800, tightly tracked. Weight never
+   animates (it changes text width, so it would shift the layout). */
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
 }
 
 h1 {
-  font-weight: 400;
-  font-size: 2.25rem;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  margin: 0 0 0.75rem;
-  text-wrap: balance;
-}
-
-.dek {
-  font-style: italic;
-  font-size: 1.12rem;
-  color: var(--muted);
-  margin: 0 0 1.5rem;
+  font-size: var(--display-1);
+  margin: 0 0 var(--space-l);
 }
 
 h2 {
-  font-weight: 400;
-  font-style: italic;
-  font-size: 1.45rem;
-  line-height: 1.25;
-  margin: 2.75rem 0 0.7rem;
-  text-wrap: balance;
+  font-size: var(--display-2);
+  margin: var(--space-2xl) 0 var(--space-m);
 }
 
 h3 {
-  font-weight: 600;
-  font-size: 1rem;
-  line-height: 1.35;
-  margin: 1.75rem 0 0.4rem;
-}
-
-p {
-  margin: 0 0 1rem;
-}
-
-a {
-  color: var(--accent);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
+  font-size: var(--text-lg);
+  font-weight: 750;
+  line-height: 1.2;
 }
 
 strong,
 b {
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* One focus ring for everything: 2px accent (6.05:1 on paper in light,
-   8.85:1 in dark — well past the 3:1 a focus indicator needs). */
+a {
+  color: var(--blue);
+}
+
+a:hover {
+  color: var(--blue-dark);
+}
+
+/* One focus ring for everything: amber outside, navy inside, so it shows on
+   white, on navy and on photos alike. */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 3px solid var(--amber);
   outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--navy);
 }
 
 code,
-pre,
-kbd {
+pre {
   font-family: var(--mono);
+  font-size: 0.9em;
 }
 
-code {
-  font-size: 0.8em;
-  background: var(--wash);
-  padding: 0.08em 0.3em;
-  border-radius: 3px;
+:not(pre) > code {
+  background: var(--bg-soft);
+  padding: 0.1em 0.3em;
 }
 
 pre {
-  font-size: 0.74rem;
-  line-height: 1.55;
-  background: var(--wash);
-  padding: 0.85rem 1rem;
-  border-radius: 4px;
+  background: var(--bg-soft);
+  border-left: 3px solid var(--blue);
+  padding: var(--space-m);
   overflow-x: auto;
-  margin: 0 0 1.25rem;
-}
-
-pre code {
-  font-size: inherit;
-  background: none;
-  padding: 0;
-  border-radius: 0;
-}
-
-ul,
-ol {
-  padding-left: 1.25rem;
-  margin: 0 0 1rem;
-}
-
-li {
-  margin: 0.2rem 0;
-}
-
-hr {
-  border: 0;
-  border-top: 1px solid var(--rule);
-  margin: 2.5rem 0;
 }
 
 table {
-  border-collapse: collapse;
   width: 100%;
-  font-size: 0.86rem;
-  line-height: 1.45;
+  border-collapse: collapse;
 }
 
 th,
 td {
+  border: 1px solid var(--line);
+  padding: var(--space-xs) var(--space-s);
   text-align: left;
   vertical-align: top;
-  padding: 0.45rem 0.75rem 0.45rem 0;
-  border-bottom: 1px solid var(--rule);
 }
 
 th {
-  font-weight: 600;
-  font-size: 0.72rem;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--muted);
-  border-bottom-color: var(--ink);
+  background: var(--bg-soft);
 }
-
-/* ==========================================================================
-   §4 FORMS, BUTTONS AND HELPERS — controls plus shared utilities
-   Families: text inputs and textareas, the one solid button (button
-   element and button class together), the muted helper, the
-   visually-hidden helper, and the measure column.
-   Invariant: one button style only (square-ish, never a pill), and
-   the reading column defined here is capped by the measure token.
-   ========================================================================== */
 
 input,
 textarea,
@@ -321,61 +195,79 @@ button {
   font: inherit;
 }
 
-/* Field boundaries use --muted, not --rule: --rule on paper is ~1.3:1
-   and fails the 3:1 non-text contrast duty for control boundaries
-   (fleet a11y review); --muted passes in both schemes. */
 input:where(:not([type="radio"], [type="checkbox"])),
 textarea {
   width: 100%;
-  min-height: 48px;
-  border: 1px solid var(--muted);
-  border-radius: 4px;
+  border: 1px solid var(--line);
   padding: 0.6rem 0.75rem;
-  color: var(--ink);
-  background: var(--paper);
-}
-
-textarea {
-  min-height: 0;
+  color: var(--text);
+  background: var(--bg);
 }
 
 input:focus,
 textarea:focus {
-  border-color: var(--accent);
+  border-color: var(--blue);
 }
 
-/* The one solid button: ink on paper, accent on hover. Square-ish (6px),
-   never a pill. Links styled as buttons are the same element. */
+/* Buttons: a pill, and links styled as buttons carry an arrow. */
 button,
 .button {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 0.6em;
-  min-height: 48px;
-  padding: 0.6rem 1.15rem;
-  border: 1px solid var(--ink);
-  border-radius: 6px;
-  background: var(--ink);
-  color: var(--paper);
+  padding: 0.75em 1.5em;
+  border: 1.5px solid var(--blue);
+  border-radius: var(--radius-pill);
+  background: var(--blue);
+  color: var(--on-dark);
   font-weight: 600;
-  font-size: 0.98rem;
-  line-height: 1.3;
+  line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 120ms ease, border-color 120ms ease;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
 button:hover,
 .button:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--paper);
+  background: var(--blue-dark);
+  border-color: var(--blue-dark);
+  color: var(--on-dark);
 }
 
-button:disabled {
-  opacity: 0.6;
-  cursor: wait;
+.button::after {
+  content: "→";
+  content: "→" / "";
+  transition: transform 0.2s;
+}
+
+.button:hover::after {
+  transform: translateX(0.25em);
+}
+
+/* White pill, for photos and dark bands. */
+.button-light {
+  background: var(--bg);
+  border-color: var(--bg);
+  color: var(--ink);
+}
+
+.button-light:hover {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+}
+
+/* Outline pill, the quieter second choice next to a solid one. */
+.button-outline {
+  background: transparent;
+  border-color: currentColor;
+  color: inherit;
+}
+
+.button-outline:hover {
+  background: var(--on-dark);
+  border-color: var(--on-dark);
+  color: var(--ink);
 }
 
 .muted {
@@ -395,50 +287,209 @@ button:disabled {
   white-space: nowrap;
 }
 
-/* INVARIANT — MEASURE: this column class and the header and footer
-   inners (§5) are the only width-governed reading surfaces, and all
-   of them use the one measure token. Do not add a second page width. */
-/* The reading column. Every reading surface uses it. (The old GE
-   .container alias was dead — no markup used it — and was removed by
-   the Press fleet CSS review; .measure is the only column class.) */
-.measure {
-  max-width: var(--measure);
+/* Small uppercase label above a heading, e.g. "Lesson 3". */
+.eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.container {
+  max-width: calc(var(--read-max) + 2 * var(--gutter));
   margin: 0 auto;
-  padding: 2.5rem 1rem 4rem;
+  padding: var(--space-xl) var(--gutter) var(--space-2xl);
 }
 
-/* ==========================================================================
-   §5 SHELL — site header and footer (rendered by the root layout)
-   Families: site-header and site-header-inner, brand, brand-mark and
-   brand-word, site-nav; then site-footer and site-footer-inner,
-   footer-about, footer-heading, footer-lessons and footer-number.
-   A narrow-width wrap query sits between the header and footer rules.
-   Invariant: MEASURE — both inners are capped by the measure token.
-   ========================================================================== */
+/* Full-width bands that alternate down a page. */
+.band-light {
+  background: var(--bg-soft);
+}
 
-/* Skip link: hidden until keyboard focus, then pinned above the shell. */
-.skip-link {
+.band-dark {
+  background: var(--navy);
+  color: var(--on-dark-muted);
+}
+
+.band-dark :is(h1, h2, h3) {
+  color: var(--on-dark);
+}
+
+.band-dark a:not(.button),
+.band-dark .button-outline {
+  color: var(--on-dark);
+}
+
+/* A full-width photo with white text over it. The photo sits in
+   .photo-band-photo (a box of its own, so it can move without the text), a
+   dark gradient covers it, and .photo-band-inner holds the text on top. The
+   gradient is darkest behind the text at the bottom, so a bright photo never
+   hides it. */
+.photo-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  background: var(--navy);
+  color: var(--on-dark);
+}
+
+.photo-band-photo {
   position: absolute;
-  left: var(--space-m);
-  top: -4rem;
-  z-index: 100;
-  padding: 0.6rem 1rem;
-  background: var(--ink);
-  color: var(--paper);
+  inset: 0;
+  z-index: -2;
 }
 
-.skip-link:focus-visible {
-  top: var(--space-xs);
+.photo-band-photo img {
+  object-fit: cover;
 }
 
-/* One ruled row on paper, always solid — there is no photo to sit over. */
+.photo-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to top,
+    rgb(5 10 25 / 0.88) 0%,
+    rgb(5 10 25 / 0.6) 40%,
+    rgb(5 10 25 / 0.25) 75%,
+    rgb(5 10 25 / 0.35) 100%
+  );
+}
+
+.photo-band-inner {
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: calc(var(--header-h) + var(--space-2xl)) var(--gutter) var(--space-xl);
+}
+
+.photo-band :is(h1, h2) {
+  color: var(--on-dark);
+  text-shadow: 0 1px 24px rgb(5 10 25 / 0.4);
+}
+
+.photo-band .eyebrow {
+  color: var(--amber);
+}
+
+/* "Photo: <name> / Unsplash", small, under the title. */
+.photo-credit {
+  margin: 0;
+  color: var(--on-dark-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+/* A Lesson as a photo card (see lesson-card.tsx): square-edged photo on top,
+   "Lesson N" and the title below. The photo zooms in a little on hover. */
+.lesson-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.3s;
+}
+
+/* The card's own shadow would hide the focus ring's navy inner edge, so put
+   the ring back on top of it. */
+.lesson-card:focus-visible {
+  box-shadow: 0 0 0 2px var(--navy), var(--shadow-soft);
+}
+
+.lesson-card:hover {
+  color: var(--ink);
+  box-shadow: 0 14px 40px rgb(10 20 51 / 0.18), 0 1px 2px rgb(10 20 51 / 0.06);
+}
+
+.lesson-card-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--navy);
+}
+
+.lesson-card-photo img {
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.lesson-card:hover .lesson-card-photo img {
+  transform: scale(1.04);
+}
+
+.lesson-card-body {
+  display: grid;
+  gap: var(--space-2xs);
+  padding: var(--space-m) var(--space-l) var(--space-l);
+}
+
+.lesson-card .eyebrow {
+  color: var(--blue);
+}
+
+.lesson-card-title {
+  font-family: var(--font-heading);
+  font-size: var(--display-3);
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* The "passed" tick's place in the photo's corner, always kept so the card
+   never shifts when it's filled. Empty, it shows nothing. */
+.lesson-card-tick {
+  position: absolute;
+  top: var(--space-s);
+  right: var(--space-s);
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  pointer-events: none;
+}
+
+.lesson-card:hover .lesson-card-title {
+  text-decoration: underline;
+  text-decoration-color: var(--amber);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+/* Header: stays at the top. Solid by default; see-through while a page's top
+   photo band (marked data-hero, holding <HeaderOverlay/>) sits under it. Before
+   the page's code runs, a page with a band starts see-through too. */
 .site-header {
+  --header-fg: var(--ink);
+  --header-bg: var(--bg);
+  --header-shadow: var(--shadow-soft);
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--paper);
-  border-bottom: 1px solid var(--rule);
-  color: var(--ink);
+  height: var(--header-h);
+  color: var(--header-fg);
+  background: var(--header-bg);
+  box-shadow: var(--header-shadow);
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+html[data-header="clear"] .site-header,
+html:not([data-header]):has([data-hero]) .site-header {
+  --header-fg: var(--on-dark);
+  --header-bg: linear-gradient(rgb(5 10 25 / 0.55), transparent);
+  --header-shadow: none;
+}
+
+/* A top photo band slides up under the header. */
+[data-hero] {
+  margin-top: calc(-1 * var(--header-h));
 }
 
 .site-header-inner {
@@ -446,35 +497,33 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-m);
-  min-height: var(--header-h);
-  max-width: var(--measure);
+  height: 100%;
+  max-width: var(--page-max);
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--gutter);
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  min-height: 48px;
-  color: var(--ink);
-  font-size: 1rem;
-  font-weight: 600;
+  color: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   line-height: 1.1;
   text-decoration: none;
+  text-transform: uppercase;
 }
 
 .brand:hover {
-  color: var(--ink);
-  text-decoration: underline;
-  text-decoration-color: var(--accent);
-  text-underline-offset: 3px;
+  color: inherit;
 }
 
 .brand-mark {
   flex: none;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 .site-nav {
@@ -483,65 +532,75 @@ button:disabled {
 }
 
 .site-nav a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 48px;
-  color: var(--ink);
+  color: inherit;
   font-size: 0.95rem;
+  font-weight: 500;
   text-decoration: none;
   white-space: nowrap;
+  border-bottom: 2px solid transparent;
 }
 
 .site-nav a:hover {
-  color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  color: inherit;
+  border-bottom-color: var(--amber);
 }
 
 @media (max-width: 560px) {
+  .brand {
+    font-size: 0.78rem;
+  }
   .brand-word {
-    max-width: 6em;
+    max-width: 5.5em;
+  }
+  .brand-mark {
+    width: 1.75rem;
+    height: 1.75rem;
   }
   .site-nav {
     gap: var(--space-m);
   }
   .site-nav a {
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
   }
 }
 
-/* Footer: a ruled closing block in the measure. */
+/* Footer: dark, every Lesson, then the photo credits. */
 .site-footer {
-  border-top: 1px solid var(--rule);
-  color: var(--muted);
-  font-size: 0.9rem;
+  background: var(--navy);
+  color: var(--on-dark-muted);
+  font-size: 0.95rem;
 }
 
 .site-footer-inner {
   display: grid;
-  gap: var(--space-l);
-  max-width: var(--measure);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--space-xl);
+  max-width: var(--page-max);
   margin: 0 auto;
-  padding: var(--space-xl) 1rem var(--space-l);
+  padding: var(--space-2xl) var(--gutter) var(--space-xl);
+}
+
+.footer-about .brand {
+  color: var(--on-dark);
 }
 
 .footer-about p {
-  max-width: 26rem;
-  margin: var(--space-xs) 0 0;
+  max-width: 24rem;
+  margin: var(--space-m) 0 0;
 }
 
 .footer-heading {
-  margin: 0 0 var(--space-s);
-  font-size: 0.72rem;
-  font-style: normal;
+  margin: 0 0 var(--space-m);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--on-dark-muted);
 }
 
 .footer-lessons ol {
-  columns: 2 14rem;
+  columns: 2 15rem;
   column-gap: var(--space-xl);
   list-style: none;
   margin: 0;
@@ -550,259 +609,307 @@ button:disabled {
 
 .footer-lessons li {
   break-inside: avoid;
-  margin: 0;
-  padding: 0.2rem 0;
+  padding: var(--space-2xs) 0;
 }
 
 .site-footer a {
-  color: var(--ink);
+  color: var(--on-dark);
   text-decoration: none;
 }
 
 .site-footer a:hover {
-  color: var(--accent);
+  color: var(--on-dark);
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration-color: var(--amber);
+  text-underline-offset: 0.2em;
 }
 
 .footer-number {
   display: inline-block;
-  min-width: 1.8em;
-  font-family: var(--mono);
-  font-size: 0.85em;
-  color: var(--muted);
+  min-width: 1.6em;
+  color: var(--amber);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
-/* ==========================================================================
-   §6 HOME — the journal index (the home page)
-   Families: home-start and home-start-note, home-facts, home-section,
-   part-group and part-heading with part-number, lesson-list and the
-   lesson-card row family, then the Main flow stages (flow-steps).
-   Invariant: entries are ruled rows on paper — hairlines, no cards,
-   and no lift or zoom on hover (STILLNESS, FILE MAP).
-   ========================================================================== */
-
-.home-start {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin: 0 0 1.25rem;
+.site-footer-base {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-l) var(--gutter);
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  font-size: var(--text-sm);
 }
 
-.home-start-note {
+.site-footer-base p {
   margin: 0;
-  flex: 1 1 16rem;
-  font-size: 0.9rem;
-  color: var(--muted);
 }
 
-.home-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.4rem;
+.site-footer-base a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (max-width: 720px) {
+  .site-footer-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Credits: one row per photo, a small thumbnail and who took it. */
+.credit-list {
   list-style: none;
-  padding: 0.7rem 0;
   margin: 0;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  font-size: 0.88rem;
-  color: var(--muted);
+  padding: 0;
+  border-top: 1px solid var(--line);
 }
 
-.home-facts li {
-  margin: 0;
+.credit {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--space-m);
+  align-items: center;
+  padding: var(--space-s) 0;
+  border-bottom: 1px solid var(--line);
 }
 
-.home-facts strong {
+.credit-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  background: var(--navy);
+}
+
+.credit-photo img {
+  object-fit: cover;
+}
+
+.credit-lesson {
+  display: block;
   color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
 }
 
+.credit-by {
+  display: block;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+/* Home, top to bottom: the full-screen photo, the light intro, the Lesson
+   grid, the dark Main flow band, and the closing photo. */
 .home-section {
-  margin-top: var(--space-xl);
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--gutter);
 }
 
 .home-section h2 {
-  margin-top: 0;
+  margin: var(--space-xs) 0 var(--space-m);
 }
 
-/* A Part heading: small-caps label, then the title. */
+.home-section > .eyebrow,
+.home-intro .eyebrow {
+  color: var(--blue);
+}
+
+.band-dark .eyebrow {
+  color: var(--amber);
+}
+
+.section-lead {
+  max-width: 40rem;
+  font-size: var(--text-lg);
+  color: var(--text);
+}
+
+.band-dark .section-lead {
+  color: var(--on-dark);
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+}
+
+/* The opening photo fills the first screen. Its people sit on the right, so
+   the text goes bottom-left, over a gradient that's darkest on that side. */
+.home-hero {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.home-hero::before {
+  background:
+    linear-gradient(to right, rgb(5 10 25 / 0.7) 0%, rgb(5 10 25 / 0.15) 70%),
+    linear-gradient(to top, rgb(5 10 25 / 0.85) 0%, rgb(5 10 25 / 0.2) 55%, rgb(5 10 25 / 0.4) 100%);
+}
+
+.home-hero .photo-band-photo img {
+  object-position: 70% 50%;
+}
+
+.home-hero .photo-band-inner {
+  padding-bottom: var(--space-2xl);
+}
+
+.home-hero h1 {
+  max-width: 15ch;
+  margin: var(--space-s) 0 var(--space-m);
+}
+
+.home-hero-lead {
+  max-width: 34rem;
+  margin: 0 0 var(--space-xl);
+  font-size: var(--text-lg);
+  color: var(--on-dark);
+}
+
+.photo-band .button-row + .photo-credit,
+.photo-band .button + .photo-credit {
+  margin-top: var(--space-xl);
+}
+
+/* About the course: text on the left, a photo on the right. */
+.home-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-2xl);
+  align-items: center;
+}
+
+.home-intro-figure {
+  margin: 0;
+}
+
+.home-intro-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: var(--navy);
+}
+
+.home-intro-photo img {
+  object-fit: cover;
+}
+
+.figure-credit {
+  margin-top: var(--space-xs);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 860px) {
+  .home-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+}
+
+/* Every Lesson as a photo card, three to a row, then two, then one. */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-l);
+  margin: var(--space-xl) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson-grid li {
+  display: flex;
+}
+
+.lesson-grid .lesson-card {
+  flex: 1;
+}
+
+@media (max-width: 1024px) {
+  .lesson-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Once every Lesson has a Part, the grid splits under a heading per Part. */
 .part-group {
-  margin-top: 2.25rem;
+  margin-top: var(--space-2xl);
+}
+
+.part-group:first-of-type {
+  margin-top: var(--space-xl);
 }
 
 .part-heading {
-  margin: 0 0 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2xs) var(--space-s);
+  margin: 0;
+  padding-bottom: var(--space-s);
+  border-bottom: 2px solid var(--ink);
+  font-size: var(--display-3);
 }
 
 .part-number {
-  font-size: 0.7rem;
-  letter-spacing: 0.09em;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--muted);
-  margin: 0;
+  color: var(--blue);
 }
 
-.part-heading h3 {
-  margin: 0.15rem 0 0.35rem;
+.part-group .lesson-grid {
+  margin-top: var(--space-l);
 }
 
-/* The index entries, one per Lesson: ruled rows, closed by a final rule. */
-.lesson-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1rem;
-  border-bottom: 1px solid var(--rule);
+@media (max-width: 640px) {
+  .lesson-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
-.lesson-list li {
-  margin: 0;
-}
-
-/* A Press ruled entry: a hairline top rule on paper — plain numeral, title,
-   outcome line, minutes, arrow. No box, no radius, no disc. Hover/focus is
-   a wash ground and an accent underline on the title — no lift, no zoom. */
-.lesson-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  min-height: 48px;
-  padding: 0.9rem 0.5rem;
-  border-top: 1px solid var(--rule);
-  color: var(--ink);
-  text-decoration: none;
-  transition: background-color 120ms ease;
-}
-
-.lesson-card:hover {
-  background: var(--wash);
-  color: var(--ink);
-}
-
-.lesson-card:hover .lesson-card-title,
-.lesson-card:focus-visible .lesson-card-title {
-  text-decoration: underline;
-  text-decoration-color: var(--accent);
-  text-underline-offset: 3px;
-}
-
-.lesson-card:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  background: var(--wash);
-}
-
-.lesson-card-num {
-  flex: none;
-  min-width: 2ch;
-  padding-top: 0.1rem;
-  font-family: var(--mono);
-  font-size: 0.9rem;
-  font-weight: 500;
-  text-align: right;
-  color: var(--muted);
-}
-
-.lesson-card:hover .lesson-card-num,
-.lesson-card:focus-visible .lesson-card-num {
-  color: var(--accent);
-}
-
-.lesson-card-body {
-  display: block;
-  min-width: 0;
-}
-
-.lesson-card-label {
-  display: block;
-  font-size: 0.7rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.15rem;
-}
-
-.lesson-card-title {
-  display: block;
-  font-weight: 600;
-  font-size: 1.02rem;
-  line-height: 1.35;
-  color: var(--ink);
-}
-
-.lesson-card-outcome {
-  display: block;
-  margin-top: 0.2rem;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  color: var(--muted);
-}
-
-.lesson-card-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  margin-top: 0.45rem;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-/* The "passed" tick's reserved slot, always kept so the entry never
-   shifts when it's filled. Empty, it shows nothing. */
-.lesson-card-tick {
-  width: 1.25rem;
-  height: 1.25rem;
-  pointer-events: none;
-}
-
-.lesson-card-arrow {
-  flex: none;
-  margin-left: auto;
-  padding-top: 0.15rem;
-  color: var(--accent);
-  font-size: 1.1rem;
-  line-height: 1;
-}
-
-/* Home sub-area — Main flow stages: flow-steps, flow-step and its
-   flow-step-when label, flow-step-link and flow-note. These are home
-   page stages only; the Scene kind named flow lives in §10c. */
-/* The Main flow as stages: a 2px ink rule per stage, its Skill commands
-   as the small-caps when-label. */
+/* The Main flow's steps on the navy band, each under an amber number. Three
+   to a row, two on tablets, one on phones. */
 .flow-steps {
-  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-xl) var(--space-l);
+  margin: var(--space-xl) 0;
   padding: 0;
-  margin: 1.25rem 0 1.75rem;
+  list-style: none;
 }
 
 .flow-step {
-  border-top: 2px solid var(--ink);
-  padding: 0.6rem 0 0.25rem;
-  margin: 0 0 0.75rem;
+  padding-top: var(--space-m);
+  border-top: 1px solid rgb(255 255 255 / 0.18);
 }
 
-.flow-step-when {
-  font-size: 0.7rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0;
-}
-
-/* Keep a command whole, e.g. never "/implement-" then "spec". */
-.flow-step-when code {
-  white-space: nowrap;
-  text-transform: none;
-  letter-spacing: 0;
+.flow-step-number {
+  display: block;
+  color: var(--amber);
+  font-family: var(--font-heading);
+  font-size: var(--display-2);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .flow-step h3 {
-  margin: 0 0 0.45rem;
+  margin: var(--space-m) 0 var(--space-xs);
 }
 
-.flow-step p {
-  margin-bottom: 0.5rem;
+/* A step whose Lesson exists links to it. */
+.flow-step-link {
+  text-decoration: underline;
+  text-decoration-color: rgb(255 176 32 / 0.55);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.flow-step-link:hover {
+  text-decoration-color: var(--amber);
 }
 
 .flow-step-link::after {
@@ -810,110 +917,345 @@ button:disabled {
   content: " →" / "";
 }
 
+.flow-step p {
+  margin: 0 0 var(--space-xs);
+}
+
+/* Keep a command whole, e.g. never "/implement-" then "spec". */
+.flow-step-skills code {
+  white-space: nowrap;
+}
+
+.band-dark :not(pre) > code {
+  background: var(--navy-raised);
+  color: var(--on-dark);
+}
+
 .flow-note {
-  font-size: 0.9rem;
-  color: var(--muted);
-  font-style: italic;
+  max-width: 40rem;
+  margin: 0 0 var(--space-l);
+}
+
+@media (max-width: 960px) {
+  .flow-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 560px) {
-  .lesson-card {
-    padding: 0.85rem 0.4rem;
-    gap: 0.75rem;
+  .flow-steps {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .lesson-card-num {
-    font-size: 0.85rem;
-  }
-  .home-start {
-    align-items: stretch;
-  }
-  .home-start .button {
-    justify-content: center;
-    width: 100%;
-  }
-  .home-start-note {
-    flex-basis: 100%;
+}
+
+/* The closing photo: a call to start the course. */
+.home-cta {
+  min-height: clamp(28rem, 72vh, 44rem);
+}
+
+/* Keep the top of the rocket's arc in the frame. */
+.home-cta .photo-band-photo img {
+  object-position: 60% 15%;
+}
+
+.home-cta .photo-band-inner {
+  padding-top: var(--space-3xl);
+}
+
+.home-cta h2 {
+  margin: var(--space-s) 0 var(--space-m);
+}
+
+@media (max-width: 560px) {
+  .home-section {
+    padding: var(--space-2xl) var(--gutter);
   }
 }
 
 /* ==========================================================================
-   §7 LESSON PAGE — chrome around one Lesson
-   Families: lesson-kicker, lesson-hero, the lesson column clip,
-   lesson-intro, lesson-section with section-title and section-num,
-   and lesson-after. The intro first paragraph doubles as the dek.
-   Invariant: Sections read in one column in written order; their
-   content is styled by §8 to §12, never re-widthed here (MEASURE).
+   Lesson page, top to bottom: the photo band, the intro (goals and opening
+   prose), one block per Section (text beside a stage from 1080px), the
+   Final test band, the sources, the Discussion band and Previous/Next.
+   The base style of everything here is its final state: the scroll engine
+   (ticket 04) and the questions (ticket 05) only ever start from an earlier
+   state and come back to this.
    ========================================================================== */
 
-/* The header: kicker, title, then a hairline. The intro's first line is
-   the dek; its goals sit in the hairline band below. */
-.lesson-kicker {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1.25rem;
+.lesson-hero {
+  min-height: clamp(24rem, 64vh, 40rem);
 }
 
-.lesson-hero {
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 1.25rem;
-  margin-bottom: 1.5rem;
+/* The title lines up with the text column below it. */
+.lesson-hero .photo-band-inner {
+  max-width: calc(var(--text-col) + 2 * var(--gutter));
 }
 
 .lesson-hero h1 {
-  margin-bottom: 0;
+  max-width: 18ch;
+  margin: var(--space-s) 0 var(--space-m);
 }
 
-/* Clips sideways overflow without becoming a scroll container. */
+/* "Part 2 · The main flow" in amber, then "Lesson 1 · 12 min read". */
+.lesson-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs) var(--space-l);
+  margin: 0;
+}
+
+.lesson-eyebrow span + span {
+  color: var(--on-dark);
+}
+
+/* The wrapper for everything under the photo band. Ticket 04 changes
+   --lesson-bg with the Section in view (its tone). It clips sideways
+   overflow without becoming a scroll container (overflow: clip, never
+   hidden), so sticky stages and view() timelines inside still work. */
 .lesson {
+  --lesson-bg: var(--bg);
+  /* Where a pinned stage sits: under the header and the section bar. */
+  --stage-top: calc(var(--header-h) + var(--lesson-bar-h) + var(--space-l));
+  background: var(--lesson-bg);
   overflow-x: clip;
 }
 
+/* Every part of the page is one column at text width, centred. From 1080px
+   they widen to the Lesson's full width and keep their text in the left
+   column, so every left edge lines up. */
+.lesson-intro,
+.lesson-section,
+.lesson-after,
+.final-test-inner,
+.discussion,
+.prev-next {
+  width: 100%;
+  max-width: calc(var(--text-col) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* The intro: the opening line reads as a lead, then the goals card. */
 .lesson-intro {
   display: grid;
-  gap: var(--space-l);
+  gap: var(--space-xl);
+  padding-block: var(--space-2xl) var(--space-m);
 }
 
-/* The opening line of the intro reads as the dek. */
-.lesson-intro > .prose > p:first-of-type {
-  font-style: italic;
-  font-size: 1.12rem;
-  color: var(--muted);
+.lesson-intro > .prose {
+  font-size: var(--text-lg);
+  color: var(--ink);
 }
 
+/* One Section. Each block is a grid item, spaced by the grid's gap. */
 .lesson-section {
-  margin-top: var(--space-xl);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  row-gap: var(--space-l);
+  padding-block: var(--space-xl);
 }
 
+/* The Section heading: its number ("02") on a short rule, then the title. */
 .section-title {
-  margin-top: 0;
+  margin: 0;
+  font-size: var(--display-2);
 }
 
-/* The Section's number as a small mono label above its heading. */
 .section-num {
-  display: block;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-style: normal;
-  font-weight: 500;
-  letter-spacing: 0.09em;
-  color: var(--muted);
-  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-s);
+  color: var(--blue);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
 }
 
-.lesson-after {
-  margin-top: var(--space-l);
+.section-num::after {
+  content: "";
+  width: 2.5rem;
+  height: 2px;
+  background: currentColor;
 }
 
-/* ==========================================================================
-   §8 PROSE — rendered Lesson markdown
-   Families: the prose class and its paragraph, list, blockquote, pre
-   and table children, task-box checklist squares, and the mark
-   key-phrase wash shared with Scene captions (§10).
-   Invariant: prose inherits §3 element type; this section only sets
-   rhythm inside the reading column. Wide tables scroll internally
-   instead of pushing the page sideways.
-   ========================================================================== */
+/* Stages. On phones a Section without a Scene has no stage: its numeral is
+   hidden, and a big-idea callout simply sits in the text. */
+.stage--numeral,
+.stage-numeral {
+  display: none;
+}
 
+/* A Scene: its stage, then its captions. Until the stepper runs (ticket 04)
+   the Scene shows its final state, every item at once, so its stage takes
+   its full height and scrolls with the page: a pinned, fixed-height stage
+   would only ever show the start of the picture.
+
+   With the stepper on, the stage pins under the header across its own
+   captions only, then scrolls away with them. At min(34svh, 18rem) it leaves
+   at least 55% of a phone's screen for text. */
+.scene-run {
+  display: grid;
+  row-gap: var(--space-m);
+}
+
+.scene-run > .stage--scene:has([data-stepper="on"]) {
+  position: sticky;
+  top: calc(var(--header-h) + var(--lesson-bar-h));
+  z-index: 2;
+  height: min(34svh, 18rem);
+  margin-inline: calc(-1 * var(--gutter));
+  padding: var(--space-xs) var(--gutter);
+  background: var(--lesson-bg);
+}
+
+/* The captions: a numbered card per step. */
+.scene-steps {
+  display: grid;
+  gap: var(--space-m);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scene-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-s);
+  align-items: start;
+  padding: var(--space-m) var(--space-l) var(--space-m) var(--space-m);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--blue);
+  box-shadow: var(--shadow-soft);
+}
+
+.scene-step-num {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: 0.05rem;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--on-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.scene-step p {
+  margin: 0;
+  color: var(--ink);
+}
+
+/* From 1080px: text on the left, the stage on the right. Every text block is
+   a grid item in column 1, one row each (--rows counts them; the Scene's
+   wrapper steps aside so its captions are one of them). The stage spans all
+   of those rows plus a last flexible row, which grows only if the stage is
+   taller than the text. It's sticky within that area, so it pins while its
+   own Section scrolls by and the next Section pushes it away. */
+@media (min-width: 1080px) {
+  .lesson-hero .photo-band-inner {
+    max-width: var(--lesson-max);
+  }
+
+  /* The header widens with the Lesson, so the brand lines up with the
+     title. A visited Lesson that Next keeps mounted but hidden carries an
+     inline display: none, so it never widens another page's header. */
+  html:has(.lesson:not([style*="display"])) .site-header-inner {
+    max-width: var(--lesson-max);
+  }
+
+  .lesson-intro,
+  .lesson-section,
+  .lesson-after,
+  .final-test-inner,
+  .discussion,
+  .prev-next {
+    max-width: var(--lesson-max);
+  }
+
+  .lesson-intro > *,
+  .lesson-after > *,
+  .final-test-inner > *,
+  .discussion > * {
+    max-width: var(--text-col);
+  }
+
+  .lesson-section {
+    grid-template-columns: minmax(0, var(--text-col)) minmax(20rem, 1fr);
+    grid-template-rows: repeat(var(--rows), auto) 1fr;
+    column-gap: clamp(2.5rem, 5vw, var(--space-2xl));
+    padding-block: var(--space-2xl);
+  }
+
+  .lesson-section > *,
+  .scene-run > * {
+    grid-column: 1;
+  }
+
+  .scene-run {
+    display: contents;
+  }
+
+  .lesson-section .stage {
+    position: sticky;
+    top: var(--stage-top);
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: start;
+  }
+
+  .stage--numeral,
+  .stage--idea,
+  .stage-numeral {
+    display: block;
+  }
+
+  /* Beside its captions, a Scene's stage pins only once the stepper runs;
+     until then it sits at the top of its Section at full height. */
+  .scene-run > .stage--scene {
+    position: static;
+  }
+
+  .scene-run > .stage--scene:has([data-stepper="on"]) {
+    position: sticky;
+    z-index: auto;
+    height: min(calc(100svh - var(--stage-top) - var(--space-l)), 50rem);
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+
+  /* A Section with no Scene: its number, huge and in outline. */
+  .stage-numeral {
+    color: transparent;
+    font-family: var(--font-heading);
+    font-size: clamp(8rem, 13vw, 15rem);
+    font-weight: 800;
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    font-variant-numeric: tabular-nums;
+    -webkit-text-stroke: 2px var(--line-strong);
+    user-select: none;
+  }
+
+  .stage--idea .callout {
+    margin-top: var(--space-xl);
+  }
+
+  /* Captions get room to breathe beside the stage. */
+  .scene-steps {
+    gap: var(--space-xl);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Prose: the running text of a Lesson, and the text inside its boxes.
+   -------------------------------------------------------------------------- */
 .prose {
   overflow-wrap: anywhere;
 }
@@ -932,6 +1274,7 @@ button:disabled {
 
 .prose h3 {
   margin: 1.6em 0 0.5em;
+  font-size: 1.35rem;
 }
 
 .prose :is(ul, ol) {
@@ -948,11 +1291,11 @@ button:disabled {
 }
 
 .prose li::marker {
-  color: var(--muted);
+  color: var(--blue);
 }
 
 .prose ol > li::marker {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* A checklist ("- [ ] …"): an empty square instead of a bullet. */
@@ -967,66 +1310,117 @@ button:disabled {
   height: 1rem;
   margin: 0 0.6em 0 -1.5em;
   vertical-align: -0.12em;
-  border: 1.5px solid var(--accent);
-  background: var(--paper);
+  border: 2px solid var(--blue);
+  background: var(--bg);
 }
 
 .prose li > .task-box[data-checked] {
-  background: var(--accent);
+  background: var(--blue);
 }
 
 .prose blockquote {
   margin-left: 0;
   padding: 0.15em 0 0.15em 1.2em;
-  border-left: 3px solid var(--accent);
+  border-left: 4px solid var(--amber);
+  color: var(--ink);
+  font-size: 1.08rem;
+}
+
+.prose strong {
   color: var(--ink);
 }
 
-/* ==key phrase==: a quiet accent wash behind ink text, always in its
-   final state (nothing sweeps it in). */
+.prose a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.prose a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ==key phrase==: a marker-pen stroke behind ink text. Ticket 04 sweeps it
+   in by growing the background's width from 0 to 100%. */
 .prose mark,
 .scene-step mark {
   padding: 0 0.12em;
+  margin: 0 -0.04em;
   color: var(--ink);
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  background-color: transparent;
+  background-image: linear-gradient(
+    100deg,
+    rgb(255 176 32 / 0.15) 0,
+    rgb(255 176 32 / 0.55) 0.4em,
+    rgb(255 176 32 / 0.45) calc(100% - 0.4em),
+    rgb(255 176 32 / 0.2) 100%
+  );
+  background-repeat: no-repeat;
+  background-position: 0 70%;
+  background-size: 100% 72%;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
 
-/* A wide table scrolls on its own instead of pushing the page sideways. */
+/* A wide table scrolls on its own instead of pushing the page sideways, so
+   its words can wrap whole instead of breaking mid-word. */
 .prose table {
   display: block;
   max-width: 100%;
   overflow-x: auto;
+  font-size: 0.93rem;
 }
 
 .prose :is(th, td) {
   overflow-wrap: normal;
 }
 
-/* ==========================================================================
-   §9 BOXES — labelled blocks inside Lesson prose
-   Families: block-label and icon; goals with goal, goal-mark and
-   goal-tick; callout in watch-out and big-idea tones; the Your turn
-   frame (try, html-part, code-block, copy-button); site-story; and
-   sources with sources-list.
-   Invariant: boxes are rules and washes, not floating cards, and a
-   box is always named by its block-label in words, never colour alone.
-   ========================================================================== */
+.prose th {
+  background: rgb(13 21 38 / 0.05);
+  color: var(--ink);
+}
 
-/* The small-caps label at the top of a box: an icon and a word, never
-   colour alone. */
+.prose tr:nth-child(even) td {
+  background: rgb(13 21 38 / 0.02);
+}
+
+/* Code in a Lesson: navy panels with an amber edge, and a soft blue tint for
+   code inside a sentence. Both read on the paper and soft tones alike. */
+.lesson pre {
+  padding: var(--space-m) var(--space-l);
+  background: var(--navy);
+  border-left: 3px solid var(--amber);
+  color: var(--code-on-dark);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.lesson pre code {
+  font-size: inherit;
+}
+
+.lesson :not(pre) > code {
+  padding: 0.08em 0.3em;
+  background: rgb(30 63 204 / 0.08);
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------------------
+   Boxes: goals, callouts, "Your turn", the Site story and sources. Each
+   keeps its own surface, so it reads the same on any tone.
+   -------------------------------------------------------------------------- */
+
+/* The label at the top of a box: an icon and a word, never colour alone. */
 .block-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin: 0 0 0.25rem;
-  font-size: 0.7rem;
-  font-weight: 400;
+  margin: 0 0 var(--space-xs);
+  font-size: 0.78rem;
+  font-weight: 700;
   line-height: 1.2;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--muted);
 }
 
 .icon {
@@ -1035,22 +1429,28 @@ button:disabled {
   height: 1.1rem;
 }
 
-/* Goals: a hairline band under the dek. The empty circle per goal is
-   ticked once the Final test is passed (a later ticket). */
+/* Goals: "By the end of this Lesson", with an empty circle per goal that
+   ticket 05 ticks once the Final test is passed. */
 .goals {
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  padding: 0.9rem 0 1rem;
+  padding: var(--space-l) var(--space-l) var(--space-l);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
+  box-shadow: var(--shadow-soft);
+}
+
+.goals .block-label {
+  color: var(--blue);
 }
 
 .goals-title {
-  margin: 0 0 var(--space-s);
-  font-size: 1.15rem;
+  margin: 0 0 var(--space-m);
+  font-size: var(--display-3);
 }
 
 .goals-list {
   display: grid;
-  gap: var(--space-xs);
+  gap: var(--space-s);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1061,17 +1461,17 @@ button:disabled {
   grid-template-columns: 1.5rem minmax(0, 1fr);
   gap: var(--space-s);
   align-items: start;
-  margin: 0;
   color: var(--ink);
+  font-size: 1.05rem;
   line-height: 1.5;
 }
 
 .goal-mark {
-  width: 1.35rem;
-  height: 1.35rem;
-  margin-top: 0.12rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.05rem;
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--blue);
   stroke-width: 2;
 }
 
@@ -1084,47 +1484,72 @@ button:disabled {
   stroke-dashoffset: 1;
 }
 
-/* Callouts: a 3px rule and breathing room, no card. The big idea is the
-   one remembered thing, set on wash. */
+/* Callouts. */
 .callout {
-  border-left: 3px solid var(--accent);
-  padding: 0.15rem 0 0.15rem 1rem;
-  margin: 1.5rem 0;
+  padding: var(--space-m) var(--space-l) var(--space-l);
+}
+
+.callout--tip {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+}
+
+.callout--tip .block-label {
+  color: var(--blue);
 }
 
 .callout--watch-out {
-  border-left-color: var(--bad);
+  background: var(--amber-soft);
+  border-left: 4px solid var(--amber);
+  color: var(--ink);
 }
 
 .callout--watch-out .block-label {
-  color: var(--bad);
+  color: var(--ink);
 }
 
 .callout--big-idea {
-  background: var(--wash);
-  border-radius: 0 4px 4px 0;
-  padding: 0.65rem 1rem;
+  padding: var(--space-l) var(--space-xl) var(--space-xl);
+  background: var(--navy);
+  color: var(--on-dark);
 }
 
 .callout--big-idea .block-label {
-  color: var(--accent);
-  font-weight: 600;
+  color: var(--amber);
 }
 
-.callout p:last-child {
-  margin-bottom: 0;
+.callout--big-idea .callout-body {
+  font-family: var(--font-heading);
+  font-size: var(--display-3);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
 }
 
-/* "Your turn": a hairline-framed exercise; each code block gets Copy. */
+.callout--big-idea :is(strong, em) {
+  color: var(--amber);
+}
+
+.callout--big-idea a {
+  color: var(--link-on-dark);
+}
+
+.callout--big-idea :not(pre) > code {
+  background: var(--navy-raised);
+  color: var(--on-dark);
+}
+
+/* "Your turn": a dashed blue box; each code block gets a Copy button. */
 .try {
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  padding: 1rem 1.1rem;
-  margin: 1.5rem 0;
+  padding: var(--space-l);
+  background: var(--bg);
+  border: 2px dashed var(--blue);
 }
 
 .try .block-label {
-  color: var(--good);
+  color: var(--blue);
 }
 
 /* The HTML between code blocks keeps its own spacing, as if unwrapped. */
@@ -1155,26 +1580,24 @@ button:disabled {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  min-height: 2.5rem;
   gap: 0.35em;
-  padding: 0.35rem 0.7rem;
-  border-color: var(--rule);
-  background: var(--paper);
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 400;
+  padding: 0.35em 0.8em;
+  border-color: rgb(255 255 255 / 0.3);
+  background: var(--navy-raised);
+  color: var(--on-dark);
+  font-size: 0.78rem;
 }
 
 .copy-button:hover {
-  background: var(--paper);
-  border-color: var(--accent);
+  border-color: var(--on-dark);
+  background: var(--on-dark);
   color: var(--ink);
 }
 
 .copy-button[data-status="copied"] {
   border-color: var(--good);
-  background: var(--good-wash);
-  color: var(--good);
+  background: var(--good);
+  color: var(--on-dark);
 }
 
 .copy-button .icon {
@@ -1182,24 +1605,40 @@ button:disabled {
   height: 1em;
 }
 
-/* The Site story: the author's own experience, set apart by a rule. */
+/* The Site story: the author's own experience, set apart from the teaching
+   on a warm card with an amber rule. */
 .site-story {
-  border-left: 2px solid var(--rule);
-  padding-left: 1rem;
-  margin: 1.5rem 0;
+  padding: var(--space-l) var(--space-l) var(--space-l) var(--space-xl);
+  background: var(--warm);
+  border-left: 4px solid var(--amber);
+}
+
+.site-story .block-label {
+  color: var(--warm-label);
+}
+
+.site-story-body {
+  color: var(--text);
 }
 
 .site-story pre {
   white-space: pre-wrap;
 }
 
-/* Sources: a compact list in small type. */
+.site-story :is(th, td) {
+  background: var(--bg);
+}
+
+/* Sources: a compact list in small type. No motion. */
 .sources {
   padding-top: var(--space-m);
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.85rem;
-  margin: 2rem 0 0;
+  font-size: var(--text-sm);
+}
+
+.sources .block-label {
+  color: var(--muted);
 }
 
 .sources-list :is(ul, ol) {
@@ -1213,86 +1652,50 @@ button:disabled {
   margin: 0;
 }
 
-/* ==========================================================================
-   §10 SCENES — static figures in final state (every kind)
-   Families: scene-run, scene with scene-title and scene-frame, and
-   scene-steps with scene-step captions. Kinds: §10a chat, §10b
-   terminal, §10c flow, §10d files and §10e meter.
-   Invariant: STILLNESS — every kind renders complete, in-flow and at
-   full height. No rule here hides an item by step and nothing pins;
-   the data-step hooks stay for a future stepper. All colours are
-   tokens, so every Scene is dark-safe with no kind-specific dark rules.
-   ========================================================================== */
-
-.scene-run {
-  display: grid;
-  row-gap: var(--space-m);
-  margin: 1.5rem 0;
+.lesson-after {
+  padding-block: var(--space-xl) var(--space-2xl);
 }
 
+/* --------------------------------------------------------------------------
+   Scenes: a figure on the stage with its title bar, then a frame. Without
+   the stepper every item shows (the final state) and the frame grows to fit
+   them. Once the stepper pins the stage at a fixed height, a frame that
+   overflows scrolls, until ticket 04 shifts the content instead.
+   -------------------------------------------------------------------------- */
 .scene {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   margin: 0;
-  background: var(--wash);
-  border: 1px solid var(--rule);
-  border-radius: 4px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
   overflow: clip;
 }
 
 .scene-title {
   display: flex;
+  flex: none;
   align-items: center;
   gap: 0.6rem;
   padding: 0.55rem 0.9rem;
-  border-bottom: 1px solid var(--rule);
-  color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 600;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 700;
   line-height: 1.3;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
 }
 
 .scene-frame {
+  flex: 1 1 auto;
+  min-height: 0;
   padding: var(--space-m);
-  overflow-x: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
-/* The captions: one ruled row per step, explaining the whole picture. */
-.scene-steps {
-  display: grid;
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.scene-step {
-  display: grid;
-  grid-template-columns: 2rem minmax(0, 1fr);
-  gap: var(--space-s);
-  align-items: start;
-  margin: 0;
-  padding: 0.7rem 0;
-  border-top: 1px solid var(--rule);
-}
-
-.scene-step-num {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  font-weight: 500;
-  line-height: 1.6;
-  color: var(--muted);
-}
-
-.scene-step p {
-  margin: 0;
-  color: var(--ink);
-}
-
-/* §10a Scene kind — chat: chat-log, chat-msg (you and agent tones),
-   chat-avatar and chat-bubble. Kept inside §10; see the kind note
-   on the chat-log rule below for left and right placement. */
-/* chat: your messages on the right in ink, the agent's on the left. */
+/* chat: your messages on the right in blue, the agent's on the left. */
 .chat-log {
   display: flex;
   flex-direction: column;
@@ -1307,7 +1710,6 @@ button:disabled {
   align-items: flex-start;
   gap: 0.5rem;
   max-width: 92%;
-  margin: 0;
 }
 
 .chat-msg--you {
@@ -1326,21 +1728,19 @@ button:disabled {
   width: 1.9rem;
   height: 1.9rem;
   border-radius: 50%;
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  font-weight: 500;
+  font-size: 0.62rem;
+  font-weight: 700;
   line-height: 1;
 }
 
 .chat-msg--agent .chat-avatar {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--navy);
+  color: var(--amber);
 }
 
 .chat-msg--you .chat-avatar {
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  color: var(--accent);
+  background: var(--blue-soft);
+  color: var(--blue);
 }
 
 .chat-avatar .icon {
@@ -1356,46 +1756,51 @@ button:disabled {
 .chat-bubble {
   margin: 0;
   padding: 0.55rem 0.85rem;
-  border-radius: 0.9rem;
-  font-size: 0.92rem;
-  line-height: 1.5;
+  border-radius: 1.1rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
   overflow-wrap: anywhere;
 }
 
 .chat-msg--agent .chat-bubble {
-  background: var(--paper);
-  border: 1px solid var(--rule);
+  background: var(--bg-soft);
   border-bottom-left-radius: 0.3rem;
   color: var(--ink);
 }
 
 .chat-msg--you .chat-bubble {
-  background: var(--ink);
+  background: var(--blue);
   border-bottom-right-radius: 0.3rem;
-  color: var(--paper);
+  color: var(--on-dark);
 }
 
 .chat-msg--you .chat-bubble :not(pre) > code {
-  background: transparent;
-  color: var(--paper);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  background: rgb(255 255 255 / 0.18);
+  color: var(--on-dark);
 }
 
 .chat-msg--you .chat-bubble strong {
   color: inherit;
 }
 
-/* The newest message wears a 2px accent ring. */
+/* The newest message wears a 2px blue ring. */
 .chat-msg[data-new] .chat-bubble {
-  box-shadow: 0 0 0 2px var(--wash), 0 0 0 4px var(--accent);
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--blue);
 }
 
-/* §10b Scene kind — terminal: scene-dots, term-screen, term-line,
-   term-cmd, term-prompt, term-out and term-cursor. A quiet mono
-   panel on wash: commands in ink after an accent prompt, output in
-   muted. The three dots are decoration. The block cursor after the
-   newest command does not blink (STILLNESS). */
+/* terminal: a navy window, commands after an amber prompt, output below. */
+.scene--terminal {
+  background: var(--term-bg);
+  border-color: var(--term-bg);
+  color: var(--term-text);
+}
+
+.scene--terminal .scene-title {
+  background: var(--term-bar);
+  border-bottom-color: rgb(255 255 255 / 0.08);
+  color: var(--on-dark-muted);
+}
+
 .scene-dots {
   display: inline-flex;
   gap: 0.35rem;
@@ -1406,13 +1811,24 @@ button:disabled {
   width: 0.6rem;
   height: 0.6rem;
   border-radius: 50%;
-  background: var(--rule);
-  border: 1px solid var(--muted);
+  background: var(--term-dot-red);
+}
+
+.scene-dots span:nth-child(2) {
+  background: var(--amber);
+}
+
+.scene-dots span:nth-child(3) {
+  background: var(--term-dot-green);
+}
+
+.scene--terminal .scene-frame {
+  padding: var(--space-m) var(--space-l);
 }
 
 .term-screen {
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   line-height: 1.6;
 }
 
@@ -1425,8 +1841,8 @@ button:disabled {
 .term-cmd {
   display: flex;
   gap: 0.7ch;
-  color: var(--ink);
-  font-weight: 500;
+  color: var(--on-dark);
+  font-weight: 600;
 }
 
 .term-cmd:not(:first-child) {
@@ -1435,7 +1851,7 @@ button:disabled {
 
 .term-prompt {
   flex: none;
-  color: var(--accent);
+  color: var(--amber);
 }
 
 .term-line :is(kbd, samp),
@@ -1444,7 +1860,7 @@ samp.term-line {
 }
 
 .term-out {
-  color: var(--muted);
+  color: var(--term-output);
 }
 
 /* A block cursor after the newest command. It doesn't blink. */
@@ -1454,21 +1870,19 @@ samp.term-line {
   align-self: center;
   width: 0.55em;
   height: 1.15em;
-  background: var(--accent);
+  background: var(--amber);
 }
 
 .term-cmd[data-cursor] .term-cursor {
   display: inline-block;
 }
 
-/* §10c Scene kind — flow: flow-map, flow-stop, flow-edge, flow-node
-   with flow-node-text, flow-when, flow-label and flow-mark, plus the
-   branched and side variants. Stages run down the column; each node
-   sits under a 2px rule (ink once reached, accent for the current
-   one, hairline while idle) with its when-label in small caps. A
-   side node hangs to the right of the node before it on a dashed
-   branch. State is never colour alone: reached nodes are ticked and
-   the current one carries aria-current in the markup. */
+/* flow: nodes stacked top to bottom, joined by edges. A side node hangs to
+   the right of the node before it, on a dashed branch. Reached nodes are
+   ticked, the current one is solid blue, the rest are outlines. */
+/* Centred with auto margins, which only take up spare room: when the
+   picture is taller than its frame it overflows downwards, where the frame
+   can scroll to it, never off the top. */
 .scene--flow .scene-frame,
 .scene--meter .scene-frame {
   display: grid;
@@ -1476,20 +1890,19 @@ samp.term-line {
 
 .flow-map {
   width: 100%;
-  max-width: 26rem;
+  max-width: 24rem;
   margin: auto;
   padding: 0;
   list-style: none;
 }
 
 .flow-map--branched {
-  max-width: 38rem;
+  max-width: 36rem;
 }
 
 .flow-stop {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  margin: 0;
 }
 
 .flow-map--branched .flow-stop {
@@ -1522,14 +1935,14 @@ samp.term-line {
   display: grid;
   grid-template-columns: 1.5rem minmax(0, 1fr);
   align-items: center;
-  margin: 0 0 0 -1.5rem;
+  margin-left: -1.5rem;
 }
 
 .flow-edge {
   display: block;
   justify-self: center;
   width: 12px;
-  height: 1.25rem;
+  height: 1.5rem;
 }
 
 .flow-edge--side {
@@ -1546,13 +1959,13 @@ samp.term-line {
 }
 
 .flow-edge line {
-  stroke: var(--muted);
+  stroke: var(--line-strong);
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
 }
 
 .flow-edge[data-drawn] line {
-  stroke: var(--accent);
+  stroke: var(--blue);
 }
 
 /* The branch is dashed (its dashes are in path lengths: pathLength="1"). */
@@ -1562,49 +1975,20 @@ samp.term-line {
 
 .flow-node {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.6rem;
-  padding: 0.6rem 0 0.45rem;
-  border-top: 2px solid var(--rule);
+  padding: 0.6rem 0.85rem;
+  background: var(--bg);
+  border: 2px solid var(--line-strong);
   color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.35;
-}
-
-.flow-node[data-state="done"] {
-  border-top-color: var(--ink);
-  color: var(--ink);
-}
-
-.flow-node[data-state="current"] {
-  border-top-color: var(--accent);
-  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .flow-node--side {
-  font-size: 0.88rem;
-}
-
-.flow-node-text {
-  display: block;
-  min-width: 0;
-}
-
-.flow-when {
-  display: block;
-  font-size: 0.7rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.flow-node[data-state="current"] .flow-when {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.flow-label {
-  font-weight: 600;
+  border-style: dashed;
+  font-size: 0.84rem;
 }
 
 .flow-mark {
@@ -1613,10 +1997,8 @@ samp.term-line {
   place-items: center;
   width: 1.35rem;
   height: 1.35rem;
-  margin-top: 0.1rem;
-  border: 1.5px solid var(--muted);
+  border: 2px solid var(--line-strong);
   border-radius: 50%;
-  color: var(--paper);
 }
 
 .flow-mark .icon {
@@ -1626,31 +2008,42 @@ samp.term-line {
   opacity: 0;
 }
 
+.flow-node[data-state="done"] {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+  color: var(--ink);
+}
+
 .flow-node[data-state="done"] .flow-mark {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--on-dark);
 }
 
 .flow-node[data-state="done"] .flow-mark .icon {
   opacity: 1;
 }
 
-.flow-node[data-state="current"] .flow-mark {
-  border-color: var(--accent);
-  background: radial-gradient(circle, var(--accent) 0 32%, transparent 36%);
+.flow-node[data-state="current"] {
+  background: var(--blue);
+  border-color: var(--blue);
+  box-shadow: 0 10px 28px rgb(30 63 204 / 0.32);
+  color: var(--on-dark);
+  transform: scale(1.04);
 }
 
-/* §10d Scene kind — files: file-list, file-row, file-icon, file-path
-   (file-dir and file-name) and file-badge in added and changed tones.
-   A ruled tree of rows; the badge carries added or changed in words,
-   with a matching rule at the left. Only the badge matching the row
-   state is shown — a wording toggle, not a reveal (STILLNESS). */
+.flow-node[data-state="current"] .flow-mark {
+  border-color: var(--on-dark);
+  background: radial-gradient(circle, var(--on-dark) 0 32%, transparent 36%);
+}
+
+/* files: a tree of rows; green for added, amber behind ink for changed. */
 .file-list {
   margin: 0;
   padding: 0;
   list-style: none;
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: 0.84rem;
 }
 
 .file-row {
@@ -1658,9 +2051,8 @@ samp.term-line {
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 0.6rem;
   align-items: center;
-  margin: 0;
   padding: 0.5rem 0.6rem;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--line);
   border-left: 3px solid transparent;
 }
 
@@ -1669,7 +2061,8 @@ samp.term-line {
 }
 
 .file-row[data-change="changed"] {
-  border-left-color: var(--accent);
+  background: var(--amber-soft);
+  border-left-color: var(--amber);
 }
 
 .file-icon {
@@ -1686,27 +2079,26 @@ samp.term-line {
 
 .file-name {
   color: var(--ink);
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .file-badge {
   padding: 0.12rem 0.45rem;
-  border-radius: 3px;
-  font-family: var(--serif);
+  font-family: var(--font-body);
   font-size: 0.68rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .file-badge--added {
-  background: var(--good-wash);
+  background: var(--good-soft);
   color: var(--good);
 }
 
 .file-badge--changed {
-  background: var(--paper);
-  color: var(--accent);
+  background: var(--amber);
+  color: var(--ink);
 }
 
 .file-row[data-change="added"] .file-badge--changed,
@@ -1714,17 +2106,12 @@ samp.term-line {
   display: none;
 }
 
-/* §10e Scene kind — meter: meter, meter-track, meter-region in smart
-   and dumb tones, meter-gauge, meter-fill, meter-notch, meter-zone
-   and meter-readings with meter-reading and meter-value. A horizontal
-   gauge driven by the inline scene props (zone, fill, at — see TOKEN
-   GLOSSARY). Earlier readings leave a notch; past the zone marker
-   the fill takes the bad token and its word tag appears. */
+/* meter: a horizontal gauge. Earlier readings leave a notch; past the zone
+   marker the fill turns amber and a "Dumb zone" tag appears. */
 .meter {
   display: grid;
   gap: var(--space-l);
   margin-block: auto;
-  width: 100%;
 }
 
 .meter-track {
@@ -1736,7 +2123,7 @@ samp.term-line {
   position: absolute;
   top: 0;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1753,9 +2140,8 @@ samp.term-line {
   display: none;
   left: calc(var(--zone) * 100% + 0.5rem);
   padding: 0.1rem 0.4rem;
-  border-radius: 3px;
-  background: var(--bad-wash);
-  color: var(--bad);
+  background: var(--amber);
+  color: var(--ink);
 }
 
 .scene[data-zone="dumb"] .meter-region--dumb {
@@ -1765,22 +2151,21 @@ samp.term-line {
 .meter-gauge {
   position: relative;
   height: 2.75rem;
-  background: var(--paper);
-  border: 1px solid var(--muted);
-  border-radius: 4px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line-strong);
   overflow: clip;
 }
 
 .meter-fill {
   position: absolute;
   inset: 0;
-  background: var(--accent);
+  background: var(--blue);
   transform: scaleX(var(--fill));
   transform-origin: left center;
 }
 
 .scene[data-zone="dumb"] .meter-fill {
-  background: var(--bad);
+  background: var(--amber);
 }
 
 .meter-notch {
@@ -1790,7 +2175,7 @@ samp.term-line {
   left: calc(var(--at) * 100%);
   width: 2px;
   margin-left: -1px;
-  background: var(--muted);
+  background: rgb(13 21 38 / 0.35);
 }
 
 .meter-notch[data-current] {
@@ -1821,13 +2206,12 @@ samp.term-line {
   display: flex;
   align-items: baseline;
   gap: 0.6rem;
-  margin: 0;
 }
 
 .meter-value {
   min-width: 3.2ch;
-  font-family: var(--mono);
-  font-weight: 500;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .meter-reading[data-current] {
@@ -1837,28 +2221,24 @@ samp.term-line {
 }
 
 .meter-reading[data-current] .meter-value {
-  font-weight: 600;
+  font-family: var(--font-heading);
+  font-size: var(--display-3);
+  font-weight: 800;
+  line-height: 1;
 }
 
-/* ==========================================================================
-   §11 QUESTIONS — Checkpoints inside Sections, then the Final test
-   Families: question with question-kicker, question-count,
-   question-fields, question-prompt and question-number; options and
-   option with its native radio; and the question-answer disclosure
-   with question-answer-list and question-answer-option.
-   Each question is a fieldset of native radios. Option states: idle
-   is a hairline on paper, hover takes the accent border, and picked
-   takes the accent border on wash.
-   Invariant: STATE IN WORDS — right and wrong are only ever told in
-   the answer box (in words), never by colour on the options.
-   ========================================================================== */
-
+/* --------------------------------------------------------------------------
+   Questions: Checkpoints in the text column and the Final test's cards.
+   Each is a fieldset of native radios styled as cards. Ticket 05 adds the
+   checked, right/wrong and crowd states.
+   -------------------------------------------------------------------------- */
 .question {
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  padding: 1rem 1.1rem;
-  margin: 1.5rem 0;
-  color: var(--ink);
+  padding: var(--space-l);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
+  box-shadow: var(--shadow-soft);
+  color: var(--text);
 }
 
 .question-kicker {
@@ -1866,17 +2246,16 @@ samp.term-line {
   align-items: center;
   gap: 0.5rem;
   margin: 0 0 var(--space-s);
-  color: var(--accent);
-  font-size: 0.72rem;
-  font-weight: 600;
+  color: var(--blue);
+  font-size: 0.8rem;
+  font-weight: 700;
   line-height: 1.2;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .question-count {
   color: var(--muted);
-  font-weight: 400;
 }
 
 .question-fields {
@@ -1893,25 +2272,28 @@ samp.term-line {
   margin: 0 0 var(--space-m);
   padding: 0;
   color: var(--ink);
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.4;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 750;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
 }
 
 .question-number {
   display: block;
   margin-bottom: 0.4rem;
-  color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 400;
-  letter-spacing: 0.09em;
+  color: var(--blue);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .options {
   display: grid;
   clear: both;
-  gap: 0.4rem;
+  gap: var(--space-xs);
 }
 
 .option {
@@ -1919,31 +2301,27 @@ samp.term-line {
   grid-template-columns: auto minmax(0, 1fr);
   gap: var(--space-s);
   align-items: start;
-  min-height: 48px;
-  padding: 0.65rem 0.85rem;
-  background: transparent;
-  /* Boundary in --muted for 3:1 non-text contrast (see §4 field note). */
-  border: 1px solid var(--muted);
-  border-radius: 4px;
+  padding: 0.8rem 1rem;
+  background: var(--bg);
+  border: 1.5px solid var(--line-strong);
   color: var(--ink);
-  font-size: 0.95rem;
   cursor: pointer;
-  transition: border-color 120ms ease, background-color 120ms ease;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
 }
 
 .option:hover {
-  border-color: var(--accent);
+  border-color: var(--blue);
 }
 
 .option:has(:checked) {
-  background: var(--wash);
-  border-color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent);
+  background: var(--blue-soft);
+  border-color: var(--blue);
+  box-shadow: inset 0 0 0 1px var(--blue);
 }
 
-/* The ring goes on the whole option, not the small circle. */
+/* The ring goes on the whole card, not the small circle. */
 .option:has(:focus-visible) {
-  outline: 2px solid var(--accent);
+  outline: 3px solid var(--amber);
   outline-offset: 2px;
 }
 
@@ -1954,9 +2332,9 @@ samp.term-line {
   width: 1.25rem;
   height: 1.25rem;
   margin: 0.15rem 0 0;
-  border: 1.5px solid var(--muted);
+  border: 2px solid var(--muted);
   border-radius: 50%;
-  background: var(--paper);
+  background: var(--bg);
   cursor: pointer;
 }
 
@@ -1965,12 +2343,13 @@ samp.term-line {
   width: 0.6rem;
   height: 0.6rem;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--blue);
   transform: scale(0);
+  transition: transform 0.15s;
 }
 
 .option input[type="radio"]:checked {
-  border-color: var(--accent);
+  border-color: var(--blue);
 }
 
 .option input[type="radio"]:checked::before {
@@ -1986,16 +2365,29 @@ samp.term-line {
   line-height: 1.5;
 }
 
+/* Forced-colour modes (Windows High Contrast) replace backgrounds, which
+   would hide the dot and the picked card's tint: keep the dot, and outline
+   the picked card. */
+@media (forced-colors: active) {
+  .option input[type="radio"]::before {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+
+  .option:has(:checked) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
+
 .question-answer {
   margin-top: var(--space-m);
   padding-top: var(--space-s);
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--line);
 }
 
 .question-answer summary {
-  min-height: 48px;
-  padding: 0.7rem 0;
-  color: var(--accent);
+  color: var(--blue);
   font-weight: 600;
   cursor: pointer;
 }
@@ -2014,46 +2406,65 @@ samp.term-line {
 
 .question-answer-option {
   color: var(--ink);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .question-answer-list li[data-correct] .question-answer-option {
   color: var(--good);
 }
 
-/* §11b Final test — final-test, final-test-inner, final-test-head,
-   final-test-lead and final-test-questions. The same question rules
-   as §11 apply unchanged; this sub-area only frames them as one
-   ruled end-of-Lesson section in the same column (MEASURE). */
-/* The Final test: a ruled section in the same column — a 2px ink rule,
-   then its questions in turn. No band, no tone shift. */
+/* --------------------------------------------------------------------------
+   The Final test: a navy band of its own, with light question cards. Its
+   text stays in the left column, like the rest of the Lesson.
+   -------------------------------------------------------------------------- */
 .final-test {
   margin-top: var(--space-xl);
-  border-top: 2px solid var(--ink);
-  padding-top: var(--space-l);
+  padding-block: var(--space-2xl);
+  background: var(--navy);
+  color: var(--on-dark-muted);
 }
 
 .final-test-inner {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-l);
 }
 
 .final-test-head h2 {
   margin: 0;
+  color: var(--on-dark);
+  font-size: var(--display-2);
 }
 
 .final-test-head .eyebrow {
   margin: 0 0 var(--space-xs);
+  color: var(--amber);
 }
 
 .final-test-lead {
+  max-width: 34rem;
   margin: var(--space-s) 0 0;
-  color: var(--muted);
-  font-style: italic;
+  color: var(--on-dark);
+  font-size: var(--text-lg);
 }
 
 .final-test-main > :not(.final-test-questions) {
   margin-bottom: var(--space-l);
+}
+
+/* Blocks written before the questions: plain prose turns light on navy,
+   while boxes keep their own light surface and dark text. */
+.final-test-main > .prose,
+.final-test-main > .prose :is(strong, blockquote, h3) {
+  color: var(--on-dark);
+}
+
+.final-test-main > .prose a {
+  color: var(--link-on-dark);
+}
+
+.final-test-main > :is(.callout--tip, .callout--watch-out, .try, .site-story) {
+  color: var(--text);
 }
 
 .final-test-questions {
@@ -2064,28 +2475,50 @@ samp.term-line {
   list-style: none;
 }
 
-.final-test-questions .question {
-  margin: 0;
-}
-
-/* ==========================================================================
-   §12 DISCUSSION — comments, then Previous and Next navigation
-   Families: discussion, comment-form with form-error, comment-list,
-   comment and comment-meta; the prev-next rules close the section.
-   Invariant: MEASURE — navigation stays in the one reading column
-   as ruled text links (Previous above Next), never a card row.
-   ========================================================================== */
-
-.discussion {
-  margin-top: var(--space-xl);
-  border-top: 1px solid var(--rule);
-  padding-top: var(--space-l);
+/* --------------------------------------------------------------------------
+   Discussion: a full-width band after the Final test. Not sticky.
+   -------------------------------------------------------------------------- */
+.discussion-band {
+  padding-block: var(--space-2xl);
+  background: var(--bg-soft);
+  border-top: 1px solid var(--line);
 }
 
 .discussion h2 {
   margin: 0 0 var(--space-xs);
+  font-size: var(--display-3);
 }
 
+/* Previous/Next: two photo cards side by side at text width, Next always on
+   the right. One per row on phones. */
+.prev-next {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-l);
+  padding-block: var(--space-2xl);
+}
+
+.prev-next .next {
+  grid-column: 2;
+}
+
+@media (min-width: 1080px) {
+  .prev-next {
+    grid-template-columns: repeat(2, minmax(0, calc((var(--text-col) - var(--space-l)) / 2)));
+  }
+}
+
+@media (max-width: 640px) {
+  .prev-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prev-next .next {
+    grid-column: auto;
+  }
+}
+
+/* Discussion: comment form and list. */
 .comment-form {
   display: grid;
   gap: 0.6rem;
@@ -2096,8 +2529,13 @@ samp.term-line {
   justify-self: start;
 }
 
+.comment-form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .form-error {
-  color: var(--bad);
+  color: var(--error);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -2109,9 +2547,10 @@ samp.term-line {
 }
 
 .comment {
-  border-top: 1px solid var(--rule);
-  padding: 0.8rem 0;
-  margin: 0;
+  background: var(--bg);
+  border-left: 3px solid var(--blue);
+  padding: var(--space-s) var(--space-m);
+  margin-bottom: var(--space-s);
 }
 
 .comment p {
@@ -2121,139 +2560,78 @@ samp.term-line {
 }
 
 .comment-meta {
-  font-size: 0.85rem;
-  color: var(--muted);
+  font-size: 0.9rem;
 }
 
-.comment-meta strong {
-  color: var(--ink);
-}
-
-/* §12 sub-area — Previous and Next (prev-next): ruled text links in
-   the one reading column, Previous above Next, closed by a final
-   rule — never a two-column card row. */
-/* Previous/Next: ruled text links in the one reading column, Previous
-   above Next, closed by a final rule — never a two-column card row. */
-.prev-next {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  margin-top: var(--space-xl);
-  border-bottom: 1px solid var(--rule);
-}
-
-/* ==========================================================================
-   §13 ACCESSIBILITY QUERIES — forced colours, then reduced motion
-   Families: forced-colours overrides for the radio dot, the picked
-   option, the meter fill, the mark wash and the flow tick; then the
-   reduced-motion override that retires all transitions.
-   Invariant: STILLNESS is the default (FILE MAP), so reduced motion
-   only retires the small 120ms colour transitions; forced colours
-   keeps every signal visible in system colours (STATE IN WORDS).
-   ========================================================================== */
-/* Forced-colour modes (Windows High Contrast) replace backgrounds, which
-   would hide the radio dot, the picked option's tint, the meter fill and
-   the mark wash: keep each signal with system colours instead. */
-@media (forced-colors: active) {
-  .option input[type="radio"]::before {
-    forced-color-adjust: none;
-    background: CanvasText;
+/* Scroll motion. Both effects only run when motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Reveal: reveal.tsx hides what's still below the screen, then shows each
+     item once as it arrives. It fades in and rises a little; items arriving
+     together follow each other by 80ms (--reveal-i is their place in line).
+     Without JavaScript no item is ever marked hidden, so all of it shows. */
+  [data-reveal-state="hidden"] {
+    opacity: 0;
+    transform: translateY(1.5rem);
   }
 
-  .option:has(:checked) {
-    outline: 2px solid Highlight;
-    outline-offset: -2px;
+  [data-reveal-state="shown"] {
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: calc(var(--reveal-i, 0) * 80ms);
   }
 
-  .meter-fill {
-    forced-color-adjust: none;
-    background: Highlight;
-  }
+  /* Parallax: a band's photo moves slower than the page, in browsers with
+     scroll-driven animations. Elsewhere it simply stays still. Only the
+     photo's box moves; the band's overflow: hidden keeps it from showing
+     past the edges. The animation-timeline must come after the animation
+     shorthand, which resets it. The timeline is the band's own trip
+     across the screen: the photo can't use view() itself, because the band's
+     overflow: hidden makes the band the photo's scroller. */
+  @supports (animation-timeline: view()) {
+    .photo-band {
+      view-timeline: --band block;
+    }
 
-  .prose mark,
-  .scene-step mark {
-    forced-color-adjust: none;
-    background: Mark;
-    color: MarkText;
-  }
+    /* A top band: as it scrolls away, its photo drifts down behind it. */
+    [data-hero] .photo-band-photo {
+      animation: band-drift linear both;
+      animation-timeline: --band;
+      animation-range: exit 0% exit 100%;
+    }
 
-  .flow-node[data-state="done"] .flow-mark {
-    forced-color-adjust: none;
-    background: Highlight;
-    color: HighlightText;
+    /* A band further down: a taller photo box glides through it from top
+       to bottom while the band crosses the screen. */
+    .home-cta .photo-band-photo {
+      inset: -12% 0;
+      animation: band-glide linear both;
+      animation-timeline: --band;
+      animation-range: cover 0% cover 100%;
+    }
   }
 }
 
-/* Reduce motion: Press is still to begin with; this keeps even the small
-   hover transitions from running. */
+@keyframes band-drift {
+  to {
+    transform: translateY(30%);
+  }
+}
+
+@keyframes band-glide {
+  from {
+    transform: translateY(-9%);
+  }
+  to {
+    transform: translateY(9%);
+  }
+}
+
+/* Reduce motion: nothing slides or fades. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     transition: none !important;
     animation: none !important;
-  }
-}
-
-/* ==========================================================================
-   §14 PRINT — always light, no chrome
-   Families: the print token swap on the root rule, the released
-   measure, hidden header, footer, navigation and form chrome, and
-   page-break guards for scenes, questions, boxes and headings.
-   Invariant: print never follows the dark scheme; it re-declares
-   the colour tokens in black on white. This and §13 are the only
-   sanctioned exceptions to TOKEN DISCIPLINE (FILE MAP).
-   ========================================================================== */
-
-@media print {
-  :root {
-    color-scheme: light;
-    --paper: #fff;
-    --ink: #000;
-    --muted: #444;
-    --rule: #bbb;
-    --wash: #f1f1f1;
-    --accent: #000;
-    --good: #000;
-    --bad: #000;
-    --good-wash: #fff;
-    --bad-wash: #fff;
-  }
-
-  html {
-    font-size: 10.5pt;
-  }
-
-  .measure {
-    max-width: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .site-header,
-  .site-footer,
-  .prev-next,
-  .home-start,
-  .copy-button,
-  .comment-form {
-    display: none;
-  }
-
-  .scene,
-  .question,
-  .callout,
-  .try,
-  .goals,
-  pre,
-  table {
-    break-inside: avoid;
-  }
-
-  h2,
-  h3 {
-    break-after: avoid;
-  }
-
-  a {
-    color: inherit;
   }
 }

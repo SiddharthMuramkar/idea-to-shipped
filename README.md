@@ -18,6 +18,10 @@
 
 [**Read the course →**](https://idea-to-shipped.vercel.app)
 
+<br/>
+
+<a href="https://idea-to-shipped.vercel.app/learn/grilling"><img src="docs/images/lesson-page.png" alt="The Grilling Lesson page: a numbered Section with its Scene beside the text" width="860"/></a>
+
 </div>
 
 ---
@@ -77,7 +81,7 @@ This is my first full-stack app that actually made it to production. Everything 
 ## Features
 
 - **Lessons are Markdown files.** They live in `content/lessons/` and are built into static pages at deploy time.
-- **Typed Lesson blocks.** A rewritten Lesson has goals, Scenes (small pictures, static in their final state, every step visible at once), Checkpoints and a Final test, each question with its answer one click away.
+- **Typed Lesson blocks.** A rewritten Lesson has goals, Scenes (small pictures that build up step by step), Checkpoints and a Final test, each question with its answer one click away.
 - **Comments on every Lesson.** Newest first, with an optional name. They're stored in Postgres.
 - **A real REST API.** You can `curl` it, read it, and follow one request through every layer.
 - **One database branch per environment.** Local, test, every PR preview and production each get their own Neon branch, so test data never reaches production.
@@ -215,6 +219,9 @@ title: Grilling
 slug: grilling
 order: 1
 part: 2
+image: /photos/grilling.jpg
+imageAlt: A woman in glasses takes notes while questioning a man across an office desk.
+imageCredit: Vitaly Gariev
 ---
 ```
 
@@ -224,6 +231,7 @@ part: 2
 | `slug` | Its permanent id, used in its URL (`/learn/grilling`) |
 | `order` | Its position in the course; must match `NN` |
 | `part` | Its Part: `1` Foundations, `2` The main flow, `3` When things go wrong, `4` Level up |
+| `image`, `imageAlt`, `imageCredit` | Its photo under `public/`, a description for screen readers, and the photographer's name |
 
 Any other key is an error, and so is a slug or `order` that another Lesson already uses. The page title and position come from the header, not the filename.
 
@@ -232,7 +240,7 @@ Any other key is an error, and so is a slug or `order` that another Lesson alrea
 | Block | What it makes |
 |---|---|
 | `goals` | The 3–4 things a Visitor will be able to do, before the first `##` |
-| `scene chat` / `terminal` / `flow` / `files` / `meter` | A Scene: a small picture in-flow in the text, shown complete with its steps as numbered captions. At most one per Section (never in the intro) |
+| `scene chat` / `terminal` / `flow` / `files` / `meter` | A Scene: a small picture beside the text, with its steps as numbered captions. At most one per Section (never in the intro) |
 | `checkpoint <id>` | One question in the text, with its answer and per-option feedback under "Show the answer". Its prompt is one paragraph; orderings go in the options |
 | `test <id>` | One Final test question. They sit together at the end, each with its own answer box |
 | `callout tip` / `watch-out` / `big-idea` | A highlighted box |
@@ -276,11 +284,10 @@ The reasons behind the architecture are written down as ADRs:
 5. [Answers reference questions by permanent ids, with no foreign key](docs/adr/0005-answers-reference-questions-by-permanent-id.md) (not built yet)
 6. [Visitors are a random cookie ID, and Answers are graded in the browser, then re-graded on the server](docs/adr/0006-anonymous-visitor-cookie-and-server-regrading.md) (not built yet)
 7. [Lesson blocks are typed fenced Markdown, not MDX, and scroll effects are CSS plus IntersectionObserver, not an animation library](docs/adr/0007-typed-markdown-blocks-and-css-scroll-effects.md) (Scene stepping not built yet)
-8. [The site is presented as Press, an editorial journal on its own paper, and Lessons carry no photos](docs/adr/0008-press-editorial-journal-no-photos.md)
 
 ## What's not in v1
 
-Some things were left out on purpose: accounts, editing, deleting or moderating Comments, spam protection, replies, search, and a custom domain.
+Some things were left out on purpose: accounts, editing, deleting or moderating Comments, spam protection, replies, dark mode, search, and a custom domain.
 
 ## Credits
 

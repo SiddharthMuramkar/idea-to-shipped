@@ -3,6 +3,9 @@ title: Wayfinder
 slug: wayfinder
 order: 18
 part: 4
+image: /photos/wayfinder.jpg
+imageAlt: A lone person walks along a forest trail into thick fog.
+imageCredit: Dominik Chelstowski
 ---
 
 Some ideas are too big to plan in one sitting. Instead of guessing the route, chart a map of the decisions and clear them one session at a time.

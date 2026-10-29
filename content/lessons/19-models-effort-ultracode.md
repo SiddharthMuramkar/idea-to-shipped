@@ -3,6 +3,9 @@ title: Models, effort & ultracode
 slug: models-effort-ultracode
 order: 19
 part: 4
+image: /photos/models-effort-ultracode.jpg
+imageAlt: A black-and-white close-up of a jet engine's fan blades spiralling into the centre.
+imageCredit: Joao
 ---
 
 Claude Code has four dials that decide how much brain, time and money go into each reply. Turning them all up rarely helps; here's how to set each one, and when to leave it alone.

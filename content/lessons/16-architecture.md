@@ -3,6 +3,9 @@ title: Architecture
 slug: architecture
 order: 16
 part: 4
+image: /photos/architecture.jpg
+imageAlt: A white cable-stayed bridge pylon with fanned steel cables against a deep blue sky.
+imageCredit: Daniele Bissoli
 ---
 
 Agents write code fast, and fast code gets messy fast. Learn the words for judging a codebase's shape, and a Skill that finds where it's getting hard to change.

@@ -2,6 +2,9 @@
 title: questions
 slug: questions
 order: 1
+image: /photos/x.jpg
+imageAlt: A photo.
+imageCredit: Ada Lens
 ---
 
 ## Why plans fail

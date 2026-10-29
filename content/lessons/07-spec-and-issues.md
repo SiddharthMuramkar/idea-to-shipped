@@ -3,6 +3,9 @@ title: Spec + tickets
 slug: spec-and-issues
 order: 7
 part: 2
+image: /photos/spec-and-issues.jpg
+imageAlt: A person drafts on a large sheet with a scale ruler and a rolled blueprint on a wooden table.
+imageCredit: Daniel McCullough
 ---
 
 When a build is too big for one sitting with your coding agent, write what you agreed into a spec (one document saying where you're going) and a few thin tickets (small tasks that get you there) before you start a fresh conversation.

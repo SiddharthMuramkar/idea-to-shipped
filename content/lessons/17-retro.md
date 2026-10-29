@@ -3,6 +3,9 @@ title: Retro
 slug: retro
 order: 17
 part: 4
+image: /photos/retro.jpg
+imageAlt: A person in a green sweater looks at a blue wall covered in yellow sticky notes.
+imageCredit: Per Lööv
 ---
 
 Every session leaves clues about what slowed the agent down. `/retro` reads them and proposes a fix in the repo for each one, so the next session doesn't trip over the same thing.

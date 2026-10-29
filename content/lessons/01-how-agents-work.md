@@ -3,6 +3,9 @@ title: How coding agents work
 slug: how-agents-work
 order: 1
 part: 1
+image: /photos/how-agents-work.jpg
+imageAlt: Two robotic arms with grippers pick items out of trays on an automated workstation.
+imageCredit: Franck V.
 ---
 
 Know what really happens between the sentence you type and the code that appears, and which controls keep you in charge of it.

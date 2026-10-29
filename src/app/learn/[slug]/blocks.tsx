@@ -5,15 +5,6 @@ import { Icon, type IconName } from "./icons";
 import { Checkpoint } from "./question";
 import { SceneRun } from "./scene";
 
-// Block dispatch lives in BlockView at the bottom of this file: one
-// `case` per Block type (src/lessons/blocks.ts), each rendering in place
-// in the single reading column — BlockView never reorders, wraps in a
-// column, or defers a block. The switch is exhaustive with no default:
-// adding a Block type means adding a case here, and any type that needs
-// Section-level layout (like finalTest) must ALSO be intercepted in
-// section.tsx. Keep this file presentational: parsing/validation stays
-// in src/lessons/.
-//
 // What every block on a Lesson page may need to know about the page.
 export type LessonContext = {
   slug: string;
@@ -83,12 +74,12 @@ function splitCodeBlocks(html: string): Chunk[] {
 function Goals({ itemsHtml, slug }: { itemsHtml: string[]; slug: string }) {
   const headingId = `${slug}--goals`;
   return (
-    <section className="goals" aria-labelledby={headingId} data-goals>
+    <section className="goals" aria-labelledby={headingId} data-goals data-reveal-children>
       <BlockLabel icon="check">Your goals</BlockLabel>
       <h2 id={headingId} className="goals-title">
         By the end of this Lesson
       </h2>
-      <ul className="goals-list">
+      <ul className="goals-list" data-reveal-children>
         {itemsHtml.map((html, i) => (
           <li key={i} className="goal">
             {/* An empty circle now; ticket 05 draws the tick once the Final
@@ -108,7 +99,7 @@ function Goals({ itemsHtml, slug }: { itemsHtml: string[]; slug: string }) {
 function Callout({ tone, html }: { tone: CalloutTone; html: string }) {
   const { label, icon } = CALLOUTS[tone];
   return (
-    <aside className={`callout callout--${tone}`}>
+    <aside className={`callout callout--${tone}`} data-reveal>
       <BlockLabel icon={icon}>{label}</BlockLabel>
       <div className="prose callout-body" dangerouslySetInnerHTML={{ __html: html }} />
     </aside>
@@ -118,7 +109,7 @@ function Callout({ tone, html }: { tone: CalloutTone; html: string }) {
 // "Your turn": an exercise, with a Copy button on each of its code blocks.
 function Try({ html }: { html: string }) {
   return (
-    <div className="try">
+    <div className="try" data-reveal>
       <BlockLabel icon="try">Your turn</BlockLabel>
       <div className="prose try-body">
         {splitCodeBlocks(html).map((chunk, i) =>
@@ -138,7 +129,7 @@ function Try({ html }: { html: string }) {
 
 function SiteStory({ html }: { html: string }) {
   return (
-    <aside className="site-story">
+    <aside className="site-story" data-reveal>
       <BlockLabel icon="story">How I used it building this site</BlockLabel>
       <div className="prose site-story-body" dangerouslySetInnerHTML={{ __html: html }} />
     </aside>
@@ -156,23 +147,11 @@ function Sources({ html }: { html: string }) {
 
 // One block, in its final state. `sceneId` names the Section's Scene (a
 // Section has at most one), so its ids are unique on the page.
-//
-// Dispatch table (Block type → rendered form, all in-flow, in order):
-//   prose      → .prose HTML as-is
-//   goals      → <Goals> ("By the end of this Lesson")
-//   scene      → <SceneRun> with id=sceneId (at most one per Section)
-//   checkpoint → <Checkpoint> numbered via ctx.checkpoints (section.tsx)
-//   finalTest  → null HERE — section.tsx renders it as its own ruled
-//                Section (FinalTestSection); never render it inline
-//   callout    → <Callout> (tone: tip | watch-out | big-idea, see CALLOUTS)
-//   try        → <Try> ("Your turn", Copy button per top-level code block)
-//   siteStory  → <SiteStory> ("How I used it building this site")
-//   sources    → <Sources> ("Sources")
-// A missing case is a compile error by design (exhaustive switch).
 export function BlockView({ block, ctx, sceneId }: { block: Block; ctx: LessonContext; sceneId: string }) {
   switch (block.type) {
     case "prose":
-      return <div className="prose" dangerouslySetInnerHTML={{ __html: block.html }} />;
+      // Each paragraph, list and table fades in on its own (see reveal.tsx).
+      return <div className="prose" data-reveal-children dangerouslySetInnerHTML={{ __html: block.html }} />;
     case "goals":
       return <Goals itemsHtml={block.itemsHtml} slug={ctx.slug} />;
     case "scene":
@@ -187,7 +166,7 @@ export function BlockView({ block, ctx, sceneId }: { block: Block; ctx: LessonCo
         />
       );
     case "finalTest":
-      // The Final test is a ruled section of its own (FinalTestSection in
+      // The Final test is a band of its own (FinalTestSection in
       // section.tsx), never a block in the text.
       return null;
     case "callout":

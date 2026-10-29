@@ -3,6 +3,9 @@ title: Full lesson
 slug: full
 order: 1
 part: 2
+image: /photos/full.jpg
+imageAlt: Every block in one place.
+imageCredit: Ada Lens
 ---
 
 ```goals

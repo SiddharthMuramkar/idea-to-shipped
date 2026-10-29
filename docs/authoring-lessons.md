@@ -45,6 +45,9 @@ title: Grilling
 slug: grilling
 order: 4
 part: 2
+image: /photos/grilling.jpg
+imageAlt: A woman in glasses takes notes while questioning a man across an office desk.
+imageCredit: Vitaly Gariev
 ---
 ```
 
@@ -54,6 +57,9 @@ part: 2
 | `slug` | yes | The Lesson's permanent id, used in its URL (`/learn/grilling`). Lowercase words joined by `-`. **Never change it once published** (see below). |
 | `order` | yes | Its position in the course, a whole number. Must match the filename's `NN`. |
 | `part` | yes for new Lessons | Which Part it belongs to: `1` Foundations, `2` The main flow, `3` When things go wrong, `4` Level up. Parts never go backwards as `order` goes up. |
+| `image` | yes | The Lesson's photo, as a path under `public/` (e.g. `/photos/grilling.jpg`). The file must exist. |
+| `imageAlt` | yes | One sentence describing the photo for screen readers. |
+| `imageCredit` | yes | The photographer's name, shown as "Photo: <name> / Unsplash". |
 
 **Rules:**
 
@@ -535,6 +541,7 @@ It needs no database and no `.env` file, so it runs anywhere, in a fresh clone, 
 | No two Lessons share a slug or an `order`. |
 | The filename's `NN` equals `order`. |
 | The 12 original slugs still exist (they're permanent). |
+| The header's `image` exists under `public/`. |
 | Once every Lesson has a `part`, `part` never goes down as `order` goes up. |
 
 **Checked on each Lesson.** Every Lesson gets its own group of these checks, named after its slug, so a failure says which Lesson and which rule.
@@ -588,6 +595,9 @@ title: Grilling an idea
 slug: grilling-an-idea
 order: 20
 part: 4
+image: /photos/grilling.jpg
+imageAlt: A woman in glasses takes notes while questioning a man across an office desk.
+imageCredit: Vitaly Gariev
 ---
 
 ```goals

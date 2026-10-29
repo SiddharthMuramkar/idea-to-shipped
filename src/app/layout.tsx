@@ -1,23 +1,19 @@
-import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Source_Serif_4 } from "next/font/google";
+import type { Metadata } from "next";
+import { Inter, Inter_Tight } from "next/font/google";
 import Link from "next/link";
 import { lessons } from "@/lessons/lessons";
 import { LogoMark } from "./logo";
 import "./globals.css";
 
-// Fonts — next/font/google, self-hosted at build time (no Google request, no layout shift).
-// Both variable fonts (no `weight`); serif adds `axes: ["opsz"]` → `font-optical-sizing: auto` in globals.css.
-// Flow: `--font-*` vars on <html> (RootLayout) → `--serif`/`--mono` tokens in globals.css → app-wide.
-const serif = Source_Serif_4({
-  variable: "--font-source-serif",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  axes: ["opsz"],
 });
 
-// Mono: code/commands/aligned numerals only — never body copy.
-const mono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+// The headings: bold (750–800) and tightly spaced. It's a variable font, so
+// every weight in between is available without loading more files.
+const display = Inter_Tight({
+  variable: "--font-display",
   subsets: ["latin"],
 });
 
@@ -27,32 +23,20 @@ export const metadata: Metadata = {
     "Learning Matt Pocock's skills and agentic coding by building this site.",
 };
 
-// Viewport: separate export from `metadata` (Next requires it). No theme toggle — follows system scheme.
-// themeColor exception: viewport API requires literal hex — keep in sync with `--paper` in globals.css.
-export const viewport: Viewport = {
-  colorScheme: "light dark",
-  // Literal required (see above) — must match `--paper`.
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#edeae3" },
-    { media: "(prefers-color-scheme: dark)", color: "#171614" },
-  ],
-};
-
-// Footer data flow: loadLessons() (`"use cache"`) → lessons.listLessons() → `all` → footer <ol> (slug/number/title).
 async function loadLessons() {
   "use cache";
   return lessons.listLessons();
 }
 
-// Shell: <html> (font vars) → header (brand + main nav) / <main>{children}</main> / footer (about + `all` lessons).
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const all = await loadLessons();
   return (
-    <html lang="en" className={`${serif.variable} ${mono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${display.variable}`}>
       <body>
-        <a className="skip-link" href="#main">
-          Skip to content
-        </a>
+        {/* Without JavaScript nothing turns the header solid, so keep it solid. */}
+        <noscript>
+          <style>{`.site-header { --header-fg: var(--ink) !important; --header-bg: var(--bg) !important; --header-shadow: var(--shadow-soft) !important; }`}</style>
+        </noscript>
         <header className="site-header">
           <div className="site-header-inner">
             <Link href="/" className="brand">
@@ -65,7 +49,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </nav>
           </div>
         </header>
-        <main id="main">{children}</main>
+        <main>{children}</main>
         <footer className="site-footer">
           <div className="site-footer-inner">
             <div className="footer-about">
@@ -90,6 +74,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 ))}
               </ol>
             </nav>
+          </div>
+          <div className="site-footer-base">
+            <p>
+              Photos from Unsplash. <Link href="/credits">Photo credits</Link>
+            </p>
           </div>
         </footer>
       </body>

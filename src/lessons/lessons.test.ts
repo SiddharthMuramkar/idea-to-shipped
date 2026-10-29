@@ -12,6 +12,9 @@ const first = {
   number: 1,
   slug: "first",
   title: "First lesson",
+  image: "/photos/first.jpg",
+  imageAlt: "A lighthouse at dawn.",
+  imageCredit: "Ada Lens",
   part: null,
   minutes: 1,
 };
@@ -19,6 +22,9 @@ const second = {
   number: 2,
   slug: "second",
   title: "Second lesson",
+  image: "/photos/second.jpg",
+  imageAlt: "Two hikers on a ridge: one points ahead.",
+  imageCredit: "Bo Shutter",
   part: { number: 2, title: "The main flow" },
   minutes: 1,
 };
@@ -26,6 +32,9 @@ const tenth = {
   number: 10,
   slug: "tenth",
   title: "Tenth lesson",
+  image: "/photos/tenth.jpg",
+  imageAlt: "A rocket on the launch pad.",
+  imageCredit: "Cy Aperture",
   part: null,
   minutes: 1,
 };
@@ -122,6 +131,13 @@ describe("getLesson", () => {
     await expect(broken.getLesson("shouty")).rejects.toThrow(
       'shouty.md: "# A second title": use ## for Sections; the title comes from the header',
     );
+  });
+
+  test("returns the Lesson's photo, its alt text and its credit", async () => {
+    const lesson = await lessons.getLesson("second");
+    expect(lesson?.image).toBe("/photos/second.jpg");
+    expect(lesson?.imageAlt).toBe("Two hikers on a ridge: one points ahead.");
+    expect(lesson?.imageCredit).toBe("Bo Shutter");
   });
 
   test("returns null for a slug that doesn't exist", async () => {
@@ -483,6 +499,9 @@ describe("a Lesson using every block kind and every Scene kind", () => {
       number: 1,
       slug: "full",
       title: "Full lesson",
+      image: "/photos/full.jpg",
+      imageAlt: "Every block in one place.",
+      imageCredit: "Ada Lens",
       part: { number: 2, title: "The main flow" },
       minutes: 2,
       previous: null,
@@ -731,22 +750,17 @@ describe("broken Lesson files", () => {
     await expect(broken.listLessons()).rejects.toThrow("oops.md: missing title");
   });
 
-  test("a Lesson with only the required header keys parses", async () => {
-    const plain = lessonsFrom(path.join(fixtures, "no-photo"));
-    expect(await plain.listLessons()).toEqual([
-      {
-        number: 1,
-        slug: "no-photo",
-        title: "No photo",
-        part: null,
-        minutes: 1,
-      },
-    ]);
+  test.each([
+    ["missing-image", "no-photo.md: missing image"],
+    ["missing-image-alt", "no-alt.md: missing imageAlt"],
+    ["missing-image-credit", "no-credit.md: missing imageCredit"],
+  ])("a Lesson in %s fails loudly, naming the file", async (folder, message) => {
+    const broken = lessonsFrom(path.join(fixtures, folder));
+    await expect(broken.listLessons()).rejects.toThrow(message);
   });
 
   test.each([
     ["unknown-header-key", 'colour.md: unknown header key "colour"'],
-    ["photo-header-key", 'stale.md: unknown header key "image"'],
     ["duplicate-header-key", 'retitled.md: header key "title" is set twice'],
     ["bad-part", 'five.md: part must be 1, 2, 3 or 4 (got "5")'],
     ["bad-order", 'two.md: order must be a whole number (got "two")'],

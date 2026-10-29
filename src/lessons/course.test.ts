@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
@@ -102,6 +103,13 @@ describe("the course", () => {
     const all = await lessons.listLessons();
     if (!courseHasParts(all)) return;
     expect(partsGoingBackwards(all)).toEqual([]);
+  });
+
+  test("every Lesson's photo exists under public/", async () => {
+    const missing = (await lessons.listLessons())
+      .filter((lesson) => !existsSync(path.join(process.cwd(), "public", lesson.image)))
+      .map((lesson) => `${lesson.slug}: ${lesson.image}`);
+    expect(missing).toEqual([]);
   });
 });
 

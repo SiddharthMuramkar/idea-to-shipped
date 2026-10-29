@@ -13,6 +13,9 @@ function summary(number: number, slug: string, part: 1 | 2 | 3 | 4 | null): Less
     number,
     slug,
     title: slug,
+    image: `/photos/${slug}.jpg`,
+    imageAlt: "A photo.",
+    imageCredit: "Ada Lens",
     part: part === null ? null : { number: part, title: PARTS[part] },
     minutes: 1,
   };
@@ -101,9 +104,10 @@ describe("unknownSlashNames", () => {
 });
 
 describe("lessonNumberMentions", () => {
-  test("finds a Lesson number in the Lesson's own text, but not in its neighbours' titles", () => {
+  test("finds a Lesson number in the Lesson's own text, but not in its neighbours' titles or its photo's alt text", () => {
     const lesson: Lesson = {
       ...summary(3, "spec", 2),
+      imageAlt: "A poster for Lesson 3.",
       intro: [{ type: "prose", html: "<p>As Lesson 2 showed, grill first.</p>\n" }],
       sections: [
         {
