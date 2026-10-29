@@ -2,9 +2,6 @@
 title: gauge
 slug: gauge
 order: 1
-image: /photos/x.jpg
-imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 ## Section

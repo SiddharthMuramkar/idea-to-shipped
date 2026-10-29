@@ -3,9 +3,6 @@ title: PR + ship
 slug: pr-and-ship
 order: 11
 part: 2
-image: /photos/pr-and-ship.jpg
-imageAlt: An aerial view of a loaded container ship guided out of port by two red tugboats.
-imageCredit: william william
 ---
 
 Get a change from your branch onto the real site safely, through a pull request a person can review in minutes.

@@ -1,3 +1,42 @@
+/**
+ * Contract — lessons.ts (course entry point; see also blocks.ts, questions.ts,
+ * scenes.ts, markdown.ts, and ADR 0004 / ADR 0005 / ADR 0007).
+ *
+ * Inputs:
+ *   - `lessonsFrom(dir)` reads every `*.md` file in `dir`, sorted by filename.
+ *     The production singleton `lessons` points it at `content/lessons`
+ *     (resolved from `process.cwd()`); nothing else is hard-coded.
+ *   - Each file is `---` header, then Markdown body (see parseLesson below).
+ *     Header keys are exactly: `title`, `slug`, `order` (all required,
+ *     non-empty) and optional `part` (1–4, see PARTS). Unknown keys, a key set
+ *     twice, a missing required key, or a non-whole-number `order` throws.
+ *   - BOM and CRLF/CR line endings are normalised before parsing.
+ *
+ * Invariants an LLM / author can trust:
+ *   - Slugs are permanent (ADR 0004): `slug` and `order` come from the header,
+ *     never the filename; the filename prefix (e.g. `01-grilling.md`) only
+ *     sorts files on disk and should match `order`. Never rename a published
+ *     slug and never embed the position number in it — Comments in the DB
+ *     reference Lessons by this slug as plain text, with no foreign key.
+ *   - `slug` and `order` (`number`) are each unique across the whole course;
+ *     duplicates throw naming both files. Lessons are returned sorted by
+ *     `number` ascending, and `previous`/`next` follow that order.
+ *   - Question ids inside the body are permanent too (ADR 0005); uniqueness
+ *     within a Lesson is enforced by blocks.ts / questions.ts, not here.
+ *   - `listLessons()` is header-only and cheap (no body parsing); `minutes`
+ *     is an estimate at 220 wpm, minimum 1. `getLesson(slug)` returns `null`
+ *     for an unknown slug (never throws for that), as does `getQuestions`.
+ *
+ * Errors: every parse failure is `throw new Error("<file>: …")` — a broken
+ * Lesson fails the build and names its file. No silent fallbacks.
+ *
+ * Fixture use: tests never touch the real course through this module's
+ * singleton for parser cases — they call `lessonsFrom(<dir>)` with
+ * `src/lessons/__fixtures__/<case>/` (e.g. `valid`, `full`, `duplicate-slug`,
+ * `unknown-header-key`, `no-photo`). One fixture folder per behaviour or
+ * failure mode. Keep new parser cases as new fixture folders, not edits to
+ * `content/lessons`.
+ */
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { countProseWords, parseBody, type Block, type LessonBody, type Section } from "./blocks";
@@ -27,16 +66,10 @@ export function courseHasParts(all: LessonSummary[]): boolean {
   return all.length > 0 && all.every((lesson) => lesson.part !== null);
 }
 
-// Every place that shows a Lesson shows its photo, so the summary carries it:
-// the photo's path under public/, a description for screen readers, and the
-// photographer's name for the "Photo: <name> / Unsplash" credit.
 export type LessonSummary = {
   number: number;
   slug: string;
   title: string;
-  image: string;
-  imageAlt: string;
-  imageCredit: string;
   part: Part | null;
   minutes: number;
 };
@@ -73,10 +106,7 @@ function estimateWords(body: string): number {
 //   slug: grilling
 //   order: 1
 //   part: 2              (optional: 1 to 4, see PARTS)
-//   image: /photos/grilling.jpg
-//   imageAlt: A woman in glasses questions a man across a desk.
-//   imageCredit: Vitaly Gariev
-const REQUIRED = ["title", "slug", "order", "image", "imageAlt", "imageCredit"];
+const REQUIRED = ["title", "slug", "order"];
 const KNOWN_KEYS = new Set([...REQUIRED, "part"]);
 
 function parsePart(file: string, value: string | undefined): Part | null {
@@ -119,9 +149,6 @@ function parseLesson(file: string, raw: string): ParsedLesson {
     number: Number(fields.order),
     slug: fields.slug,
     title: fields.title,
-    image: fields.image,
-    imageAlt: fields.imageAlt,
-    imageCredit: fields.imageCredit,
     part: parsePart(file, fields.part),
     minutes: Math.max(1, Math.ceil(estimateWords(body) / WORDS_PER_MINUTE)),
     file,
@@ -159,8 +186,8 @@ export function allBlocks(lesson: LessonBody): Block[] {
 }
 
 function summarize(lesson: ParsedLesson): LessonSummary {
-  const { number, slug, title, image, imageAlt, imageCredit, part, minutes } = lesson;
-  return { number, slug, title, image, imageAlt, imageCredit, part, minutes };
+  const { number, slug, title, part, minutes } = lesson;
+  return { number, slug, title, part, minutes };
 }
 
 export function lessonsFrom(dir: string) {

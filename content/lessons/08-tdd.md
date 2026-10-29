@@ -3,9 +3,6 @@ title: TDD
 slug: tdd
 order: 8
 part: 2
-image: /photos/tdd.jpg
-imageAlt: A scientist in a white lab coat works at a lab bench full of instruments and cables.
-imageCredit: ThisisEngineering
 ---
 
 Make the agent prove each behaviour with a test it watched fail first, so the tests it leaves behind are ones you can trust.

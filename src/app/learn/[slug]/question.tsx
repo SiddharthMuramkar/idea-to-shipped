@@ -8,6 +8,25 @@ import { Icon } from "./icons";
 // button to pretend otherwise: the reader picks an option, then opens the box
 // to compare. It works the same with or without JavaScript.
 
+// Grading contract — Checkpoint vs Final test:
+// - Shipped behaviour grades neither. Checkpoint and FinalTest share
+//   QuestionFields (the radios) and AnswerReveal (the "Show the answer"
+//   box with the right option and per-option feedbackHtml), so today
+//   both are manual self-checks: pick, open the box, compare. There is
+//   deliberately no Check button, score, or status line to fake it.
+// - Checkpoint is one Question where it was written in the text column
+//   (<div class="question checkpoint" data-checkpoint> with a
+//   "Checkpoint [n of total]" kicker). By definition (GLOSSARY) it gives
+//   instant feedback and never counts towards passing the Lesson.
+// - FinalTest is every `test` Question of the Section together in one
+//   ruled section (<section class="final-test" data-section
+//   data-final-test>, "Question i of N" labels, any preceding blocks as
+//   children). By definition its Questions are checked together and
+//   80% or more passes; one whole submission is an Attempt and the
+//   latest Attempt decides. None of that scoring exists yet — ticket 05
+//   adds checking, scores and crowd stats without changing the markup
+//   contract above, and Checkpoints stay uncounted when it lands.
+//
 // Ids and radio names are unique on the whole document, not just the Lesson:
 // Next keeps up to three visited pages mounted, so two Lessons can be in the
 // DOM at once. Slugs and question ids are kebab-case (single dashes), so "--"
@@ -74,7 +93,7 @@ export function Checkpoint({
   total: number;
 }) {
   return (
-    <div className="question checkpoint" data-checkpoint={question.id} data-reveal>
+    <div className="question checkpoint" data-checkpoint={question.id}>
       <p className="question-kicker">
         <Icon name="checkpoint" />
         Checkpoint{total > 1 && <span className="question-count">{` ${number} of ${total}`}</span>}
@@ -85,9 +104,9 @@ export function Checkpoint({
   );
 }
 
-// The Final test: a full-width navy band with every `test` question as its
-// own card, each with its answer box. `children` are any blocks written
-// before the questions in the same Section.
+// The Final test: a ruled section in the reading column with every `test`
+// question in turn, each with its answer box. `children` are any blocks
+// written before the questions in the same Section.
 export function FinalTest({
   questions,
   slug,

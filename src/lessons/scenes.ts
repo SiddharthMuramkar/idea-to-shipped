@@ -1,3 +1,50 @@
+/**
+ * Contract — scenes.ts (one `scene <type>` fence body → Scene; ADR 0007).
+ *
+ * Inputs: `parseScene(file, type, body)` where `type` is the fence's single
+ * argument and `body` is the raw text inside the fence. `file` is used only
+ * in error messages. `type` must be one of `chat | terminal | flow | files |
+ * meter`; anything else (including a missing type) throws.
+ *
+ * Body grammar (shared, see parseSteps): setting lines come first, before
+ * the first step; a `# <caption>` line starts a new step; every later line
+ * is an item belonging to the current step, and each step lists only what it
+ * ADDS (steps accumulate at render time — do not repeat earlier items).
+ * At least one `# ` step is required, and a caption must be non-empty.
+ * Settings: `title: …` is the only shared setting (at most once, non-empty);
+ * any other key throws `unknown setting` unless the kind allows it below.
+ * Lines in `itemKeys` (`word:` items) are never read as settings.
+ *
+ * Per-kind extras and item lines:
+ *   - chat:     items `you: …` / `agent: …` (non-empty, rendered inline).
+ *   - terminal: `$ …` is a command (must be non-empty); every other line is
+ *               output verbatim. `\# …` escapes a leading `#`; a bare `#`
+ *               or `#nospace` line is output, not a step.
+ *   - flow:     settings `node: <id> | <label>` or `… | side` (ids unique,
+ *               no spaces; a `side` node needs a main node declared before
+ *               it); items `at: <node id>` referencing a declared node.
+ *   - files:    items `+ <path>` (added) / `~ <path>` (changed).
+ *   - meter:    setting `zone: <0–100>` (optional trailing `%`, at most
+ *               once); items `fill: <0–100>% | <label>`; at least one fill
+ *               across all steps is required.
+ *
+ * Invariants: percentages are numbers 0–100 (decimals allowed). Slugs
+ * (ADR 0004) and question ids (ADR 0005) do not appear in Scenes — a Scene
+ * carries no permanent external key, so renaming its title/captions is safe.
+ * Placement (inside a Section, one per Section) is enforced by blocks.ts,
+ * not here.
+ *
+ * Output: the `Scene` discriminated union keyed by `kind`, always with
+ * `title: string | null`; captions and chat text are inline-rendered HTML,
+ * terminal text is raw.
+ *
+ * Errors: `throw new Error("<file>: scene <kind>: …")` for every rule above.
+ *
+ * Fixture use: exercised through `lessonsFrom(__fixtures__/<case>)` in
+ * lessons.test.ts (e.g. `full`, `meter-values`, `terminal-comments`,
+ * `unknown-scene-type`, `unknown-scene-setting`, `scene-in-intro`,
+ * `two-scenes`). Add one fixture folder per new grammar rule.
+ */
 import { renderInline } from "./markdown";
 
 // A Scene is a small picture beside the text that builds up step by step as

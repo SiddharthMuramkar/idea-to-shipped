@@ -3,9 +3,6 @@ title: Implement
 slug: implement
 order: 9
 part: 2
-image: /photos/implement.jpg
-imageAlt: A construction worker in a hard hat stands on a timber wall frame against a blue sky.
-imageCredit: Josh Olalde
 ---
 
 Once the plan is agreed, hand the building to a Skill that tests, reviews and saves the work: one task at a time with `/implement`, or a whole written plan in one run with `/implement-spec`.

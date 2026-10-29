@@ -3,9 +3,6 @@ title: Wizard
 slug: wizard
 order: 15
 part: 3
-image: /photos/wizard.jpg
-imageAlt: A man in a dark room carefully plugs a cable into a server rack.
-imageCredit: ThisisEngineering
 ---
 
 When the agent hits a step only you can take, let it write you a script that walks you through it, and keeps your secrets out of the chat.

@@ -1,3 +1,39 @@
+/**
+ * Contract — markdown.ts (the course's private Markdown renderer).
+ *
+ * Inputs / outputs (all pure string transforms; no I/O, no Lesson knowledge):
+ *   - `lex(src)` → marked `Token[]`; `renderTokens(tokens)` renders block
+ *     tokens from `lex()` to HTML; `renderInline(src)` renders one line of
+ *     inline Markdown to HTML with no wrapping `<p>` (prompts, captions).
+ *   - `htmlToText(html)` strips tags and decodes exactly the entities in
+ *     ENTITIES (`&amp; &lt; &gt; &quot; &#39; &nbsp;`); `countWordsIn(text)`
+ *     counts whitespace-separated words containing a letter or digit
+ *     (incl. Latin Extended), so stray punctuation never counts.
+ *
+ * Invariants an LLM / author can trust:
+ *   - The renderer is a private `Marked` instance (GFM on, plus the `==mark==`
+ *     extension and the checkbox renderer below). It never mutates the global
+ *     `marked` instance or any other importer's renderer.
+ *   - `==key phrase==` becomes `<mark>…</mark>` only when `==` touches a
+ *     non-space character on the inside; `a == b` and `===` stay literal, and
+ *     matching is lazy so `==8== of ==10==` is two highlights.
+ *   - A checklist box (`- [ ] …` / `- [x] …`) renders as a decorative
+ *     `<span class="task-box">` (with `data-checked` when ticked, hidden from
+ *     screen readers), never as an interactive/disabled checkbox input.
+ *   - This module knows nothing about slugs (ADR 0004), question ids
+ *     (ADR 0005), header keys, or typed blocks (ADR 0007): callers in
+ *     lessons.ts / blocks.ts / questions.ts / scenes.ts own those rules and
+ *     pass already-validated text here.
+ *
+ * Errors: none thrown by design for string input — rendering is total;
+ * malformed Markdown renders as literal text rather than failing. Parse and
+ * validation errors belong to the caller modules above.
+ *
+ * Fixture use: unit-tested directly in markdown.test.ts against `lex` /
+ * `renderTokens`; end-to-end (e.g. `==mark==` inside a Lesson) via the
+ * `mark` fixture folder through `lessonsFrom(__fixtures__/mark)` in
+ * lessons.test.ts.
+ */
 import { Marked, type Token, type TokenizerAndRendererExtension } from "marked";
 
 // ==key phrase== becomes <mark>key phrase</mark>. The == has to touch a

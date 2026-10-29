@@ -1,3 +1,38 @@
+/**
+ * Contract — questions.ts (one `checkpoint` / `test` fence body → Question).
+ *
+ * Inputs: `parseQuestion(file, kind, id, body)` where `kind` is
+ * `"checkpoint" | "test"`, `id` is the fence's single argument (required),
+ * and `body` is the raw text inside the fence. `file` is used only in errors.
+ * Body grammar (see the worked example above parseQuestion): a one-paragraph
+ * inline-text prompt first, then 3–4 options, each `- [ ] …` or `- [x] …`
+ * starting at column 0, each followed by one or more `> …` feedback lines.
+ *
+ * Invariants an LLM / author can trust (ADR 0005):
+ *   - Question ids are permanent, like Lesson slugs (ADR 0004): kebab-case
+ *     (`/^[a-z0-9]+(?:-[a-z0-9]+)*$/`), at most 40 characters, unique within
+ *     their Lesson across Checkpoints and the Final test combined
+ *     (uniqueness is enforced by the caller, blocks.ts). Once published,
+ *     never rename or reuse an id; changing what a question asks or which
+ *     options it offers means a new id. Rewording is fine.
+ *   - Options are known by position only — ids `a`–`d` in written order —
+ *     never by text. Never reorder or remove a published question's options.
+ *   - Exactly one option is `[x]`; `[X]` also counts. Every option must have
+ *     non-empty feedback. The prompt must precede the options and must not
+ *     contain block lines (bullets, numbered items, quotes, fences).
+ *
+ * Output: `Question = { id, kind, promptHtml, options, answer }` where each
+ * option is `{ id: "a"…"d", html, feedbackHtml }` and `answer` is the correct
+ * option's positional id. Prompt/option/feedback text is rendered inline.
+ *
+ * Errors: `throw new Error("<file>: <kind> \"<id>\": …")` for every rule
+ * above (a missing id throws before the id is known). No defaults are invented.
+ *
+ * Fixture use: exercised through `lessonsFrom(__fixtures__/<case>)` in
+ * lessons.test.ts (e.g. `questions`, `duplicate-question-id`,
+ * `bad-question-id`, `two-answers`, `five-options`, `missing-feedback`,
+ * `empty-prompt`). Add one fixture folder per new validation rule.
+ */
 import { renderInline } from "./markdown";
 
 // Options are known by their position, never by their text (ADR 0005).

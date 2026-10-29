@@ -47,11 +47,11 @@ _Avoid_: Context limit, token budget
 ## Inside a Lesson
 
 **Section**:
-One `## ` heading's worth of a Lesson, numbered "01", "02", … on the page. Its text sits beside a stage that holds its Scene, or its number in outline. The Final test is a band of its own, not a numbered Section.
+One `## ` heading's worth of a Lesson, numbered "01", "02", … on the page. It reads top to bottom in the Lesson's single column: its number as a small mono label, its heading, then every block in written order — prose, its Scene in-flow where it was written, callouts, Checkpoints. The Final test is a ruled section in the same column, not a numbered Section.
 _Avoid_: Chapter, part, step
 
 **Scene**:
-A small picture inside a Lesson (a chat, a terminal, a flow, a file tree or a context meter) that builds step by step as you scroll past its captions.
+A small picture inside a Lesson (a chat, a terminal, a flow, a file tree or a context meter), shown static in its final state: every step's items visible at once, with its captions following in order as the explanation of the complete picture. A scroll stepper that builds it step by step is deferred future work, not shipped behaviour.
 _Avoid_: Animation, diagram, widget, slideshow
 
 **Site story**:
@@ -85,3 +85,9 @@ _Avoid_: Message, feedback, post, reply
 **Visitor**:
 Anyone reading the site. Visitors have no accounts: the site knows one only by a random ID in a cookie, set the first time they answer a question.
 _Avoid_: User, member, commenter, learner
+
+## The site itself
+
+**Press**:
+The way this site presents the course: an editorial journal the Visitor reads, Lesson by Lesson, rather than a product site that shows the course off. When specs and tickets say "Press", they mean this presentation and nothing about printing or publishing elsewhere.
+_Avoid_: Theme, skin, redesign (as a noun for the finished thing), template

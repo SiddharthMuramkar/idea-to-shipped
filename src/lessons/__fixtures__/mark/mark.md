@@ -2,9 +2,6 @@
 title: mark
 slug: mark
 order: 1
-image: /photos/x.jpg
-imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 This is a ==key phrase== here.
