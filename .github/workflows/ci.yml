@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # tsc checks against route types that are generated, not committed.
+      - run: npx next typegen
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm run test:content
+      # Not `npm run build`, which migrates a real database first. Only the API
+      # route imports the db, and neon() just needs a well-formed URL at import.
+      - run: npx next build
+        env:
+          DATABASE_URL: postgresql://build:build@localhost:5432/build
+
+  # Secrets can't be read in a job-level `if`, so this job checks for the one
+  # db needs. Without it (a PR from a fork, or before it's added) db is skipped
+  # instead of failing.
+  db-secret:
+    runs-on: ubuntu-latest
+    outputs:
+      present: ${{ steps.check.outputs.present }}
+    steps:
+      - id: check
+        env:
+          TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+        run: |
+          if [ -n "$TEST_DATABASE_URL" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  db:
+    needs: db-secret
+    if: needs.db-secret.outputs.present == 'true'
+    runs-on: ubuntu-latest
+    # Every run shares the one Neon test branch and the tests empty the comments
+    # table, so runs queue instead of overlapping. The timeout stops a hung run
+    # from holding up the queue.
+    timeout-minutes: 10
+    concurrency:
+      group: neon-test-branch
+      cancel-in-progress: false
+      queue: max
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # After npm ci, so dependency install scripts never see the secret. The db
+      # tests and db:migrate:test both take DATABASE_URL from this file.
+      - name: Point the tests at the Neon test branch
+        env:
+          TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+        run: printf 'DATABASE_URL=%s\n' "$TEST_DATABASE_URL" > .env.test.local
+      - run: npm run db:migrate:test
+      - run: npx vitest run --project db
