@@ -48,4 +48,8 @@ If the concept you need isn't in the glossary yet, that's a signal: either you'r
 
 If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
 
-> _Contradicts ADR-0007 (event-sourced orders), but worth reopening because…_
+> _Contradicts ADR 0004 (Comments reference Lessons by a permanent slug), but worth reopening because…_
+
+## Don't restate the code
+
+The code is the documentation. Don't write prose that restates what it does: the prose drifts and then misleads. Domain words go in `GLOSSARY.md`, and the code uses them. The why goes in `docs/adr/`. The Lesson format is whatever `npm run test:content` accepts: its messages say how to fix a Lesson, and `src/lessons/__fixtures__/complete-example/` is a complete one. Any prose that stays must be true of the code today.
