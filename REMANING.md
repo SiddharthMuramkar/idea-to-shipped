@@ -2,6 +2,16 @@
 
 The session that started this work stopped early because the weekly usage ran out. A new session continues from here. Everything it needs is in this file and the paths it lists.
 
+## Start here (for a fresh session, days later)
+
+1. `cd ~/Developer/idea-to-shipped && git fetch && git switch codebase-cleanup && npm ci`
+2. Confirm the branch is green: `npx next typegen && npx tsc --noEmit && npm run lint && npm run test:content` (453 tests expected).
+3. Read "Decisions" before changing anything; they were agreed with the user and must not be re-asked.
+4. Do "Next steps" in order. Step 2 (review + fix) is the only unfinished engineering work. Steps 3 onward are shipping it.
+5. The project memory in `~/.claude/projects/-Users-siddharth-Developer-idea-to-shipped/memory/` loads automatically and points here.
+
+What the PR is, in one paragraph: the site (idead-to-shipped.app, a Matt Pocock Skills course) got a scalable content structure so the user can add many more Lessons and whole new Courses. Lessons moved to `content/idea-to-shipped/<slug>.md` with order in `course.md`. Docs that restated code were deleted ("the code is the documentation"), dependencies were upgraded, and CI was added. Visitors see no change.
+
 ## Where things stand
 
 - **Production is fixed.** The user ran `vercel promote dpl_B4nQv7gMHp8mvEmy2EkbTQw46WvF --scope acme-ef4b`. Verified afterwards:
