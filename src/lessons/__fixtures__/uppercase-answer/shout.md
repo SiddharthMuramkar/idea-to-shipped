@@ -1,7 +1,6 @@
 ---
 title: shout
 slug: shout
-order: 1
 image: /photos/x.jpg
 imageAlt: A photo.
 imageCredit: Ada Lens

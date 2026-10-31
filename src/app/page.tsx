@@ -1,31 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
+import { loadHomeCourse } from "@/app/home-course";
 import { homePhotos } from "@/app/home-photos";
 import { LessonCard } from "@/app/lesson-card";
 import { PhotoBand, PhotoCredit } from "@/app/photo-band";
 import { Reveal } from "@/app/reveal";
-import { courseHasParts, lessons, type LessonSummary, type Part } from "@/lessons/lessons";
-
-async function loadLessons() {
-  "use cache";
-  return lessons.listLessons();
-}
+import type { Course, LessonSummary, Part } from "@/lessons/lessons";
 
 // The Lesson grid: three cards to a row, then two, then one on phones.
 const CARD_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px";
 
-// The Lessons under a heading per Part, in course order. Null until every
-// Lesson has a Part, and until then the grid stays flat.
-function byPart(all: LessonSummary[]): { part: Part; lessons: LessonSummary[] }[] | null {
-  if (!courseHasParts(all)) return null;
-  const groups: { part: Part; lessons: LessonSummary[] }[] = [];
-  for (const lesson of all) {
-    const part = lesson.part!;
-    const group = groups.find((g) => g.part.number === part.number);
-    if (group) group.lessons.push(lesson);
-    else groups.push({ part, lessons: [lesson] });
-  }
-  return groups.sort((a, b) => a.part.number - b.part.number);
+// The Course's Lessons under a heading per Part, in reading order. Null for a
+// Course without Parts, whose grid stays flat.
+function byPart(course: Course): { part: Part; lessons: LessonSummary[] }[] | null {
+  if (!course.parts) return null;
+  return course.parts.map((part) => ({
+    part,
+    lessons: course.lessons.filter((lesson) => lesson.part?.number === part.number),
+  }));
 }
 
 // The Main flow, step by step, as the dark band teases it. The Main flow
@@ -83,9 +75,10 @@ function LessonGrid({ lessons: list }: { lessons: LessonSummary[] }) {
 }
 
 export default async function Home() {
-  const all = await loadLessons();
+  const course = await loadHomeCourse();
+  const all = course.lessons;
   const first = all[0];
-  const parts = byPart(all);
+  const parts = byPart(course);
   const slugs = new Set(all.map((l) => l.slug));
   const { hero, intro, cta } = homePhotos;
 
@@ -93,7 +86,7 @@ export default async function Home() {
     <>
       <Reveal />
       {/* The first screen: a full-screen photo under the see-through header. */}
-      <PhotoBand className="home-hero" image={hero.image} imageAlt={hero.imageAlt}>
+      <PhotoBand className="home-hero" photo={hero}>
         <span className="eyebrow">A free course in agentic coding</span>
         <h1>From idea to shipped, one Skill at a time.</h1>
         <p className="home-hero-lead">
@@ -108,7 +101,7 @@ export default async function Home() {
             See the main flow
           </Link>
         </div>
-        <PhotoCredit name={hero.imageCredit} />
+        <PhotoCredit photo={hero} />
       </PhotoBand>
 
       <section id="about" className="band-light">
@@ -135,7 +128,7 @@ export default async function Home() {
               />
             </span>
             <figcaption>
-              <PhotoCredit name={intro.imageCredit} className="figure-credit" />
+              <PhotoCredit photo={intro} className="figure-credit" />
             </figcaption>
           </figure>
         </div>
@@ -224,7 +217,7 @@ export default async function Home() {
           <Link href={`/learn/${first.slug}`} className="button button-light">
             Start with Lesson {first.number}
           </Link>
-          <PhotoCredit name={cta.imageCredit} />
+          <PhotoCredit photo={cta} />
         </div>
       </section>
     </>

@@ -41,7 +41,7 @@ function QuestionFields({ question, slug, label }: { question: Question; slug: s
 // The answer, closed until the reader opens it: the right option, then why
 // each option is right or wrong.
 function AnswerReveal({ question }: { question: Question }) {
-  const right = question.options.find((option) => option.id === question.answer)!;
+  const right = question.options.find((option) => option.id === question.correctOption)!;
   return (
     <details className="question-answer">
       <summary>Show the answer</summary>
@@ -51,7 +51,7 @@ function AnswerReveal({ question }: { question: Question }) {
       </p>
       <ul className="question-answer-list">
         {question.options.map((option) => (
-          <li key={option.id} data-correct={option.id === question.answer ? "" : undefined}>
+          <li key={option.id} data-correct={option.id === question.correctOption ? "" : undefined}>
             <span className="question-answer-option" dangerouslySetInnerHTML={{ __html: option.html }} />{" "}
             <span dangerouslySetInnerHTML={{ __html: option.feedbackHtml }} />
           </li>
@@ -85,8 +85,8 @@ export function Checkpoint({
   );
 }
 
-// The Final test: a full-width navy band with every `test` question as its
-// own card, each with its answer box. `children` are any blocks written
+// The Final test: a full-width navy band with every `final-test` question as
+// its own card, each with its answer box. `children` are any blocks written
 // before the questions in the same Section.
 export function FinalTest({
   questions,

@@ -3,11 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
-  // Lesson files are read at request time (the comments API checks slugs),
-  // so ship them with the server functions.
+  // Every Course's files are read at request time (the comments API checks
+  // Slugs against all of them), so ship them with the server functions.
   outputFileTracingIncludes: {
-    "/api/comments": ["./content/lessons/**/*"],
-    "/learn/*": ["./content/lessons/**/*"],
+    "/api/comments": ["./content/**/*"],
+    "/learn/*": ["./content/**/*"],
   },
 };
 

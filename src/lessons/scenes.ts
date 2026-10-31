@@ -1,4 +1,4 @@
-import { renderInline } from "./markdown";
+import { renderInline, type Fail } from "./markdown";
 
 // A Scene is a small picture beside the text that builds up step by step as
 // the reader scrolls past its captions. Each step lists only what it ADDS.
@@ -18,8 +18,6 @@ export type Scene =
 
 const SCENE_KINDS = ["chat", "terminal", "flow", "files", "meter"] as const;
 type SceneKind = Scene["kind"];
-
-type Fail = (problem: string) => Error;
 
 // Reads a percentage from 0 to 100, such as "40" or "62.5", or null for
 // anything else.
@@ -56,7 +54,7 @@ function parseSteps<I>(
     if (step) {
       const caption = (step[1] ?? "").trim();
       if (caption === "") throw fail('a step needs a caption after the "# "');
-      steps.push({ captionHtml: renderInline(caption), items: [] });
+      steps.push({ captionHtml: renderInline(caption, fail), items: [] });
       continue;
     }
     if (steps.length === 0) {
@@ -65,7 +63,7 @@ function parseSteps<I>(
         grammar.setting(setting[1], setting[2].trim());
         continue;
       }
-      throw fail(`"${line.trim()}" comes before the first "# " step`);
+      throw fail(`"${line.trim()}" comes before the first "# " step: put a "# <caption>" line above it`);
     }
     const item = grammar.item(line);
     if (item === null) throw fail(`"${line.trim()}" isn't a ${grammar.describe}`);
@@ -93,13 +91,14 @@ export function parseScene(file: string, type: string | undefined, body: string)
   const setting = (extra: Record<string, (value: string) => void> = {}) =>
     (key: string, value: string) => {
       if (key === "title") {
-        if (title !== null) throw fail('"title" is set twice');
+        if (title !== null) throw fail('"title" is set twice: keep one');
         if (value === "") throw fail('"title" needs a value');
         title = value;
       } else if (extra[key]) {
         extra[key](value);
       } else {
-        throw fail(`unknown setting "${key}"`);
+        const known = ["title", ...Object.keys(extra)].join(", ");
+        throw fail(`unknown setting "${key}": remove it (a ${kind} Scene's settings are ${known})`);
       }
     };
 
@@ -112,8 +111,8 @@ export function parseScene(file: string, type: string | undefined, body: string)
         item(line) {
           const match = /^(you|agent):\s*(.*)$/.exec(line);
           if (!match) return null;
-          if (match[2].trim() === "") throw fail(`"${line.trim()}" has nothing to say`);
-          return { from: match[1] as "you" | "agent", html: renderInline(match[2].trim()) };
+          if (match[2].trim() === "") throw fail(`"${line.trim()}" has nothing to say: write the message after the colon`);
+          return { from: match[1] as "you" | "agent", html: renderInline(match[2].trim(), fail) };
         },
       });
       return { kind, title, steps };
@@ -149,7 +148,7 @@ export function parseScene(file: string, type: string | undefined, body: string)
             if (!id || /\s/.test(id) || !label || (side !== undefined && side !== "side") || rest.length) {
               throw fail(`"node: ${value}" should read "node: <id> | <label>" or "node: <id> | <label> | side"`);
             }
-            if (nodes.some((node) => node.id === id)) throw fail(`node "${id}" is declared twice`);
+            if (nodes.some((node) => node.id === id)) throw fail(`node "${id}" is declared twice: give each node its own id`);
             // A side node is drawn beside the main node before it.
             if (side === "side" && !nodes.some((node) => !node.side)) {
               throw fail(`"node: ${value}": a side node needs a main node declared before it`);
@@ -191,7 +190,7 @@ export function parseScene(file: string, type: string | undefined, body: string)
         // warning colour.
         setting: setting({
           zone(value) {
-            if (zone !== null) throw fail('"zone" is set twice');
+            if (zone !== null) throw fail('"zone" is set twice: keep one');
             zone = percent(value.replace(/%$/, ""));
             if (zone === null) throw fail(`"zone: ${value}" needs a number from 0 to 100`);
           },

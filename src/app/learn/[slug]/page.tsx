@@ -3,23 +3,18 @@ import { notFound } from "next/navigation";
 import { LessonCard } from "@/app/lesson-card";
 import { PhotoBand, PhotoCredit } from "@/app/photo-band";
 import { Reveal } from "@/app/reveal";
-import { courseHasParts, lessons } from "@/lessons/lessons";
+import { courses } from "@/lessons/lessons";
 import { Discussion } from "./discussion";
 import { LessonArticle } from "./section";
 
+// Every Lesson of every Course: a Slug is unique across them all.
 export async function generateStaticParams() {
-  return (await lessons.listLessons()).map(({ slug }) => ({ slug }));
+  return (await courses.listLessons()).map(({ slug }) => ({ slug }));
 }
 
 async function loadLesson(slug: string) {
   "use cache";
-  return lessons.getLesson(slug);
-}
-
-// Header-only summaries of the whole course, to know whether it has Parts yet.
-async function loadCourse() {
-  "use cache";
-  return lessons.listLessons();
+  return courses.getLesson(slug);
 }
 
 export async function generateMetadata({
@@ -39,14 +34,12 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
   const lesson = await loadLesson((await params).slug);
   if (!lesson) notFound();
 
-  const showPart = courseHasParts(await loadCourse());
-
   return (
     <>
       <Reveal />
-      <PhotoBand as="header" className="lesson-hero" image={lesson.image} imageAlt={lesson.imageAlt}>
+      <PhotoBand as="header" className="lesson-hero" photo={lesson.photo}>
         <p className="eyebrow lesson-eyebrow">
-          {showPart && lesson.part && (
+          {lesson.part && (
             <span>
               Part {lesson.part.number} · {lesson.part.title}
             </span>
@@ -56,7 +49,7 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
           </span>
         </p>
         <h1>{lesson.title}</h1>
-        <PhotoCredit name={lesson.imageCredit} />
+        <PhotoCredit photo={lesson.photo} />
       </PhotoBand>
 
       <div className="lesson" data-lesson={lesson.slug}>

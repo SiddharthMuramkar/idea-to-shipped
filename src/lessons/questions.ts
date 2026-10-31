@@ -1,4 +1,4 @@
-import { renderInline } from "./markdown";
+import { renderInline, type Fail } from "./markdown";
 
 // Options are known by their position, never by their text (ADR 0005).
 const OPTION_IDS = ["a", "b", "c", "d"] as const;
@@ -12,10 +12,11 @@ export type QuestionOption = { id: (typeof OPTION_IDS)[number]; html: string; fe
 
 export type Question = {
   id: string;
-  kind: "checkpoint" | "test";
+  kind: "checkpoint" | "final-test";
   promptHtml: string;
   options: QuestionOption[];
-  answer: QuestionOption["id"];
+  // The answer key: the one right option. (An Answer is a Visitor's pick.)
+  correctOption: QuestionOption["id"];
 };
 
 type DraftOption = { text: string; correct: boolean; feedback: string[] };
@@ -37,7 +38,7 @@ export function parseQuestion(
   body: string,
 ): Question {
   if (!id) throw new Error(`${file}: ${kind}: needs an id, as in "${kind} my-question"`);
-  const fail = (problem: string) => new Error(`${file}: ${kind} "${id}": ${problem}`);
+  const fail: Fail = (problem) => new Error(`${file}: ${kind} "${id}": ${problem}`);
   if (!QUESTION_ID.test(id) || id.length > MAX_ID_LENGTH) {
     throw fail(
       `the id must be kebab-case (a-z, 0-9, single dashes), at most ${MAX_ID_LENGTH} characters`,
@@ -51,7 +52,9 @@ export function parseQuestion(
     const option = /^- \[([ xX])\] (.*)$/.exec(line);
     const feedback = /^\s*> ?(.*)$/.exec(line);
     if (option) {
-      if (option[2].trim() === "") throw fail(`option ${OPTION_IDS[drafts.length] ?? "?"} is empty`);
+      if (option[2].trim() === "") {
+        throw fail(`option ${OPTION_IDS[drafts.length] ?? "?"} is empty: write its text after the box`);
+      }
       drafts.push({ text: option[2].trim(), correct: option[1] !== " ", feedback: [] });
     } else if (/^\s+- \[/.test(line)) {
       // An indented option would otherwise be read as part of the prompt.
@@ -84,11 +87,12 @@ export function parseQuestion(
     }
   });
 
+  const promptHtml = renderInline(prompt.join(" "), fail);
   const options = drafts.map((draft, i) => ({
     id: OPTION_IDS[i],
-    html: renderInline(draft.text),
-    feedbackHtml: renderInline(draft.feedback.join(" ")),
+    html: renderInline(draft.text, fail),
+    feedbackHtml: renderInline(draft.feedback.join(" "), fail),
   }));
-  const answer = options[drafts.findIndex((d) => d.correct)].id;
-  return { id, kind, promptHtml: renderInline(prompt.join(" ")), options, answer };
+  const correctOption = options[drafts.findIndex((d) => d.correct)].id;
+  return { id, kind, promptHtml, options, correctOption };
 }

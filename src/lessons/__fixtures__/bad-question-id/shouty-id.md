@@ -1,7 +1,6 @@
 ---
 title: shouty-id
 slug: shouty-id
-order: 1
 image: /photos/x.jpg
 imageAlt: A photo.
 imageCredit: Ada Lens

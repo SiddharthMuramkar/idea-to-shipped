@@ -1,7 +1,6 @@
 ---
 title: questions
 slug: questions
-order: 1
 image: /photos/x.jpg
 imageAlt: A photo.
 imageCredit: Ada Lens
@@ -27,7 +26,7 @@ More prose.
 
 ## Final test
 
-```test scenario-frontier
+```final-test scenario-frontier
 What is the frontier?
 - [x] The questions it can ask now.
   > Yes: settled answers push it outward.
@@ -39,7 +38,7 @@ What is the frontier?
   > The first round is only the start.
 ```
 
-```test spot-the-mistake
+```final-test spot-the-mistake
 Which line is wrong?
 - [ ] Line A
 > Fine.

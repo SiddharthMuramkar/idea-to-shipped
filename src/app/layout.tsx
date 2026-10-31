@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
 import Link from "next/link";
-import { lessons } from "@/lessons/lessons";
+import { loadHomeCourse } from "./home-course";
 import { LogoMark } from "./logo";
 import "./globals.css";
 
@@ -23,13 +23,8 @@ export const metadata: Metadata = {
     "Learning Matt Pocock's skills and agentic coding by building this site.",
 };
 
-async function loadLessons() {
-  "use cache";
-  return lessons.listLessons();
-}
-
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const all = await loadLessons();
+  const { lessons: all } = await loadHomeCourse();
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>
       <body>

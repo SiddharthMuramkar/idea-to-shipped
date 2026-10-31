@@ -1,7 +1,6 @@
 ---
 title: ordering
 slug: ordering
-order: 1
 image: /photos/x.jpg
 imageAlt: A photo.
 imageCredit: Ada Lens
@@ -9,7 +8,7 @@ imageCredit: Ada Lens
 
 ## Final test
 
-```test sequence-steps
+```final-test sequence-steps
 Put these in order:
 1. Grill
 2. Spec

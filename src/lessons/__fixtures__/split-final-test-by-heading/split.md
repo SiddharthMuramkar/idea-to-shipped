@@ -1,7 +1,6 @@
 ---
 title: split
 slug: split
-order: 1
 image: /photos/x.jpg
 imageAlt: A photo.
 imageCredit: Ada Lens
@@ -11,7 +10,7 @@ imageCredit: Ada Lens
 
 Some prose.
 
-```test first
+```final-test first
 Which?
 - [x] A
   > a
@@ -23,7 +22,7 @@ Which?
 
 ## Another section
 
-```test second
+```final-test second
 Which again?
 - [x] A
   > a

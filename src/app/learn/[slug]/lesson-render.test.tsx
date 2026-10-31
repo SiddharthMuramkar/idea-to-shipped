@@ -1,22 +1,22 @@
 import path from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test } from "vitest";
-import { allBlocks, lessons, lessonsFrom, type Scene } from "@/lessons/lessons";
+import { allBlocks, courses, coursesFrom, type Scene } from "@/lessons/lessons";
 import { SceneRun } from "./scene";
 import { LessonArticle } from "./section";
 
-describe("every Lesson in content/lessons", async () => {
-  const all = await lessons.listLessons();
+describe("every Lesson of every Course in content/", async () => {
+  const all = await courses.listLessons();
 
   test.each(all.map((lesson) => [lesson.slug]))("%s renders", async (slug) => {
-    const lesson = (await lessons.getLesson(slug))!;
+    const lesson = (await courses.getLesson(slug))!;
     const html = renderToStaticMarkup(<LessonArticle lesson={lesson} />);
     expect(html).toContain('<article class="lesson-article">');
   });
 });
 
 describe("Scenes", () => {
-  const full = lessonsFrom(path.join(process.cwd(), "src/lessons/__fixtures__/full"));
+  const full = coursesFrom(path.join(process.cwd(), "src/lessons/__fixtures__/full"));
 
   async function scenes(): Promise<Scene[]> {
     const lesson = (await full.getLesson("full"))!;

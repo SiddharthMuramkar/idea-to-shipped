@@ -1,14 +1,14 @@
 import path from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test } from "vitest";
-import { lessonsFrom, type Question } from "@/lessons/lessons";
+import { coursesFrom, type Question } from "@/lessons/lessons";
 import { Checkpoint, FinalTest } from "./question";
 
 // Until grading exists (ticket 05), every question shows its own answer in a
 // "Show the answer" box, with or without JavaScript, and nothing pretends it
 // can be checked.
 
-const full = lessonsFrom(path.join(process.cwd(), "src/lessons/__fixtures__/full"));
+const full = coursesFrom(path.join(process.cwd(), "src/lessons/__fixtures__/full"));
 
 async function questions(): Promise<{ checkpoint: Question; finalTest: Question[] }> {
   const all = (await full.getQuestions("full"))!;
@@ -29,7 +29,7 @@ describe("Checkpoint", () => {
     const boxes = answerBoxes(html);
     expect(boxes).toHaveLength(1);
     expect(boxes[0]).toContain("<summary>Show the answer</summary>");
-    const right = checkpoint.options.find((option) => option.id === checkpoint.answer)!;
+    const right = checkpoint.options.find((option) => option.id === checkpoint.correctOption)!;
     expect(boxes[0]).toContain(`<strong>Answer: </strong><span>${right.html}</span>`);
     for (const option of checkpoint.options) expect(boxes[0]).toContain(option.feedbackHtml);
   });
@@ -54,7 +54,7 @@ describe("Final test", () => {
     const boxes = answerBoxes(html);
     expect(boxes).toHaveLength(finalTest.length);
     finalTest.forEach((question, i) => {
-      const right = question.options.find((option) => option.id === question.answer)!;
+      const right = question.options.find((option) => option.id === question.correctOption)!;
       expect(boxes[i]).toContain(`<strong>Answer: </strong><span>${right.html}</span>`);
     });
   });
