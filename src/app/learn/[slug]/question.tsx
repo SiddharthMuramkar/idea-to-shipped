@@ -4,9 +4,9 @@ import { Icon } from "./icons";
 
 // Checkpoints and the Final test as plain server markup: native radios in a
 // fieldset, and under each question a "Show the answer" box. Nothing grades
-// yet (ticket 05 adds checking, scores and crowd stats), so there's no Check
-// button to pretend otherwise: the reader picks an option, then opens the box
-// to compare. It works the same with or without JavaScript.
+// the choices, so there's no Check button to pretend otherwise: the Visitor
+// picks an option, then opens the box to compare. It works the same with or
+// without JavaScript.
 
 // Ids and radio names are unique on the whole document, not just the Lesson:
 // Next keeps up to three visited pages mounted, so two Lessons can be in the
@@ -17,7 +17,6 @@ function questionIds(slug: string, questionId: string) {
   return { name: base, option: (optionId: string) => `${base}--${optionId}` };
 }
 
-// One question: the prompt as the legend, then its options as radio cards.
 function QuestionFields({ question, slug, label }: { question: Question; slug: string; label?: string }) {
   const ids = questionIds(slug, question.id);
   return (
@@ -38,8 +37,6 @@ function QuestionFields({ question, slug, label }: { question: Question; slug: s
   );
 }
 
-// The answer, closed until the reader opens it: the right option, then why
-// each option is right or wrong.
 function AnswerReveal({ question }: { question: Question }) {
   const right = question.options.find((option) => option.id === question.correctOption)!;
   return (
@@ -61,7 +58,6 @@ function AnswerReveal({ question }: { question: Question }) {
   );
 }
 
-// A Checkpoint: one question in the text column.
 export function Checkpoint({
   question,
   slug,
@@ -85,9 +81,7 @@ export function Checkpoint({
   );
 }
 
-// The Final test: a full-width navy band with every `final-test` question as
-// its own card, each with its answer box. `children` are any blocks written
-// before the questions in the same Section.
+// `children` are any blocks written before the questions in the same Section.
 export function FinalTest({
   questions,
   slug,

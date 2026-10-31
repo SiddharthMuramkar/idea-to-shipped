@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import type { Comment } from "@/comments/comments";
 import { MAX_BODY, MAX_NAME } from "@/comments/limits";
 
-// The Discussion band at the end of a Lesson, after the Final test: lists
-// the Lesson's Comments and posts new ones through the comments API.
-export function Discussion({ lesson }: { lesson: string }) {
+export function Discussion({ slug }: { slug: string }) {
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [name, setName] = useState("");
@@ -15,11 +13,11 @@ export function Discussion({ lesson }: { lesson: string }) {
   const [posting, setPosting] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/comments?lesson=${encodeURIComponent(lesson)}`)
+    fetch(`/api/comments?lesson=${encodeURIComponent(slug)}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then(setComments)
       .catch(() => setLoadError(true));
-  }, [lesson]);
+  }, [slug]);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -29,7 +27,7 @@ export function Discussion({ lesson }: { lesson: string }) {
       const res = await fetch("/api/comments", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ lesson, name, body }),
+        body: JSON.stringify({ lesson: slug, name, body }),
       });
       const data = await res.json();
       if (!res.ok) {

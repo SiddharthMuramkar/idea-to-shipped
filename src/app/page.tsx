@@ -85,7 +85,6 @@ export default async function Home() {
   return (
     <>
       <Reveal />
-      {/* The first screen: a full-screen photo under the see-through header. */}
       <PhotoBand className="home-hero" photo={hero}>
         <span className="eyebrow">A free course in agentic coding</span>
         <h1>From idea to shipped, one Skill at a time.</h1>
@@ -182,10 +181,10 @@ export default async function Home() {
                   )}
                 </h3>
                 <p className="flow-step-skills">
-                  {step.skills.map((c, j) => (
-                    <span key={c}>
+                  {step.skills.map((skill, j) => (
+                    <span key={skill}>
                       {j > 0 && " or "}
-                      <code>{c}</code>
+                      <code>{skill}</code>
                     </span>
                   ))}
                 </p>

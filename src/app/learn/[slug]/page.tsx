@@ -27,9 +27,8 @@ export async function generateMetadata({
 // Previous/Next sit two to a row at text width, one per row on phones.
 const NEIGHBOUR_SIZES = "(max-width: 640px) 100vw, (max-width: 860px) 50vw, 380px";
 
-// A cached Server Component: it never reads cookies, so every Lesson page
-// is static. What a Visitor has done (Comments, and later Answers) arrives
-// through the client components' own requests.
+// Reads no cookies, so every Lesson page is static: the Comments load in the
+// browser, through the Discussion's own request.
 export default async function LessonPage({ params }: PageProps<"/learn/[slug]">) {
   const lesson = await loadLesson((await params).slug);
   if (!lesson) notFound();
@@ -56,7 +55,7 @@ export default async function LessonPage({ params }: PageProps<"/learn/[slug]">)
         <LessonArticle lesson={lesson} />
 
         <div className="discussion-band">
-          <Discussion lesson={lesson.slug} />
+          <Discussion slug={lesson.slug} />
         </div>
 
         {(lesson.previous || lesson.next) && (

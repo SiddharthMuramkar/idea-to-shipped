@@ -2,23 +2,8 @@ import type { CSSProperties } from "react";
 import type { Scene } from "@/lessons/lessons";
 import { Icon } from "./icons";
 
-// A Scene, rendered on the server in its FINAL state: every item of every
-// step is in the HTML and visible, so with no JavaScript the picture is
-// complete and a screen reader reads all of it.
-//
-// The contract with the scene stepper (ticket 04):
-// - Steps are numbered from 1, in caption order. Step 0 is the empty frame.
-// - Every item carries data-step="<n>": the step that adds it. Items added by
-//   the last step carry data-new, the "just arrived" highlight.
-// - Caption cards are <li data-step="<n>"> in .scene-steps, in the text
-//   column. The figure and its captions share one .scene-run wrapper.
-// - The stepper sets data-stepper="on" and data-active-step on the figure,
-//   and only then may CSS hide items whose step is past the active one (with
-//   opacity, never display or visibility), and pin the stage at a fixed
-//   height. Without it the stage takes its full height (globals.css). Kind-specific state it updates:
-//   flow nodes' data-state and aria-current, files rows' data-change, the
-//   meter's --fill, data-zone and the reading marked data-current, and the
-//   terminal command marked data-cursor.
+// A Scene in its final state: every item of every step is in the HTML and
+// visible, so the picture is complete and a screen reader reads all of it.
 
 type SceneOf<K extends Scene["kind"]> = Extract<Scene, { kind: K }>;
 
@@ -36,7 +21,8 @@ const DEFAULT_TITLES: Record<Scene["kind"], string> = {
 
 const titleOf = (scene: Scene) => scene.title ?? DEFAULT_TITLES[scene.kind];
 
-// Every item of every step, in order, tagged with its step number.
+// Every item, tagged with the step that adds it, counted from 1 like the
+// captions.
 function itemsOf<I>(steps: { items: I[] }[]): (I & { step: number })[] {
   return steps.flatMap((step, i) => step.items.map((item) => ({ ...item, step: i + 1 })));
 }
@@ -313,7 +299,6 @@ function zoneOf(scene: Scene): "smart" | "dumb" | undefined {
   return latestReading(scene).fill > scene.zone ? "dumb" : "smart";
 }
 
-// The picture itself: a figure with its title as the figcaption.
 function SceneFigure({ scene, id }: { scene: Scene; id: string }) {
   const titleId = `${id}--title`;
   return (
@@ -341,10 +326,9 @@ function SceneFigure({ scene, id }: { scene: Scene; id: string }) {
   );
 }
 
-// A Scene where it was written: its stage, then its step captions as an
-// ordered list of cards. From 1080px the wrapper steps aside (display:
-// contents) so the stage can take the Section's right-hand column; below
-// that, the stage pins above the captions and only across them.
+// A Scene where it was written: its stage, then its step captions. From
+// 1080px the wrapper steps aside (display: contents) so the stage can take
+// the Section's right-hand column.
 export function SceneRun({ scene, id }: { scene: Scene; id: string }) {
   return (
     <div className="scene-run" data-scene-run>

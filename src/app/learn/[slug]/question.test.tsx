@@ -4,7 +4,7 @@ import { describe, expect, test } from "vitest";
 import { coursesFrom, type Question } from "@/lessons/lessons";
 import { Checkpoint, FinalTest } from "./question";
 
-// Until grading exists (ticket 05), every question shows its own answer in a
+// Nothing grades the choices, so every question shows its own answer in a
 // "Show the answer" box, with or without JavaScript, and nothing pretends it
 // can be checked.
 
@@ -15,7 +15,6 @@ async function questions(): Promise<{ checkpoint: Question; finalTest: Question[
   return { checkpoint: all[0], finalTest: all.slice(1) };
 }
 
-// The answer boxes in rendered HTML, each as its own string.
 function answerBoxes(html: string): string[] {
   return html.match(/<details class="question-answer">[\s\S]*?<\/details>/g) ?? [];
 }

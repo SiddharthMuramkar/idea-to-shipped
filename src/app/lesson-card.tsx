@@ -2,13 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import type { LessonSummary } from "@/lessons/lessons";
 
-// A Lesson as a card: its photo, then "Lesson N" and the title. Used for the
-// home page's Lesson grid and for Previous/Next on a Lesson page. `label` goes
+// A Lesson as a card: its photo, then "Lesson N" and the title. `label` goes
 // before the number (e.g. "Next"), and `sizes` tells the browser how wide the
-// card is drawn, so phones don't download a desktop-sized photo. The corner
-// of the photo keeps an empty slot for the "passed" tick, so the card never
-// shifts when the tick arrives. A Lesson without a photo is a card without
-// one, and the slot goes with it: the tick is placed on the photo.
+// card is drawn, so phones don't download a desktop-sized photo.
 export function LessonCard({
   lesson,
   label,

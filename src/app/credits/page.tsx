@@ -13,8 +13,6 @@ async function loadLessons() {
   return courses.listLessons();
 }
 
-// "Photo by <name> on Unsplash", linked to the photographer and the photo's
-// page when unsplash.ts knows them.
 function PhotoBy({ photo }: { photo: Photo }) {
   const links = unsplash[photo.image];
   return (
@@ -31,9 +29,6 @@ function PhotoBy({ photo }: { photo: Photo }) {
   );
 }
 
-// The full list of photos and photographers. Each Lesson's photo and credit
-// come from its own header (a Lesson without a photo isn't listed), the home
-// page's from home-photos.ts; the links come from unsplash.ts.
 export default async function Credits() {
   const all = await loadLessons();
   return (
