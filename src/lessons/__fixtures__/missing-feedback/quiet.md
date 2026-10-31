@@ -1,7 +1,6 @@
 ---
 title: quiet
 slug: quiet
-order: 1
 image: /photos/x.jpg
 imageAlt: A photo.
 imageCredit: Ada Lens
@@ -11,7 +10,7 @@ imageCredit: Ada Lens
 
 Some prose.
 
-```test scenario-quiet
+```final-test scenario-quiet
 Which?
 - [ ] A
   > a

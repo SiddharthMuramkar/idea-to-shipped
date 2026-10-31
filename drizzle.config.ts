@@ -10,7 +10,8 @@ export default defineConfig({
   schema: "./src/db/schema.ts",
   out: "./drizzle",
   dbCredentials: {
-    // Schema changes go over a direct connection when one is available.
+    // Neon's pooler runs in transaction mode, which migration tools may not
+    // support, so schema changes take the direct connection when there is one.
     url: process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL!,
   },
 });

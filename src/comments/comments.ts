@@ -1,7 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { comments } from "@/db/schema";
-import { lessons } from "@/lessons/lessons";
+import { courses } from "@/lessons/lessons";
 import { MAX_BODY, MAX_NAME } from "./limits";
 
 export type Comment = { id: number; name: string; body: string; createdAt: string };
@@ -21,9 +21,10 @@ export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 
 const UNKNOWN_LESSON = { ok: false, error: "Unknown lesson." } as const;
 
-// No foreign key protects lesson_slug (ADR 0004), so check it here.
+// No foreign key protects lesson_slug (ADR 0004), so check it here, against
+// every Course: a Slug names one Lesson across all of them.
 async function isLesson(slug: unknown): Promise<boolean> {
-  return typeof slug === "string" && slug !== "" && (await lessons.lessonExists(slug));
+  return typeof slug === "string" && slug !== "" && (await courses.lessonExists(slug));
 }
 
 // Accepts whatever JSON the request carried and checks every field itself.

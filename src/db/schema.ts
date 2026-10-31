@@ -1,7 +1,7 @@
 import { index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-// One row per Comment. lesson_slug points at a Lesson file by its permanent
-// Slug. There's no foreign key, because Lessons aren't in the database (ADR 0004).
+// lesson_slug points at a Lesson file by its permanent Slug. There's no
+// foreign key, because Lessons aren't in the database (ADR 0004).
 export const comments = pgTable(
   "comments",
   {

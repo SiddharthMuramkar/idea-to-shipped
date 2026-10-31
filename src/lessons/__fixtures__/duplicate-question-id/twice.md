@@ -1,7 +1,6 @@
 ---
 title: twice
 slug: twice
-order: 1
 image: /photos/x.jpg
 imageAlt: A photo.
 imageCredit: Ada Lens
@@ -21,7 +20,7 @@ Which?
   > c
 ```
 
-```test same-id
+```final-test same-id
 Which again?
 - [x] A
   > a

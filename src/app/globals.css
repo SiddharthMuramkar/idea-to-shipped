@@ -69,8 +69,6 @@
   --radius-pill: 999px;
   --shadow-soft: 0 6px 24px rgb(10 20 51 / 0.1), 0 1px 2px rgb(10 20 51 / 0.06);
   --header-h: 4.5rem;
-  /* The Lesson section bar's height, under the header (ticket 04 sets it). */
-  --lesson-bar-h: 0rem;
 }
 
 @media (max-width: 560px) {
@@ -444,8 +442,6 @@ button:hover,
   text-wrap: balance;
 }
 
-/* The "passed" tick's place in the photo's corner, always kept so the card
-   never shifts when it's filled. Empty, it shows nothing. */
 .lesson-card-tick {
   position: absolute;
   top: var(--space-s);
@@ -831,7 +827,7 @@ html:not([data-header]):has([data-hero]) .site-header {
   }
 }
 
-/* Once every Lesson has a Part, the grid splits under a heading per Part. */
+/* A Course with Parts splits the grid under a heading per Part. */
 .part-group {
   margin-top: var(--space-2xl);
 }
@@ -976,9 +972,6 @@ html:not([data-header]):has([data-hero]) .site-header {
    Lesson page, top to bottom: the photo band, the intro (goals and opening
    prose), one block per Section (text beside a stage from 1080px), the
    Final test band, the sources, the Discussion band and Previous/Next.
-   The base style of everything here is its final state: the scroll engine
-   (ticket 04) and the questions (ticket 05) only ever start from an earlier
-   state and come back to this.
    ========================================================================== */
 
 .lesson-hero {
@@ -1007,15 +1000,13 @@ html:not([data-header]):has([data-hero]) .site-header {
   color: var(--on-dark);
 }
 
-/* The wrapper for everything under the photo band. Ticket 04 changes
-   --lesson-bg with the Section in view (its tone). It clips sideways
+/* The wrapper for everything under the photo band. It clips sideways
    overflow without becoming a scroll container (overflow: clip, never
-   hidden), so sticky stages and view() timelines inside still work. */
+   hidden), so sticky stages inside still work. */
 .lesson {
-  --lesson-bg: var(--bg);
-  /* Where a pinned stage sits: under the header and the section bar. */
-  --stage-top: calc(var(--header-h) + var(--lesson-bar-h) + var(--space-l));
-  background: var(--lesson-bg);
+  /* Where a pinned stage sits: just under the header. */
+  --stage-top: calc(var(--header-h) + var(--space-l));
+  background: var(--bg);
   overflow-x: clip;
 }
 
@@ -1088,27 +1079,10 @@ html:not([data-header]):has([data-hero]) .site-header {
   display: none;
 }
 
-/* A Scene: its stage, then its captions. Until the stepper runs (ticket 04)
-   the Scene shows its final state, every item at once, so its stage takes
-   its full height and scrolls with the page: a pinned, fixed-height stage
-   would only ever show the start of the picture.
-
-   With the stepper on, the stage pins under the header across its own
-   captions only, then scrolls away with them. At min(34svh, 18rem) it leaves
-   at least 55% of a phone's screen for text. */
+/* A Scene: its stage, then its captions. */
 .scene-run {
   display: grid;
   row-gap: var(--space-m);
-}
-
-.scene-run > .stage--scene:has([data-stepper="on"]) {
-  position: sticky;
-  top: calc(var(--header-h) + var(--lesson-bar-h));
-  z-index: 2;
-  height: min(34svh, 18rem);
-  margin-inline: calc(-1 * var(--gutter));
-  padding: var(--space-xs) var(--gutter);
-  background: var(--lesson-bg);
 }
 
 /* The captions: a numbered card per step. */
@@ -1155,8 +1129,9 @@ html:not([data-header]):has([data-hero]) .site-header {
    a grid item in column 1, one row each (--rows counts them; the Scene's
    wrapper steps aside so its captions are one of them). The stage spans all
    of those rows plus a last flexible row, which grows only if the stage is
-   taller than the text. It's sticky within that area, so it pins while its
-   own Section scrolls by and the next Section pushes it away. */
+   taller than the text. A stage without a Scene is sticky within that area,
+   so it pins while its own Section scrolls by and the next Section pushes it
+   away. */
 @media (min-width: 1080px) {
   .lesson-hero .photo-band-inner {
     max-width: var(--lesson-max);
@@ -1215,19 +1190,11 @@ html:not([data-header]):has([data-hero]) .site-header {
     display: block;
   }
 
-  /* Beside its captions, a Scene's stage pins only once the stepper runs;
-     until then it sits at the top of its Section at full height. */
+  /* A Scene's stage shows every step at once, at full height, which can be
+     taller than the screen, so it scrolls with the page: pinned, it would
+     hide its end. */
   .scene-run > .stage--scene {
     position: static;
-  }
-
-  .scene-run > .stage--scene:has([data-stepper="on"]) {
-    position: sticky;
-    z-index: auto;
-    height: min(calc(100svh - var(--stage-top) - var(--space-l)), 50rem);
-    margin: 0;
-    padding: 0;
-    background: none;
   }
 
   /* A Section with no Scene: its number, huge and in outline. */
@@ -1339,8 +1306,7 @@ html:not([data-header]):has([data-hero]) .site-header {
   text-decoration-thickness: 2px;
 }
 
-/* ==key phrase==: a marker-pen stroke behind ink text. Ticket 04 sweeps it
-   in by growing the background's width from 0 to 100%. */
+/* ==key phrase==: a marker-pen stroke behind ink text. */
 .prose mark,
 .scene-step mark {
   padding: 0 0.12em;
@@ -1384,7 +1350,7 @@ html:not([data-header]):has([data-hero]) .site-header {
 }
 
 /* Code in a Lesson: navy panels with an amber edge, and a soft blue tint for
-   code inside a sentence. Both read on the paper and soft tones alike. */
+   code inside a sentence. */
 .lesson pre {
   padding: var(--space-m) var(--space-l);
   background: var(--navy);
@@ -1407,7 +1373,7 @@ html:not([data-header]):has([data-hero]) .site-header {
 
 /* --------------------------------------------------------------------------
    Boxes: goals, callouts, "Your turn", the Site story and sources. Each
-   keeps its own surface, so it reads the same on any tone.
+   keeps its own surface, so it reads the same on any background.
    -------------------------------------------------------------------------- */
 
 /* The label at the top of a box: an icon and a word, never colour alone. */
@@ -1429,8 +1395,7 @@ html:not([data-header]):has([data-hero]) .site-header {
   height: 1.1rem;
 }
 
-/* Goals: "By the end of this Lesson", with an empty circle per goal that
-   ticket 05 ticks once the Final test is passed. */
+/* Goals: "By the end of this Lesson", with an empty circle per goal. */
 .goals {
   padding: var(--space-l) var(--space-l) var(--space-l);
   background: var(--bg);
@@ -1657,10 +1622,8 @@ html:not([data-header]):has([data-hero]) .site-header {
 }
 
 /* --------------------------------------------------------------------------
-   Scenes: a figure on the stage with its title bar, then a frame. Without
-   the stepper every item shows (the final state) and the frame grows to fit
-   them. Once the stepper pins the stage at a fixed height, a frame that
-   overflows scrolls, until ticket 04 shifts the content instead.
+   Scenes: a figure on the stage with its title bar, then a frame that grows
+   to fit every item.
    -------------------------------------------------------------------------- */
 .scene {
   display: flex;
@@ -2229,8 +2192,7 @@ samp.term-line {
 
 /* --------------------------------------------------------------------------
    Questions: Checkpoints in the text column and the Final test's cards.
-   Each is a fieldset of native radios styled as cards. Ticket 05 adds the
-   checked, right/wrong and crowd states.
+   Each is a fieldset of native radios styled as cards.
    -------------------------------------------------------------------------- */
 .question {
   padding: var(--space-l);

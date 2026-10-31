@@ -27,10 +27,10 @@ const mark: TokenizerAndRendererExtension = {
   },
 };
 
-// The course's own Markdown renderer. It's a private instance, so the global
-// `marked` (and anything else that imports it) is never changed. A checklist
-// ("- [ ] …") is a list to read, not a form, so its boxes are drawn squares
-// hidden from screen readers instead of disabled, unlabeled checkboxes.
+// A private instance, so the global `marked` (and anything else that imports
+// it) is never changed. A checklist ("- [ ] …") is a list to read, not a
+// form, so its boxes are drawn squares hidden from screen readers instead of
+// disabled, unlabeled checkboxes.
 const md = new Marked({
   gfm: true,
   extensions: [mark],
@@ -41,19 +41,41 @@ const md = new Marked({
   },
 });
 
-export function lex(src: string): Token[] {
-  return md.lexer(src);
+// Builds the error for a problem in some Markdown. The caller knows the file
+// and the block, so the message can say where the problem is.
+export type Fail = (problem: string) => Error;
+
+// A Lesson's HTML goes onto the page as it is (dangerouslySetInnerHTML), so
+// raw HTML written in a Lesson would too. Lessons are Markdown only. marked
+// lexes every HTML block and tag as an "html" token, while code spans and
+// code blocks are tokens of their own, so `<div>` in backticks stays legal.
+function refuseHtml(tokens: Token[], fail: Fail) {
+  md.walkTokens(tokens, (token) => {
+    if (token.type !== "html") return;
+    const html = token.raw.trim().split("\n")[0];
+    throw fail(
+      `raw HTML isn't allowed in a Lesson (found "${html}"): write it in Markdown, or put it in backticks to show it as code`,
+    );
+  });
 }
 
-// Renders block tokens taken from lex(): a run of paragraphs, or a whole
-// callout, try, Site story or sources body.
+export function lex(src: string, fail: Fail): Token[] {
+  const tokens = md.lexer(src);
+  refuseHtml(tokens, fail);
+  return tokens;
+}
+
+// Only for tokens from lex(), which has already refused raw HTML.
 export function renderTokens(tokens: Token[]): string {
   return md.parser(tokens);
 }
 
-// Renders one line of Markdown without a wrapping <p>: prompts, captions.
-export function renderInline(src: string): string {
-  return md.parseInline(src, { async: false });
+// Lexes and renders in two steps, not with md.parseInline, because marked
+// appends "Please report this to …" to any error thrown inside parseInline.
+export function renderInline(src: string, fail: Fail): string {
+  const tokens = md.Lexer.lexInline(src, md.defaults);
+  refuseHtml(tokens, fail);
+  return md.Parser.parseInline(tokens, md.defaults);
 }
 
 const ENTITIES: Record<string, string> = {
@@ -65,15 +87,14 @@ const ENTITIES: Record<string, string> = {
   "&nbsp;": " ",
 };
 
-// The text a reader sees in a piece of rendered HTML.
 export function htmlToText(html: string): string {
   return html
     .replace(/<[^>]*>/g, "")
     .replace(/&(amp|lt|gt|quot|#39|nbsp);/g, (entity) => ENTITIES[entity]);
 }
 
-// How many words a piece of plain text holds. A "word" needs a letter or a
-// digit, so stray punctuation such as "-" or ">" never counts.
+// A "word" needs a letter or a digit, so stray punctuation such as "-" or ">"
+// never counts.
 export function countWordsIn(text: string): number {
   return text.split(/\s+/).filter((word) => /[A-Za-z0-9\u00C0-\u024F]/.test(word)).length;
 }

@@ -1,9 +1,8 @@
+import type { Photo } from "@/lessons/lessons";
+
 // The home page's own photos. A Lesson's photo lives in its file header; these
 // aren't Lessons, so they live here, and the credits page lists them too.
-export type HomePhoto = {
-  image: string;
-  imageAlt: string;
-  imageCredit: string;
+export type HomePhoto = Photo & {
   // Where on the home page the photo sits, for the credits page.
   label: string;
 };

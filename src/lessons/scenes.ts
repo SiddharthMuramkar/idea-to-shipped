@@ -1,7 +1,6 @@
-import { renderInline } from "./markdown";
+import { renderInline, type Fail } from "./markdown";
 
-// A Scene is a small picture beside the text that builds up step by step as
-// the reader scrolls past its captions. Each step lists only what it ADDS.
+// Each step lists only what it ADDS to the picture.
 type SceneStep<I> = { captionHtml: string; items: I[] };
 
 export type Scene =
@@ -19,22 +18,12 @@ export type Scene =
 const SCENE_KINDS = ["chat", "terminal", "flow", "files", "meter"] as const;
 type SceneKind = Scene["kind"];
 
-type Fail = (problem: string) => Error;
-
-// Reads a percentage from 0 to 100, such as "40" or "62.5", or null for
-// anything else.
 function percent(value: string): number | null {
   if (!/^\d{1,3}(?:\.\d+)?$/.test(value)) return null;
   const n = Number(value);
   return n <= 100 ? n : null;
 }
 
-// What a scene's body looks like:
-//   title: Optional title           (settings first)
-//   # The first caption              (a "# " line starts a step)
-//   you: an item this step adds      (the kind's item lines)
-//   # The next caption
-//   ...
 // `itemKeys` are "word:" items, so they're never read as settings.
 function parseSteps<I>(
   lines: string[],
@@ -44,7 +33,6 @@ function parseSteps<I>(
     setting: (key: string, value: string) => void;
     item: (line: string) => I | null;
     describe: string;
-    // A line that's only "#" (no space after it) is an item, not a step.
     bareHashIsItem?: boolean;
   },
 ): SceneStep<I>[] {
@@ -56,7 +44,7 @@ function parseSteps<I>(
     if (step) {
       const caption = (step[1] ?? "").trim();
       if (caption === "") throw fail('a step needs a caption after the "# "');
-      steps.push({ captionHtml: renderInline(caption), items: [] });
+      steps.push({ captionHtml: renderInline(caption, fail), items: [] });
       continue;
     }
     if (steps.length === 0) {
@@ -65,7 +53,7 @@ function parseSteps<I>(
         grammar.setting(setting[1], setting[2].trim());
         continue;
       }
-      throw fail(`"${line.trim()}" comes before the first "# " step`);
+      throw fail(`"${line.trim()}" comes before the first "# " step: put a "# <caption>" line above it`);
     }
     const item = grammar.item(line);
     if (item === null) throw fail(`"${line.trim()}" isn't a ${grammar.describe}`);
@@ -93,13 +81,14 @@ export function parseScene(file: string, type: string | undefined, body: string)
   const setting = (extra: Record<string, (value: string) => void> = {}) =>
     (key: string, value: string) => {
       if (key === "title") {
-        if (title !== null) throw fail('"title" is set twice');
+        if (title !== null) throw fail('"title" is set twice: keep one');
         if (value === "") throw fail('"title" needs a value');
         title = value;
       } else if (extra[key]) {
         extra[key](value);
       } else {
-        throw fail(`unknown setting "${key}"`);
+        const known = ["title", ...Object.keys(extra)].join(", ");
+        throw fail(`unknown setting "${key}": remove it (a ${kind} Scene's settings are ${known})`);
       }
     };
 
@@ -112,8 +101,8 @@ export function parseScene(file: string, type: string | undefined, body: string)
         item(line) {
           const match = /^(you|agent):\s*(.*)$/.exec(line);
           if (!match) return null;
-          if (match[2].trim() === "") throw fail(`"${line.trim()}" has nothing to say`);
-          return { from: match[1] as "you" | "agent", html: renderInline(match[2].trim()) };
+          if (match[2].trim() === "") throw fail(`"${line.trim()}" has nothing to say: write the message after the colon`);
+          return { from: match[1] as "you" | "agent", html: renderInline(match[2].trim(), fail) };
         },
       });
       return { kind, title, steps };
@@ -125,10 +114,8 @@ export function parseScene(file: string, type: string | undefined, body: string)
         setting: setting(),
         describe: "terminal line",
         bareHashIsItem: true,
-        // "$ command" is typed in; every other line is what it prints. Output
-        // that starts with "# " (a shell comment) is written "\# ", since a
-        // plain "# " line starts the next step. The backslash isn't shown. A
-        // "#" with no space after it ("#!/bin/sh", or "#" alone) is output.
+        // A plain "# " line starts the next step, so output that starts with
+        // "# " (a shell comment) is written "\# ", and shown without the "\".
         item(line) {
           const command = /^\$(?: (.*))?$/.exec(line);
           if (!command) return { type: "output" as const, text: line.replace(/^\\#/, "#") };
@@ -142,14 +129,13 @@ export function parseScene(file: string, type: string | undefined, body: string)
     case "flow": {
       const steps = parseSteps(lines, fail, {
         itemKeys: ["at"],
-        // node: <id> | <label> [| side]
         setting: setting({
           node(value) {
             const [id, label, side, ...rest] = value.split("|").map((part) => part.trim());
             if (!id || /\s/.test(id) || !label || (side !== undefined && side !== "side") || rest.length) {
               throw fail(`"node: ${value}" should read "node: <id> | <label>" or "node: <id> | <label> | side"`);
             }
-            if (nodes.some((node) => node.id === id)) throw fail(`node "${id}" is declared twice`);
+            if (nodes.some((node) => node.id === id)) throw fail(`node "${id}" is declared twice: give each node its own id`);
             // A side node is drawn beside the main node before it.
             if (side === "side" && !nodes.some((node) => !node.side)) {
               throw fail(`"node: ${value}": a side node needs a main node declared before it`);
@@ -187,11 +173,11 @@ export function parseScene(file: string, type: string | undefined, body: string)
     case "meter": {
       const steps = parseSteps(lines, fail, {
         itemKeys: ["fill"],
-        // zone: <0-100>, with or without a "%": where the meter turns to the
+        // The zone is where the Smart zone ends and the meter turns to the
         // warning colour.
         setting: setting({
           zone(value) {
-            if (zone !== null) throw fail('"zone" is set twice');
+            if (zone !== null) throw fail('"zone" is set twice: keep one');
             zone = percent(value.replace(/%$/, ""));
             if (zone === null) throw fail(`"zone: ${value}" needs a number from 0 to 100`);
           },

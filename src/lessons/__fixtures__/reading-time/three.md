@@ -1,7 +1,6 @@
 ---
 title: three-minutes
 slug: three-minutes
-order: 2
 image: /photos/x.jpg
 imageAlt: A photo.
 imageCredit: Ada Lens

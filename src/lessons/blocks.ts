@@ -1,5 +1,5 @@
 import type { Token, Tokens } from "marked";
-import { countWordsIn, htmlToText, lex, renderInline, renderTokens } from "./markdown";
+import { countWordsIn, htmlToText, lex, renderInline, renderTokens, type Fail } from "./markdown";
 import { parseQuestion, type Question } from "./questions";
 import { parseScene, type Scene } from "./scenes";
 
@@ -18,12 +18,11 @@ export type Section = { id: string; title: string; titleHtml: string; blocks: Bl
 
 export type LessonBody = { intro: Block[]; sections: Section[] };
 
-// A code fence whose info string starts with one of these is a typed block.
 const KINDS = [
   "goals",
   "scene",
   "checkpoint",
-  "test",
+  "final-test",
   "callout",
   "try",
   "site-story",
@@ -31,9 +30,9 @@ const KINDS = [
 ] as const;
 type Kind = (typeof KINDS)[number];
 
-// Real code languages, matched in any case. Some sit close to a kind ("text"
-// is one letter from "test", "ts" and "r" two from "try"), so a fence that
-// starts with one of these is always ordinary code, never a near miss.
+// Real code languages, matched in any case. Some sit close to a kind ("ts"
+// and "r" are two letters from "try"), so a fence that starts with one of
+// these is always ordinary code, never a near miss.
 const LANGUAGES = new Set([
   // Web and JavaScript
   "ts", "tsx", "js", "jsx", "mjs", "cjs", "json", "jsonc", "json5", "html", "css", "less",
@@ -58,7 +57,8 @@ const LANGUAGES = new Set([
 
 // Words authors reach for instead of a kind: a callout tone or Scene type on
 // its own, or a near synonym. "tip" is two letters from "try", so without
-// these it would suggest "try".
+// these it would suggest "try", and "test" is too far from "final-test" to
+// be caught as a near miss, so it would quietly show as code.
 const HINTS = new Map(Object.entries({
   tip: "callout tip",
   "watch-out": "callout watch-out",
@@ -71,6 +71,7 @@ const HINTS = new Map(Object.entries({
   story: "site-story",
   quiz: "checkpoint <id>",
   question: "checkpoint <id>",
+  test: "final-test <id>",
 }));
 
 // How many single-letter edits turn one word into the other.
@@ -97,8 +98,6 @@ function kindOf(file: string, word: string): Kind | null {
   return null;
 }
 
-// A fence's info string split into words: "checkpoint my-id" gives
-// ["checkpoint", "my-id"].
 function infoWords(lang: string): string[] {
   return lang.trim().split(/\s+/);
 }
@@ -125,10 +124,8 @@ function checkNested(file: string, tokens: Token[], where: string) {
   }
 }
 
-// Lexes a callout, try, Site story or sources body and renders it, once
-// it's checked that no typed block hides inside.
 function renderBody(file: string, kind: Kind, text: string): string {
-  const tokens = lex(text);
+  const tokens = lex(text, (problem) => new Error(`${file}: ${kind}: ${problem}`));
   checkNested(file, tokens, `a ${kind} block`);
   return renderTokens(tokens);
 }
@@ -141,10 +138,8 @@ function slugify(text: string): string {
   return slug || "section";
 }
 
-// The words a reader reads as running text: prose plus callout, try and Site
-// story bodies. Headings and code (code blocks and inline `code` alike) don't
-// count, and neither do goals, Scenes, questions or sources. The content lint
-// holds each Lesson to a range.
+// Running text is what a reader reads as prose, so the code and headings
+// inside these blocks don't count.
 export function countProseWords(blocks: Block[]): number {
   return blocks.reduce((total, block) => {
     if (!["prose", "callout", "try", "siteStory"].includes(block.type)) return total;
@@ -162,30 +157,25 @@ export function countProseWords(blocks: Block[]): number {
 const CALLOUT_TONES = ["tip", "watch-out", "big-idea"] as const;
 export type CalloutTone = (typeof CALLOUT_TONES)[number];
 
-// How many words each kind takes after its name: checkpoint <id>,
-// test <id>, callout <tone>, scene <type>; the rest take none.
-const ARGS: Record<Kind, number> = {
-  goals: 0,
-  scene: 1,
-  checkpoint: 1,
-  test: 1,
-  callout: 1,
-  try: 0,
-  "site-story": 0,
-  sources: 0,
+const ARG: Partial<Record<Kind, string>> = {
+  scene: "<type>",
+  checkpoint: "<id>",
+  "final-test": "<id>",
+  callout: "<tone>",
 };
 
 function parseGoals(file: string, body: string): string[] {
-  const tokens = lex(body).filter((t) => t.type !== "space");
+  const fail: Fail = (problem) => new Error(`${file}: goals: ${problem}`);
+  const tokens = lex(body, fail).filter((t) => t.type !== "space");
   if (tokens.length !== 1 || tokens[0].type !== "list") {
-    throw new Error(`${file}: goals: write the goals as a Markdown list`);
+    throw fail("write the goals as a Markdown list");
   }
   const { items } = tokens[0] as Tokens.List;
   // Each goal renders as one line, so a sub-list would run into its text.
   if (items.some((item) => item.tokens.some((token) => token.type === "list"))) {
-    throw new Error(`${file}: goals: goals items can't contain nested lists`);
+    throw fail("goals items can't contain nested lists: write each goal as one line");
   }
-  return items.map((item) => renderInline(item.text.trim()));
+  return items.map((item) => renderInline(item.text.trim(), fail));
 }
 
 function calloutTone(file: string, tone: string | undefined): CalloutTone {
@@ -197,19 +187,15 @@ function calloutTone(file: string, tone: string | undefined): CalloutTone {
   return tone as CalloutTone;
 }
 
-// Lexes a Lesson's body once and walks its top-level tokens. A ## heading
-// opens a Section, a fence whose first word is a kind becomes that block, and
-// everything else between them becomes one prose block. Typed blocks count
-// only at the top level: one inside a list, a blockquote or another block's
-// body is an error.
 export function parseBody(file: string, body: string): LessonBody {
+  const inFile: Fail = (problem) => new Error(`${file}: ${problem}`);
   const intro: Block[] = [];
   const sections: Section[] = [];
   const sectionIds = new Set<string>();
   const questionIds = new Set<string>();
   let blocks = intro;
   let prose: Token[] = [];
-  // The Final test while its test blocks are still arriving back to back.
+  // The Final test while its final-test blocks are still arriving back to back.
   let openFinalTest: Question[] | null = null;
   let hasFinalTest = false;
 
@@ -220,7 +206,7 @@ export function parseBody(file: string, body: string): LessonBody {
   }
 
   function openSection(token: Tokens.Heading) {
-    const titleHtml = renderInline(token.text);
+    const titleHtml = renderInline(token.text, inFile);
     const title = htmlToText(titleHtml);
     const base = slugify(title);
     let id = base;
@@ -230,11 +216,11 @@ export function parseBody(file: string, body: string): LessonBody {
     sections.push({ id, title, titleHtml, blocks });
   }
 
-  function addQuestion(kind: "checkpoint" | "test", id: string | undefined, text: string) {
+  function addQuestion(kind: Question["kind"], id: string | undefined, text: string) {
     const question = parseQuestion(file, kind, id, text);
     const fail = (problem: string) => new Error(`${file}: ${kind} "${question.id}": ${problem}`);
     if (questionIds.has(question.id)) {
-      throw fail("another question in this Lesson already uses this id");
+      throw fail("another question in this Lesson already uses this id: give each question its own");
     }
     questionIds.add(question.id);
     if (kind === "checkpoint") {
@@ -243,7 +229,7 @@ export function parseBody(file: string, body: string): LessonBody {
       openFinalTest.push(question);
     } else if (hasFinalTest) {
       throw fail(
-        "test blocks must sit together (only blank lines between them) to form one Final test",
+        "final-test blocks must sit together (only blank lines between them) to form one Final test",
       );
     } else if (sections.length === 0) {
       throw fail("the Final test goes in a Section (after a ## heading), not in the intro");
@@ -255,12 +241,16 @@ export function parseBody(file: string, body: string): LessonBody {
   }
 
   function addTypedBlock(kind: Kind, args: string[], text: string) {
-    if (args.length > ARGS[kind]) {
+    const takes = ARG[kind] ? 1 : 0;
+    if (args.length > takes) {
       // Named the way every other error names its block: checkpoint "my-id",
       // scene chat, callout tip, goals.
       const [arg] = args;
-      const label = kind === "checkpoint" || kind === "test" ? `${kind} "${arg}"` : ARGS[kind] ? `${kind} ${arg}` : kind;
-      throw new Error(`${file}: ${label}: unexpected "${args.slice(ARGS[kind]).join(" ")}"`);
+      const label = kind === "checkpoint" || kind === "final-test" ? `${kind} "${arg}"` : takes ? `${kind} ${arg}` : kind;
+      const usage = takes ? `${kind} ${ARG[kind]}` : kind;
+      throw new Error(
+        `${file}: ${label}: unexpected "${args.slice(takes).join(" ")}": write the fence's first line as "${usage}"`,
+      );
     }
     switch (kind) {
       case "goals":
@@ -268,7 +258,7 @@ export function parseBody(file: string, body: string): LessonBody {
         blocks.push({ type: "goals", itemsHtml: parseGoals(file, text) });
         return;
       case "checkpoint":
-      case "test":
+      case "final-test":
         addQuestion(kind, args[0], text);
         return;
       case "callout":
@@ -291,7 +281,9 @@ export function parseBody(file: string, body: string): LessonBody {
         }
         if (blocks.some((block) => block.type === "scene")) {
           const where = sections[sections.length - 1].title;
-          throw new Error(`${file}: scene ${scene.kind}: one Scene per Section ("${where}" already has one)`);
+          throw new Error(
+            `${file}: scene ${scene.kind}: one Scene per Section ("${where}" already has one): move this one to a Section of its own`,
+          );
         }
         blocks.push({ type: "scene", scene });
         return;
@@ -299,7 +291,7 @@ export function parseBody(file: string, body: string): LessonBody {
     }
   }
 
-  for (const token of lex(body)) {
+  for (const token of lex(body, inFile)) {
     if (token.type === "heading" && (token as Tokens.Heading).depth === 1) {
       throw new Error(
         `${file}: "${token.raw.trim()}": use ## for Sections; the title comes from the header`,
@@ -316,7 +308,7 @@ export function parseBody(file: string, body: string): LessonBody {
       const kind = kindOf(file, word);
       if (kind) {
         flushProse();
-        if (kind !== "test") openFinalTest = null;
+        if (kind !== "final-test") openFinalTest = null;
         addTypedBlock(kind, args, (token as Tokens.Code).text);
         continue;
       }

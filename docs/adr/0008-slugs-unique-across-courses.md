@@ -1,0 +1,3 @@
+# Slugs are unique across all Courses
+
+The site holds Courses, and each Lesson belongs to one of them. A Lesson's Slug stays unique across every Course, not just within its own, so a Slug alone names one Lesson. Comments, and any later per-Lesson data such as Answers (ADR 0005), keep pointing at a Slug alone, and every Lesson stays at `/learn/<slug>`, whichever Course it's in. We rejected Slugs that are unique only within their Course: every Comment would then need its Course stored beside its Slug, which means a database migration, and the per-Course addresses would need redirects from every published `/learn/<slug>` link. The cost: two Courses can't each have a Lesson called `intro`, so the second one needs a Slug of its own.

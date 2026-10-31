@@ -3,11 +3,9 @@ import { allBlocks, type Block, type Lesson, type Section } from "@/lessons/less
 import { BlockView, type LessonContext } from "./blocks";
 import { FinalTest } from "./question";
 
-// The Section's number as it's shown: "01", "02", …
 const numeral = (n: number) => String(n).padStart(2, "0");
 
-// The intro: everything before the first ## heading (goals, opening prose),
-// one column at text width.
+// The intro: everything before the first ## heading (goals, opening prose).
 export function LessonIntro({ blocks, ctx }: { blocks: Block[]; ctx: LessonContext }) {
   if (blocks.length === 0) return null;
   return (
@@ -46,11 +44,10 @@ function FinalTestSection({ section, at, ctx }: { section: Section; at: number; 
 }
 
 // One ## Section. From 1080px it's a grid: the text on the left, and on the
-// right a stage that pins while the Section scrolls by and is pushed away by
-// the next one. The stage shows the Section's Scene; with no Scene, a large
-// outline numeral, with the Section's big-idea callout under it if it has
-// one. Below 1080px it's one column: a Scene's stage pins above its own
-// captions, and the numeral isn't shown.
+// right a stage with the Section's Scene or, with no Scene, a large outline
+// numeral (with the Section's big-idea callout under it, if it has one) that
+// pins while the Section scrolls by. Below 1080px it's one column, and the
+// numeral isn't shown.
 //
 // Every text block is its own grid item in the left column, one row each.
 // The stage spans all of those rows plus a last, flexible one, which takes

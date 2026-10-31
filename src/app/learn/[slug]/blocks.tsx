@@ -18,7 +18,6 @@ const CALLOUTS: Record<CalloutTone, { label: string; icon: IconName }> = {
   "big-idea": { label: "Big idea", icon: "big-idea" },
 };
 
-// The small label at the top of a box: an icon and a word.
 function BlockLabel({ icon, children }: { icon: IconName; children: string }) {
   return (
     <p className="block-label">
@@ -82,8 +81,6 @@ function Goals({ itemsHtml, slug }: { itemsHtml: string[]; slug: string }) {
       <ul className="goals-list" data-reveal-children>
         {itemsHtml.map((html, i) => (
           <li key={i} className="goal">
-            {/* An empty circle now; ticket 05 draws the tick once the Final
-                test is passed. */}
             <svg className="goal-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <circle cx="12" cy="12" r="10" />
               <path className="goal-tick" d="m7.5 12.5 3 3 6-6.5" pathLength={1} />
@@ -106,7 +103,6 @@ function Callout({ tone, html }: { tone: CalloutTone; html: string }) {
   );
 }
 
-// "Your turn": an exercise, with a Copy button on each of its code blocks.
 function Try({ html }: { html: string }) {
   return (
     <div className="try" data-reveal>
@@ -145,8 +141,8 @@ function Sources({ html }: { html: string }) {
   );
 }
 
-// One block, in its final state. `sceneId` names the Section's Scene (a
-// Section has at most one), so its ids are unique on the page.
+// `sceneId` names the Section's Scene (a Section has at most one), so its ids
+// are unique on the page.
 export function BlockView({ block, ctx, sceneId }: { block: Block; ctx: LessonContext; sceneId: string }) {
   switch (block.type) {
     case "prose":
