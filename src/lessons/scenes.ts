@@ -1,7 +1,6 @@
 import { renderInline, type Fail } from "./markdown";
 
-// A Scene is a small picture beside the text that builds up step by step as
-// the reader scrolls past its captions. Each step lists only what it ADDS.
+// Each step lists only what it ADDS to the picture.
 type SceneStep<I> = { captionHtml: string; items: I[] };
 
 export type Scene =
@@ -19,20 +18,12 @@ export type Scene =
 const SCENE_KINDS = ["chat", "terminal", "flow", "files", "meter"] as const;
 type SceneKind = Scene["kind"];
 
-// Reads a percentage from 0 to 100, such as "40" or "62.5", or null for
-// anything else.
 function percent(value: string): number | null {
   if (!/^\d{1,3}(?:\.\d+)?$/.test(value)) return null;
   const n = Number(value);
   return n <= 100 ? n : null;
 }
 
-// What a scene's body looks like:
-//   title: Optional title           (settings first)
-//   # The first caption              (a "# " line starts a step)
-//   you: an item this step adds      (the kind's item lines)
-//   # The next caption
-//   ...
 // `itemKeys` are "word:" items, so they're never read as settings.
 function parseSteps<I>(
   lines: string[],
@@ -42,7 +33,6 @@ function parseSteps<I>(
     setting: (key: string, value: string) => void;
     item: (line: string) => I | null;
     describe: string;
-    // A line that's only "#" (no space after it) is an item, not a step.
     bareHashIsItem?: boolean;
   },
 ): SceneStep<I>[] {
@@ -124,10 +114,8 @@ export function parseScene(file: string, type: string | undefined, body: string)
         setting: setting(),
         describe: "terminal line",
         bareHashIsItem: true,
-        // "$ command" is typed in; every other line is what it prints. Output
-        // that starts with "# " (a shell comment) is written "\# ", since a
-        // plain "# " line starts the next step. The backslash isn't shown. A
-        // "#" with no space after it ("#!/bin/sh", or "#" alone) is output.
+        // A plain "# " line starts the next step, so output that starts with
+        // "# " (a shell comment) is written "\# ", and shown without the "\".
         item(line) {
           const command = /^\$(?: (.*))?$/.exec(line);
           if (!command) return { type: "output" as const, text: line.replace(/^\\#/, "#") };
@@ -141,7 +129,6 @@ export function parseScene(file: string, type: string | undefined, body: string)
     case "flow": {
       const steps = parseSteps(lines, fail, {
         itemKeys: ["at"],
-        // node: <id> | <label> [| side]
         setting: setting({
           node(value) {
             const [id, label, side, ...rest] = value.split("|").map((part) => part.trim());
@@ -186,7 +173,7 @@ export function parseScene(file: string, type: string | undefined, body: string)
     case "meter": {
       const steps = parseSteps(lines, fail, {
         itemKeys: ["fill"],
-        // zone: <0-100>, with or without a "%": where the meter turns to the
+        // The zone is where the Smart zone ends and the meter turns to the
         // warning colour.
         setting: setting({
           zone(value) {

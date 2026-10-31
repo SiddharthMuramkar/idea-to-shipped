@@ -9,12 +9,10 @@ export type { Photo } from "./files";
 export type { Question, QuestionOption } from "./questions";
 export type { Scene } from "./scenes";
 
-// One of the groups a Course's Lessons are read in: a "## " heading in its
-// course.md, numbered from 1.
+// A "## " heading in its Course's course.md, numbered from 1.
 export type Part = { number: number; title: string };
 
-// A Lesson as the places that list it need it: a card, the footer,
-// Previous/Next and the credits page.
+// A Lesson without its body: what every list of Lessons shows.
 export type LessonSummary = {
   // Its position in its Course, from 0, so it changes when Lessons move.
   number: number;
@@ -42,19 +40,15 @@ export type Course = {
   lessons: LessonSummary[];
 };
 
-// The Lesson's running-text word count (see countProseWords). The content
-// lint holds each Idea to shipped Lesson to a range.
+// Only running text counts (see countProseWords).
 export function countWords(lesson: LessonBody): number {
   return countProseWords(allBlocks(lesson));
 }
 
-// Every block of a Lesson in reading order: the intro, then each Section.
 export function allBlocks(lesson: LessonBody): Block[] {
   return [lesson.intro, ...lesson.sections.map((section) => section.blocks)].flat();
 }
 
-// Every question in a Lesson, Checkpoints and Final test alike, in the order
-// a reader meets them.
 export function allQuestions(lesson: LessonBody): Question[] {
   return allBlocks(lesson).flatMap((block) =>
     block.type === "checkpoint" ? [block.question] : block.type === "finalTest" ? block.questions : [],
@@ -63,8 +57,8 @@ export function allQuestions(lesson: LessonBody): Question[] {
 
 const COURSE_FILE = "course.md";
 
-// One Lesson as the loader keeps it. Its body is parsed the first time
-// someone asks for the whole Lesson, since listing Lessons never needs it.
+// A Lesson's body is parsed the first time someone asks for the whole
+// Lesson, since listing Lessons never needs it.
 type Entry = { summary: LessonSummary; course: Course; file: string; body: string; parsed?: LessonBody };
 
 type Content = { courses: Course[]; lessons: Map<string, Entry> };
@@ -79,9 +73,8 @@ function freeze<T>(value: T): T {
   return value;
 }
 
-// Reads one Course's folder: its course.md and its Lesson files, each by its
-// name without ".md". Every problem with them, or between them, goes into
-// `problems`; `where` names a file as the messages show it.
+// Problems go into `problems` instead of being thrown; `where` names a file
+// the way the messages show it.
 async function readFolder(
   root: string,
   folder: string,
@@ -133,9 +126,9 @@ async function readFolder(
   return { listing, files };
 }
 
-// Reads every Course under `root`: one folder per Course, holding its
-// course.md and one <slug>.md per Lesson. It checks that the files fit
-// together, and reports every problem it finds at once.
+// Throws every problem with the files and their headers at once, one per
+// line, so an author can fix them all in one pass. A Lesson's body is only
+// checked once it's parsed.
 async function readContent(root: string): Promise<Content> {
   const where = (...names: string[]) => [path.basename(root), ...names].join("/");
   const problems: string[] = [];
@@ -218,18 +211,15 @@ export function coursesFrom(root: string) {
       return (await load()).courses.find((course) => course.slug === slug) ?? null;
     },
 
-    // Every Lesson of every Course, a Course at a time. Header-only, so it
-    // stays cheap: no Lesson body is parsed.
+    // Every Lesson of every Course, a Course at a time.
     async listLessons(): Promise<LessonSummary[]> {
       return (await load()).courses.flatMap((course) => course.lessons);
     },
 
-    // A Slug names one Lesson across every Course, so it alone finds it.
+    // A Slug names one Lesson across every Course (ADR 0008), so it alone
+    // finds it.
     getLesson,
 
-    // The Lesson's questions (see allQuestions), or null when there's no such
-    // Lesson. The quiz grades Answers against this, so it never reads Lesson
-    // files itself.
     async getQuestions(slug: string): Promise<Question[] | null> {
       const lesson = await getLesson(slug);
       return lesson && allQuestions(lesson);
@@ -241,5 +231,5 @@ export function coursesFrom(root: string) {
   };
 }
 
-// The real site: content/, one folder per Course.
+// The site's own Courses. Tests point coursesFrom at fixtures instead.
 export const courses = coursesFrom(path.join(process.cwd(), "content"));

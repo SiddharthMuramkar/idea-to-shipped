@@ -3,6 +3,8 @@ import { countWordsIn } from "./markdown";
 // The two kinds of file under content/: a Course's course.md, and its Lesson
 // files. Both open with the same header of "key: value" lines between ---
 // lines. A Lesson's body is parsed later, by parseBody (blocks.ts).
+// __fixtures__/complete-example/ is a whole Course written out, with every
+// block kind and Scene kind.
 
 // A Lesson's photo, from Unsplash: its path under public/, a description for
 // screen readers, and the photographer's name for the "Photo: <name> /
@@ -28,7 +30,6 @@ const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const PHOTO_KEYS = ["image", "imageAlt", "imageCredit"];
 
-// Reading speed for the "N min" label.
 const WORDS_PER_MINUTE = 220;
 
 // Editors on Windows save "\r\n" line endings and sometimes a byte-order mark
@@ -37,8 +38,6 @@ function normalize(raw: string): string {
   return raw.replace(/^﻿/, "").replace(/\r\n?/g, "\n");
 }
 
-// The header's fields and the text after it. `required` keys must be set;
-// `optional` ones may be; any other key is an error.
 function parseHeader(file: string, raw: string, required: string[], optional: string[] = []) {
   const match = normalize(raw).match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!match) {
@@ -81,7 +80,6 @@ function estimateWords(body: string): number {
   );
 }
 
-// A photo takes all three keys, or a Lesson has none of them and no photo.
 function parsePhoto(file: string, fields: Record<string, string>): Photo | null {
   const set = PHOTO_KEYS.filter((key) => fields[key]);
   if (set.length === 0) return null;
@@ -94,13 +92,8 @@ function parsePhoto(file: string, fields: Record<string, string>): Photo | null 
   return { image: fields.image, imageAlt: fields.imageAlt, imageCredit: fields.imageCredit };
 }
 
-// A Lesson file's header:
-//   title: Grilling
-//   slug: grilling                      (permanent: Comments point at it)
-//   image: /photos/grilling.jpg         (the photo is optional: set all
-//   imageAlt: A woman questions a man.   three keys, or none)
-//   imageCredit: Vitaly Gariev
-// Its place in the course and its Part come from the Course's course.md.
+// A Lesson's place and its Part come from its Course's course.md, never from
+// its own header.
 export function parseLessonFile(file: string, raw: string): LessonFile {
   const { fields, body } = parseHeader(file, raw, ["title", "slug"], PHOTO_KEYS);
   if (!SLUG.test(fields.slug)) {
@@ -117,17 +110,6 @@ export function parseLessonFile(file: string, raw: string): LessonFile {
   };
 }
 
-// A course.md lists its Lessons by Slug, one "- <slug>" line each, in reading
-// order. "## <title>" lines split them into Parts; with none, the Course has
-// no Parts and its Lessons read as one list.
-//   ---
-//   title: Idea to shipped
-//   slug: idea-to-shipped
-//   ---
-//
-//   ## Foundations
-//   - start-here
-//   - how-agents-work
 export function parseCourseFile(file: string, raw: string): CourseFile {
   const { fields, body } = parseHeader(file, raw, ["title", "slug"]);
   if (!SLUG.test(fields.slug)) {

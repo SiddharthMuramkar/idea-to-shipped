@@ -4,12 +4,8 @@ import { describe, expect, test } from "vitest";
 import { checkLessonLinks, EDITORIAL_RULES } from "./course-lint";
 import { courses, type Course, type Lesson } from "./lessons";
 
-// The content lint: every Course in content/. Every Course must load (its
-// course.md, file names and Slugs line up), every Lesson must parse, and
-// links and photos must lead somewhere. The Idea to shipped Course is also
-// held to its house style (EDITORIAL_RULES in course-lint.ts). Each failure
-// says what's wrong and how to fix it, so an author can fix the file without
-// reading this code.
+// The content lint. Each failure says what's wrong and how to fix it, so an
+// author can fix the file without reading this code.
 
 // The Course whose house style the editorial rules are.
 const IDEA_TO_SHIPPED = "idea-to-shipped";
@@ -43,7 +39,6 @@ const PUBLISHED_SLUGS = [
 // that doesn't load yields no Courses here; "every Course loads" says why.
 const all: Course[] = await courses.listCourses().catch(() => []);
 
-// A Lesson's file, as an author finds it.
 const fileOf = (course: Course, slug: string) => `content/${course.slug}/${slug}.md`;
 
 async function load(slug: string): Promise<Lesson> {

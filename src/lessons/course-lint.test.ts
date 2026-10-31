@@ -18,7 +18,7 @@ import {
 } from "./course-lint";
 import type { Block, Lesson, LessonSummary, Question } from "./lessons";
 
-// The real Course follows every rule, so none of them fires on it. These
+// Idea to shipped follows every rule, so none of them fires on it. These
 // tests make each one fire, so a rule that stopped working, or a message that
 // stopped saying how to fix it, can't go unnoticed.
 

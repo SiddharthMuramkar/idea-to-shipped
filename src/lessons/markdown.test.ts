@@ -4,8 +4,6 @@ import { lex, renderInline, renderTokens, type Fail } from "./markdown";
 const fail: Fail = (problem) => new Error(problem);
 
 describe("checklists", () => {
-  // "- [ ] …" is a list to read, not a form: its squares are drawn, never
-  // inputs, so a screen reader doesn't announce unlabeled disabled checkboxes.
   test("draw each box as a hidden square, ticked or not, and no form control", () => {
     const html = renderTokens(lex("- [ ] Each round arrives as numbered questions.\n- [x] You answered in one reply.\n", fail));
     expect(html).not.toContain("<input");

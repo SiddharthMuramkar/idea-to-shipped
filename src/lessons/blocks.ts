@@ -18,7 +18,6 @@ export type Section = { id: string; title: string; titleHtml: string; blocks: Bl
 
 export type LessonBody = { intro: Block[]; sections: Section[] };
 
-// A code fence whose info string starts with one of these is a typed block.
 const KINDS = [
   "goals",
   "scene",
@@ -99,8 +98,6 @@ function kindOf(file: string, word: string): Kind | null {
   return null;
 }
 
-// A fence's info string split into words: "checkpoint my-id" gives
-// ["checkpoint", "my-id"].
 function infoWords(lang: string): string[] {
   return lang.trim().split(/\s+/);
 }
@@ -127,8 +124,6 @@ function checkNested(file: string, tokens: Token[], where: string) {
   }
 }
 
-// Lexes a callout, try, Site story or sources body and renders it, once
-// it's checked that no typed block hides inside.
 function renderBody(file: string, kind: Kind, text: string): string {
   const tokens = lex(text, (problem) => new Error(`${file}: ${kind}: ${problem}`));
   checkNested(file, tokens, `a ${kind} block`);
@@ -143,10 +138,8 @@ function slugify(text: string): string {
   return slug || "section";
 }
 
-// The words a reader reads as running text: prose plus callout, try and Site
-// story bodies. Headings and code (code blocks and inline `code` alike) don't
-// count, and neither do goals, Scenes, questions or sources. The content lint
-// holds each Lesson to a range.
+// Running text is what a reader reads as prose, so the code and headings
+// inside these blocks don't count.
 export function countProseWords(blocks: Block[]): number {
   return blocks.reduce((total, block) => {
     if (!["prose", "callout", "try", "siteStory"].includes(block.type)) return total;
@@ -164,8 +157,6 @@ export function countProseWords(blocks: Block[]): number {
 const CALLOUT_TONES = ["tip", "watch-out", "big-idea"] as const;
 export type CalloutTone = (typeof CALLOUT_TONES)[number];
 
-// The word each kind takes after its name, if any: checkpoint <id>,
-// final-test <id>, callout <tone>, scene <type>. The rest take none.
 const ARG: Partial<Record<Kind, string>> = {
   scene: "<type>",
   checkpoint: "<id>",
@@ -196,11 +187,6 @@ function calloutTone(file: string, tone: string | undefined): CalloutTone {
   return tone as CalloutTone;
 }
 
-// Lexes a Lesson's body once and walks its top-level tokens. A ## heading
-// opens a Section, a fence whose first word is a kind becomes that block, and
-// everything else between them becomes one prose block. Typed blocks count
-// only at the top level: one inside a list, a blockquote or another block's
-// body is an error.
 export function parseBody(file: string, body: string): LessonBody {
   const inFile: Fail = (problem) => new Error(`${file}: ${problem}`);
   const intro: Block[] = [];

@@ -3,8 +3,7 @@ import { renderInline, type Fail } from "./markdown";
 // Options are known by their position, never by their text (ADR 0005).
 const OPTION_IDS = ["a", "b", "c", "d"] as const;
 
-// Question ids are permanent, like slugs (ADR 0005): kebab-case, unique
-// within their Lesson.
+// Question ids are permanent, like Slugs (ADR 0005).
 const QUESTION_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const MAX_ID_LENGTH = 40;
 
@@ -15,7 +14,6 @@ export type Question = {
   kind: "checkpoint" | "final-test";
   promptHtml: string;
   options: QuestionOption[];
-  // The answer key: the one right option. (An Answer is a Visitor's pick.)
   correctOption: QuestionOption["id"];
 };
 
@@ -25,12 +23,6 @@ type DraftOption = { text: string; correct: boolean; feedback: string[] };
 // ("- ", "* ", "+ "), a numbered item ("1. "), a quote ("> ") or a code fence.
 const BLOCK_LINE = /^(?:[-*+] |\d+[.)] |>|```|~~~)/;
 
-// A question block reads:
-//   The prompt: one paragraph of inline text, on one or more lines.
-//   - [ ] A wrong option            (options start at the beginning of the line)
-//     > Feedback shown when it's picked (one or more "> " lines).
-//   - [x] The right option          ("[X]" works too)
-//     > Feedback.
 export function parseQuestion(
   file: string,
   kind: Question["kind"],

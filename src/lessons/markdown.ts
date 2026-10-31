@@ -27,10 +27,10 @@ const mark: TokenizerAndRendererExtension = {
   },
 };
 
-// The course's own Markdown renderer. It's a private instance, so the global
-// `marked` (and anything else that imports it) is never changed. A checklist
-// ("- [ ] …") is a list to read, not a form, so its boxes are drawn squares
-// hidden from screen readers instead of disabled, unlabeled checkboxes.
+// A private instance, so the global `marked` (and anything else that imports
+// it) is never changed. A checklist ("- [ ] …") is a list to read, not a
+// form, so its boxes are drawn squares hidden from screen readers instead of
+// disabled, unlabeled checkboxes.
 const md = new Marked({
   gfm: true,
   extensions: [mark],
@@ -65,14 +65,12 @@ export function lex(src: string, fail: Fail): Token[] {
   return tokens;
 }
 
-// Renders block tokens taken from lex(): a run of paragraphs, or a whole
-// callout, try, Site story or sources body.
+// Only for tokens from lex(), which has already refused raw HTML.
 export function renderTokens(tokens: Token[]): string {
   return md.parser(tokens);
 }
 
-// Renders one line of Markdown without a wrapping <p>: prompts, captions.
-// It lexes and renders in two steps, not with md.parseInline, because marked
+// Lexes and renders in two steps, not with md.parseInline, because marked
 // appends "Please report this to …" to any error thrown inside parseInline.
 export function renderInline(src: string, fail: Fail): string {
   const tokens = md.Lexer.lexInline(src, md.defaults);
@@ -89,15 +87,14 @@ const ENTITIES: Record<string, string> = {
   "&nbsp;": " ",
 };
 
-// The text a reader sees in a piece of rendered HTML.
 export function htmlToText(html: string): string {
   return html
     .replace(/<[^>]*>/g, "")
     .replace(/&(amp|lt|gt|quot|#39|nbsp);/g, (entity) => ENTITIES[entity]);
 }
 
-// How many words a piece of plain text holds. A "word" needs a letter or a
-// digit, so stray punctuation such as "-" or ">" never counts.
+// A "word" needs a letter or a digit, so stray punctuation such as "-" or ">"
+// never counts.
 export function countWordsIn(text: string): number {
   return text.split(/\s+/).filter((word) => /[A-Za-z0-9\u00C0-\u024F]/.test(word)).length;
 }

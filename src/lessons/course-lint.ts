@@ -22,7 +22,6 @@ function blocksOf<T extends Block["type"]>(lesson: Lesson, type: T) {
 // A question named the way its fence names it: checkpoint "my-id".
 const label = (question: Question) => `${question.kind} "${question.id}"`;
 
-// Every string in a value: HTML, captions, prompts, options and so on.
 function allText(value: unknown): string {
   if (typeof value === "string") return value;
   if (Array.isArray(value)) return value.map(allText).join("\n");
@@ -30,9 +29,8 @@ function allText(value: unknown): string {
   return "";
 }
 
-// Everything a Lesson's own body says: the intro and every Section, with
-// their HTML, captions, prompts and options. Not its header or its
-// neighbours, whose titles belong to other Lessons.
+// Everything a Lesson's own body says, not its header or its neighbours,
+// whose titles belong to other Lessons.
 function bodyText(lesson: Pick<Lesson, "intro" | "sections">): string {
   return allText([lesson.intro, lesson.sections]);
 }
@@ -64,7 +62,6 @@ export function checkCheckpoints(lesson: Lesson): string[] {
   return [`has ${count} Checkpoints: it needs 3 to 5, each a \`\`\`checkpoint <id> block right after the idea it checks`];
 }
 
-// Final test size by Slug; every other Lesson has 8 to 10 questions.
 const FINAL_TEST_SIZE: Record<string, Range> = {
   "start-here": [5, 6],
   "main-flow": [8, 15],
@@ -170,7 +167,6 @@ export function checkSources(lesson: Lesson): string[] {
   ];
 }
 
-// Words of running text (see countWords).
 const WORD_RANGE: Record<string, Range> = { "start-here": [900, 1400] };
 const DEFAULT_WORD_RANGE: Range = [1800, 3000];
 
