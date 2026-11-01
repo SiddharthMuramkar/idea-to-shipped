@@ -1,0 +1,97 @@
+/* Preview-only styles. Prefixed so nothing here can restyle the live site;
+   tokens come from globals.css so the frame around each OpenUI panel still
+   reads as this site, which makes the contrast inside the panel honest. */
+
+.openui-preview {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--gutter) var(--space-3xl);
+}
+
+.openui-preview > section {
+  margin-top: var(--space-2xl);
+}
+
+.openui-preview .section-lead {
+  max-width: var(--read-max);
+}
+
+.openui-compare {
+  font-size: var(--text-sm);
+}
+
+.openui-panel {
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  margin-top: var(--space-l);
+}
+
+.openui-panel-render {
+  padding: var(--space-l);
+  overflow-x: auto;
+}
+
+.openui-panel-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-m);
+  border-top: 1px solid var(--line);
+  padding: var(--space-s) var(--space-l);
+  background: var(--bg-soft);
+}
+
+.openui-replay {
+  padding: 0.45em 1.1em;
+  font-size: var(--text-sm);
+}
+
+.openui-replay:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.openui-panel-status {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.openui-errors {
+  margin: 0;
+  padding: var(--space-s) var(--space-l) var(--space-s) calc(var(--space-l) + 1.2em);
+  color: var(--error);
+  font-size: var(--text-sm);
+}
+
+.openui-source {
+  border-top: 1px solid var(--line);
+  padding: var(--space-s) var(--space-l);
+}
+
+.openui-source summary {
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.openui-source pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Known collision, patched only inside preview panels: globals.css styles
+   every bare <button> as a site pill (padding .75em 1.5em), which inflates
+   OpenUI's 16px radio/checkbox/switch buttons into 51px pills. Real
+   adoption would fix this properly with cascade layers (the layered
+   OpenUI stylesheet plus moving site resets into a base layer), not with
+   per-component overrides like this one. */
+.openui-panel-render :is([role="radio"], [role="checkbox"], [role="switch"]) {
+  padding: 0;
+}
+
+.openui-verdict {
+  border: 1px solid var(--line-strong);
+  padding: var(--space-l);
+  background: var(--warm);
+  max-width: var(--read-max);
+}
