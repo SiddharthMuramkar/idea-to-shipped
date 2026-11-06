@@ -241,6 +241,26 @@ Why: A worktree holds only what Git tracks, so gitignored files aren't there. Cl
 
 ## Going deeper
 
+### Why it exists
+
+Git's own example of a worktree has no agent in it. You're in the middle of a refactor, a big reshuffle of your code, and your files are a mess. Then someone needs an urgent fix. So you make a temporary linked worktree from `main`, fix it there, remove it, and carry on:
+
+```sh
+git worktree add -b emergency-fix ../temp main
+# fix, test and commit inside ../temp, then:
+git worktree remove ../temp
+```
+
+Agents need the same separation, all the time. Sessions in one folder share its files, its index and its HEAD, so one session's commit or switch changes what the others are working on. A worktree per session gives each one its own files, index and HEAD.
+
+```checkpoint urgent-fix
+You're halfway through a messy refactor when an urgent fix comes in. What does Git's own worktree example suggest?
+- [x] Make a temporary linked worktree from `main`, fix it there, then remove it.
+- [ ] Commit the half-done refactor to `main` first, then make the fix on top of it.
+- [ ] Switch this folder to `main`, and let Git carry the messy edits over with you.
+Why: A linked worktree gives the fix its own folder, so the refactor's mess stays where it is. You remove the worktree when the fix is done.
+```
+
 ### How it works underneath
 
 Git gives each linked worktree a private folder inside the main worktree's `.git/worktrees/`. The linked folder holds a `.git` file that points back there. Take `recipes-search` from above:

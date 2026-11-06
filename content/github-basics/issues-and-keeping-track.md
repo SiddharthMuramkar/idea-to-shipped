@@ -186,7 +186,7 @@ An Issue someone else opened is labelled `needs-info`, and they haven't replied 
 Why: `needs-info` means the Issue waits for whoever opened it to answer. When they reply, it goes back to `needs-triage` for a decision. Closing with a reason is for `wontfix`.
 ```
 
-An **assignee** is a person responsible for an Issue. Click **Assignees** in the sidebar, or run `gh issue edit 12 --add-assignee @me` to take it yourself. An Issue can have up to 10 assignees, and `gh issue list --assignee @me` lists yours.
+An **assignee** is a person responsible for an Issue. Click **Assignees** in the sidebar, or run `gh issue edit 12 --add-assignee "@me"` to take it yourself. An Issue can have up to 10 assignees, and `gh issue list --assignee "@me"` lists yours.
 
 An agent that works through your `gh` login acts as you, and its comments and changes appear under your name. Assign its Issues to yourself, since you answer for that work. Some agents, such as GitHub's Copilot, can also be assigned an Issue directly.
 

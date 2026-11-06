@@ -52,6 +52,8 @@ e2b18c4 Set up the site and its tests (#1)
 
 `git show` with an ID prints one commit: its header, message and diff. With no ID, it shows the commit HEAD points at. Add `--stat` for a list of the changed files instead of the full diff.
 
+On github.com, the same history sits behind the link with the number of commits, above the file list. Click a commit to see its diff, with removed lines in red and added lines in green.
+
 ```checkpoint commit-records-what
 An agent changes one line in `README.md` and commits. What does the new commit record?
 - [x] A snapshot of every file in the project, unchanged ones linked rather than copied.
@@ -381,6 +383,8 @@ No test file. Is the message wrong? This is where you open one file's diff, inst
 
 The commit adds one entry to `UNITS`. The existing test, in `tests/units.test.ts`, is named "converts every unit in UNITS both ways". So the new unit is tested, and the claim holds. One question, answered from the diff, not from the agent's summary.
 
+If you use Matt Pocock's Skills, one gap matters here. [code-review](/learn/code-review) reviews `git diff <fixed-point>...HEAD`, so it sees committed work only, and implement runs it before its own commit. So after implement says done, run code-review yourself, with `main` as the fixed point.
+
 ```checkpoint committed-on-main
 You asked an agent to build a feature without checking the branch first. `git status` now starts "On branch main". What happened?
 - [x] The work was committed onto `main`, the branch that was open.
@@ -669,4 +673,5 @@ Why: Before, 5 lines from line 20. After, 3 lines from line 20. The region is tw
 - [CI/CD Crash Course: Commands and Code](https://gist.github.com/bradtraversy/b6b1e16322cf60d8f41fbda71b1c607e), Brad Traversy
 - [cicd-lab-starter](https://github.com/bradtraversy/cicd-lab-starter), Brad Traversy
 - [implement: SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md), Matt Pocock's Skills
+- [code-review: SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md), Matt Pocock's Skills
 ```

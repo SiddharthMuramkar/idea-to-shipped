@@ -1,7 +1,7 @@
 ---
 title: Checking a pull request before you merge
 slug: checking-a-pr
-summary: Green checks prove only what they test. Read the description, the diff, the checks and the preview, and weigh the risk, before you merge.
+summary: Why green checks prove only what they test, and how to read the description, diff, checks and preview, and weigh the risk, before you merge.
 ---
 
 Say your coding agent has opened PR #14 to fix the search bug in your recipe site. Every check is green, and the agent asks: "Shall I merge?" You may not read code well yet, and the agent sounds sure. Green feels like a yes, but it only answers part of the question.
@@ -146,7 +146,7 @@ Why: Each environment can have its own settings, including its database. A previ
 
 Ask two questions of every PR. Can the change be undone cheaply? And what could it break?
 
-A **two-way door** is a change you can walk back cheaply: new search code, say, which a revert (a new commit that undoes it) takes out again. A **one-way door** can't be walked back, such as deleting a column of saved recipes, or sending emails. As one user put it, "rolling back a commit won't unsend a batch of emails".
+A **two-way door** is a change you can walk back cheaply. New search code is one: a revert, a new commit that undoes it, takes it out again. A **one-way door** can't be walked back, such as deleting a column of saved recipes, or sending emails. As one user put it, "rolling back a commit won't unsend a batch of emails".
 
 The **blast radius** is what the change could break if it's wrong: one page, every page, or other people's data.
 

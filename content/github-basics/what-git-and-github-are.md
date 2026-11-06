@@ -228,7 +228,7 @@ Why: Never paste a password or token into the chat. `gh auth login` signs you in
 
 GitHub from zero follows one change from start to finish, the way GitHub suggests. GitHub calls it **GitHub flow**: make a branch, commit and push your changes, open a pull request, merge it, then delete the branch.
 
-The next four lessons give you the Git half:
+Four lessons give you the Git half:
 
 - [Reading a repository](/learn/reading-a-repository): what each common file and folder is for.
 - [Commits and diffs](/learn/commits-and-diffs): what a commit holds, and how to read a change.

@@ -105,7 +105,7 @@ On github.com:
 1. Open the repo. After a recent push, a yellow banner offers **Compare & pull request** for your branch: click it. Otherwise, open the **Pull requests** tab and click **New pull request**.
 2. Check the two branch menus. **base** is where the work lands, usually `main`. **compare** is your branch.
 3. Type a title and a description.
-4. Click **Create pull request**. For a draft, open the menu on that button and choose **Create draft pull request** instead.
+4. Click **Create pull request**. For a draft instead, open the menu on that button, choose **Create draft pull request**, then click **Draft pull request**.
 
 With `gh`, from your branch:
 
@@ -181,7 +181,7 @@ In **Files changed**, read one file at a time. When you've read a file, tick **V
 
 A **check** is one automated job's result on the PR's latest commit. It shows a yellow dot while it runs, then a green tick or a red cross. Checks usually come from **CI** (continuous integration), which runs your tests on every push. [What CI/CD is](/learn/what-ci-cd-is) sets it up.
 
-The **merge box** at the bottom of the Conversation tab says whether the PR can merge right now. If it can't, it says what's in the way, such as a failing check or a **merge conflict**: two changes to the same lines that Git can't combine by itself. [Checking a pull request before you merge](/learn/checking-a-pr) reads it line by line.
+The **merge box** at the bottom of the Conversation tab says whether the PR can merge right now. If it can't, it says what's in the way, such as a failing check or a **merge conflict**. A merge conflict means two changes touch the same lines, and Git can't combine them by itself. [Checking a pull request before you merge](/learn/checking-a-pr) reads it line by line.
 
 From the terminal, three commands cover the page:
 
