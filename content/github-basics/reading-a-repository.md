@@ -84,7 +84,7 @@ A small website for sharing family recipes.
 
 A **license** says what other people may do with your code. Without one, default copyright applies: you keep all rights, and nobody may copy, share or build on your work. So a public repo with no license can be read, but not reused.
 
-The license text usually sits in a `LICENSE` file at the top of the repo, and GitHub names a license it recognises on the repo's page. When you create a repo on github.com, you can pick one from a list. Later, you add the file yourself. choosealicense.com, made by GitHub, helps you choose.
+The license text usually sits in a `LICENSE` file at the top of the repo. GitHub names a license it recognises on the repo's page. When you create a repo on github.com, you can pick one from a list. Later, you add the file yourself. choosealicense.com, made by GitHub, helps you choose.
 
 ```checkpoint no-license
 You find a public repo with useful code, and it has no LICENSE file. Can you copy its code into your own project?
@@ -289,16 +289,16 @@ Why: The `@AGENTS.md` line pulls `AGENTS.md` into `CLAUDE.md`. So there's one te
 
 You don't read a repo top to bottom. You read it in an order that answers the big questions first:
 
-1. **The README**: what it is, and how to run it.
-2. **`package.json` or `pyproject.toml`**: what it's built with, and its commands.
-3. **The top-level folders**: the main parts.
-4. **The test names**: what it promises.
-5. **`docs/adr/` and `GLOSSARY.md`**: what was decided, and which words to use.
-6. **`CLAUDE.md` or `AGENTS.md`**: what agents are told.
-7. **`.github/workflows/`**: which checks run on each change.
-8. **The history and open work**: the last ten commits, and the open Issues and pull requests.
+1. The README: what it is, and how to run it.
+2. `package.json` or `pyproject.toml`: what it's built with, and its commands.
+3. The top-level folders: the main parts.
+4. The test names: what it promises.
+5. `docs/adr/` and `GLOSSARY.md`: what was decided, and which words to use.
+6. `CLAUDE.md` or `AGENTS.md`: what agents are told.
+7. `.github/workflows/`: which checks run on each change.
+8. The history and open work: the last ten commits, and the open Issues and pull requests.
 
-On github.com, the README sits under the file list. The About box on the right gives the description and the license. Above the file list, a link with the number of commits opens the history. **Go to file** finds a file by name, and the Issues and Pull requests tabs show the open work.
+On github.com, the README sits under the file list. The About box on the right gives the description and the license. Above the file list, a link with the number of commits opens the history. The Go to file button finds a file by name, and the Issues and Pull requests tabs show the open work.
 
 In the terminal, inside the repo's folder, the same route takes a few commands:
 
@@ -325,10 +325,10 @@ Say someone asks where your recipe site keeps its recipes. An agent built it, an
 
 **The architecture** is four things you can see without reading code: the main parts, how they connect, where data lives, and what's hard to change. For the recipe site, a map might read:
 
-- **Main parts:** the pages (`src/pages/`), the recipe loader (`src/recipes/`) and the search (`src/search/`).
-- **How they connect:** the pages ask the loader for recipes, and the search for matches.
-- **Where data lives:** Markdown files in `content/`, one per recipe, as the ADR decided.
-- **What's hard to change:** the recipe file format, because every recipe file and the loader depend on it.
+- Main parts: the pages (`src/pages/`), the recipe loader (`src/recipes/`) and the search (`src/search/`).
+- How they connect: the pages ask the loader for recipes, and the search for matches.
+- Where data lives: Markdown files in `content/`, one per recipe, as the ADR decided.
+- What's hard to change: the recipe file format, because every recipe file and the loader depend on it.
 
 No architecture note in the repo? Ask the agent to draw the map, then check one folder it names with `ls`. Drawings can be wrong, so trust the files over the drawing.
 

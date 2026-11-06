@@ -408,6 +408,10 @@ Add a verify script to package.json that runs typecheck, tests and build in that
 
 ## Try it
 
+Two practice runs. The first stays on your machine, with Brad’s starter app. The second adds a real CI check, called `test`, to your practice project on GitHub. Later Try it steps rely on that check, such as the one in [Merging and cleaning up](/learn/merging-and-cleaning-up).
+
+### On your machine: one verify command
+
 ````try
 Run Brad’s three checks on your own machine, join them into one `verify` script, and watch `&&` stop at the first failure. Nothing here touches GitHub. It takes about ten minutes.
 
@@ -461,6 +465,60 @@ npm run verify
 - [ ] With `status: 'up'`, it stops at the failing test, and the build never starts.
 
 You can delete the `cicd-practice` folder afterwards. The lab starts again from Brad’s starter, in a repo of your own.
+````
+
+### On GitHub: a `test` check for your practice project
+
+````try
+Add a CI workflow that runs your practice project’s tests on every pull request, then watch its check go green, red, and green again. Its one job has the id `test` and no `name:`, so the check it reports is called `test`.
+
+**You need:** your practice project, the yoga-studio booking site, on an up-to-date `main`, and `gh`, logged in. If you haven’t set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. You don’t need Python on your machine: the runner installs it.
+
+1. Make a branch: `git switch -c add-ci`.
+2. Make the folders: `mkdir -p api .github/workflows`.
+3. Name what CI installs: `echo pytest > api/requirements.txt`. If `api/requirements.txt` already exists, add a `pytest` line to it instead.
+4. Add a test that passes, as `api/test_smoke.py`:
+
+```python
+def test_adds_up():
+    assert 1 + 1 == 2
+```
+
+5. Add the workflow, as `.github/workflows/ci.yml`. The `#` comments are notes for you; YAML ignores them.
+
+```yaml
+name: ci
+on:
+  pull_request:                        # the event: every pull request
+jobs:
+  test:                                # the job; also the check's name
+    runs-on: ubuntu-latest             # the runner: a fresh Linux machine
+    steps:
+      - uses: actions/checkout@v7      # fetch the code
+      - uses: actions/setup-python@v7  # install Python
+        with:
+          python-version: "3.12"
+      - run: pip install -r api/requirements.txt   # install the listed packages
+      - run: pytest api                # run the tests
+```
+
+6. Commit and push: `git add . && git commit -m "add CI" && git push -u origin add-ci`.
+7. Open the pull request: `gh pr create --fill`.
+8. Watch the run: `sleep 10 && gh pr checks --watch`. You should see `test` pass. That’s green.
+9. Break the test: in `api/test_smoke.py`, change `1 + 1 == 2` to `1 + 1 == 3`.
+10. Commit and push: `git commit -am "break the test" && git push`.
+11. Watch again: `sleep 10 && gh pr checks --watch`. You should see `test` fail. That’s red.
+12. Open the pull request in your browser with `gh pr view --web`, and click its **Checks** tab. You should see pytest’s error under `test`.
+13. Undo the faulty commit with a revert: `git revert --no-edit HEAD && git push`.
+14. Watch again. You should see `test` pass.
+15. Merge: `gh pr merge --squash --delete-branch`. From now on, every pull request runs this check.
+
+**It’s working if:**
+
+- [ ] The pull request showed `test` green, then red with pytest’s error, then green after the revert.
+- [ ] After the merge, `main` holds `.github/workflows/ci.yml`, and your next pull request runs `test`.
+
+This workflow runs on pull requests only. Brad’s also runs on pushes to `main`, and [Gates: checks that block](/learn/gates) explains why a release gate needs that.
 ````
 
 ## Read and watch next
@@ -601,6 +659,7 @@ Why: GitHub won’t let a workflow’s own changes set off runs without limit, s
 - [Understanding GitHub Actions](https://docs.github.com/en/actions/get-started/understand-github-actions), GitHub Docs
 - [GitHub-hosted runners](https://docs.github.com/en/actions/concepts/runners/github-hosted-runners), GitHub Docs
 - [actions/checkout README](https://github.com/actions/checkout), GitHub
+- [actions/setup-python README](https://github.com/actions/setup-python), GitHub
 - [Communicating with Docker service containers](https://docs.github.com/en/actions/tutorials/use-containerized-services/use-docker-service-containers), GitHub Docs
 - [Automate branching with GitHub Actions](https://neon.com/docs/guides/branching-github-actions), Neon Docs
 - [GITHUB_TOKEN](https://docs.github.com/en/actions/concepts/security/github_token), GitHub Docs

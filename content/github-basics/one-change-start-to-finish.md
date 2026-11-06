@@ -254,6 +254,24 @@ Why: Claude Code reads `CLAUDE.md` at the start of every session. A session you 
 
 ## Going deeper
 
+### Why it exists
+
+When an agent can run every step, it's easy to stop following along. Claude writes about 90 percent of the code for Claude Code. Its team still keeps two jobs for people: deciding what to build, and checking the proof that a change works, such as test output. So the loop gives the agent the commands and leaves you the decisions.
+
+The branch is what makes the loop safe. Your changes reach `main` only when you merge. Until then, a half-done or wrong change can sit on its branch, get fixed, or get thrown away, and `main` never sees it.
+
+A bigger change takes the same path: more commits, more files, the same steps. If a change grows too big to review well, split it into several Issues, each with its own loop. [How teams protect main](/learn/how-teams-do-it) shows why small pull requests get better reviews.
+
+Some repos turn on auto-merge, which merges a pull request by itself once its required reviews and checks pass. On a repo that requires no review, it can merge before you've run your Merge check. So turn it on only for a change you've already read.
+
+```checkpoint quick-13
+Claude writes most of Claude Code's code. Which jobs does its team still keep for people?
+- [x] Deciding what to build, and checking the proof that a change works.
+- [ ] Typing the git commands, and writing each commit message by hand.
+- [ ] Running the checks, and opening every pull request themselves.
+Why: The team keeps people for deciding what to build and for checking proof, such as test output. The agent can do the typing.
+```
+
 ### Where it goes wrong
 
 **`gh` isn't found, or asks you to log in.** Install it from the [GitHub CLI manual](https://cli.github.com/manual/). Then run `gh auth login` yourself. It usually opens your browser: take the default at each question and finish there.

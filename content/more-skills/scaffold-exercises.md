@@ -235,7 +235,7 @@ The lint command is missing, and every folder matches the plan. What do you repo
 Why: Folders that match the plan still haven't been checked. So say the linter is gone, and go through the Skill's rules yourself.
 ```
 
-**Your bug report gets closed.** Matt froze misc in October 2026, so bug reports, feature requests and PRs against these Skills are closed. He isn't running them day to day, so he can't tell whether a fix is right. His advice if one breaks: "install it with skills.sh and fix your copy: the files are yours to edit." He means `npx skills`, the installer, which copies editable files into your project.
+**Your bug report gets closed.** Matt froze misc in October 2026, so bug reports, feature requests and pull requests against these Skills are closed. He isn't running them day to day, so he can't tell whether a fix is right. His advice if one breaks: "install it with skills.sh and fix your copy: the files are yours to edit." He means `npx skills`, the installer, which copies editable files into your project.
 
 ```checkpoint quick-13
 The Skill breaks for you, and you want it working. What does Matt advise?

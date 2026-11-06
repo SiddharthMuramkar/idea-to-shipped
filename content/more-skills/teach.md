@@ -265,7 +265,7 @@ teach's lessons are designed around spacing, and you want to review. What do you
 Why: The lessons are designed around spacing, but "nothing schedules a review". teach won't switch from new material on its own, so you ask.
 ```
 
-**The lessons come out thin.** Results vary by model, [harness](/learn/context-hygiene) and [effort level](/learn/models-effort-ultracode). One user got "a single 30-line HTML card" through the Copilot CLI harness with Codex. Change one of those before you rewrite your prompt.
+**The lessons come out thin.** Results vary by model, [harness](/learn/context-hygiene) and [effort level](/learn/models-effort-ultracode). One user got "a single 30-line HTML card" through the Copilot CLI harness with Codex, a model from OpenAI. Change one of those before you rewrite your prompt.
 
 ### Try it
 
