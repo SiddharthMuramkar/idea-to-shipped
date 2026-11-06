@@ -208,7 +208,7 @@ describe("unknownSlashNames", () => {
 
   test("flags stale or made-up names, and full names outside mattpocock-skills or naming a Built-in", () => {
     const html = [
-      "/to-prd",
+      "/to-plan",
       "/mattpocock-skills:to-prd",
       "/mattpocock-skills:clear",
       "/mattpocock:grilling",
@@ -217,7 +217,7 @@ describe("unknownSlashNames", () => {
       .map(code)
       .join("\n");
     expect(unknownSlashNames(html)).toEqual([
-      "/to-prd",
+      "/to-plan",
       "/mattpocock-skills:to-prd",
       "/mattpocock-skills:clear",
       "/mattpocock:grilling",
@@ -225,13 +225,17 @@ describe("unknownSlashNames", () => {
     ]);
   });
 
+  test("lets a Lesson mention a retired name or another author's Skill, bare or by the full name listed", () => {
+    expect(unknownSlashNames(["/to-prd", "/diagnose", "/tldr", "/code-review:code-review"].map(code).join("\n"))).toEqual([]);
+  });
+
   test("ignores paths: those with more than one /, and folders at the root such as /tmp", () => {
     expect(unknownSlashNames(code("/learn/grilling") + code("/api/comments") + code("/tmp"))).toEqual([]);
   });
 
   test("checkSlashNames says where a new name goes", () => {
-    expect(checkSlashNames(lessonWith([{ type: "prose", html: code("/to-prd") }]))).toEqual([
-      "names `/to-prd`, which is neither a Skill the Courses teach nor a Built-in command: use its current name, or add a new one to SKILLS or BUILT_IN_COMMANDS in src/lessons/course-lint.ts",
+    expect(checkSlashNames(lessonWith([{ type: "prose", html: code("/to-plan") }]))).toEqual([
+      "names `/to-plan`, which is neither a Skill the Courses teach nor a Built-in command: use its current name, or add a new one to SKILLS or BUILT_IN_COMMANDS in src/lessons/course-lint.ts",
     ]);
   });
 });

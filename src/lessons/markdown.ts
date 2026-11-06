@@ -45,23 +45,40 @@ const md = new Marked({
 // and the block, so the message can say where the problem is.
 export type Fail = (problem: string) => Error;
 
+// Where a link in a Lesson may point: another Lesson, or a web page over
+// https. Anything else (javascript:, data:, http:, a relative path) could run
+// code or break, so it's refused (ADR 0007: content can't run code).
+const SAFE_LINK = /^(?:\/learn\/[a-z0-9]+(?:-[a-z0-9]+)*(?:#[\w-]+)?|https:\/\/\S+)$/;
+
 // A Lesson's HTML goes onto the page as it is (dangerouslySetInnerHTML), so
 // raw HTML written in a Lesson would too. Lessons are Markdown only. marked
 // lexes every HTML block and tag as an "html" token, while code spans and
 // code blocks are tokens of their own, so `<div>` in backticks stays legal.
-function refuseHtml(tokens: Token[], fail: Fail) {
+// Links must point somewhere safe, and the only image is the header photo.
+function refuseUnsafe(tokens: Token[], fail: Fail) {
   md.walkTokens(tokens, (token) => {
-    if (token.type !== "html") return;
-    const html = token.raw.trim().split("\n")[0];
-    throw fail(
-      `raw HTML isn't allowed in a Lesson (found "${html}"): write it in Markdown, or put it in backticks to show it as code`,
-    );
+    if (token.type === "html") {
+      const html = token.raw.trim().split("\n")[0];
+      throw fail(
+        `raw HTML isn't allowed in a Lesson (found "${html}"): write it in Markdown, or put it in backticks to show it as code`,
+      );
+    }
+    if (token.type === "image") {
+      throw fail(
+        `images aren't allowed in a Lesson's text (found "${token.raw}"): a Lesson has one photo, set with image and imageAlt in its header`,
+      );
+    }
+    if (token.type === "link" && !SAFE_LINK.test(token.href)) {
+      throw fail(
+        `the link "${token.href}" isn't allowed: link another Lesson as /learn/<slug>, or a web page by its full https:// address`,
+      );
+    }
   });
 }
 
 export function lex(src: string, fail: Fail): Token[] {
   const tokens = md.lexer(src);
-  refuseHtml(tokens, fail);
+  refuseUnsafe(tokens, fail);
   return tokens;
 }
 
@@ -74,7 +91,7 @@ export function renderTokens(tokens: Token[]): string {
 // appends "Please report this to …" to any error thrown inside parseInline.
 export function renderInline(src: string, fail: Fail): string {
   const tokens = md.Lexer.lexInline(src, md.defaults);
-  refuseHtml(tokens, fail);
+  refuseUnsafe(tokens, fail);
   return md.Parser.parseInline(tokens, md.defaults);
 }
 

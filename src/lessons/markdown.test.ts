@@ -26,6 +26,20 @@ describe("raw HTML", () => {
     );
   });
 
+  test("a link that could run code, or isn't https or a Lesson, is refused", () => {
+    for (const href of ["javascript:alert(1)", "JavaScript:alert(1)", "data:text/html,x", "http://example.com", "notes.md", "#top", "mailto:a@b.c"]) {
+      expect(() => renderInline(`[x](${href})`, fail), href).toThrow("isn't allowed: link another Lesson as /learn/<slug>");
+    }
+    expect(() => lex("See [x][ref].\n\n[ref]: javascript:alert(1)\n", fail)).toThrow('the link "javascript:alert(1)"');
+    expect(renderInline("[a](/learn/tdd) and [b](/learn/tdd#going-deeper) and [c](https://example.com/x?y=1)", fail)).toContain(
+      '<a href="/learn/tdd">a</a>',
+    );
+  });
+
+  test("an image in a Lesson's text is refused: the photo goes in the header", () => {
+    expect(() => renderInline("![a cat](https://example.com/cat.jpg)", fail)).toThrow("images aren't allowed in a Lesson's text");
+  });
+
   test("in backticks, a fenced block or an autolink is not HTML", () => {
     expect(renderInline("`<div>` and <https://example.com>", fail)).toBe(
       '<code>&lt;div&gt;</code> and <a href="https://example.com">https://example.com</a>',

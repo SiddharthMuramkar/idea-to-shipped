@@ -178,6 +178,18 @@ export const BUILT_IN_COMMANDS = new Set([
 // Folders at the root of a Unix file system. `/tmp` is a path, not a name.
 const ROOT_FOLDERS = new Set(["bin", "dev", "etc", "home", "opt", "tmp", "usr", "var"]);
 
+// Names a Lesson may mention only to say they're old or someone else's: Skills
+// Matt renamed or removed (so readers can match advice that still uses them),
+// and well-known Skills from other authors. Add a name here only when every
+// Lesson that uses it says what it is; a stale name used as an instruction
+// is what this lint exists to catch.
+export const MENTIONED_NAMES = new Set([
+  // Retired names of Matt's Skills.
+  "to-prd", "diagnose", "ubiquitous-language",
+  // Other authors' Skills and plugins.
+  "tldr", "no-fluff", "code-review:code-review",
+]);
+
 // Every backticked `/name` or `/namespace:name` in some rendered HTML that
 // isn't a known Skill or Built-in command, in the order they appear. This
 // catches stale names such as /to-prd. Paths such as /learn/grilling have a
@@ -186,8 +198,8 @@ export function unknownSlashNames(html: string): string[] {
   return [...html.matchAll(/<code>\/([a-z][a-z0-9-]*)(?::([a-z][a-z0-9-]*))?<\/code>/g)]
     .filter(([, first, second]) =>
       second === undefined
-        ? !SKILLS.has(first) && !BUILT_IN_COMMANDS.has(first) && !ROOT_FOLDERS.has(first)
-        : first !== SKILL_NAMESPACE || !SKILLS.has(second),
+        ? !SKILLS.has(first) && !BUILT_IN_COMMANDS.has(first) && !ROOT_FOLDERS.has(first) && !MENTIONED_NAMES.has(first)
+        : (first !== SKILL_NAMESPACE || !SKILLS.has(second)) && !MENTIONED_NAMES.has(`${first}:${second}`),
     )
     .map(([, first, second]) => (second === undefined ? `/${first}` : `/${first}:${second}`));
 }
