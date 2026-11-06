@@ -19,7 +19,7 @@ Brad Traversy, a web development teacher on YouTube, opens his CI/CD crash cours
 
 **With CI/CD, a machine tests every change and keeps merged work ready to go live.**
 
-- **CI**, continuous integration, is building and testing every change automatically, such as on each pull request.
+- **CI**, continuous integration, is [merging](/learn/merging-and-cleaning-up) small changes into the shared code often, with a machine building and testing each one automatically, such as on each pull request.
 - **CD**, continuous delivery, is keeping merged changes always ready to go live. When they go live automatically, that’s **continuous deployment**.
 
 ```checkpoint quick-1
@@ -32,11 +32,11 @@ Why: CI is the testing half. CD and continuous deployment are about getting merg
 
 Agents make this urgent. **Ralph**, a loop that runs an agent over and over on its own, shows why. Matt Pocock, who writes about coding with agents at AI Hero, puts it this way: “A human might commit once or twice a day. Ralph can pile dozens of commits into a repo in hours.” If those commits are poor, the code gets worse fast. Your job moves from typing to checking, and you can’t read that fast, so the first round of checking has to be done by machines, on every change.
 
-Machine checks suit agents, too. An agent doesn’t get frustrated by repetition: when its code fails a check, it tries again. That’s why Matt’s [retro](/learn/retro), a [Skill](/learn/skills) that looks back over a coding session, treats a repo with no automatic checks as a problem in itself.
+Machine checks suit agents, too. An agent doesn’t get frustrated by repetition: when its code fails a check, it tries again. That’s why Matt’s [retro](/learn/retro), a [Skill](/learn/skills) that looks back over a coding session, treats a [repo](/learn/what-git-and-github-are) with no automatic checks as a problem in itself.
 
-Two words carry the rest of these lessons. A **check** is the pass/fail result that one CI job, a set of automated steps, reports on a commit: the green tick or red cross you’ve seen next to a [pull request](/learn/pull-requests). A **gate** is an automatic check that blocks the next step, such as merging or going live. A check on its own only reports. It becomes a gate when something is set up to wait for it.
+Two words carry the rest of these lessons. A **check** is the pass/fail result that one CI job, a set of automated steps, reports on a [commit](/learn/commits-and-diffs): the green tick or red cross you’ve seen next to a [pull request](/learn/pull-requests). A **gate** is an automatic check that blocks the next step, such as merging or going live. A check on its own only reports. It becomes a gate when something is set up to wait for it.
 
-Say an agent has written a CI workflow for your `recipes` site (the file that tells GitHub which jobs to run, and when), with jobs that check its code and run its tests, and pushed it on a branch. It runs only on pull requests and on pushes to `main`, so until one of those happens it has run zero times. And with no **ruleset** on `main` (a named list of rules for a branch, as in [How teams protect main](/learn/how-teams-do-it)), even a red result can’t stop a merge. Brad points out the same gap after his first green run: even if a test failed, “we could still merge.”
+Say an agent has written a CI workflow for your `recipes` site (the file that tells GitHub which jobs to run, and when), with jobs that check its code and run its tests, and [pushed](/learn/push-pull-and-remotes) it on a [branch](/learn/branches-and-worktrees). It runs only on pull requests and on pushes to `main`, so until one of those happens it has run zero times. And with no **ruleset** on `main` (a named list of rules for a branch, as in [How teams protect main](/learn/how-teams-do-it)), even a red result can’t stop a merge. Brad points out the same gap after his first green run: even if a test failed, “we could still merge.”
 
 You don’t have to write any of this by hand. Brad’s advice is to tell your agent to add these guardrails, as long as you know the words to ask with. This lesson is the words. [Reading a GitHub Actions workflow](/learn/reading-a-workflow), [Gates: checks that block](/learn/gates) and [the lab](/learn/lab-gated-pipeline) are the wiring.
 
@@ -142,7 +142,7 @@ Brad’s definitions match Fowler’s, and he says his project uses continuous d
 
 Vercel, the hosting service the lab uses in Render’s place, makes two kinds of deployment from a site’s GitHub repo. A **deployment** is one build of one commit, at its own web address.
 
-- A **production deployment** changes production. You get one when you push or merge into the production branch (the live one, usually `main`), or run `vercel --prod`. A new project’s first deployment is always a production one.
+- A **production deployment** is a build made for production. You get one when you push or merge into the production branch (the live one, usually `main`), or run `vercel --prod`. A new project’s first deployment is always a production one.
 - A **preview deployment** is a test copy of the site, at its own address. You get one when you open a pull request, or push to any other branch. The live site stays as it is.
 
 A production deployment goes live when it is **promoted**: given the production domain, the site’s real address. By default Vercel promotes each one as soon as it’s built. The lab adds a gate. When a PR merges into `main`, Vercel builds a production deployment, holds it until GitHub’s check (called `Verify` in Brad’s lab) passes on that commit, then promotes it with nobody clicking. That’s still continuous deployment, held back by a check. [Gates: checks that block](/learn/gates) sets up the hold.
@@ -207,7 +207,7 @@ Why: Every job gets a fresh machine with none of your files on it. A step has to
 Why bother, when the agent already ran the checks on your laptop? Because your laptop has history, and Fowler notes that “works on my machine” is a well-known phrase for a reason. The runner has none of that history. It gets the one commit being checked, the packages the **lockfile** lists (for npm, `package-lock.json`: the exact version of every package to install), and GitHub’s standard tools. Here are three ways a change can pass on your laptop and fail there:
 
 - **An uncommitted file.** Say the agent creates `src/recipes.ts`, imports it, and forgets to commit it. Your folder has the file, so everything passes. The runner has only the commit, so the import fails.
-- **A missing dependency.** A package sits in your `node_modules` folder, where npm keeps installed packages, but it was never added to `package.json` and the lockfile. CI installs from the lockfile alone, so the package isn’t there.
+- **A missing dependency.** A package sits in your `node_modules` folder, where npm keeps installed packages, but it was never added to `package.json` (the file that lists a Node project’s packages and scripts) and the lockfile. CI installs from the lockfile alone, so the package isn’t there.
 - **A different Node version.** Say your laptop runs Node 22 and the workflow asks for Node 24. Code that depends on one version’s behaviour passes in one place and fails in the other.
 
 GitHub Actions isn’t the only CI service. Brad names Jenkins, CircleCI and Travis CI: they differ in setup, but all of them run checks automatically whenever the code changes. These lessons use GitHub Actions only.
@@ -314,7 +314,7 @@ Why: `engines` only records what the project expects, and npm treats it as advic
 
 ## Where the gates sit
 
-A change an agent writes passes four stops on its way to users. They are also the map of the next three lessons.
+A change an agent writes passes four stops on its way to users. Stops 2 to 4 are also the map of the next three lessons.
 
 1. **Pre-commit hook**, on your laptop, at each commit. A **hook** is a script Git runs at a set moment. A pre-commit hook runs before each commit, and if it fails, there’s no commit. Matt’s [setup-pre-commit](/learn/setup-pre-commit) Skill writes the three-line hook shown below: format the staged files with Prettier, a code formatter, then typecheck, then test.
 2. **Required check**, on GitHub, before merge. The workflow runs the checks on a fresh runner for every PR. A ruleset on `main` makes the check required: no green, no merge. In Brad’s lab the ruleset is called “Protect main”, and it requires `Verify`.
@@ -347,7 +347,7 @@ Stop 1 is the fastest feedback, before anything leaves the laptop. But anyone, a
 
 The same check counts twice: GitHub’s `Verify` blocks the merge, and Vercel waits for it again on `main` before promoting. Both find it by the job’s name, so rename the job and neither finds it until the ruleset and the Deployment Check are updated. Brad builds the same two layers with Render: a ruleset on GitHub, and Render’s “After CI Checks Pass” setting.
 
-The next lessons go stop by stop. [Reading a GitHub Actions workflow](/learn/reading-a-workflow) reads a workflow line by line, [Gates: checks that block](/learn/gates) wires stops 2 to 4, and [the lab](/learn/lab-gated-pipeline) has you build it all on Brad’s starter app, with Vercel in place of Render.
+The next lessons go stop by stop. [Reading a GitHub Actions workflow](/learn/reading-a-workflow) reads a workflow line by line, [Gates: checks that block](/learn/gates) wires stops 2 to 4, and [the lab](/learn/lab-gated-pipeline) has you build them on Brad’s starter app, with Vercel in place of Render. Stop 1 has its own lesson, [setup-pre-commit](/learn/setup-pre-commit).
 
 ```callout remember
 The pre-commit hook is fast but skippable. The gates that hold are the required check before merge and the Deployment Check before release. You review in between.
@@ -388,7 +388,7 @@ In July 2025, a user named searls opened issue #319 on Anthropic’s Claude Code
 
 The cause is a GitHub rule. Each job gets a key called `GITHUB_TOKEN`, so the job can act on the repo. Events that a workflow causes with that key don’t start new workflow runs, with a few exceptions, so a workflow’s commit can’t start a workflow that commits again, without end.
 
-The exception that matters here is for pull requests. A push made with `GITHUB_TOKEN` starts no `push` run. But when a workflow creates a pull request or pushes to one with it, the `pull_request` runs start in an approval-required state. Someone with write access to the repo has to select **Approve workflows to run** in the merge box.
+When searls reported it, GitHub started no run at all. GitHub’s docs now add an exception for pull requests. A push made with `GITHUB_TOKEN` starts no `push` run. But when a workflow creates a pull request or pushes to one with it, the `pull_request` runs start in an approval-required state. Someone with write access to the repo has to select **Approve workflows to run** in the merge box.
 
 So a check that never ran isn’t a check that passed. When an agent pushes to a pull request from inside a workflow, look for its run, and approve it if GitHub asks. [Agents in GitHub Actions](/learn/agents-in-github-actions) runs agents this way.
 
@@ -410,7 +410,7 @@ Add a verify script to package.json that runs typecheck, tests and build in that
 
 ## Try it
 
-Two practice runs. The first stays on your machine, with Brad’s starter app. The second adds a real CI check, called `test`, to your practice project on GitHub. Later Try it steps rely on that check, such as the one in [Merging and cleaning up](/learn/merging-and-cleaning-up).
+Two practice runs. The first stays on your machine, with Brad’s starter app. The second adds a real CI check, called `test`, to your practice project on GitHub. Later Try it steps rely on that check. If you skipped the auto-merge Try it in [Merging and cleaning up](/learn/merging-and-cleaning-up) because you had no check, go back to it after the second run.
 
 ### On your machine: one verify command
 
@@ -476,7 +476,7 @@ Add a CI workflow that runs your practice project’s tests on every pull reques
 
 **You need:** your practice project, the yoga-studio booking site, on an up-to-date `main`, and `gh`, logged in. If you haven’t set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. You don’t need Python on your machine: the runner installs it.
 
-1. Make a branch: `git switch -c add-ci`.
+1. In your `yoga-studio` folder, update `main` and make a branch: `git switch main && git pull && git switch -c add-ci`.
 2. Make the folders: `mkdir -p api .github/workflows`.
 3. Name what CI installs, pytest (a tool that runs Python tests): `echo pytest > api/requirements.txt`. If `api/requirements.txt` already exists, add a `pytest` line to it instead.
 4. Add a test that passes, as `api/test_smoke.py`:

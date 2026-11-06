@@ -113,7 +113,7 @@ git switch -c 7-cooking-time
 
 `git pull` comes first, so the branch starts from the latest `main`, not from whatever your computer had last week. The name follows a common habit: the Issue's number, then a few words, `<issue-number>-<short-slug>`.
 
-On github.com, the Issue's sidebar has **Create a branch**, under Development. It makes the branch on GitHub, from the default branch. Then run `git fetch` and `git switch 7-cooking-time` to work on it.
+On github.com, the Issue's sidebar has **Create a branch**, under Development. GitHub suggests a name made from the Issue's number and title. Change it to `7-cooking-time` in the **Branch name** field, and click **Create branch**. That makes the branch on GitHub, from the default branch. Then run `git fetch` and `git switch 7-cooking-time` to work on it.
 
 ```checkpoint quick-5
 Why run `git pull` on `main` before `git switch -c 7-cooking-time`?
@@ -135,7 +135,7 @@ git commit -m "Show cooking time on recipe cards"
 git push -u origin 7-cooking-time
 ```
 
-`git status` lists what changed, and `git diff` shows the lines. Name the files in `git add`, so nothing extra slips into the commit. Only what you stage goes into the commit, and only commits get pushed, so an edit you didn't stage reaches neither GitHub nor the checks. Until you push, the branch exists only on your computer. `-u` links your branch to its copy on GitHub, so later you can type a plain `git push` or `git pull`.
+`git status` lists what changed, and `git diff` shows the lines. Name the files in `git add`, so nothing extra slips into the commit. Only what you stage goes into the commit, and only commits get pushed, so an edit you didn't stage reaches neither GitHub nor the checks. Until you push, your new commits exist only on your computer. `-u` links your branch to its copy on GitHub, so later you can type a plain `git push` or `git pull`.
 
 ```checkpoint quick-6
 What does `-u` in `git push -u origin 7-cooking-time` do?
@@ -187,7 +187,7 @@ Why: The checks test only what someone wrote tests for. Your Merge check reads t
 
 ### Merge, then clean up
 
-On github.com, in the merge box, choose **Squash and merge** from the merge button's menu, then click **Confirm squash and merge**. Then click **Delete branch**.
+On github.com, in the merge box, choose **Squash and merge** from the merge button's menu, and click **Squash and merge**. Then click **Confirm squash and merge**, and then **Delete branch**.
 
 In the terminal, one command merges and deletes the branch, on GitHub and on your computer:
 
@@ -203,10 +203,12 @@ git switch main
 git pull
 ```
 
-You should see `"state": "CLOSED"`. Merging on GitHub doesn't change the copy on your computer, so `git pull` brings the merged work into your `main`. If you merged on github.com, the branch is still on your computer: `git branch -d 7-cooking-time` deletes it. After a squash merge, git may refuse with "not fully merged". [Merging and cleaning up](/learn/merging-and-cleaning-up) shows how to check nothing is lost first.
+You should see `"state": "CLOSED"`. If you merged with `gh` from your branch, it has already switched you to `main` and pulled, so `git pull` only says `Already up to date.`
+
+If you merged on github.com, nothing has changed on your computer yet, so `git pull` brings the merged work into your `main`. The branch is still on your computer too: `git branch -d 7-cooking-time` deletes it. After a squash merge, git may refuse with "not fully merged". [Merging and cleaning up](/learn/merging-and-cleaning-up) shows how to check nothing is lost first.
 
 ```checkpoint quick-9
-Pull request #8 has merged on GitHub. Why do you still run `git pull` on your `main`?
+You merged pull request #8 on github.com. Why do you still run `git pull` on your `main`?
 - [x] Merging on GitHub doesn't change your computer's copy, so the pull brings the work in.
 - [ ] The pull finishes the merge, which GitHub leaves half done until you run it.
 - [ ] The pull closes Issue #7, which GitHub leaves open until your copy catches up.
@@ -255,7 +257,7 @@ Why: Claude Code reads `CLAUDE.md` at the start of every session. A session you 
 ## Try it
 
 ````try
-You need git and `gh`, logged in with `gh auth login`. You'll make a public practice repo, take one change round the loop, then delete the repo.
+You need git, with your name and email set, and `gh`, logged in with `gh auth login`. [What Git and GitHub are](/learn/what-git-and-github-are) sets up both. You'll make a public practice repo, take one change round the loop, then delete the repo.
 
 1. Make the practice repo and go into it:
 
@@ -286,7 +288,7 @@ git push -u origin 1-first-recipe
 gh pr create --title "Add a first recipe" --body "Closes #1"
 ```
 
-5. Read it, as your Merge check: `gh pr view 2`. You should see `Closes #1` and one changed file. This repo has no CI, so there are no checks to wait for.
+5. Read it, as your Merge check: `gh pr view 2`. You should see `wants to merge 1 commit into main from 1-first-recipe`, `+1 -0` for the one line you added, and `Closes #1`. Then `gh pr diff 2 --name-only` lists the one changed file, `pancakes.md`. This repo has no CI, so there are no checks to wait for.
 6. Merge it, and check the Issue closed:
 
 ```sh
@@ -294,7 +296,7 @@ gh pr merge 2 --squash --delete-branch
 gh issue view 1 --json state
 ```
 
-7. You should see `"state": "CLOSED"`. Then run `git switch main` and `git pull`, and `cat pancakes.md` shows the recipe line.
+7. You should see `"state": "CLOSED"`. Then run `git switch main` and `git pull`: `gh` already did both, so git says `Already on 'main'` and `Already up to date.` `cat pancakes.md` shows the recipe line.
 8. Delete the practice repo: on github.com, open its **Settings**, scroll to the bottom, and click **Delete this repository**.
 
 To practise with an agent, ask it for steps 2 to 4, one at a time. Check each with the look-only commands in the table above.
@@ -304,7 +306,7 @@ To practise with an agent, ask it for steps 2 to 4, one at a time. Check each wi
 
 ### Why it exists
 
-When an agent can run every step, it's easy to stop following along. Claude writes about 90 percent of the code for Claude Code. Its team still keeps two jobs for people: deciding what to build, and checking the proof that a change works, such as test output. So the loop gives the agent the commands and leaves you the decisions.
+When an agent can run every step, it's easy to stop following along. Claude writes about 90 percent of the code for Claude Code. Its team still keeps people for some jobs, among them deciding what to build and checking the proof that a change works, such as test output. So the loop gives the agent the commands and leaves you the decisions.
 
 The branch is what makes the loop safe. Your changes reach `main` only when you merge. Until then, a half-done or wrong change can sit on its branch, get fixed, or get thrown away, and `main` never sees it.
 
@@ -324,7 +326,9 @@ Why: The team keeps people for deciding what to build and for checking proof, su
 
 **`gh` isn't found, or asks you to log in.** Install it from the [GitHub CLI manual](https://cli.github.com/manual/). Then run `gh auth login` yourself. It usually opens your browser: take the default at each question and finish there.
 
-**`gh` says `not a git repository`.** You're in the wrong folder, so `cd` into your project. If it still fails, your project isn't on GitHub yet: [Push, pull and remotes](/learn/push-pull-and-remotes) shows how to put it there.
+**`gh` says `not a git repository`.** You're in the wrong folder, so `cd` into your project. If it still fails, the folder isn't a Git repository yet: [What Git and GitHub are](/learn/what-git-and-github-are) shows how to make one, with `git init` and a first commit.
+
+**`gh` says `no git remotes found`.** Your repo isn't on GitHub yet. [Push, pull and remotes](/learn/push-pull-and-remotes) shows how to put it there.
 
 **The pull request shows no checks.** Your repo has no CI yet. [What CI/CD is](/learn/what-ci-cd-is) explains it, and an agent can set it up for you.
 

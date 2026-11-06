@@ -78,7 +78,7 @@ Rulesets aren’t available everywhere. On GitHub Free they work on public repos
 You may also meet the older **branch protection rules**, which do the same job (see [How teams protect main](/learn/how-teams-do-it)). Rulesets are the newer form: several can apply to one branch, and one can be switched off without being deleted. Where both kinds exist, GitHub applies them all, and the strictest version of each rule wins.
 
 ```callout watch-out
-A skipped job counts as passed. Say a required job `needs` another job, and that job fails: the required job is skipped, and the PR may still merge. GitHub’s advice is to use `always()` with `needs` for required checks that depend on other jobs.
+A skipped job counts as passed. Say a required job `needs` another job, and that job fails: the required job is skipped, and the PR may still merge. GitHub’s advice: give such a job `if: always()` next to its `needs:`. An `if:` line sets when a job runs, and `always()` makes it run even when a job it needs failed. Then it isn’t skipped, and it can check that job’s result and fail too.
 ```
 
 ```callout remember
@@ -126,10 +126,10 @@ A gate you’ve never seen fail is a gate you only hope works. Brad proves his t
 
 1. The check goes yellow (queued), then red. The merge button is blocked. **The merge gate held.**
 2. He switches “Protect main” from Active to Disabled. The PR is still red, but now the merge button works, and he merges.
-3. Render starts no deploy, because its Auto-Deploy setting is “After CI Checks Pass” and the check on the merged commit failed. **The deploy gate held.**
+3. Render starts no deploy, because its Auto-Deploy setting is “After CI Checks Pass” and the check on the merged commit failed. **Render’s release gate held.**
 4. He clicks GitHub’s Revert on the merged PR, which opens a new PR that undoes it. Its check passes and he merges it. Then he switches the ruleset back to Active.
 
-Take three things from it. First, each gate covers for the other: with the merge gate off, the deploy gate still kept the bad commit from users. Second, switching a gate off _is_ the bypass, and nothing reminds you to switch it back on. Brad had to remember. Treat it as a loud act: do the one thing you needed, switch it back in the same sitting, and never let an agent do it without asking you. Third, the failing change still landed on `main`. The gate kept it from users, not from history, and it took a revert (see [Undo and merge conflicts](/learn/undo-and-conflicts)) to clean up `main`.
+Take three things from it. First, each gate covers for the other: with the merge gate off, Render’s release gate still kept the bad commit from users. Second, switching a gate off _is_ the bypass, and nothing reminds you to switch it back on. Brad had to remember. Treat it as a loud act: do the one thing you needed, switch it back in the same sitting, and never let an agent do it without asking you. Third, the failing change still landed on `main`. The gate kept it from users, not from history, and it took a revert (see [Undo and merge conflicts](/learn/undo-and-conflicts)) to clean up `main`.
 
 On Vercel the second half plays out differently, and the difference matters. Render didn’t start a deploy at all. Vercel builds the production deployment from the bad commit anyway, then holds it. The deployment exists, with its own URL, but it isn’t promoted to the production domain. Built isn’t live. You’ll run this exact test on your own repo in [the lab](/learn/lab-gated-pipeline).
 
@@ -159,7 +159,7 @@ Why: Vercel still creates the production deployment, but the Deployment Check ke
 
 A **preview deployment** is a temporary copy of the site for one branch or PR, with its own URL. On Vercel you don’t switch them on. Every push to a branch that isn’t the production branch gets one, and so does every PR. When the project is connected to GitHub, Vercel’s bot posts the link as a comment on the PR, and the commit gets a status saying whether the deployment worked.
 
-Each preview has two kinds of URL. The branch URL always shows the latest push to that branch, so it’s the one to keep open while an agent is still working. The commit URL is frozen to one commit, so it’s the one to quote when you report a problem. Production doesn’t move: only merges to the production branch, `main`, make production deployments.
+Each preview has two kinds of URL. The branch URL always shows the latest push to that branch, so it’s the one to keep open while an agent is still working. The commit URL is frozen to one commit, so it’s the one to quote when you report a problem. Production doesn’t move with the branch. Production deployments come from commits that land on the production branch, `main`, whether by a merge or a direct push. Once the merge gate is on, that means merges.
 
 Who can open the link depends on **Deployment Protection**, a project setting. With its Vercel Authentication method, anyone who opens a protected URL is sent to a Vercel login, and only people with access to the project get through. You choose what it covers. Standard Protection protects every deployment except the production domains, so the real site stays public and the previews stay private. All Deployments protects production too.
 
@@ -204,9 +204,9 @@ Why: Nothing automatic stops a merge when nobody opened the preview. Force Promo
 
 On Vercel a deployment is built first and goes live only when it is **promoted**, that is, given the production domain. By default Vercel promotes your newest successful production build straight away: merge to `main`, Vercel builds, the build goes live. That is continuous deployment, where changes go live with no human click. Out of the box, though, it’s continuous deployment with no check either.
 
-**Deployment Checks** add a step between built and promoted: Vercel holds each production deployment until all the required checks pass, and only then gives it the production domain. A check can come from three places. Vercel’s own native checks, Lint and Typecheck, run the matching script in `package.json`, and are skipped if there isn’t one. GitHub Checks read the commit’s statuses and check runs. Integrations from the Vercel Marketplace, add-ons made by other companies, can add their own. GitHub Checks need two things first: the project is linked to GitHub through Vercel for GitHub, and automatic production aliasing (Vercel promoting each new production deployment by itself) is on.
+**Deployment Checks** add a step between built and promoted: Vercel holds each production deployment until all the required checks pass, and only then gives it the production domain. A check can come from three places. Vercel’s own native checks include Lint and Typecheck, which run the matching script in `package.json` and are skipped if there isn’t one. GitHub Checks read the commit’s statuses and check runs. Integrations from the Vercel Marketplace, add-ons made by other companies, can add their own. GitHub Checks need two things first: the project is linked to GitHub through Vercel for GitHub, and automatic production aliasing (Vercel promoting each new production deployment by itself) is on.
 
-You add them in the project’s **Settings → Build and Deployment → Deployment Checks**. In the lab, the project gets one blocking check: GitHub as the source, `Verify` as the name, holding production. Brad’s app has a `typecheck` script, so Vercel’s native Typecheck could run too, but it has no `lint` script, so a native Lint check would be skipped. GitHub matches checks by job name, so the rename trap from the merge gate is here too: rename the job, and the Deployment Check must be updated to match.
+You add them in the project’s **Settings → Build and Deployment → Deployment Checks**. Only a check marked as required holds production; one that isn’t holds nothing. In the lab, the project gets one blocking check: GitHub as the source, `Verify` as the name, holding production. Brad’s app has a `typecheck` script, so Vercel’s native Typecheck could run too, but it has no `lint` script, so a native Lint check would be skipped. GitHub matches checks by job name, so the rename trap from the merge gate is here too: rename the job, and the Deployment Check must be updated to match.
 
 Here is a detail that’s easy to miss. The release gate reads the check on the commit Vercel deployed, and after a merge that’s a new commit on `main`: a merge commit or a squash commit, as in [Merging and cleaning up](/learn/merging-and-cleaning-up). The PR’s green check belongs to a different commit. The new one gets a check only if the workflow also runs on pushes to `main`, which is why Brad’s workflow lists both `push` and `pull_request`. Render has the same rule from the other side: with After CI Checks Pass, a commit with zero checks never deploys. The push run also catches two PRs that pass alone but break together. If your ruleset doesn’t require branches to be up to date before merging, GitHub warns that checks can fail after the merge.
 
@@ -325,15 +325,16 @@ Check which gates a repo of yours has today. These commands only read; they chan
 gh ruleset check --default
 ```
 
-You should see how many rules apply, each one by its type, such as `pull_request` or `required_status_checks`. `0 rules` means no ruleset protects `main`, so a red PR can still merge. (A classic branch protection rule doesn’t show here: see [How teams protect main](/learn/how-teams-do-it).) On a private repo with GitHub Free, it may stop with `HTTP 403`, because rulesets there need a paid plan.
+You should see how many rules apply, each one by its type, such as `pull_request` or `required_status_checks`. In a ruleset, the merge gate is the `required_status_checks` rule with your check’s name in it. `deletion` and `non_fast_forward` (Restrict deletions and Block force pushes, which a new ruleset starts with) don’t stop a red PR. `0 rules` means no ruleset protects `main`. Unless a classic branch protection rule does (it doesn’t show here: see [How teams protect main](/learn/how-teams-do-it)), a red PR can still merge. On a private repo with GitHub Free, it may stop with `HTTP 403`, because rulesets there need a paid plan.
 
-2. The check. List the latest workflow runs:
+2. The check. List the latest workflow runs, then only the runs from pushes to `main`:
 
 ```sh
 gh run list --limit 5
+gh run list --branch main --event push --limit 5
 ```
 
-You should see your CI workflow’s runs, with `pull_request` as the event for PRs and `push` for merges into `main`. No `push` runs means a merged commit never gets a check of its own, so a release gate would wait forever.
+You should see your CI workflow’s runs, with `pull_request` as the event for PRs and `push` for merges into `main`. Several pushes to a PR can fill the first list, so the second lists only runs from pushes to `main`. If the first prints `no runs found`, no workflow has run on this repo yet, so there’s no check for a gate to wait for. If only the second prints it, although you’ve merged since the workflow was added, the workflow doesn’t run on pushes to `main`: look for `push` under its `on:`. Then a merged commit never gets a check of its own, so a release gate would wait forever.
 
 3. The look gate. List your recent pull requests, then open one in the browser, with its number in place of `<number>`. Look for a comment from Vercel’s bot with the preview link.
 
@@ -342,7 +343,7 @@ gh pr list --state all --limit 3
 gh pr view <number> --web
 ```
 
-4. The release gate. In the Vercel dashboard, open the project, then **Settings → Build and Deployment → Deployment Checks**. You should see each check that holds production, with its source and its name. An empty list means every successful production build goes live at once.
+4. The release gate. In the Vercel dashboard, open the project, then **Settings → Build and Deployment → Deployment Checks**. You should see each check with its source and its name. Only a check marked as required holds production, so an empty list, or one with no required check, means every successful production build goes live at once.
 
 **It’s working if:**
 

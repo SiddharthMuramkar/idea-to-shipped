@@ -9,7 +9,7 @@ Say you've started using a coding agent. You type one sentence, commands scroll 
 ```goals
 - You'll be able to ask an agent for each git and GitHub step in plain words, and check what it did with look-only commands.
 - You'll be able to run two agent sessions at once, each in its own worktree, without them colliding.
-- You'll be able to organise bigger work the way Matt Pocock does: a Spec, its Tickets, and one pull request per Ticket.
+- You'll be able to organise bigger work with Matt Pocock's Skills, as a Spec and its Tickets, and land it one pull request per Ticket.
 ```
 
 ## The agent types, you decide
@@ -18,18 +18,22 @@ A coding agent is an AI that reads your files, runs commands and writes code fro
 
 **Let the agent type the commands, and keep three jobs yourself: saying what to do, checking what it did, and deciding what merges.**
 
-The agent can run every git and `gh` command the earlier lessons taught, from `git switch -c` to `gh pr merge`. In its default mode, Claude Code asks your permission before it runs a shell command. The exception is a built-in set of read-only ones, such as `ls` and the read-only forms of `git`. So you see each command that changes something before it runs.
+The agent can run every git and `gh` command the earlier lessons taught, from `git switch -c` to `gh pr merge`. In Manual mode, Claude Code asks your permission before it runs a shell command. The exception is a built-in set of read-only ones, such as `ls` and the read-only forms of `git`. So you see each command that changes something before it runs, unless you, or the project's settings, have allowed it. Answering "Yes, and don't ask again" allows commands like that one in this repo from then on.
+
+Recent versions of Claude Code usually start a new session in auto mode instead. There, a second model reviews the commands in your place, and the ones it approves run without asking you, pushes included. To review each command yourself, press Shift+Tab until the status bar says `manual mode on`.
 
 Your evidence comes from look-only commands, which show you something and change nothing. Run them yourself, in a second terminal, whenever the agent reports back. The agent's summary is a claim. The command's output is the proof.
 
 | You want to know | Run |
 |---|---|
 | Which branch the agent is on, and what's left uncommitted | `git status` |
-| Which commits the branch adds | `git log --oneline main..HEAD` |
+| Which commits the branch adds | `git fetch`, then `git log --oneline origin/main..HEAD` |
 | Which files the pull request changes | `gh pr diff --name-only` |
 | The pull request's base branch, title and description | `gh pr view` |
 | Whether the checks passed | `gh pr checks` |
 | Whether the Issue closed | `gh issue view <number> --json state` |
+
+`origin/main` is your copy of GitHub's `main`. `git fetch` brings it up to date, and changes none of your files or branches. [Push, pull and remotes](/learn/push-pull-and-remotes) explains both.
 
 ```checkpoint quick-1
 The agent reports: "Done. Committed, pushed and opened the pull request." What do you do next?
@@ -68,7 +72,7 @@ Why: Without it, the agent commits on whatever branch is open. A squash-merged b
 When the pull request is up, check it before you even start your Merge check:
 
 - The base is `main`, and the description says `Closes` and the right Issue number: `gh pr view`.
-- The branch adds only this change's commits: `git log --oneline main..HEAD`.
+- The branch adds only this change's commits: `git fetch`, then `git log --oneline origin/main..HEAD`. A merge commit that brought in the latest `main` is fine too.
 - The files are the ones you expected, and no others: `gh pr diff --name-only`, or the **Files changed** tab.
 - Nothing is left behind: `git status` says "nothing to commit, working tree clean".
 - The checks are green, and you know what they test: `gh pr checks`.
@@ -119,7 +123,7 @@ claude
 
 A new worktree is a fresh checkout. It holds only what git tracks, so it has no installed dependencies and no gitignored files such as `.env`. Ask the new session to install the dependencies and copy `.env` in. A `.worktreeinclude` file can make `claude --worktree` copy listed files for you; `git worktree add` ignores it.
 
-Two running copies of your site can't share a port, the number in its local address, such as `localhost:3000`. So give the second copy its own. If your site has a database, give each copy its own too, or a migration in one changes it for both.
+Two running copies of your site can't share a port, the number in its local address, such as `localhost:3000`. So give the second copy its own. If your site has a database, give each copy its own too. Otherwise a migration, a change to how the database stores its data, run from one copy changes it for both.
 
 ```checkpoint quick-5
 You start a second copy of your site from a new worktree. What does it need?
@@ -141,7 +145,7 @@ Worktrees keep sessions apart while they work, but not forever. As Matt Pocock p
 
 > Merge the latest `main` into this branch and push. If git prints `CONFLICT`, stop and tell me.
 
-The agent runs `git fetch` first, which refreshes `origin/main`, your copy of GitHub's `main`. Then check from that worktree's folder: `git log --oneline HEAD..origin/main` should print nothing. That means no commit on GitHub's `main` is missing from the branch.
+The agent runs `git fetch` first, which refreshes `origin/main`, your copy of GitHub's `main`. Then check from that worktree's folder: run `git fetch` yourself, then `git log --oneline HEAD..origin/main`. It should print nothing. That means no commit on GitHub's `main` is missing from the branch.
 
 One collision git can't see: two sessions adding the same thing under two names, such as `cookTime` in one file and `cookingMinutes` in another. The changes don't overlap, so git merges them without a conflict. Agree on the exact names first, or run the two one after the other.
 
@@ -155,7 +159,7 @@ Why: `git stash` sets changes aside on a list that every worktree shares, so one
 
 ## Bigger work: a Spec, Tickets and pull requests
 
-Some changes are too big for one session: say, a shopping list built from your recipes. You need a plan that outlives any one conversation. Matt Pocock, a developer and teacher, publishes a popular set of Skills: named instructions an agent loads when you type them, such as `/to-spec`. His **main flow** is one way to organise big work. [The main flow](/learn/main-flow) maps all of it.
+Some changes are too big for one session: say, a shopping list built from your recipes. You need a plan that outlives any one conversation. Matt Pocock, a developer and teacher, publishes a popular set of Skills: named instructions an agent loads when you type their name, such as `/to-spec`, or, for some, when it decides they fit. [What a Skill is](/learn/skills) explains them. His **main flow** is one way to organise big work. [The main flow](/learn/main-flow) maps all of it.
 
 | Step | What it does | What appears on GitHub |
 |---|---|---|
@@ -163,7 +167,7 @@ Some changes are too big for one session: say, a shopping list built from your r
 | [to-spec](/learn/to-spec) | Writes a **Spec**: the plan for one whole feature, with its decisions. | One Issue. |
 | [to-tickets](/learn/to-tickets) | Splits the Spec into **Tickets**, each one session's work, joined by blocked-by links. | Sub-issues of the Spec, once you approve its list. |
 | [implement](/learn/implement) | Builds one Ticket and commits to your current branch. | Nothing, until you ask for a push and a pull request. |
-| [implement-spec](/learn/implement-spec) | Builds every Ticket in one run, each in its own worktree. | A draft pull request for the whole Spec, if you ask for one. |
+| [implement-spec](/learn/implement-spec) | Builds every Ticket in one run, each in its own worktree. | A draft pull request for the whole Spec, if you ask for one. Without one, it closes the Tickets itself at the end. |
 
 Say `/to-spec` writes Spec #20, "Shopping list". `/to-tickets` splits it into three Tickets: #21 adds a recipe's ingredients to the list, #22 shows the list page, and #23 ticks off bought items. #22 is blocked by #21, and #23 by #22. [Issues: keeping track of work](/learn/issues-and-keeping-track) shows how sub-issues and blocked-by links work.
 
@@ -181,7 +185,7 @@ Why: A Ticket can start once every Issue blocking it has closed. The `Blocked by
 
 Your default is one pull request per Ticket, into `main`, saying `Closes` and that Ticket's number. Each Merge check stays small, and each Ticket closes as its work lands.
 
-implement-spec works differently. It merges each Ticket's branch into one shared **integration branch**, not into `main`. Those merges close nothing, because GitHub acts on `Closes` only when a pull request merges into the default branch. The Tickets close when the integration branch's pull request merges into `main`, at the end of the run.
+implement-spec works differently. It merges each Ticket's branch into one shared **integration branch**, not into `main`. Those merges close nothing, because GitHub acts on `Closes` only when a pull request merges into the default branch. If you ask for the integration branch's pull request, the Tickets close when it merges into `main`. Without one, implement-spec closes each Ticket itself at the end of the run, while the work still waits on the integration branch, not on `main`. So ask for the pull request.
 
 ```diagram
 type: git
@@ -204,17 +208,17 @@ The cost: you stop reading each Ticket's work as it lands, and review it all at 
 When you come back to a Spec after a break, read the Spec first, then its open Tickets. Matt puts the reason this way: "Its value is that the tickets are disposable and the spec is not." The Tickets close one by one, and the Spec keeps the reasoning.
 
 ```checkpoint quick-8
-You're running implement-spec. Three Tickets' branches have merged into the integration branch, and all three Tickets still show as open. What's going on?
+You're running implement-spec, and you asked for its pull request. Three Tickets' branches have merged into the integration branch, and all three Tickets still show as open. What's going on?
 - [x] Nothing's wrong: they close when the integration branch's pull request merges into `main`.
 - [ ] The merges failed, so the agent should merge the three branches in again.
 - [ ] GitHub closes Issues in batches, so the three will close by themselves soon.
-Why: GitHub acts on `Closes` only when a pull request merges into the default branch. Merges into the integration branch close nothing, so the Tickets close at the end of the run.
+Why: GitHub acts on `Closes` only when a pull request merges into the default branch. Merges into the integration branch close nothing, so the Tickets close when that branch's pull request merges into `main`.
 ```
 
 ## Try it
 
 ````try
-You need a git repo of your own, such as `recipes`, with nothing uncommitted. Claude Code is optional.
+You need a git repo of your own, such as the `recipes` repo from [What Git and GitHub are](/learn/what-git-and-github-are), with nothing uncommitted. Claude Code is optional.
 
 1. In your project's folder, make a second worktree on a practice branch:
 
@@ -225,15 +229,15 @@ git worktree add ../recipes-practice -b practice-second-session
 2. Run `git worktree list`. You should see your project's folder first, then a line for `recipes-practice` ending in `[practice-second-session]`.
 3. Go there and look: `cd ../recipes-practice`, then `git status`. It says `On branch practice-second-session`, while your project's folder stays on its own branch.
 4. Optional: run `claude` here to start a second session, and ask "Which branch are you on?" Then type `/exit`.
-5. Go back to your project's folder, then remove the practice worktree and its branch:
+5. Go back to your project's folder. For `recipes`, that's `cd ../recipes`.
+6. Remove the practice worktree and its branch:
 
 ```sh
-cd ../recipes
 git worktree remove ../recipes-practice
 git branch -d practice-second-session
 ```
 
-6. Run `git worktree list` again. You should see only your project's folder.
+7. Run `git worktree list` again, then `git branch`. You should see only your project's folder, and no `practice-second-session` branch.
 
 To practise through an agent, ask: "Make a worktree with `git worktree add`, on a new practice branch, `practice-second-session`." Check with `git worktree list`. Then ask it to remove the worktree and delete the branch, and check again.
 ````
@@ -244,7 +248,7 @@ To practise through an agent, ask: "Make a worktree with `git worktree add`, on 
 
 **`/implement` has finished, but GitHub shows nothing.** It ends at a commit on your current branch, and never touches the Ticket. Ask the agent to push and open the pull request, saying `Closes` and the Ticket's number.
 
-**A Ticket looks blocked, though its blocker's work has merged.** On one big branch, the blocker closes only when the integration branch's pull request merges. So ask the agent to track what has merged into that branch.
+**A Ticket looks blocked, though its blocker's work has merged.** On one big branch, the blocker stays open until the end of the run, or until the integration branch's pull request merges. So ask the agent to track what has merged into that branch.
 
 **The Spec has a `ready-for-agent` label you didn't add.** to-spec adds it. On a Spec it means no more triage, the sorting and labelling of new Issues, is needed. It's input for an agent, not an order to build the whole Spec. An agent running unwatched can't tell the difference, so remove the label once `/to-tickets` has run.
 
@@ -264,10 +268,10 @@ Why: `/implement` ends at a commit on your current branch. Pushing and opening t
 
 **A session edits files outside its share.** You may have given the split only in conversation, and `/compact`, which replaces the conversation with a summary, lost it. Put the split in `CLAUDE.local.md` in that worktree: a personal instruction file that Claude Code reads like `CLAUDE.md`, kept out of git with `.gitignore`.
 
-**GitHub says `CONFLICTING`, but a merge on your computer is clean.** Some repos give a file the rule `merge=union` in `.gitattributes`, which tells git to keep both sides' lines. Git on your computer obeys it, and GitHub ignores it. Have the agent merge `main` in locally and push. If git doesn't stop, the mark was false.
+**GitHub marks a conflict, but a merge on your computer is clean.** The pull request page says "This branch has conflicts that must be resolved", and `gh pr view --json mergeable` prints `CONFLICTING`. Some repos give a file the rule `merge=union` in `.gitattributes`, which tells git to keep both sides' lines. Git on your computer obeys it, and GitHub ignores it. Have the agent merge `main` in locally and push. If git doesn't stop, the mark was false.
 
 ```checkpoint quick-10
-GitHub marks your pull request `CONFLICTING`. The only file both branches changed has the rule `merge=union`. What do you do first?
+Your pull request's page says "This branch has conflicts that must be resolved". The only file both branches changed has the rule `merge=union`. What do you do first?
 - [x] Have the agent merge the latest `main` in locally, and report any `CONFLICT`.
 - [ ] Close the pull request and rebuild the work, because GitHub can't merge it.
 - [ ] Delete the `merge=union` line and push, because the rule causes the conflict.
@@ -299,7 +303,7 @@ Q: Which Ticket is next?
 A: An open one with nothing open blocking it.
 
 Q: Why do Tickets stay open while implement-spec merges their branches?
-A: GitHub acts on `Closes` only on merges into the default branch. They close when the integration branch's pull request merges into `main`.
+A: GitHub acts on `Closes` only on merges into the default branch. With a pull request, they close when it merges into `main`. Without one, implement-spec closes them itself at the end of the run.
 ```
 
 ## Final test
@@ -379,10 +383,12 @@ Why: Each Ticket's branch merges into the integration branch, and only its one p
 ```sources
 - [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees), Claude Code docs
 - [Configure permissions](https://code.claude.com/docs/en/permissions), Claude Code docs
+- [Choose a permission mode](https://code.claude.com/docs/en/permission-modes), Claude Code docs
 - [How Claude remembers your project](https://code.claude.com/docs/en/memory), Claude Code docs
 - [git worktree](https://git-scm.com/docs/git-worktree), The Git project
 - [git stash](https://git-scm.com/docs/git-stash), The Git project
 - [git log](https://git-scm.com/docs/git-log), The Git project
+- [git fetch](https://git-scm.com/docs/git-fetch), The Git project
 - [gitattributes](https://git-scm.com/docs/gitattributes), The Git project
 - [git fsck](https://git-scm.com/docs/git-fsck), The Git project
 - [Pull requests](https://docs.github.com/en/pull-requests/reference/pull-requests), GitHub Docs

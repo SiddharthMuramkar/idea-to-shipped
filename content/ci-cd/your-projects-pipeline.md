@@ -4,7 +4,7 @@ slug: your-projects-pipeline
 summary: Plan the pipeline for your own Next.js project on Vercel: one verify script, when each gate goes on, preview tests, a database per preview, and your agent's prompt.
 ---
 
-The lab gave you a gated pipeline on a toy app. Your own project is bigger. Say it's `recipes`: a Next.js site on Vercel, with its recipes in a Postgres database. Link that repo to Vercel, and by default every merge to `main` goes live with nothing holding it. Switch on every possible check at once, and the gates block you for reasons nobody cares about. This lesson is the plan in between: which gates to switch on, in what order, and the prompt that sets up the first ones.
+[The lab](/learn/lab-gated-pipeline) gave you a gated pipeline on a toy app. Your own project is bigger. Say it's `recipes`: a Next.js site you're starting on Vercel, which will later keep its recipes in a Postgres database. Link that repo to Vercel, and by default every merge to `main` goes live with nothing holding it. Switch on every possible check at once, and the [gates](/learn/gates) block you for reasons nobody cares about. This lesson is the plan in between: which gates to switch on, in what order, and the prompt that sets up the first ones.
 
 ```goals
 - Take stock of your project's pipeline today, with a few read-only commands.
@@ -20,16 +20,16 @@ Start from what is actually there. Many projects reach this point with good habi
 | Part | How to check | What you might find | So |
 |---|---|---|---|
 | Merging | `gh api repos/OWNER/recipes --jq '{allow_squash_merge, allow_merge_commit, delete_branch_on_merge}'` | Squash merges by habit, but merge commits still allowed | The habit is right; the settings still offer other buttons |
-| Rulesets | `gh api repos/OWNER/recipes/rules/branches/main` | `[]` | Anyone, agents included, can push straight to `main` |
-| Workflows | `ls .github/workflows` | Nothing, or a workflow on a branch that hasn't merged | No check exists for a gate to require |
-| Vercel | Project Settings → Git, then Build and Deployment | Linked to the repo, production branch `main`, no Deployment Checks | A merge to `main` goes live unchecked |
+| Rulesets (GitHub's rules for a branch) | `gh api repos/OWNER/recipes/rules/branches/main` | `[]` | Anyone, agents included, can push straight to `main` |
+| Workflows | `ls .github/workflows` | Nothing, or a workflow on a branch that hasn't merged | No check runs your tests, so a gate has none to require |
+| Vercel | Project Settings → Git (the linked repo), Environments → Production (the production branch, under Branch Tracking), then Build and Deployment (Deployment Checks) | Linked to the repo, production branch `main`, no Deployment Checks (which hold a release until a check passes) | A merge to `main` goes live unchecked |
 | Scripts | `npm pkg get scripts` | `lint`, `typecheck`, `test` and `build`, but no `verify` | The pieces exist, but no one command runs them all |
 
-**Turn each gate on when there's something real for it to check, starting with your first code pull request.**
+**Turn each gate on when there's something real for it to check, starting with your first code pull request.** If your project is already past its first code pull request, start with the next one.
 
-The Vercel row matters most. Once Vercel is linked to the repo, every push to the production branch makes a production deployment. By default, Vercel promotes the newest good one straight away. Vercel's own Lint and Typecheck checks, if you've added them, run only those two scripts, never your tests. So when your first code pull request merges, it goes live with nothing holding it.
+The Vercel row matters most. Once Vercel is linked to the repo, every push to the production branch makes a production deployment. By default, Vercel promotes the newest good one straight away, which makes it the live site. Vercel's own Lint and Typecheck checks, if you've added them, run only those two scripts, never your tests. So when your first code pull request merges, it goes live with nothing holding it.
 
-One more thing to look for: branches that never merge, such as notes or experiments. A ruleset that targets `main` never touches them. Vercel does: it makes a preview deployment for every push to every branch. The project's **Ignored Build Step** setting runs a command before each build, and cancels the build when the command exits with 0. For example, to skip branches whose names start with `notes/`:
+One more thing to look for: branches that never merge, such as notes or experiments. A ruleset that targets `main` never touches them. Vercel does: it makes a preview deployment, a copy of the site at its own URL, for every push to every branch. The project's **Ignored Build Step** setting runs a command before each build, and cancels the build when the command exits with 0. For example, to skip branches whose names start with `notes/`:
 
 ```sh
 if [[ "$VERCEL_GIT_COMMIT_REF" == notes/* ]]; then exit 0; else exit 1; fi
@@ -50,7 +50,7 @@ Why: The Git link makes every push to `main` a production deployment, and Vercel
 
 ```checkpoint ruleset-notes-branch
 With a ruleset on `main` only, an agent pushes notes to `notes/meeting`. What does the ruleset do?
-- [ ] Blocks the push until `Verify` passes
+- [ ] Blocks the push until a check passes
 - [ ] Asks for a pull request first
 - [x] Nothing, because it covers `main` only
 - [ ] Deletes the branch after the push
@@ -63,7 +63,7 @@ Which of these findings means there's nothing yet for a gate to require?
 - [ ] Merge commits are still allowed
 - [ ] Vercel's own checks block nothing
 - [x] No workflow produces a check
-Why: A gate requires a check by name, and checks come from workflow jobs. With no workflow, a ruleset or a Deployment Check would have nothing to wait for.
+Why: A gate requires a check by name, and here the check that runs your tests comes from a workflow job, since Vercel's own checks never run them. With no workflow, the ruleset and a Deployment Check have no such check to wait for.
 ```
 
 ## The whole chain, in order
@@ -78,15 +78,15 @@ Before you switch anything on, see every check between an agent's first commit a
 | Vercel, while the pull request is open | The preview deployment | Nothing by itself: you are the gate | Merging without looking |
 | Vercel, after the merge | Deployment Checks | Going live | Force Promote |
 
-When all of them miss something, there's the undo. Instant Rollback points production back at an earlier deployment, then a revert pull request fixes `main`. [Gates: checks that block](/learn/gates) covers each one.
+When all of them miss something, there's the undo. Instant Rollback points production back at an earlier deployment, then a revert pull request fixes `main`. [Gates: checks that block](/learn/gates) covers the ruleset, the preview, Deployment Checks and the undo; [setup-pre-commit](/learn/setup-pre-commit) covers the hook.
 
 ```checkpoint agent-skips-alone
-Which of these can an agent skip on its own, without anyone switching a gate off?
+Which of these can an agent skip on its own machine, without touching GitHub or Vercel?
 - [x] The pre-commit hook, with `--no-verify`
 - [ ] The required check, on its pull request
 - [ ] The Deployment Check, on production
 - [ ] Your review of the preview deployment
-Why: `git commit --no-verify` skips the hook, and nothing on GitHub notices. The required check and the Deployment Check sit outside the agent's machine, and the preview review is yours.
+Why: `git commit --no-verify` skips the hook, and nothing on GitHub notices. Each of the others needs GitHub or Vercel: switching the ruleset off, clicking Force Promote, or merging before you look.
 ```
 
 ## One verify script, three places to run it
@@ -156,14 +156,16 @@ Why: Native checks run only the `lint` and `typecheck` scripts, and Vercel doesn
 | Tool | What it does | A typical setup |
 |---|---|---|
 | Playwright | Drives real browser engines (Chromium, Firefox, WebKit) through scripted visits | Tests at several widths, such as 360, 768 and 1440 px. The config reads the preview's URL from a variable such as `PLAYWRIGHT_BASE_URL`, and tests a local build without one. |
-| axe | Scans each page for WCAG failures, through `@axe-core/playwright` | A test helper that asks for the `wcag22aa` tag |
-| Lighthouse CI | Audits each page several times, and fails the run when a budget is missed | A budget file, such as `lighthouserc.cjs`: LCP ≤ 2,500 ms, CLS ≤ 0.1, TBT ≤ 200 ms, accessibility score ≥ 0.95 |
+| axe | Scans each page for failures of WCAG, the web's accessibility standard, through `@axe-core/playwright` | A test helper that asks for the `wcag22aa` tag |
+| Lighthouse CI | Audits each page several times, and fails the run when a budget is missed | A budget file, such as `lighthouserc.cjs`: LCP (load speed) ≤ 2,500 ms, CLS (layout jumps) ≤ 0.1, TBT (busy time) ≤ 200 ms, accessibility score ≥ 0.95 |
 
 **WCAG** (the Web Content Accessibility Guidelines) is the standard that accessibility checks test against. Two details about axe earn their place. axe finds, on average, about 57% of WCAG issues by itself; the rest need a person. And WCAG 2.2's rule on target size (tap targets at least 24 by 24 CSS pixels) is off by default. It runs only when the test asks for the `wcag22aa` tag, and Playwright's own documented example doesn't ask.
 
 Lighthouse's numbers need defining. **LCP** (Largest Contentful Paint) measures how fast the biggest piece of content appears. **CLS** (Cumulative Layout Shift) measures how much the layout jumps. The budget above sets both at Google's thresholds for "good".
 
 **INP** (Interaction to Next Paint) measures how fast the page reacts to a tap or click. Lighthouse loads pages with no user, so it can't measure INP. Its stand-in is **TBT** (Total Blocking Time): how long the page was too busy to respond. Real INP comes only from real visitors, after launch.
+
+Playwright's tests drive the whole running site the way a visitor would. Tests like these are **end-to-end tests**, or **e2e** for short.
 
 How does a workflow find the preview? Vercel tells GitHub. A **repository_dispatch** event is one that something outside GitHub sends to start workflows. Vercel sends one each time a deployment's status changes. A workflow that listens for `vercel.deployment.success` starts once a preview has finished building, and reads its URL from `github.event.client_payload.url`.
 
@@ -194,7 +196,7 @@ jobs:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
 ```
 
-Three traps sit in that small file, and each one explains a line of it:
+Three traps come with that small file:
 
 1. It runs on the wrong commit unless told otherwise. GitHub runs a `repository_dispatch` workflow against the latest commit on `main`, not the pull request's commit. The checkout action fetches the deployed commit instead. The status action posts the result on that commit, where the pull request and Vercel look for it, hence `statuses: write`.
 2. It can't test the pull request that adds it. The event starts a workflow only if the file is already on `main`. So the e2e workflow lands in one pull request, and first runs on the next.
@@ -235,7 +237,7 @@ Why: `ready` means built but not yet promoted, so the check can still hold it. F
 
 ## A database branch for every preview
 
-Say `recipes` keeps its recipes in Postgres on Neon, a hosted Postgres service. Previews then raise a question: which database does a preview talk to? If it's production's, a **migration** (a change to the database's structure, such as adding a column) tried on a preview runs against real data. Neon's answer is a branch. A **Neon branch** is a copy-on-write clone of a database. It's made at once and starts with all its parent's data, but changes to it never touch the parent.
+Say `recipes` later keeps its recipes in Postgres on Neon, a hosted Postgres service. Previews then raise a question: which database does a preview talk to? If it's production's, a **migration** (a change to the database's structure, such as adding a column) tried on a preview runs against real data. Neon's answer is a branch. A **Neon branch** is a copy-on-write clone of a database. It's made at once and starts with all its parent's data, but changes to it never touch the parent.
 
 1. An agent pushes to a pull request's branch. Vercel starts a preview deployment, as it does for every push.
 2. Neon's integration hears about the deployment, and creates a branch named `preview/<git-branch>`, copied from the project's default branch.
@@ -281,7 +283,7 @@ Each gate goes on when there's something real for it to check. Too early, and it
 | Ruleset "Protect main" | The same pull request, once `Verify` has run | Pushing to `main`; merging while `Verify` is red |
 | Vercel's Git connection | Usually linked already: confirm it | Nothing: it gives every pull request a preview, the look gate |
 | Deployment Check on `Verify` | The same pull request, before it merges | Promoting a production build whose `Verify` failed |
-| Playwright and axe on previews | Once pages exist, often the pull request after the first | Nothing while report-only; once required, merging |
+| Playwright and axe on previews | Once pages exist, often the pull request after the first | Nothing while report-only (shown, not required); once required, merging |
 | Lighthouse CI budgets | When the design settles | Once required, merging a pull request that misses a budget |
 | A Neon branch per preview | When a database arrives | Nothing: it keeps migrations and tests off production data |
 
@@ -405,9 +407,9 @@ Use this when your project's first code pull request is ready. It sets up the fi
 ```text
 Set up the first gates for OWNER/recipes, as part of its first code pull request, from the branch BRANCH_NAME. Every change reaches main through this pull request.
 
-1. Verify script. Add "verify": "npm run typecheck && npm run lint && npm test && npm run build" to package.json, using the scripts that already exist. Make typecheck run next typegen before tsc --noEmit. Run npm run verify and show me the end of the output.
+1. Verify script. Add "verify": "npm run typecheck && npm run lint && npm test && npm run build" to package.json, using the scripts that already exist. Make typecheck run next typegen before tsc --noEmit, and add it if it's missing. If there's no test script, set up Vitest with test as vitest run and one passing unit test. Run npm run verify and show me the end of the output.
 2. CI. Add .github/workflows/ci.yml with one job, id verify and name Verify, on pull_request to main and on push to main: permissions contents: read, Node from engines or .nvmrc, npm ci, then npm run verify. If the branch already has a CI workflow, replace its check job with this one, and keep its other jobs running without requiring them. Push, open the pull request, and show me the green Verify check.
-3. Merge gate. Once Verify has passed on the pull request, create a branch ruleset with gh api: "Protect main", default branch, active, require a pull request (0 approvals, squash only), require the Verify check from GitHub Actions, block force pushes, restrict deletions, empty bypass list. Turn off merge commits and rebase merging in the repo settings. GET both back and show me.
+3. Merge gate. If the repo is private on GitHub Free, stop and tell me: rulesets there work only on public repos. Once Verify has passed on the pull request, create a branch ruleset with gh api: "Protect main", default branch, active, require a pull request (0 approvals, squash only), require the Verify check from GitHub Actions, block force pushes, restrict deletions, empty bypass list. Turn off merge commits and rebase merging in the repo settings. GET both back and show me.
 4. Release gate. Confirm the Vercel project is linked to this repo by Git, with production branch main and automatic production aliasing on, and that the pull request got a preview link. Add a Deployment Check from GitHub on Verify. If the API or CLI can't do a step, give me the exact dashboard steps.
 5. Prove it. Push a commit with a deliberately failing unit test, and show me the red Verify check and the blocked merge. Revert that commit, then wait for me to merge. After I merge, show me the production deployment waiting for Verify before it was promoted.
 
@@ -444,7 +446,9 @@ ls .github/workflows 2>/dev/null || echo "no workflows yet"
 npm pkg get scripts
 ```
 
-You should see where your project starts. Before any gates, the rules call prints `[]`, and the folder check may say `no workflows yet`. The scripts list `lint`, `typecheck`, `test` and `build`, but no `verify`.
+You should see where your project starts. Before any gates, the rules call prints `[]`, and the folder check may say `no workflows yet`. A new Next.js app lists `dev`, `build`, `start` and `lint`; yours may also have `typecheck` and `test`. Either way, there's no `verify` yet.
+
+Check `visibility` too. On GitHub Free, rulesets work only on public repos. If yours prints `private`, make it public or move to a paid plan before you add the merge gate (see [Gates: checks that block](/learn/gates)).
 
 Run them again after your agent's first gates have merged. The rules list `pull_request` and `required_status_checks`, `allow_merge_commit` is `false`, `ci.yml` is listed, and `verify` appears among the scripts.
 ````
@@ -469,8 +473,8 @@ A: On the agent's machine before it opens a pull request, in CI as the job `Veri
 Q: Why can't Lighthouse measure INP?
 A: It loads pages with no user, so nothing taps or clicks. TBT is its stand-in; real INP comes from real visitors.
 
-Q: Which three lines in a `repository_dispatch` e2e workflow fix its traps?
-A: Vercel's checkout action (test the deployed commit), Vercel's status action with `statuses: write` (report on that commit), and the file must already be on `main`.
+Q: What are the three traps of a `repository_dispatch` e2e workflow?
+A: It runs on `main`'s latest commit, so it needs Vercel's checkout and status actions, with `statuses: write`. It can't test the pull request that adds it, as it must be on `main` first. And the project may not send the events: `disableRepositoryDispatchEvents` must be `false`.
 
 Q: Which Vercel event lets e2e results hold a production release?
 A: `vercel.deployment.ready`: built, but not yet promoted. `vercel.deployment.success` arrives after promotion.
@@ -557,7 +561,7 @@ Why: The cleanup deletes a preview branch once its Git branch is gone, but it ch
 ```
 
 ```final-test no-ruleset-red-check
-None of your gates are on yet. An agent opens your project's first code pull request. One CI job shows a red ✗, yet the merge button is green. What stops a merge?
+None of your gates are on yet. An agent opens your project's first code pull request. One CI job shows a red ✗, yet the merge button still works. What stops a merge?
 - [ ] GitHub, because the check is red
 - [ ] Vercel, which holds the production build
 - [ ] A pre-commit hook in the repo

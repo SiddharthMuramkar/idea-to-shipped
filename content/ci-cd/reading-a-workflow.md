@@ -18,7 +18,9 @@ Say an agent adds a file called `ci.yml` to your `recipes` repo and opens a pull
 
 **An event starts a workflow, each job in it runs on a fresh runner, and each job reports one check (a pass or fail on the commit), named after the job.**
 
-Workflows are written in YAML: plain-text settings, where `key: value` sets something, a leading `-` starts a list item, and indentation (spaces, never tabs) shows what belongs inside what. What’s new is the vocabulary. Six words cover every workflow you’ll read.
+Workflows are written in YAML: plain-text settings, where `key: value` sets something, a leading `-` starts a list item, and indentation (spaces, never tabs) shows what belongs inside what. A short list can also sit on one line, in square brackets: `branches: [main]` is the same as `branches:` with `- main` indented under it. What’s new is the vocabulary. Six words cover every workflow you’ll read.
+
+The table’s last column shows each word in Brad’s lab: the pipeline that Brad Traversy, a web development teacher on YouTube, builds in his CI/CD crash course. You’ll read its workflow file in full below.
 
 | Word | What it is | In Brad’s lab |
 |---|---|---|
@@ -72,7 +74,7 @@ In a step, what is `actions/checkout@v7`?
 - [ ] A branch of your own repository
 - [x] A reusable action, pinned to v7
 - [ ] A runner image with Node installed
-Why: It follows `uses:`, so it’s an action: published code from the `actions/checkout` repo, version 7. It copies your repo’s files onto the blank runner. A shell command would follow `run:`.
+Why: It’s an action: published code from the `actions/checkout` repo, and `@v7` pins it to version 7. It copies your repo’s files onto the blank runner. In a workflow file, a step runs an action with `uses:` and a shell command with `run:`.
 ```
 
 ```checkpoint quick-3
@@ -85,7 +87,7 @@ Why: By default, jobs run at the same time. One waits for another only if you gi
 
 ## Brad’s ci.yml: when it runs, and what it may touch
 
-Here is the workflow from Brad Traversy’s lab, exactly as it appears in his gist, the GitHub page of commands and code that goes with his CI/CD crash course. In [the lab](/learn/lab-gated-pipeline) you’ll have an agent add it to your own copy of his starter app. Read it once from top to bottom, then take it apart in two halves below.
+Here is the workflow from Brad Traversy’s lab, exactly as it appears in his gist, the GitHub page of commands and code that goes with his CI/CD crash course. In [the lab](/learn/lab-gated-pipeline) you’ll add it to your own copy of his starter app, by hand as Brad does or through your agent. Read it once from top to bottom, then take it apart in two halves below.
 
 ```yaml
 name: CI
@@ -181,7 +183,7 @@ Then the `steps`, in order, on that one machine. Each step has a `name` for the 
 |---|---|
 | `uses: actions/checkout@v7` | Copies the repo’s files onto the runner (on a PR, the test merge). |
 | `uses: actions/setup-node@v7` with `node-version: 24`, `cache: npm` | Sets up Node 24 in place of the machine’s default. `cache: npm` saves npm’s store of downloaded packages under a key made from `package-lock.json`, and restores it on the next run, so installs download less. It does not cache `node_modules`. |
-| `run: npm ci` | A clean install, exactly as the lockfile says. It deletes any `node_modules` first, never edits `package.json` or the lockfile, and stops with an error if the two disagree. |
+| `run: npm ci` | A clean install from the lockfile, `package-lock.json`, which records the exact version of every package. It deletes any `node_modules` first, never edits `package.json` (the project’s list of packages and scripts) or the lockfile, and stops with an error if the two disagree. |
 | `run: npm run verify` | Brad’s one script: `npm run typecheck && npm test && npm run build`. `&&` stops at the first failure, so the step fails, the job fails, and the check goes red. |
 
 Two choices there are deliberate. `npm ci`, not `npm install`, because a check has to test exactly what was committed. If the lockfile is out of date, you want a loud failure, not a silent fix on a machine that’s about to be thrown away. And one `verify` script, not three steps, so you can run the same command on your laptop that CI runs. Brad’s gist has you do exactly that, `npm ci` then `npm run verify`, before pushing.
@@ -241,11 +243,11 @@ jobs:
 Read it the way you read Brad’s, and six things differ:
 
 - **The workflow’s name** is `Licensed`. It labels the runs in the Actions tab, and plays no part in the check’s name.
-- **The triggers are Brad’s, written on one line each.** YAML lets you write a short set of keys between braces, and a single branch can stand in for a list. So `push: {branches: main}` means the same as Brad’s three lines under `push:`.
+- **The triggers are Brad’s, written on one line each.** YAML lets you write a short set of keys on one line between braces, and GitHub accepts a single branch name where it expects a list. So `push: {branches: main}` means the same as Brad’s three lines from `push:` down to `- main`.
 - **There’s no `permissions` key.** The token then gets the default access set in the repository’s or the organization’s settings, so the file alone doesn’t tell you what the job may do.
 - **The job id is `test`, and its `name:` is `Check licenses`.** So the check is called `Check licenses`. The order of keys inside a job doesn’t matter: `name:` can come after `runs-on:`.
 - **There’s no `timeout-minutes`,** so a hung job could run for the default 360 minutes.
-- **There’s no `setup-node` step, and the steps have no names.** `npm ci` runs on whatever Node the runner image has preinstalled, which changes when GitHub updates the image. Without a `name:`, the log labels each step by what it runs, such as “Run npm ci”.
+- **There’s no `setup-node` step, and the steps have no names.** `npm ci` runs on whatever Node the runner image has preinstalled, which changes when GitHub updates the image. The `engines` field, where a project’s `package.json` names the Node version it expects, doesn’t change that. Without a `name:`, the log labels each step by what it runs, such as “Run npm ci”.
 
 The same repo shows the naming rule from the other side. Its main workflow, `test.yml`, has a job with the id `build` and no `name:`, so that check is called `build`.
 
@@ -270,7 +272,7 @@ Why: The job has `name: Check licenses`, so the check carries that name. `test` 
 - [ ] Node 24, read from the engines field
 - [ ] The Node installed on your own laptop
 - [ ] None: npm ci fails without setup-node
-Why: Without setup-node, the step uses the Node that comes with the runner image, which changes when GitHub updates the image. `engines` never switches a Node version, and the runner has nothing from your laptop.
+Why: Without setup-node, the step uses the Node that comes with the runner image, which changes when GitHub updates the image. Nothing else on the runner switches Node to match `engines`, and the runner has nothing from your laptop.
 ```
 
 ```checkpoint check-10
@@ -331,7 +333,7 @@ Why: GitHub masks the secret values it knows, but says redaction isn’t guarant
 ```
 
 ```checkpoint check-13
-An agent pushes twice to a PR a minute apart. The workflow has `concurrency` with `group: ${{ github.workflow }}-${{ github.ref }}` and `cancel-in-progress: true`. What happens?
+An agent pushes a second commit to a PR while the first commit’s run is still going. The workflow has `concurrency` with `group: ${{ github.workflow }}-${{ github.ref }}` and `cancel-in-progress: true`. What happens?
 - [ ] Both runs finish; the later one counts
 - [x] The older run stops; the newer runs
 - [ ] The newer run waits for the older
@@ -391,7 +393,7 @@ Your PR shows `Verify` as “Expected”, waiting for a status, and the Actions 
 - [x] The workflow’s branch filter skipped this PR
 - [ ] A secret was printed in the logs
 - [ ] The job hit its ten-minute timeout limit
-Why: “Expected” means nothing has reported that check at all. A failing test or a timeout would show a red run. With no run, the usual causes are a filter that doesn’t match (such as `branches: [master]`) or a merge conflict. If a run exists but under another name, the job was renamed.
+Why: “Expected” means nothing has reported that check at all. A failing test or a timeout would still leave a run, failed or cancelled. With no run, the usual causes are a filter that doesn’t match (such as `branches: [master]`) or a merge conflict. If a run exists but under another name, the job was renamed.
 ```
 
 ## Practice: spot the bug
@@ -528,7 +530,7 @@ Add .github/workflows/ci.yml: run on pull requests to main and pushes to main, p
 ````try
 Read a real workflow’s runs, and one run’s log, on GitHub’s public `actions/checkout` repo. These commands only read; they change nothing.
 
-**You need:** `gh`, the GitHub CLI, logged in to your GitHub account. If it isn’t set up, see [One change, start to finish](/learn/one-change-start-to-finish).
+**You need:** `gh`, the GitHub CLI, logged in to your GitHub account. If it isn’t set up, see [What Git and GitHub are](/learn/what-git-and-github-are).
 
 1. List the latest runs of `licensed.yml` that passed, so each one has a full log. Each line shows the result, the run’s title, the workflow (`Licensed`), the branch, the event (`push` or `pull_request`), the run ID, how long it took and how long ago.
 
@@ -703,7 +705,7 @@ Q: What does `concurrency` with `cancel-in-progress: true` do?
 A: It allows one run at a time per group, and cancels the older run when a newer push arrives.
 
 Q: A required check says “Expected”, and there’s no run. What are the usual causes?
-A: A branch or path filter that skipped the workflow, a merge conflict, or a renamed job.
+A: A branch or path filter that skipped the workflow, a merge conflict, or no `pull_request` trigger. If there’s a run but its check has another name, the job was renamed.
 ```
 
 ## Final test

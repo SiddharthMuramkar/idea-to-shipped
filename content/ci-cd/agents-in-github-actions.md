@@ -30,7 +30,7 @@ Matt calls a setup where triggers, not people, start agent sessions a **software
 
 | Kind | Started by | What the agent may do | Ends in |
 |---|---|---|---|
-| On demand | You, writing `@claude …` in an issue or pull request comment | Answer, or commit to a new branch | A reply, and a link for you to open the pull request |
+| On demand | You, writing `@claude …` in an issue or pull request comment | Answer, or commit to a branch | A reply; from an issue, also a link for you to open the pull request |
 | Automatic review | A pull request being opened or updated | Read the diff, post comments | Comments on the pull request |
 | Label-triggered AFK | A label such as `agent:implement` | Write code, review, update branches | A pull request waiting for your review |
 
@@ -64,11 +64,11 @@ Why: A factory is defined by what starts the session: a trigger, not a person. O
 
 Anthropic's ready-made agent for Actions is `anthropics/claude-code-action`. It's an **action**: a packaged step that a workflow pulls in with `uses:`, like `actions/checkout` in [Reading a GitHub Actions workflow](/learn/reading-a-workflow). It installs Claude Code on the runner and runs it there. Its calls to the model go out to Anthropic, or to the cloud provider you choose.
 
-One input decides how it behaves: `prompt`. Leave it out, and the action runs in **interactive mode**. It waits for `@claude` in a comment, a review, or the title or body of a new issue. Then it replies in a comment and updates it as it works. Ask for a change, and it commits to a new branch, then gives you a link to open the pull request yourself.
+One input decides how it behaves: `prompt`. Leave it out, and the action runs in **interactive mode**. It waits for `@claude` in a comment, a review, or the title or body of a new issue. Then it replies in a comment and updates it as it works. Ask for a change on an issue, and it commits to a new branch, then gives you a link to open the pull request yourself. Ask on an open pull request, and it pushes to that pull request's branch.
 
 Give it a `prompt`, and it runs in **automation mode**. It does that job on every event the workflow listens to, with no mention needed. Its results go to the run's log, unless the job tells it to post and gives it a tool for posting. Automatic review is automation mode with "review this pull request" as the job.
 
-Here is the review workflow from Claude Code's docs. The quick setup in the next part writes one that runs the same `code-review` plugin:
+Here is the review workflow from Claude Code's docs. It runs the `code-review` **plugin**: a package of skills, installed in one go. A **skill** is a named set of instructions an agent loads for one job ([What a Skill is](/learn/skills)). The quick setup in the next part writes a workflow that runs the same plugin:
 
 ```yaml
 name: Code Review
@@ -96,7 +96,7 @@ jobs:
           claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment"'
 ```
 
-Read it the way you'd read any workflow. `on: pull_request` runs it when a pull request is opened, pushed to, reopened or marked ready. The job's own token may only read. The comments go out through the Claude GitHub App, which the action signs in as by default, and `id-token: write` is what lets it. The `prompt` runs the plugin's review skill on this pull request. `--comment` posts the findings on the pull request, not only in the log. The review skips drafts, and pull requests Claude has already commented on.
+Read it the way you'd read any workflow. `on: pull_request` runs it when a pull request is opened, pushed to, reopened or marked ready. The job's own token may only read. The comments go out through the Claude GitHub App, which the action signs in as by default, and `id-token: write` is what lets it. The `plugin_marketplaces` and `plugins` lines add Anthropic's official **marketplace**, a catalogue of plugins called `claude-plugins-official`, and install the plugin from it. The `prompt` runs the plugin's review skill, `/code-review:code-review`, on this pull request. `--comment` posts the findings on the pull request, not only in the log. The review skips drafts, and pull requests Claude has already commented on.
 
 The last line is the limit that matters most. `claude_args` passes flags straight to Claude Code, and `--allowedTools` names tools the agent may use without asking. In a run nobody watches there's nobody to ask, so a tool that isn't granted can't be used. This review grants one extra tool: the one that posts inline comments. These are the inputs you'll meet most:
 
@@ -108,7 +108,7 @@ The last line is the limit that matters most. `claude_args` passes flags straigh
 | `label_trigger` | A label that starts the action when someone adds it to an issue |
 
 ```callout remember
-No `prompt`: it waits for `@claude`, commits to a branch, and you open the pull request. A `prompt`: it runs on every matching event, such as each pull request. Its limits live in `claude_args`: `--allowedTools` and `--max-turns`.
+No `prompt`: it waits for `@claude`. On an issue, it commits to a new branch and you open the pull request; on an open pull request, it pushes to that pull request's branch. A `prompt`: it runs on every matching event, such as each pull request. Its limits live in `claude_args`: `--allowedTools` and `--max-turns`.
 ```
 
 ```checkpoint at-claude-result
@@ -117,7 +117,7 @@ Your `@claude` workflow has no `prompt`. You comment "@claude fix the TypeError 
 - [ ] An approved review on a pull request
 - [x] A branch, and a link to open a pull request
 - [ ] Nothing, until you run the workflow by hand
-Why: In interactive mode, Claude commits to a new branch and links you to open the pull request yourself. By default it neither merges nor opens the pull request for you.
+Why: On an issue, Claude in interactive mode commits to a new branch and links you to open the pull request yourself. By default it neither merges nor opens the pull request for you.
 ```
 
 ```checkpoint where-max-turns
@@ -153,12 +153,12 @@ The secret is how the run pays for the model. There are two kinds:
 | `ANTHROPIC_API_KEY` | A key from the Claude Console | API billing, per token |
 | `CLAUDE_CODE_OAUTH_TOKEN` | `claude setup-token`, run in your own terminal. It lasts a year, and needs a paid Claude plan. | Your Claude subscription. The token is tied to you, so don't share it across other people's repos. |
 
-Every run costs twice: GitHub Actions minutes for the machine, and model usage (API tokens, or your plan's allowance). Clear requests, a short `CLAUDE.md`, a turn cap and a job timeout keep both down.
+Every run uses two things: a machine and the model. On a public repo, GitHub's standard machines, such as `ubuntu-latest`, are free. On a private repo, each run's minutes come out of your GitHub plan's monthly allowance. The model costs on every run: API tokens, or part of your Claude plan's allowance. Clear requests, a short `CLAUDE.md`, a turn cap and a job timeout keep both down.
 
 Who can start a run is checked too. On issue and pull request events, the person who triggered it must have write access to the repo. Bots are refused unless you list them. On public repos, GitHub withholds secrets from runs started by pull requests from forks, so the review runs only on branches in the same repo.
 
 ```callout remember
-Three pieces: the Claude GitHub App (on chosen repos only), one secret (an API key or your subscription token), and one workflow file. You merge the setup pull request yourself. Each run costs Actions minutes plus model usage, and only people with write access can start one.
+Three pieces: the Claude GitHub App (on chosen repos only), one secret (an API key or your subscription token), and one workflow file. You merge the setup pull request yourself. Each run costs model usage, plus Actions minutes on a private repo, and only people with write access can start one.
 ```
 
 ```checkpoint first-review-runs
@@ -171,12 +171,12 @@ Why: The setup pushes a branch and prepares a pull request. Until it merges, the
 ```
 
 ```checkpoint oauth-cost
-Your workflow uses `CLAUDE_CODE_OAUTH_TOKEN`. What does one review run cost you?
+Your private repo's review workflow uses `CLAUDE_CODE_OAUTH_TOKEN`. What does one review run cost you?
 - [ ] Nothing, because GitHub hosts the model
 - [ ] API tokens, billed per review
 - [ ] Only your Claude subscription's usage
 - [x] Actions minutes and subscription usage
-Why: The machine still uses Actions minutes, and the model calls draw on your subscription instead of API billing. Two costs, whichever secret you use.
+Why: On a private repo, the machine uses Actions minutes from your GitHub plan, and the model calls draw on your subscription instead of API billing. On a public repo, GitHub's standard machines are free.
 ```
 
 ```checkpoint no-write-access
@@ -217,7 +217,7 @@ Two workflow settings return with a twist. The three workflows that push to a pu
 
 Because the sandbox is the boundary, Sandcastle skips Claude's permission prompts on AFK runs by default, and runs one iteration unless you ask for more. Inside Actions, Matt's spec runs it with `noSandbox()`. The spec doesn't say why; a likely reason is that the runner is already a fresh machine, thrown away after the job.
 
-The spec needs GitHub Issues. If your tickets live somewhere else, such as Markdown files in the repo, you'd move them to GitHub Issues first ([Issues: keeping track of work](/learn/issues-and-keeping-track)). Sandcastle on its own is looser: its setup offers other trackers too.
+The spec needs GitHub Issues. If your tickets live somewhere else, such as Markdown files in the repo, you'd move them to GitHub Issues first ([The build loop in practice](/learn/spec-driven-build-loop) shows how). Sandcastle on its own is looser: its setup offers other trackers too.
 
 ```callout remember
 Labels are both the controls and the state. The workflow holds the keys and makes every change on GitHub; the agent only commits and writes files. `AGENT_PAT` lets one step start the next. A human still merges.
@@ -254,7 +254,7 @@ Why: A CI run is cheap to throw away; a half-finished agent run is not. So the n
 
 An agent in Actions reads text that other people can write, holds credentials, and can push code. Each rule below closes one way that goes wrong. Check all six on any workflow an agent proposes.
 
-1. **Least permissions, per job.** Set `permissions: contents: read` at the top, then raise it only on the job that needs more, as Matt's spec does. Naming any permission sets every one you didn't name to `none`, so a short list is a tight one. A review job needs to read; it doesn't need `contents: write`.
+1. **Least permissions, per job.** Set `permissions: contents: read` at the top, then raise it only on the job that needs more. Matt's spec skips the top line and gives each job its own short list. Naming any permission sets every one you didn't name to `none`, so a short list is a tight one. A review job needs to read; it doesn't need `contents: write`.
 2. **Secrets stay secret, and tokens stay small.** Keys live in GitHub secrets, never in the YAML, and are never printed. With this action, leave `show_full_output` off: it puts everything Claude ran and read into the log. Debug mode (the `ACTIONS_STEP_DEBUG` secret set to `true`) switches it on by itself. Prefer short-lived tokens: `GITHUB_TOKEN` dies with the job. A personal token such as `AGENT_PAT` lives on, so make it fine-grained: one repo, and only the access the spec lists. And anyone with write access can read every secret.
 3. **No pwn requests.** `pull_request_target` runs with your repo's secrets and a token that can write. That's safe while it runs only code from your default branch. Check out the pull request's own code and run anything from it, and a stranger's code runs with your secrets: a **pwn request**. Use `pull_request`, as the review workflow does.
 4. **No script injection.** Issue titles, pull request bodies and even branch names are typed by whoever opened them. GitHub pastes `${{ … }}` into the shell script before it runs, so a crafted title can end a quote early and run a command. Pass untrusted text in through `env:`, where the shell treats it as data.
@@ -262,6 +262,8 @@ An agent in Actions reads text that other people can write, holds credentials, a
 6. **Caps, and the same gates.** Limit how long and how often it runs. Let its pull request face exactly what yours face: the ruleset, the `Verify` check, the preview and your review. No auto-merge.
 
 Rule 3 has one deliberate exception. Matt's spec uses `pull_request_target` and runs the pull request's code, because plain `pull_request` can't run on a pull request that conflicts with `main`. That stays safe only while its pull requests come from the agents' own branches. It also relies on labels: only people with triage access or more can add the labels that start a run. (Triage is a role that can manage issues and pull requests, but can't push code.) Don't copy it to a repo that takes pull requests from forks.
+
+GitHub now closes this door by default too. `actions/checkout` v7 refuses a fork's pull request code under `pull_request_target`, unless you set `allow-unsafe-pr-checkout: true`. And from 2 December 2026, GitHub blocks the event itself in public repos, unless a policy in the repo's Actions settings allows it. So to run Matt's platform on a public repo, you allow it on purpose, for Review, Implement PR and Update Branch only.
 
 Rule 4's fix looks like this. A title such as `a"; ls $GITHUB_WORKSPACE"` breaks the first version, but not the second:
 
@@ -393,7 +395,7 @@ Then widen the loop one step at a time. Matt's advice is to start narrow: one ki
 |---|---|---|
 | 1. Review on a practice repo | Automatic review on the lab's `cicd-lab` repo ([Lab: a gated pipeline](/learn/lab-gated-pipeline)). The job only reads, and the agent can only comment. | Now: you learn what a run costs, and what it catches |
 | 2. Review on your real project | The same workflow, beside your project's gates | Once the project has its `Verify` check and ruleset ([Setting up your own project's pipeline](/learn/your-projects-pipeline)) |
-| 3. `@claude` on demand | Small fixes you ask for in a comment. It writes to branches; you open and merge the pull requests. | When the reviews have proved useful |
+| 3. `@claude` on demand | Small fixes you ask for in a comment. It writes to branches; you merge the pull requests. | When the reviews have proved useful |
 | 4. A label pipeline | Matt's platform, or your own Sandcastle loop, for `ready-for-agent` tickets only. A human still merges. | Only after your tickets live in GitHub Issues |
 
 ```callout remember
@@ -412,7 +414,7 @@ Why: Deciding how readers browse needs your reactions as the input, which is HIT
 ```checkpoint vague-ticket
 A ticket reads "Make the site better" and has no acceptance criteria. Why not label it `agent:implement`?
 - [ ] Labels only work on pull requests
-- [x] The agent will guess, and nobody checks
+- [x] The agent will guess, with nobody to ask
 - [ ] Actions can't run on a ticket at all
 - [ ] It needs a sub-issue before any label
 Why: With no criteria and nobody to ask, the agent picks a default and builds on it. That's the AFK failure Matt describes. Labels do work on issues.
@@ -452,7 +454,7 @@ Why: Anthropic moves the `v1` tag to each new release, and anyone who controls a
 ## Try it
 
 ````try
-You need the GitHub CLI, signed in. These commands only read; they change nothing.
+You need the GitHub CLI, signed in, and for step 3 the `cicd-lab` repo from [Lab: a gated pipeline](/learn/lab-gated-pipeline). These commands only read; they change nothing.
 
 1. Ask GitHub for the action's latest release, and Sandcastle's one-line description:
 
@@ -467,13 +469,13 @@ gh api repos/mattpocock/sandcastle --jq .description
 gh api repos/mattpocock/course-video-manager/contents/docs/agents/afk-agent-platform-spec.md -H "Accept: application/vnd.github.raw" | grep -E '^\| [1-8] +\|'
 ```
 
-3. List your practice repo's secrets, by name only:
+3. List your `cicd-lab` repo's secrets, by name only. Put your GitHub username in place of `YOUR_USERNAME`:
 
 ```sh
 gh secret list --repo YOUR_USERNAME/cicd-lab
 ```
 
-You should see `v1` first: the release GitHub marks as latest, whose tag Anthropic moves to each new patch release. Then Sandcastle's description, "Orchestrate sandboxed coding agents in TypeScript with sandcastle.run()". Then the spec's eight workflows, the same eight as the table above. Last, your secrets' names, never their values; after setup, `CLAUDE_CODE_OAUTH_TOKEN` or `ANTHROPIC_API_KEY` is among them.
+You should see `v1` first: the release GitHub marks as latest, whose tag Anthropic moves to each new patch release. Then Sandcastle's description, "Orchestrate sandboxed coding agents in TypeScript with sandcastle.run()". Then the spec's eight workflows, the same eight as the table above. Last, your secrets' names, never their values. Before setup, `gh` prints `no secrets found`; after setup, `CLAUDE_CODE_OAUTH_TOKEN` or `ANTHROPIC_API_KEY` is among them.
 ````
 
 For the reasoning behind the platform, read parts 2 and 3.9 of the [full spec](https://github.com/mattpocock/course-video-manager/blob/main/docs/agents/afk-agent-platform-spec.md). For the shape of the loop, watch Matt's [AFK software factory video](https://www.youtube.com/watch?v=E5-QK3CDVQM), about 11 minutes. The safety rules above are what to add when that loop moves into GitHub Actions.
@@ -488,7 +490,7 @@ Q: What three pieces does Claude's action need before it can run?
 A: The Claude GitHub App on the repo, one secret (`ANTHROPIC_API_KEY` or `CLAUDE_CODE_OAUTH_TOKEN`), and a workflow file.
 
 Q: What does one run of an agent in Actions cost?
-A: GitHub Actions minutes for the machine, plus model usage: API tokens, or your Claude plan's allowance.
+A: Model usage: API tokens, or your Claude plan's allowance. On a private repo, GitHub Actions minutes for the machine too; on a public repo, GitHub's standard machines are free.
 
 Q: In Matt's AFK platform, what makes the changes on GitHub?
 A: The workflow steps: labels, comments, pushes and pull requests. The agent only commits locally and writes files.
@@ -542,7 +544,7 @@ Why: `pull_request` gives fork pull requests a read-only token and no secrets. `
 ```
 
 ```final-test sandcastle-edits
-In Sandcastle, with a Docker sandbox and a `branch` strategy, how do the agent's edits reach your repo?
+In Sandcastle, with a Docker sandbox, you ask for the agent's work on a named branch. How do its edits reach your repo?
 - [ ] It emails a patch file to you
 - [x] A worktree is bind-mounted into the container
 - [ ] It pushes its commits straight to `main`

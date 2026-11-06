@@ -86,7 +86,7 @@ To see the rules on a repo's default branch, run:
 gh ruleset check --default
 ```
 
-Run it in your project's folder, or add `--repo <owner>/<repo>` for any repo you can read. On github.com, the same list is at `https://github.com/<owner>/<repo>/rules`. Here is Neon, a public database project, shortened:
+Run it in your project's folder, or add `--repo <owner>/<repo>` for any repo you can read. On github.com, `https://github.com/<owner>/<repo>/rules` lists the repo's rulesets, and clicking one shows its rules. Here is what `gh ruleset check` prints for Neon, a public database project, shortened:
 
 ```text
 5 rules apply to branch main in repo neondatabase/neon
@@ -98,7 +98,7 @@ Run it in your project's folder, or add `--repo <owner>/<repo>` for any repo you
 - required_linear_history
 ```
 
-So on Neon, a change to `main` comes through a pull request and is squash-merged. It needs one approval, from a code owner when the files have one, and every review thread resolved. The ruleset also blocks deleting or force-pushing `main`.
+So on Neon, a change to `main` comes through a pull request and is squash-merged. It needs one approval, from a code owner when the files have one, and every review thread resolved. The ruleset also blocks deleting or force-pushing `main`, and `creation` lets only people on its bypass list create a branch named `main`.
 
 `gh ruleset check` lists rules from rulesets only. A classic branch protection rule doesn't show there, so `0 rules` doesn't prove `main` is unprotected. Look under **Settings**, then **Branches**, or run `gh api repos/<owner>/<repo>/branches/main --jq .protected`, which prints `true` for a branch with classic protection.
 
@@ -137,11 +137,11 @@ Two details catch people out. You can't approve your own pull request. And an ag
 To ask for a review on github.com, click **Reviewers** in the pull request's sidebar and pick a teammate. In the terminal, run `gh pr edit 8 --add-reviewer ben-t`.
 
 ```checkpoint quick-6
-You work alone, and your agents open pull requests with your GitHub login. You add a rule requiring one approval. What happens to their pull requests?
+You work alone, and your agents open pull requests with your GitHub login. You add a ruleset requiring one approval, and leave its bypass list empty. What happens to their pull requests?
 - [x] None can merge, because nobody but you can approve them, and you're the author.
 - [ ] You approve each one, then merge it, as you would a teammate's.
 - [ ] The agents approve each other's pull requests, so the rule is met.
-Why: Authors can't approve their own pull requests, and your agents' pull requests are yours. On a repo of one, a required approval blocks every merge.
+Why: Authors can't approve their own pull requests, and your agents' pull requests are yours. With nobody able to bypass the ruleset, a required approval blocks every merge.
 ```
 
 A **CODEOWNERS** file names who is responsible for which files. Put it in `.github/`, in the repo's root, or in `docs/`. Each line is a file pattern, written like a `.gitignore` line, then one or more owners. Say your team is Ana, Ben and Cara:
@@ -175,7 +175,7 @@ A **convention** is a habit the whole team follows, so names carry meaning and t
 - **Commit messages.** A short first line, written as a command, says what the commit does: "Show cooking time on recipe cards". Some teams follow Conventional Commits, which starts each message with a type: `feat: show cooking time`, `fix: correct pancake servings`.
 - **Pull requests.** A title that says what changes, and a description with `Closes #7`, so the Issue closes when it merges.
 
-Most teams enforce these by habit and review. Organizations on GitHub's Enterprise plans can also make a ruleset refuse branch names or commit messages that don't match a pattern. With agents, write your conventions down where the agent reads them at the start of each session, such as `CLAUDE.md` or a `CONTRIBUTING.md` file. [Instruction files](/learn/instruction-files) shows how.
+Most teams enforce these by habit and review. Organizations on GitHub's Enterprise plans can also make a ruleset refuse branch names or commit messages that don't match a pattern. With agents, write your conventions down where the agent reads them at the start of each session: `CLAUDE.md` for Claude Code, or `AGENTS.md`, which many other agents read. If they already live in a `CONTRIBUTING.md`, add a line to `CLAUDE.md` with `@` and that file's path, such as `@CONTRIBUTING.md`. Claude Code then loads it too. [Instruction files](/learn/instruction-files) shows how.
 
 ```checkpoint quick-8
 Your team names branches `<issue-number>-<short-slug>`. You start work on Issue #12, "Add a print button". Which name fits?
@@ -191,11 +191,11 @@ The right rules depend on who shares the repo.
 
 | Who | Rules that fit |
 |---|---|
-| You alone, with or without agents | Require a pull request and your checks, with zero approvals. Block force pushes and deletions. Your Merge check is the review. |
+| You alone, with or without agents | Require a pull request and your checks, with zero approvals. Block force pushes and deletions. Your [Merge check](/learn/checking-a-pr), the routine you run before you merge, is the review. |
 | A small team | The same, plus one required approval, and CODEOWNERS for the parts that need an expert, such as the workflow files. |
 | A big, busy team | Approvals scaled by risk, code owners, strict checks or a merge queue, and automated review on every pull request. |
 
-Zero approvals is right for a project of one, not lazy. You can't approve your own pull requests, so a required approval would block every merge. The rules still make every change pass through a pull request and its checks.
+Zero approvals is right for a project of one, not lazy. You can't approve your own pull requests, so a required approval would block every merge, unless you bypassed the rule each time. The rules still make every change pass through a pull request and its checks.
 
 Small pull requests help at every size. Someone has to read them, and small changes get reviewed more quickly and more thoroughly, and they're simpler to roll back. At Google, a reviewer may reject a change for being too large, and for no other reason. Anthropic's Code Review reviews pull requests with agents. It found problems in 84% of pull requests over 1,000 changed lines, and in 31% of those under 50.
 
@@ -206,7 +206,7 @@ A big team adds layers. Claude writes about 90 percent of Claude Code's code, an
 3. An automated security review can block the merge.
 4. CI's checks can block it too.
 5. A second person approves riskier changes.
-6. The checks run again on the latest `main` plus the change, before it merges.
+6. The checks run again on the latest `main` plus the change, before it merges. Two pull requests that each pass on their own can still break `main` together.
 
 A rollback, such as a [revert](/learn/undo-and-conflicts), handles whatever still gets through. When an agent writes a pull request there, the person who ran the agent always counts as one of its required reviewers. And an agent's approval doesn't count as a person's.
 
@@ -285,7 +285,7 @@ Why: A failing check blocks a merge only if a rule names it as required. `gh pr 
 
 ```flashcards
 Q: What's the difference between a ruleset and a branch protection rule?
-A: Both protect branches. A ruleset is a named list of rules for chosen branches, and several can apply at once. A branch protection rule is the older, classic kind. When both apply, the stricter rule wins.
+A: Both protect branches. A ruleset is a named list of rules for chosen branches, and several can apply at once. A branch protection rule is the older, classic kind. When both cover a branch, all their rules apply, and where two of them disagree, the stricter one wins.
 
 Q: Which rules protect `main` on most repos?
 A: Require a pull request, require status checks, block force pushes and restrict deletions. Bigger teams add required approvals and code owner review.

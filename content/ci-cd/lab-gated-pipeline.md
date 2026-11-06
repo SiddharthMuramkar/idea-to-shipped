@@ -162,7 +162,7 @@ npm run dev
 npm run verify
 ```
 
-You should see the home page say "CI/CD Lab", and the health endpoint answer `{"status":"ok"}`. Then `npm run verify` ends with a test summary showing `pass 1` and `fail 0`, and a new `dist` folder appears.
+You should see the home page say "CI/CD Lab", and the health endpoint answer `{"status":"ok"}`. Then `npm run verify` prints a test summary showing `pass 1` and `fail 0`. It ends with the build's `> tsc` line and no errors, and a new `dist` folder appears.
 ````
 
 Brad explains his choice of `npm ci` over `npm install` (video 6:40). `npm install` can change the lock file, the file that pins every package's exact version. `npm ci` installs exactly what the lock file lists, which is why CI uses it too.
@@ -231,12 +231,13 @@ Vercel differs here. You set none of Render's four settings. Vercel spots the Ex
 ````try
 You need your Vercel account, signed in with GitHub.
 
-1. In Vercel's dashboard, click Add New…, then Project.
+1. In Vercel's dashboard, click Create New, then Project, or open [vercel.com/new](https://vercel.com/new).
 2. Under Import Git Repository, find `cicd-lab` and click Import.
 3. Not listed? Click Adjust GitHub App Permissions, and give Vercel access to the repo.
 4. Leave every setting as Vercel fills it in. Click Deploy.
-5. When the deployment is Ready, open the project and click its domain.
-6. Check the health endpoint. Put your project's domain in place of `YOUR_PRODUCTION_URL`:
+5. Error instead of Ready? Open the deployment's Build Logs, and use the fixes below this box. With the starter's TypeScript 7, it's likely `TS2688`.
+6. When the deployment is Ready, open the project and click its domain.
+7. Check the health endpoint. Put your project's domain in place of `YOUR_PRODUCTION_URL`:
 
 ```sh
 curl https://YOUR_PRODUCTION_URL/api/health
@@ -251,12 +252,12 @@ On Render, `npm start` runs a server that listens all the time. On Vercel the ap
 
 Two URLs matter from now on. A **deployment** is one build of one commit, at its own URL, such as `cicd-lab-a1b2c3d4e-your-account.vercel.app`. The **Production URL** is your project's main address, such as `cicd-lab.vercel.app`, with a few extra letters if that name is taken. It always shows the newest production deployment that has gone live.
 
-The first deployment of a new project is a production deployment, so it went live at once. With no gate yet, that's continuous deployment with no check, like Brad's On Commit. Listen for one slip at 14:23: Brad calls On Commit "continuous delivery", after calling it continuous deployment at 13:19. By his own definitions (video 2:04), going live with no human click is continuous deployment.
+The first deployment of a new project is a production deployment, so it went live as soon as it built. With no gate yet, that's continuous deployment with no check, like Brad's On Commit. Listen for one slip at 14:23: Brad calls On Commit "continuous delivery", after calling it continuous deployment at 13:19. By his own definitions (video 2:04), going live with no human click is continuous deployment.
 
 If the build fails, open the deployment and read its Build Logs before you change any code. Two errors have known causes:
 
 - `TS2688: Cannot find type definition file for 'node'`. The starter uses TypeScript 7, which is very new, and Vercel's Express builder has failed on it. Move to TypeScript 6 with the commands below.
-- `No entrypoint found which imports express`. The app's file moved, or lost its default export. Put `src/app.ts` back as it was.
+- `No entrypoint found which imports express`. No file on Vercel's list imports `express` any more, for example because the app's file moved. Put `src/app.ts` back as it was.
 
 ```sh
 npm install --save-dev typescript@6
@@ -383,12 +384,12 @@ You should see `Verify` ✓ in the pull request's checks, beside Vercel's own st
 
 GitHub shows the check as `CI / Verify (pull_request)`: the workflow's name, the job's name and the event. The check's own name is `Verify`, from the job's `name:` line. Without a `name:` line, the job's id, `verify`, would be the name. That's the name both gates will ask for.
 
-Why `-D`? Brad's `git branch -d` works because a merge commit keeps the branch's commits in `main`. A squash makes one new commit instead, so `-d` says the branch is "not fully merged". An empty `git diff` proves `main` already holds everything, so `-D` (delete anyway) loses nothing.
+Why `-D`? Brad's `git branch -d` works because a merge commit keeps the branch's commits in `main`. A squash makes one new commit instead, so `main` doesn't hold them. Yet `-d` may still delete the branch, with a warning, because it first checks against `origin/feature/github-actions-ci`: Git's memory of the copy you pushed, which `git pull` leaves in place. After `git fetch --prune` drops that memory, `-d` refuses, saying the branch is "not fully merged". Either way, an empty `git diff` proves `main` already holds everything, so `-D` (delete anyway) loses nothing.
 
 The second run matters later. The squash commit on `main` is brand new, and the pull request's green check belongs to a different commit. The push run gives the new commit its own `Verify`. That's the one Vercel's Deployment Check will wait for in Step 6.
 
 ```checkpoint squash-branch-d
-After the squash merge, `git branch -d feature/github-actions-ci` refuses. What's the safe next move?
+After the squash merge and a `git fetch --prune`, `git branch -d feature/github-actions-ci` refuses. What's the safe next move?
 - [ ] Switch the repo back to merge commits
 - [ ] Revert the squash commit on `main`
 - [x] Check `git diff` is empty, then use `-D`
@@ -568,7 +569,7 @@ Here Vercel differs most. Render never starts the deploy. Vercel builds a produc
 You should see the rules call from Step 5 list `pull_request` and `required_status_checks` again.
 ````
 
-Switching a gate off is its bypass, and nothing reminds you to switch it back. The bad commit also reached `main`: the release gate kept it from users, not from history. The revert, a new pull request that undoes the merge, cleaned `main` up through both gates. [Undo and merge conflicts](/learn/undo-and-conflicts) covers reverts.
+Switching a gate off is its bypass, and nothing reminds you to switch it back. The bad commit also reached `main`: the release gate kept it from users, not from history. The revert, a new pull request that undoes the merge, cleaned `main` up with a green `Verify`, and the Deployment Check let it go live. [Undo and merge conflicts](/learn/undo-and-conflicts) covers reverts.
 
 ```checkpoint gate-off-vercel
 With Protect main switched off, you merge the red pull request. What does Vercel do?
@@ -731,12 +732,12 @@ Most of these fail quietly. Nothing errors; a gate waits, or the build stops wit
 | A private repo on GitHub Free | The ruleset doesn't protect `main` | Make the repo public, or use GitHub Pro |
 | Previews sit behind a Vercel login | `curl` on a preview gets a login page | Open previews in a browser logged in to Vercel |
 | Your Node isn't 24 | Your local results differ from CI's | Install Node 24, and check `node --version` |
-| No lock file in Git | CI fails at the `npm ci` step | Commit `package-lock.json` |
+| No lock file in Git | CI stops at Set up Node.js: "Dependencies lock file is not found" | Commit `package-lock.json` |
 | The app file moved, or lost its default export | "No entrypoint found which imports express", or routes stop answering | Keep `src/app.ts` importing `express`, ending with `export default app` |
 | TypeScript 7 on Vercel | The build fails with `TS2688: Cannot find type definition file for 'node'` | Move to TypeScript 6, as in Step 3 |
 | A fix set for Production only | Production builds, then the first preview fails | Fix the cause in the code, not in one environment |
 
-The last row needs a word. Vercel hands **environment variables**, named settings, to your build. Each one applies only to the environments you tick: Production, Preview or Development. Vercel offers an opt-in variable, `VERCEL_EXPERIMENTAL_BACKENDS=1`, that swaps in a newer, experimental builder for Express. Set it for Production only, and previews build without it. That builder also has a known crash on TypeScript 7, so it doesn't fix the `TS2688` error.
+The last row needs a word. Vercel hands **environment variables**, named settings, to your build. Each one applies only to the environments you tick: Production, Preview or Development. Say a variable you set for Production only gets a failing build through. Previews build without it, so the first preview fails. One opt-in variable, `VERCEL_EXPERIMENTAL_BACKENDS=1`, swaps in a newer, experimental builder for Express, but it's no way around `TS2688`: that builder has a known crash on TypeScript 7 too.
 
 ```checkpoint red-pr-still-merges
 You created the ruleset, yet a pull request with a red ✗ still merges. What do you check first?
@@ -748,12 +749,12 @@ Why: The form starts at Disabled, and a Disabled ruleset blocks nothing. Node, t
 ```
 
 ```checkpoint npm-ci-fails
-On the very first pull request, CI fails at `npm ci`, though everything worked on your machine. What do you check first?
+On the very first pull request, CI stops at Set up Node.js with "Dependencies lock file is not found", though everything worked on your machine. What do you check first?
 - [x] Whether `package-lock.json` is in Git
 - [ ] Whether the ruleset is set to Active
 - [ ] Whether Vercel imported the repo yet
 - [ ] Whether the preview has finished loading
-Why: `npm ci` installs from the lock file and stops without one. The ruleset and Vercel don't affect how the runner installs.
+Why: With `cache: npm`, Set up Node.js needs the lock file in the repo, and so does `npm ci` after it. The ruleset and Vercel don't affect how the runner installs.
 ```
 
 ## Tell your agent
@@ -907,7 +908,7 @@ Your first Vercel build failed, so you added an environment variable for Product
 - [ ] Previews build from a different copy of the repo
 - [ ] Previews need their own Deployment Check first
 - [ ] Previews only build once the pull request merges
-Why: Each variable applies only to the environments you tick: Production, Preview or Development. Fix the cause in the code instead, such as moving from TypeScript 7 to 6.
+Why: Each variable applies only to the environments you tick: Production, Preview or Development. Fix the cause in the code instead, and every environment gets the fix.
 ```
 
 ```final-test ts2688-fix

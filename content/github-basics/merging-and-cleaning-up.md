@@ -114,7 +114,7 @@ Three things must be true before you can use it:
 - The repo's plan has it. GitHub Free offers it only in public repos. Private repos need a paid plan, such as GitHub Pro or Team.
 - The PR can't merge yet. The option shows only while something is still pending, such as a required check that's running.
 
-To turn it on, choose a method from the merge button's menu, click **Enable auto-merge**, then **Confirm auto-merge**. With `gh`, run `gh pr merge 14 --auto --squash`. It prints that the PR "will be automatically merged via squash when all requirements are met".
+To turn it on, choose a method from the merge button's menu, click **Enable auto-merge**, then **Confirm auto-merge**. With `gh`, run `gh pr merge 14 --auto --squash`. It prints that the PR "will be automatically merged via squash when all requirements are met". But if the PR can already merge, `gh` doesn't wait: it merges straight away, even while checks the repo doesn't require are still running.
 
 To turn it off, click **Disable auto-merge** in the merge box, or run `gh pr merge 14 --disable-auto`. It also turns itself off if someone without write access (the right to change the repo) pushes to the branch or switches its base branch.
 
@@ -164,7 +164,7 @@ Why: It has to merge into the default branch, usually `main`, and its descriptio
 
 Some Issues won't close by themselves: the PR forgot its `Closes` line, or the work needed no code at all. Close those by hand, with a comment saying why, so the next reader knows.
 
-On github.com, open the Issue and write your comment. Next to **Close issue**, open the menu to pick a reason, such as completed or not planned. Then click **Close issue**.
+On github.com, open the Issue and write your comment. Once you've typed it, the **Close issue** button reads **Close with comment**. Open the menu next to that button to pick a reason, such as completed or not planned. Then click **Close with comment**.
 
 With `gh`:
 
@@ -206,6 +206,8 @@ git branch -vv
 
 `git pull` brings the merged commit into your `main` ([Push, pull and remotes](/learn/push-pull-and-remotes) explains pulling). `git fetch --prune` makes Git forget branches that were deleted on GitHub. Then `git branch -vv` lists your branches. One whose GitHub copy is gone shows `[origin/12-search-capitals: gone]`.
 
+Used a [worktree](/learn/branches-and-worktrees) for this work? Remove it first, from your project's main folder, with `git worktree remove <folder>`. Git won't delete a branch while a worktree has it checked out. And it removes only a clean worktree, with nothing left uncommitted.
+
 Delete each finished branch with `git branch -d 12-search-capitals`. After a squash merge, Git may refuse, saying the branch is `not fully merged`. That's expected: `main` holds one new commit, not your branch's commits, so Git can't find them there.
 
 Before you force it with `git branch -D`, check that the branch holds nothing new. The first command prints the ID of your branch's last commit, and the second the PR's (its `headRefOid`). They should match:
@@ -215,9 +217,7 @@ git rev-parse 12-search-capitals
 gh pr view 14 --json headRefOid --jq .headRefOid
 ```
 
-If they match, the branch holds only work that's already in the PR, so `-D` is safe. If they differ, the branch has a commit the PR lacks. Put it on a fresh branch with its own PR first.
-
-Used a [worktree](/learn/branches-and-worktrees) for this work? Remove it from your project's main folder with `git worktree remove <folder>`. Git removes only a clean worktree, with nothing left uncommitted.
+If they match, the branch holds only work that's already in the PR, so `-D` is safe. If they differ, don't delete it yet: find out what differs. Ask your agent which commits on `12-search-capitals` aren't in PR #14 (`gh pr view 14 --json commits` lists the PR's). A commit the PR lacks goes on a fresh branch with its own PR. If there's none, your copy was only behind the PR, and `-D` is safe.
 
 Then start your next change on a fresh branch, from an up-to-date `main`.
 
@@ -253,6 +253,8 @@ Then check its report against these:
 If you want the agent to merge later, once a check finishes, ask for auto-merge only after your Merge check is done:
 
 > My Merge check passed. Turn on auto-merge with squash for PR #14.
+
+Auto-merge waits only for checks the repo requires. If the check you're waiting for isn't required, wait for it yourself, then ask for the merge.
 
 ```checkpoint quick-9
 Your agent reports: "Merged PR #14, and Issue #12 is closed." What do you run to check the second claim?
@@ -324,41 +326,47 @@ This one uses your practice project, the yoga-studio booking site from [Issues: 
 ````try
 You'll need the practice project. If you haven't set it up, do its Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. No CI check yet? The Try it in [What CI/CD is](/learn/what-ci-cd-is) adds one, called `test`.
 
-1. On GitHub Free, make the repo public first. Free has auto-merge and protected branches only in public repos.
+1. Go into your practice project's folder:
+
+   ```sh
+   cd yoga-studio
+   ```
+
+2. On GitHub Free, make the repo public first. Free has auto-merge and protected branches only in public repos.
 
    ```sh
    gh repo edit --visibility public --accept-visibility-change-consequences
    ```
 
-2. Turn on auto-merge: in **Settings**, under **General**, select **Allow auto-merge**.
-3. In **Settings**, click **Branches**, then **Add classic branch protection rule**.
-4. Type `main` as the branch name pattern. Select **Require status checks to pass before merging**.
-5. Search for your CI check, select it, and click **Create**.
-6. Create a practice Ticket, so your booking Ticket, #3, stays open. Note its number.
+3. Turn on auto-merge: in **Settings**, under **General**, select **Allow auto-merge**.
+4. In **Settings**, click **Branches**, then **Add classic branch protection rule**.
+5. Type `main` as the branch name pattern. Select **Require status checks to pass before merging**.
+6. Search for your CI check, select it, and click **Create**. Nothing found? The search lists only checks that passed in the past week. Open any small PR so `test` runs, then search again.
+7. Create a practice Ticket, so your booking Ticket, #3, stays open. Note its number.
 
    ```sh
    gh issue create --title "Try auto-merge" --body "Practice."
    ```
 
-7. Start its branch:
+8. Start its branch:
 
    ```sh
    git switch main && git pull && git switch -c try-auto-merge
    ```
 
-8. Change one line of `README.md`, then commit and push:
+9. Change one line of `README.md`, then commit and push:
 
    ```sh
    git commit -am "Try auto-merge" && git push -u origin HEAD
    ```
 
-9. Open a PR into `main`, with your practice Ticket's number in place of `N`:
+10. Open a PR into `main`, with your practice Ticket's number in place of `N`:
 
-   ```sh
-   gh pr create --title "Try auto-merge" --body "Closes #N"
-   ```
+    ```sh
+    gh pr create --title "Try auto-merge" --body "Closes #N"
+    ```
 
-10. While the checks run, click **Enable auto-merge**, then **Confirm auto-merge**. If they finish first, the button won't show: push another small commit and try again.
+11. While the checks run, click **Enable auto-merge**, then **Confirm auto-merge**. If they finish first, the button won't show: push another small commit and try again.
 
 You should see the PR merge by itself once the checks pass, and the Ticket's Issue close. Then go back:
 
@@ -375,7 +383,7 @@ git switch main && git pull
 
 **Your PR says `into` another branch.** GitHub ignored its `Closes` line, so the merge closed nothing. The Issue closes when a PR into `main` says so, or when you close it by hand.
 
-**`gh` won't delete your local branch, because a worktree has it open.** Git lets only one folder be on a branch at a time. The merge itself went through: only the clean-up stopped, and recent versions of `gh` print the commands to finish. Run `git status` in that worktree first, in case it holds work you want.
+**`gh` won't delete your local branch, because a worktree has it open.** Git lets only one folder be on a branch at a time. The merge itself went through. `gh` 2.99 and later still delete the branch on GitHub, skip only your computer's copy, and say why, usually with the commands to finish. Older versions stop the whole clean-up with Git's error. Run `git status` in that worktree first, in case it holds work you want.
 
 **A later PR shows commits you already merged.** You kept working on a branch after it was squash-merged. A new PR from it lists the old commits again, and you may meet the same [merge conflicts](/learn/undo-and-conflicts) more than once. Start each change on a fresh branch.
 
@@ -542,5 +550,4 @@ Why: Git's list of GitHub branches is only as fresh as its last fetch. `--prune`
 - [git-pull](https://git-scm.com/docs/git-pull), The Git project
 - [git-switch](https://git-scm.com/docs/git-switch), The Git project
 - [git-worktree](https://git-scm.com/docs/git-worktree), The Git project
-- [v1.3: /implement-spec, /pr, /retro, and GLOSSARY.md](https://www.aihero.dev/skills/skills-changelog-v13-implement-spec-pr-retro-and-glossary-md), Matt Pocock, 2026-10-05
 ```

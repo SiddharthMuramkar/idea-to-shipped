@@ -30,7 +30,7 @@ A change can be in four places. You met the first three in [Commits and diffs](/
 |---|---|---|---|
 | Edited, not staged | `git status` lists it under "Changes not staged for commit" | `git restore <file>` | The file goes back to its last staged or committed version. The edit is gone for good. |
 | Staged, not committed | `git status` lists it under "Changes to be committed" | `git restore --staged <file>` | The file comes off the list for the next commit. The edit stays in the file. |
-| Committed, not pushed | `git log` shows the commit, and GitHub doesn't have it | `git commit --amend`, or `git reset --soft HEAD~1` | The commit is replaced, or undone with its changes kept staged. |
+| Committed, not pushed, nothing built on it | `git log` shows the commit, and GitHub doesn't have it | `git commit --amend`, or `git reset --soft HEAD~1` | The commit is replaced, or undone with its changes kept staged. |
 | Pushed to GitHub | GitHub's list of commits shows it | `git revert <commit>` | A new commit cancels the old one. History stays as it was. |
 | In a merged pull request | The pull request says Merged | The Revert button, or `gh pr revert <number>` | GitHub opens a new pull request that cancels it. You merge that one. |
 
@@ -39,17 +39,17 @@ Read the table from top to bottom, like a ladder. The first rung is the only one
 The third rung is the first that rewrites history. The last two never do. They add a new commit that does the opposite of the bad one, so the mistake and its undo both stay in the record.
 
 ```checkpoint quick-1
-An agent ran `git add .` and staged `.env`, the file that holds your site's secret key, because `.gitignore` forgot it. Nothing is committed yet. Which undo fits?
+An agent ran `git add .` and staged `.env`, the file that holds your site's secret key, because `.gitignore` forgot it. The repo has earlier commits, but this change isn't committed yet. Which undo fits?
 - [x] `git restore --staged .env`, which takes it off the list and leaves the file on disk.
 - [ ] `git revert HEAD`, which adds a new commit that cancels the latest one.
 - [ ] `git reset --soft HEAD~1`, which moves the branch back by one commit.
 - [ ] `git commit --amend`, which replaces the latest commit with a new one.
-Why: The mistake is in the staging area, so `git restore --staged` takes the file off the list for the next commit and keeps it on disk. The other three act on commits, and nothing is committed yet.
+Why: The mistake is in the staging area, so `git restore --staged` takes the file off the list for the next commit and keeps it on disk. The other three act on commits, and `.env` isn't in any commit yet.
 ```
 
 ## Undo on your computer
 
-While a mistake hasn't left your computer, you can fix it any way you like. Nobody else has seen it yet.
+While a mistake hasn't left your computer, and nothing else is built on it, you can fix it any way you like. Nobody else has seen it yet.
 
 ### Throw an edit away, or unstage it
 
@@ -65,7 +65,7 @@ Changes not staged for commit:
 
 Git's own hint names the undo. Run `git restore recipes/pancakes.md`, and the file goes back to how it was. Run `git status` again: the file has gone from the list.
 
-If the file was staged, `git status` lists it under "Changes to be committed" instead, with the hint `git restore --staged <file>`. That command only takes the file off the list. Your edit stays in the file, ready for a later commit.
+If the file was staged, `git status` lists it under "Changes to be committed" instead, with the hint `git restore --staged <file>`. That command only takes the file off the list. Your edit stays in the file, ready for a later commit. In a repo with no commits yet, git's hint is `git rm --cached <file>` instead, because there's no commit to restore from. It too takes the file off the list and leaves it on disk.
 
 ```checkpoint quick-2
 You staged `recipes/pancakes.md` and `recipes/waffles.md`, but this commit should hold only the pancakes. You want to commit the waffles later. What do you run?
@@ -73,7 +73,7 @@ You staged `recipes/pancakes.md` and `recipes/waffles.md`, but this commit shoul
 - [ ] `git restore recipes/waffles.md`
 - [ ] `git reset --soft HEAD~1`
 - [ ] `git commit --amend`
-Why: `--staged` only takes the file off the list for the next commit, and the waffle edit stays on disk. Without `--staged`, `git restore` throws the edit away. The last two act on commits, not on what's staged.
+Why: `--staged` only takes the file off the list for the next commit, and the waffle edit stays on disk. Without `--staged`, `git restore` puts the file back to its staged version, which already holds the waffle edit, so waffles stays on the list. The last two act on commits, not on what's staged.
 ```
 
 Agents sometimes use older spellings of the same two undos. `git checkout -- <file>` does what `git restore <file>` does. `git reset HEAD <file>` does what `git restore --staged <file>` does.
@@ -92,16 +92,16 @@ git commit --amend --no-edit
 To undo the last commit but keep its changes, run `git reset --soft HEAD~1`. `HEAD` is the commit your folder has open, and `HEAD~1` is the one before it. The branch moves back one commit, and the undone changes wait in the staging area. You can then commit them again, perhaps as two smaller commits.
 
 ```callout watch-out
-`git reset --hard` is a different tool. It moves the branch and throws away every uncommitted edit in your folder, with no copy anywhere. If an agent proposes it, ask what it's trying to do: there's almost always a gentler command.
+`git reset --hard` is a different tool. It moves the branch and throws away every uncommitted change to the files git tracks, with no copy anywhere. Only new files that aren't staged survive. If an agent proposes it, ask what it's trying to do: there's almost always a gentler command.
 ```
 
 ```checkpoint quick-3
 An agent's last commit has a typo in its message. It hasn't pushed, and nothing is built on the branch. What do you ask for?
 - [x] `git commit --amend`, to replace the commit with a corrected one.
 - [ ] `git revert HEAD`, to add a second commit that cancels the first.
-- [ ] `git reset --hard`, to throw the commit away and start again.
+- [ ] `git reset --hard HEAD~1`, to throw the commit away and start again.
 - [ ] `git restore --staged`, to take the commit off the staging list.
-Why: The commit exists only on your computer, so it's safe to replace, and `--amend` fixes the message. A revert adds a whole extra commit for a typo, `reset --hard` also destroys uncommitted edits, and `restore --staged` works on staged files, not commits.
+Why: The commit exists only on your computer, so it's safe to replace, and `--amend` fixes the message. A revert doesn't fix the message: it cancels the commit's changes and leaves the typo in the history. `reset --hard HEAD~1` throws the commit away and also destroys uncommitted edits, and `restore --staged` works on staged files, not commits.
 ```
 
 ## Undo what's on GitHub
@@ -112,17 +112,17 @@ Once a commit is on GitHub, the rules change. Other people, other branches and t
 
 Git can't change a commit. Amend makes a new commit and moves the branch label onto it, and reset moves the label back to an older one. While only your computer has the old commit, nobody notices. Once GitHub has it, anything built on it still points at it. Now two versions of the history live side by side, and someone has to untangle them.
 
-The Pro Git book gives the rule for rebasing in one line. Don't rebase commits that exist outside your repository and that people may have based work on. The same goes for amend and reset. And "shared" means more than "pushed". A commit that another branch, another worktree or a teammate has built on is shared, even if it never reached GitHub.
+Rebasing replays a branch's commits on top of another commit, as new copies. [Push, pull and remotes](/learn/push-pull-and-remotes) shows how. The Pro Git book gives the rule for it in one line. Don't rebase commits that exist outside your repository and that people may have based work on. The same goes for amend and reset. And "shared" means more than "pushed". A commit that another branch, another [worktree](/learn/branches-and-worktrees) (a second folder of the repo, with its own branch) or a teammate has built on is shared, even if it never reached GitHub.
 
 Putting rewritten commits on GitHub takes a **force push** (`git push --force`). A normal push only moves GitHub's branch forward, to a commit that already contains everything the branch had. Git calls that a **fast-forward**. A rewrite moves the branch sideways, so `git push` refuses unless you force it. A force push to a shared branch can wipe other people's commits from it, which is why teams [block force pushes on `main`](/learn/how-teams-do-it).
 
 ```checkpoint quick-4
 Which commit is safe to rewrite with amend or reset?
 - [x] One on your own branch that you haven't pushed, with nothing built on it.
-- [ ] One you pushed an hour ago to a branch that nobody else has opened.
+- [ ] One you pushed an hour ago, which a teammate has since pulled and built on.
 - [ ] One you never pushed, but that a branch in another worktree is built on.
 - [ ] One on `main` on GitHub, as long as you force-push the result at once.
-Why: Rewrite only what nothing else has seen. A pushed commit is on GitHub, a commit another branch is built on is shared, and rewriting `main` on GitHub needs the very force push that wipes other people's work.
+Why: Rewrite only what nothing else has seen. A commit a teammate has pulled is shared, and so is one another branch is built on. Rewriting `main` on GitHub needs the very force push that wipes other people's work.
 ```
 
 ### Revert a commit or a merged pull request
@@ -226,7 +226,7 @@ Why: `reset --hard` would throw away your uncommitted edits. The new branch keep
 
 ## Merge conflicts: what they are
 
-A merge combines two branches. Git usually manages it alone, because the two sides changed different files, or different lines. A **merge conflict** is the case git can't settle. Both branches changed the same lines in different ways, or one deleted a file that the other edited. Git won't guess which version is right. It stops, marks the spots, and waits for someone to decide.
+A merge combines two branches. Git usually manages it alone, because the two sides changed different files, or different lines. A **merge conflict** is the case git can't settle. Both branches changed the same lines in different ways, or one deleted a file that the other edited. Changes on lines right next to each other count as the same lines. Git won't guess which version is right. It stops, marks the spots, and waits for someone to decide.
 
 Say pull requests #11 (quicker pancakes) and #12 (vegan pancakes) both changed the same line of `recipes/pancakes.md`. #11 merges first. Now #12 conflicts: its line and `main`'s line differ, and git can't pick. On GitHub, #12 says "This branch has conflicts that must be resolved", and its merge button stays off until someone resolves them. In the terminal, `gh pr view 12 --json mergeable` prints `"mergeable": "CONFLICTING"`. GitHub Actions, GitHub's own automation for checks, also won't start #12's pull request checks until the conflict is fixed.
 
@@ -317,7 +317,7 @@ An agent can do all the typing. What it can't know is which version is right. Th
 
 You say:
 
-> This pull request has merge conflicts. Merge `main` into the branch; don't rebase. Before you commit, show me each conflict: both sides, what you propose, and why. Wait for my OK. Then run `git diff --check` and the tests, commit and push.
+> This pull request has merge conflicts. Run `git fetch origin`, then merge `origin/main` into the branch; don't rebase. Before you commit, show me each conflict: both sides, what you propose, and why. Wait for my OK. Then, before you stage anything, run `git diff --check` (it must print nothing) and the tests. After that, commit and push.
 
 Once it has pushed, you look:
 
@@ -334,7 +334,7 @@ An agent says it has resolved a conflict and wants to commit. What should happen
 - [x] It shows you each side and its choice, checks for markers, and runs the tests.
 - [ ] It rebases onto `main` and force-pushes, so the conflict can't come back.
 - [ ] It pushes first, so you can read the result in the pull request on GitHub.
-Why: Git can't tell which version is right, and neither can the agent: you decide. Then `git diff --check` catches leftover markers, and the tests catch changes that merge as text but break as code.
+Why: Git can't tell which version is right, and neither can the agent: you decide. Then `git diff --check`, run before staging, catches leftover markers, and the tests catch changes that merge as text but break as code.
 ```
 
 ## Preventing conflicts and the worst commands
@@ -401,7 +401,7 @@ git commit --no-edit
 7. Undo the merge with a revert: `git revert -m 1 --no-edit HEAD`. Then `cat pancakes.md` shows `Serves 4. Ready in 15 minutes.` again.
 8. Run `git log --oneline`. The revert is on top, and every earlier commit is still there.
 9. Throw the revert away with `git reset --hard HEAD~1`. That's safe here, because nothing is uncommitted. `git log --oneline` no longer shows it.
-10. Run `git reflog`. Its second line, `HEAD@{1}`, is the revert. Bring it back with `git branch rescued HEAD@{1}`, and `git log --oneline rescued` shows it again.
+10. Run `git reflog`. Its second line, `HEAD@{1}`, is the revert. Bring it back with `git branch rescued "HEAD@{1}"`, and `git log --oneline rescued` shows it again.
 
 Delete the `undo-practice` folder when you're done. To practise with an agent, ask it to do steps 1 to 4 and stop. Then ask it to keep both changes, and check its work with `git show --remerge-diff`.
 ````
@@ -413,10 +413,10 @@ Q: What do you ask before any undo?
 A: Where does the mistake live: unstaged, staged, committed on your computer, or on GitHub? The further it has travelled, the gentler the undo.
 
 Q: Which undos can lose work for good?
-A: `git restore <file>` on an edit that was never staged or committed, and `git reset --hard`, which throws away every uncommitted edit.
+A: `git restore <file>` on an edit that was never staged or committed, and `git reset --hard`, which throws away every uncommitted change to the files git tracks.
 
 Q: What's the difference between `git restore <file>` and `git restore --staged <file>`?
-A: The first throws the edit away. The second only takes the file off the next commit's list, and the edit stays.
+A: The first throws away edits you haven't staged. The second only takes the file off the next commit's list, and the edit stays.
 
 Q: How do you undo a merged pull request?
 A: Revert it. The Revert button or `gh pr revert <number>` opens a new pull request that cancels it, and you merge that.
@@ -430,8 +430,8 @@ A: Commits lost to a reset or an amend on your computer. Never uncommitted edits
 Q: What is a merge conflict?
 A: Two branches changed the same lines differently, or one deleted a file the other edited. Git stops and waits for someone to choose.
 
-Q: An agent resolved a conflict. What do you check?
-A: `git show --remerge-diff` for what it kept and dropped, `git diff --check` for leftover markers, and the tests.
+Q: An agent resolves a conflict. What gets checked, and when?
+A: `git diff --check` before it stages the file, for leftover markers, and the tests. After it commits, `git show --remerge-diff`, for what it kept and dropped.
 ```
 
 ## Final test
@@ -509,12 +509,12 @@ Why: A rebase replaces every commit on your branch and strands the branch built 
 ```
 
 ```final-test final-different-lines
-Two pull requests change different lines of `recipes/pancakes.md`. The first one merges. What happens to the second?
+Two pull requests change different lines of `recipes/pancakes.md`, a few lines apart. The first one merges. What happens to the second?
 - [x] It can merge without a conflict, because git combines changes on different lines.
 - [ ] It conflicts, because both pull requests changed the same file.
 - [ ] It's closed, because GitHub allows one merged change per file each day.
 - [ ] It overwrites the first one's change, because the newer pull request wins.
-Why: Git stops only where it can't safely pick a side: the same lines changed differently, or a deleted file that the other side edited. Different lines merge on their own, though you still run the tests.
+Why: Git stops where it can't safely pick a side: the same lines changed differently, or a deleted file that the other side edited. Changes on lines right next to each other count as the same lines, but changes a few lines apart merge on their own. You still run the tests.
 ```
 
 ```sources

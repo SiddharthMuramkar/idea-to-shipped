@@ -53,7 +53,7 @@ The description is the author's claim: what changed, why, and how they know it w
 
 Look for three things:
 
-- The Issue: `Closes #12`, and a change that matches #12's "Done when" line.
+- The [Issue](/learn/issues-and-keeping-track) it closes, named with `Closes #12`, and a change that matches #12's "Done when" line. That line in the Issue says what you could see or run to know the work is done.
 - Evidence from a real run: test output, or a screenshot before and after. Claude Code's guide is blunt: "'All tests pass' on its own tells you very little."
 - The risk: what could break, and whether it's easy to undo. That comes up again below.
 
@@ -171,7 +171,7 @@ Why: Deleted data can't be walked back. The agent graded its own change, so chec
 
 If the agent that wrote the change reviewed it, it would be marking its own work. A new session hasn't seen the reasoning behind the code, so it isn't swayed by it.
 
-In Claude Code, `/code-review` hands the diff to a fresh **subagent**: a helper agent that never saw your conversation. Pass a PR number, as in `/code-review 14`, to review that PR. Or start a new session and say:
+In Claude Code, `/review 14` hands PR #14's diff to a fresh **subagent**: a helper agent that never saw your conversation. (`/review` is the built-in `/code-review` under another name. Once you install Matt Pocock's Skills, his own [code-review](/learn/code-review) Skill can take the `/code-review` name.) Or start a new session and say:
 
 > Review pull request #14 against Issue #12. Report real bugs, skip style, and change nothing.
 
@@ -181,7 +181,7 @@ A review informs your decision; it doesn't make it. On the Claude Code team, "Ag
 
 ```checkpoint quick-7
 The session that built PR #14 offers to review it too. What do you do?
-- [x] Use a fresh session or `/code-review`, which hasn't seen the reasoning behind the change.
+- [x] Use a fresh session or `/review`, which hasn't seen the reasoning behind the change.
 - [ ] Accept, because the session that built the change knows it best.
 - [ ] Skip the review, because green checks have already reviewed the code.
 Why: The building session would be marking its own work. A fresh reviewer isn't swayed by the reasoning that produced the code.
@@ -195,7 +195,7 @@ Every Merge check ends in one of three moves:
 - Send it back when something's wrong: a failed check, a file nobody asked for, a [merge conflict](/learn/undo-and-conflicts), a preview that fails "Done when", or a risk you don't understand. Tell the agent what you found, and to push a fix to the same branch. Then run your Merge check again on the new commits.
 - Merge when the checks you rely on passed, the diff matches the description and the Issue, the preview works, and you understand the risk. [Merging and cleaning up](/learn/merging-and-cleaning-up) takes it from there.
 
-Watch for auto-merge while you check. If `gh pr view` shows a line starting `Auto-merge: enabled`, the PR will merge as soon as the repo's required checks pass. That may be before you've finished. Turn it off with `gh pr merge 14 --disable-auto`, or with **Disable auto-merge** in the merge box.
+Watch for auto-merge while you check. If `gh pr view` shows a line starting `Auto-merge: enabled`, the PR will merge as soon as the repo's required reviews and checks pass. That may be before you've finished. Turn it off with `gh pr merge 14 --disable-auto`, or with **Disable auto-merge** in the merge box.
 
 ```checkpoint quick-8
 Every check is green and there are no conflicts, but on the preview "SOUP" still finds nothing. What's your move?
@@ -269,7 +269,7 @@ You need the draft PR from the Try it in [Opening a pull request](/learn/pull-re
    gh pr checks
    ```
 
-   You'll probably see `no checks reported`. Your practice repo has no CI yet, so nothing is proved. [What CI/CD is](/learn/what-ci-cd-is) adds a check.
+   You'll probably see `no checks reported`. Your practice repo has no CI, so nothing is proved. (The Try it in [What CI/CD is](/learn/what-ci-cd-is) adds a `test` check to a different repo: your yoga-studio practice project.)
 
 5. Open the page, click **Files changed**, and tick **Viewed** on `README.md`:
 
@@ -376,7 +376,7 @@ Why: Green means the checks that ran passed, and it can't speak for anything the
 
 ```final-test cpr-who-reviews
 The session that built your change offers to review it before you merge. What do you do?
-- [x] Start a fresh session or run `/code-review`, because it hasn't seen the reasoning behind the change.
+- [x] Start a fresh session or run `/review`, because it hasn't seen the reasoning behind the change.
 - [ ] Accept, because the session that built the change knows its reasoning best.
 - [ ] Skip the review, because a PR with green checks has already been reviewed by CI.
 - [ ] Accept, and ask it to look twice, because a second look makes the review a fresh one.
@@ -394,7 +394,7 @@ Why: Deleted data can't be walked back, so that's a one-way door. The agent grad
 
 ```final-test cpr-auto-merge-on
 You're part way through your Merge check. `gh pr view` shows `Auto-merge: enabled`, and the checks are still running. What do you do?
-- [x] Turn auto-merge off, because it merges once the required checks pass, whatever you've looked at.
+- [x] Turn auto-merge off, because it merges once the required reviews and checks pass, whatever you've looked at.
 - [ ] Carry on, because auto-merge can't act until you've tried the preview yourself.
 - [ ] Carry on, because auto-merge waits for an agent's review to finish.
 - [ ] Close the PR and open a new one, because auto-merge can't be turned off once it's on.
