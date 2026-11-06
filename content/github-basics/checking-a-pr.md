@@ -23,7 +23,7 @@ A **check** is the pass-or-fail result of one automated job, such as running the
 
 For example, say the `recipes` tests check that searching "soup" finds Tomato soup. A PR could pass them all and still break the home page, if no test ever opens it. Checks run only what someone wrote them to run.
 
-Addy Osmani has described how the team behind Claude Code reviews code. They call "did someone read the code?" an imprecise measure. They ask instead: "what could go wrong with this change, and what check - automated or human - is the right one to catch it?" Each layer of checking catches some problems and misses others.
+Addy Osmani has described how the team behind Claude Code reviews code. The team treats "did someone read the code?" as an imprecise measure. It asks instead: "what could go wrong with this change, and what check - automated or human - is the right one to catch it?" Each layer of checking catches some problems and misses others.
 
 So the automated checks are one layer, and the other looks are yours. Together they make your **Merge check**: the short routine you run before you say merge. Read a PR in this order:
 
@@ -85,10 +85,10 @@ Some files need a slow read, whatever the Issue says. Two are about what the cha
 - A **migration**: a file that changes how a database stores data, such as removing a column. Many can't be undone without losing data.
 - A **workflow file**, in `.github/workflows/`: it defines the checks themselves. A PR that edits its own checks can make itself pass.
 
-Two more are about what the change brings in:
+Two more are about what the change brings in, or gives away:
 
 - A **lockfile**, such as `package-lock.json`: it pins the exact versions of the packages your project uses. A big change there means new or upgraded packages.
-- A **secret**: a password or key, often in a file like `.env`. Once it's pushed, it's on GitHub, so replace the key first ([Undo and merge conflicts](/learn/undo-and-conflicts) explains why).
+- A **secret**: a password or key, often in a file like `.env`. Once it's pushed, the old commit on GitHub keeps it, so get a new key first ([Commits and diffs](/learn/commits-and-diffs) explains why).
 
 Size matters too. Hundreds of lines across dozens of files, for one small Issue, is too much to check. Ask for a split.
 

@@ -390,7 +390,7 @@ Q: Which branch is the head, and which is the base?
 A: The head branch holds your work. The base branch is where it should land, usually `main`.
 
 Q: What does a PR's list of changes show?
-A: What its head branch adds since it split off from the base, at the merge base. Later work on `main` isn't part of it.
+A: What its head branch adds since the merge base, the commit where it split off. Later work on `main` isn't part of it.
 
 Q: When is a pull request ready to open?
 A: When its branch holds one whole change, finished and ready to check.
@@ -498,12 +498,12 @@ Why: GitHub compares from the merge base, the commit where your branch began. Wo
 ```
 
 ```final-test pr-request-changes
-You submit a review with Request changes on a repo that has no rules about reviews. Can someone still merge the PR?
-- [x] Yes. Request changes blocks a merge only when a rule requires reviews.
+You submit a review with Request changes on a repo whose `main` has no rules at all. Can someone still merge the PR?
+- [x] Yes. Request changes blocks a merge only when a rule on the branch requires pull requests.
 - [ ] No. Request changes always locks the merge button until you approve.
 - [ ] No. The PR turns back into a draft until the changes are made.
 - [ ] Yes, but only after the author deletes your review.
-Why: Request changes is a verdict, not a lock. It stops a merge only when the repo has a rule that requires reviews.
+Why: Request changes is a verdict, not a lock. It stops a merge only when a rule on the branch requires pull requests.
 ```
 
 ```sources

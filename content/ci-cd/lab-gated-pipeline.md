@@ -381,7 +381,7 @@ git branch -D feature/github-actions-ci
 You should see `Verify` ✓ in the pull request's checks, beside Vercel's own status and a Vercel comment with a preview link. After the merge, the Actions tab shows a second CI run, for the push to `main`.
 ````
 
-GitHub shows the check as `CI / Verify (pull_request)`: the workflow's name, the job's name and the event. The check's own name is `Verify`, from the job's `name:` line. That's the name both gates will ask for.
+GitHub shows the check as `CI / Verify (pull_request)`: the workflow's name, the job's name and the event. The check's own name is `Verify`, from the job's `name:` line. Without a `name:` line, the job's id, `verify`, would be the name. That's the name both gates will ask for.
 
 Why `-D`? Brad's `git branch -d` works because a merge commit keeps the branch's commits in `main`. A squash makes one new commit instead, so `-d` says the branch is "not fully merged". An empty `git diff` proves `main` already holds everything, so `-D` (delete anyway) loses nothing.
 
@@ -865,13 +865,13 @@ You squash-merge a green pull request. When does its change go live on your Prod
 Why: The squash makes a new commit on `main`. The push run gives it its own `Verify`, and the Deployment Check holds the production deployment until that passes. Then Vercel promotes it with no click.
 ```
 
-```final-test pull-request-only
-To save runner minutes, an agent edits `ci.yml` to run on `pull_request` only. Pull requests still get their `Verify`. What happens after the next merge?
-- [ ] Nothing changes, since every pull request still runs
-- [ ] The ruleset blocks every pull request from merging
-- [x] It merges, but production is never promoted
-- [ ] Vercel promotes it without waiting at all
-Why: The ruleset reads `Verify` on the pull request, so merging still works. The Deployment Check reads it on the new squash commit, and only a push run checks that commit. So the deployment stays held, unless someone clicks Force Promote.
+```final-test why-push-trigger
+Why does `ci.yml` run on pushes to `main`, and not only on pull requests?
+- [ ] Vercel can't build a pull request's commits
+- [x] The squash commit needs its own `Verify`
+- [ ] The ruleset ignores pull request runs
+- [ ] GitHub bills pull request runs differently
+Why: The Deployment Check reads `Verify` on the commit Vercel deploys. After a squash merge, that commit is new, and only the push run checks it.
 ```
 
 ```final-test optional-test-cleanup
@@ -890,6 +890,15 @@ You created Protect main an hour ago, yet a red pull request still looks mergeab
 - [ ] `gh pr list -R YOUR_USERNAME/cicd-lab --state all`
 - [ ] `git diff main feature/version-endpoint`
 Why: The rules call lists only rules GitHub enforces on that branch, and `[]` means nothing protects `main`. The usual reason is that the form started at Disabled. The other commands list runs, pull requests or file changes, not rules.
+```
+
+```final-test job-id-rename
+An agent tidies `ci.yml` and changes the job's id from `verify:` to `checks:`, leaving `name: Verify` as it was. The run passes. What do the gates see?
+- [x] A passing check, still reported as `Verify`
+- [ ] No `Verify` at all, so pull requests wait
+- [ ] A new check, `checks`, that nothing requires
+- [ ] The ruleset renaming its required check itself
+Why: The check takes the job's `name:`; the id counts only when there's no `name:`. So both gates still find `Verify`. Change `name:` instead, and every pull request waits for a check that never arrives.
 ```
 
 ```final-test production-only-variable

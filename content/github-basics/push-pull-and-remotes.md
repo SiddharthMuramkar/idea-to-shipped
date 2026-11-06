@@ -20,7 +20,7 @@ A **remote** is a copy of your repo that lives somewhere else, usually on GitHub
 
 **Your repo and GitHub's copy change only when you say so: `git push` sends commits up, and `git pull` brings new ones down.**
 
-`origin` is the usual name for your own repo on GitHub. `git clone` gives that name to the remote it cloned from, and most tools expect it. The name isn't special to Git, though. It's only the default.
+`origin` is the usual name for your own repo on GitHub. `git clone` gives that name to the remote it cloned from, and many tools and guides assume it. The name isn't special to Git, though. It's only the default.
 
 `git remote -v` lists your remotes. For example:
 
@@ -198,7 +198,7 @@ Those numbers are only as fresh as your last fetch. `git status` doesn't ask Git
 
 `git branch -vv` shows the same for every branch at once, such as `[origin/add-search: ahead 2, behind 1]`. [Branches and worktrees](/learn/branches-and-worktrees) explains its other marks.
 
-When the two sides have diverged, Git won't guess how to combine them. `git push` is refused, because GitHub holds work you don't have. A plain `git pull` stops too, and asks you to choose how to combine: merge or rebase.
+When the two sides have diverged, Git won't guess how to combine them. `git push` is refused, because GitHub holds work you don't have. A plain `git pull` stops too, without changing anything, and you choose how to combine: merge or rebase.
 
 ```checkpoint stale-up-to-date
 A teammate pushed to `main` five minutes ago, but `git status` says your `main` is up to date with `origin/main`. Why?
@@ -270,14 +270,14 @@ git remote add upstream https://github.com/family-cooks/recipes.git
 
 `gh repo fork family-cooks/recipes --clone` does both steps for you. To bring in new work from the original, use the Sync fork button on your fork's page. Or run `git fetch upstream`, then `git merge upstream/main`, then push. To propose your change, push a branch to your fork and open a pull request into the original repo.
 
-One trap: in a clone of a fork, `gh` treats the original repo as the default for Issues and pull requests. That's handy for a pull request, but a new Issue can land in someone else's repo. Agents working in forks have filed Issues into the wrong repo this way. Before the first `gh issue create`, check the target with `gh repo view --json nameWithOwner`.
+One trap: when `gh` clones or creates a fork, it makes the original repo the default for Issues and pull requests. That's handy for a pull request, but a new Issue can land in someone else's repo. Agents working in forks have filed Issues into the wrong repo this way. Before the first `gh issue create`, check the target with `gh repo view --json nameWithOwner`.
 
 ```checkpoint fork-default
 You cloned your fork of `family-cooks/recipes` with `gh`. You want to file an Issue in your own fork. What do you check first?
 - [x] The target repo, with `gh repo view --json nameWithOwner`, because `gh` may default to the original.
 - [ ] Nothing, because `gh` always files Issues in the repo you cloned.
 - [ ] Your SSH key, because forks can only be reached over SSH.
-Why: In a clone of a fork, `gh` treats the original as the default repo. A quick check stops an Issue landing in someone else's repo.
+Why: When `gh` clones a fork, it makes the original the default repo. A quick check stops an Issue landing in someone else's repo.
 ```
 
 ## Tell your agent
@@ -325,7 +325,7 @@ You need Git, a GitHub account, and a way to sign in from the terminal, such as 
    git push -u origin main
    ```
 
-   You should see `branch 'main' set up to track 'origin/main'.`
+   You should see `branch 'main' set up to track 'origin/main'.` If Git says there's no `main`, your branch has another name, such as `master`: rename it with `git branch -m main`, then push again.
 5. Reload the repo's page on github.com. You should see your README and your commits.
 6. On github.com, open `README.md`, click the pencil icon to edit it, add a line, and commit the change to `main`.
 7. Back in the terminal, ask Git:
@@ -405,7 +405,7 @@ Q: `git status` says "ahead by 2", "behind by 3" or "diverged". What next in eac
 A: Ahead: push. Behind: pull. Diverged: combine the two, by merging or rebasing, then push. Fetch first, because the numbers are only as fresh as your last fetch.
 
 Q: Merge or rebase to bring `main` into your branch?
-A: Merge rewrites nothing, so it's always safe to push. Rebase rewrites your commits, so never rebase commits others may have built on.
+A: Merge rewrites nothing, so a normal push works afterwards. Rebase rewrites your commits, so never rebase commits others may have built on.
 
 Q: Why doesn't your GitHub password work for `git push`?
 A: GitHub removed password sign-in for Git. Use a token, stored by a helper such as `gh auth login` or Git Credential Manager.

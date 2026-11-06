@@ -530,7 +530,7 @@ Why: `gone` means GitHub's copy no longer exists. It shows once `git fetch --pru
 ```
 
 ```final-test squash-then-delete
-`add-search` was squash-merged and its GitHub copy deleted. `git branch -d add-search` refuses, though `git diff add-search <squash-commit>` prints nothing. Why does it refuse?
+`add-search` was squash-merged, its GitHub copy was deleted, and `git fetch --prune` has run. `git branch -d add-search` refuses, though `git diff add-search <squash-commit>` prints nothing. Why?
 - [x] The squash made a brand-new commit, so the branch's own commits aren't in `main`'s history.
 - [ ] Its pull request is still open on GitHub, waiting for a review.
 - [ ] Git never deletes a branch that was ever pushed to GitHub.
@@ -550,8 +550,8 @@ Why: A repo has one list of stashes, not one per worktree. Worktrees keep each a
 ```final-test green-but-skipped
 An agent reports its tests green from its own worktree, but the key test reads a gitignored `.env`. Why might green mean little?
 - [x] A worktree holds only what Git tracks, so the `.env` is missing there and the test can silently skip.
-- [ ] A worktree runs its tests against `main`'s code, not its own branch's code.
-- [ ] Git locks a gitignored file while another worktree has it open.
+- [ ] A worktree runs its tests against `main`'s code, not the code on its own branch.
+- [ ] Git locks a gitignored file while another worktree has it open, so the test reads nothing.
 Why: Gitignored files aren't in a new worktree, so a test that reads one can silently skip. In Claude Code, `.worktreeinclude` copies such files in.
 ```
 
