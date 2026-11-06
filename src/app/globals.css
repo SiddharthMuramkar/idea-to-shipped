@@ -442,14 +442,34 @@ button:hover,
   z-index: -2;
 }
 
+/* The art is darker than a photo already, so its band needs less shade
+   behind the text. */
+.photo-band[data-art]::before {
+  background: linear-gradient(to top, rgb(5 10 25 / 0.6) 0%, rgb(5 10 25 / 0.15) 55%, transparent 100%);
+}
+
+.photo-band {
+  --numeral-size: clamp(6.5rem, 22vw, 20rem);
+}
+
 .photo-band-art .art-numeral {
   top: calc(var(--header-h) + var(--space-s));
-  right: max(var(--gutter), (100% - var(--lesson-max)) / 2 + var(--gutter));
+  /* Its right edge lines up with the header's, which is as wide as the
+     page (a Lesson's is wider, from 1080px). */
+  right: max(var(--gutter), (100% - var(--band-max, var(--page-max))) / 2 + var(--gutter));
   bottom: auto;
-  font-size: clamp(8rem, 22vw, 20rem);
+  font-size: var(--numeral-size);
   line-height: 0.82;
   -webkit-text-stroke-width: 2.5px;
   opacity: 0.8;
+}
+
+/* On a phone the numeral would run into the heading, so the text starts
+   under it. */
+@media (max-width: 640px) {
+  .photo-band:has(.art-numeral) .photo-band-inner {
+    padding-top: calc(var(--header-h) + var(--space-s) + 0.82 * var(--numeral-size) + var(--space-l));
+  }
 }
 
 /* A Lesson as a photo card (see lesson-card.tsx): square-edged photo on top,
@@ -685,6 +705,11 @@ html:not([data-header]):has([data-hero]) .site-header {
   padding: var(--space-2xs) 0;
 }
 
+/* A long title wraps under itself, not under its number. */
+.footer-courses a {
+  display: inline-flex;
+}
+
 .site-footer a {
   color: var(--on-dark);
   text-decoration: none;
@@ -853,14 +878,45 @@ html:not([data-header]):has([data-hero]) .site-header {
   object-position: 60% 50%;
 }
 
-/* Without a photo of its own, the home band glows in the Courses' colours. */
+/* Without a photo, the home band glows in the Courses' colours, brightest
+   on the right, away from the text. */
 .home-hero .art {
   background:
-    radial-gradient(55% 65% at 88% 12%, rgb(79 116 255 / 0.6), transparent 62%),
-    radial-gradient(42% 52% at 66% 58%, rgb(155 123 255 / 0.32), transparent 66%),
-    radial-gradient(38% 48% at 96% 78%, rgb(20 184 166 / 0.3), transparent 66%),
-    radial-gradient(30% 40% at 48% 4%, rgb(255 176 32 / 0.16), transparent 70%),
+    radial-gradient(46% 58% at 80% 24%, rgb(79 116 255 / 0.78), transparent 66%),
+    radial-gradient(32% 44% at 72% 64%, rgb(155 123 255 / 0.48), transparent 68%),
+    radial-gradient(32% 42% at 97% 80%, rgb(20 184 166 / 0.5), transparent 68%),
+    radial-gradient(26% 34% at 45% 6%, rgb(255 176 32 / 0.26), transparent 70%),
+    radial-gradient(30% 40% at 78% 102%, rgb(228 91 168 / 0.32), transparent 70%),
     linear-gradient(160deg, var(--navy-raised), var(--navy) 70%);
+}
+
+.home-hero[data-art]::before {
+  background: linear-gradient(to right, rgb(5 10 25 / 0.55) 0%, rgb(5 10 25 / 0.1) 60%, transparent 100%);
+}
+
+/* Without a photo, the closing band is royal blue, set apart from the
+   navy footer under it. */
+.home-cta .art {
+  background:
+    radial-gradient(60% 80% at 90% 0%, rgb(255 255 255 / 0.2), transparent 62%),
+    radial-gradient(50% 70% at 0% 100%, rgb(10 20 51 / 0.45), transparent 70%),
+    linear-gradient(120deg, var(--blue-dark), var(--blue) 75%);
+}
+
+.home-cta[data-art] {
+  min-height: 0;
+}
+
+.home-cta[data-art]::before {
+  display: none;
+}
+
+.home-cta[data-art] .eyebrow {
+  color: var(--on-dark);
+}
+
+.home-cta[data-art] .photo-band-inner {
+  padding-block: var(--space-3xl);
 }
 
 .home-hero .photo-band-inner {
@@ -1176,9 +1232,16 @@ html:not([data-header]):has([data-hero]) .site-header {
 .course-progress-text {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.3rem;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+/* Where bars sit one under another, the count is wide enough for "13 of
+   13 done" and its tick, so the bars line up. */
+:is(.course-card, .progress-course) .course-progress-text {
+  min-width: 7.6rem;
 }
 
 .course-progress .icon {
@@ -1566,6 +1629,10 @@ html:not([data-header]):has([data-hero]) .site-header {
    so it pins while its own Section scrolls by and the next Section pushes it
    away. */
 @media (min-width: 1080px) {
+  .lesson-hero {
+    --band-max: var(--lesson-max);
+  }
+
   .lesson-hero .photo-band-inner {
     max-width: var(--lesson-max);
   }

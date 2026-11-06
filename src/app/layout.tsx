@@ -63,7 +63,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 {list.map((course, i) => (
                   <li key={course.slug}>
                     <Link href={`/courses/${course.slug}`}>
-                      <span className="footer-number">{i + 1}</span> {course.title}
+                      <span className="footer-number">{i + 1}</span> <span>{course.title}</span>
                     </Link>
                   </li>
                 ))}
