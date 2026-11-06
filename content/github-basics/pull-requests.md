@@ -22,7 +22,7 @@ Say you've fixed the search bug in your recipe site on its own branch, and pushe
 A PR always compares two [branches](/learn/branches-and-worktrees):
 
 - the **head branch**, which holds your work, such as `12-search-capitals`;
-- the **base branch**, where the work should land. That's usually `main`, the repo's **default branch**.
+- the **base branch**, where the work should land. That's usually `main`, the repo's **default branch**: the one GitHub shows first, and the base for new PRs.
 
 ```diagram
 type: git
@@ -96,7 +96,7 @@ Why: A draft shows the work and runs its checks, but it can't be merged until so
 
 ## Opening one
 
-First, the branch must be pushed to GitHub ([Push, pull and remotes](/learn/push-pull-and-remotes) shows how). It also needs at least one commit that `main` doesn't have.
+On github.com, the branch must already be pushed ([Push, pull and remotes](/learn/push-pull-and-remotes) shows how). Either way, it needs at least one commit that `main` doesn't have.
 
 On github.com:
 
@@ -150,7 +150,7 @@ Risk: small. Only the search box changes, and a revert undoes it.
 
 A description like "Fixed stuff" leaves the reviewer to work everything out from the changes. "Tests pass", with nothing shown, is a claim, not evidence.
 
-Templates help. A repo can keep a PR template, such as `.github/pull_request_template.md`, that fills each new description with headings. Matt Pocock's [pr](/learn/pr) Skill gives agents a template of its own: Summary, Evidence, and Merge Danger, which says how risky merging is.
+Templates help. A repo can keep a PR template, such as `.github/pull_request_template.md`, that every new description starts from. Matt Pocock's [pr](/learn/pr) Skill gives agents a template of its own: Summary, Evidence, and Merge Danger, which says how risky merging is.
 
 ```checkpoint quick-6
 Your agent's PR description says only "Tests pass." What do you ask for?
@@ -207,7 +207,7 @@ Comments you add on lines while reviewing stay pending, seen only by you, until 
 
 Two rules matter when you work alone or with agents. You can't approve your own PR. And an agent working through your `gh` login opens PRs as you, so its PRs count as yours.
 
-Request changes blocks nothing by itself. It stops a merge only when the repo has a rule that requires reviews, which [How teams protect main](/learn/how-teams-do-it) covers. Working alone, you send work back by telling the agent what to fix.
+Request changes blocks nothing by itself. It stops a merge only when a rule on the branch requires pull requests, which [How teams protect main](/learn/how-teams-do-it) covers. Working alone, you send work back by telling the agent what to fix.
 
 To change a PR, push more commits to the same branch. The PR updates by itself, and its checks run again. You don't open a new PR.
 
@@ -348,7 +348,7 @@ Why: Agents write code quickly, but someone still has to read it before it reach
 
 Matt Pocock's own public repo shows a description doing its job. In September 2026 he opened PR #1120 on `mattpocock/skills`, to release a new version of his Skills. Its body has the three parts of his template.
 
-The Summary sketches the change as a small file tree, with `+` for folders added and `-` for folders removed. The Evidence gives a before and an after: the plugin listed 25 Skills, then 27, with a validation command passing. The Merge Danger part calls the change "two-way for the graduations, one-way-ish for the removal".
+The Summary sketches the change as a small file tree, with `+` for folders added and `-` for folders removed. The Evidence gives a before and an after: the plugin listed 25 Skills, then 27, with a validation command passing. The Merge Danger part calls the change "two-way for the graduations, one-way-ish for the removal and the glossary rename". Two-way means easy to walk back, and one-way means hard to undo. [Checking a pull request before you merge](/learn/checking-a-pr) explains these doors.
 
 It also warns readers what changes for them. Anyone who used the Skill being removed would find it gone after updating. A reviewer can check each of those claims against the diff, which is the point.
 

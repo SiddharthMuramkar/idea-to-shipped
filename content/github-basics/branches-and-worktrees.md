@@ -20,7 +20,9 @@ A commit is a saved snapshot of the project, with a pointer to the commit before
 
 A **branch** is a name stuck on one commit, like a movable label. When you commit on a branch, its label moves forward to the new commit. Making a branch copies no files: it adds one more label.
 
-To **check out** a branch is to put its files in a folder to work on. **HEAD** is Git's marker for what you have checked out, normally your current branch. A **worktree** is a folder with one of the repo's branches checked out.
+To **check out** a branch is to put its files in a folder to work on. **HEAD** is Git's marker for what you have checked out, normally your current branch.
+
+A **worktree** is a folder with one of the repo's branches checked out. So when two pieces of work need two branches at the same moment, they need two folders.
 
 **A branch keeps work off `main`; a worktree gives a branch its own folder, which you need only when two sessions work at once.**
 
@@ -163,14 +165,14 @@ git branch -d add-search
 
 `-d` is the safe delete: it refuses if the branch holds work that isn't merged. In his CI/CD crash course gist, Brad Traversy merges with a merge commit, then runs the same three steps, with `git pull --ff-only`. There, `-d` goes through.
 
-A **squash merge** is different. It lands the branch's work on `main` as one brand-new commit, so the branch's own commits never join `main`'s history. Once GitHub's copy is gone, `-d` refuses, saying the branch isn't fully merged, even though nothing would be lost.
+A **squash merge** is different. It lands the branch's work on `main` as one brand-new commit, so the branch's own commits never join `main`'s history. Once GitHub's copy is gone, and Git has noticed after a `git fetch --prune`, `-d` refuses. It says the branch isn't fully merged, even though nothing would be lost.
 
 First check that nothing would be lost. `git diff add-search <squash-commit>`, with the squash commit's ID from `git log` on `main`, should print nothing. Then force the delete with `git branch -D add-search`. [Merging and cleaning up](/learn/merging-and-cleaning-up) covers the full sweep after each merge.
 
 Once its pull request is squash-merged, never reuse the branch. A later pull request from it can carry the commits already squashed into `main`. New work, new branch.
 
 ```checkpoint squash-d-refuses
-Your pull request from `add-search` was squash-merged, and GitHub deleted its copy. `git branch -d add-search` refuses: not fully merged. What do you do?
+Your pull request from `add-search` was squash-merged, GitHub deleted its copy, and you ran `git fetch --prune`. `git branch -d add-search` refuses: not fully merged. What do you do?
 - [x] Check that `git diff add-search <squash-commit>` prints nothing, then use `-D`.
 - [ ] Leave the branch, because `-d` says the work isn't on `main` yet.
 - [ ] Merge the pull request again, so Git counts the branch as merged.
@@ -359,9 +361,9 @@ Before you delete any branch, ask: is it `main`? Is a folder using it, or does i
 
 ```checkpoint safe-to-delete
 Which branch is safe to delete?
-- [x] One whose pull request was squash-merged, whose diff with the squash commit is empty, and that no folder is using.
-- [ ] One with commits GitHub doesn't have yet, checked out in another worktree.
-- [ ] `main`, once every feature branch has been merged into it.
+- [x] One whose pull request was squash-merged, with an empty diff against the squash commit and no folder using it.
+- [ ] One with commits GitHub doesn't have yet, which another worktree has checked out right now.
+- [ ] `main`, once every feature branch has been merged into it through pull requests.
 Why: Never `main`. A branch that a folder is using, or that holds unmerged work, is live. A merged branch with nothing new on it is a leftover.
 ```
 
