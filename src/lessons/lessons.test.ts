@@ -3,8 +3,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
 import { parseBody } from "./blocks";
+import { checkPhoto, LESSON_RULES } from "./course-lint";
+import { parseDiagram } from "./diagrams";
 import { parseCourseFile, parseLessonFile } from "./files";
-import { allBlocks, allQuestions, countWords, coursesFrom } from "./lessons";
+import { allBlocks, allQuestions, coursesFrom } from "./lessons";
 
 const fixtures = path.join(__dirname, "__fixtures__");
 
@@ -22,15 +24,44 @@ async function parseFixture(folder: string, name: string) {
 }
 
 // The valid fixture: a Course with Parts and a Course without, each listing
-// its Lessons in an order their file names don't follow.
+// its Lessons in an order their file names don't follow, and a credits
+// manifest that credits every image but one.
 const valid = coursesFrom(path.join(fixtures, "valid"));
+
+const withParts = { slug: "with-parts", title: "With parts" };
+const withoutParts = { slug: "without-parts", title: "Without parts" };
+
+// Its credits, as image-credits.json holds them.
+const trailMap = {
+  title: "Trail map",
+  author: "Di Atlas",
+  license: "CC0",
+  licenseUrl: null,
+  source: "https://commons.wikimedia.org/wiki/File:Trail_map.jpg",
+};
+const lighthouse = {
+  title: "Lighthouse at dawn",
+  author: "Ada Lens",
+  license: "CC BY 4.0",
+  licenseUrl: "https://creativecommons.org/licenses/by/4.0",
+  source: "https://commons.wikimedia.org/wiki/File:Lighthouse_at_dawn.jpg",
+};
+const hikers = {
+  title: "Two hikers on a ridge",
+  author: "Bo Shutter",
+  license: "CC BY-SA 4.0",
+  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0",
+  source: "https://commons.wikimedia.org/wiki/File:Two_hikers_on_a_ridge.jpg",
+};
 
 // Its Lessons as the module should hand them out.
 const welcome = {
   number: 0,
   slug: "welcome",
   title: "Welcome",
-  photo: { image: "/photos/welcome.jpg", imageAlt: "A lighthouse at dawn.", imageCredit: "Ada Lens" },
+  summary: "Where the Course starts.",
+  course: withParts,
+  photo: { image: "/photos/welcome.jpg", imageAlt: "A lighthouse at dawn.", credit: lighthouse },
   part: { number: 1, title: "Getting started" },
   minutes: 1,
 };
@@ -38,34 +69,83 @@ const setup = {
   number: 1,
   slug: "setup",
   title: "Setup",
-  photo: { image: "/photos/setup.jpg", imageAlt: "Two hikers on a ridge: one points ahead.", imageCredit: "Bo Shutter" },
+  summary: "Get everything installed.",
+  course: withParts,
+  photo: { image: "/photos/setup.jpg", imageAlt: "Two hikers on a ridge: one points ahead.", credit: hikers },
   part: { number: 1, title: "Getting started" },
   minutes: 1,
 };
-const deploy = { number: 2, slug: "deploy", title: "Deploy", photo: null, part: { number: 2, title: "Shipping" }, minutes: 1 };
+const deploy = {
+  number: 2,
+  slug: "deploy",
+  title: "Deploy",
+  summary: null,
+  course: withParts,
+  photo: null,
+  part: { number: 2, title: "Shipping" },
+  minutes: 1,
+};
 const aside = {
   number: 0,
   slug: "aside",
   title: "An aside",
-  photo: { image: "/photos/aside.jpg", imageAlt: "A rocket on the launch pad.", imageCredit: "Cy Aperture" },
+  summary: "A short detour.",
+  course: withoutParts,
+  // The manifest has no credit for it.
+  photo: { image: "/photos/aside.jpg", imageAlt: "A rocket on the launch pad.", credit: null },
   part: null,
   minutes: 1,
 };
-const recap = { number: 1, slug: "recap", title: "Recap", photo: null, part: null, minutes: 1 };
+const recap = { number: 1, slug: "recap", title: "Recap", summary: null, course: withoutParts, photo: null, part: null, minutes: 1 };
 
 describe("Courses", () => {
-  test("each folder is a Course, in folder-name order, its Lessons in course.md's order rather than by file name", async () => {
+  test("each folder is a Course, listed by order, its Lessons in course.md's order rather than by file name", async () => {
     expect(await valid.listCourses()).toEqual([
       {
         slug: "with-parts",
         title: "With parts",
+        description: "Getting started, then shipping.",
+        order: 1,
+        photo: { image: "/photos/with-parts.jpg", imageAlt: "A trail map with two marked stages.", credit: trailMap },
         parts: [
           { number: 1, title: "Getting started" },
           { number: 2, title: "Shipping" },
         ],
         lessons: [welcome, setup, deploy],
       },
-      { slug: "without-parts", title: "Without parts", parts: null, lessons: [aside, recap] },
+      {
+        slug: "without-parts",
+        title: "Without parts",
+        description: "Two Lessons in one list.",
+        order: 2,
+        photo: null,
+        parts: null,
+        lessons: [aside, recap],
+      },
+    ]);
+  });
+
+  test("Courses are listed by order, then by slug, and those without an order come last", async () => {
+    const ordered = await coursesFrom(path.join(fixtures, "course-order")).listCourses();
+    expect(ordered.map(({ slug, order }) => [slug, order])).toEqual([
+      ["minus", -1],
+      ["zeta", 1],
+      ["alpha", 2],
+      ["beta", 2],
+      ["delta", null],
+      ["omega", null],
+    ]);
+  });
+
+  test("listLessons follows the Courses' order", async () => {
+    const lessons = await coursesFrom(path.join(fixtures, "course-order")).listLessons();
+    expect(lessons.map((lesson) => lesson.slug)).toEqual([
+      "minus-one",
+      "zeta-one",
+      "alpha-one",
+      "beta-one",
+      "delta-one",
+      "omega-one",
     ]);
   });
 
@@ -114,19 +194,101 @@ describe("reading time", () => {
   });
 });
 
-describe("photos", () => {
-  test("a Lesson without image, imageAlt or imageCredit has no photo", async () => {
+describe("images and their credits", () => {
+  test("a Lesson without image or imageAlt has no photo", async () => {
     expect((await valid.getLesson("deploy"))?.photo).toBeNull();
   });
 
   test.each([
-    ["missing-image", "no-photo", "missing image): add it, or remove imageAlt and imageCredit"],
-    ["missing-image-alt", "no-alt", "missing imageAlt): add it, or remove image and imageCredit"],
-    ["missing-image-credit", "no-credit", "missing imageCredit): add it, or remove image and imageAlt"],
-    ["photo-image-only", "only-image", "missing imageAlt and imageCredit): add them, or remove image"],
-  ])("a Lesson in %s with only some photo keys fails, saying what to add or remove", async (folder, name, fix) => {
+    ["missing-image", "no-photo", "missing image): add it, or remove imageAlt"],
+    ["missing-image-alt", "no-alt", "missing imageAlt): add it, or remove image"],
+  ])("a Lesson in %s with only one of the two image keys fails, saying what to add or remove", async (folder, name, fix) => {
     await expect(readFixture(folder, name)).rejects.toThrow(
-      `${name}.md: a photo needs image, imageAlt and imageCredit together (${fix} for a Lesson without a photo`,
+      `${name}.md: image and imageAlt go together (${fix} for a Lesson without an image`,
+    );
+  });
+
+  test("an image's credit comes from image-credits.json, by its path, and is null when the manifest has none", async () => {
+    expect((await valid.getLesson("welcome"))?.photo?.credit).toEqual(lighthouse);
+    expect((await valid.getLesson("aside"))?.photo?.credit).toBeNull();
+  });
+
+  test("without an image-credits.json no image has a credit, which isn't a loading problem", async () => {
+    const full = coursesFrom(path.join(fixtures, "full"));
+    expect((await full.getLesson("full"))?.photo).toEqual({
+      image: "/photos/full.jpg",
+      imageAlt: "Every block in one place.",
+      credit: null,
+    });
+  });
+
+  test("listCredits lists every image the headers use, a Course's own before its Lessons', with where each shows", async () => {
+    expect(await valid.listCredits()).toEqual([
+      {
+        image: "/photos/with-parts.jpg",
+        imageAlt: "A trail map with two marked stages.",
+        credit: trailMap,
+        usedBy: [{ course: withParts, lesson: null }],
+      },
+      {
+        image: "/photos/welcome.jpg",
+        imageAlt: "A lighthouse at dawn.",
+        credit: lighthouse,
+        usedBy: [{ course: withParts, lesson: { slug: "welcome", title: "Welcome" } }],
+      },
+      {
+        image: "/photos/setup.jpg",
+        imageAlt: "Two hikers on a ridge: one points ahead.",
+        credit: hikers,
+        usedBy: [{ course: withParts, lesson: { slug: "setup", title: "Setup" } }],
+      },
+      {
+        image: "/photos/aside.jpg",
+        imageAlt: "A rocket on the launch pad.",
+        credit: null,
+        usedBy: [{ course: withoutParts, lesson: { slug: "aside", title: "An aside" } }],
+      },
+    ]);
+  });
+
+  test("an image used twice is listed once, with every place it shows", async () => {
+    const shared = await coursesFrom(path.join(fixtures, "shared-image")).listCredits();
+    const course = { slug: "course", title: "Shared image" };
+    expect(shared).toEqual([
+      {
+        image: "/images/shared.jpg",
+        imageAlt: "A harbour at night.",
+        credit: null,
+        usedBy: [
+          { course, lesson: null },
+          { course, lesson: { slug: "lesson", title: "The lesson" } },
+        ],
+      },
+    ]);
+  });
+
+  test.each([
+    [
+      "credits-not-object",
+      'credits-not-object/image-credits.json: must hold one JSON object, keyed by each image\'s path, as in { "/images/lessons/tdd.jpg": { "title": … } }',
+    ],
+    [
+      "bad-credits",
+      [
+        'bad-credits/image-credits.json: "/images/a.jpg": its credit must be an object with title, author, license, licenseUrl, source',
+        'bad-credits/image-credits.json: "/images/b.jpg": unknown key "licence": remove it (a credit\'s keys are title, author, license, licenseUrl, source)',
+        'bad-credits/image-credits.json: "/images/c.jpg": author must be a string: add it in double quotes',
+        "bad-credits/image-credits.json: \"/images/c.jpg\": licenseUrl must be a string, or null when there's none",
+      ].join("\n"),
+    ],
+  ])("a broken manifest in %s fails to load, naming each image and what to fix", async (folder, message) => {
+    const error = await coursesFrom(path.join(fixtures, folder)).listCourses().catch((e: Error) => e);
+    expect((error as Error).message).toBe(message);
+  });
+
+  test("a manifest that isn't JSON fails to load, saying so", async () => {
+    await expect(coursesFrom(path.join(fixtures, "bad-credits-json")).listCourses()).rejects.toThrow(
+      /^bad-credits-json\/image-credits\.json: isn't valid JSON \(.+\): fix the file so it parses$/,
     );
   });
 });
@@ -276,11 +438,14 @@ describe("how a Course's files fit together", () => {
 });
 
 describe("course.md", () => {
-  test("lists a Course's Lessons in order, under its Parts' ## headings", async () => {
+  test("holds the Course's header, then lists its Lessons in order, under its Parts' ## headings", async () => {
     const raw = await readFile(path.join(fixtures, "valid", "with-parts", "course.md"), "utf8");
     expect(parseCourseFile("course.md", raw)).toEqual({
       slug: "with-parts",
       title: "With parts",
+      description: "Getting started, then shipping.",
+      order: 1,
+      image: { image: "/photos/with-parts.jpg", imageAlt: "A trail map with two marked stages." },
       parts: [
         { title: "Getting started", slugs: ["welcome", "setup"] },
         { title: "Shipping", slugs: ["deploy"] },
@@ -294,9 +459,17 @@ describe("course.md", () => {
     expect(parseCourseFile("course.md", raw)).toEqual({
       slug: "without-parts",
       title: "Without parts",
+      description: "Two Lessons in one list.",
+      order: 2,
+      image: null,
       parts: null,
       slugs: ["aside", "recap"],
     });
+  });
+
+  test("a Course without an order: line has a null order", async () => {
+    const raw = await readFile(path.join(fixtures, "course-order", "delta", "course.md"), "utf8");
+    expect(parseCourseFile("course.md", raw).order).toBeNull();
   });
 
   test.each([
@@ -315,6 +488,15 @@ describe("course.md", () => {
     [
       "bad-course-slug",
       'slug "Idea_To_Shipped" isn\'t kebab-case: use a-z, 0-9 and single dashes, and name the Course\'s folder after it',
+    ],
+    ["no-description", 'missing description: add a "description: …" line to the header'],
+    [
+      "bad-order",
+      'order "first" isn\'t a whole number: write one, as in "order: 3" (Courses are listed by order, then by slug)',
+    ],
+    [
+      "image-without-alt",
+      "image and imageAlt go together (missing imageAlt): add it, or remove image for a Course without an image",
     ],
   ])("a broken course.md (%s) fails, saying what to fix", async (name, problem) => {
     const raw = await readFile(path.join(fixtures, "course-files", `${name}.md`), "utf8");
@@ -345,6 +527,7 @@ describe("Checkpoints and the Final test", () => {
       },
     ],
     correctOption: "b",
+    explanationHtml: null,
   };
   const frontier = {
     id: "scenario-frontier",
@@ -361,6 +544,7 @@ describe("Checkpoints and the Final test", () => {
       { id: "d", html: "The first question.", feedbackHtml: "The first round is only the start." },
     ],
     correctOption: "a",
+    explanationHtml: null,
   };
   const spot = {
     id: "spot-the-mistake",
@@ -372,6 +556,7 @@ describe("Checkpoints and the Final test", () => {
       { id: "c", html: "Line C", feedbackHtml: "This one." },
     ],
     correctOption: "c",
+    explanationHtml: null,
   };
 
   test("a checkpoint block becomes one question, with feedback on every option", async () => {
@@ -396,16 +581,50 @@ describe("Checkpoints and the Final test", () => {
     expect(await valid.getQuestions("nope")).toBeNull();
   });
 
+  test("a Why: line is the question's explanation, and options without feedback have none", async () => {
+    expect(allQuestions(await parseFixture("why-lines", "why"))).toEqual([
+      {
+        id: "true-or-false",
+        kind: "checkpoint",
+        promptHtml: "Grilling writes <strong>code</strong>.",
+        options: [
+          { id: "a", html: "True", feedbackHtml: "" },
+          { id: "b", html: "False", feedbackHtml: "" },
+        ],
+        correctOption: "b",
+        explanationHtml: "Grilling produces <em>decisions</em>; the code comes later.",
+      },
+      {
+        id: "some-feedback",
+        kind: "checkpoint",
+        promptHtml: "Which comes first?",
+        options: [
+          { id: "a", html: "Grill", feedbackHtml: "" },
+          { id: "b", html: "Spec", feedbackHtml: "The spec records decisions, so they come first." },
+          { id: "c", html: "Build", feedbackHtml: "" },
+        ],
+        correctOption: "a",
+        explanationHtml: "Decisions come before the spec and the code.",
+      },
+    ]);
+  });
+
+  test("a question may have 2 to 6 options, known as a to f", async () => {
+    const lesson = await coursesFrom(path.join(fixtures, "full")).getLesson("full");
+    const counts = allQuestions(lesson!).map((question) => question.options.map((option) => option.id).join(""));
+    expect(counts).toEqual(["abc", "ab", "abc", "abc", "abcdef"]);
+  });
+
   test.each([
     ["no-answer", "none", 'none.md: checkpoint "pick-one": needs exactly one [x] option'],
     ["two-answers", "two", 'two.md: checkpoint "pick-one": needs exactly one [x] option'],
     [
       "missing-feedback",
       "quiet",
-      'quiet.md: final-test "scenario-quiet": option b needs feedback: a "> " line under it',
+      'quiet.md: final-test "scenario-quiet": needs a "Why: …" line after the options, explaining the answer, or "> " feedback under every option (option b has none)',
     ],
-    ["two-options", "short", 'short.md: checkpoint "too-few": needs 3 or 4 options (found 2)'],
-    ["five-options", "long", 'long.md: checkpoint "too-many": needs 3 or 4 options (found 5)'],
+    ["one-option", "single", 'single.md: checkpoint "too-few": needs 2 to 6 options (found 1)'],
+    ["seven-options", "long", 'long.md: checkpoint "too-many": needs 2 to 6 options (found 7)'],
     ["empty-prompt", "blank", 'blank.md: checkpoint "no-prompt": needs a prompt before the options'],
     [
       "bad-question-id",
@@ -464,6 +683,66 @@ describe("Checkpoints and the Final test", () => {
       { id: "pick-one", correctOption: "b" },
     ]);
   });
+
+  test.each([
+    ["before-options", 'the "Why:" line comes before the options: move it after the last one'],
+    ["two-whys", 'has two "Why:" lines: keep one, and write the whole explanation on it'],
+    ["empty-why", '"Why:" needs its explanation after it, on the same line'],
+    ["option-after-why", '"- [ ] C" comes after the "Why:" line: put every option and its feedback before it'],
+    ["feedback-after-why", '"> Late feedback." comes after the "Why:" line: put every option and its feedback before it'],
+    ["text-after-why", '"and more." comes after the "Why:" line: write the whole explanation on that one line'],
+    ["indented-why", '"Why: Because.": the "Why:" line starts at the beginning of the line, not indented'],
+  ])("a misplaced Why: line (%s) fails, saying where it goes", async (name, problem) => {
+    await expect(parseFixture("why-errors", name)).rejects.toThrow(`${name}.md: checkpoint "pick-one": ${problem}`);
+  });
+});
+
+describe("flashcards", () => {
+  test("each Q: and A: pair becomes a card, its sides rendered as inline Markdown", async () => {
+    const lesson = await coursesFrom(path.join(fixtures, "full")).getLesson("full");
+    expect(allBlocks(lesson!).filter((block) => block.type === "flashcards")).toEqual([
+      {
+        type: "flashcards",
+        cards: [
+          { frontHtml: "What does grilling produce?", backHtml: "Decisions, not code." },
+          { frontHtml: "Who owns the <code>details</code>?", backHtml: "The agent." },
+        ],
+      },
+    ]);
+  });
+
+  test.each([
+    ["empty", 'needs at least one card: a "Q: …" line with an "A: …" line under it'],
+    ["no-answer", '"Q: What?" has no answer: put its "A: …" line right under it'],
+    ["last-unanswered", '"Q: Two?" has no answer: put its "A: …" line right under it'],
+    ["answer-first", '"A: Yes." has no question: put a "Q: …" line right above it'],
+    ["touching", '"Q: Two?": put a blank line between one card and the next'],
+    [
+      "stray-line",
+      '"and more." isn\'t a "Q: …" or "A: …" line: write each card as one "Q: …" line and one "A: …" line, with a blank line between cards',
+    ],
+    ["indented", '"A: Yes.": start each "Q:" and "A:" line at the beginning of the line'],
+    ["empty-question", 'a "Q:" line needs its question after the colon'],
+    ["empty-answer", '"Q: One?" has an empty answer: write it after the "A:"'],
+  ])("a broken flashcards block (%s) fails, saying what to fix", async (name, problem) => {
+    await expect(parseFixture("flashcard-errors", name)).rejects.toThrow(`${name}.md: flashcards: ${problem}`);
+  });
+});
+
+describe("diagrams", () => {
+  // The diagram module parses the block's body; these check only that the
+  // block reaches it, whatever it makes of the body.
+  test("a diagram block holds what parseDiagram makes of its body", async () => {
+    const lesson = await coursesFrom(path.join(fixtures, "full")).getLesson("full");
+    const source = ['type: chain', 'caption: "Grill, then build."', "steps:", '  - "Grill the idea"', '  - "Build it"'].join("\n");
+    expect(allBlocks(lesson!).filter((block) => block.type === "diagram")).toEqual([
+      { type: "diagram", diagram: parseDiagram("full/full-course/full.md", source) },
+    ]);
+  });
+
+  test("a diagram parseDiagram refuses fails the Lesson, naming its file", async () => {
+    await expect(parseFixture("diagram-errors", "no-caption")).rejects.toThrow("no-caption.md");
+  });
 });
 
 describe("block kinds", () => {
@@ -475,6 +754,8 @@ describe("block kinds", () => {
       "typo-listed",
       'typo-listed.md: "checkpiont" is not a block kind: did you mean "checkpoint"?',
     ],
+    ["kind-typo", "flashcard", 'flashcard.md: "flashcard" is not a block kind: did you mean "flashcards"?'],
+    ["kind-typo", "diagrams", 'diagrams.md: "diagrams" is not a block kind: did you mean "diagram"?'],
   ])("a misspelt kind in %s is an error that suggests the right one", async (folder, name, message) => {
     await expect(parseFixture(folder, name)).rejects.toThrow(message);
   });
@@ -483,6 +764,10 @@ describe("block kinds", () => {
     ["tip", "callout tip"],
     ["watch-out", "callout watch-out"],
     ["big-idea", "callout big-idea"],
+    ["remember", "callout remember"],
+    ["card", "flashcards"],
+    ["cards", "flashcards"],
+    ["mermaid", "diagram"],
     ["chat", "scene chat"],
     ["terminal", "scene terminal"],
     ["flow", "scene flow"],
@@ -517,7 +802,11 @@ describe("block kinds", () => {
       "nested",
       "nested.md: goals: goals items can't contain nested lists: write each goal as one line",
     ],
-    ["bad-callout-tone", "loud", 'loud.md: callout: the tone must be tip, watch-out or big-idea (got "shout")'],
+    [
+      "bad-callout-tone",
+      "loud",
+      'loud.md: callout: the tone must be tip, watch-out, big-idea or remember (got "shout")',
+    ],
   ])("a misused block in %s is an error", async (folder, name, message) => {
     await expect(parseFixture(folder, name)).rejects.toThrow(message);
   });
@@ -567,6 +856,8 @@ describe("raw HTML", () => {
     ["in-feedback", 'final-test "scenario-pick": ', "<i>"],
     ["in-caption", "scene chat: ", "<mark>"],
     ["in-chat-line", "scene chat: ", "<b>"],
+    ["in-flashcard", "flashcards: ", "<kbd>"],
+    ["in-why", 'checkpoint "pick-one": ', "<b>"],
   ])("raw HTML in %s is an error, naming the file, the block and the HTML", async (name, block, html) => {
     await expect(parseFixture("raw-html", name)).rejects.toThrow(
       `${name}.md: ${block}raw HTML isn't allowed in a Lesson (found "${html}"): write it in Markdown, or put it in backticks to show it as code`,
@@ -684,6 +975,18 @@ describe("a Lesson using every block kind and every Scene kind", () => {
       { id: "c", html: "Start coding.", feedbackHtml: "Skipping a decision doesn&#39;t remove it." },
     ],
     correctOption: "b",
+    explanationHtml: null,
+  };
+  const trueOrFalse = {
+    id: "grill-first",
+    kind: "checkpoint",
+    promptHtml: "Grilling comes before building.",
+    options: [
+      { id: "a", html: "True", feedbackHtml: "" },
+      { id: "b", html: "False", feedbackHtml: "" },
+    ],
+    correctOption: "a",
+    explanationHtml: "Decisions come <em>before</em> code.",
   };
   const finalTest = [
     {
@@ -700,6 +1003,7 @@ describe("a Lesson using every block kind and every Scene kind", () => {
         { id: "c", html: "The last question.", feedbackHtml: "No." },
       ],
       correctOption: "a",
+      explanationHtml: null,
     },
     {
       id: "spot-the-gap",
@@ -711,8 +1015,27 @@ describe("a Lesson using every block kind and every Scene kind", () => {
         { id: "c", html: "Review", feedbackHtml: "Yes." },
       ],
       correctOption: "c",
+      explanationHtml: null,
+    },
+    {
+      id: "pick-the-skill",
+      kind: "final-test",
+      promptHtml: "Which Skill writes the spec?",
+      options: [
+        { id: "a", html: "<code>/grilling</code>", feedbackHtml: "" },
+        { id: "b", html: "<code>/to-spec</code>", feedbackHtml: "" },
+        { id: "c", html: "<code>/to-tickets</code>", feedbackHtml: "" },
+        { id: "d", html: "<code>/implement</code>", feedbackHtml: "" },
+        { id: "e", html: "<code>/tdd</code>", feedbackHtml: "" },
+        { id: "f", html: "<code>/code-review</code>", feedbackHtml: "It reviews code once there is some." },
+      ],
+      correctOption: "b",
+      explanationHtml: "<code>/to-spec</code> turns the grilling into a spec.",
     },
   ];
+  const diagramSource = ["type: chain", 'caption: "Grill, then build."', "steps:", '  - "Grill the idea"', '  - "Build it"'].join(
+    "\n",
+  );
 
   test("parses to exactly this structure", async () => {
     const lesson = await full.getLesson("full");
@@ -720,7 +1043,9 @@ describe("a Lesson using every block kind and every Scene kind", () => {
       number: 0,
       slug: "full",
       title: "Full lesson",
-      photo: { image: "/photos/full.jpg", imageAlt: "Every block in one place.", imageCredit: "Ada Lens" },
+      summary: "Every block kind in one Lesson.",
+      course: { slug: "full-course", title: "Full course" },
+      photo: { image: "/photos/full.jpg", imageAlt: "Every block in one place.", credit: null },
       part: { number: 1, title: "The main flow" },
       minutes: 2,
       previous: null,
@@ -793,6 +1118,23 @@ describe("a Lesson using every block kind and every Scene kind", () => {
           ],
         },
         {
+          id: "remember",
+          title: "Remember",
+          titleHtml: "Remember",
+          blocks: [
+            { type: "callout", tone: "remember", html: "<p>Grill first, then <strong>build</strong>.</p>\n" },
+            {
+              type: "flashcards",
+              cards: [
+                { frontHtml: "What does grilling produce?", backHtml: "Decisions, not code." },
+                { frontHtml: "Who owns the <code>details</code>?", backHtml: "The agent." },
+              ],
+            },
+            { type: "diagram", diagram: parseDiagram("full/full-course/full.md", diagramSource) },
+            { type: "checkpoint", question: trueOrFalse },
+          ],
+        },
+        {
           id: "final-test",
           title: "Final test",
           titleHtml: "Final test",
@@ -802,17 +1144,8 @@ describe("a Lesson using every block kind and every Scene kind", () => {
     });
   });
 
-  test("countWords counts prose, callout, try and Site story words, but no headings, code, goals, Scenes, questions or sources", async () => {
-    const lesson = await full.getLesson("full");
-    // Intro text. (2) + Most bad output ... decision. (8) + You own the
-    // architecture. (4) + A tip. (2) + Careful. (1) + Run and watch it fail.
-    // (5, the `npm test` is code) + My first message: Round one had 8
-    // questions. (8, the ``` block is code).
-    expect(countWords(lesson!)).toBe(30);
-  });
-
-  test("getQuestions returns the Checkpoint, then the Final test", async () => {
-    expect(await full.getQuestions("full")).toEqual([checkpoint, ...finalTest]);
+  test("getQuestions returns the Checkpoints, then the Final test", async () => {
+    expect(await full.getQuestions("full")).toEqual([checkpoint, trueOrFalse, ...finalTest]);
   });
 });
 
@@ -910,15 +1243,26 @@ describe("Scenes", () => {
 });
 
 describe("the complete example", () => {
-  // A whole Course of one Lesson, written the way a real one is: the template
-  // to copy when starting a Course or a Lesson.
-  test("parses, with every block kind and every Scene kind", async () => {
-    const lesson = await coursesFrom(path.join(fixtures, "complete-example")).getLesson("grilling-an-idea");
-    const kinds = new Set(allBlocks(lesson!).map((block) => (block.type === "scene" ? `scene ${block.scene.kind}` : block.type)));
+  // A whole Course of one Lesson, with its credits manifest, written the way
+  // a real one is: the template to copy when starting a Course or a Lesson.
+  const example = coursesFrom(path.join(fixtures, "complete-example"));
+
+  test("parses, with every block kind, callout tone and Scene kind", async () => {
+    const lesson = await example.getLesson("grilling-an-idea");
+    const kinds = new Set(
+      allBlocks(lesson!).map((block) =>
+        block.type === "scene" ? `scene ${block.scene.kind}` : block.type === "callout" ? `callout ${block.tone}` : block.type,
+      ),
+    );
     expect([...kinds].sort()).toEqual([
-      "callout",
+      "callout big-idea",
+      "callout remember",
+      "callout tip",
+      "callout watch-out",
       "checkpoint",
+      "diagram",
       "finalTest",
+      "flashcards",
       "goals",
       "prose",
       "scene chat",
@@ -930,6 +1274,28 @@ describe("the complete example", () => {
       "sources",
       "try",
     ]);
+  });
+
+  test("asks questions both ways, a Why: line or feedback on every option, with 2 to 6 options", async () => {
+    const questions = allQuestions((await example.getLesson("grilling-an-idea"))!);
+    expect(questions.some((question) => question.explanationHtml === null)).toBe(true);
+    expect(questions.some((question) => question.explanationHtml !== null)).toBe(true);
+    const counts = questions.map((question) => question.options.length);
+    expect([Math.min(...counts), Math.max(...counts)]).toEqual([2, 6]);
+  });
+
+  test("follows every content rule, its images credited in its own manifest", async () => {
+    const lesson = (await example.getLesson("grilling-an-idea"))!;
+    const course = (await example.getCourse("example-course"))!;
+    // Its image paths show where images go; only content/'s must exist.
+    const anywhere = () => true;
+    const problems = [
+      ...LESSON_RULES.flatMap(({ check }) => check(lesson)),
+      ...checkPhoto(lesson.photo, anywhere),
+      ...checkPhoto(course.photo, anywhere),
+    ];
+    expect(problems).toEqual([]);
+    expect([lesson.photo?.credit, course.photo?.credit].every(Boolean)).toBe(true);
   });
 });
 
@@ -960,7 +1326,7 @@ describe("broken Lesson headers", () => {
     [
       "unknown-header-key",
       "colour",
-      "colour.md: unknown header key \"colour\": remove it (the header's keys are title, slug, image, imageAlt, imageCredit)",
+      "colour.md: unknown header key \"colour\": remove it (the header's keys are title, slug, summary, image, imageAlt)",
     ],
     ["duplicate-header-key", "retitled", 'retitled.md: header key "title" is set twice: keep one'],
     [

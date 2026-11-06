@@ -1,0 +1,23 @@
+{
+  "/images/lessons/lesson.jpg": {
+    "title": "A photo",
+    "author": "Ada Lens",
+    "license": "CC0",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:A_photo.jpg"
+  },
+  "/images/a.jpg": "Ada Lens, CC0",
+  "/images/b.jpg": {
+    "title": "B",
+    "author": "Bo Shutter",
+    "licence": "CC0",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:B.jpg"
+  },
+  "/images/c.jpg": {
+    "title": "C",
+    "license": "CC0",
+    "licenseUrl": 4,
+    "source": "https://commons.wikimedia.org/wiki/File:C.jpg"
+  }
+}

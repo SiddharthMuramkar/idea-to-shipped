@@ -6,19 +6,31 @@ import { countWordsIn } from "./markdown";
 // __fixtures__/complete-example/ is a whole Course written out, with every
 // block kind and Scene kind.
 
-// A Lesson's photo, from Unsplash: its path under public/, a description for
-// screen readers, and the photographer's name for the "Photo: <name> /
-// Unsplash" credit.
-export type Photo = { image: string; imageAlt: string; imageCredit: string };
+// The image a header names: its path under public/ and a description for
+// screen readers. Who made it and its licence come from the credits manifest
+// (lessons.ts), never from the header, so one place holds every credit.
+export type HeaderImage = { image: string; imageAlt: string };
 
-// A Lesson file as it reads on its own, before its Course places it.
-export type LessonFile = { slug: string; title: string; photo: Photo | null; minutes: number; body: string };
+// A Lesson file as it reads on its own, before its Course places it. The
+// summary is optional here; the content lint asks every Lesson for one.
+export type LessonFile = {
+  slug: string;
+  title: string;
+  summary: string | null;
+  image: HeaderImage | null;
+  minutes: number;
+  body: string;
+};
 
-// A course.md: the Course's title and slug, then its Lessons' Slugs in
-// reading order, grouped under each Part's title when it has Parts.
+// A course.md: the Course's header, then its Lessons' Slugs in reading
+// order, grouped under each Part's title when it has Parts.
 export type CourseFile = {
   slug: string;
   title: string;
+  description: string;
+  // Where the Course sits in the list of Courses; null for after the rest.
+  order: number | null;
+  image: HeaderImage | null;
   parts: { title: string; slugs: string[] }[] | null;
   slugs: string[];
 };
@@ -28,7 +40,7 @@ export type CourseFile = {
 // Slugs with "--", which a kebab-case Slug can never contain.
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-const PHOTO_KEYS = ["image", "imageAlt", "imageCredit"];
+const IMAGE_KEYS = ["image", "imageAlt"];
 
 const WORDS_PER_MINUTE = 220;
 
@@ -80,22 +92,35 @@ function estimateWords(body: string): number {
   );
 }
 
-function parsePhoto(file: string, fields: Record<string, string>): Photo | null {
-  const set = PHOTO_KEYS.filter((key) => fields[key]);
-  if (set.length === 0) return null;
-  const missing = PHOTO_KEYS.filter((key) => !fields[key]);
-  if (missing.length > 0) {
+// `owner` names what a header without an image is: "a Lesson" or "a Course".
+function parseImage(file: string, fields: Record<string, string>, owner: string): HeaderImage | null {
+  const [set] = IMAGE_KEYS.filter((key) => fields[key]);
+  if (!set) return null;
+  const [missing] = IMAGE_KEYS.filter((key) => !fields[key]);
+  if (missing) {
     throw new Error(
-      `${file}: a photo needs image, imageAlt and imageCredit together (missing ${missing.join(" and ")}): add ${missing.length > 1 ? "them" : "it"}, or remove ${set.join(" and ")} for a Lesson without a photo`,
+      `${file}: image and imageAlt go together (missing ${missing}): add it, or remove ${set} for ${owner} without an image`,
     );
   }
-  return { image: fields.image, imageAlt: fields.imageAlt, imageCredit: fields.imageCredit };
+  return { image: fields.image, imageAlt: fields.imageAlt };
+}
+
+// Courses are listed by this number, so any whole number will do: gaps
+// leave room to slot a Course in later.
+function parseOrder(file: string, value: string | undefined): number | null {
+  if (!value) return null;
+  if (!/^-?\d+$/.test(value)) {
+    throw new Error(
+      `${file}: order "${value}" isn't a whole number: write one, as in "order: 3" (Courses are listed by order, then by slug)`,
+    );
+  }
+  return Number(value);
 }
 
 // A Lesson's place and its Part come from its Course's course.md, never from
 // its own header.
 export function parseLessonFile(file: string, raw: string): LessonFile {
-  const { fields, body } = parseHeader(file, raw, ["title", "slug"], PHOTO_KEYS);
+  const { fields, body } = parseHeader(file, raw, ["title", "slug"], ["summary", ...IMAGE_KEYS]);
   if (!SLUG.test(fields.slug)) {
     throw new Error(
       `${file}: slug "${fields.slug}" isn't kebab-case: use a-z, 0-9 and single dashes (as in "spec-and-issues"), and name the file after it`,
@@ -104,19 +129,22 @@ export function parseLessonFile(file: string, raw: string): LessonFile {
   return {
     slug: fields.slug,
     title: fields.title,
-    photo: parsePhoto(file, fields),
+    summary: fields.summary || null,
+    image: parseImage(file, fields, "a Lesson"),
     minutes: Math.max(1, Math.ceil(estimateWords(body) / WORDS_PER_MINUTE)),
     body,
   };
 }
 
 export function parseCourseFile(file: string, raw: string): CourseFile {
-  const { fields, body } = parseHeader(file, raw, ["title", "slug"]);
+  const { fields, body } = parseHeader(file, raw, ["title", "slug", "description"], ["order", ...IMAGE_KEYS]);
   if (!SLUG.test(fields.slug)) {
     throw new Error(
       `${file}: slug "${fields.slug}" isn't kebab-case: use a-z, 0-9 and single dashes, and name the Course's folder after it`,
     );
   }
+  const order = parseOrder(file, fields.order);
+  const image = parseImage(file, fields, "a Course");
   const parts: { title: string; slugs: string[] }[] = [];
   const slugs: string[] = [];
   // Slugs listed before the first heading.
@@ -156,5 +184,13 @@ export function parseCourseFile(file: string, raw: string): CourseFile {
   if (slugs.length === 0) {
     throw new Error(`${file}: lists no Lessons: add one "- <slug>" line per Lesson, in reading order`);
   }
-  return { slug: fields.slug, title: fields.title, parts: parts.length > 0 ? parts : null, slugs };
+  return {
+    slug: fields.slug,
+    title: fields.title,
+    description: fields.description,
+    order,
+    image,
+    parts: parts.length > 0 ? parts : null,
+    slugs,
+  };
 }

@@ -3,7 +3,6 @@ title: nested
 slug: nested
 image: /photos/x.jpg
 imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 ```goals

@@ -3,7 +3,6 @@ title: sections
 slug: sections
 image: /photos/x.jpg
 imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 Before any heading.

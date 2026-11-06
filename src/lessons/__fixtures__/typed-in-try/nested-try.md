@@ -3,7 +3,6 @@ title: nested-try
 slug: nested-try
 image: /photos/x.jpg
 imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 ## Section

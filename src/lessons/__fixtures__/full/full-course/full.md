@@ -1,9 +1,9 @@
 ---
 title: Full lesson
 slug: full
+summary: Every block kind in one Lesson.
 image: /photos/full.jpg
 imageAlt: Every block in one place.
-imageCredit: Ada Lens
 ---
 
 ```goals
@@ -118,6 +118,35 @@ fill: 62% | Spec and code
 - [Docs](https://example.com/d)
 ```
 
+## Remember
+
+```callout remember
+Grill first, then **build**.
+```
+
+```flashcards
+Q: What does grilling produce?
+A: Decisions, not code.
+
+Q: Who owns the `details`?
+A: The agent.
+```
+
+```diagram
+type: chain
+caption: "Grill, then build."
+steps:
+  - "Grill the idea"
+  - "Build it"
+```
+
+```checkpoint grill-first
+Grilling comes before building.
+- [x] True
+- [ ] False
+Why: Decisions come *before* code.
+```
+
 ## Final test
 
 ```final-test scenario-frontier
@@ -138,4 +167,16 @@ Which step is missing?
   > It's there.
 - [x] Review
   > Yes.
+```
+
+```final-test pick-the-skill
+Which Skill writes the spec?
+- [ ] `/grilling`
+- [x] `/to-spec`
+- [ ] `/to-tickets`
+- [ ] `/implement`
+- [ ] `/tdd`
+- [ ] `/code-review`
+  > It reviews code once there is some.
+Why: `/to-spec` turns the grilling into a spec.
 ```

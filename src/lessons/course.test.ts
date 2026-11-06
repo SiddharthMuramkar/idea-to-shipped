@@ -1,14 +1,14 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
-import { checkLessonLinks, EDITORIAL_RULES } from "./course-lint";
+import { checkLessonLinks, checkPhoto, LESSON_RULES } from "./course-lint";
 import { courses, type Course, type Lesson } from "./lessons";
 
 // The content lint. Each failure says what's wrong and how to fix it, so an
 // author can fix the file without reading this code.
 
-// The Course whose house style the editorial rules are.
-const IDEA_TO_SHIPPED = "idea-to-shipped";
+// The Course the home page and the footer list (src/app/home-course.ts).
+const HOME_COURSE = "idea-to-shipped";
 
 // Every Slug the site has published. Comments in production point at them
 // (ADR 0004), so each must always name a Lesson, in whichever Course or Part.
@@ -35,11 +35,22 @@ const PUBLISHED_SLUGS = [
   "models-effort-ultracode",
 ];
 
-// Collected up front so each Lesson gets its own describe block. Content
-// that doesn't load yields no Courses here; "every Course loads" says why.
+// Published Slugs whose Lessons now have new ones, against ADR 0004. Each old
+// address needs a permanent redirect to the new one, and the Comments under
+// the old Slug need moving to the new Slug, or they no longer show.
+const RENAMED_SLUGS: Record<string, string> = {
+  "spec-and-issues": "to-spec",
+  "pr-and-ship": "pr",
+  architecture: "improve-codebase-architecture",
+};
+
+// Collected up front so each Course and Lesson gets its own describe block.
+// Content that doesn't load yields none here; "every Course loads" says why.
 const all: Course[] = await courses.listCourses().catch(() => []);
 
 const fileOf = (course: Course, slug: string) => `content/${course.slug}/${slug}.md`;
+
+const inPublic = (image: string) => existsSync(path.join(process.cwd(), "public", image));
 
 async function load(slug: string): Promise<Lesson> {
   const lesson = await courses.getLesson(slug);
@@ -48,7 +59,7 @@ async function load(slug: string): Promise<Lesson> {
 }
 
 describe("content/", () => {
-  test("every Course loads: its course.md, file names and Slugs line up", async () => {
+  test("every Course loads: its course.md, file names, Slugs and image credits line up", async () => {
     const problems = await courses.listCourses().then(
       () => "",
       (error: Error) => error.message,
@@ -64,36 +75,39 @@ describe("content/", () => {
     expect(problems).toEqual([]);
   });
 
-  test("every published Slug still names a Lesson (Comments point at it, ADR 0004)", async () => {
+  test("every published Slug still names a Lesson, or was renamed to one (Comments point at it, ADR 0004)", async () => {
     const missing: string[] = [];
     for (const slug of PUBLISHED_SLUGS) {
-      if (await courses.lessonExists(slug)) continue;
-      missing.push(
-        `"${slug}" is a published Slug, but no Lesson has it: put "slug: ${slug}" back in its Lesson's header (a Lesson can change its title, Course or Part, but never its Slug)`,
-      );
+      const now = RENAMED_SLUGS[slug] ?? slug;
+      if (!(await courses.lessonExists(now))) {
+        missing.push(
+          `"${now}" is a published Slug${now === slug ? "" : ` (renamed from "${slug}")`}, but no Lesson has it: put "slug: ${now}" back in its Lesson's header (a Lesson can change its title, Course or Part, but never its Slug)`,
+        );
+      }
+      if (now !== slug && (await courses.lessonExists(slug))) {
+        missing.push(
+          `a Lesson has the slug "${slug}", which was renamed to "${now}": the redirect from /learn/${slug} would hide it, so give it a Slug of its own`,
+        );
+      }
     }
     expect(missing).toEqual([]);
   });
 
-  test("every Lesson photo exists under public/", () => {
-    const missing = all.flatMap((course) =>
-      course.lessons.flatMap(({ slug, photo }) =>
-        photo && !existsSync(path.join(process.cwd(), "public", photo.image))
-          ? [`${fileOf(course, slug)}: its photo ${photo.image} isn't in public/: add the file, or fix the header's image: path`]
-          : [],
-      ),
-    );
-    expect(missing).toEqual([]);
-  });
-
-  test(`the ${IDEA_TO_SHIPPED} Course exists and is read in Parts`, () => {
-    const course = all.find(({ slug }) => slug === IDEA_TO_SHIPPED);
+  test(`the ${HOME_COURSE} Course exists and is read in Parts`, () => {
+    const course = all.find(({ slug }) => slug === HOME_COURSE);
     const problem = !course
-      ? `content/${IDEA_TO_SHIPPED}/course.md is missing: the home page and the footer list this Course`
+      ? `content/${HOME_COURSE}/course.md is missing: the home page and the footer list this Course`
       : !course.parts
-        ? `content/${IDEA_TO_SHIPPED}/course.md has no Parts: list its Lessons under "## <Part title>" headings, which the home page shows`
+        ? `content/${HOME_COURSE}/course.md has no Parts: list its Lessons under "## <Part title>" headings, which the home page shows`
         : null;
     expect(problem).toBeNull();
+  });
+});
+
+describe.each(all)("Course $slug", (course) => {
+  test("its image exists under public/, openly licensed and credited", () => {
+    const problems = checkPhoto(course.photo, inPublic).map((problem) => `content/${course.slug}/course.md: ${problem}`);
+    expect(problems).toEqual([]);
   });
 });
 
@@ -107,9 +121,11 @@ describe.each(lessons)("Lesson $slug", ({ course, slug }) => {
     expect(problems(checkLessonLinks(await load(slug), slugs))).toEqual([]);
   });
 
-  if (course.slug === IDEA_TO_SHIPPED) {
-    test.each(EDITORIAL_RULES)("$rule", async ({ check }) => {
-      expect(problems(check(await load(slug)))).toEqual([]);
-    });
-  }
+  test("its image exists under public/, openly licensed and credited", async () => {
+    expect(problems(checkPhoto((await load(slug)).photo, inPublic))).toEqual([]);
+  });
+
+  test.each(LESSON_RULES)("$rule", async ({ check }) => {
+    expect(problems(check(await load(slug)))).toEqual([]);
+  });
 });

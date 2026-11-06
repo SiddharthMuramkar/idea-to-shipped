@@ -3,7 +3,6 @@ title: code
 slug: code
 image: /photos/x.jpg
 imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 ```text

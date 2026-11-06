@@ -1,9 +1,9 @@
 ---
 title: Grilling an idea
 slug: grilling-an-idea
-image: /photos/grilling.jpg
+summary: How to start a grilling session, steer its rounds of questions, and move on to a spec while the plan is fresh.
+image: /images/lessons/grilling-an-idea.jpg
 imageAlt: A woman in glasses takes notes while questioning a man across an office desk.
-imageCredit: Vitaly Gariev
 ---
 
 ```goals
@@ -35,6 +35,13 @@ agent: **Q3** One database branch per environment? *Recommended:* yes.
 
 ```callout tip
 Answer in shorthand. "Yes", "yes, but no accounts" and "you decide" are all fine.
+```
+
+```checkpoint yes-accepts
+In a grilling round, replying "yes" to a question accepts its recommended answer.
+- [x] True
+- [ ] False
+Why: Each question comes with a recommended answer, and "yes" accepts it. Your answers then unlock the next round.
 ```
 
 ## The idea in plain words
@@ -132,13 +139,18 @@ Don't `/clear` between grilling and the spec. The spec needs the grilling's reas
 ```
 
 ```checkpoint when-to-clear
-You've just finished grilling and the plan is agreed. What next?
+You've just finished grilling and the plan is agreed. What do you type next?
 - [ ] `/clear`, so the spec starts from a clean context.
-  > Clearing throws away the reasoning the spec needs.
-- [x] Run `/to-spec` in the same session.
-  > Right. The grilling is the spec's best source, so stay where it is.
-- [ ] `/compact` first, to make room.
-  > That turns the grilling into a lossy summary right when you need it in full.
+- [x] `/to-spec`, in the same session.
+- [ ] `/compact`, to make room before the spec.
+- [ ] `/tdd`, to write the first failing test.
+- [ ] `/code-review`, to check the plan.
+- [ ] `/grill-with-docs`, to grill the idea again.
+Why: The grilling is the spec's best source, so write the spec in the same session, before anything clears it or turns it into a summary.
+```
+
+```callout remember
+Grilling and the spec share one session: don't `/clear` or `/compact` between them.
 ```
 
 ## Try it yourself
@@ -161,6 +173,15 @@ List the 3–5 mistakes beginners really make, each with the fix.
 You own the **scope and the architecture**. The agent owns the **details**.
 ```
 
+```diagram
+type: compare
+caption: "You own the scope and the architecture. The agent owns the details."
+columns: ["You", "The agent"]
+rows:
+  - label: "decide"
+    cells: ["the scope and the architecture", "the details"]
+```
+
 ## How I used it building this site
 
 ````site-story
@@ -172,6 +193,19 @@ My first message was long and messy:
 
 Round one had 8 questions at once. I said "one or two at a time, please", and it adapted.
 ````
+
+## Remember
+
+```flashcards
+Q: What does each question in a grilling round come with?
+A: A recommended answer, which "yes" accepts.
+
+Q: Who owns the scope and the architecture, and who owns the details?
+A: You own the scope and the architecture; the agent owns the **details**.
+
+Q: Grilling is done for a feature too big for one session. What comes next?
+A: `/to-spec`, in the same session.
+```
 
 ## Final test
 
@@ -199,16 +233,27 @@ You: "skip that, just build it". The agent starts writing code.
 ```final-test sequence-main-flow
 Which order is right for a feature too big for one session?
 - [ ] Spec, grill, implement, review.
-  > You can't write a spec before you've made the decisions in it.
 - [x] Grill, spec, implement, review.
-  > Yes. Decisions first, then the spec, then code, then a review.
 - [ ] Grill, implement, spec, review.
-  > The spec is what the implementation follows, so it comes first.
 - [ ] Implement, grill, spec, review.
-  > Grilling after the code means arguing with code instead of with a plan.
+Why: Decisions come first, then the spec that records them, then the code built from the spec, then a review of that code.
 ```
 
-## Sources
+```final-test who-decides-accounts
+Mid-grilling, the agent asks whether the site needs accounts at all. Who should answer?
+- [x] You, because accounts change the scope of the site.
+- [ ] The agent, because it knows the best practice for accounts.
+- [ ] Nobody yet, because the code will show whether accounts are needed.
+Why: Accounts change what the site is, and you own the scope and the architecture. The agent owns the details, such as how the sign-in form is laid out.
+```
+
+```final-test round-reply
+A round asks three questions, and you like every recommended answer. What's the quickest good reply?
+- [ ] Rewrite each recommended answer in your own words.
+- [x] "yes, yes, yes"
+- [ ] Nothing: skip the round and let the agent carry on.
+Why: "Yes" accepts a question's recommended answer, so shorthand is enough. Skipping a round leaves its decisions to the agent's guesses.
+```
 
 ```sources
 - [mattpocock/skills](https://github.com/mattpocock/skills), the `grilling` Skill, v1.3.1 (read 2026-10-23)

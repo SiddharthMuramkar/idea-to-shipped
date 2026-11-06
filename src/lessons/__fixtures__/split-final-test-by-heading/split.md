@@ -3,7 +3,6 @@ title: split
 slug: split
 image: /photos/x.jpg
 imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 ## Section

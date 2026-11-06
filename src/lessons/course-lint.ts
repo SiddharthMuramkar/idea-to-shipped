@@ -1,23 +1,12 @@
-import { allBlocks, allQuestions, countWords, type Block, type Lesson, type Question } from "./lessons";
+import { allQuestions, type Block, type Lesson, type Photo, type Question } from "./lessons";
 import { htmlToText } from "./markdown";
 
-// The content lint's rules for Lessons, which course.test.ts runs on every
-// Course in content/. The loader already checks how a Course's files fit
-// together, and the parser how each Lesson is written; these rules check what
-// a Lesson says. Each check returns one message per problem, saying what's
-// wrong and how to fix it, so an author can fix a Lesson from the message
-// alone. Every Course follows checkLessonLinks; the EDITORIAL_RULES are the
-// Idea to shipped Course's house style, and no other Course follows them.
-
-type Range = [min: number, max: number];
-
-function inRange(n: number, [min, max]: Range) {
-  return n >= min && n <= max;
-}
-
-function blocksOf<T extends Block["type"]>(lesson: Lesson, type: T) {
-  return allBlocks(lesson).filter((block): block is Extract<Block, { type: T }> => block.type === type);
-}
+// The content lint's rules, which course.test.ts runs on every Course in
+// content/. The loader already checks how a Course's files fit together (a
+// course.md without a description doesn't load), and the parser how each
+// Lesson is written; these rules check what a Lesson says. Each check
+// returns one message per problem, saying what's wrong and how to fix it, so
+// an author can fix a Lesson from the message alone.
 
 // A question named the way its fence names it: checkpoint "my-id".
 const label = (question: Question) => `${question.kind} "${question.id}"`;
@@ -35,7 +24,7 @@ function bodyText(lesson: Pick<Lesson, "intro" | "sections">): string {
   return allText([lesson.intro, lesson.sections]);
 }
 
-// Every Course: links to /learn/<slug> must reach a Lesson, in any Course.
+// Links to /learn/<slug> must reach a Lesson, in any Course.
 export function checkLessonLinks(lesson: Lesson, slugs: ReadonlySet<string>): string[] {
   return [...bodyText(lesson).matchAll(/href="\/learn\/([^"#?/]+)/g)]
     .map(([, slug]) => slug)
@@ -43,104 +32,84 @@ export function checkLessonLinks(lesson: Lesson, slugs: ReadonlySet<string>): st
     .map((slug) => `links to /learn/${slug}, but no Lesson has the slug "${slug}": point the link at an existing Lesson's Slug`);
 }
 
-export function checkGoals(lesson: Lesson): string[] {
-  const goals = blocksOf(lesson, "goals");
-  if (goals.length === 0) return ["has no goals block: open the Lesson with a ```goals block listing 3 or 4 goals"];
-  if (goals.length > 1) return [`has ${goals.length} goals blocks: keep one, before the first ## heading`];
-  const count = goals[0].itemsHtml.length;
-  return inRange(count, [3, 4]) ? [] : [`its goals block lists ${count} goals: list 3 or 4`];
-}
+// Submitting the Final test is what marks a Lesson Done, so every Lesson
+// ends with one, big enough to cover what it taught.
+export const FINAL_TEST_MIN = 5;
 
-export function checkScenes(lesson: Lesson): string[] {
-  if (blocksOf(lesson, "scene").length > 0) return [];
-  return ["has no Scene: picture an idea with a ```scene block (chat, terminal, flow, files or meter) in one of its Sections"];
-}
-
-export function checkCheckpoints(lesson: Lesson): string[] {
-  const count = blocksOf(lesson, "checkpoint").length;
-  if (inRange(count, [3, 5])) return [];
-  return [`has ${count} Checkpoints: it needs 3 to 5, each a \`\`\`checkpoint <id> block right after the idea it checks`];
-}
-
-const FINAL_TEST_SIZE: Record<string, Range> = {
-  "start-here": [5, 6],
-  "main-flow": [8, 15],
+// What to call a block in a message, the way its fence names it.
+const BLOCK_NAMES: Record<Block["type"], string> = {
+  prose: "text",
+  goals: "a goals block",
+  scene: "a Scene",
+  checkpoint: "a checkpoint",
+  finalTest: "another Final test",
+  callout: "a callout",
+  try: "a try block",
+  siteStory: "a site-story block",
+  sources: "a sources block",
+  flashcards: "a flashcards block",
+  diagram: "a diagram",
 };
-const DEFAULT_FINAL_TEST_SIZE: Range = [8, 10];
 
-export function checkFinalTest(lesson: Lesson): string[] {
-  const [min, max] = FINAL_TEST_SIZE[lesson.slug] ?? DEFAULT_FINAL_TEST_SIZE;
-  const [finalTest] = blocksOf(lesson, "finalTest");
-  if (!finalTest) {
-    return [`has no Final test: end it with a "## Final test" Section of ${min} to ${max} \`\`\`final-test <id> blocks`];
+// The parser has already made the Final test one run of final-test blocks
+// in one Section. This checks where that Section is, and what follows it.
+export function checkFinalTest(lesson: Pick<Lesson, "sections">): string[] {
+  const { sections } = lesson;
+  const at = sections.findIndex((section) => section.blocks.some((block) => block.type === "finalTest"));
+  if (at === -1) {
+    return [
+      `has no Final test: end it with a "## Final test" Section of at least ${FINAL_TEST_MIN} \`\`\`final-test <id> blocks`,
+    ];
   }
+  const section = sections[at];
+  const index = section.blocks.findIndex((block) => block.type === "finalTest");
+  const finalTest = section.blocks[index] as Extract<Block, { type: "finalTest" }>;
+  const problems: string[] = [];
+
   const count = finalTest.questions.length;
-  return inRange(count, [min, max]) ? [] : [`its Final test has ${count} questions: it needs ${min} to ${max}`];
-}
-
-// The kinds of question a Final test mixes, told apart by how their ids
-// start. Start here's short Final test doesn't mix them.
-const QUESTION_MIX = [
-  { prefix: "scenario-", min: 3, kind: "a situation to act in" },
-  { prefix: "spot-", min: 2, kind: "a mistake to spot" },
-  { prefix: "sequence-", min: 1, kind: "steps to put in order" },
-];
-
-export function checkQuestionMix(lesson: Lesson): string[] {
-  if (lesson.slug === "start-here") return [];
-  const ids = blocksOf(lesson, "finalTest").flatMap((block) => block.questions.map((question) => question.id));
-  return QUESTION_MIX.flatMap(({ prefix, min, kind }) => {
-    const count = ids.filter((id) => id.startsWith(prefix)).length;
-    if (count >= min) return [];
-    return [
-      `its Final test has ${count} "${prefix}" questions (${kind}): it needs at least ${min}, each with an id that starts "${prefix}"`,
-    ];
-  });
-}
-
-// The 12 Slugs the site launched with. Each of them tells its Site story.
-const SITE_STORY_SLUGS = new Set([
-  "start-here",
-  "grilling",
-  "domain-modeling",
-  "spec-and-issues",
-  "wizard",
-  "prototype",
-  "tdd",
-  "code-review",
-  "pr-and-ship",
-  "diagnosing-bugs",
-  "models-effort-ultracode",
-  "main-flow",
-]);
-
-export function checkSiteStory(lesson: Lesson): string[] {
-  if (!SITE_STORY_SLUGS.has(lesson.slug) || blocksOf(lesson, "siteStory").length > 0) return [];
-  return [
-    "has no Site story: add a ```site-story block telling how the author really used it building this site (every Lesson the site launched with tells one)",
-  ];
-}
-
-// Questions whose correct option is longer than every wrong one: a guesser
-// who always picks the longest option gets them right. Length is the text a
-// reader sees; a tie gives nothing away, so it passes.
-export function checkLongestOption(lesson: Lesson): string[] {
-  const length = (html: string) => htmlToText(html).trim().length;
-  return allQuestions(lesson).flatMap((question) => {
-    const correct = question.options.find((option) => option.id === question.correctOption);
-    if (!correct) return [];
-    const longestWrong = Math.max(
-      ...question.options.filter((option) => option !== correct).map((option) => length(option.html)),
+  if (count < FINAL_TEST_MIN) {
+    problems.push(
+      `its Final test has ${count} question${count === 1 ? "" : "s"}: it needs at least ${FINAL_TEST_MIN}, each a \`\`\`final-test <id> block`,
     );
-    if (length(correct.html) <= longestWrong) return [];
+  }
+  if (at !== sections.length - 1) {
+    problems.push(
+      `its Final test is in "${section.title}", but it goes in the Lesson's last ## Section: move the Final test, and the sources after it, to the end`,
+    );
+  }
+  if (section.title.trim().toLowerCase() !== "final test") {
+    problems.push(`its Final test sits under "## ${section.title}": title that Section "Final test"`);
+  }
+  // Only the sources may follow: the questions are the Lesson's last word.
+  let sources = 0;
+  for (const block of section.blocks.slice(index + 1)) {
+    if (block.type === "sources") {
+      if (++sources === 2) problems.push("has two sources blocks after its Final test: merge them into one");
+      continue;
+    }
+    problems.push(
+      `has ${BLOCK_NAMES[block.type]} after its Final test's questions: only a sources block may follow them, so move it above the Final test`,
+    );
+  }
+  return problems;
+}
+
+export const SUMMARY_MAX = 200;
+
+// Cards show the summary, so it's one short plain sentence.
+export function checkSummary(lesson: Pick<Lesson, "summary">): string[] {
+  if (!lesson.summary) {
     return [
-      `${label(question)}: the correct option (${correct.id}) has ${length(correct.html)} characters and the longest wrong one ${longestWrong}, so picking the longest option gives it away: shorten the correct option or lengthen a wrong one`,
+      `has no summary: add a "summary: …" line to its header, one plain sentence of at most ${SUMMARY_MAX} characters saying what it teaches (cards show it)`,
     ];
-  });
+  }
+  const length = [...lesson.summary].length;
+  if (length <= SUMMARY_MAX) return [];
+  return [`its summary has ${length} characters: shorten it to at most ${SUMMARY_MAX}`];
 }
 
 // "All of the above" and "none of the above" test ruling options out, not
-// understanding.
+// understanding. The site shuffles options too, so "above" means nothing.
 export function checkAllOrNone(lesson: Lesson): string[] {
   return allQuestions(lesson).flatMap((question) =>
     question.options
@@ -150,33 +119,6 @@ export function checkAllOrNone(lesson: Lesson): string[] {
           `${label(question)}: option ${option.id} is "${htmlToText(option.html).trim()}": replace it with an answer of its own, since it tests ruling options out rather than understanding`,
       ),
   );
-}
-
-export function checkSources(lesson: Lesson): string[] {
-  const sources = blocksOf(lesson, "sources");
-  if (sources.length === 0) {
-    return ["has no sources block: end it with a ```sources block listing at least 3 sources, each a Markdown link"];
-  }
-  if (sources.length > 1) return [`has ${sources.length} sources blocks: merge them into one`];
-  const items = sources[0].html.match(/<li>[\s\S]*?<\/li>/g) ?? [];
-  return [
-    ...(items.length >= 3 ? [] : [`its sources block lists ${items.length} sources: list at least 3`]),
-    ...items
-      .filter((item) => !item.includes("<a href="))
-      .map((item) => `source "${htmlToText(item).trim()}" has no link: write it as [title](https://…)`),
-  ];
-}
-
-const WORD_RANGE: Record<string, Range> = { "start-here": [900, 1400] };
-const DEFAULT_WORD_RANGE: Range = [1800, 3000];
-
-export function checkWordCount(lesson: Lesson): string[] {
-  const [min, max] = WORD_RANGE[lesson.slug] ?? DEFAULT_WORD_RANGE;
-  const words = countWords(lesson);
-  if (inRange(words, [min, max])) return [];
-  return [
-    `has ${words} words of running text: it needs ${min} to ${max} (prose, callouts, try and Site story blocks count; headings, code, goals, Scenes, questions and sources don't)`,
-  ];
 }
 
 // Every "Lesson <number>" in a Lesson's body. Numbers change when Lessons
@@ -192,26 +134,49 @@ export function checkLessonNumbers(lesson: Lesson): string[] {
   );
 }
 
-// The Skills in mattpocock-skills 1.3.1. A Lesson may name one bare
-// (`/grilling`) or by its full name (`/mattpocock-skills:grilling`).
+// The Skills the Courses teach: every Skill in the skills Course's snapshot
+// (mattpocock-skills 1.3.1, and the few others it covers). A Lesson may name
+// one bare (`/grilling`), or one of Matt's by its full name
+// (`/mattpocock-skills:grilling`).
 export const SKILL_NAMESPACE = "mattpocock-skills";
 export const SKILLS = new Set([
-  "ask-matt", "grill-with-docs", "implement", "implement-spec", "improve-codebase-architecture",
-  "retro", "setup-matt-pocock-skills", "to-spec", "to-tickets", "triage", "wayfinder",
-  "code-review", "codebase-design", "diagnosing-bugs", "domain-modeling", "pr", "prototype",
-  "research", "tdd", "wizard", "grill-me", "handoff", "teach", "to-questionnaire", "wait-what",
-  "grilling", "writing-for-agents", "git-guardrails-claude-code", "setup-pre-commit",
-  "migrate-to-shoehorn", "scaffold-exercises",
+  "ask-matt", "chief-of-staff", "claude-handoff", "code-review", "codebase-design", "diagnosing-bugs",
+  "domain-modeling", "git-guardrails-claude-code", "grill-me", "grill-with-docs", "grilling", "handoff",
+  "implement", "implement-spec", "improve-codebase-architecture", "loop-me", "migrate-to-shoehorn",
+  "orca-cli", "orchestration", "pr", "prototype", "research", "retro", "scaffold-exercises",
+  "setup-matt-pocock-skills", "setup-pre-commit", "setup-ts-deep-modules", "tdd", "teach",
+  "to-questionnaire", "to-spec", "to-tickets", "triage", "wait-what", "wayfinder", "wizard",
+  "writing-beats", "writing-for-agents", "writing-fragments", "writing-shape",
 ]);
 
-// Claude Code's Built-in commands (and the Skills bundled with it), named bare.
+// Claude Code's Built-in commands and the Skills bundled with it, with their
+// aliases, named bare, as the Claude Code docs' Commands page lists them
+// (read 2026-11-05).
 export const BUILT_IN_COMMANDS = new Set([
-  "clear", "compact", "context", "model", "effort", "fast", "rewind", "init", "help", "config",
-  "permissions", "plan", "resume", "agents", "mcp", "hooks", "memory", "cost", "usage", "status",
-  "doctor", "login", "logout", "plugin", "skills", "ultrareview", "review", "add-dir", "exit",
-  "export", "terminal-setup", "vim", "btw", "reload-skills", "reload-plugins", "workflows",
-  "autocompact", "simplify", "security-review", "loop", "schedule", "statusline",
+  "add-dir", "advisor", "agents", "artifact-capabilities", "artifact-diagramming", "artifacts",
+  "auto-mode-setup", "autocompact", "autofix-pr", "background", "batch", "branch", "btw", "bug",
+  "cd", "chrome", "claude-api", "claude-in-chrome", "clear", "code-review", "color", "compact",
+  "config", "context", "copy", "cost", "dataviz", "debug", "deep-research", "design",
+  "design-login", "design-sync", "desktop", "diff", "doctor", "effort", "exit", "export", "fast",
+  "feedback", "fewer-permission-prompts", "focus", "fork", "goal", "heapdump", "help", "hooks",
+  "ide", "import", "init", "insights", "install-github-app", "install-slack-app", "keybindings",
+  "list-agents", "login", "logout", "loop", "mcp", "memory", "mobile", "model", "output-style",
+  "passes", "permissions", "plan", "plugin", "plugin-authoring", "powerup", "pr-comments",
+  "privacy-settings", "radio", "rate-limit-options", "recap", "release-notes", "reload-plugins",
+  "reload-skills", "remote-control", "remote-env", "rename", "restart", "resume", "review",
+  "rewind", "run", "run-skill-generator", "sandbox", "schedule", "scroll-speed",
+  "security-review", "setup-bedrock", "setup-vertex", "simplify", "skill-doctor", "skills",
+  "slides", "stats", "status", "statusline", "stickers", "stop", "subtask", "tasks",
+  "team-onboarding", "teleport", "terminal-setup", "theme", "tui", "ultraplan", "ultrareview",
+  "update-config", "upgrade", "usage", "usage-credits", "verify", "vim", "voice", "web-setup",
+  "workflow-authoring", "workflows",
+  // Aliases.
+  "allowed-tools", "android", "app", "bashes", "checkpoint", "ios", "peers", "quit", "rc", "tp",
+  "undo", "update",
 ]);
+
+// Folders at the root of a Unix file system. `/tmp` is a path, not a name.
+const ROOT_FOLDERS = new Set(["bin", "dev", "etc", "home", "opt", "tmp", "usr", "var"]);
 
 // Every backticked `/name` or `/namespace:name` in some rendered HTML that
 // isn't a known Skill or Built-in command, in the order they appear. This
@@ -221,7 +186,7 @@ export function unknownSlashNames(html: string): string[] {
   return [...html.matchAll(/<code>\/([a-z][a-z0-9-]*)(?::([a-z][a-z0-9-]*))?<\/code>/g)]
     .filter(([, first, second]) =>
       second === undefined
-        ? !SKILLS.has(first) && !BUILT_IN_COMMANDS.has(first)
+        ? !SKILLS.has(first) && !BUILT_IN_COMMANDS.has(first) && !ROOT_FOLDERS.has(first)
         : first !== SKILL_NAMESPACE || !SKILLS.has(second),
     )
     .map(([, first, second]) => (second === undefined ? `/${first}` : `/${first}:${second}`));
@@ -230,23 +195,55 @@ export function unknownSlashNames(html: string): string[] {
 export function checkSlashNames(lesson: Lesson): string[] {
   return unknownSlashNames(bodyText(lesson)).map(
     (name) =>
-      `names \`${name}\`, which is neither a Skill in ${SKILL_NAMESPACE} 1.3.1 nor a Built-in command: use its current name, or add a new one to SKILLS or BUILT_IN_COMMANDS in src/lessons/course-lint.ts`,
+      `names \`${name}\`, which is neither a Skill the Courses teach nor a Built-in command: use its current name, or add a new one to SKILLS or BUILT_IN_COMMANDS in src/lessons/course-lint.ts`,
   );
 }
 
-// The Idea to shipped Course's house style, one rule per test in
-// course.test.ts.
-export const EDITORIAL_RULES: { rule: string; check: (lesson: Lesson) => string[] }[] = [
-  { rule: "opens with one goals block of 3 or 4 goals", check: checkGoals },
-  { rule: "has at least one Scene", check: checkScenes },
-  { rule: "has 3 to 5 Checkpoints", check: checkCheckpoints },
-  { rule: "ends with a Final test of the right size", check: checkFinalTest },
-  { rule: 'mixes "scenario-", "spot-" and "sequence-" questions in its Final test', check: checkQuestionMix },
-  { rule: "tells its Site story, if the site launched with it", check: checkSiteStory },
-  { rule: "never makes the correct option the longest one", check: checkLongestOption },
+// The licences an image may have: CC0, public domain ("Public domain" or a
+// "PD…" mark, as Wikimedia Commons names them), or CC BY or CC BY-SA in any
+// version, with or without a country ("CC BY-SA 3.0 de").
+const OPEN_LICENSE = /^(?:CC0(?: 1\.0)?|Public domain|PD\b.*|CC BY(?:-SA)? \d\.\d(?: [A-Za-z-]+)?)$/i;
+
+const CREDITS = "content/image-credits.json";
+
+// A header's image (a Lesson's or a Course's) must be a real file, openly
+// licensed and credited. `exists` says whether a path is under public/.
+export function checkPhoto(photo: Photo | null, exists: (image: string) => boolean): string[] {
+  if (!photo) return [];
+  const { image, credit } = photo;
+  const problems: string[] = [];
+  if (!exists(image)) problems.push(`its image ${image} isn't in public/: add the file, or fix the header's image: path`);
+  if (!credit) {
+    return [
+      ...problems,
+      `its image ${image} has no credit: add "${image}" to ${CREDITS}, with its title, author, license, licenseUrl and source`,
+    ];
+  }
+  if (!OPEN_LICENSE.test(credit.license.trim())) {
+    problems.push(
+      `its image ${image} has the license "${credit.license}" in ${CREDITS}: use an image licensed CC0, Public domain (PD…), CC BY or CC BY-SA instead`,
+    );
+  }
+  if (credit.author.trim() === "") {
+    problems.push(
+      `its image ${image} has no author in ${CREDITS}: name who made it, or write "Unknown author" for a public-domain work`,
+    );
+  }
+  if (!/^https:\/\/\S+$/.test(credit.source)) {
+    problems.push(
+      `its image ${image} has the source "${credit.source}" in ${CREDITS}: link the page it comes from, starting https://`,
+    );
+  }
+  return problems;
+}
+
+// The rules every Lesson of every Course follows, one test each in
+// course.test.ts. Links and images need more than the Lesson, so they're
+// checked on their own there.
+export const LESSON_RULES: { rule: string; check: (lesson: Lesson) => string[] }[] = [
+  { rule: `ends with a Final test of at least ${FINAL_TEST_MIN} questions`, check: checkFinalTest },
+  { rule: `has a summary of at most ${SUMMARY_MAX} characters`, check: checkSummary },
   { rule: 'has no "all of the above" or "none of the above" options', check: checkAllOrNone },
-  { rule: "has one sources block of at least 3 linked sources", check: checkSources },
-  { rule: "has the right amount of running text", check: checkWordCount },
   { rule: 'never says "Lesson <number>"', check: checkLessonNumbers },
   { rule: "names only real Skills and Built-in commands", check: checkSlashNames },
 ];

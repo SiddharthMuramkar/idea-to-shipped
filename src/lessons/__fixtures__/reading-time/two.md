@@ -3,7 +3,6 @@ title: two-minutes
 slug: two-minutes
 image: /photos/x.jpg
 imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 ## Words
