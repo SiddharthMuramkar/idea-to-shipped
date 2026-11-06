@@ -3,8 +3,9 @@ import type { ReactNode } from "react";
 import { HeaderOverlay } from "@/app/header-overlay";
 import type { Photo } from "@/lessons/lessons";
 
-// "Photo: <name> / Unsplash", the short credit that sits on or under a photo.
-// Nothing for a Lesson without a photo.
+// "Image: <author> · <license>", the short credit that sits on or under a
+// photo, linked to the page the image comes from. Nothing for a page without
+// a photo, or a photo the credits manifest has no credit for.
 export function PhotoCredit({
   photo,
   className = "photo-credit",
@@ -12,8 +13,13 @@ export function PhotoCredit({
   photo: Photo | null;
   className?: string;
 }) {
-  if (!photo) return null;
-  return <p className={className}>Photo: {photo.imageCredit} / Unsplash</p>;
+  if (!photo?.credit) return null;
+  const { author, license, source } = photo.credit;
+  return (
+    <p className={className}>
+      Image: <a href={source}>{author} · {license}</a>
+    </p>
+  );
 }
 
 // A page's top photo band: a full-width photo under the see-through header,

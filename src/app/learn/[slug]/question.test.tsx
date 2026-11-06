@@ -10,31 +10,46 @@ import { Checkpoint, FinalTest } from "./question";
 
 const full = coursesFrom(path.join(process.cwd(), "src/lessons/__fixtures__/full"));
 
-async function questions(): Promise<{ checkpoint: Question; finalTest: Question[] }> {
+// The full fixture's questions: a Checkpoint with feedback on every option,
+// one with only a Why: line, and a Final test that mixes both.
+async function questions(): Promise<{ checkpoints: Question[]; finalTest: Question[] }> {
   const all = (await full.getQuestions("full"))!;
-  return { checkpoint: all[0], finalTest: all.slice(1) };
+  return {
+    checkpoints: all.filter((question) => question.kind === "checkpoint"),
+    finalTest: all.filter((question) => question.kind === "final-test"),
+  };
 }
 
 function answerBoxes(html: string): string[] {
   return html.match(/<details class="question-answer">[\s\S]*?<\/details>/g) ?? [];
 }
 
+const rightAnswer = (question: Question) =>
+  `<strong>Answer: </strong><span>${question.options.find((option) => option.id === question.correctOption)!.html}</span>`;
+
 describe("Checkpoint", () => {
   test("shows its answer and why each option is right or wrong, outside <noscript>", async () => {
-    const { checkpoint } = await questions();
+    const [checkpoint] = (await questions()).checkpoints;
     const html = renderToStaticMarkup(<Checkpoint question={checkpoint} slug="full" number={1} total={1} />);
 
     expect(html).not.toContain("<noscript>");
     const boxes = answerBoxes(html);
     expect(boxes).toHaveLength(1);
     expect(boxes[0]).toContain("<summary>Show the answer</summary>");
-    const right = checkpoint.options.find((option) => option.id === checkpoint.correctOption)!;
-    expect(boxes[0]).toContain(`<strong>Answer: </strong><span>${right.html}</span>`);
+    expect(boxes[0]).toContain(rightAnswer(checkpoint));
     for (const option of checkpoint.options) expect(boxes[0]).toContain(option.feedbackHtml);
   });
 
+  test("shows its Why: line under the answer, and lists no options when none has feedback", async () => {
+    const [, why] = (await questions()).checkpoints;
+    const [box] = answerBoxes(renderToStaticMarkup(<Checkpoint question={why} slug="full" number={2} total={2} />));
+
+    expect(box).toContain(`${rightAnswer(why)}</p><p class="question-explanation">${why.explanationHtml}</p>`);
+    expect(box).not.toContain("question-answer-list");
+  });
+
   test("has no Check button or empty status line", async () => {
-    const { checkpoint } = await questions();
+    const [checkpoint] = (await questions()).checkpoints;
     const html = renderToStaticMarkup(<Checkpoint question={checkpoint} slug="full" number={1} total={1} />);
 
     expect(html).not.toContain("<button");
@@ -52,10 +67,19 @@ describe("Final test", () => {
 
     const boxes = answerBoxes(html);
     expect(boxes).toHaveLength(finalTest.length);
-    finalTest.forEach((question, i) => {
-      const right = question.options.find((option) => option.id === question.correctOption)!;
-      expect(boxes[i]).toContain(`<strong>Answer: </strong><span>${right.html}</span>`);
-    });
+    finalTest.forEach((question, i) => expect(boxes[i]).toContain(rightAnswer(question)));
+  });
+
+  test("lists only the options that have feedback, beside the explanation", async () => {
+    const { finalTest } = await questions();
+    const mixed = finalTest.find((question) => question.id === "pick-the-skill")!;
+    const [box] = answerBoxes(
+      renderToStaticMarkup(<FinalTest questions={[mixed]} slug="full" id="full--final-test" titleHtml="Final test" />),
+    );
+
+    expect(box).toContain(`<p class="question-explanation">${mixed.explanationHtml}</p>`);
+    expect(box.match(/<li/g)).toHaveLength(1);
+    expect(box).toContain("It reviews code once there is some.");
   });
 
   test("has no score card, Check button or JavaScript-only note", async () => {

@@ -15,6 +15,29 @@ describe("every Lesson of every Course in content/", async () => {
   });
 });
 
+describe("the newer blocks", () => {
+  const full = coursesFrom(path.join(process.cwd(), "src/lessons/__fixtures__/full"));
+  const article = async () => renderToStaticMarkup(<LessonArticle lesson={(await full.getLesson("full"))!} />);
+
+  test("a remember callout is a callout with its own label", async () => {
+    const box = /<aside class="callout callout--remember"[\s\S]*?<\/aside>/.exec(await article())?.[0] ?? "";
+    expect(box).toContain("Remember</p>");
+    expect(box).toContain("Grill first, then <strong>build</strong>.");
+  });
+
+  test("flashcards show every card, the front in bold and the back under it", async () => {
+    const cards = (await article()).match(/<li class="flashcard">[\s\S]*?<\/li>/g) ?? [];
+    expect(cards).toEqual([
+      '<li class="flashcard"><p class="flashcard-front"><strong>What does grilling produce?</strong></p><p class="flashcard-back">Decisions, not code.</p></li>',
+      '<li class="flashcard"><p class="flashcard-front"><strong>Who owns the <code>details</code>?</strong></p><p class="flashcard-back">The agent.</p></li>',
+    ]);
+  });
+
+  test("a diagram shows its caption", async () => {
+    expect(await article()).toContain("Grill, then build.");
+  });
+});
+
 describe("Scenes", () => {
   const full = coursesFrom(path.join(process.cwd(), "src/lessons/__fixtures__/full"));
 

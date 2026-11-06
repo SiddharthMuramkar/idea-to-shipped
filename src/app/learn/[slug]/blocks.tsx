@@ -1,6 +1,7 @@
-import type { Block, CalloutTone } from "@/lessons/lessons";
+import type { Block, CalloutTone, Flashcard } from "@/lessons/lessons";
 import { htmlToText } from "@/lessons/markdown";
 import { CopyButton } from "./copy-button";
+import { DiagramView } from "./diagram";
 import { Icon, type IconName } from "./icons";
 import { Checkpoint } from "./question";
 import { SceneRun } from "./scene";
@@ -16,6 +17,7 @@ const CALLOUTS: Record<CalloutTone, { label: string; icon: IconName }> = {
   tip: { label: "Tip", icon: "tip" },
   "watch-out": { label: "Watch out", icon: "watch-out" },
   "big-idea": { label: "Big idea", icon: "big-idea" },
+  remember: { label: "Remember", icon: "remember" },
 };
 
 function BlockLabel({ icon, children }: { icon: IconName; children: string }) {
@@ -141,6 +143,25 @@ function Sources({ html }: { html: string }) {
   );
 }
 
+// Every card with both sides showing: the front in bold, the back under it.
+function Flashcards({ cards }: { cards: Flashcard[] }) {
+  return (
+    <div className="flashcards">
+      <BlockLabel icon="cards">Flashcards</BlockLabel>
+      <ul className="flashcard-list">
+        {cards.map((card, i) => (
+          <li key={i} className="flashcard">
+            <p className="flashcard-front">
+              <strong dangerouslySetInnerHTML={{ __html: card.frontHtml }} />
+            </p>
+            <p className="flashcard-back" dangerouslySetInnerHTML={{ __html: card.backHtml }} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 // `sceneId` names the Section's Scene (a Section has at most one), so its ids
 // are unique on the page.
 export function BlockView({ block, ctx, sceneId }: { block: Block; ctx: LessonContext; sceneId: string }) {
@@ -173,5 +194,9 @@ export function BlockView({ block, ctx, sceneId }: { block: Block; ctx: LessonCo
       return <SiteStory html={block.html} />;
     case "sources":
       return <Sources html={block.html} />;
+    case "flashcards":
+      return <Flashcards cards={block.cards} />;
+    case "diagram":
+      return <DiagramView diagram={block.diagram} />;
   }
 }

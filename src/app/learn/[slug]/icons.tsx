@@ -15,6 +15,15 @@ const PATHS = {
     </>
   ),
   "big-idea": <path d="M12 2.5 14.1 9l6.4 3-6.4 3L12 21.5 9.9 15l-6.4-3 6.4-3L12 2.5z" />,
+  // A bookmark: what to keep from a Section.
+  remember: <path d="M6.5 3h11v18l-5.5-4-5.5 4z" />,
+  // Two cards, one behind the other.
+  cards: (
+    <>
+      <rect x="3" y="7" width="14" height="13" rx="1.5" />
+      <path d="M7 4h12.5A1.5 1.5 0 0 1 21 5.5V16" />
+    </>
+  ),
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
   try: (
     <>
