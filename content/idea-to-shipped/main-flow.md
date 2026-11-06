@@ -10,6 +10,8 @@ Say you've installed Matt Pocock's Skills and set up the repo for your yoga-stud
 
 **The main flow is the path most work takes through the Skills: grill, plan, build test-first, review, ship, then learn.**
 
+A **flow** is a path through the Skills. This is the main one, and the other ways in, covered below, merge onto it.
+
 Matt, a developer and teacher who publishes the Skills, puts it this way: "This is the main flow that all of my work runs through." Each stop is a **Skill**, a set of instructions the agent loads for one kind of task (see [what a Skill is](/learn/skills)). This lesson is the map; each stop has its own lesson, linked below.
 
 ```diagram
@@ -45,7 +47,7 @@ Why: The main flow starts by grilling the idea. Planning, building, review, ship
 1. **Grill.** Before any code, the agent interviews you until you both understand the idea the same way ([grill before you build](/learn/grill-before-you-build)). In a repo, type `/grill-with-docs` ([grill-with-docs](/learn/grill-with-docs)). It writes the words you settle into `GLOSSARY.md` as you go, with [domain-modeling](/learn/domain-modeling). With no repo, use [grill-me](/learn/grill-me), which saves nothing. Both run the same interview, [grilling](/learn/grilling).
 2. **Detour, only if talk can't settle a question.** Some questions need something you can run or see, like a tricky booking rule or a screen. [prototype](/learn/prototype) answers it with throwaway code, in a fresh session that [handoff](/learn/handoff) bridges out and back.
 3. **Plan, only if the build spans sessions.** [to-spec](/learn/to-spec) turns the conversation into a **Spec**: one Issue that describes the whole feature. [to-tickets](/learn/to-tickets) splits it into **Tickets**, one Issue per small piece of work, [each working end to end](/learn/small-end-to-end-tickets) and naming what must finish first. Here you also agree where tests will check the feature from outside ([test first](/learn/test-first)).
-4. **Build.** [implement](/learn/implement) builds one Ticket, or a small change, test-first with [tdd](/learn/tdd). Then it commits the work, saving it as a snapshot in Git ([commits](/learn/commits-and-diffs)), and stops: it opens no pull request. [implement-spec](/learn/implement-spec) builds a whole Spec in one run. Helper agents build its Tickets in parallel, and everything lands on one branch, a separate line of work in Git. Both close with [code-review](/learn/code-review), which checks the work [against the Spec and the standards](/learn/review-spec-and-standards).
+4. **Build.** [implement](/learn/implement) builds one Ticket, or a small change, test-first with [tdd](/learn/tdd). Next it runs [code-review](/learn/code-review), which checks the work [against the Spec and the standards](/learn/review-spec-and-standards). Then it commits the work, saving it as a snapshot in Git ([commits](/learn/commits-and-diffs)), and stops: it opens no pull request. [implement-spec](/learn/implement-spec) builds a whole Spec in one run. Helper agents build its Tickets in parallel, and everything lands on one branch, a separate line of work in Git. When every Ticket is in, it runs code-review once, over that branch.
 5. **Ship.** The work goes up as a pull request, a proposed change that's reviewed before it joins the main code, and [pr](/learn/pr) shapes its description. [The build loop in practice](/learn/spec-driven-build-loop) takes a whole Spec to merged pull requests.
 6. **Learn.** [retro](/learn/retro) looks back over the session and suggests fixes to the agent's environment, not the code. Run it before you clear the session.
 
@@ -81,7 +83,7 @@ You've grilled a small change, and the session has plenty of room left. What do 
 - [x] `/implement`, in this same session.
 - [ ] `/to-spec`, then `/to-tickets`, so it's written down.
 - [ ] `/clear`, then `/implement` in a fresh session.
-Why: Fork B: the build fits in this session, so skip the Spec and Tickets and build it right here, where every decision is still in the window.
+Why: Fork B: the build fits in this session, so skip the Spec and Tickets and build it right here, where every decision is still in the session.
 ```
 
 ## Context between steps
