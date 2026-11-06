@@ -1,9 +1,7 @@
 ---
 title: The context window
 slug: context-window
-image: /photos/context-window.jpg
-imageAlt: Snow-capped mountains under low cloud, seen through a dark three-pane window.
-imageCredit: Daniel Seßler
+summary: An agent can only think about what fits in one window of text, and it thinks best while that window is far from full. Here's how to keep it there.
 ---
 
 An agent can only think about what fits in one window of text, and it thinks best while that window is far from full. Here's how to keep it there.

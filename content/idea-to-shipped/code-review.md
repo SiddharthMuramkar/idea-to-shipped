@@ -1,478 +1,467 @@
 ---
-title: Code review
+title: code-review
 slug: code-review
-image: /photos/code-review.jpg
-imageAlt: A woman leans over a desk to review work on a laptop with a seated colleague.
-imageCredit: Vitaly Gariev
+summary: code-review judges your branch's changes on two separate axes, each with its own report.
 ---
 
-Before you trust code an agent wrote, send two fresh reviewers over it: one checks it against your project's rules, the other against what you asked for.
+## What it's for
 
-```goals
-- You'll be able to explain the Standards and Spec axes, and why the report keeps them apart instead of giving one verdict.
-- You'll be able to start a review the reliable way: committed work, a named fixed point, and `/mattpocock-skills:code-review` rather than Claude Code's Built-in `/code-review`.
-- You'll be able to read the report: tell hard violations from judgement calls, sort Spec findings, and decide which ones to act on.
-- You'll be able to say when in your work to run a review, and when a different tool is the better reach.
+Imagine the tests pass on Ticket #13, the booking endpoint. Did the agent build what the Ticket asked, and follow your repo's rules? The agent that wrote the code is a poor judge of that.
+
+**code-review judges your branch's changes on two separate [axes](/learn/review-spec-and-standards), each with its own report.**
+
+- **Standards**: does the code follow the repo's documented coding standards?
+- **Spec**: does the code do what the Issue or Spec behind it asked for?
+
+Separate reports stop a pass on one hiding a failure on the other.
+
+```checkpoint quick-1
+Your change follows every standard but builds the wrong thing. Why does it help that the two reports stay separate?
+- [x] The Standards pass can't hide the Spec failure.
+- [ ] The Spec axis can be skipped once the Standards pass.
+- [ ] The findings can be ranked together in one list.
+Why: A change can pass one axis and fail the other. With separate reports, the pass on one can't hide the failure on the other.
 ```
 
-## Why it matters
+On Ticket #13's branch, you type:
 
-Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal) can write four hundred lines while you make a coffee. The tests (small programs that check that your code gives the expected result) pass. You glance at it, it looks fine, and you accept it. Somewhere in those lines is a choice you'd never have made, or a requirement that quietly went missing.
-
-That's what happened on this site. When the comment box under each Lesson went live, all 19 of the site's tests passed. Then a review found that sending a number as a comment crashed the server with a `500` error (a failure on the server's side), instead of the `400` reply for an invalid request that the spec (the written description of what to build) promised. No test had tried a number; tests only check what someone thought to check. ==Passing tests isn't the same as correct.==
-
-Code review means reading changed code critically before you trust it. Two things make it hard with an agent:
-
-- **You didn't write the code**, so you don't know where its weak spots are, and reading every line yourself defeats the point of an agent.
-- **The agent that wrote it is a poor judge of it.** It made every decision in that code, so it tends to approve them. And its context window (its working memory for the conversation, measured in tokens, the small chunks of text AI usage is counted in; see [The context window](/learn/context-window)) holds the whole build, so it reasons less sharply.
-
-Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, calls automated code review one of the most impactful ways to raise the quality of agent-written code. A Skill is a short instruction file the agent loads when you type its name, or when a task matches its description (see [Skills](/learn/skills)). His `code-review` Skill hands the job to fresh reviewers, each with a narrow brief.
-
-## The idea: a fixed point and two axes
-
-A few words first:
-
-- A **repo** (repository) is a project folder tracked by Git, the tool that records every change.
-- A **commit** is a saved snapshot of the repo. `HEAD` means your latest commit.
-- A **diff** is the list of lines that changed between two snapshots.
-- A **fixed point** is the snapshot you compare against: a branch like `main` (a branch is a separate line of commits), a commit's ID like `4f849b9`, a tag (a name pinned to one commit, like `v1.0`), or `HEAD~5` (five commits back).
-
-The Skill reviews the diff between your fixed point and `HEAD`. Strictly, it measures from where your branch split off it, so later commits on `main` don't count. If you don't name a fixed point, it asks rather than guessing. Before spending anything, it checks that the fixed point exists and the diff isn't empty, so a typo fails at once, in front of you.
-
-Then it asks two separate questions about that diff. Matt calls them axes. One checks the work against its spec, or its ticket (one small, buildable piece of a spec).
-
-| | Standards | Spec |
-|---|---|---|
-| Question | Is it built right? | Is it the right thing? |
-| Checks against | Your repo's documented rules, plus a fixed list of code smells (warning signs, explained below) | The spec or ticket the work came from |
-| Every finding cites | The file and rule, or the named smell plus the code | The line of the spec |
-
-Why two? Because ==a change can pass one axis and fail the other==. Code that obeys every rule but builds the wrong feature passes Standards and fails Spec. Code that does just what the ticket asked, in a style the project's rules forbid, does the reverse. A single blended score would let the passing half hide the failing half.
-
-```scene flow
-title: What happens when you start a review
-node: pin | Pin the fixed point
-node: spec | Find the spec
-node: rules | Find the standards
-node: agents | Two sub-agents, in parallel
-node: report | Two sections, side by side
-# You name a fixed point, like main. It checks that it exists and that the diff isn't empty before spending anything.
-at: pin
-# It looks for the spec: ticket numbers in commit messages, a path you gave, a matching file, or it asks you.
-at: spec
-# It gathers every file that says how code should be written, then adds a fixed list of twelve code smells.
-at: rules
-# It starts two sub-agents (helper agents, each with a fresh context window) at the same time: a Standards reviewer and a Spec reviewer.
-at: agents
-# You get two separate sections and a worst issue for each axis. No overall winner.
-at: report
+```
+/code-review main
 ```
 
-```checkpoint axis-library-renewal
-A library app's ticket asked for "members can renew a loan once". The diff renews loans exactly once, as asked, but copies the same date maths into three files and names the main function `doIt2`. How does the review come out?
-- [ ] Spec fails, because the ticket didn't ask for three files.
-  > The ticket is about behaviour, and the behaviour matches. Where the code lives is a question about how it's built.
-- [ ] Both axes fail, since messy code can't count as done.
-  > The axes are independent on purpose. The feature is exactly what was asked, so Spec passes.
-- [x] Standards flags the copied maths and name; Spec passes.
-  > Right. Copied date maths and a name like `doIt2` are about how it's built (Duplicated Code, Mysterious Name). It still does what the ticket asked.
-- [ ] One blended verdict: mostly fine, with some style notes.
-  > The report never blends the axes. A blended score is exactly how one half hides the other.
+`main` is the **fixed point**: the commit, branch or tag (a name for a commit) a review compares against.
+
+The agent reads `git diff main...HEAD`. `HEAD` is the commit you currently have checked out. The three dots compare against the **merge-base**, the commit where your branch left `main`, so only your branch's changes show.
+
+```checkpoint quick-2
+You branched from `main`, and `main` has moved on since. What does `git diff main...HEAD` show?
+- [x] Only your branch's changes, from the merge-base on.
+- [ ] Your changes, plus everything that landed on main since.
+- [ ] Only the changes in the last commit on your branch.
+Why: The three dots compare against the merge-base, the commit where your branch left main. So later work on main stays out, and every commit on your branch stays in.
 ```
 
-## The Standards axis: your rules, then the smells
+Each axis then runs in its own subagent, at the same time.
 
-Before it starts the reviewers, the Skill searches the repo for every file that says how code here should be written, and hands that list to the Standards reviewer. If a `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it's always on the list. This site has neither. Its rules live in ADRs (short decision records in `docs/adr/`) and the glossary in `GLOSSARY.md`, plus `CLAUDE.md` (the instructions Claude Code loads into every conversation) and `AGENTS.md`, which both point agents at the docs for Next.js, the web framework this site uses.
+The standards come from the repo's own files, such as `CONTRIBUTING.md`, its contribution rules. On top sits a **smell baseline**: twelve code smells from Martin Fowler's book _Refactoring_. One is Duplicated Code: the same logic copied in two places.
 
-On top of whatever the repo documents, the reviewer always carries a **smell baseline**: twelve code smells from chapter 3 of *Refactoring*, Martin Fowler's classic book on restructuring code. A code smell is a hint that the design might be off, not a bug. A few of the twelve:
+Your repo's standards always win: if they allow something the baseline would flag, the smell is dropped. And each smell is a judgement call, never a hard violation.
 
-- **Duplicated Code**: the same logic turns up in more than one place in the change.
-- **Mysterious Name**: a name that doesn't say what the thing does or holds.
-- **Shotgun Surgery**: one logical change forces edits scattered across many files.
-- **Middle Man**: a function that mostly just passes calls on to another.
-
-Each smell comes with its fix: extract the shared code, rename it, gather what changes together. Two rules bind the baseline:
-
-1. **The repo overrides.** If your documented standards endorse something a smell would flag, the smell is dropped.
-2. **A smell is always a judgement call**, written as a possibility (possible Duplicated Code, say), ==never a hard violation==. Breaking a documented rule can be a hard violation; a smell can't.
-
-The Standards reviewer also skips anything your tooling already enforces, such as a linter (a program that flags common mistakes automatically).
-
-Matt's advice is to keep your rules in `CODING_STANDARDS.md`, which only the reviewer reads, so they don't weigh down the agent doing the building. Over time, `/retro` ([Retro](/learn/retro)) proposes new rules when a review misses a kind of mistake, or automatic checks for purely mechanical ones.
-
-```checkpoint smells-with-no-docs
-A weekend project has no standards documents at all: no `CODING_STANDARDS.md`, no ADRs, nothing. What does the Standards axis check?
-- [x] The twelve-smell baseline, each one a judgement call.
-  > Right. The baseline applies even when a repo documents nothing, and a smell is never a hard violation.
-- [ ] Nothing: with no documents, it skips the Standards axis.
-  > Only the Spec axis can skip, and only when there's no spec. The smell baseline means Standards always has something to check.
-- [ ] Only the problems the linter already reports.
-  > It's the reverse: the Standards axis skips anything tooling already enforces.
-- [ ] A popular public style guide, treated as hard rules.
-  > There's no outside style guide. Without repo rules, it's the Fowler smells, and those are never hard violations.
+```checkpoint quick-3
+A review reports a smell, and your repo's standards say nothing about it. How do you treat it?
+- [x] As a judgement call for you to weigh.
+- [ ] As a hard violation you have to fix.
+- [ ] As noise, because only repo rules count.
+Why: A smell is always a judgement call, never a hard violation. Your repo's standards can overrule it, but here they say nothing, so it's yours to weigh.
 ```
 
-## The Spec axis: what you asked for
-
-Before it starts the reviewers, the Skill also looks for the spec in this order, then hands it to the Spec reviewer:
-
-1. Ticket references in the commit messages, like `#123` or `Closes #45`, fetched from your issue tracker (where tickets live). `/setup-matt-pocock-skills` writes the note that tells it where that is.
-2. A path you pass when you start the review.
-3. A spec file under `docs/`, `specs/` or `.scratch/` whose name matches the branch or feature.
-4. Asking you.
-
-If there's no spec at all, it doesn't start the Spec reviewer, and the report says "no spec available". It doesn't invent requirements from the code.
-
-It reports three kinds of finding, quoting the spec line for each:
-
-- **Missing or partial**: something the spec asked for that isn't there, or is only half there.
-- **Scope creep**: behaviour nobody asked for.
-- **Looks implemented, but wrong**: the feature exists but doesn't do what the spec line says.
-
-This axis is ==only as sharp as the spec==. A vague spec makes a vague review. That's one more reason to write one with `/to-spec`, and split it with `/to-tickets`, for anything that will take more than one session (one Claude Code conversation); see [Spec + tickets](/learn/spec-and-issues).
-
-```checkpoint colour-picker-extra
-A to-do app's spec asks for due dates on tasks. The diff adds due dates and also a colour picker for each task. Where does the colour picker show up in the report?
-- [ ] Under Spec, as a missing or partial requirement.
-  > Nothing is missing: due dates are there. The picker is something extra.
-- [x] Under Spec, as scope creep beyond the due dates.
-  > Right. Behaviour nobody asked for is scope creep, and the reviewer quotes the spec to show it wasn't requested.
-- [ ] Under Standards, as a hard violation.
-  > Standards asks whether code follows the repo's rules. Whether a feature was requested is a Spec question.
-- [ ] Nowhere: extra features are a bonus, not a finding.
-  > The Spec reviewer reports extras on purpose. Unrequested behaviour is code someone has to maintain.
+```diagram
+type: chain
+caption: "Each axis then runs in its own subagent, at the same time."
+steps:
+  - "you type: `/code-review main`"
+  - label: "The agent reads `git diff main...HEAD`"
+    note: "only your branch's changes show"
+  - parallel:
+      - "Standards: does the code follow the repo's documented coding standards?"
+      - "Spec: does the code do what the Issue or Spec behind it asked for?"
+  - "a report with a `## Standards` part and a `## Spec` part"
 ```
 
-## Two reviewers, side by side
+## When to use it
 
-The two reviews run as **sub-agents**: helper agents, each with its own fresh context window. The Skill starts both at the same time and waits for both reports. That buys three things:
+- You want a finished branch, a pull request or work in progress checked.
+- You're running [implement](/learn/implement) or [implement-spec](/learn/implement-spec). They call it for you.
 
-- **Neither sees the other's reasoning**, so one axis can't colour the other.
-- **Neither wrote the code**, so neither is defending its own choices.
-- **Both start clean**, in the Smart zone: the part of the context window where the model (the AI doing the thinking) still reasons clearly. Matt's rule of thumb is about 150k tokens on today's best models.
+```checkpoint quick-4
+You're running implement on a Ticket. Once the code is done, who starts the review?
+- [x] implement does, because it calls code-review for you.
+- [ ] You do, because implement stops and waits for you.
+- [ ] Nobody, because implement leaves review to the PR.
+Why: implement and implement-spec both call code-review themselves, so you don't have to start it.
+```
 
-Each sub-agent gets a tight brief: the diff command, the list of commits, its sources, and an order to report in under 400 words. The Standards brief includes the full smell list, because the sub-agent can't see it otherwise.
+## When not to use it
 
-The report always has this outline, though the wording inside each section varies:
+- If you need a pull request's description, use its look-alike [pr](/learn/pr) instead, because it writes the description and doesn't judge the code.
+- If the whole codebase is the problem, not one diff, use [improve-codebase-architecture](/learn/improve-codebase-architecture) instead, because it surveys a codebase for hard-to-change code and suggests refactors.
+- If you want bugs hunted, use Claude Code's built-in reviewer, `/review`, instead, because this Skill doesn't hunt them.
 
-```md
+```checkpoint quick-5
+Your branch is reviewed and fixed, and its pull request needs a description. Which Skill fits?
+- [x] pr, which writes the pull request's description.
+- [ ] code-review, which judges the code.
+- [ ] improve-codebase-architecture, which surveys a codebase.
+Why: pr writes a pull request's description and doesn't judge the code. Judging is code-review's job, and it's already done here.
+```
+
+## What it needs to start
+
+You type `/code-review`, or you ask for a review and the agent starts it on its own.
+
+- Your work committed, because it reads only commits.
+- A fixed point, or it asks for one.
+- A Spec. It looks for Issue numbers in your commit messages, such as `Closes #13`, then a path or Spec file, and asks if it finds none. Issue numbers need your Issue tracker [set up](/learn/setup-matt-pocock-skills). With no Spec, it skips the Spec axis and says so.
+
+```checkpoint quick-6
+You run a review on a branch with no Spec anywhere. What happens?
+- [x] It skips the Spec axis, and says so.
+- [ ] It stops at once, with no report at all.
+- [ ] It runs the Standards axis a second time.
+Why: With no Spec, there's nothing to check the code against. So the Spec axis is skipped and the report says so, while the Standards axis still runs.
+```
+
+## What it creates
+
+Nothing on disk. You get a report with a `## Standards` part and a `## Spec` part. It ends with one line: how many findings (problems) each axis has, and the worst issue within each.
+
+```checkpoint quick-7
+You're about to read the report's last line. What will it tell you?
+- [x] Each axis's finding count and its worst issue.
+- [ ] The one worst issue picked across both axes.
+- [ ] Every finding again, merged and ranked by risk.
+Why: The report ends with one line, how many findings each axis has and the worst issue within each, so the two axes stay apart to the end.
+```
+
+## Going deeper
+
+### Why it exists
+
+A reviewer that doesn't know your repo gets two things wrong. It complains about choices you made on purpose, and it misses the rules your code relies on. Matt's design "exists to avoid a generic review skill that does not know your standards."
+
+```checkpoint quick-8
+Say a reviewer reads your repo without knowing its standards. What does it get wrong?
+- [x] It flags choices you made on purpose, and misses your rules.
+- [ ] It passes everything, because it has no rules to check against.
+- [ ] It refuses to run until the repo has its own written standards.
+Why: A reviewer that doesn't know your repo complains about what's deliberate and misses the rules your code relies on. That's the problem code-review's design avoids.
+```
+
+So your repo's own docs come first, and the repo always overrides.
+
+Agents can make a codebase worse over time. Matt's answer is two agents: one does the work, the second imposes your standards.
+
+### How it works underneath
+
+**Fresh eyes.** Think of proofreading your own essay: you read what you meant. Matt says agents are often "really bad at editing code or improving code" they've written themselves. So each axis runs in a subagent, whose clean context sees only its brief. Neither axis sees the other's reasoning, either.
+
+```checkpoint quick-9
+An agent has written your code in this session. Why does each axis run in a subagent?
+- [x] It starts clean, and sees only its brief.
+- [ ] It can open files the agent isn't allowed to.
+- [ ] It can run tests the agent has no way to run.
+Why: Agents are often bad at improving code they've written themselves, like you proofreading your own essay. A subagent's clean context doesn't carry the writer's thinking.
+```
+
+The Skill now says to start every subagent with a fresh context window. Matt added that in October 2026 because some Codex models fork the conversation instead. A fork starts with a copy of the writer's context window, which defeats the point.
+
+**Code smells.** A code smell is a surface sign that usually points to a deeper problem. A hint, not proof: Fowler says some long methods are fine. So the Skill labels each smell as a rule of thumb, with the word "possible" in front, as in possible Duplicated Code.
+
+```checkpoint quick-10
+A finding says "possible Duplicated Code". What does the word "possible" tell you?
+- [x] It's a hint to look closer, not proof.
+- [ ] It's proven, but it can safely wait.
+- [ ] It's a rule your repo has written down.
+Why: A smell is a surface sign that usually points to a deeper problem, but not always. So the Skill labels it as a rule of thumb.
+```
+
+Each smell also names its fix: Duplicated Code says to extract the shared shape. [tdd](/learn/tdd) left refactoring out of its loop; this is where it comes back.
+
+**Findings you can check.** A Standards finding cites the file and the rule, or names the smell and quotes the changed lines. A Spec finding quotes the line of the Spec: something missing, something nobody asked for, or something built wrongly.
+
+For example, a report on Ticket #13 might read:
+
+```
 ## Standards
-Hard violations (file + rule) · judgement calls (a rule cited, or a smell named and the code quoted)
+CONTRIBUTING.md, "Every endpoint returns a response model":
+  POST /bookings returns a plain dict.
+possible Duplicated Code: "if booked >= capacity" appears twice.
 
 ## Spec
-Missing or partial · scope creep · looks wrong (each quoting the spec)
+"A full class takes no more bookings": missing.
 
-Summary: findings per axis, and the worst issue within each axis.
+Standards: 2 findings, worst: the plain dict. Spec: 1 finding, worst: the missing rule.
 ```
 
-==There is no overall winner.== The Skill reports; it doesn't edit your code.
+### A real example
 
-```checkpoint worst-per-axis
-A review ends: "Standards: 3 findings, worst is a duplicated price calculation. Spec: 2 findings, worst is a missing refund button." A teammate asks why it doesn't just name the single worst problem overall. What's the reason?
-- [ ] Sub-agents can't read each other's reports to compare.
-  > The Skill reads both reports itself. It declines to rank them on purpose.
-- [ ] Spec findings always outrank Standards ones.
-  > Neither axis outranks the other. Either one can hold the issue that matters most.
-- [ ] It saves tokens by skipping a final comparison step.
-  > Cost isn't the reason. The separation is a deliberate design choice.
-- [x] Ranking across the axes would let one bury the other.
-  > Right. Keeping a worst issue per axis means a serious Spec gap can't be buried under a pile of Standards notes, or the reverse.
+In a July 2026 video, Matt runs his whole flow to strip internal tooling from his CLI. As implement finishes, it loads code-review by itself. The repo has no written coding standards, so the review has only "some classic ones kind of from Martin Fowler". Both subagents come back, with the work checked against the Spec and the standards. Only then does implement commit.
+
+Notice the order: review first, commit after. implement says it that way, and that order can cause the empty diff below.
+
+Notice where it ran: inside the session that wrote the code. Matt prefers a fresh session, because the session that wrote the code carries every assumption behind it. The subagents start fresh, but that session still writes their briefs and can clean up their reports. For an independent review, run it yourself from a clean session.
+
+```checkpoint quick-11
+implement has run its own review step. You want an independent review. What do you do?
+- [x] Run the review yourself from a clean session.
+- [ ] Nothing, because the subagents already start fresh.
+- [ ] Ask the same session to run its review again.
+Why: The subagents start fresh, but the session that wrote the code still writes their briefs and can clean up their reports. A clean session keeps its assumptions out.
 ```
 
-## A session, step by step
+### Where it goes wrong
 
-Here's this site's first review with Matt's Skill, run after the comment box went live. The findings are real; the wording is condensed, the summary line is illustrative, and the first line names the fixed point up front.
+**`/code-review` may not run the reviewer you meant.** This is the Skill's most reported problem. Claude Code ships its own `/code-review`, which hunts bugs in the diff. Install Matt's Skills, and one of the two wins that name. Matt won't rename his to dodge a harness's built-ins.
 
-```scene chat
-title: Reviewing this site's first build (illustrative, from a real review)
-# You type the Skill's full name and a fixed point: the site's first commit.
-you: `/mattpocock-skills:code-review` Review since 4f849b9.
-# Before starting anything, it checks the fixed point and the diff.
-agent: `4f849b9` resolves, and the diff since it isn't empty.
-# It finds both sets of sources, then starts the two reviewers together.
-agent: Spec: `.scratch/lesson-site/spec.md` and its tickets. Standards: `AGENTS.md`, `CLAUDE.md`, `GLOSSARY.md` and four ADRs (no `CODING_STANDARDS.md` here), plus the smell baseline. Starting the Standards and Spec reviewers now.
-# The Standards report: no hard violations, only judgement calls. The endpoint is the code that receives each new comment; the comments module is the code that saves and reads them.
-agent: **Standards.** Hard violations: none. Judgement calls include the length limits living in two files, three names for one idea, and the endpoint checking each comment itself instead of leaving that to the comments module.
-# The Spec report quotes the spec for each finding.
-agent: **Spec.** Looks wrong: a number as a comment returns `500`, but the spec says "`400` + `{ error }` if invalid"; the home page's rows don't match the spec's wording. Not asked for: dates on comments, a "Loading…" message.
-# One summary line: a worst issue per axis, and no overall winner.
-agent: **Summary.** Standards: 0 hard violations, 7 judgement calls; worst is the endpoint doing its own checks. Spec: 4 findings; worst is the `500` crash.
-# You decide what to act on.
-you: Fix the crash test-first (a failing test, then the fix), move the checks into the comments module and share the limits. Leave the renames for now.
+With his **plugin**, a bundle of Skills you can install together, type the full name: `/mattpocock-skills:code-review`. With a plain install, your copy takes `/code-review`, and the built-in stays reachable through its alias, `/review`. To give `/code-review` back to the built-in, rename the folder and the `name:` field in your copy. But `npx skills update` undoes that rename.
+
+```checkpoint quick-12
+You installed Matt's plugin, and you want his review, not Claude Code's. What do you type?
+- [x] `/mattpocock-skills:code-review`, the full name.
+- [ ] `/code-review`, the short name of the Skill.
+- [ ] `npx skills update`, which renames the Skill.
+Why: With the plugin, the full name always reaches Matt's Skill. The short name is the one the two reviewers compete for.
 ```
 
-## Your part: commit, name it, read it
+**The review stops at an empty diff, or misses your last change.** The diff sees only commits. It leaves out **staged** changes, the ones marked with `git add` for the next commit. It also leaves out working-tree changes, the edits you haven't staged. implement asks for the review before it commits, so the diff can be empty. Then the review stops, and neither subagent runs.
 
-**Commit first.** The diff runs from the fixed point to your latest commit, so work you haven't committed is invisible to it. If the agent just made changes, ask it to "commit these changes", review, then fix in a new commit. ==Commit before you review.==
-
-**Type the full name.** Claude Code has its own `/code-review`, a Built-in command (it ships with Claude Code itself, not with Matt's Skills). It's a bug hunt for things like unchecked empty values and race conditions (two actions colliding), with effort levels (how hard it thinks) such as `/code-review max` and a deep cloud version, `/code-review ultra`. With Matt's Skills installed as a plugin (a bundle that adds them all at once), the bare `/code-review` can land on the Built-in review, and Matt won't rename his Skill to dodge it. The sure way in is the full name, `/mattpocock-skills:code-review`. A bug list with no Standards or Spec sections means the Built-in review answered.
-
-**Name the fixed point.** For a whole branch, it's usually `main`. For one ticket, it's the commit just before the work started.
-
-**Review from a clean session.** The sub-agents start fresh anyway, but the agent you're talking to writes their briefs and passes on their reports. If it did the building, it brings the build's assumptions. Review after `/clear` (a Built-in command that empties the conversation; your files and commits stay) or in a new session.
-
-**Read findings as leads, not verdicts.** The Skill passes the reports on unchecked, so one can point at the wrong line or exaggerate the damage. Check each citation, act on the ones that hold up, then stop. A re-run always finds something new: each fix is new code, and judgement calls vary between runs.
-
-The Skill is model-invoked: the agent may start it when you say "review this branch since main" in plain words, though it can pick the Built-in review instead. `/implement`, Matt's Skill that builds the work in a spec or ticket, also calls it when it finishes. `/implement-spec`, which builds a whole spec's tickets with helper agents, calls it once over the whole branch ([Implement](/learn/implement)). Both use the bare name, so they can get the Built-in review too.
-
-| Your situation | Reach for |
-|---|---|
-| A diff exists; you want to know it's built right and is the right thing | `/mattpocock-skills:code-review` |
-| You want bugs hunted: empty values, races, off-by-one errors (counting one too many or too few) | Claude Code's Built-in `/code-review` |
-| Nothing is written yet, and you want it built test-first (a failing test, then the code) | `/tdd` ([TDD](/learn/tdd)) |
-| Something is broken and you don't know why | `/diagnosing-bugs` ([Diagnosing bugs](/learn/diagnosing-bugs)) |
-| The whole codebase has drifted, not one diff | `/improve-codebase-architecture` ([Architecture](/learn/architecture)) |
-
-```callout watch-out
-Inside `/implement`, the review runs before the final commit, so it can't see work that wasn't committed along the way. Run `/mattpocock-skills:code-review` yourself afterwards, from a clean session.
+```checkpoint quick-13
+You've edited a file but not committed it. You're about to run a review. What happens to that edit?
+- [x] The review misses it, because the diff sees only commits.
+- [ ] The review includes it, along with your staged changes.
+- [ ] The review commits it for you, and then reads the diff.
+Why: The diff sees only commits, so staged and working-tree changes stay out. Commit first, then review.
 ```
 
-```checkpoint which-review-answered
-With Matt's plugin installed, you type `/code-review` and get back a list of places the code could crash, with no mention of your spec. What happened?
-- [x] The bare name reached the Built-in, so it hunted bugs.
-  > Right. The bare name can reach Claude Code's Built-in bug hunt. Type `/mattpocock-skills:code-review` to reach Matt's Skill every time.
-- [ ] The Skill found no spec, so it fell back to hunting bugs.
-  > With no spec, Matt's Skill says "no spec available" and still gives a Standards section. A plain bug list means a different tool answered.
-- [ ] Your repo has no standards documents, so it skipped both axes.
-  > With no documents, Standards still checks the smell baseline, and Spec needs only a spec. Neither axis turns into a crash list.
-- [ ] The diff was empty, so it reviewed the whole repo instead.
-  > An empty diff stops the review early, before any sub-agent starts.
+The fix is to change the order: "Commit first, then review, then amend or add a fixup." That means changing your last commit, or adding a small one that corrects it.
+
+```diagram
+type: chain
+caption: "Commit first, then review, then amend or add a fixup."
+steps:
+  - "Commit first"
+  - "then review"
+  - "then amend or add a fixup."
 ```
 
-## How Matt and others use it
+**It finds new problems on every run.** Each fix adds new code to review, and smells are judgement calls, so the results change from run to run. Don't run it in a loop "until it comes back clean, because it never will." Act on the findings with a cited rule behind them, then stop. Anthropic warns that any reviewer asked to find problems will always find something.
 
-**Matt Pocock:**
-
-- **Make it work, then make it good.** In his September 2026 talk on the pull-request bottleneck (a pull request, or PR, is a proposed change that's reviewed before it joins the main branch), he split the job in two: implementing makes code work, review makes it good.
-- **Grow your own standards.** In the same talk he advised building your own standards with your team, not leaning on generic third-party review bots.
-- **Review where it's smart.** At an April 2026 workshop he explained that an agent reviewing at the end of its own long build session works in the dumb zone, past the Smart zone, so clear first. He builds with Sonnet and reviews with Opus (two Claude models; Opus is the stronger), because review is where he needs the smarts. ([Models, effort & ultracode](/learn/models-effort-ultracode) covers switching.)
-- **At the end of every ticket.** In his July 2026 walkthrough, `/implement` ran the review by itself when a ticket was done. He clears between tickets, then runs one final review against the spec.
-
-**Other developers:**
-
-- Colin Eberhardt of Scott Logic wrote in October 2026 that when he rebuilt a real app with the Skills, both axes caught a few bugs in the first build.
-- A developer running `/implement` unattended in a loop checked the transcripts of 173 sessions in September 2026: the bare name had reached the Built-in review 36 times, Matt's Skill 18. His loop now types the full names.
-- One reader, quoted in Matt's docs, called an agent reviewing its own work in the same session "confirmation bias with a slash command".
-
-## Try it yourself
-
-````try
-You need Claude Code installed and signed in, plus Git (see [Start here](/learn/start-here)).
-
-1. Make an empty folder, turn it into a Git repo and start Claude Code in it. If it asks whether you trust this folder, choose Yes. To stop the agent at any point, press Esc.
-
-```sh
-mkdir review-practice
-cd review-practice
-git init -b main
-claude
+```checkpoint quick-14
+You fixed the findings, and a second run reports new ones. What do you do?
+- [x] Act on the ones with a cited rule, then stop.
+- [ ] Keep running it until it comes back clean.
+- [ ] Fix them all, since every smell is a fault.
+Why: Each fix adds new code, and smells are judgement calls, so a clean run never arrives. Act on the findings with a cited rule behind them, then stop.
 ```
 
-2. Type a slash and the word mattpocock. If `mattpocock-skills:code-review` is in the list that pops up, delete what you typed. If it isn't, type `/exit`, install Matt's Skills, then run `claude` again:
+**A finding turns out to be wrong.** A subagent's report is "a hypothesis, not evidence." The Skill doesn't re-check each finding against the files, so one can cite the wrong place or overstate the impact. Read its citation before you act on it.
 
-```sh
-claude plugin install mattpocock-skills@claude-plugins-official
+**The agent count keeps climbing.** The two subagents can start their own reviews, so each one spawns two more. One report reached more than 50 agents. In October 2026 Matt ruled guards against this out of scope: "The harness should be responsible for stopping infinite subagent loops, not skills." The harness, the agent tool you run, decides what a subagent can reach, so a limit set there holds for every Skill. Claude Code caps nesting at three layers by default. The Skill has no guard, so if you run a review unattended, watch the agent count.
+
+```checkpoint quick-15
+You're about to leave a review running unattended. What should you keep an eye on?
+- [x] The agent count, because the Skill has no guard.
+- [ ] Nothing, because the Skill caps its subagents.
+- [ ] Nothing, because Matt added a guard to the briefs.
+Why: Subagents can start their own reviews, and each one spawns two more. Matt leaves the limit to the harness, so the Skill itself has no guard.
 ```
 
-3. Check that plan mode (where the agent only reads and proposes) is off: if you see "plan mode on" under the prompt box, press Shift+Tab until it changes. Any other mode is fine.
-4. Ask for a spec and a deliberately incomplete build. If it asks permission to create files or commit, choose Yes. If Git says it doesn't know who you are, let the agent set a name and email for this folder only.
+### Try it
 
-```text
-Create .scratch/reading-time/spec.md with three requirements for a readingTime(text) function: (1) it rounds up to whole minutes at 200 words per minute; (2) it never returns less than 1; (3) it ignores text inside Markdown code blocks. Commit it on main. Then make a branch called reading-time, write reading-time.js meeting only requirements 1 and 2, and commit it.
+Run one real review, and see what it can't see. You'll need your practice project, with a branch of unmerged work for one Ticket. To get one, repeat [implement](/learn/implement)'s Try it on another open Ticket and a new branch, up to its commit.
+
+1. Check out that branch.
+2. Add a `CONTRIBUTING.md` at the repo's root with one rule: `Every endpoint returns a response model, never a plain dict.`
+3. Commit everything, with `Closes #` and the Ticket's number in the commit message.
+4. Open a fresh session.
+5. Type `/code-review main`. If you installed the plugin, type `/mattpocock-skills:code-review main` instead.
+6. Read the report. You should see a `## Standards` part and a `## Spec` part.
+7. Check the findings. Each Standards finding should name your rule or one smell. Each Spec finding should quote a line of the Ticket.
+8. Add a new file, `api/ping.py`, with an endpoint that returns a plain dict. Don't commit it.
+9. Run the same command again. You should see no finding about that file, because the review reads only commits.
+10. Fix only the findings with a cited rule behind them.
+11. Delete that file, commit your fixes, and stop.
+
+### Read more
+
+- [The /code-review Skill](https://www.aihero.dev/skills-code-review), Matt Pocock, updated 2026-08-24
+- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (video)
+- [AI Skills with Matt Pocock](https://www.youtube.com/watch?v=4DhcSPkEbwI), The Pragmatic Engineer with Matt Pocock, 2026-09-17 (video)
+- [Renaming skills to dodge harness built-in commands](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/harness-name-collisions.md), Matt Pocock, 2026-10-06
+- [Guards against sub-agents recursing into skills](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/subagent-recursion.md), Matt Pocock, 2026-10-06
+- [[Bug] `implement` and `code-review` disagree on reviewing uncommitted changes (#511)](https://github.com/mattpocock/skills/issues/511), pellorao, 2026-07-10
+- [/code-review name clash with Claude Code built-in (#483)](https://github.com/mattpocock/skills/issues/483), N0tS0Lucky, 2026-07-09
+- [code-review sub-agents recursively invoke /code-review and fan out (#573)](https://github.com/mattpocock/skills/issues/573), dmmulroy, 2026-07-14
+- [Code Smell](https://martinfowler.com/bliki/CodeSmell.html), Martin Fowler, 2006-02-09
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic, read 2026-10-30
+
+## Practice scenarios
+
+Optional practice: more situations like the ones in the final test.
+
+```checkpoint code-review-deeper-fresh-session
+implement built your booking endpoint and ran its own review step at the end, and committed. You still open a clean session and run code-review against main yourself instead of relying on that built-in step. What's the reason behind this step?
+- [x] The session that wrote the diff still briefs the reviewers and can clean up their reports.
+- [ ] A clean session loads a stricter smell baseline than the review step inside implement does.
+  > The smell baseline is one fixed set of Fowler smells. What changes is which session writes the reviewers' briefs.
+- [ ] implement's step only checks the Spec axis, since the Standards axis needs a session of its own.
+  > Whichever session starts it, the axes run the same way. The problem is where the review was started from.
+- [ ] Only a clean session lets the review read every file in the repo instead of just the diff.
+  > Every run reviews the diff between the fixed point and HEAD. A clean session doesn't widen that.
+Why: The two subagents start with a fresh context window, but the session that starts the review still writes their briefs and presents their reports, verbatim or lightly cleaned. If that session wrote the code, its assumptions can shape both. Starting the review from a clean session keeps them out.
 ```
 
-5. Type `/clear`, so the review starts clean, as it would after a real build.
-6. Try a bad fixed point first. It should say it can't find `nope` and stop before starting any reviewers; if it offers another fixed point, say no. If it suggests `/setup-matt-pocock-skills`, now or in the next step, skip it: you'll give it the spec's path yourself.
-
-```text
-/mattpocock-skills:code-review Review since nope.
+```checkpoint code-review-deeper-no-clean-pass
+Every time you fix the findings on your FastAPI branch and run the review again, it reports new smells. You decide to fix only the findings that cite a rule from your CONTRIBUTING.md or the Ticket, then stop. What's the reason behind this step?
+- [x] Each fix adds new code, and smells are judgement calls, so it never comes back clean.
+- [ ] The review refuses a fourth run on one branch, so later runs would be wasted anyway.
+  > Nothing caps the runs. The point is that the review never settles on a clean result, however often you run it.
+- [ ] A smell that shows up twice turns into a hard violation that blocks the merge.
+  > A baseline smell is always a judgement call, never a hard violation, however often it appears.
+- [ ] The Spec axis switches off once every line of the Ticket has been quoted once.
+  > Earlier runs don't switch off an axis. The new findings come from the Standards axis's judgement calls.
+Why: Each fix adds new code to review, and smells are judgement calls that change from run to run. So a clean run never arrives, and chasing one would go on forever. That's why you act on the findings with a cited rule behind them, then stop.
 ```
 
-7. Now the real review. Two sub-agent rows, one per axis, should appear together in the panel below the prompt box. They run in the background: wait for the report, even if the prompt comes back first. If more rows keep appearing, press Ctrl+X then Ctrl+K, and again within 3 seconds, to stop them all: that's a known bug, not your mistake. Then type `/clear` and rerun this step.
+## Remember
 
-```text
-/mattpocock-skills:code-review Review since main. The spec is .scratch/reading-time/spec.md.
+```flashcards
+Q: What are code-review's two axes?
+A: Standards: does the code follow the repo's documented standards? Spec: does it do what the Issue or Spec asked?
+
+Q: Which command does code-review use to see your branch's changes since main?
+A: `git diff main...HEAD`, three dots, so it compares against the merge-base.
+
+Q: What does code-review create?
+A: A report with a Standards part and a Spec part, ending with the number of findings and the worst issue within each axis.
+
+Q: In code-review, is a baseline smell like Duplicated Code a hard violation?
+A: No. Each smell is always a judgement call, and a documented repo standard overrides it.
+
+Q: Does code-review see changes you haven't committed yet?
+A: No. It diffs from the merge-base to HEAD, which leaves out staged and working-tree changes. Commit first, then review, then amend or add a fixup.
+
+Q: Claude Code ships its own `/code-review`. How do you reach Matt's one from his plugin?
+A: By its full name, `/mattpocock-skills:code-review`. Matt doesn't rename Skills to dodge a harness's built-ins.
+
+Q: Per Matt, what should stop code-review's subagents from starting more reviews without end?
+A: The harness, not the Skill. In October 2026 he ruled guards like that out of scope for Skills, so watch the agent count.
 ```
-
-8. Read the report, but don't fix anything. Type `/exit` when you're done.
-
-**It's working if:**
-
-- [ ] With `nope`, it stopped before starting any sub-agents.
-- [ ] It started two sub-agents together, one per axis.
-- [ ] The report has two separate sections, Standards and Spec, not one merged list.
-- [ ] The Spec section flags requirement (3) as missing and quotes that line of the spec.
-- [ ] Any Standards finding names a smell and quotes the code. This repo documents no rules, so expect smells only, or nothing at all.
-- [ ] The summary names a worst issue for each axis that has findings, and no overall winner.
-````
-
-## Common mistakes
-
-- **Typing the bare `/code-review`** and getting the Built-in bug hunt instead of Matt's two axes.
-- **Treating a smell as a hard violation**, or acting on one your own docs allow.
-- **Expecting a Spec review without a spec.** You get "no spec available".
-- **Skipping the habits in Your part:** reviewing uncommitted work, reviewing in the session that wrote the code, and looping until it comes back clean.
-
-```site-story
-After the comment box went live, I typed `/mattpocock-skills:code-review`, starting from `4f849b9`, the site's very first commit, so it reviewed everything built after it.
-
-**Standards: 0 hard violations, 7 judgement calls.** The code followed all four ADRs and used Next.js correctly. The judgement calls included the comment length limits written in two places (change one, forget the other), the endpoint checking input itself instead of leaving it to the comments module, and three names for one idea: `order`, `number` and "position".
-
-**Spec: one real bug, plus small gaps.** Sending a number instead of text crashed the server with a `500`, where the spec promised a `400`. I confirmed it on the live site. The home page's rows didn't match the spec's wording either, and there were extras nobody asked for, like dates on comments.
-
-**I fixed it in one pull request, PR #7:** the crash, test-first (the new test failed first, with `.trim is not a function`), all input checks moved into the comments module, the limits in one shared file, and the home page and ADR wording. **I left alone on purpose:** renames, emoji counting as two characters, and a repeated error line.
-
-**The name clash, live.** Before Matt's review, I'd typed `/code-review max`: Claude Code's Built-in bug hunt at maximum effort, running in the background, not Matt's Skill.
-
-On a later build, the review inside `/implement-spec` found about 15 problems, such as the home page calling Skills "commands", which the glossary rules out. One fix-up agent fixed them all.
-```
-
-## Cheat sheet
-
-| Moment | What to do |
-|---|---|
-| Before reviewing | Commit everything; start a clean session |
-| Start it | `/mattpocock-skills:code-review Review since main.` Add the spec's path if it can't find one |
-| Got a plain bug list | That was the Built-in `/code-review`; use the full name |
-| Reading Standards | Hard violations cite a documented rule; smells are always judgement calls |
-| Reading Spec | Missing or partial, scope creep, looks wrong; each quotes the spec |
-| Acting on it | Check each citation and fix what holds up; don't loop until clean |
-| Afterwards | `/pr` writes the PR's description; `/retro` proposes rules or checks for what the review missed: run it before you `/clear`, or point it at the old session's log ([Retro](/learn/retro)) |
 
 ## Final test
 
-```final-test predict-wrong-feature
-A bakery site's ticket says "customers can pre-order a cake for pickup". The agent built a polished delivery-scheduling flow instead, with no way to choose pickup. The code is tidy, well named and in line with the repo's ADRs. How should the report read?
-- [ ] Both axes pass: the code is clean and pre-orders work.
-  > Clean code can still be the wrong thing. The ticket's line says pickup, and there's no pickup.
-- [x] Standards passes; Spec flags missing pickup and scope creep.
-  > Right. Pickup is missing and delivery wasn't asked for, while how it's built is fine. That's the pass-one, fail-the-other case the two axes exist for.
-- [ ] Standards fails too, because the wrong feature means the wrong code.
-  > Standards judges how it's built, and this code is built well. Building the wrong thing is a Spec failure; the axes are judged separately.
-- [ ] Spec flags only scope creep: delivery wasn't asked for.
-  > Delivery is extra, but the ticket's pickup is missing too. Both belong in the Spec section.
+```final-test code-review-two-axes
+What are the two axes code-review judges a change on?
+- [x] Standards (the repo's coding standards) and Spec (what the Issue asked).
+- [ ] Tests (whether they all pass) and Speed (how fast the new code runs).
+- [ ] Coverage (how much is tested) and Docs (whether the docs are up to date).
+- [ ] Security (known risks in the code) and Style (the linter's formatting rules).
+Why: Code can follow every standard and still build the wrong thing, or build the right thing and break the repo's conventions. So the review asks two separate questions. Does the code follow the repo's documented standards, and does it do what the Issue or Spec asked?
 ```
 
-```final-test scenario-bug-hunt
-Your checkout change follows the house rules and does what its ticket asked. Before merging, you want to know whether a customer who double-clicks Pay could be charged twice, or whether an empty basket crashes the page. What do you reach for?
-- [ ] `/mattpocock-skills:code-review`, since bugs count as Standards findings.
-  > Matt's Skill checks your rules and your spec, and this change already meets both. Hunting for crashes and double charges is a different job.
-- [ ] `/diagnosing-bugs`, since you're looking for bugs.
-  > That's for when something is already broken and you don't know why. Nothing has broken yet.
-- [ ] `/tdd`, since it writes a test for every possible bug first.
-  > `/tdd` builds new behaviour test-first. This code already exists; you want it inspected.
-- [x] Claude Code's Built-in `/code-review`, since it looks for breakage.
-  > Right. The Built-in review is a bug hunt, with effort levels like `/code-review max` for a deeper pass. It complements Matt's two-axis review rather than replacing it.
+```final-test code-review-three-dots
+To review your branch against main, code-review reads `git diff main...HEAD`. What do the three dots do?
+- [x] They compare against the merge-base, where your branch left main.
+- [ ] They limit the diff to the last three commits on your branch.
+- [ ] They add the changes you haven't committed yet to the diff.
+- [ ] They compare against main's newest commit, including its later work.
+Why: The three dots make the comparison start at the merge-base, the commit where your branch left main. So you see only your branch's work, and nothing that landed on main after you branched.
 ```
 
-```final-test scenario-fixed-point
-This morning you branched off `main` and made four commits for one feature. Everything is committed. What do you type to review all four?
-- [x] `/mattpocock-skills:code-review Review since main.`
-  > Right. The full name reaches Matt's Skill, and `main` is the fixed point your branch started from, so the diff covers all four commits.
-- [ ] `/mattpocock-skills:code-review Review since HEAD.`
-  > `HEAD` is your latest commit. Comparing it with itself gives an empty diff, and the review stops early.
-- [ ] `/code-review max`, the strongest setting.
-  > With the plugin installed, the bare name can reach Claude Code's Built-in bug hunt, which gives no Standards or Spec report.
-- [ ] `/mattpocock-skills:code-review` on its own, so it can choose the branch.
-  > It doesn't choose: with no fixed point, it asks you. Naming `main` up front saves a round trip.
+```final-test code-review-repo-wins
+Your repo's CONTRIBUTING.md allows something the smell baseline would flag. What does the review do?
+- [x] It drops the smell, because a documented repo standard always wins.
+- [ ] It flags the smell as a hard violation, since the baseline is fixed.
+- [ ] It reports both, and asks you which one the repo should follow.
+Why: A documented repo standard always wins over the baseline. If your repo allows something the baseline would flag, that choice is deliberate, so the review drops the smell instead of complaining about it.
 ```
 
-```final-test scenario-new-findings
-You fixed every finding from a review and ran it again. This time it reports four new findings: one cites a rule in your `CODING_STANDARDS.md`, and three name a possible smell. What now?
-- [ ] Keep fixing and re-running until it comes back clean.
-  > It never converges: fixes are new code, and judgement calls vary from run to run.
-- [ ] Switch to the Built-in review, which gives steadier results.
-  > A different tool answers a different question: it hunts bugs, and doesn't check the change against your spec.
-- [x] Check the cited rule, weigh the three smells, then move on.
-  > Right. A cited rule can be a hard violation, so confirm it applies; smells are judgement calls. Every fix is new code, so another run will always find something. Act on what holds up, then move on.
-- [ ] Treat them all as hard violations and fix all four before merging.
-  > Only a documented rule can make a finding hard. The three smells are judgement calls to weigh, not must-fixes.
+```final-test code-review-deeper-uncommitted
+implement finishes your booking endpoint and runs the review before it commits anything. Why can that review find nothing to check?
+- [x] It diffs from the merge-base to HEAD, which leaves out staged and working-tree changes.
+- [ ] It only reviews files that the Ticket names, and this Ticket names no files at all.
+- [ ] It skips every file the repo's linter already checks, which covers the new endpoint.
+- [ ] It waits for CI to pass on the branch, and CI hasn't run on this branch yet.
+Why: The review reads `git diff <fixed-point>...HEAD`, which sees only commits. implement asks for the review before it commits, so all the new work can still be uncommitted and the diff empty. That's why the fix is to commit first, then review.
 ```
 
-```final-test spot-uncommitted
-Ana asked the agent to fix three findings. It edited the files and said it was done. She typed `/clear`, then ran `/mattpocock-skills:code-review Review since main.` again. The new report flags the same three problems as before. Spot the mistake.
-- [ ] She should have used `/code-review max` for a deeper look.
-  > That's the Built-in bug hunt, a different tool. It doesn't explain why the old problems came back.
-- [x] She should have committed the fixes first.
-  > Right. The diff runs from the fixed point to the latest commit, so edits that aren't committed are invisible and the review sees the old code. Commit, then review.
-- [ ] Her fixed point should have been `HEAD`.
-  > `HEAD` against itself is an empty diff, and the review stops early. `main` was right; the fixes just weren't in a commit.
-- [ ] She needed to pass the spec's path again.
-  > The spec's path affects the Spec axis, not which changes the diff contains. The fixes weren't in any commit.
+```final-test code-review-deeper-fan-out-owner
+code-review's subagents can start their own reviews, which start more. What did Matt decide about this?
+- [x] The harness should stop runaway subagents, so the Skill itself gets no guard.
+- [ ] Each subagent brief gets a line that forbids it from calling the Skill again.
+- [ ] Both axes now run inside one agent, so there is no subagent left to fan out.
+- [ ] The SKILL.md caps the review at two levels of subagents, then stops them.
+Why: The harness decides what a subagent can reach, so a limit set there holds for every Skill. A guard written into one Skill covers only that Skill. So Matt left the Skill without a guard, which is why you should watch the agent count when a review runs unattended.
 ```
 
-```final-test spot-overridden-smell
-A repo's ADR says its thin `api-client` wrapper is deliberate: it keeps a vendor's library behind one module. The review lists a judgement call: "possible Middle Man in `api-client`; cut it and call the vendor's library directly." What's wrong with that finding?
-- [x] The ADR endorses the wrapper, so it shouldn't be raised.
-  > Right. A documented repo standard overrides the baseline, so this smell shouldn't have been reported at all.
-- [ ] Nothing: as a judgement call, it's fine to raise.
-  > Being a judgement call doesn't protect it. Where the repo's docs endorse what a smell would flag, the smell goes.
-- [ ] It belongs under Spec, because an ADR is a kind of spec.
-  > ADRs are documented standards, so they belong to the Standards axis. Here the ADR cancels the finding.
-- [ ] It's too soft: breaking an ADR makes it a hard violation.
-  > The code follows the ADR, so nothing is broken. And a smell is never a hard violation.
+```final-test code-review-branch-done
+Your Ticket branch that adds a health check to your Docker setup is built, test-first, and the tests pass. It hasn't gone into main yet. What comes next?
+- [x] Check the changes since main against the Ticket and the standards.
+  > Right: that's `/code-review`.
+- [ ] Write the pull request's description now, so it can go into main.
+  > That's `/pr`. The check comes first, so the pull request presents the change after its fixes.
+- [ ] Write more tests for the health check's edge cases first.
+  > That's `/tdd`. The Ticket is built and its tests pass. What's missing is a look at the finished change.
+Why: The Ticket is built and its tests pass, so what's missing is a check of the finished change. That check comes before the pull request, so the pull request can present the change after its fixes. implement also reviews once the work is done, and the diff since main shows exactly what the branch changed.
 ```
 
-```final-test spot-same-session
-After a three-hour build, Raj types: "Review your work against the spec." The agent replies that everything looks great, and Raj merges. A week later, a missing requirement turns up. Spot the mistake.
-- [ ] He should have run the tests once more first.
-  > Tests only check what someone thought to check, and none covered the missing requirement. The problem was who did the reviewing.
-- [ ] He should have typed `/compact` first, to shrink the chat to a summary.
-  > A summary keeps the same agent, still primed by its own choices. The reviewer needs to be one that didn't write the code.
-- [ ] He should have asked for the Built-in `/code-review`.
-  > That's a bug hunt. It doesn't check the work against the spec, so it wouldn't flag a missing requirement.
-- [x] He should have had a different agent do the review.
-  > Right. It was biased toward its own choices, and three hours in it was likely past the Smart zone. Use `/mattpocock-skills:code-review` from a clean session, so neither the reviewers nor the agent briefing them built the code.
+```final-test code-review-no-fixed-point
+Your FastAPI branch is still work in progress, with no pull request yet. You want its changes checked against the Ticket and the repo's standards, though you haven't decided what to compare the branch with. Which fits best?
+- [x] Review the branch's diff on both axes; it asks what to compare to.
+  > Right: that's `/code-review`.
+- [ ] Write the pull request body first, so there's something to review.
+  > That's `/pr`. The body describes a change for whoever merges it. A review needs no pull request: it asks you for a fixed point, such as main.
+- [ ] Look back over the session for changes to the agent's environment.
+  > That's `/retro`. That suggests changes to the environment, not a check of this code against the Ticket and the standards.
+- [ ] Build the rest of the branch test-first, one slice at a time.
+  > That's `/tdd`. That adds code. It doesn't check the changes so far against the Ticket or the standards.
+Why: You want changes checked against a Ticket and the standards, and that works on a branch or work in progress, with no pull request needed. You don't have to pick the comparison point first: if you name no fixed point, the review asks for one before it reads the diff.
 ```
 
-```final-test sequence-review-ticket
-You've just finished a small feature on its own branch off `main`, built by chatting with the agent in one long session. Which order gives the most trustworthy review?
-- [ ] Review since `main` → commit → fix the findings → `/clear`
-  > Reviewing before committing hides the newest work from the diff.
-- [ ] `/clear` → review since `main` → commit → fix the findings
-  > A clean session is good, but the work has to be committed before the review can see it.
-- [x] Commit → `/clear` → review since `main` → fix, commit
-  > Right. Commit so the diff sees the work, clear so the review starts without the build's assumptions, then fix what's cited in a new commit.
-- [ ] Commit → review since `main` → fix everything → re-run until clean
-  > Reviewing in the long build session keeps its assumptions in the room, and re-running until clean never ends.
+```final-test code-review-findings-on-integration
+Every Ticket of your booking site's Spec is merged into the integration branch, and a draft pull request is open. The review of that branch against main has come back with findings on both axes. What comes next?
+- [x] Fix all findings in one subagent, then mark the draft ready.
+  > Right: that's `/implement-spec`.
+- [ ] Write the pull request body now, and fix the findings after.
+  > That's `/pr`. The findings get fixed first, so the pull request describes the fixed change.
+- [ ] Turn each finding into a new Ticket, with its blocking links.
+  > That's `/to-tickets`. implement-spec fixes everything the review raised in a single fresh implementer subagent, with no new Tickets.
+Why: The review's findings get fixed together, by one fresh implementer subagent, with no new Tickets. Only then is the draft pull request marked ready for review, so whoever reads it sees the fixed change.
 ```
 
-```final-test predict-departures-order
-A train-times app's spec says "departures are listed soonest first". The diff sorts departures by time, but the latest trains come out on top. Nothing else changed. Where should this finding land?
-- [ ] Spec: a missing or partial requirement, only half there.
-  > Sorting by departure time is there in full. It runs the wrong way, which is a different kind of finding.
-- [ ] Spec: scope creep, behaviour beyond the request.
-  > Nothing was added that the spec didn't ask for. Scope creep is behaviour nobody requested.
-- [ ] Standards: a hard violation of a documented rule.
-  > No documented coding rule is broken. Whether behaviour matches a spec line is the Spec axis's question.
-- [x] Spec: it looks implemented, but it's done wrong.
-  > Right. The feature exists but doesn't do what the spec line says, so the reviewer quotes "soonest first" beside the reversed order.
+```final-test code-review-pick-migration
+Your branch with a SQL migration that adds a cancellations table is done. You want to know two things. Does it follow the repo's CONTRIBUTING.md, and does it do what Ticket #31 asked? Which fits best?
+- [x] Check the diff against the repo's standards and against the Ticket.
+  > Right: that's `/code-review`.
+- [ ] Write the pull request's description, linking it to the Ticket.
+  > That's `/pr`. That describes the change for others. It doesn't check it against anything.
+- [ ] Rebuild the migration test-first, following CONTRIBUTING.md.
+  > That's `/tdd`. The migration is already built. The question is whether it's right.
+Why: Your two questions are the review's two axes. Following CONTRIBUTING.md is the Standards axis, and that file is always on its list when it exists. Doing what Ticket #31 asked is the Spec axis. Neither of the other options checks the migration against anything.
 ```
 
-```final-test why-two-reviewers
-A teammate suggests a cheaper version of the review: one fresh sub-agent that checks both the repo's rules and the spec in a single pass. What would that most likely cost?
-- [ ] Nothing: one fresh agent is as independent as two.
-  > It's fresh from the build, but not from itself. What it concludes on one axis sits in its context while it judges the other.
-- [ ] The smell baseline, which only a Standards sub-agent can hold.
-  > The Skill pastes the baseline into whatever brief it writes. Losing it isn't the risk.
-- [x] Independence: a verdict on one axis can sway the other.
-  > Right. In two separate contexts, neither reviewer sees the other's reasoning, so a clean Standards pass can't soften a Spec gap, or the reverse.
-- [ ] Ticket lookup, since sub-agents can't reach an issue tracker.
-  > The Skill finds the spec itself and passes it in. That works the same with one reviewer or two.
+```final-test code-review-two-reports
+Reviewing your AI agent's branch, the agent checks the coding standards and the Spec in two separate subagents. It reports them under two headings and never ranks a finding from one against a finding from the other. What's the reason behind this step?
+- [x] So a pass on one axis can't hide a fail on the other.
+- [ ] Two subagents working in parallel finish sooner than one.
+  > They do run in parallel, but the reason given is that they don't pollute each other's context and one axis can't mask the other.
+- [ ] So the Standards findings, which matter more, can go first.
+  > Neither axis outranks the other. The report never reranks findings or picks one winner.
+- [ ] So each subagent only has to read half of the changed files.
+  > Both read the whole diff. They differ in what they judge it against.
+Why: Code that follows every standard can still build the wrong thing, and code that does what the Issue asked can still break the repo's conventions. In one blended verdict, the axis that passes would hide the one that fails. Keeping the reports apart keeps both failures visible.
 ```
 
 ```sources
-- [code-review SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/code-review/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [code-review docs page](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/docs/engineering/code-review.md) (same-session review, trusting findings, convergence, uncommitted work): pinned to mattpocock-skills 1.3.1, read 2026-10-23. Public copy: [The /code-review Skill](https://www.aihero.dev/skills-code-review), AI Hero, updated 2026-08-24, read 2026-10-23.
-- [implement SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement/SKILL.md) and [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement-spec/SKILL.md) (both call `code-review` by its bare name): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [retro SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/retro/SKILL.md) (`CODING_STANDARDS.md` is read during review; mechanical rules become checks): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [Out of scope: harness name collisions](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/.out-of-scope/harness-name-collisions.md), mattpocock/skills, read 2026-10-23.
-- [Extend Claude with skills](https://code.claude.com/docs/en/skills), Claude Code docs (the bundled `/code-review`; a plugin's Skills are namespaced with the plugin's name), read 2026-10-23.
-- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (clearing between tickets and a final review 14:39–14:50; review inside `/implement` 14:55–15:12; why the writing agent is a poor reviewer 15:46–16:21).
-- [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock at AI Engineer, 2026-04-24 (reviewing in the Smart zone 1:04:59–1:06:24; standards go to the reviewer, Sonnet implements, Opus reviews 1:32:23–1:32:44).
-- [Can Cursor's HARDCORE Review Skill Stop The Slop?](https://www.youtube.com/watch?v=mh5XZ-L5SFQ), Matt Pocock, 2026-05-28 (impact of automated review 0:00–0:06).
-- [Fixing the PR Bottleneck](https://www.youtube.com/watch?v=LlgiOCmFG_w), Matt Pocock, AI Engineer Paris 2026 (AI Engineer channel), 2026-09-25, auto-translated captions (keep standards out of the implementer 11:35–13:28; make it work, then make it good 13:37–14:00; `CODING_STANDARDS.md` 14:04–14:20; build your own reviewer 14:31–15:19).
-- [An honest review of Matt Pocock's Skills framework](https://blog.scottlogic.com/2026/10/19/an-honest-review-of-matt-pococks-skills.html), Colin Eberhardt, Scott Logic, 2026-10-19.
-- [implement loses two of its five beats on unattended runs](https://github.com/mattpocock/skills/discussions/1091), GitHub Discussion #1091, Warshoow's comment of 2026-09-29 (173 sessions: the bare name reached the Built-in review in 36, Matt's Skill ran in 18), with the loop itself in [afk.sh](https://github.com/mattpocock/skills/discussions/1136), Discussion #1136, 2026-09-28.
-- [Fix code review findings (PR #7)](https://github.com/SiddharthMuramkar/idea-to-shipped/pull/7), this site's repo, 2026-10-21 (the Site story's fixes).
+- [code-review: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/code-review/SKILL.md), Matt Pocock's Skills
+- [improve-codebase-architecture: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/improve-codebase-architecture/SKILL.md), Matt Pocock's Skills
+- [The /code-review Skill](https://www.aihero.dev/skills-code-review), Matt Pocock, 2026-08-24 (page says Updated Aug 24, 2026)
+- [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic
+- [pr: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/pr/SKILL.md), Matt Pocock's Skills
+- [implement: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement/SKILL.md), Matt Pocock's Skills
+- [implement-spec: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement-spec/SKILL.md), Matt Pocock's Skills
+- [AI Skills with Matt Pocock](https://www.youtube.com/watch?v=4DhcSPkEbwI), The Pragmatic Engineer (Gergely Orosz) with Matt Pocock, 2026-09-17
+- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16
+- [Start subagents with a fresh context window, not a fork #1341](https://github.com/mattpocock/skills/pull/1341), mattpocock, 2026-10-29
+- [Code Smell](https://martinfowler.com/bliki/CodeSmell.html), Martin Fowler, 2006-02-09
+- [Bug `implement` and `code-review` disagree on reviewing uncommitted changes #511](https://github.com/mattpocock/skills/issues/511), pellorao, 2026-07-10
+- [/code-review name clash with Claude Code built-in #483](https://github.com/mattpocock/skills/issues/483), N0tS0Lucky, 2026-07-09
+- [Renaming skills to dodge harness built-in commands (.out-of-scope/harness-name-collisions.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/harness-name-collisions.md), Matt Pocock, 2026-10-06
+- [code-review sub-agents recursively invoke /code-review and fan out #573](https://github.com/mattpocock/skills/issues/573), dmmulroy, 2026-07-14
+- [Guards against sub-agents recursing into skills (.out-of-scope/subagent-recursion.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/subagent-recursion.md), Matt Pocock (mattpocock/skills, added in PR, 2026-10-06
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
+- [tdd: reshape into reference-only with pre-agreed seams #393](https://github.com/mattpocock/skills/pull/393), Matt Pocock (mattpocock), 2026-06-30
+- [Create custom subagents](https://code.claude.com/docs/en/sub-agents), Anthropic (Claude Code Docs)
+- [Pull request merges](https://docs.github.com/en/pull-requests/reference/pull-request-merges)
+- [ask-matt: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/SKILL.md), Matt Pocock's Skills
 ```

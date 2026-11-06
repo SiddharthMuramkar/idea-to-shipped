@@ -1,425 +1,453 @@
 ---
-title: Retro
+title: retro
 slug: retro
-image: /photos/retro.jpg
-imageAlt: A person in a green sweater looks at a blue wall covered in yellow sticky notes.
-imageCredit: Per Lööv
+summary: retro looks back over a coding session and suggests changes to the agent's environment, not the code.
 ---
 
-Every session leaves clues about what slowed the agent down. `/retro` reads them and proposes a fix in the repo for each one, so the next session doesn't trip over the same thing.
+## What it's for
 
-```goals
-- You'll be able to explain what `/retro` changes (the agent's environment, not your code) and run it at the right moment: in the session it reviews, before `/clear`.
-- You'll be able to send each finding to the right home: a failing check for a mechanical slip, `CODING_STANDARDS.md` for a judgement call, a pointer for slow searching, and a new rule in `CLAUDE.md` almost never.
-- You'll be able to explain why Matt never runs `/init`, and what earns a line in a steering file.
-- You'll be able to review any document an agent reads with `/writing-for-agents`: sharpen its context pointers, cut its no-ops, and state what you want instead of what you don't.
+Imagine your booking endpoint is finished. The agent hunted a long time for one file, and you corrected, by hand, an import the project doesn't allow. The endpoint works, so nobody looks back. The next agent hits the same problems.
+
+**retro looks back over a coding session and suggests changes to the agent's environment, not the code.** That's the [environment](/learn/fix-the-environment) you've met already: navigation pointers, automated checks, coding standards, instruction files and tools.
+
+```checkpoint quick-1
+An agent's session was a struggle, but the endpoint works. What will retro suggest changing?
+- [x] The agent's environment, such as its checks and coding standards.
+- [ ] The endpoint's code, so that part can't go wrong a second time.
+- [ ] The Ticket's wording, so the next agent gets clearer instructions.
+Why: retro suggests changes to the agent's environment, not the code: navigation pointers, automated checks, coding standards, instruction files and tools.
 ```
 
-## Why it matters
+You type `/retro`. The agent reads the session's record (a saved log of it), finds where it struggled, and lists fixes. For example:
 
-Claude Code is Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal. Watch one work and you'll see it stumble. It needs twenty searches to find one file. It runs `npm install` in a project set up for pnpm (npm and pnpm are package managers: tools that download a project's libraries). The reviewer (a second agent that checks the finished change) misses a mistake it should have caught. And the feature gets built anyway, because ==the agent doesn't complain==.
-
-Next session, the same struggles happen again. A session is one conversation, from starting `claude` until you clear it or quit, and each one starts blank. Claude Code's auto memory sometimes saves a note for later, but only when it judges one worth keeping. Nothing reliably changes unless the fix is written into the repo: the project folder the agent works in, with its history tracked by Git, the tool that records every change.
-
-The usual reflex is a new line in `CLAUDE.md`, the file of standing instructions Claude Code loads into every session: "Use pnpm, not npm." But that file only grows, and every session pays for every line, relevant or not.
-
-Matt Pocock, a developer and teacher, publishes a popular set of Skills for Claude Code. A Skill is a short instruction file the agent loads when you type its name or when a task matches its description. Matt noticed he was doing this upkeep by hand: tidying steering files (files like `CLAUDE.md` that load into every session to steer the agent), adding lint rules (automatic checks that flag code patterns), making files easier to find. So he bundled it into `/retro`, short for retrospective, which joined his main set in version 1.3, released in early October 2026. It looks back at a session and suggests improvements to the agent's ==environment==: the steering files, docs, automated checks, tools and access around your code.
-
-```callout big-idea
-`/retro` doesn't fix the bug the agent shipped. It looks for the gap in the repo that let the bug through, and proposes the check, pointer or rule that closes it.
+```
+1. Automated checks: a lint rule (an automatic code check) in CI would catch that disallowed import.
+2. Navigation: a pointer in CLAUDE.md would save the long hunt for that file.
 ```
 
-## The idea: fix the environment, not the code
+You pick the fixes you want, and the next build starts from a better environment.
 
-`/retro` is user-invoked: only you can start it, by typing `/retro` at the start of a message. Plain words like "let's do a retro" won't start it. When it runs, it does four things:
+## When to use it
 
-1. **Loads `/writing-for-agents`**, Matt's reference on writing for agents, as the style guide for anything it proposes, on every run.
-2. **Reads the session's record.** By default that's the current session; name another and it searches the session logs Claude Code keeps on your machine, under `~/.claude/projects/`.
-3. **Hunts for candidates in seven categories.**
-4. **Lists them most severe first**, and stops there. Nothing changes until you pick one.
+retro is the last step of the [main flow](/learn/issues-and-keeping-track), and it closes the loop after a build. Use it when:
 
-| Category | What went wrong | Where the fix goes |
-|---|---|---|
-| Navigation | Finding a file or fact took ages | A navigation pointer in a file the agent already opens |
-| Automated checks | A slip a tool could have flagged | A check: lint, a type check, a test, a commit hook, a CI job |
-| Coding standards | A judgement call got past the reviewer, or a standard is unclear | Add, clarify or remove a rule in `CODING_STANDARDS.md` |
-| Global AGENTS.md | `CLAUDE.md` or its twin `AGENTS.md`, in the repo or your personal one for every project, has grown big | Move its rules into standards or checks |
-| Tool economy | A tool call (a search, a command) cost far more than it was worth | A cheaper tool, or a different one |
-| No-ops | Steering lines that change nothing | Cut them |
-| Information access | Information the agent couldn't see | More access: an app's log saved to a file, read-only access to a service |
+- You've finished a build that went sideways: the agent hunted for files or repeated a mistake.
+- You've fixed a hard bug, and you want to ask what would have prevented it.
 
-A type check confirms the code's pieces fit together; a test runs code and checks the answers. A pre-commit hook runs checks every time you commit (save a snapshot of your changes in Git); CI, short for continuous integration, runs them on a server every time you push (send your commits to a shared copy, say on GitHub).
+Run it in the session it's looking back on, before you type `/clear`. The struggles are still in the context window then.
 
-**Mechanical or judgement?** Before it proposes any rule, `/retro` sorts the mistake. A ==mechanical== one follows a fixed pattern: a banned function, the wrong import, a file in the wrong folder, the wrong package manager. That gets an automated check, because, as Matt's docs put it, "a check can fail and a sentence in a standards file can't." Only genuine judgement calls, like "matches the surrounding style", become written rules. A repo where no hook or CI job runs lint, types or tests is a finding by itself. If a check exists but nothing runs it, the finding is to wire it up.
-
-**The reviewer enforces standards, not the builder.** The agent implementing a change is under the most context pressure: it explores, writes code and debugs, all in one context window (its working memory for the session, measured in tokens, the chunks of text AI usage is counted in). The reviewer gets a diff (the list of changed lines) and has room to spare. So standards go in `CODING_STANDARDS.md`, which Matt's code-review Skill always reads when it exists. Type that Skill as `/mattpocock-skills:code-review`, because plain `/code-review` can run Claude Code's own Built-in bug hunt instead (see [Skills](/learn/skills)). No Skill ships the standards file: `/retro` proposes creating it the first time it finds a judgement-call rule.
-
-```scene flow
-title: Where a retro finding lands
-node: struggle | A moment the agent struggled
-node: sort | What kind of problem is it?
-node: check | Mechanical: a check that fails | side
-node: standard | Judgement call: CODING_STANDARDS.md | side
-node: pointer | Slow to find: a navigation pointer | side
-node: pick | You choose what gets built
-# `/retro` reads the session's record and finds a moment the agent struggled.
-at: struggle
-# It sorts the problem before it proposes anything.
-at: sort
-# A fixed pattern, like the wrong package manager, gets a check that fails, not a sentence.
-at: check
-# A matter of taste becomes a rule in the coding standards the reviewer reads.
-at: standard
-# A file that took twenty searches gets a pointer from a file the agent already reads.
-at: pointer
-# The candidates arrive most severe first, and nothing changes until you pick.
-at: pick
+```checkpoint quick-2
+You've merged Ticket #13, and the session went badly. When do you run retro?
+- [x] Now, in this session, while the struggles are still in context.
+- [ ] Tomorrow, in a fresh session, once the context window is empty.
+- [ ] After the next Ticket, once two sessions have gone the same way.
+Why: Run it in the session it's looking back on. Before you clear, the struggles are still in the context window.
 ```
 
-```checkpoint reviewer-has-room
-Your team keeps a 900-line list of judgement-call rules, such as when a function has grown big enough to split. By `/retro`'s reasoning, where do those rules do the most good?
-- [ ] In `CLAUDE.md`, so the builder follows them from the first line it writes.
-  > The builder is already juggling exploring, coding and debugging. Hundreds of rules on top get followed unevenly.
-- [x] With the reviewer, which only reads a diff, not the whole codebase.
-  > Right. The reviewer has the least context pressure, so it has room to apply every rule. That's why standards live in `CODING_STANDARDS.md`.
-- [ ] Split across both, so each agent enforces half of them.
-  > Halving the list doesn't change who has room for it. Review is where the rules belong.
-- [ ] Nowhere: rules that long should become one big lint check.
-  > Checks are for fixed patterns. Judgement calls need a reviewer that reads them.
+## When not to use it
+
+- If you want to know whether the code is right, use [code-review](/learn/code-review) instead, because it reviews the diff, not how the work went.
+- If you're passing unfinished work to a fresh session, use [handoff](/learn/handoff) instead, because it writes the summary for the next agent.
+
+```checkpoint quick-3
+You want a verdict on whether the endpoint's code is right. Which Skill fits?
+- [x] code-review, since it reviews the diff.
+- [ ] retro, since it looks at the session.
+- [ ] handoff, since it writes a summary of the work.
+Why: code-review reviews the diff, so it can judge the code. handoff is for passing unfinished work to the next agent.
 ```
 
-## A real retro, step by step
+## What it needs to start
 
-This site hasn't had a retro yet, so here is Matt's own, from his October 2026 launch video, run over a batch of his recent sessions.
+Only you can start it, by typing `/retro`. The agent won't start it on its own.
 
-```scene chat
-title: Matt's retro over his recent sessions (paraphrased; his messages are illustrative)
-# Matt points the Skill at his recent sessions. It loads `/writing-for-agents`, then reads their records.
-you: `/retro` look back over my recent sessions
-# Candidates arrive most severe first, each worded for what happened. The top one: something public that can't be undone.
-agent: **1.** An agent published a release (a new numbered version) without asking you first.
-# Next, a missing guardrail. A check script exists, but nothing runs it.
-agent: **2.** There's a `pnpm check` script, but nothing runs it. Add a CI job.
-# Long sessions were losing instructions each time `/compact` shrank the conversation into a summary.
-agent: **3.** Repeated instructions get lost when long sessions are compacted. Move them into a Skill.
-# Then the tools: one costs too much, one can't be reached.
-agent: **4.** A custom command-line tool wastes tokens.
-agent: **5.** Another custom tool isn't on the PATH, the list of folders the terminal searches for commands.
-# Matt overrules the order. A release can be recut, so number 1 isn't serious. Number 3 he'll build.
-you: 1 doesn't matter, I can cut another release. Let's do 3.
+```checkpoint quick-4
+An agent finishes a rough build, and you say nothing. Will retro run?
+- [x] No. Only you can start it, by typing /retro.
+- [ ] Yes. The agent starts it after any rough build.
+- [ ] Yes, if CI failed at some point during the build.
+Why: Only you can start it, by typing /retro. The agent won't start it on its own.
 ```
 
-Every candidate pointed at something real, and Matt's first move was to argue with the ranking: the order is a first draft, not a verdict.
+retro needs a session to look back on: the current one by default. After clearing, point it at that session's log, the record kept on your machine, by naming the session after `/retro`.
 
-## Your part: when to run it, and how to judge the list
+Your repo needs no checks first. A repo with no guardrail (no pre-commit hook and no [CI](/learn/what-ci-cd-is) job running lint, typecheck and tests) is itself a finding.
 
-- **Run it before you clear.** `/clear`, a Built-in command (one that comes with Claude Code), empties the working context, where the struggles live. So run `/retro` in the session it reviews. In Matt's Main flow, his path from idea to shipped, it's the last step, after the code review and `/pr`, the Skill that writes a pull request's description (a pull request asks to merge your changes into the main project; see [The main flow](/learn/main-flow)).
-- **Already cleared?** In a fresh session, type `/retro` followed by the session you mean, for example `/retro my previous session in this repo, where the agent couldn't find the config file`. It searches the logs for it.
-- **Pick sessions worth learning from:** ones that were harder than they should have been. After `/diagnosing-bugs` (Matt's Skill for hard bugs) fixes one, run `/retro` in the same session to ask what would have prevented it (see [Diagnosing bugs](/learn/diagnosing-bugs)). After a smooth session, skip it: you'll mostly get rules nobody needed.
-- **Trace every candidate, and question the order.** Throw out any you can't link to a specific moment in the session, or to a plain fact about the repo, such as nothing running its checks. Late in a long session, the agent can forget mid-session struggles and pad the categories with generic advice. And the ranking can put a noisy but harmless slip above a silent, costly one.
-- **Build what you accept like any other change.** A new check is code: try it on the repo before it blocks anyone's work. One bug report on Matt's repo says accepted changes were left uncommitted, so run `git status` (it lists what changed) afterwards.
-- **Prune checks yourself.** `/retro` judges the sessions you show it, not how its past proposals have fared since, so it can't tell you that last month's rule now fires on good code.
-
-Don't confuse it with its neighbours. Matt's code review gives a verdict on code. `/improve-codebase-architecture` hunts for structural improvements to the code (see [Architecture](/learn/architecture)). `/retro` works from a session's history and improves the environment.
-
-```checkpoint untraceable-candidate
-`/retro` lists five candidates after a session where the agent kept running the wrong test command. Number four says "Add more comments to improve readability." Nothing in the session involved comments. What do you do with it?
-- [ ] Accept it; the Skill ranked it, so it must have found something.
-  > A ranking isn't evidence. A candidate you can't trace to the session or the repo is probably filler.
-- [ ] Put it in `CLAUDE.md` so every session sees it.
-  > That spends every session's context on advice nobody needed, and it's vague enough to change nothing.
-- [ ] Rerun `/retro` until the list has no generic items.
-  > Rerunning burns tokens and can produce new filler. Judging the list is your job.
-- [x] Discard it: nothing in the session or the repo backs it.
-  > Right. A real candidate traces to a moment in the session or to a plain fact about the repo, like a missing guardrail. Generic advice that fits neither gets dropped.
+```checkpoint quick-5
+Your repo has no pre-commit hook and no CI job running its checks. You type /retro. What happens?
+- [x] It runs, and reports the missing guardrail as a finding.
+- [ ] It stops, and asks you to add a guardrail before it runs.
+- [ ] It runs, but skips the checks since there are none to read.
+Why: A repo with no guardrail is itself a finding, so your repo needs no checks before you start.
 ```
 
-## Steering files, and why Matt never runs `/init`
+## What it creates
 
-`CLAUDE.md` is a steering file: Claude Code puts its contents into the context window of every session in the repo. `AGENTS.md` is the same idea under a name other agents read; Claude Code reads it instead only when there's no `CLAUDE.md` (see [How coding agents work](/learn/how-agents-work)). Claude Code also has a Built-in command, `/init`, that writes a starter `CLAUDE.md` describing your project.
+Nothing on disk. You get a list of **candidates**: suggested improvements, in order of severity. retro changes nothing until you pick.
 
-In February 2026 Matt published a video called "Never Run claude /init". His advice: never run it, and delete any steering file you think an agent wrote. He cited a study that found unnecessary requirements in these files make tasks harder. His reasons:
-
-- **The start of the window is fixed.** Exploring, building and testing take more or less room depending on the task. What's loaded at the start, including `CLAUDE.md`, never shrinks, and you pay for it on every request.
-- **It's global.** A line about React, a tool for building web pages, helps a session on the pages and is dead weight in a database or docs session.
-- **There's an instruction budget.** He estimates a model can juggle roughly 300 to 400 instructions at once, about 500 on the biggest models. Lines that don't apply still spend it.
-- **What `/init` writes is discoverable or goes stale.** The commands are already in `package.json`, the file that lists a project's scripts. "This is a React app" is plain from the config (settings) files. Notes naming specific files rot the moment you rename one. The agent explores before it builds anyway.
-
-At the time, the only `CLAUDE.md` line in his whole setup said he works on WSL (Linux running inside Windows): hard to discover, and true in every session. General steering preferences, he said, belong in Skills, which load only when needed.
-
-So what earns a line? Mostly ==navigation pointers==, plus the rare fact that's both undiscoverable and relevant to every session. `/retro` sharpens the old rule of thumb (a correction you've made twice is a candidate line): a mechanical repeat mistake becomes a check, a judgement call goes to `CODING_STANDARDS.md`, and only what neither can hold goes in `CLAUDE.md`.
-
-```checkpoint globality
-A teammate wants to add five lines to the project's `CLAUDE.md` about a pattern every React component should follow, because sessions that build pages keep skipping it. What's Matt's objection?
-- [ ] Five lines is too few; the rule needs a full page of examples to work.
-  > Length isn't the problem. Where the lines live is.
-- [ ] The agent ignores `CLAUDE.md`, so the lines will have no effect.
-  > It reads `CLAUDE.md` in every session. That's exactly why every line costs something.
-- [x] Every session pays for them, including ones that never touch React.
-  > Right. Steering files are global. Page-building preferences belong in a Skill the agent pulls in when needed, or in the reviewer's standards.
-- [ ] They'd only work at the top of `CLAUDE.md`, where the agent reads first.
-  > Position doesn't change the cost. Wherever they sit, every session loads them.
+```checkpoint quick-6
+retro has shown you its list. What has changed in your repo so far?
+- [x] Nothing. It only suggests fixes until you pick one.
+- [ ] The most severe fix is committed on a new branch.
+- [ ] Each candidate has become a new Issue on the tracker.
+Why: You get a list of candidates in order of severity, and nothing on disk. retro changes nothing until you pick.
 ```
 
-## Writing for agents: the reference `/retro` loads
+What went wrong decides the fix. If the agent hunted for a file, the fix is a navigation pointer. A mechanical mistake, a fixed pattern a program could spot, becomes a deterministic check, like a lint rule or a CI job. A judgement call becomes a coding standard, for the reviewer to enforce. The reviewer is [code-review](/learn/code-review)'s review agent.
 
-`/writing-for-agents` is Matt's guide to writing any document an agent reads: a Skill, a `CLAUDE.md`, a spec (a written plan of what to build), a doc that a pointer leads to. It's model-invoked, so the agent picks it up on its own when you create or edit a Skill or change `CLAUDE.md` or `AGENTS.md`, and you can type it yourself. Until August 2026 it was called writing-great-skills. Its main ideas:
-
-- **Context pointers.** A context pointer is a line the agent always sees that names something it can't see yet, and says when to go and get it. A Skill's description is one; so is a `CLAUDE.md` line naming a doc. How reliably the agent follows it depends on the wording. If the agent never opens a doc it needed, sharpen the pointer before you paste the doc in: key word first, one trigger per distinct case.
-- **The two loads.** ==Context load== is what always-loaded material costs the agent: tokens and attention every time it replies. Cognitive load is what it costs you to remember which documents exist. A user-invoked Skill like `/retro` costs the agent no context; you pay by remembering it, which is worth it where your judgement counts.
-- **Progressive disclosure.** Material sits on a ladder: steps the agent follows, then reference in the same file, then reference in a separate file behind a pointer. Inline what every case needs; put what only some cases reach behind a pointer, so the top stays readable. The failure is sprawl: a file too long even when every line is true.
-- **No-ops.** For each sentence, ask whether it changes what the agent does by default. "Write clean, readable code" doesn't. If a sentence fails, cut all of it; a trimmed no-op is still a no-op. Restating what the agent can look up, like the scripts in `package.json`, is a copy that goes stale. Keep what looking can't reveal: the reason behind a choice, a trap no config file mentions.
-- **Leading words.** A compact word the model already knows can anchor a whole behaviour in a few tokens: a *tight* feedback loop (fast and repeatable), a test that goes *red* (fails). A word too feeble to beat the default, like *be thorough*, is itself a no-op; reach for a stronger one, like *relentless*.
-- **Say what you want, not what you don't.** A ban drags the forbidden idea into the agent's attention. "Don't write long comments" puts long comments front and centre; "Keep every comment to one line" never mentions them. Keep a prohibition only as a hard guardrail you can't phrase positively, and pair it with the target you want.
-
-```checkpoint no-op-test
-A Skill you're writing contains the line "Be careful and think about edge cases." You run the Skill with and without the line, and the agent behaves the same both times. What does `/writing-for-agents` say to do?
-- [x] Delete all of it: it doesn't change the default.
-  > Right. It changes nothing compared with the default, so it only costs tokens. If you need the behaviour, reach for a stronger leading word.
-- [ ] Trim it to "Think about edge cases" to save tokens.
-  > A shorter no-op is still a no-op. Delete the whole sentence.
-- [ ] Put it in bold so the agent takes it seriously.
-  > Formatting doesn't make a line change behaviour. Check by running the document, and delete what fails.
-- [ ] Move it into `CLAUDE.md` so it applies to every session.
-  > That spreads a line that does nothing across every session.
+```checkpoint quick-7
+The reviewer missed a judgement call: the code doesn't match the surrounding style. What fix will retro suggest?
+- [x] A coding standard, for the reviewer to enforce.
+- [ ] A deterministic check, like a lint rule or a CI job.
+- [ ] A navigation pointer to a file that shows the style.
+Why: A mechanical mistake gets a deterministic check, and a hunt for a file gets a navigation pointer. A judgement call becomes a coding standard, for the reviewer to enforce.
 ```
 
-## How Matt and others use it
-
-**Matt Pocock:**
-
-- **He runs it by hand, on samples.** In his October 2026 launch video he said nearly everyone he shows it to wants to automate it. His answer: "No, you don't want to automate this." Left to loop on its own findings, an agent chases false positives and drifts the repo somewhere it shouldn't go. When he has a free moment, he points it at recent sessions, especially one that went wrong.
-- **He leans on navigation.** His "prompt of the day" on 2 October 2026 asked `/retro` to read his last ten sessions and find where agents took too long to find information or relied on out-of-date docs. He called navigability an underrated way to save tokens.
-- **He reviews the system, not just the code.** In a September 2026 talk on the pull-request bottleneck, just before `/retro` shipped, he argued you should never write the same review comment twice: look back over a week of reviews for the checks and standards that would make the next review lighter. The 1.3.1 Skill reads sessions, not pull requests, so you point it at the sessions behind them.
-- **Push to the reviewer, let the builder pull.** In an April 2026 workshop he put it this way: the builder can pull standards in when it has a question, while the reviewer gets them pushed alongside the code.
-
-**Other developers:**
-
-- A user Matt quoted at launch said retro showed their agents bumping into problems nobody had noticed, because the agents' persistence got the features built anyway.
-- On Hacker News in October 2026, one developer said he keeps a `CONTRIBUTING.md` and a `CODING_STANDARDS.md` beside the decision records Matt's Skills write, and the agents seem to find those docs and keep them up to date.
-
-## Try it yourself
-
-````try
-You need Claude Code installed and signed in, and Git ([Start here](/learn/start-here) covers both), plus Node.js, which runs JavaScript outside a browser. If `git --version` or `node --version` doesn't print a number, install what's missing (for Node.js, the LTS installer from nodejs.org), then open a new terminal. Allow 15 minutes. To stop the agent, press Esc, or choose No at a permission prompt.
-
-1. Make a practice folder, turn it into a Git repo and start Claude Code. If it asks whether you trust this folder, choose Yes.
-
-```sh
-mkdir retro-practice
-cd retro-practice
-git init
-claude
+```diagram
+type: compare
+caption: "What went wrong decides the fix."
+columns: ["What went wrong", "the fix"]
+rows:
+  - cells: ["the agent hunted for a file", "a navigation pointer"]
+  - cells: ["A mechanical mistake", "a deterministic check, like a lint rule or a CI job"]
+  - cells: ["A judgement call", "a coding standard, for the reviewer to enforce"]
 ```
 
-2. Type a slash and the word retro, without pressing Enter. If `/retro` is in the list that pops up, delete what you typed and go on. If it isn't, delete it, type `/exit`, run this in your terminal to install Matt's Skills, then run `claude` again:
+## Going deeper
 
-```sh
-claude plugin install mattpocock-skills@claude-plugins-official
+### Why it exists
+
+An agent rarely tells you where it struggled. It hunts for a file or repeats a mistake, then carries on. Matt puts the problem this way: "It pushes on, and the feature gets built anyway." So the finished code hides the cost.
+
+```checkpoint quick-8
+Your agent's feature works, and it reported no trouble. Why might a look back still be worth it?
+- [x] The agent carries on after a struggle, so the finished code hides it.
+- [ ] The agent lists each struggle, but only in its final commit message.
+- [ ] A working feature usually means the agent skipped all of the hard parts.
+Why: An agent rarely tells you where it struggled. It carries on and the feature gets built, so the finished code hides the cost.
 ```
 
-3. Check that plan mode (where the agent only plans and changes no files) is off: if you see "plan mode on" under the prompt box, press Shift+Tab until it changes. Any other mode is fine.
-4. Ask for a deliberately weak steering file. If it asks permission to create the file, choose Yes. If it offers better wording, reply: "Keep these exact lines; it's practice."
+Fixing what caused those struggles fell to you: keeping `AGENTS.md` lean, the Skills sharp, the lint rules good and the code easy to navigate. Matt did it by hand, then bundled it into retro.
 
-```text
-Create a file called CLAUDE.md containing exactly these four lines:
-This project is written in JavaScript.
-Write clean, readable code.
-Don't use var.
-See notes.md.
+So retro reads the real session, not the finished feature. Human review has the same aim: you're reviewing the system that creates the code, so "you never want to write the same comment twice".
+
+So the loop is: find a mistake, run `/retro`, and make the mistake impossible next time.
+
+```diagram
+type: cycle
+caption: "So the loop is"
+steps: ["find a mistake", "run `/retro`", "make the mistake impossible next time"]
 ```
 
-5. Give it a small job: a function plus a test. If it asks permission to create files or run its test, choose Yes.
+### How it works underneath
 
-```text
-Write a JavaScript function that counts the words in a string, with a test that runs on Node's built-in test runner.
+**The name comes from team practice.** retro is short for retrospective: a team's look back at how its work went. Martin Fowler credits Norm Kerth with launching the practice. Kerth's Prime Directive asks a team to believe "that everyone did the best job they could", given what they knew, their skills, resources and situation. Think of retro as that idea turned on a session: it asks what in the repo let the mistakes happen.
+
+```checkpoint quick-9
+An agent made three mistakes in a session. Which question does retro ask about them?
+- [x] What in the repo let them happen?
+- [ ] Which agent should now be replaced?
+- [ ] Who wrote the code that they touched?
+Why: Retrospectives start from the belief that everyone did the best job they could. Think of retro as that idea turned on a session: it asks what in the repo let the mistakes happen.
 ```
 
-6. Review `CLAUDE.md` with the reference:
+**How a run starts.** retro's Skill file sets `disable-model-invocation: true`, a Skill setting that stops the agent starting it by itself. Once you start it, it loads [writing-for-agents](/learn/writing-for-agents), the Skill with rules for writing documents agents read.
 
-```text
-/writing-for-agents Review CLAUDE.md line by line. Label each line as a context pointer, a no-op, a copy of something discoverable, or a prohibition, and suggest a better wording or home for each. Report only; leave the file unchanged.
+retro looks for candidates in set categories, such as navigation, automated checks and coding standards. Before it proposes a new check, it reads the repo's own check commands, because a check that exists but isn't wired up is the finding. Another category is **tool economy**: whether the agent's tool use wastes tokens.
+
+```checkpoint quick-10
+Your repo has a lint script, but CI never runs it. What will retro report?
+- [x] The unwired check, as the finding.
+- [ ] A brand-new lint rule to replace it.
+- [ ] Nothing, since a lint script exists.
+Why: Before it proposes a check, retro reads the repo's own check commands. A check that exists but isn't wired up is the finding, so there's no need to build another.
 ```
 
-7. In the same session, before anything else, type:
+**Rules go where there's room for them.** Think of **context pressure** as how hard a job crowds an agent's [context window](/learn/instruction-files). retro's Skill file names two agents: an implementation agent that builds, and a review agent that checks. The implementation agent has the most: it explores, writes code and debugs. The review agent has the least, because it receives a diff and needs no exploring. So coding standards go to the reviewer, which has room to apply them.
 
-```text
-/retro
+A `CLAUDE.md` line "loads into every session, gives less weight to everything else in the file, and goes out of date as the code changes." So that file is for navigation pointers and little else.
+
+```checkpoint quick-11
+The agent keeps making one mistake. Why not add a line to CLAUDE.md?
+- [x] It loads into every session and goes out of date.
+- [ ] It's only read by the reviewer, never by the agent.
+- [ ] It's ignored unless a Ticket tells the agent to read it.
+Why: A line in CLAUDE.md loads into every session, gives less weight to everything else in the file, and goes out of date. So that file is for navigation pointers and little else.
 ```
 
-8. Read the list without accepting anything. For each candidate, find the moment or the repo fact it points to. Type `/exit` when you're done.
+**A check beats a written rule when a program can spot the mistake.** Say the agent keeps building SQL from glued strings. A line in `CODING_STANDARDS.md` asks the reviewer to make that same call on every future diff. A lint rule costs you once, then catches it every time. So retro's default is to build the check. Matt's reason: "A check can fail. A sentence in a Markdown file cannot."
 
-**It's working if:**
-
-- [ ] The review called "Write clean, readable code" a no-op, the JavaScript line discoverable (or a no-op), "Don't use var" a prohibition or a job for a lint rule, and "See notes.md" a weak pointer: it never says when to read the file, which doesn't exist.
-- [ ] The review left `CLAUDE.md` unchanged.
-- [ ] Right after you sent `/retro`, a line mentioning writing-for-agents showed that Skill loading. If you see none, ask: "Did you load the writing-for-agents skill?"
-- [ ] Its candidates came most severe first, and each one points at a moment in this session or a plain fact about the repo.
-- [ ] It flagged that nothing runs its test automatically: no pre-commit hook, no CI job.
-- [ ] It proposed no new `CLAUDE.md` rule for a slip a check could catch (a sharper `notes.md` pointer is fine), and nothing changed until you chose.
-````
-
-## Common mistakes
-
-- **A `CLAUDE.md` line for every repeat mistake.** Mechanical slips get a check; judgement calls go to the reviewer's standards.
-- **Running `/init`**, or keeping a steering file an agent generated.
-- **Running `/retro` after `/clear`** without naming the old session.
-- **Accepting every candidate, or automating the whole thing.** You're the judge.
-- **Asking an agent to "streamline" a document.** It optimises for length and cuts behaviour; use the no-op test instead.
-- **Typing plain `/code-review` for Matt's reviewer.** Type `/mattpocock-skills:code-review`.
-
-```site-story
-Not used on this site yet. The project's `CLAUDE.md` is 17 lines, almost all pointers, mostly an "Agent skills" block in the shape that `/setup-matt-pocock-skills` (Matt's once-per-repo setup Skill) writes. And `package.json` has `lint` and `test` scripts, but no CI job or pre-commit hook runs them, which `/retro` counts as a finding in itself.
+```checkpoint quick-12
+The agent keeps building SQL from glued strings. Why choose a lint rule over a line in `CODING_STANDARDS.md`?
+- [x] It costs you once, and the reviewer needn't re-check each diff.
+- [ ] `CODING_STANDARDS.md` is only read by the agent writing the code.
+- [ ] A lint rule runs faster than a reviewer can read a single line.
+Why: A line in the standards file asks the reviewer to make the same call on every future diff. A lint rule costs you once, then catches it every time.
 ```
 
-## Cheat sheet
+### A real example
 
-| Moment | What to do |
-|---|---|
-| A build was harder than it should have been | `/retro` in that session, before `/clear` |
-| Already cleared | A fresh `/retro` that names the old session |
-| A mechanical repeat mistake | A check that fails: lint rule, hook or CI job |
-| A judgement call the reviewer missed | A rule in `CODING_STANDARDS.md` |
-| The agent searched too long | A navigation pointer |
-| Tempted by `/init` | Skip it; keep `CLAUDE.md` to pointers and undiscoverable, global facts |
-| Writing a Skill or editing `CLAUDE.md` | `/writing-for-agents`: sharpen pointers, delete no-ops, state the positive |
+In September 2026, a user ran implement-spec end to end on one Spec, then filed issue #1010 in Matt's repo, drafted by an AI agent.
+
+After the build, the same session ran a `/retro` Skill over its own transcript, its full record. A subagent pulled every tool call out of the log, so the counts aren't from memory. A tool call is one request to run a tool.
+
+A merged [Ticket](/learn/issues-and-keeping-track)'s check failed for a cause outside that Ticket. The orchestrator, the main agent running the build, investigated it itself: "60 tool calls, and most of the run's peak context." Peak context is the fullest its context window got.
+
+A later review subagent attached a proposed sentence to each finding. For this failure, it proposed a **diagnosing subagent**, which returns a cause.
+
+So the proposed fix was a sentence for a Skill, not a code change: the kind of environment change retro looks for.
+
+```checkpoint quick-13
+A run wasted its context, though its code was fine. Which fix is the kind retro looks for?
+- [x] A sentence for a Skill, which is an environment change.
+- [ ] A code change to the merged Ticket whose check had failed.
+- [ ] A second run of that same Skill, on a brand-new branch.
+Why: The proposed fix was a sentence for a Skill, not a code change. A sharper Skill is the kind of environment change retro looks for.
+```
+
+### Where it goes wrong
+
+**The suggestions sound generic.** Matt calls this the strongest criticism of retro. One user found that once the job is finished, the agent tends to forget the struggles from the middle of the session. They say it "invents generic advice to satisfy the retro categories." Matt adds: it can overweight one session. Discard any candidate you can't trace to a specific moment. Treat the severity order as a first draft too, because a quiet, expensive mistake can rank below a loud, cheap one.
+
+```checkpoint quick-14
+retro ranks a small lint slip above a slow, costly search. How should you treat that order?
+- [x] As a first draft, since quiet mistakes can rank too low.
+- [ ] As final, since severity is worked out from the session.
+- [ ] As random, since the order only follows the categories.
+Why: Treat the severity order as a first draft, because a quiet, expensive mistake can rank below a loud, cheap one. And discard any candidate you can't trace to a specific moment.
+```
+
+**Most of the list can be noise.** Issue #1173 argues that triggers like a long search or a mistake are friction every real session has, so every run produces a list. The reporter's team asked the agent to prove its candidates after 15 of 17 runs. They suggest one narrow check per candidate. They add: "Zero survivors is a complete retro." The Skill doesn't do this yet, so they pass that instruction to `/retro`.
+
+```checkpoint quick-15
+You follow that suggestion: one narrow check per candidate, and none survives. Where does that leave the retro?
+- [x] It's complete, because an empty result counts.
+- [ ] It failed, so you should run it all over again.
+- [ ] It's unfinished until you keep at least one candidate.
+Why: Issue #1173 argues that friction in every real session means every run produces a list. One check per candidate shows which hold up, and the issue counts an empty result as complete.
+```
+
+**Your repo drifts after you automate retro.** You wired it to run by itself, so nobody weighs its findings. "An automated retro finds false positives, keeps fixing them, and takes your repo somewhere it should not go." A false positive is a problem that looks real but isn't. Run it on a sample of sessions instead, or one where the agent did something odd.
+
+```checkpoint quick-16
+You're about to add a hook that runs retro after every session and applies its top fix. What goes wrong?
+- [x] It finds false positives and keeps fixing them.
+- [ ] It can't read a session that's already finished.
+- [ ] It can only suggest fixes that you've picked before.
+Why: An automated retro finds false positives, problems that look real but aren't, and keeps fixing them. Run it on a sample of sessions instead.
+```
+
+**A lint rule keeps firing on good code.** Pruning means removing old checks. retro sees one session, so it can't tell that a rule now fires too often, or that the bug behind it is gone. You must still prune checks yourself. A rule that fires constantly on good code is the sign to remove it.
+
+```checkpoint quick-17
+A lint rule from an old retro now fires constantly on good code. Who removes it?
+- [x] You do, since retro sees only one session.
+- [ ] retro does, the next time it reads a session.
+- [ ] CI does, once the rule has failed enough times.
+Why: retro sees one session, so it can't tell that a rule now fires too often. A rule that fires constantly on good code is your sign to remove it.
+```
+
+### Try it
+
+You'll need your practice project (keeping-track's Try it sets it up), with a CI check on its pull requests (ci-cd's Try it). You'll need a session where an agent changed the booking endpoint in `api/`.
+
+1. In that session, type `/retro`. If you've cleared it, type `/retro the session that changed the booking endpoint` in a fresh one.
+
+   You should see a list of candidates, most severe first.
+
+2. For each candidate, find the moment in the session it came from. Cross out any you can't trace.
+3. For each one left, pick the narrowest check that could show it isn't needed. Try a `git log`, a count in the session, or a docs read.
+4. Run each check, and cross out any candidate it knocks down. If nothing mechanical is left, you're done.
+5. Ask the agent to add the mechanical one's check to `.github/workflows/ci.yml` on a new branch.
+6. Push the branch and open a pull request.
+
+   You should see CI run the new check on your existing code.
+
+7. Merge or close the pull request, then `git switch main && git pull`.
+
+A proposed check is code, so try it against the repo before you let it block merges.
+
+### Read more
+
+- [The /retro Skill](https://www.aihero.dev/skills-retro), Matt Pocock, updated 2026-10-05
+- [v1.3: /implement-spec, /pr, /retro, and GLOSSARY.md](https://www.aihero.dev/skills-changelog-v13-implement-spec-pr-retro-and-glossary-md), Matt Pocock, updated 2026-10-05
+- [Fixing the PR Bottleneck](https://www.youtube.com/watch?v=LlgiOCmFG_w), Matt Pocock, AI Engineer Paris 2026 talk, 2026-09-25
+- [retro: push mechanical coding-standards findings toward deterministic checks](https://github.com/mattpocock/skills/pull/1083), Matt Pocock, 2026-09-15
+- [retro: candidates reach the user unchecked, so most of each run is noise](https://github.com/mattpocock/skills/issues/1173), mecampbellsoup, 2026-10-05
+- [implement-spec: two text defects and four unnamed branches from a full run](https://github.com/mattpocock/skills/issues/1010), danielbaldwin47, 2026-09-02
+- [Priming Prime Directive](https://martinfowler.com/bliki/PrimingPrimeDirective.html), Martin Fowler, 2012-10-23
+
+## Practice scenarios
+
+Optional practice: more situations like the ones in the final test.
+
+```checkpoint retro-deeper-dont-automate
+You like what the session look-back finds on your FastAPI backend, so you plan a hook that runs it after every agent session and applies its top finding without asking. Matt advises against this. Why? What's the reason behind this step?
+- [x] An automated run finds false positives and keeps fixing them, so the repo drifts.
+- [ ] It can only read the current session, so a hook would always see an empty log.
+  > It can read older sessions too. You can run it on the current session or older ones.
+- [ ] Its findings need the reviewer agent first, so a hook would skip the code review step.
+  > Matt's objection isn't about the order of steps. He says an automated retro finds false positives and keeps fixing them.
+- [ ] Hooks can't call a user-invoked Skill, so the run would fail before it starts.
+  > Matt's objection isn't about whether it can run unattended; some users do run it after every implementation run. He says an automated retro finds false positives and keeps fixing them.
+Why: Deciding what deserves a permanent check takes judgement, so retro changes nothing until you pick from its list. Left to itself, it finds false positives, problems that look real but aren't, keeps fixing them, and takes your repo somewhere it should not go. Run it on a sample of sessions instead, or on one where the agent did something odd.
+```
+
+```checkpoint retro-deeper-inline-diagnosis
+An agent-run build of a whole Spec for your booking site just finished. Reading the session, you see the orchestrator spent 60 tool calls diagnosing a failing check itself and found the cause, using most of the run's peak context. The code is fine. You want the next run's instructions to send such failures to a subagent. Which fits best?
+- [x] Look back over the session and propose changes to the agent's environment.
+  > Right: that's `/retro`.
+- [ ] Run the two-axis review of the branch against the Standards and the Spec.
+  > That's `/code-review`. The code is fine. The problem was how the orchestrator spent its context, which a review of the diff can't see.
+- [ ] Build a feedback loop and hunt down the cause of the failing check.
+  > That's `/diagnosing-bugs`. The check's cause is already found. What you want is a better instruction for the next run.
+- [ ] Run the whole Spec again on a new branch, with implementer subagents on each frontier Ticket.
+  > That's `/implement-spec`. A rerun follows the same instructions and would diagnose inline again. The instructions need changing first.
+Why: The code is fine, so the fix belongs in the instructions the next run reads. This mirrors a real report, issue #1010. After an implement-spec run, the same session ran a retro over its own transcript, and the extract showed the cost of those 60 tool calls. A later review pass proposed a sentence sending such failures to a diagnosing subagent: a change to the environment, not the code.
+```
+
+## Remember
+
+```flashcards
+Q: What does retro create?
+A: A list of suggested improvements to the agent's environment, presented in order of severity. It changes nothing until you choose.
+
+Q: Where does retro sit in the main flow?
+A: At the end. It closes the loop after a build, especially one that went sideways, so the next build starts from a better environment.
+
+Q: In retro, what does a judgement call (not a mechanical mistake) become?
+A: A coding standard, for the reviewer to enforce.
+
+Q: In retro, what is a guardrail, and what if a repo has none?
+A: A pre-commit hook or CI job that runs the lint, typecheck and test command. A repo with none is itself a finding.
+
+Q: What loop does Matt describe for retro?
+A: Find a mistake, run retro, and make the mistake impossible next time.
+
+Q: Does retro remove the lint rules and CI jobs it proposed last month?
+A: No. It sees one session, so it can't tell a rule now fires too often. You prune checks yourself; a rule that fires constantly on good code should go.
+
+Q: Who first launched the practice of retrospectives, by Martin Fowler's account, and what does the Prime Directive ask?
+A: Norm Kerth. It asks everyone to believe that each person did the best job they could, given what they knew, their skills, the resources and the situation.
+```
 
 ## Final test
 
-```final-test scenario-repeat-mistake
-On a recipe site, the agent keeps adding `moment`, a date library the team dropped months ago, to new code. You run `/retro`. Which proposal fits how it sorts problems?
-- [ ] A new line in `CLAUDE.md`: "Never use moment."
-  > That's the reflex `/retro` resists. The line loads into every session and can still be ignored.
-- [ ] A rule in `CODING_STANDARDS.md` for the reviewer to enforce.
-  > Standards are for judgement calls. A banned library is a fixed pattern a tool can catch.
-- [x] A lint rule that fails whenever code uses `moment`.
-  > Right. It's mechanical, so it gets an automated check, run by a pre-commit hook or a CI job.
-- [ ] A commit that strips `moment` out of the new code.
-  > That fixes today's code, not the gap that let it in. `/retro` changes the environment, so the next slip gets caught.
+```final-test retro-what-it-changes
+You run retro after a rough build. What does it suggest changing?
+- [x] The agent's environment: checks, pointers, standards and tooling.
+- [ ] The code in the diff: names, structure, comments and error handling.
+- [ ] The Spec, so the next build starts from clearer requirements.
+Why: retro leaves the code alone. It asks what let the mistakes happen, and suggests changes to what surrounds the agent: navigation pointers, automated checks, coding standards and tools. So the next build starts from a better environment.
 ```
 
-```final-test scenario-style-drift
-A new page on a recipe site works, but its layout and tone don't match the pages around it, and the reviewer let it through. Where does `/retro` send the fix?
-- [x] A rule in `CODING_STANDARDS.md`, which the reviewer reads.
-  > Right. "Match the surrounding pages" is a judgement call no tool can enforce, so it becomes a written standard for review.
-- [ ] A lint rule that fails the build on any layout difference.
-  > No tool can judge whether a page matches its neighbours. Checks are for fixed patterns.
-- [ ] A paragraph in `CLAUDE.md` describing the house style.
-  > That loads into every session, including ones that never touch pages, and lands on the builder instead of the reviewer.
-- [ ] Nothing: the reviewer can't judge taste, so no file can capture it.
-  > Judging taste is exactly the reviewer's job, and `CODING_STANDARDS.md` is where it reads the rules.
+```final-test retro-mechanical-mistake
+The agent keeps making the same mechanical mistake, a fixed pattern a program could spot. What does retro turn it into?
+- [x] A deterministic check, like a lint rule or a CI job.
+- [ ] A new line in CLAUDE.md telling the agent to avoid it.
+- [ ] A rule in the coding standards for the reviewer to enforce.
+Why: A program can spot a fixed pattern, so a check can catch it every time. A line in a Markdown file can't fail the way a check can. So retro defaults to building the check, and keeps coding standards for judgement calls.
 ```
 
-```final-test scenario-cleared-session
-Yesterday's session went badly: the agent kept failing to find a config file. You typed `/clear` at the end and moved on. Today you want to learn from it. What's the best move?
-- [ ] Type `/retro` with nothing else; it reviews the current session by default.
-  > The current session is today's, which hasn't struggled with anything yet.
-- [ ] Skip it; once a session is cleared, its record is gone for good.
-  > `/clear` empties the working context, but the session's log stays on disk.
-- [ ] Describe yesterday's problems from memory, then add them to `CLAUDE.md`.
-  > Your memory loses the details, and `CLAUDE.md` is the wrong home for most fixes anyway.
-- [x] Start `/retro` and name yesterday's session, so it reads that log.
-  > Right. Claude Code keeps each session's record on disk, and `/retro` searches those logs when you name the session.
+```final-test retro-when-to-run
+You've finished a rough build. When's the best time to run retro on it?
+- [x] In the session it looks back on, before you clear it.
+- [ ] At the start of a fresh session, before the next Ticket.
+- [ ] Once a week, over all the sessions since the last one.
+Why: Until you clear, the struggles are still in the context window, so that's the best time. If you've already cleared, you can still point retro at that session's log.
 ```
 
-```final-test scenario-which-skill
-No session went wrong, but before a teammate joins you want to check whether your 40-line `CLAUDE.md` pulls its weight. Which Skill fits?
-- [ ] `/retro`, because it reads files rather than sessions.
-  > It's the other way round: it reads a session's record. With nothing gone wrong, it has little to work from and mostly proposes rules nobody needed.
-- [ ] `/mattpocock-skills:code-review`, because the file is in the repo.
-  > It checks a diff against standards and a spec, not how well a steering file is written.
-- [x] `/writing-for-agents`, because an agent reads that file.
-  > Right. Its rules on pointers, no-ops and pruning apply to any steering file, with or without a session behind it.
-- [ ] `/improve-codebase-architecture`, because it surveys the whole repo.
-  > That looks for structural improvements to the code, not to the documents agents read.
+```final-test retro-deeper-untraceable-candidate
+A retro candidate says "add more tests", but you can't find the moment in the session it came from. What do you do with it?
+- [x] Discard it, since every candidate should trace to a specific moment.
+- [ ] Keep it, since the severity order already ranks it below the others.
+- [ ] Move it into CLAUDE.md, since general advice belongs in every session.
+Why: One user found that once the job is finished, the agent can forget the struggles and invent generic advice to fill its categories. A candidate you can't trace to a specific moment may be exactly that, so discard it. The severity order is only a first draft too.
 ```
 
-```final-test scenario-earns-a-line
-You're pruning a teammate's `CLAUDE.md`. Which line earns its place there?
-- [x] "Payments: read docs/payments.md before changing checkout code."
-  > Right. It's a navigation pointer with a clear trigger, the main thing a steering file is for.
-- [ ] "This project is a Next.js app written in TypeScript, styled with Tailwind."
-  > The config files already say so. A copy of something the agent can look up costs every session and goes stale.
-- [ ] "Run `npm test` before every commit to run the whole test suite."
-  > That's mechanical, so it belongs in a pre-commit hook, where a check can fail and a sentence can't.
-- [ ] "Always write well-tested, maintainable and readable code."
-  > A no-op: the agent already aims for that, so the line changes nothing.
+```final-test retro-deeper-why-the-reviewer
+Why do coding standards go to the review agent rather than the implementation agent?
+- [x] The reviewer has the least context pressure; it gets a diff, so no exploring.
+- [ ] The reviewer runs after CI, so it can see which checks have already failed.
+- [ ] The reviewer has more tools than the implementer, so it can run linters as it reads.
+Why: The implementation agent's context window fills up as it explores, writes code and debugs. The review agent receives a diff and needs no exploring, so it has room to apply the coding standards.
 ```
 
-```final-test spot-negation
-Dana's `error-messages` Skill, which the agent loads whenever it writes an error message, says "Don't use technical jargon." Since she added that line, the messages mention stack traces and status codes even more. Spot the mistake.
-- [ ] The line should be in capitals so the agent takes it seriously.
-  > Emphasis doesn't help. The ban itself keeps jargon in the agent's attention.
-- [x] The ban names the unwanted behaviour instead of the wanted one.
-  > Right. Negation backfires. "Write every error message in words a customer would use" states the target and never mentions jargon.
-- [ ] A Skill is read only once, when it's installed.
-  > It loads each time a task matches its description, so the agent did see the line.
-- [ ] The rule belongs in `AGENTS.md`, which the agent obeys more strictly.
-  > Claude Code reads `AGENTS.md` only when there's no `CLAUDE.md`, and a ban there backfires the same way.
+```final-test retro-after-the-merge
+A Ticket for your FastAPI backend went up as a pull request, CI went green and you merged it into main. Along the way the agent spent ages hunting for the file that sets up the database session. The session is still open and the next Ticket is waiting. What comes next? What comes next?
+- [x] Look back over this session for changes to the agent's environment.
+  > Right: that's `/retro`.
+- [ ] Clear the context and start the next Ticket with a fresh agent.
+  > That's `/implement`. Run retro in the session it looks back on, before you clear. Skip it and the next agent hunts for the same file.
+- [ ] Run the two-axis review over the merged diff, Standards and Spec.
+  > That's `/code-review`. The code is already merged, and CI passed. The problem was finding files, which a review of the diff doesn't fix.
+- [ ] Write a document summing up the session so a fresh agent can continue.
+  > That's `/handoff`. The Ticket is done, so there's no work to continue. What needs fixing is the environment.
+Why: The waste was in finding that file, not in the code, and nothing stops the next agent hunting for it too. retro closes the loop: it looks back over the session and suggests an environment change, like a navigation pointer to that file. Run it now, because the struggles are still in the context window.
 ```
 
-```final-test spot-automated-retro
-Ravi set up a script that runs `/retro` after every session and accepts everything it proposes. A month later the repo is full of odd rules and checks that fire on good code. Spot the mistake.
-- [ ] The script should also have deleted any check that fires on good code.
-  > That's more automation on the same unjudged loop. Deciding what to prune takes a human too.
-- [ ] He should have kept `/retro` to standards, not checks.
-  > Mechanical slips belong in checks. The trouble was that nothing got judged.
-- [ ] He should have told it to edit `CLAUDE.md` instead of adding checks.
-  > Steering lines would cost every session. The real problem was accepting everything unseen.
-- [x] He should have judged each proposal before it went into the repo.
-  > Right. Unjudged, it chases false positives and drifts the repo. Matt runs it by hand on a sample of sessions and picks what to build.
+```final-test retro-ci-kept-failing
+On your Next.js website, the agent's pull request passed CI, yet three times you spotted that it imported a server-only database module into a client component. No check caught it; you pointed it out by hand each time. The fix is now merged. Before you clear the session, what comes next? What comes next?
+- [x] Look back over the session and suggest a check for this mistake.
+  > Right: that's `/retro`.
+- [ ] Rewrite the pull request body to warn reviewers about the import.
+  > That's `/pr`. The pull request is already merged, and a body only describes one change. The next agent would make the same mistake.
+- [ ] Write more tests for the component, one red-green slice at a time.
+  > That's `/tdd`. The bug is already fixed. The repeated mistake is a fixed pattern a check could catch on every future change.
+- [ ] Run the two-axis review of the merged diff to catch the import.
+  > That's `/code-review`. The merged code is fine now. The review reports on one diff; it doesn't stop the next agent repeating the mistake.
+Why: An import shape is a fixed pattern a program can spot, so it's a mechanical mistake, and those become deterministic checks. You caught it by hand three times, and nothing will stop the next agent until a check exists. retro suggests that check, in the session that went sideways, before you clear.
 ```
 
-```final-test predict-stale-init
-Mo's `CLAUDE.md` was written by `/init` months ago. Last week a teammate renamed two files, and since then the agent keeps looking for files that no longer exist. What's going on?
-- [ ] The agent forgot the rename because it remembers nothing between sessions.
-  > Exploring would find the new names. Something it reads every session still points to the old ones.
-- [x] The generated file still names the old files, so it now misleads.
-  > Right. Notes about specific files rot as soon as the code changes. Matt's fix is to delete what `/init` wrote and let the agent explore the code itself.
-- [ ] The rename wiped an index `/init` built, so search now fails.
-  > `/init` builds no index; it only writes a starter `CLAUDE.md`, and that file still names the old files.
-- [ ] The file is too short to list every file, so the agent guesses.
-  > Length isn't it. A fuller map would go stale faster; what's there now names files that are gone.
+```final-test retro-session-went-sideways
+Building a Docker setup for your AI agent project went badly. The agent burned tokens on huge log reads and kept missing which folder held the SQL migrations. The work is done and merged. You want ideas for making the next session go better, not changes to the code. Which fits best?
+- [x] Look back over the session for changes to the agent's environment.
+  > Right: that's `/retro`.
+- [ ] Review the merged diff against the coding standards and the Spec.
+  > That's `/code-review`. That checks whether the code is right. Your problem is how the session went, not the diff.
+- [ ] Write a document summing up the session for the next fresh agent.
+  > That's `/handoff`. That carries unfinished work forward. The work is done; you want the environment improved.
+- [ ] Build a throwaway version of the Docker setup to try a better layout.
+  > That's `/prototype`. A prototype is throwaway code that answers a design question. It doesn't look back at how the agent worked.
+Why: The code is merged, and you want the next session to go better, so the fix belongs in the environment. retro could suggest a navigation pointer to the folder the agent kept missing. It could also flag tool economy: whether the agent's tool use wasted tokens, as those huge log reads did.
 ```
 
-```final-test predict-weak-pointer
-Your `CLAUDE.md` has the line "See docs/database.md." That doc explains a migration gotcha, but the agent never opens it before changing the database. What does `/writing-for-agents` suggest first?
-- [ ] Paste the whole doc into `CLAUDE.md` so it's always loaded.
-  > That's the last resort, and it puts database detail into every session. Sharpen the pointer first.
-- [ ] Delete the pointer; the agent will find the doc by exploring.
-  > A gotcha like this is exactly what exploring misses. The pointer is the right tool; it needs better wording.
-- [x] Reword it to say what the doc covers and when to open it.
-  > Right. A pointer's wording decides how reliably it fires. Lead with the key word: "Database migrations: read docs/database.md before changing the schema."
-- [ ] Move the line to the bottom of `CLAUDE.md` so it's read last.
-  > Position isn't the fix. The line never says when the doc matters.
+```final-test retro-check-not-a-note
+Looking back at a session on your FastAPI backend, you find the agent kept building SQL by gluing strings together instead of using the query builder, a fixed pattern a linter can spot. Why make it a lint rule run in CI rather than a line in CLAUDE.md? What's the reason behind this step?
+- [x] It's mechanical, so a check always catches it; CLAUDE.md stays sparse.
+- [ ] Agents only open CLAUDE.md when a Ticket tells them to read it.
+  > They don't need to open it. CLAUDE.md is pushed into every agent's context, which is exactly why it should be used sparingly, mostly for navigation pointers.
+- [ ] Lint rules are for code style, so this belongs in the coding standards.
+  > Coding standards are for judgement calls. A fixed pattern is mechanical and gets a deterministic check.
+- [ ] A CI job runs faster than the agent can read a line in CLAUDE.md.
+  > Speed isn't the reason. A check gives the same answer every time; a note relies on the agent remembering it.
+Why: A linter can spot a fixed pattern, so a check catches it every time, while a line in a Markdown file can't fail. And CLAUDE.md goes into every agent's context window, so it's kept for navigation pointers. That makes a mechanical mistake a job for a deterministic check: a linter rule, a pre-commit hook or a CI job.
 ```
 
-```final-test sequence-retro-timing
-You've just built a feature in one session, and a few things went sideways along the way. Which order gets the most out of `/retro`?
-- [ ] `/mattpocock-skills:code-review` → `/compact` → `/pr` → `/retro`
-  > Compacting swaps the history for a summary, and the mid-session struggles are the details a summary drops.
-- [x] `/mattpocock-skills:code-review` → `/pr` → `/retro` → `/clear`
-  > Right. Review, write the pull request's description, look back while the session is still in context, then clear.
-- [ ] `/retro` → `/mattpocock-skills:code-review` → `/pr` → `/clear`
-  > `/retro` looks back on the whole build, review included. It comes last, after the reviewer has had its turn.
-- [ ] `/mattpocock-skills:code-review` → `/pr` → `/clear` → `/retro`
-  > Typed bare after `/clear`, `/retro` reviews the new, empty session. You'd have to name the old one, and running it before you clear keeps every detail in view.
+```final-test retro-no-guardrail
+Looking back at a session on your website, you notice the repo has a lint and test command, but no pre-commit hook and no CI job runs them. Nothing broke this time. Why is that still worth raising? What's the reason behind this step?
+- [x] Nothing stops the next mistake a check could catch, so it's a finding.
+- [ ] It isn't worth it. Nothing broke, so the repo's setup is fine as it is.
+  > An unchecked repo is a standing missed opportunity, not a neutral default.
+- [ ] It belongs in the next pull request body, under Merge Danger.
+  > Merge Danger covers the changes one pull request brings in. The missing guardrail affects every change.
+Why: With no pre-commit hook and no CI job running them, the lint and test commands catch nothing unless someone remembers to run them. So a repo with no guardrail is itself a finding, even when nothing broke. It's a standing missed chance, and fixing it once helps every future build.
 ```
 
 ```sources
-- [retro SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/retro/SKILL.md) (the four steps, the seven categories, mechanical vs judgement, implementation vs review, which file is for what): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [writing-for-agents SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/writing-for-agents/SKILL.md) and [SKILL-MECHANICS.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/writing-for-agents/SKILL-MECHANICS.md) (context pointers, the two loads, the information hierarchy, leading words, negation, pruning): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [code-review SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/code-review/SKILL.md) (`CODING_STANDARDS.md` is always a standards source) and [improve-codebase-architecture SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/improve-codebase-architecture/SKILL.md) (structural improvements to the code): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (`/retro` as the last Main flow step, before you clear; after `/diagnosing-bugs`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills CHANGELOG](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/CHANGELOG.md) (`retro` graduates in 1.3.0, released 2026-10-04; writing-great-skills renamed in 1.2.0, 2026-08-05): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [How Claude remembers your project](https://code.claude.com/docs/en/memory) (`AGENTS.md` is read only when there's no `CLAUDE.md`; auto memory), [Commands](https://code.claude.com/docs/en/commands) (the Built-in `/code-review`, `/init`, `/clear`) and [Sessions](https://code.claude.com/docs/en/sessions) (transcripts under `~/.claude/projects/`), Claude Code docs, read 2026-10-23.
-- [The /retro Skill](https://www.aihero.dev/skills-retro), AI Hero docs, updated 2026-10-05, read 2026-10-23.
-- [The /writing-for-agents Skill](https://www.aihero.dev/skills-writing-for-agents), AI Hero docs, updated 2026-08-24, read 2026-10-23.
-- [New Skills! v1.3 brings /pr, /implement-spec, and /retro](https://www.youtube.com/watch?v=BsJGo1wFTvQ), Matt Pocock, 2026-10-05 (why he built it 9:38–10:27; one session or a batch 10:27–10:41; what agents hide 10:42–11:16; his findings 11:16–12:34; judging them 12:34–12:50; don't automate 12:50–13:16; run it on a sample 13:16–13:35; the categories 13:35–14:00).
-- [Never Run claude /init](https://www.youtube.com/watch?v=9tmsq-Gvx6g), Matt Pocock, 2026-02-24 (never run it 0:00–0:23; the study 0:25–0:40; the fixed start of the window 1:53–3:05; globality 3:08–4:16; discoverable or stale 4:18–7:19; instruction budget 7:19–8:06; steering in Skills 8:07–8:43; his one line 8:54–9:23; trust exploring 10:09–10:20); written version [on AI Hero](https://www.aihero.dev/never-run-claude-init), updated 2026-02-24.
-- [Matt Pocock on X, "Prompt of the day"](https://x.com/mattpocockuk/status/2105951409887949107) (`/retro` over his last ten sessions), 2026-10-02.
-- [Fixing the PR Bottleneck](https://www.youtube.com/watch?v=LlgiOCmFG_w), Matt Pocock, AI Engineer Paris, 2026-09-25, auto-translated captions, so paraphrased loosely (review the system 20:00–20:35; looking back over a week of reviews 20:36–21:12).
-- [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock, AI Engineer, 2026-04-24 (push vs pull 1:27:53–1:29:42; standards pushed to the reviewer 1:32:23–1:32:44).
-- [Hacker News comment by gregwebs](https://news.ycombinator.com/item?id=49948336) (`CONTRIBUTING.md` plus `CODING_STANDARDS.md`), 2026-10-03, read 2026-10-23.
-- [mattpocock/skills issue #1311](https://github.com/mattpocock/skills/issues/1311) (accepted retro changes left uncommitted), 2026-10-20, read 2026-10-23.
+- [retro: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/retro/SKILL.md), Matt Pocock's Skills
+- [ask-matt: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/SKILL.md), Matt Pocock's Skills
+- [The /retro Skill](https://www.aihero.dev/skills-retro), Matt Pocock, 2026-10-05
+- [code-review: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/code-review/SKILL.md), Matt Pocock's Skills
+- [handoff: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/handoff/SKILL.md), Matt Pocock's Skills
+- [v1.3: /implement-spec, /pr, /retro, and GLOSSARY.md](https://www.aihero.dev/skills-changelog-v13-implement-spec-pr-retro-and-glossary-md), Matt Pocock, 2026-10-05 (updated)
+- [Fixing the PR Bottleneck — Matt Pocock, AIHero](https://ai.engineer/talks/LlgiOCmFG_w-fixing-pr-bottleneck), Matt Pocock (talk); page by AI Engineer
+- [Priming Prime Directive](https://martinfowler.com/bliki/PrimingPrimeDirective.html), Martin Fowler, 2012-10-23
+- [retro: push mechanical coding-standards findings toward deterministic checks (#1083)](https://github.com/mattpocock/skills/pull/1083), Matt Pocock (mattpocock), 2026-09-15
+- [implement-spec: two text defects and four unnamed branches from a full run](https://github.com/mattpocock/skills/issues/1010), danielbaldwin47, 2026-09-02
+- [retro: candidates reach the user unchecked, so most of each run is noise (#1173)](https://github.com/mattpocock/skills/issues/1173), mecampbellsoup, 2026-10-05
+- [Fixing the PR Bottleneck — Matt Pocock, AIHero](https://www.youtube.com/watch?v=LlgiOCmFG_w), Matt Pocock (AI Engineer channel), 2026-09-25
+- [prototype: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/prototype/SKILL.md), Matt Pocock's Skills
+- [pr: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/pr/SKILL.md), Matt Pocock's Skills
+- [implement-spec: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement-spec/SKILL.md), Matt Pocock's Skills
 ```

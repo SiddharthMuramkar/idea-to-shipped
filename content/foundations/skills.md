@@ -1,9 +1,7 @@
 ---
-title: Skills
+title: What a Skill is
 slug: skills
-image: /photos/skills.jpg
-imageAlt: Wrenches, pliers and screwdrivers hang in neat rows on a dark pegboard.
-imageCredit: Anton Savinov
+summary: A Skill is a small instruction file your coding agent (an AI that reads and changes your project for you) loads only when it's needed. Install Matt Pocock's set once, set up each project once, and…
 ---
 
 A Skill is a small instruction file your coding agent (an AI that reads and changes your project for you) loads only when it's needed. Install Matt Pocock's set once, set up each project once, and learn which Skills only you can start.

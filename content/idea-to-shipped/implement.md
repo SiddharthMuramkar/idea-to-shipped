@@ -1,445 +1,475 @@
 ---
-title: Implement
+title: implement
 slug: implement
-image: /photos/implement.jpg
-imageAlt: A construction worker in a hard hat stands on a timber wall frame against a blue sky.
-imageCredit: Josh Olalde
+summary: implement turns work that's already decided into a commit: it builds it, tests it, reviews it, and never reopens the plan.
 ---
 
-Once the plan is agreed, hand the building to a Skill that tests, reviews and saves the work: one task at a time with `/implement`, or a whole written plan in one run with `/implement-spec`.
+## What it's for
 
-```goals
-- You'll be able to say what one `/implement` run does, in order, and what it leaves for you to do.
-- You'll be able to choose between `/implement` in the same window, `/implement` once per ticket with `/clear` between, and `/implement-spec`.
-- You'll be able to explain how `/implement-spec` builds a spec: task graph, frontier, worktrees, one integration branch and one review at the end.
-- You'll be able to decide which work stays human-in-the-loop and which can run AFK, and pick between Matt's three ways to loop over tickets.
+The deciding is done, and your [Tickets](/learn/issues-and-keeping-track) are written. Type "build this" at a fresh agent, and it often redesigns the work while it builds it.
+
+**implement turns work that's already decided into a commit: it builds it, tests it, reviews it, and never reopens the plan.**
+
+Say you're building the yoga-studio booking site, and Ticket #12 (List bookings) is next. You start a fresh session and type:
+
+```
+/implement #12
 ```
 
-## Why it matters
+The agent then works in a fixed order:
 
-Claude Code is Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal. Matt Pocock, a developer and teacher, publishes a popular set of Skills for it. A Skill is a short instruction file the agent loads when you type its name, like `/implement`, or when a task matches its description (see [Skills](/learn/skills); [Start here](/learn/start-here) covers installing them).
+1. It fetches Ticket #12 from the [Issue tracker](/learn/issues-and-keeping-track) and states its title. If the reference is unclear, it asks.
+2. Where it can, it builds test-first with [tdd](/learn/tdd), at seams agreed up front. A seam is a place where tests check the code from outside.
+3. It runs the type check and single test files often, and the full test suite once at the end. The type check catches wrong types before the code runs.
+4. It runs [code-review](/learn/code-review), whose subagents review the work.
+5. It commits to the current branch.
 
-Say the agent has just grilled you about a comment box for this site (asked question after question until the plan was settled; see [Grilling](/learn/grilling)), and you agreed: anonymous comments, an optional name, newest first. Type "OK, build it" and three things go wrong:
-
-- **The plan gets reopened.** A fresh agent told "build this" often redesigns as it goes, deciding names should be required after all.
-- **Nobody checks the work.** It may write tests (small programs that run your code and check its answers) afterwards, or none, and never review the result.
-- **The session loses its sharpness.** Everything in a session (one Claude Code conversation) lives in the agent's context window, its working memory, measured in tokens (small chunks of text; see [The context window](/learn/context-window)). As it fills, the agent reasons less sharply. Matt calls the part where it still thinks clearly the Smart zone: about 150k tokens on today's best models, as a rule of thumb. Build a big feature in one go and you finish far past it, in what he calls the dumb zone.
-
-Matt's answer is two Skills that build work that has ==already been decided==. `/implement` builds one piece: tests first, checks along the way, a fresh review, then a commit (a saved snapshot of your changes in Git, the tool that tracks every version of a project). `/implement-spec` builds a whole spec (a written description of what to build and why) split into tickets (small tasks that each fit one session), giving each ticket its own helper agent.
-
-## The idea: one run of `/implement`
-
-`/implement` takes a ticket, a spec, or a plan you just agreed in the conversation, and turns it into a commit. It ==never reopens the plan==: no interview, no clarifying round, no alternative approach.
-
-It's a **user-invoked Skill**: only you can start it, by typing its name at the start of your message. The agent won't reach for it, and no other Skill can call it. So when `/to-tickets` (which splits a spec into tickets) finishes, nothing starts building by itself: typing `/implement` is your move.
-
-One run goes in this order:
-
-1. **Read the work.** If you pass a ticket, it fetches it from your issue tracker (wherever your tickets live; on this site, Markdown files in a `.scratch` folder) and states its title. If the reference is ambiguous, it asks.
-2. **Drive tdd at the agreed seams.** It loads the tdd Skill (test-driven development: a failing test first, then just enough code to pass it; see [TDD](/learn/tdd)) and builds one slice at a time. A seam is the public boundary where tests watch behaviour without reaching inside, like the comments module's "save" and "list" functions.
-3. **Check often.** Typechecks (quick automatic checks that the code fits together) and single test files run as it goes.
-4. **Run the full test suite once**, every test in the project, at the end.
-5. **Call code-review.** Matt's review Skill checks two axes: Standards (does it follow the rules written in your repo, the project folder Git tracks, plus a short list of code smells, classic signs of code that's hard to change?) and Spec (does it match what was asked?). Each runs in its own sub-agent, a helper with a fresh, empty memory, so it doesn't share the bias of the agent that just wrote the code. See [Code review](/learn/code-review).
-6. **Commit to the current branch.** A branch is a separate line of commits, and `/implement` uses whichever one you're on.
-
-Steps 2 and 5 load model-invoked Skills (ones the agent may also pick up itself). A user-invoked Skill can call those, never another user-invoked one.
-
-Notice what's missing. ==It ends at the commit.== It doesn't create a branch, open a pull request (a proposal, usually on GitHub, to merge, or combine, a branch into `main`, the project's primary branch), act on the review's findings, or close the ticket (on a local tracker, change its status from "ready-for-agent" and tick its checklist boxes). Those jobs are yours.
-
-```callout watch-out
-"Agreed seams" is the weak spot. tdd asks you to confirm them before writing a test, so name them in the spec or answer in the first minute. Agreed nowhere, the run quietly stops being test-first.
+```checkpoint quick-1
+You run implement with a Ticket reference that could mean two things. What happens?
+- [x] It asks which Ticket you mean before it starts.
+- [ ] It picks the closest match and starts building.
+- [ ] It builds every Ticket the reference could mean.
+Why: implement states the Ticket's title before it starts, and if the reference is unclear, it asks you.
 ```
 
-```checkpoint ticket-still-open
-You typed `/implement` on a ticket in your book-club app. Tests pass, the review ran and there's a new commit, but the ticket file still says "ready-for-agent" and none of its boxes are ticked. What now?
-- [ ] Run `/implement` on the same ticket again, so that this time it marks the ticket as done.
-  > Running it again just builds the same work again. Closing tickets isn't part of a run.
-- [x] Check the work, then close the ticket and tick its boxes yourself.
-  > Right. `/implement` ends at the commit. Closing the ticket is your job, and it's what lets the tickets waiting on it start.
-- [ ] Report a bug: the Skill skipped its last step.
-  > Nothing was skipped. The Skill has no step that touches the ticket.
-- [ ] Leave it: the next ticket's run closes this one before it starts.
-  > No run touches the ticket, before or after. Until you close it, the tickets waiting on it never start.
+## When to use it
+
+- You're working through the Tickets that [to-tickets](/learn/to-tickets) made, one at a time. Clear the context window between them, after any [retro](/learn/retro). Each Ticket is self-contained, so the last one's context isn't needed.
+- You've finished [grilling](/learn/grill-before-you-build), and the work is small enough for one session. Build it in the same context window, with no [Spec](/learn/issues-and-keeping-track) or Tickets.
+
+```checkpoint quick-2
+Ticket #12 is committed and Ticket #13 is next. Why is it safe to clear the context window?
+- [x] Each Ticket is self-contained, so #12's context isn't needed.
+- [ ] The agent copies #12's context into #13 when it commits.
+- [ ] Clearing the window saves #12's context for the next session.
+Why: Each Ticket is self-contained, so #13 doesn't need what the agent saw for #12. Do any retro on that session before you clear.
 ```
 
-## Where the plan lives decides how you start
+## When not to use it
 
-Tickets can wait on each other: a ticket's blocking edges name the tickets that must be finished before it starts. By hand, finished means built, committed and closed; inside `/implement-spec`, a ticket is finished once it has landed (merged into the run's shared branch). The right way in depends on where the decided work is written down:
+- If you'd rather have agents run the whole build than drive each Ticket yourself, use [implement-spec](/learn/implement-spec) instead. It builds the whole Spec in one run, with agents working in parallel.
+- If bug reports and requests are piling up, use [triage](/learn/triage) first, because it turns them into Issues ready for an agent.
 
-| The work is… | Type |
-|---|---|
-| Only in the conversation you just had, and small | `/implement` right here, saying the plan is in the conversation |
-| A small spec | `/implement` pointed at the spec |
-| A ticket on your tracker | `/implement` plus the ticket, one ticket per session, `/clear` between |
-| A spec split into tickets with blocking edges, landed in one run | `/implement-spec` |
-| Not written down anywhere yet | `/grill-with-docs` first (see [Grilling](/learn/grilling)) |
-| One behaviour you want test-first, with no spec | `/tdd` on its own |
-
-The first row has a catch. The Skill's text talks about "the spec or tickets", so it may hunt for a file that doesn't exist. Add one sentence: "The plan is in this conversation, not a file."
-
-The third row is the rhythm for a multi-session build, after `/to-spec` (which writes the spec from your conversation) and `/to-tickets` (see [Spec + tickets](/learn/spec-and-issues)). Each ticket fits one fresh context window and carries what it needs. Implement one ticket, check it, close it, then type `/clear`, a Built-in command (it comes with Claude Code; it isn't a Skill) that empties the working context. Work blockers-first.
-
-Don't hand it several tickets at once: ==one run, one ticket==. And don't run two `/implement` sessions in one checkout (one copy of the project's files on your disk). In one user's report, sessions sharing a folder rewrote each other's commits and put work on the wrong branch.
-
-```checkpoint two-terminals
-Your book-club spec has tickets 02 and 03, and neither blocks the other. To save time, you open a second terminal in the same project and start `/implement` on 03 while 02 is still building in the first. What's likely to go wrong?
-- [ ] Nothing: each session has its own context window, so the two can't affect each other.
-  > Separate memories don't mean separate files. Both sessions edit and commit in the same place.
-- [ ] The second `/implement` refuses to start until the first one has committed.
-  > It doesn't check for other sessions, which is why the clash happens silently.
-- [x] Both sessions edit and commit in one folder, so their work gets tangled.
-  > Right. One checkout means one set of files and one current branch. To build tickets in parallel, `/implement-spec` gives each its own copy of the project, called a worktree.
-- [ ] Ticket 03 waits, because `/implement` builds tickets blockers-first.
-  > Blockers-first is the order you pick by hand. `/implement` never looks at other tickets, and 03 has no blocker anyway.
+```checkpoint quick-3
+You'd like one run to build the whole Spec, with agents in parallel. Which Skill fits?
+- [x] implement-spec, which builds the whole Spec in one run.
+- [ ] implement, given every Ticket of the Spec in one go.
+- [ ] triage, which sets an agent on each Ticket of the Spec.
+Why: implement-spec builds the whole Spec in one run, with agents working in parallel. Pick it when you'd rather orchestrate the build than drive each Ticket.
 ```
 
-## A session, step by step
+## What it needs to start
 
-Here's `/implement` working one ticket from this site's first build, the comments API (the web addresses the comment box calls to save and list comments). That ticket was really built with `/tdd`, without `/implement`, so this is a replay.
+Only you can start implement, by typing `/implement`. It needs:
 
-```scene chat
-title: Replaying the comments API ticket with implement (illustrative)
-# You're on a new branch made for this ticket. You type the Skill and point it at one ticket file.
-you: `/implement .scratch/lesson-site/issues/05-comments-api.md`
-# It fetches the ticket and states its title first. There's no interview about what to build.
-agent: Ticket 05, **Comments API**: the comments module, plus the web addresses that save and list comments.
-# It loads tdd, which won't write a test until you confirm the seams. The spec named them, so this is a quick yes.
-agent: Loading **tdd**. Seams under test: the comments module and its API, against a test database, as the spec says. OK?
-you: Yes.
-# Red, then green, one slice at a time, with a typecheck and the single test file after each.
-agent: 🔴 "rejects an empty body" fails. 🟢 Now it passes. Typecheck clean. Next slice: a body that's too long.
-# Every slice is green, so the full suite runs once. Then code-review asks for a fixed point: the branch or commit to compare against.
-agent: Full suite passes. Loading **code-review**. Which fixed point should I review against?
-you: main
-# The review reads only what's been committed since the fixed point. This new branch has no commits yet, so it finds nothing. Then it commits and stops. The ticket stays open.
-agent: The diff since `main` is empty, so there's nothing to review. Committed to `ticket-05-comments-api`. The ticket file is unchanged.
-# Now the commit exists. You type `/clear` first, so the agent briefing the reviewers isn't the one that built the code, then run the review yourself by its full name. The ticket's "Done when" checklist includes a hand check with `curl`, a terminal program that calls a web address.
-you: `/mattpocock-skills:code-review main`
-agent: Standards: nothing to fix. Spec: every "Done when" item is met except the `curl` check, which needs you.
+```checkpoint quick-4
+Your Tickets are ready and the agent is idle. Will it start implement by itself?
+- [x] No. Only you can start it, by typing /implement.
+- [ ] Yes. It starts on the first ready Ticket by itself.
+- [ ] Yes, but only once you've cleared the context window.
+Why: Only you can start implement, by typing /implement. The agent doesn't start it by itself, however ready the Tickets are.
 ```
 
-Four moments needed you: confirming the seams, naming the fixed point, clearing and rerunning the review after the commit, and the `curl` check.
+- A Spec or a Ticket, ideally one whose blockers are all done. For small work, the settled conversation is enough. Say so when you start it.
+- Ideally, [seams](/learn/test-first) agreed up front.
+- The right branch checked out. implement commits to whatever branch it's on, and it won't make one for you.
 
-That empty review is a known rough edge, still open on GitHub in October 2026. So is another: the Skill calls code-review by its short name, which can reach Claude Code's Built-in command `/code-review` (a bug hunt where you pick how hard it looks). The last step above cures both: after the commit and a `/clear`, type the Skill's full name, `/mattpocock-skills:code-review`: the plugin's name (the bundle Matt's Skills were installed as), a colon, then the Skill's.
-
-## Building a whole spec: `/implement-spec`
-
-Working ten tickets by hand makes you the dispatcher. `/implement-spec` hands that job to one orchestrating agent (your session), which gives each ticket to an implementer sub-agent. It's user-invoked too. Start it in a cleared session, pointing at the spec's file or its number on your tracker.
-
-Four ideas make it work:
-
-- **Task graph.** The tickets aren't a list of steps; their blocking edges make a graph, a map of which tickets wait on which.
-- **Frontier.** The frontier is every ticket whose blockers have all landed, and ==every frontier ticket runs at once==.
-- **Worktrees.** Each implementer works in its own git worktree: a second checkout of the repo in its own folder, on its own branch, so parallel agents never edit the same files at once.
-- **One integration branch.** Each built ticket is merged (its commits combined) into one shared branch.
-
-After reading the spec and tickets (and perhaps sending an exploration sub-agent to save notes outside the repo), it creates the integration branch and starts implementers on the frontier, in the background. Each builds its ticket with tdd and merges in the branch's latest work before reporting done. A merger sub-agent lands it, and as the frontier changes, more implementers start.
-
-Only when ==every ticket has landed== does it call code-review, once, over the whole branch, and hand every finding to one fix-up implementer. If your tracker closes tickets when a pull request merges (GitHub Issues can), or you asked for one, it marks ready the draft pull request it opened after the first merge. Otherwise it resolves the tickets and stops on the integration branch. Last, it removes the worktrees.
-
-```scene flow
-title: The five tickets behind this site's redesign
-node: t01 | 01 Design foundation
-node: t02 | 02 Lesson pages with photos
-node: t04 | 04 Main flow Lesson | side
-node: t03 | 03 Home page
-node: t05 | 05 Scroll motion
-node: review | Final review of the whole branch
-# The frontier starts as ticket 01, the only one with no blockers. One implementer builds it in its own worktree.
-at: t01
-# 01 merges into the integration branch. Now ticket 02 is the whole frontier.
-at: t02
-# 02 lands, and the frontier holds two tickets: 03 and 04 build at the same time, each in its own worktree.
-at: t04
-# 04 lands first. Before reporting done, 03 pulls in the integration branch, which now holds 04, and the two clash in the shared photo-credits file.
-at: t03
-# With 02 and 03 merged, 05 is unblocked.
-at: t05
-# All five tickets are in. This is where the Skill runs its one review, over the whole branch, then hands every finding to one fix-up agent. On this run an early review had also run while 05 was building.
-at: review
+```checkpoint quick-5
+You start implement while you're still on `main`. Where do its commits go?
+- [x] Onto `main`, because it commits to whatever branch it's on.
+- [ ] Onto a new branch that it makes for the Ticket before it starts.
+- [ ] Nowhere yet, because it stops first to ask which branch you want.
+Why: implement commits to whatever branch it's on and won't make one for you. So check out the right branch before you start.
 ```
 
-Prerequisites and trade-offs:
+## What it creates
 
-- **It needs setup.** A configured tracker (otherwise it tells you to run `/setup-matt-pocock-skills`), tickets with blocking edges, and a harness (the program around the model, here Claude Code) that runs sub-agents in the background, each in its own worktree. One at a time, it's just a slower `/implement`.
-- **Worktrees move collisions; they don't remove them.** Two tickets touching one shared file still clash at merge time, or name the same thing differently. Add a blocking edge, or have the exploration notes fix the names.
-- **Nobody asks you about seams**, so name them in the spec.
-- **The review belongs at the end.** Run it mid-run and every ticket not yet built shows up as a failure, so the agent builds it and reviews again. Even the final review can repeat itself: if a second full review starts after the fix-up, tell it to stop.
-- **You review one big branch**, not each ticket as it lands.
+Code and tests, as commits on the current branch, plus a [code review](/learn/review-spec-and-standards) of that work.
 
-```checkpoint shared-file
-You're about to run `/implement-spec` on a recipe app. Two tickets that will be on the frontier together both add new labels to the same `messages.json` file. What should you do first?
-- [ ] Nothing: each implementer works in its own worktree on its own branch, so the two can never collide.
-  > Worktrees keep them apart only while they work. The clash arrives when both branches are merged.
-- [ ] Ask for both tickets to be built in the same worktree.
-  > That defeats the point of worktrees and puts two agents in one folder at once.
-- [ ] Leave it to the final review, which runs once every ticket has landed.
-  > The review reports problems after both have merged. It doesn't stop the clash, and two different names can each look fine on their own.
-- [x] Make one wait for the other, or agree the label names before either starts.
-  > Right. A blocking edge runs them one after the other; agreed names, in the tickets or the run's exploration notes, mean both start from the same words.
+implement stops at the commit. It opens no pull request and closes nothing. The rest is up to you.
+
+```checkpoint quick-6
+implement has committed its work on Ticket #12. What state is the Ticket in?
+- [x] Still open, because implement closes nothing.
+- [ ] Closed, because the commit mentions its number.
+- [ ] In review, because implement opened a pull request.
+Why: implement stops at the commit. It opens no pull request and closes nothing, so the Ticket stays open until you close it the way your Issue tracker closes work.
 ```
 
-## Human-in-the-loop or AFK
+Say your repo closes work through pull requests, as in [pull requests and merging](/learn/merging-and-cleaning-up). You open a pull request marked as closing the Ticket, with `Closes #12`. If the agent writes it, [pr](/learn/pr), the Skill with the template for a pull request's description, shapes its body. Merging that pull request into `main` closes Ticket #12.
 
-- **Human-in-the-loop:** you're present, steering in real time, catching a wrong turn while it's cheap. It suits work that's ambiguous, irreversible or hard to review afterwards.
-- **AFK** (away from keyboard): you start a session and leave. It usually needs a permissive permission mode (the setting for when the agent must stop and ask before it edits a file or runs a command), plus a sandbox: an isolated environment, like a Docker container, where it can't harm your machine. The typical failure is tidy work built on a wrong early guess. So settle the ambiguity before, let tests and review stand in during, and end with something reviewable: a branch or pull request, not merged changes.
-
-Matt's split, from his April 2026 workshop: implementation can be AFK, but "planning, this alignment phase, has to be human in the loop." He calls it a ==day shift and a night shift==: humans plan and queue up the tickets by day; agents work through them at night.
-
-In his October 2026 video he named three ways to loop over tickets:
-
-1. **The manual loop.** You're the loop: implement ticket 1, clear, implement ticket 2. Fine for a few tickets, but he calls it not really workable.
-2. **A deterministic loop.** A script runs the implementer on each ticket: his Sandcastle tool, or a shell script. He recommends it for most people: once set up, it runs the same way every time and it's cheap, because no human or agent runs the loop. But tuning one takes patience, so he puts it out of range for beginners.
-3. **The agent loop**, `/implement-spec`: "an agent does the babysitting instead of a human." He calls it worse than a script, because it isn't deterministic, but a good first step into AFK work. Its docs add that it needs no infrastructure and you can watch and steer it.
-
-Whichever loop you build, ==run one pass by hand first==. In the workshop, Matt ran a single pass of his loop and watched it, to see what to tune in the prompt; only the looping version runs AFK, in a Docker sandbox.
-
-```checkpoint run-once-first
-You've written a shell script that runs `/implement` on every ready ticket, each in a fresh session, and you plan to leave it running overnight. What should you do first?
-- [x] Start it on just one ticket, and stay at the keyboard to watch that run.
-  > Right. That's how Matt starts: one watched pass shows what to tune in the prompt before nobody is watching.
-- [ ] Tell each run to skip code-review, since nobody reads it until morning.
-  > Tests and review are what stand in for you while you're away. Keep them, and watch one pass first.
-- [ ] Add a step that merges every finished ticket straight into `main`.
-  > AFK runs should end in something reviewable, like a branch or pull request, not changes already merged.
-- [ ] Raise the effort level (how hard the model thinks), so each ticket gets more care.
-  > More effort doesn't show you whether the prompt does what you want. One watched pass does.
+```checkpoint quick-7
+Your repo closes work through pull requests, and implement has finished. Who opens the pull request?
+- [x] You do, because implement opens no pull request.
+- [ ] implement does, as its final step, once the checks pass.
+- [ ] code-review does, as soon as its review finishes.
+Why: You open it, marked as closing the Ticket with a line such as Closes #12. If the agent writes it, the pr Skill shapes its body. Merging it closes the Ticket.
 ```
 
-## How Matt and others use it
-
-**Matt Pocock**, from his videos:
-
-- **Small job, same window.** In his July 2026 walkthrough, after grilling a small cleanup, he said he'd usually just type `/implement` there and let it run. He put his own Smart zone at about 140k tokens then, leaving roughly 100k of room for the job (10:08–11:03).
-- **One ticket at a time.** In the same video he cleared the context before implementing and said he usually clears between every ticket (13:53–14:41). There, `/implement` ran code-review's two axes in sub-agents, then committed (14:50–16:23).
-- **Review in a fresh context.** In his April 2026 workshop he explained that an implementer finishes deep in its window, so a review in the same session happens in the dumb zone (1:05:28–1:06:24), so review after a `/clear`. He builds with Sonnet, a cheaper Claude model, and reviews with Opus, a stronger one (1:32:33; see [Models, effort & ultracode](/learn/models-effort-ultracode)).
-- **`/implement-spec` where there's no script.** In October 2026 he said he reaches for `/implement-spec` more than he expected in repos without a tuned script, calling it a basic version to build your own on (4:23–4:54).
-
-**Other developers:**
-
-- Colin Eberhardt of Scott Logic rebuilt an app with the Skills in October 2026. Both review axes caught a few real bugs, though many tests checked the fake back end they'd set up (mocks) more than the real code.
-- A GitHub user, Warshoow, shared a script in September 2026 that runs `/implement` once per ready ticket, each in a fresh session and worktree: 10 tickets in 62 minutes for $20.40. Across 173 sessions on their machine, tdd never loaded (an October fix makes `/implement` load it), and Claude Code's Built-in command `/code-review` answered twice as often as Matt's Skill, so the script now names each Skill in full.
-
-## Try it yourself
-
-````try
-You need Claude Code installed and signed in (see [Start here](/learn/start-here)), Git, and Node.js or Python. If `git --version` says it isn't found, install Git first. If neither `node --version` nor `python --version` (`python3 --version` on a Mac) prints a version, install Node.js (the LTS installer from nodejs.org), then open a new terminal.
-
-1. Make an empty folder, turn it into a Git repo whose first branch is `main`, and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
-
-```sh
-mkdir word-tools
-cd word-tools
-git init -b main
-claude
+```diagram
+type: chain
+caption: "implement stops at the commit."
+steps:
+  - "It fetches Ticket #12 from the Issue tracker and states its title"
+  - label: "Where it can, it builds test-first with [tdd](/learn/tdd)"
+    note: "at seams agreed up front"
+  - label: "It runs the type check and single test files often"
+    note: "the full test suite once at the end"
+  - "It runs [code-review](/learn/code-review), whose subagents review the work"
+  - "It commits to the current branch"
+  - "You open a pull request"
+  - "Merging that pull request into `main` closes Ticket #12"
+groups:
+  - from: 1
+    to: 5
+    label: "The agent then works in a fixed order"
+  - from: 6
+    to: 7
+    label: "The rest is up to you"
 ```
 
-2. Type `/implement` but don't press Enter. Check it shows in the list that pops up, then delete what you typed. If it wasn't there, type `/exit`, install Matt's Skills, then run `claude` again:
+## Going deeper
 
-```sh
-claude plugin install mattpocock-skills@claude-plugins-official
+### Why it exists
+
+The deciding happens before the build, when you grill the idea and write the Spec and Tickets. A fresh agent told to "build this" often redesigns that work as it builds.
+
+Matt built implement to do the opposite: "It never reopens the plan." There's no interview, no clarifying round, and no proposal of a different approach. Whatever was settled upstream, in the steps before it, is the input.
+
+```checkpoint quick-8
+Halfway through a Ticket, the agent sees a design it likes better. What does implement have it do?
+- [x] Build the settled plan, with no proposal of a different approach.
+- [ ] Stop and interview you about which of the designs you would prefer.
+- [ ] Switch to the better design and tell you about it when it has finished.
+Why: implement never reopens the plan. There's no interview, no clarifying round and no proposal of a different approach, because what was settled upstream is its input.
 ```
 
-3. Give it something to build on (choose Yes when it asks to run setup commands):
+So implement is the step where deciding stops and building starts.
 
-```text
-Set up a tiny TypeScript project here with Vitest and a typecheck script, with one function readingTime(text) that returns whole minutes at 200 words per minute, and one test for it. If Node.js isn't installed, use Python with pytest and mypy instead; if neither is installed, stop and tell me. If Git has no name and email yet, set placeholder ones for this folder only. Commit it on main.
+### How it works underneath
+
+**Seams agreed before the code.** A test at a seam watches what the code does from outside, so it doesn't depend on how the code works inside. Say Ticket #13 names its seam:
+
+```
+Ticket #13: the endpoint that creates a booking
+Seam: test through POST /bookings
 ```
 
-4. Make a branch, because `/implement` commits to whatever branch you're on:
+The test calls `POST /bookings` and checks the response. Agree that seam before any code exists, and the test lasts. You can rewrite the code behind the endpoint without changing the test.
 
-```text
-Create a git branch called try-implement and switch to it.
+```checkpoint quick-9
+You rewrite the code behind a seam you agreed up front. What happens to the test at that seam?
+- [x] It stays as it is, because it only watches the seam.
+- [ ] It needs rewriting too, because the code behind it changed.
+- [ ] It gets deleted, because it was written against the old code.
+Why: Agree the seam before any code exists, and the test lasts. You can rewrite the code behind the endpoint without changing the test.
 ```
 
-5. Now type the Skill, and say where the plan lives:
+Matt calls this agreement "the skill's weakest point". Nothing inside implement agrees the seams. [tdd](/learn/tdd) is the Skill that asks, and it writes no test at an unconfirmed seam.
 
-```text
-/implement The plan is in this message, not a file: add wordCount(text) next to readingTime. It counts words separated by any whitespace (spaces, tabs, new lines), and readingTime must use it. Only write tests at the public functions wordCount and readingTime.
+```checkpoint quick-10
+No seams were agreed for your Ticket. Which Skill asks you to confirm them?
+- [x] tdd, which writes no test at an unconfirmed seam.
+- [ ] implement, which agrees the seams before it builds.
+- [ ] code-review, which picks seams once the code is done.
+Why: Nothing inside implement agrees the seams. tdd is the Skill that asks, and it writes no test at an unconfirmed seam.
 ```
 
-6. Answer as it goes. Seams: reply "yes" (your message named them). A fixed point: "main". Where the spec is: "It's my /implement message." Told to run `/setup-matt-pocock-skills`: "There's no tracker; the plan is in my message. Carry on." A permission prompt to edit a file, run tests or commit: choose Yes. Press Esc to stop it at any point.
-7. If no review with Standards and Spec sections appeared, type `/clear`, then `/mattpocock-skills:code-review main` to review everything since `main`.
-8. Type: "Show me the commits on main and on try-implement." Then type `/exit`.
+So the agreement happens upstream in the Spec, or in the first exchange of the run. If it happens nowhere, the run becomes plain code-writing, and nothing warns you.
 
-**It's working if:**
+**A check the agent can run.** Anthropic, the company that makes Claude, puts the general idea this way: "Give Claude something it can run that comes back pass or fail." The agent makes a change and runs the check. If something broke, it reads the output and fixes it without you watching. So implement's checks catch its own mistakes.
 
-- [ ] It restated what it would build instead of asking you what to build.
-- [ ] You saw a line naming the tdd Skill as it loaded, and a failing test appeared before the code.
-- [ ] Typechecks and single test files ran during the work, and the full suite ran once near the end.
-- [ ] A review with two parts, Standards and Spec, ran inside the run or when you typed it in step 7.
-- [ ] The new commit is on `try-implement`, and `main` still holds only the setup work.
-
-Then ask yourself: which moments needed you, and which could have run with you away?
-````
-
-## Common mistakes
-
-- **Waiting for the agent to start it.** Both Skills are user-invoked: type the name yourself.
-- **Building on `main` by accident.** Make the branch first; `/implement` never asks.
-- **Expecting `/implement` to close tickets.** Close them yourself, or the tickets waiting on them never start.
-- **Tests quietly skipped in a worktree.** A worktree holds only what Git tracks, so a test needing an untracked file, like database credentials, can skip and still pass. This site's spec told its builders to copy those files in.
-- **And from above:** several tickets per run, two sessions per checkout, no `/clear` between tickets, unnamed seams, reviewing mid-run.
-
-```site-story
-I built this site's redesign (a new Lesson, a photo for every Lesson, scroll motion) with `/implement-spec`. My first message asked for a pull request; then came grilling, `/to-spec`, `/to-tickets` and `/implement-spec`, all in one session, with no `/clear` before the run.
-
-**One mistake first.** `/to-spec` stopped to ask me to check a design choice, and I typed `/to-tickets` instead of answering, so the spec was written on the agent's best guess. Today I'd answer first: it asked for a reason.
-
-**Five tickets, run as a graph:** 01 design, then 02 Lesson photos, then 03 home page and 04 the Main flow Lesson side by side, then 05 scroll motion. Each got its own builder and worktree, and merged into one integration branch, `main-flow-and-redesign`.
-
-**The spec named its seam** ("One seam: the Lessons module"), so every builder started from the same seam.
-
-**One collision, at merge time.** Tickets 03 and 04 both added photo credits to `unsplash.ts`. Before reporting done, 03 merged in the integration branch, which already held 04, and kept both sides of the conflict. Worktrees didn't prevent it; they moved it to the end.
-
-**The review.** Mid-build I asked whether to run the code review now or after. An early review still ran while 05 was building. After the build, the review found about 15 problems, like the home page calling Skills "commands"; one fix-up builder fixed them all. The pull request was opened only after the fix-up, never as the draft the Skill's steps open after the first merge, and my journal says `/pr` wrote its description.
+```checkpoint quick-11
+Why give the agent something it can run that comes back pass or fail?
+- [x] It can fix its own mistakes without you watching.
+- [ ] You can grade each of its steps by hand as it goes.
+- [ ] It can carry on in a session that's already full.
+Why: The agent makes a change and runs the check. If something broke, it reads the output and fixes it, so you don't have to watch.
 ```
 
-## Cheat sheet
+### A real example
 
-| Moment | What to type or do |
-|---|---|
-| Small job, plan in the conversation | `/implement` + "the plan is in this conversation" |
-| Tickets, by hand | Branch → `/implement` one ticket → close it → `/clear` → next |
-| Whole spec, parallel harness | `/clear`, then `/implement-spec` + the spec's path |
-| No Standards and Spec review appeared | After the run's commit, `/clear`, then `/mattpocock-skills:code-review main` |
-| Going AFK | Sandbox, one pass by hand first, end on a branch |
+Until October 2026, implement didn't have to say which Ticket it had picked up. An Issue on Matt's repo reported a run of `/implement #2` in a fresh session of Codex, another coding agent. Matt's summary: the agent matched `#2` to another numbered list in its context, and "started on the wrong work without saying so."
+
+The fix was one rule: fetch the Ticket from the Issue tracker and state its title before starting. Now a wrong match shows up in the agent's first line, where you can catch it.
+
+```checkpoint quick-12
+Why does implement state the Ticket's title before it starts?
+- [x] So you can catch a wrong match in its first line.
+- [ ] So the Issue tracker can mark the Ticket as started.
+- [ ] So the agent can rebuild its context from the title.
+Why: The agent once matched a bare #2 to another numbered list and started the wrong work. Now a wrong match shows up in its first line, where you can catch it.
+```
+
+So check that the title is the Ticket you meant.
+
+### Where it goes wrong
+
+**The tests appeared after the code.** An open Issue on Matt's repo reports that "TDD and code-review almost never run." One user saw the agent write the code first and add tests after. So the passing suite didn't show that those tests could catch the old behaviour. Another user's 1,125 session transcripts held 17 implement runs, with no tdd call in any of them.
+
+Users there blame the weak spot above: no seam gets agreed, so nothing triggers tdd. All these reports are older than an October 2026 change. implement now tells the agent to call tdd with the Skill tool, which loads a Skill by name.
+
+The fix: name the seams in the Spec or the Ticket, since Tickets have no seam field. That's no guarantee: one run worked out seams from a Spec and still never called tdd. So check the trace, the record of each step the agent took. You want to see an actual `tdd` call there, not only tests appearing in the diff.
+
+```checkpoint quick-13
+How can you tell that implement really ran tdd?
+- [x] The trace shows an actual tdd call.
+- [ ] The diff shows new tests beside the code.
+- [ ] The full test suite passes at the end.
+Why: Tests in the diff don't prove tdd ran, because they may have come after the code. Check the trace, the record of each step the agent took, for an actual tdd call.
+```
+
+**The Ticket is built, but it's still open.** implement has no completion step. It ends at the commit and never touches the Ticket, and it doesn't act on [code-review](/learn/code-review)'s findings either. That matters most on a chain of Tickets, because the next ones count as ready only when all their blockers are closed. Matt's warning: "If nothing gets closed, nothing ever becomes visibly unblocked." The fix: act on the findings, then close the Ticket yourself, or merge a pull request with `Closes #` and its number.
+
+```checkpoint quick-14
+implement has committed the first Ticket of a chain. Why don't the next Tickets look ready?
+- [x] The first Ticket is still open, so it still blocks them.
+- [ ] They wait until every review finding has been fixed first.
+- [ ] They stay locked until a pull request for it has been opened.
+Why: implement ends at the commit and never touches the Ticket. The next ones count as ready only when all their blockers are closed, so close it, or merge a pull request that closes it.
+```
+
+**code-review says it can't see your changes.** code-review reads `git diff <fixed-point>...HEAD`. A fixed point is the commit, branch or tag a review compares against. HEAD is the commit you currently have checked out. So the diff leaves out anything not yet committed, and implement runs the review before it commits. Unless an earlier commit exists, there's nothing to review. The fix: "Commit first, then review against the point you branched from."
+
+```checkpoint quick-15
+On a new branch with no commits yet, code-review runs. What does it see?
+- [x] Nothing, because the diff leaves out uncommitted work.
+- [ ] Only staged changes, because implement stages as it goes.
+- [ ] Every change, because it reads the working directory too.
+Why: code-review compares a fixed point with HEAD, the commit you have checked out. Work that isn't committed isn't in that diff, so commit first, then review.
+```
+
+**One Ticket used over 100k tokens.** That's normal for a non-trivial Ticket, not a sign something broke. The fix is upstream: right-size the Tickets in [to-tickets](/learn/to-tickets), so each fits one fresh context window. If one keeps going over, split it rather than raising the effort level, the main control for how hard Claude thinks.
+
+```checkpoint quick-16
+A Ticket keeps going over one fresh context window. What do you change?
+- [x] Split the Ticket into smaller ones.
+- [ ] Raise the effort level for its run.
+- [ ] Report the run as a sign of a bug.
+Why: Over 100k tokens alone is normal for a non-trivial Ticket. If one keeps going over a fresh window, it's likely too big, so split it rather than raising the effort level.
+```
+
+**Commits landed on the wrong branch, and a stash vanished.** You met this report in [branches and worktrees](/learn/branches-and-worktrees). Several implement sessions ran side by side in one checkout. They shared one working directory, one index (git's list of what goes in the next commit) and one HEAD. In a single afternoon, a stash (work set aside with `git stash`) vanished and commits landed on the wrong branch.
+
+The fix: Matt's rule is "one invocation, one ticket." For several Tickets at once, use [implement-spec](/learn/implement-spec), which gives each one its own worktree. Some people run separate implement sessions in their own worktrees instead. Either way, the stash list is shared across worktrees too, so worktrees alone don't fix the stash case.
+
+```checkpoint quick-17
+You give each implement session its own worktree. Why can a stash still vanish?
+- [x] The stash list is shared across worktrees too.
+- [ ] Each worktree deletes its own stash when it ends.
+- [ ] git clears the stash when a session makes a commit.
+Why: Separate worktrees give each session its own folder, but the stash list, refs/stash, is shared across them. So worktrees alone don't fix the stash case.
+```
+
+### Try it
+
+You'll need your practice project. It needs an open Ticket whose blockers are all closed, such as the endpoint that creates a booking. If you haven't set the project up, do [keeping track](/learn/issues-and-keeping-track)'s Try it step first, then ask your agent to add a FastAPI app in `api/`.
+
+1. On GitHub, open the Ticket. Add one line naming its seam: `Seam: test through POST /bookings`.
+2. In your terminal, run `git switch main`, then `git pull`.
+3. Run `git switch -c implement-booking`, because implement commits to whatever branch it's on. You should see that branch checked out.
+4. Start a fresh Claude Code session in the repo.
+5. Type `/implement <you>/yoga-studio#N`, with your GitHub name and the Ticket's number. You should see the Ticket's title first.
+6. Watch the run. Look for a `tdd` call before any code changes. Confirm the seam if it asks.
+7. If code-review asks for a fixed point, type `main`.
+8. You should see a commit at the end. If the review found an empty diff, run `/code-review main`.
+9. Open the Ticket on GitHub. You should see it's still open, because implement closes nothing.
+10. Run `git push -u origin implement-booking`.
+11. Run `gh pr create --title "Create a booking" --body "Closes #N"`, with the Ticket's number.
+12. Merge the pull request once its checks pass. If CI lacks Postgres or a package, ask your agent to add it. You should see the Ticket close.
+13. Type `/clear` before you start the next Ticket.
+
+### Read more
+
+- [The /implement Skill](https://www.aihero.dev/skills-implement), Matt Pocock, updated 2026-08-24, current to at least 2026-10-07
+- [implement: fetch a passed ticket reference and state its title (#1196)](https://github.com/mattpocock/skills/pull/1196), Matt Pocock, 2026-10-06
+- [implement: call the Skill tool for tdd and code-review](https://github.com/mattpocock/skills/commit/e48341a3d412cfeba4b9a79d3fd0331fc376ba82), Matt Pocock, 2026-10-06
+- [/implement silently skips its /tdd and /code-review steps (#479)](https://github.com/mattpocock/skills/issues/479), AlejandroFuentePinero, 2026-07-09
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic, read 2026-10-30
+
+## Practice scenarios
+
+Optional practice: more situations like the ones in the final test.
+
+```checkpoint implement-why-review
+An agent has finished a Ticket that adds a SQL migration, and all the tests pass. Before committing, it still reviews its diff on two axes: the repo's coding standards and the Spec. Why bother, when the tests are green? What's the reason behind this step?
+- [x] Passing tests don't prove it meets the standards or the Spec.
+- [ ] To write the pull request's body from what the diff has changed.
+  > The review checks the diff; it doesn't write the pull request body.
+- [ ] To run the full test suite once more, as a final check.
+  > The review reads the diff against standards and the Spec; it isn't a test run.
+Why: Tests only show the code works as tested. They don't prove it follows the repo's written standards, or does what the Spec or Ticket asked. The review asks those two questions.
+```
+
+```checkpoint implement-deeper-why-commit-before
+An agent finishes a yoga-studio Ticket, with all tests green and nothing committed yet. It runs the two-axis review against main, and the review reports an empty diff. Why did the review see nothing? What's the reason behind this step?
+- [x] It reviews the diff from a fixed point to HEAD, and uncommitted changes aren't in it.
+- [ ] It skips any Ticket whose tests are green, since passing tests already prove the work.
+  > Green tests aren't why. The review compares HEAD with a fixed point, and work that isn't committed isn't in HEAD.
+- [ ] It only reviews pull requests, and no pull request has been opened for this branch.
+  > It needs a fixed point and HEAD, not a pull request. The diff was empty because nothing was committed yet.
+Why: The review reads a git diff from a fixed point (the commit, branch or tag it compares against) to HEAD (the commit you have checked out). Uncommitted work isn't in that diff, so with no commits yet there's nothing to see. Commit first, then review against the point you branched from.
+```
+
+```checkpoint implement-deeper-why-tests-came-last
+You built a booking Ticket with the build-one-Ticket Skill. The diff has tests, but the trace shows the code was written first and no test-first Skill call ever ran. Neither the Spec nor the Ticket named any seams. Why did the test-first step drop out? What's the reason behind this step?
+- [x] No seam was agreed upstream, and nothing inside the build step agrees one itself.
+- [ ] The test-first step only runs when the full test suite is already failing at the start.
+  > A failing suite isn't the trigger. Tests go at pre-agreed seams, and here none were agreed anywhere.
+- [ ] The build step only calls test-first work when it runs inside a separate worktree.
+  > Worktrees aren't the trigger. Nothing inside it agrees the seams, so with none in the Spec the run becomes plain code-writing.
+Why: implement asks for test-first work at pre-agreed seams, but nothing inside it agrees them. tdd does the asking, and only if it runs. So in practice the agreement comes from the Spec or the run's first exchange. If it happens nowhere, the run becomes plain code-writing, and nothing warns you. Naming the seams in the Spec guards against that.
+```
+
+```checkpoint implement-deeper-why-runs-collided
+You ran two build sessions side by side in one yoga-studio checkout, one Ticket each. By the end of the afternoon a stash had vanished and some commits sat on the wrong branch. Why did the two runs collide? What's the reason behind this step?
+- [x] Both sessions shared one working directory, one index and one HEAD, so each saw the other's git moves.
+- [ ] Each session reopened the plan and rewrote the other Ticket's code to fit its own design.
+  > The build step never reopens the plan. The damage was to git state: a stash and branches that both sessions shared.
+- [ ] The two Tickets blocked each other, so each session waited and then committed onto the other's branch.
+  > Blockers don't move commits. Both sessions used the same index and HEAD, so one session's checkout or stash changed what the other was working on.
+Why: Two sessions in one checkout share one working directory, one index, one HEAD and the stash list, so one session's git moves change what the other is working on. Matt's rule is one run of implement per Ticket. For several at once, use the Skill that gives each Ticket its own worktree. Separate sessions in their own worktrees still don't fix the stash case, since the stash list, refs/stash, is shared across worktrees too.
+```
+
+## Remember
+
+```flashcards
+Q: What does implement create?
+A: Code and tests, built test-first where possible, as commits on the current branch, plus a code review of the work.
+
+Q: Does implement close the Ticket it builds?
+A: No. It only commits to the current branch. The Ticket closes the way the Issue tracker closes work, for example through a pull request.
+
+Q: Working Tickets one by one, what do you do between them?
+A: Clear the context window, after any retro on that session. Each Ticket is self-contained, so the last one's context is no longer needed.
+
+Q: When do you pick implement-spec over implement?
+A: When you'd rather orchestrate the whole Spec in one run, with agents building ready Tickets in parallel, than drive each Ticket yourself.
+
+Q: Does implement question or redesign the plan it's given?
+A: No. It never reopens the plan: no interview, no clarifying round, no different approach. Whatever was settled upstream is the input.
+
+Q: Why does implement state the Ticket's title before it starts?
+A: A bare "#2" once matched another numbered list in context, and the agent started the wrong work. Fetching the Ticket and stating its title makes a wrong match visible at the first line.
+
+Q: One implement run used over 100k tokens. What should you change?
+A: Nothing is wrong with the run: over 100k is normal for a non-trivial Ticket. The fix is upstream: right-size Tickets in to-tickets, and split one that keeps going over rather than raising the effort level.
+```
 
 ## Final test
 
-```final-test scenario-spec-hunt
-You grilled a small dark-mode toggle for a running club's site, then typed just `/implement`. Nothing was written to a file, and now the agent is searching the repo for a spec that doesn't exist. What did your message leave out?
-- [ ] The spec's path: run `/to-spec` first, then pass it.
-  > For a change this small, a spec is overhead. The plan already exists; the agent just doesn't know where it is.
-- [ ] A request to grill again, so the plan is fresh.
-  > `/implement` never reopens the plan, and this one is already made. The agent only needs to know where it lives.
-- [x] That the plan is in this conversation, not a file.
-  > Right. The Skill's text talks about "the spec or tickets", so one sentence saying where the plan lives stops the hunt.
-- [ ] The words "use `/implement-spec`", so helpers find it.
-  > `/implement-spec` needs a spec split into tickets with blocking edges. There's nothing on disk for it either.
+```final-test implement-ticket-reference
+You give implement a Ticket number. What does it do before it starts building?
+- [x] It fetches the Ticket and states its title.
+- [ ] It interviews you about how the Ticket should be built.
+- [ ] It splits the Ticket into smaller Tickets first.
+Why: It fetches the Ticket from the Issue tracker and states its title first, so you can catch a wrong match before any work starts. If the reference is unclear, it asks.
 ```
 
-```final-test predict-frontier
-An `/implement-spec` run on a club website has five tickets. A has no blockers. B and C are each blocked by A. D is blocked by B. E is blocked by C and D. Ticket A has just merged into the integration branch. What starts now?
-- [ ] B only, because tickets are built in the order they're listed.
-  > The tickets form a graph, not a list. Blockers set the pace, not the order on the tracker.
-- [x] B and C together, each in its own worktree on its own branch.
-  > Right. Their only blocker has landed, so both join the frontier, and every frontier ticket runs at once.
-- [ ] B, C, D and E, now that the first ticket has landed.
-  > D still waits for B, and E for C and D. Only tickets whose blockers have all landed are on the frontier.
-- [ ] Nothing yet: code-review has to check ticket A before anything else starts.
-  > The run's one review comes after every ticket has landed, not between merges.
+```final-test implement-how-it-ends
+How does implement finish its work?
+- [x] It reviews the work, then commits to the current branch.
+- [ ] It commits, then opens a pull request that closes the Ticket.
+- [ ] It runs the tests, then merges the branch into main.
+- [ ] It writes a handoff file so the next session can carry on.
+Why: The review and the commit are implement's last two steps, and the commit is where it stops. It opens no pull request and closes nothing, so those are left for you to do.
 ```
 
-```final-test scenario-serial-harness
-You have a spec with four tickets, but your harness can only run one sub-agent at a time, and you wait while each one works. How should you build it?
-- [ ] `/implement-spec` anyway, after splitting the spec into more tickets
-  > More tickets don't help when only one sub-agent runs at a time. Running tickets side by side is the whole point of `/implement-spec`; without that it's just a slower `/implement`.
-- [ ] One long session that builds all four tickets back to back
-  > That's the road into the dumb zone. Each ticket deserves a fresh window.
-- [ ] Combine the four tickets into one big ticket and implement that
-  > Tickets are sized to fit one window each. One big ticket undoes that.
-- [x] `/implement` once per ticket, with a `/clear` before each new one
-  > Right. Without sub-agents running side by side, `/implement-spec` has nothing to make up for being slower, so drive each ticket yourself in a fresh window.
+```final-test implement-test-runs
+When does implement run the full test suite?
+- [x] Once, at the end.
+- [ ] After every change.
+- [ ] Never. It only runs single test files.
+Why: While it builds, it runs the type check and single test files regularly. The full suite runs only once, at the end, before the review.
 ```
 
-```final-test scenario-pick-spec-run
-Your garden-planner spec has eight tickets from `/to-tickets`, and once the first lands, four of them can start. Claude Code on your laptop can run several helpers at once, each in its own copy of the project. You'd rather not start each ticket yourself, and checking one finished branch at the end suits you. In a cleared session, what do you type?
-- [x] `/implement-spec`, pointing it at the spec's file
-  > Right. It reads the blocking edges as a graph, builds the first ticket, then the four it unblocks at once in their own worktrees, and lands everything on one integration branch for one review.
-- [ ] `/implement` with all eight tickets at once
-  > One run takes one ticket. Eight in one window head straight for the dumb zone.
-- [ ] `/implement` on ticket 01, then `/clear` and the next
-  > That's the by-hand rhythm, and it makes you the dispatcher: the job you said you'd rather hand off.
-- [ ] `/tdd` per ticket, then `/mattpocock-skills:code-review`
-  > `/tdd` builds one behaviour test-first. It doesn't read tickets or their blocking edges, so you'd still be the dispatcher.
+```final-test implement-deeper-who-agrees-seams
+implement builds test-first at pre-agreed seams. Where does that agreement come from?
+- [x] From the Spec, or the run's first exchange, since tdd asks and implement never does.
+- [ ] From implement itself, which interviews you about the seams before it writes any code.
+- [ ] From code-review, which picks the seams after the code is written and then adds the tests.
+Why: Nothing inside implement agrees the seams. tdd is the Skill that asks, and it writes no test at an unconfirmed seam. So in practice the agreement comes from the Spec or the run's first exchange. If it happens nowhere, the run becomes plain code-writing, and nothing warns you.
 ```
 
-```final-test scenario-afk-task
-It's Friday evening. Which of these would you leave running AFK overnight?
-- [ ] A CSV export, in a sandbox, though nobody has settled the column order yet.
-  > That's an open question. Left alone, the agent fills it with a guess and builds tidy work on top of it.
-- [x] A CSV export, in a sandbox, with its columns and its seams settled in the spec.
-  > Right. The questions are settled before you leave, tests and review stand in for you, and the sandbox keeps your machine safe. It ends on a branch you check in the morning.
-- [ ] A CSV export with its columns and seams settled, on your laptop with permission prompts off.
-  > With no sandbox, one wrong command overnight can harm your own machine. Permissive modes belong inside one.
-- [ ] A clean-out of last year's rows in the live database, in a sandbox, spec settled.
-  > Irreversible work that touches production is exactly what to keep human-in-the-loop.
+```final-test implement-deeper-nothing-unblocked
+implement finished the first Ticket of a chain and committed it. Why do the Tickets it was blocking still not look ready?
+- [x] implement has no completion step, so the finished Ticket, their blocker, stays open.
+- [ ] implement keeps the chain locked until every code-review finding on the commit is fixed.
+- [ ] implement marks the next Tickets blocked until a pull request for this one has merged.
+Why: implement ends at the commit and never touches the Ticket, so the Ticket stays open. The next Tickets count as ready only when all their blockers are closed, so they can't look ready until it's closed.
 ```
 
-```final-test scenario-loop-choice
-Your team works through about thirty tickets a week across several repos, all run overnight while nobody watches. One engineer can spend the next few weeks setting something up. Which way of looping over tickets fits Matt's advice for this team?
-- [ ] The manual loop: one person types `/implement` and `/clear` for every ticket.
-  > Matt calls being the loop yourself not really workable, and here it's thirty times a week.
-- [ ] `/implement-spec`, because an agent makes smarter choices than a script.
-  > An agent making the orchestration decisions is less reliable than a script when nobody is watching. Matt calls it a good first step, not the end state for a team with time to build a loop.
-- [x] A deterministic script loop, such as Sandcastle or a shell script.
-  > Right. Once tuned, it runs the same way every time and costs less, because no human or agent runs the loop.
-- [ ] One long session per repo for the whole week's tickets.
-  > That ends far past the Smart zone, the opposite of a fresh window per ticket.
+```final-test implement-one-ticket-at-a-time
+Your Spec for a FastAPI booking backend has eight Tickets with blocking links. You want to build them yourself, one Ticket per session, starting each with a fresh context window. Which fits best?
+- [x] Build one Ticket per session, clearing the context between them.
+  > Right: that's `/implement`.
+- [ ] Hand the whole Spec to one orchestrated run with parallel agents.
+  > That's `/implement-spec`. That's for when you'd rather orchestrate the build than drive each Ticket yourself.
+- [ ] Split the Spec into Tickets.
+  > That's `/to-tickets`. The Tickets already exist, with their blocking links.
+Why: You want to drive the build yourself, one Ticket per session, and that's the per-Ticket way to work a Spec. Clearing the context between Tickets loses nothing, because each Ticket is self-contained: the last one's context is no longer needed.
 ```
 
-```final-test spot-on-main
-Sam wanted the new search feature on its own branch, ready for a pull request. Sam opened Claude Code in the project, typed `/implement` with the ticket, and the run went well. Afterwards, the new commit is on `main`. Spot the mistake.
-- [x] Sam didn't create and switch to a branch before typing `/implement`.
-  > Right. It commits to whichever branch you're on. It doesn't create one, and it doesn't ask.
-- [ ] Sam didn't run `/mattpocock-skills:code-review` before typing `/implement`.
-  > There's nothing to review before the code exists, and a review doesn't choose branches.
-- [ ] Sam didn't type `/clear` before `/implement`, so no clean branch was made.
-  > `/clear` empties the agent's working memory. It doesn't touch Git, so the project stays on `main`.
-- [ ] The ticket wasn't ready-for-agent, so the branch step was skipped.
-  > There's no branch step to skip. `/implement` commits to whichever branch you're on, whatever the ticket's status says.
+```final-test implement-orchestrate-the-spec
+A Spec for a Dockerised AI agent service has twelve Tickets, and four have no blockers. You'd rather set the whole build running, with agents working the ready Tickets in parallel, than drive each Ticket yourself. Which fits best?
+- [x] Start one run that builds the whole Spec from its Tickets.
+  > Right: that's `/implement-spec`.
+- [ ] Build each ready Ticket yourself, one fresh session at a time.
+  > That's `/implement`. That's driving each Ticket yourself. You'd rather one run set agents working the ready Tickets in parallel.
+- [ ] Split the Spec into Tickets again, sized for parallel agents.
+  > That's `/to-tickets`. The Tickets already exist.
+Why: You'd rather start one run than drive each Ticket, so the whole-Spec run fits. It works out which Tickets block which, puts a fresh agent on each ready Ticket in parallel, and lands everything on one integration branch.
 ```
 
-```final-test spot-midrun-review
-Halfway through an `/implement-spec` run on a six-ticket spec, Jo gets impatient and asks the orchestrating agent for "a quick review of everything so far". The report lists the search and export features as missing, the agent starts extra work on both, and then a second review kicks off. Spot the mistake.
-- [ ] Jo asked in plain words instead of typing the Skill's name.
-  > Plain words can start a model-invoked Skill like code-review. The timing was the problem.
-- [x] The review ran while two tickets still hadn't landed.
-  > Right. The review compares the code with the whole spec, so tickets still in their worktrees read as failures. `/implement-spec` runs it once, at the end.
-- [ ] Jo reviewed everything at once instead of one worktree at a time.
-  > Reviewing half-built work in pieces has the same problem. The run's one review belongs after the last merge.
-- [ ] A code review can't run on an integration branch.
-  > It can: that's exactly where `/implement-spec` runs it, once every ticket is in.
+```final-test implement-small-change
+You want to add a health-check endpoint to your FastAPI app. You've just talked it through in this session. It's small, and it will fit in this context window. Which fits best?
+- [x] Build it right here, in this session.
+  > Right: that's `/implement`.
+- [ ] Write a Spec for it first, then build it.
+  > That's `/to-spec`. A Spec and Tickets are for multi-session builds. This one fits in one session.
+- [ ] Split it into Tickets, then build them.
+  > That's `/to-tickets`. A change this small doesn't need slicing; it fits one context window as it is.
+Why: The work fits this context window and you've already talked it through, so a Spec and Tickets would add steps for no gain. Those are for builds that span several sessions. Build it here, in the same context window.
 ```
 
-```final-test sequence-one-run
-Which order matches one `/implement` run on a ticket?
-- [ ] Commit → fetch the ticket → tdd slices → full suite → code-review
-  > Committing comes last. At the start, nothing is built yet.
-- [ ] Fetch the ticket → full suite → tdd slices → commit → code-review
-  > The full suite runs once, at the end, after the slices. And the review comes before the commit.
-- [ ] Fetch the ticket → code-review → tdd slices → full suite → commit
-  > The review checks finished work, so it comes after the build.
-- [x] Fetch the ticket → tdd slices → full suite → code-review → commit
-  > Right. Read the work, build it test-first with checks along the way, run everything once, review, then commit to the current branch.
+```final-test implement-close-the-ticket
+You're working Ticket #12 of your website's Spec, on its own branch. The code is built, the review's findings are fixed, and the commits are on the branch. This repo closes work through pull requests, and CI checks every pull request. What comes next? What comes next?
+- [x] Open a pull request into main with "Closes #12" and a body shaped for review; merge once checks pass.
+  > Right: that's `/pr`.
+- [ ] Open a pull request into main with "Closes #12" and a body shaped for review; merge before checks finish.
+  > That's `/pr`. CI builds and tests every pull request, and a protected branch can require those status checks before a merge. Merging first can put a broken change on main.
+- [ ] Run the build step again, so it opens the pull request and closes #12.
+  > That's `/implement`. It only commits to the current branch. It never opens a pull request or closes anything.
+- [ ] Review the diff once more against the Spec and the standards first.
+  > That's `/code-review`. The review has already run and its findings are fixed.
+Why: Building stops at a commit, so Ticket #12 is still open. In this repo, work closes through a pull request: "Closes #12" in its description closes the Ticket when it merges into main, the default branch. The Skill for writing pull requests shapes the body. CI (automatic builds and tests) runs checks on the pull request, so wait for them to pass, to keep a broken change off main.
 ```
 
-```final-test predict-run-end
-You run `/implement-spec` in a repo whose tracker is a folder of local Markdown files, and you never ask for a pull request. What should you expect when it finishes?
-- [ ] A pull request on GitHub, marked ready for review.
-  > A pull request appears only if the tracker closes tickets when a pull request merges, or you ask for one. A folder of Markdown files does neither.
-- [ ] Every ticket's work committed straight to `main`.
-  > Nothing lands on `main`. Everything goes to the integration branch.
-- [x] One integration branch with every ticket merged and resolved.
-  > Right. On a local tracker the run ends on the integration branch, with each ticket resolved and nothing merged into `main`.
-- [ ] A separate branch for each ticket, all left for you to merge into `main` by hand.
-  > A merger sub-agent lands each ticket on the integration branch as it finishes, and the worktrees get cleaned up.
+```final-test implement-next-ticket
+Ticket #12's pull request is merged into main, and #12 is closed. You've already looked back over #12's session for fixes to the agent's environment, and they're committed. Ticket #13, for the same website, was blocked only by #12. What do you do next? What comes next?
+- [x] Clear the context, then build #13 on a new branch from the updated main.
+  > Right: that's `/implement`.
+- [ ] Build #13 on a new branch from main, in this same context window.
+  > That's `/implement`. Each Ticket starts fresh, because the last one's context is no longer needed.
+- [ ] Clear the context, then build #13 on #12's branch, which is still checked out.
+  > That's `/implement`. #12's branch is merged and done. New work goes on a new branch, made from the updated main, which now holds #12.
+- [ ] Write a handoff file about #13, then build it on a new branch in a new session.
+  > That's `/handoff`. A handoff is for a new harness, a new directory or a colleague. The Ticket already holds what the next session needs.
+Why: Ticket #13 is self-contained and works from the Ticket itself, so #12's context is no longer needed: clear it. #12's branch is merged and done, so #13 goes on a new branch made from the latest main, which now holds #12.
 ```
 
 ```sources
-- [implement SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement-spec/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the fork between `/implement` per ticket and `/implement-spec`; clearing between tickets), [tdd SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/SKILL.md) (pre-agreed seams) and [code-review SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/code-review/SKILL.md) (the fixed point, the empty-diff check, the smell baseline): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [The /implement Skill](https://www.aihero.dev/skills-implement), AI Hero docs, updated 2026-08-24, read 2026-10-23.
-- [The /implement-spec Skill](https://www.aihero.dev/skills-implement-spec), AI Hero docs, published 2026-10-05, read 2026-10-23.
-- [Skills changelog v1.3: implement-spec, pr, retro and GLOSSARY.md](https://www.aihero.dev/skills-changelog-v13-implement-spec-pr-retro-and-glossary-md), AI Hero, updated 2026-10-05, read 2026-10-23.
-- AI Coding Dictionary: [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) (2026-09-24) and [Human-in-the-loop](https://www.aihero.dev/ai-coding-dictionary/human-in-the-loop) (2026-07-01), read 2026-10-23.
-- [New Skills! v1.3 brings /pr, /implement-spec, and /retro](https://www.youtube.com/watch?v=BsJGo1wFTvQ), Matt Pocock, 2026-10-05 (three loops 1:08–3:23, how he uses it 4:23–4:54).
-- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (the fork and his Smart zone figure 10:08–11:03, one ticket at a time 13:53–14:41, the `/implement` run 14:50–16:23).
-- [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock at AI Engineer, 2026-04-24 (human-in-the-loop vs AFK 26:39–27:07, day and night shift 53:15–53:35, one pass by hand 54:52–56:03, review in a fresh context 1:05:28–1:06:24, Sandcastle and models 1:29:50–1:32:40).
-- [An honest review of Matt Pocock's Skills framework](https://blog.scottlogic.com/2026/10/19/an-honest-review-of-matt-pococks-skills.html), Colin Eberhardt, Scott Logic, 2026-10-19.
-- [afk.sh (Discussion #1136)](https://github.com/mattpocock/skills/discussions/1136), mattpocock/skills on GitHub, 2026-09-28, with the author's update of 2026-09-29.
-- [Issue #1215: bare code-review calls reach the Built-in command](https://github.com/mattpocock/skills/issues/1215), opened 2026-10-07, and [issue #511: implement and code-review disagree on reviewing uncommitted changes](https://github.com/mattpocock/skills/issues/511), opened 2026-07-10, both open when read on 2026-10-24.
-- [The main flow Lesson + GE-style redesign (PR #9)](https://github.com/SiddharthMuramkar/idea-to-shipped/pull/9), this site's repo, merged 2026-10-22, with its spec and tickets in the repo's `.scratch/main-flow-and-redesign/`.
+- [implement: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement/SKILL.md), Matt Pocock's Skills
+- [code-review: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/code-review/SKILL.md), Matt Pocock's Skills
+- [ask-matt: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/SKILL.md), Matt Pocock's Skills
+- [implement-spec: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement-spec/SKILL.md), Matt Pocock's Skills
+- [Linking a pull request to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
+- [The /implement Skill](https://www.aihero.dev/skills-implement), Matt Pocock, 2026-08-24
+- [implement: fetch a passed ticket reference and state its title (#1196)](https://github.com/mattpocock/skills/pull/1196), Matt Pocock, 2026-10-06
+- [tdd: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/tdd/SKILL.md), Matt Pocock's Skills
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
+- [implement: call the Skill tool for tdd and code-review (e48341a)](https://github.com/mattpocock/skills/commit/e48341a3d412cfeba4b9a79d3fd0331fc376ba82), Matt Pocock, 2026-10-06
+- [/implement silently skips its /tdd and /code-review steps (#479)](https://github.com/mattpocock/skills/issues/479), AlejandroFuentePinero, 2026-07-09
+- [Understanding GitHub Actions](https://docs.github.com/en/actions/get-started/understand-github-actions)
+- [Branches](https://docs.github.com/en/pull-requests/reference/branches)
 ```

@@ -1,9 +1,7 @@
 ---
-title: The main flow
+title: The main flow, from idea to shipped
 slug: main-flow
-image: /photos/main-flow.jpg
-imageAlt: An aerial view of a large highway interchange at sunset with ramps looping over one another.
-imageCredit: Denys Nevozhai
+summary: One map for the whole course: which Skill to type next, from a rough idea to merged code, and what to do with the conversation between steps.
 ---
 
 One map for the whole course: which Skill to type next, from a rough idea to merged code, and what to do with the conversation between steps.

@@ -1,440 +1,465 @@
 ---
-title: TDD
+title: tdd
 slug: tdd
-image: /photos/tdd.jpg
-imageAlt: A scientist in a white lab coat works at a lab bench full of instruments and cables.
-imageCredit: ThisisEngineering
+summary: tdd gives the agent the rules of the red → green loop: a failing test first, then only enough code to pass it.
 ---
 
-Make the agent prove each behaviour with a test it watched fail first, so the tests it leaves behind are ones you can trust.
+## What it's for
 
-```goals
-- You'll be able to explain why an agent should write one failing test, then only the code that makes it pass, instead of writing the code first or all the tests first.
-- You'll be able to agree a seam with the agent before any test exists, weighing what a test there catches and what it misses.
-- You'll be able to spot implementation-coupled, tautological and horizontally sliced tests, and say what a test may fake and what it never should.
-- You'll be able to decide when to reach for `/tdd`, when to skip it, and where refactoring happens instead.
+Imagine an agent that writes the code first, then tests that only repeat it. They pass, but tell you little.
+
+**tdd gives the agent the rules of the red → green loop: a failing test first, then only enough code to pass it.** It's [test-first](/learn/test-first) as a Skill.
+
+Say tdd runs on Ticket #13, the booking endpoint:
+
+1. The agent writes down a **seam**: the public boundary you test at, without reaching inside, here `POST /bookings`. You confirm it.
+2. Red: it writes one test that fails, because the behaviour doesn't exist yet.
+3. Green: it writes only enough code to make that test pass.
+4. Then the next test.
+
+```checkpoint quick-1
+Your agent has one failing test for Ticket #13. How much code does it write next?
+- [x] Only enough to make that one test pass.
+- [ ] Enough to finish all of Ticket #13.
+- [ ] Enough to pass that test and the next few too.
+Why: Green means only enough code to make the failing test pass. Then the agent writes the next test.
 ```
 
-## Why it matters
-
-You ask Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal) to add a 2,000-character limit to this site's comment box. It writes the code, then the tests: small programs that run your code with a known input and check the result. Every test passes. A week later a Visitor (anyone reading the site) posts a 5,000-character essay and it goes straight in. One test checked that the limit was set to 2,000. It was. Nothing checked that the API (the code that receives and saves each Comment) actually used it.
-
-Nobody lied. The agent wrote the code first, so the tests described that code, gaps included. Matt Pocock, a developer and teacher, publishes a popular set of Skills for Claude Code. A Skill is a short instruction file the agent loads when you type its name, like `/tdd`, or when your request matches its description (see [Skills](/learn/skills)). In an April 2026 workshop Matt described the habit: an agent working in layers writes the whole implementation, then a whole layer of tests for it, and tends to cheat at the tests.
-
-Tests are an agent's feedback loop: the way it finds out whether its code works without you checking by hand. In the same workshop Matt said the quality of those loops sets the ceiling on how good an agent's code can get.
-
-The `tdd` Skill fixes the order. The agent writes the test first, watches it fail, and only then writes the code. ==A test written before the code can't bend to fit it.==
-
-## The idea: red, then green, one slice at a time
-
-TDD stands for test-driven development: you write each test before the code it tests. A test runner (a program such as Vitest that runs your tests and reports the results) shows a failing test in red and a passing one in green, which gives the loop its name:
-
-1. **Red.** Write one test for one behaviour that doesn't exist yet. Run it and watch it fail.
-2. **Green.** Write only enough code to make that test pass. Nothing for the test after next, no extra features.
-3. **Repeat** with the next behaviour.
-
-Why insist on seeing red? A test you've never seen fail might not be checking anything. If it fails while the behaviour is missing, then passes once the code exists, and the test itself didn't change in between, you have real evidence. ==A test that goes red, then green, is hard to cheat.==
-
-Each cycle is a **vertical slice**: one behaviour, one test, one small piece of code. The Skill calls each test a **tracer bullet** (the idea from [Spec + tickets](/learn/spec-and-issues), shrunk to one test): it shows where your shots land, so the next cycle can learn from it.
-
-Classic TDD has a third step: refactor (tidy the code without changing what it does). ==Matt's Skill has no refactor step.== In March 2026 Matt said agents are reluctant to change code still sitting in their own context window (their working memory for the conversation), and version 1.1 of his Skills (July 2026) dropped the step. Tidying now belongs to review: the `code-review` Skill has helper agents with fresh context windows check the finished changes and flag what to fix. The `tdd` description still mentions "red-green-refactor" (open GitHub bug report #589), and the phrase still triggers it; you just get red, then green.
-
-```scene terminal
-title: Red, then green, on this site's comment API (illustrative)
-# You and the agent have already agreed where the test plugs in (a seam; more on those below): the comments route, the code that runs when a new Comment arrives. The agent writes one test for the length limit and runs it before writing the check.
-$ npx vitest run src/app/api/comments
-× a body of exactly 2000 characters is fine, 2001 is rejected
-AssertionError: expected 201 to be 400
-Tests  1 failed (1)
-# Red, for the right reason: the API answered with status code 201 ("saved") where the test expected 400 ("rejected"). It adds one length check and nothing else.
-$ npx vitest run src/app/api/comments
-✓ a body of exactly 2000 characters is fine, 2001 is rejected
-Tests  1 passed (1)
-# Green. Only now does the next test appear: a blank Comment. It fails first too.
-$ npx vitest run src/app/api/comments
-✓ a body of exactly 2000 characters is fine, 2001 is rejected
-× an empty or blank body is rejected with 400
-Tests  1 failed | 1 passed (2)
-# Just enough code to reject blanks, and both pass. One slice at a time, each seen red first.
-$ npx vitest run src/app/api/comments
-✓ a body of exactly 2000 characters is fine, 2001 is rejected
-✓ an empty or blank body is rejected with 400
-Tests  2 passed (2)
+```diagram
+type: cycle
+caption: "the red → green loop"
+steps: ["Red: it writes one test that fails", "Green: it writes only enough code", "Then the next test."]
+outside: "Refactoring"
 ```
 
-```checkpoint green-first-run
-On a book-club site, the agent writes a test for "a member can't vote twice", runs it, and it passes straight away. No code has changed yet. What's the right reaction?
-- [ ] Good news: one fewer step, so move on to the next behaviour.
-  > A test you've never seen fail proves nothing yet. It may not be checking what its name says.
-- [x] Find out why: the rule may exist, or the test checks nothing.
-  > Right. Say so honestly, then break the behaviour on purpose and confirm the test goes red.
-- [ ] Delete the test, since the loop only allows tests that start out red and then turn green.
-  > The test might be fine. The point is to prove it can fail, not to throw it away.
-- [ ] Write the code anyway, so the loop stays in order.
-  > Writing code for a behaviour that may already exist adds risk without adding evidence.
+Step 2's test might be:
+
+```python
+def test_member_can_book_a_class(client):  # client sends requests to the app
+    response = client.post("/bookings", json={"class_id": 7})
+    assert response.status_code == 201  # 201 means created
 ```
 
-## Seams: agree where tests go first
+A good test like this checks behaviour through a public interface, not the code's insides. The code can change and the test still holds.
 
-Code is split into modules (pieces that each do one job), and each module has an interface: what the rest of the code must know to use it, mostly the functions it exports and what they promise. The Skill calls the place you test at a **seam**: the public boundary where you can watch behaviour from outside without reaching inside.
-
-The Skill's firmest rule: ==no test is written at a seam you haven't agreed.== Before any test exists, the agent writes down the seams it proposes and waits for your OK. Each should come with a short note on what a test there would catch and miss. Testing effort is limited, so settling seams first puts it on the paths that matter, not on every edge case.
-
-Take this site's comment API. Its route handler (the function that runs when the comment box sends a new Comment to `POST /api/comments`) hands it to the comments module, which checks it and saves it. Here are two seams you could test at:
-
-| Seam | Catches | Misses |
-|---|---|---|
-| The route handler, called with a real request against a real test database | What a Visitor gets back: status codes, error messages, broken JSON (garbled request data), whether the Comment is saved | How the comment box shows those errors |
-| The comments module's `postComment` function, one layer down | The rules, and whether the Comment is saved | Status codes, broken JSON and what a Visitor sees |
-
-The higher seam catches more per test, and this site's API tests use it. Matt's `to-spec` Skill, which writes a spec (a written description of what to build), has the same instinct: prefer existing seams to new ones, the highest you can, ideally one. In the full Main flow (the path most work takes, from idea to shipped), you agree the seams while `/to-spec` writes the spec. Later, `/implement`, the Skill that builds the work, calls `tdd` at those seams, so there's little left to confirm.
-
-```checkpoint skipped-seam
-You type `/tdd` and ask for a "save a recipe to favourites" feature. The agent's first reply is a new test file, already run and failing. Which of the Skill's required steps has it skipped?
-- [x] Agreeing with you which boundary to test.
-  > Right. No test is written at a seam you haven't agreed. Press Esc and ask for its proposed seams, with what each catches and misses.
-- [ ] Planning the refactor that follows each green.
-  > This loop has no refactor step: tidying belongs to review. What it missed comes before any test.
-- [ ] Listing every edge case the tests will cover.
-  > The Skill doesn't aim at every edge case. Agreeing seams first is what puts the effort on the paths that matter.
-- [ ] Checking the runner with a test that passes.
-  > A test you've only seen pass proves nothing. Starting red is right; the missing step comes before any test.
+```checkpoint quick-2
+You rewrite the insides of the booking code, and the endpoint behaves as before. What should a good test do?
+- [x] Still pass, as it checks behaviour through a public interface.
+- [ ] Fail, because it checks how the code works on its insides too.
+- [ ] Fail, so that you know to rewrite the test along with the code.
+Why: A good test checks behaviour through a public interface, not the code's insides. So the code can change and the test still holds.
 ```
 
-## A session, step by step
+The rules also name three **anti-patterns**, or common mistakes:
 
-Here's a short session (one Claude Code conversation) that adds a rule to the comment API: no links in v1. It runs inside the site's repo, its project folder tracked with Git (a tool that records every change), so the agent reads `GLOSSARY.md`, the project's list of agreed terms, and uses words like Comment in test names.
+- **Implementation-coupled test**: it reaches into the code's insides instead of its interface.
+- **Tautological test**: it computes its expected value the same way the code does, so it can never disagree with the code.
+- **Horizontal slicing**: writing all the tests first, so no test can respond to what the last cycle taught you.
 
-```scene chat
-title: Adding a no-links rule to the comment API (illustrative)
-# You type the Skill and the behaviour you want.
-you: `/tdd` Comments can't contain links in v1. Reject any Comment whose body or name contains `http://` or `https://`, with a clear error.
-# Before any test exists, it proposes seams, each with what it catches and misses, and waits.
-agent: I read GLOSSARY.md and the existing tests. Proposed seams: **1. The `POST /api/comments` route** (the API tests already use it): catches what a Visitor gets back; misses how the comment box shows it. **2. The comments module's `postComment`**, one layer down (no tests there yet): catches the rule and the save; misses status codes and what a Visitor sees. Which should we test?
-# You pick the seam. That's a decision for you, not a detail.
-you: 1, the route.
-# Red: one test, run before any code changes. It fails for the right reason.
-agent: Test: "a body containing a link is rejected with 400". Ran it: expected 400, got 201. That's red.
-# Green: only enough code to pass, nothing for future tests.
-agent: Added one check in the comments module. The new test passes, and so do the existing ones.
-# Next slice, next red: the other half of your rule. It only appears once the first test is green.
-agent: Next: "a name containing a link is rejected too". Ran it: it fails, because only the body is checked so far. Extended the check: green.
-# It stops without a tidy-up pass. That belongs to review.
-agent: Done: two tests, each seen red, then green. Any tidying is for code review.
+```checkpoint quick-3
+Your test calls a private helper instead of going through the endpoint. Which mistake is that?
+- [x] An implementation-coupled test: it reaches into the insides.
+- [ ] A tautological test: it computes its value the way the code does.
+- [ ] Horizontal slicing: it writes all of the tests before any code.
+Why: A private helper is part of the code's insides. A test that reaches in there instead of using the interface is implementation-coupled.
 ```
 
-## Good tests and the three bad ones
+A **mock** is a fake stand-in for a real part. It goes only at system boundaries, where your code meets things you don't control, like an outside API or the clock. Your own modules stay real.
 
-A good test checks behaviour through the public interface, reads like a line of the spec, survives refactors and makes one logical claim. This site has one called "a body of exactly 2000 characters is fine, 2001 is rejected": the name alone tells you what the API promises. Its inputs (2000 and 2001 characters) and what it expects back (saved with 201, rejected with 400) all come from the spec, not from the code.
-
-The Skill names three ways tests go wrong:
-
-- **Implementation-coupled.** The test checks how the code works instead of what it does: it swaps the module's own parts for fakes (stand-ins with canned answers; more below), tests private functions (ones the module keeps to itself), counts how often something was called, or checks through a side channel, like querying a database table directly instead of reading the data back through the interface. The tell: ==it breaks when you restructure the code, though nothing a user sees has changed.== Matt's September 2026 conference talk on reviewing agents' code showed one that read a page's source file to check one section came after another.
-- **Tautological.** The expected value comes from the code, not from an independent source like the spec. Worked out the way the code works it out, it passes by construction and can never disagree. Copied from a constant (a named, fixed value like `MAX_BODY = 2000`), it checks a number, not a behaviour: Matt's example from the same talk was a test that the constant for X's (Twitter's) post limit equals 280. That passes even if nothing enforces the limit.
-- **Horizontal slicing.** Every test first, then all the code: a layer at a time. Such a batch describes imagined behaviour, tests how things are shaped instead of what a user does, and fixes a test structure too early.
-
-Here's the opening story's tautological test next to a real one:
-
-```ts
-// Tautological: restates the code's own constant, so it passes whatever the API does
-expect(MAX_BODY).toBe(2000);
-
-// Behaviour at the seam, with the number taken from the spec
-const res = await post({ lesson: "grilling", body: "x".repeat(2001) });
-expect(res.status).toBe(400);
+```checkpoint quick-4
+Your code reads the clock and calls your own pricing module. Which do you mock in the test?
+- [x] The clock, a system boundary you don't control.
+- [ ] The pricing module, because you wrote it yourself.
+- [ ] Both, so that nothing real runs in the test.
+Why: A mock goes only at system boundaries, such as an outside API or the clock. Your own pricing module stays real.
 ```
 
-The first passes even if the API never checks the length. The second fails until it does.
+Refactoring isn't in the loop. It belongs to review, in [code-review](/learn/code-review).
 
-```checkpoint rename-breaks-test
-On a recipe site, the agent splits the inside of `scale(recipe, servings)` into two smaller helpers. Every recipe still scales correctly, but one test now fails: it checked that `scale` called a helper named `multiplyAmounts` exactly once. What's the right verdict on this test?
-- [ ] A good catch: update it to count calls to both new helpers.
-  > Every recipe still scales correctly, so nothing broke. Counting the new helpers ties the test even tighter to the inside of `scale`.
-- [ ] Too broad: replace it with one test per helper.
-  > The helpers are internals, not the interface. Tests per helper break on the next split too.
-- [ ] Horizontal slicing: it was written before the code.
-  > Horizontal slicing means writing all the tests before any of the code. Writing one test first is the loop working.
-- [x] Implementation-coupled: it checks how, not what.
-  > Right. It broke on a change nobody using `scale` can see. Check results instead: 200 g of flour for 4 servings becomes 400 g for 8.
+## When to use it
+
+- You're building a feature or fixing a bug test-first.
+- You want **integration tests**: tests running several parts of the system together.
+
+```checkpoint quick-5
+You've decided on a new rule for the booking API, and you want it built test-first. Does tdd fit?
+- [x] Yes, because it fits building a feature test-first.
+- [ ] No, because it only fits fixing a bug test-first.
+- [ ] No, because it only fits writing integration tests.
+Why: tdd fits building a feature or fixing a bug test-first. A new rule is a small feature, and you've already decided what it should do.
 ```
 
-## Fake only at the edges
+## When not to use it
 
-You don't want every test run to send a real email or charge a real card, so a test sometimes swaps in a fake. The Skill calls it a mock, and its rule is short: ==fake only at system boundaries==, where your code meets something you don't control.
+- For a fast answer to a design question, use its look-alike [prototype](/learn/prototype), because it skips tests and stays off `main`.
+- For a hard bug with no known cause, use [diagnosing-bugs](/learn/diagnosing-bugs). It first builds a **feedback loop**: a quick pass/fail check that fails on a bug and passes once it's fixed.
 
-| Fake it | Never fake it |
-|---|---|
-| Outside services, like payments or email | Your own modules |
-| Time and randomness | Internal helpers |
-| Sometimes the database (a real test database is better) | Anything else you control |
-| Sometimes the filesystem | |
-
-Fake your own code and the test only checks the fake. Even at a boundary, a fake hides what it leaves out: Matt's September talk showed a test that swapped the browser's audio feature for a bare fake, so it could never fail, while the real feature had error cases that only showed up for real users.
-
-One habit makes the edges easy to fake: **pass dependencies in** (dependency injection). Hand a function the outside things it relies on, like a clock or an email service, and a test can hand it a fake instead. This site's Lessons module takes its folder as an input, so its tests pass in folders of fake Lessons.
-
-This site goes further: one of its ADRs (architecture decision records: short notes on a hard-to-reverse choice) says the tests always talk to a real Postgres database, in a copy kept only for tests. Neon, the service that hosts it, calls such a copy a branch. A faked database can pass when the real query would fail.
-
-```checkpoint which-fake-is-wrong
-Your gym app's sign-up charges the first month through a payment service and sends a welcome text through an SMS service, both run by other companies. Four tests each swap one thing for a fake. Which swap breaks the Skill's rule?
-- [ ] The SMS service, handed to sign-up as a dependency.
-  > That's a boundary you don't control, and you don't want real texts going out on every run. Faking it is the rule working.
-- [ ] The payment service that charges the first month.
-  > An outside payment service is a system boundary. Faking it is allowed.
-- [x] The app's pricing module that sets the fee.
-  > Right. That's your own code. Fake it and the test only checks the fake; let it run for real.
-- [ ] The random generator that picks each welcome code.
-  > Randomness is a boundary too. A fake makes the result predictable enough to check.
+```checkpoint quick-6
+You want a design question answered fast, with code that won't ship. Which Skill fits?
+- [x] prototype, which skips tests and stays off `main`.
+- [ ] tdd, which writes one failing test at a time.
+- [ ] diagnosing-bugs, which builds a feedback loop first.
+Why: A prototype answers a design question fast. It skips tests and stays off `main`, so it's the look-alike to use here instead of tdd.
 ```
 
-## When to reach for it
+## What it needs to start
 
-Reach for `/tdd` when there's a concrete behaviour with an input and an output you can observe: a validation rule, a calculation, a transformation, what an API returns. `tdd` is a model-invoked Skill: you can type `/tdd`, and the agent may load it on its own when you ask to build something test-first.
+You type `/tdd`, or the agent starts it when a task fits. [implement](/learn/implement) calls it where possible, and [implement-spec](/learn/implement-spec) calls it for each Ticket. For a whole Ticket, you'd almost always use implement. tdd needs:
 
-| Your situation | Reach for |
-|---|---|
-| A behaviour with clear inputs and outputs | `/tdd` |
-| You're not sure yet what should happen | `/grill-with-docs` first, where the agent questions you until the plan is settled (see [Grilling](/learn/grilling)), then `/implement` (small) or `/to-spec` (multi-session) |
-| The real question is the interface's shape | `/codebase-design` |
-| A spec or tickets (small tasks sized for one session) you want built | `/implement` per ticket, or `/implement-spec` for the whole spec; both drive `tdd` |
-| Styling, settings, code that only connects other pieces | Probably no test: check it by eye |
-| A browser test for a feature that doesn't exist yet | Not first: it makes the loop too slow |
+- A behaviour to build.
+- Seams agreed with you before any test. You can't test everything, so this puts the effort on the critical paths, the parts that must not break.
 
-The fifth row is your call: the Skill has rules for where tests go, but none for whether a change is worth testing (issue #746 asked for that and was closed as not planned). A test of a colour or a setting has no independent answer to check, so it just restates the code.
-
-The last row is about browser tests, which open a real browser and click through a page. They're slow, so Matt's docs say they come after the behaviour works. The Skill won't stop the agent writing one first, so write that rule into your project's `CLAUDE.md`, a file of standing instructions the agent reads each session.
-
-`tdd` is a reference, not a driver: it holds the rules, and something else runs the session. That's you, or `/implement`, which closes out with `code-review`. See [Implement](/learn/implement) and [Code review](/learn/code-review). (Type `/mattpocock-skills:code-review` for Matt's: Claude Code ships its own `/code-review`, a Built-in command with the same name.)
-
-The Skill's docs admit the agent sometimes writes code before the test anyway. If strictness matters for a slice, watch the run.
-
-## How Matt and others use it
-
-**Matt Pocock** called good TDD the most consistent way he has improved what agents produce (March 2026). Some habits, from his videos:
-
-- **TDD is in his standing prompt.** In his April 2026 workshop, the prompt in his Ralph script (built to run the agent unattended, task after task) says: explore the repo, use TDD, then run the feedback loops (tests and other automatic checks). He ran it once on stage and pointed out the agent confirming red before green.
-- **He shapes the codebase around testing.** He said he'd warped his whole technique around making TDD work: a badly structured codebase has no clear test boundaries, while modules that hide a lot behind a small interface have clear seams. See [Architecture](/learn/architecture).
-- **He enforces test quality at review.** In the September talk he argued that an implementing agent already has too much to do, so standards belong in a separate review with its own context: make it work, then make it good.
-
-**Other developers:**
-
-- A developer posting as Warshoow ran `/implement` unattended, one ticket after another, and reported that across 173 sessions on their machine (September 2026), `tdd` never ran once. Matt's `/implement` now tells the agent explicitly to load `tdd`.
-- In October 2026, Colin Eberhardt of the consultancy Scott Logic rebuilt an app with Matt's Skills. `/implement` ran red-green TDD and the reviews caught real bugs, but its storage tests, repeated for every kind of record, checked their fakes more than the code.
-
-## Try it yourself
-
-````try
-You need Claude Code installed and signed in (see [Start here](/learn/start-here)).
-
-1. In your terminal, make an empty folder and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
-
-```sh
-mkdir reading-time
-cd reading-time
-claude
+```checkpoint quick-7
+Why does the agent agree seams with you before it writes any test?
+- [x] You can't test everything, so it puts effort on the critical paths.
+- [ ] It isn't allowed to read any of your code until you have said yes.
+- [ ] It can then write all of the tests at once, in a single big batch.
+Why: You can't test everything. Agreeing the seams before any test puts the effort on the critical paths.
 ```
 
-2. Type a slash and then tdd, but don't press Enter. If `tdd` is in the list that pops up, delete what you typed and go on to step 3. If it isn't, delete it, type `/exit`, run this in your terminal to install Matt's Skills, then run `claude` again:
+## What it creates
 
-```sh
-claude plugin install mattpocock-skills@claude-plugins-official
+- Tests at the agreed seams, each one failing before its code was written.
+- Only enough code to pass them, with no extra features.
+
+```checkpoint quick-8
+You open a test that tdd left behind. What should be true of a test that tdd leaves behind?
+- [x] It failed before the code that passes it was written.
+- [ ] It was written after its code, to confirm the code works.
+- [ ] It was written at a seam the agent chose without asking.
+Why: tdd leaves tests at the agreed seams, each one failing before its code was written, plus only enough code to pass them.
 ```
 
-3. Check that plan mode (where the agent only reads and proposes) is off: if you see "plan mode on" under the prompt box, press Shift+Tab until it changes. Any other mode is fine.
-4. Type this:
+## Going deeper
+
+### Why it exists
+
+TDD, short for test-driven development, was built for people. A failing test reminds you where you were when you come back from a coffee break. Matt puts it this way: "TDD optimizes for having a very small working memory." Agents hold far more than people do, so they don't need that reminder.
+
+What agents do need is feedback: a way to see what their code does when it runs. A test that fails first gives them that. Matt adds that a failure built first is very hard for an agent to cheat.
+
+So Matt often asks an agent for **TDD evidence**: proof that the test would fail without the change.
+
+```checkpoint quick-9
+You want an agent to show that its change really does something. What do you ask for?
+- [x] TDD evidence: proof the test would fail without the change.
+- [ ] A test run showing that the new test passed the first time.
+- [ ] A list of every function that the change touched and tested.
+Why: TDD evidence is proof that the test would fail without the change. So the change is what turns the test green.
+```
+
+There's a second problem: agents often write poor tests. So tdd holds the rules that make the loop produce tests worth keeping.
+
+Matt admits mixed feelings about TDD, but still recommends it for the confidence it gives.
+
+### How it works underneath
+
+Kent Beck, who rediscovered TDD, wrote its loop down as Canon TDD (2023). It has five steps. You list your test scenarios, turn exactly one into a real test, and make it pass. Step 4 is "Optionally refactor". Step 5 repeats until the list is empty.
+
+Two of Beck's named mistakes are close to Matt's anti-patterns:
+
+- **Turning the whole list into tests first.** If the first test changes your mind, Beck says you get "Rework". Matt calls this horizontal slicing.
+- **Pasting computed values in as the expected values.** Beck says that "defeats double checking". Matt's closest anti-pattern is the tautological test, which recomputes the value the way the code does.
+
+```checkpoint quick-10
+You turn your whole test list into tests, then start on the code. What does Beck warn about?
+- [x] If the first test changes your mind, you get rework.
+- [ ] A long list of tests takes too long for the agent to run.
+- [ ] The tests end up copying computed values from the code.
+Why: If the first test changes your mind, the tests you've already written need rework. Matt calls this mistake horizontal slicing.
+```
+
+For example, say a booking adds up its line prices. Here's a tautological test, then the fix:
+
+```python
+# Tautological: repeats the code's own sum
+assert booking_total(prices) == sum(prices)
+
+# Independent: a known value
+assert booking_total([10, 5]) == 15
+```
+
+Canon TDD and Matt's tdd share one test at a time. But Canon TDD starts from a test list, while Matt's tdd starts from agreed seams. And only Canon TDD keeps a refactor step.
+
+```checkpoint quick-11
+You're comparing Canon TDD with Matt's tdd. Which one keeps a refactor step?
+- [x] Only Canon TDD.
+- [ ] Only Matt's tdd.
+- [ ] Both of them.
+Why: Both take one test at a time. Canon TDD starts from a test list and keeps a refactor step. Matt's tdd starts from agreed seams and doesn't.
+```
+
+```diagram
+type: compare
+caption: "Canon TDD and Matt's tdd"
+columns: ["Canon TDD", "Matt's tdd"]
+rows:
+  - label: "one test at a time"
+    cells: ["yes", "yes"]
+  - label: "starts from"
+    cells: ["a test list", "agreed seams"]
+  - label: "a refactor step"
+    cells: ["yes", "no"]
+```
+
+Matt removed that step because agents almost never performed it, and because review and implementation work better as separate sessions. The phrase "red-green-refactor" still starts the Skill, but what you get is red-green.
+
+The Skill's file is short on purpose. The loop rests on **leading words**, compact terms the model already knows and thinks with: TDD, red/green and tracer bullet. So the old Workflow section, which spelled the loop out step by step, was largely a no-op: it changed almost nothing. What's left is a reference: seams, anti-patterns and the rules of the loop.
+
+```checkpoint quick-12
+Why could Matt cut the Workflow section from tdd?
+- [x] The model already holds the loop's words, like TDD and red/green.
+- [ ] The section moved into code-review, along with the refactor step.
+- [ ] The section became a longer checklist for each cycle of the loop.
+Why: The loop rests on leading words the model already holds. Spelling it out changed almost nothing, so what's left is a reference.
+```
+
+The reference also has the agent read `GLOSSARY.md`, if any, so test names match the project's words.
+
+### A real example
+
+Until October 2026, tdd's seam question named seams by label only, so you had to guess. It was "the most-reported friction with the skill".
+
+Matt's one-line fix changed the question:
 
 ```text
-/tdd In this empty folder, set up the smallest project you can with a language and test runner already installed on this machine. Then build readingTime(text) for a Lesson page: whole minutes at 200 words per minute, rounded up, never less than 1.
+Before: Which seam: A (component boundary) or B (integration boundary)?
+After:  A: component boundary: catches rendering bugs, misses network failures.
+        B: integration boundary: catches the full round-trip, slower to isolate.
 ```
 
-5. When it proposes a seam, reply: "Yes, test through readingTime itself." If it asks what to cover, offer: empty text takes 1 minute, 201 words take 2, 200 words take 1.
-6. If it asks permission to create files or run tests in this folder, choose Yes. Watch its messages: each test should fail before its code is written.
-7. When it's done, type: "Rewrite the inside of readingTime a different way, without changing what it returns, then run the tests and show me the test file."
-8. Press Esc at any point to stop it. Type `/exit` when you're done.
+Today each proposed seam gets a note on what it catches and what it misses. Matt's page on the Skill still says no fix has shipped.
 
-**It's working if:**
-
-- [ ] It proposed a seam, with what it catches and misses, and waited before any test file existed.
-- [ ] Tests appeared one at a time, and you saw each fail: before its code, or with the code broken on purpose.
-- [ ] Before your rewrite, it finished without a tidy-up pass of its own.
-- [ ] Test names describe behaviour ("201 words take 2 minutes"), and expected values are plain numbers like 2, not the formula again.
-- [ ] Nothing was faked.
-- [ ] Your rewrite in step 7 broke no tests.
-
-If it writes a batch of tests at once, say: "One test at a time: red, then green." If one passes straight away, say: "Break the code, show me that test fail, then restore it." If it never stops to agree a seam, press Esc and say: "Propose the seam, with what it catches and misses, and wait for my OK."
-````
-
-## Common mistakes
-
-- **Picking a seam blind.** If a proposal doesn't say what each seam catches and misses, ask before you answer.
-- **Expecting `tdd` to know about other tickets.** It sees the one you give it. Pass the spec too if a slice depends on its neighbours.
-
-```site-story
-I typed `/tdd` four times while building the first version of this site, once per ticket.
-
-| Ticket | Where the tests went | Result |
-|---|---|---|
-| 03 Lesson pages | The Lessons module's public functions, fed folders of fake Lessons | 7 tests; pages checked by eye |
-| 04 Comments table | None, by agreement: no public entry point yet | Checked the table existed on every database branch |
-| 05 Comments API | `GET` and `POST /api/comments`, against the real Neon `test` branch | 12 tests, including 2000 vs 2001 characters and broken JSON |
-| 06 Comment box | None, by agreement: its logic lives in the tested API | Checked by eye on a preview copy of the site |
-
-**Tests can be dangerous.** Mine empty the comments table before each one. So a setup file refuses to run unless the database address comes from `.env.test.local`, which points at the test branch.
-
-**Say so when a test is green from the start.** I learned to admit when one was, rather than pretend it had gone red.
-
-**Passing isn't the same as correct.** Later, Matt's two-axis review (`/mattpocock-skills:code-review`) found a crash none of my 19 tests had tried: a number instead of text as the comment crashed the API with a 500 error. I fixed it test-first: a red test reproduced `.trim is not a function`, all the input checks moved into the comments module, and it went green. That made 20.
-
-**For the site's later redesign, the spec named one seam:** the Lessons module's public functions, fed folders of fake Lessons; the look was checked with screenshots. The ticket said "Build the Lessons module change with `/tdd`", and it ended with 11 Lessons-module tests, including checks that a Lesson file missing a photo field fails loudly.
-
-What I took away: deciding *where* to test mattered more than testing everything.
+```checkpoint quick-13
+The agent proposes two seams and asks you to pick. What should it tell you about each one?
+- [x] What it catches and what it misses.
+- [ ] How long its tests will take to run.
+- [ ] Which file of the code it lives in.
+Why: A note on what each seam catches and what it misses gives you a basis for choosing, so you no longer have to guess.
 ```
 
-## Cheat sheet
+### Where it goes wrong
 
-| Moment | What to do |
-|---|---|
-| Start | `/tdd <the behaviour you want>`, or `/mattpocock-skills:tdd` |
-| It proposes seams | Pick the highest one that catches what matters; ask what each misses |
-| Each cycle | One failing test, seen red, then just enough code to turn it green |
-| Expected values | Numbers from the spec or a worked example, never the code's own formula |
-| Faking | System boundaries only: outside services, time, randomness, sometimes files; a real test database if you can |
-| After green | No refactor: review flags what to tidy |
-| Skip it | Styling, settings, connecting code; browser tests come later |
+**The agent wrote the code before the test.** One model, pushed on it, said it "defaulted to my normal habit". No instruction makes an agent comply every time, and stricter wording gains little. If a slice matters, watch the run rather than trusting the Skill to enforce it.
+
+```checkpoint quick-14
+A slice really matters, and you know agents sometimes write the code first. What do you do?
+- [x] Watch the run, instead of trusting the Skill to enforce it.
+- [ ] Add stricter wording to the Skill until the agent complies.
+- [ ] Switch to prototype, which doesn't need any tests at all.
+Why: No instruction makes an agent comply every time, and stricter wording gains little. If a slice matters, watch the run.
+```
+
+**implement skipped tdd.** One user counted 17 implement runs in their transcripts, with 0 tdd calls. The issue blames no agreed seam, so nothing triggers tdd, and "where possible", which reads as optional. Matt's later change to a Skill tool call kept those words. So look in the run for a `tdd` Skill tool call, which shows the agent really loaded it, before any code changes.
+
+**The first red only proved a name was missing.** A model asked to reproduce a bug wrote tests against a method that didn't exist yet. It reported "confirmed red (no method named drain_settled, 4 compile errors)". The bug itself never happened, so no test guards against it coming back. Ask for a test that calls the existing code and fails on the wrong behaviour.
+
+```checkpoint quick-15
+Fixing a bug, the agent reports red: compile errors on a method it hasn't written. What do you ask for?
+- [x] A test on the existing code that fails on the wrong behaviour.
+- [ ] The missing method first, so the test can compile and go green.
+- [ ] A second test against the same missing method, to confirm the red.
+Why: That red only proves a name is missing. The bug never happened in the test, so ask for one that calls the existing code and fails on the wrong behaviour.
+```
+
+**A test vanished on the way to green.** Beck lists "disabling or deleting tests" as a sign of an AI cheating. Check the diff, and have the agent pass it for real.
+
+**The test only restates the code.** For config, wiring or glue, there's often no independent value to check against, so the loop gives you "a test that restates the implementation". Nothing in tdd decides whether a change is worth the loop. You make that call yourself, or write the rule into your `CLAUDE.md`. The request for such a rule was closed as not planned.
+
+**A browser test came first.** A browser test drives a real web page, and it's slow enough that the red-green loop stops paying for itself. One agent wrote one before the feature existed, then decided the test was broken. So say in your repo's `CLAUDE.md` that browser tests come after the behaviour works.
+
+### Try it
+
+Use tdd to fix one bug in your practice project. Say a booking still goes through for a class that has already started. If you haven't added a full-class rule yet, a full class still taking one more booking works too.
+
+You'll need the practice project's booking endpoint. [keeping track](/learn/issues-and-keeping-track)'s Try it step sets up the project, and [implement](/learn/implement)'s builds the endpoint. It needs pytest, running in Docker Compose as a service called `api`.
+
+1. Open a fresh session in the project and type `/tdd`.
+2. Describe the bug, and ask the agent to fix it test-first.
+3. Read the seams it proposes. You should see a note on what each one catches and misses.
+4. Confirm the seam `POST /bookings`.
+5. Read the first red. You should see pytest fail because the booking went through.
+6. Read the test's expected value, the response it asserts. It should be a literal, not computed the way the code does.
+7. Let the agent write only enough code to pass the test.
+8. Run `docker compose exec api pytest`. You should see every test pass.
+9. Commit the fix on a branch, and merge it through a pull request. You should see it on `main`.
+
+If a seam has no note, ask for one before you confirm. If the first red is an `ImportError` or `AttributeError`, only a name is missing. Ask for a test that calls the existing endpoint and fails because the booking goes through.
+
+### Read more
+
+- [The /tdd Skill](https://www.aihero.dev/skills-tdd), Matt Pocock, updated 2026-08-24
+- [AI Skills with Matt Pocock](https://www.youtube.com/watch?v=4DhcSPkEbwI), The Pragmatic Engineer with Matt Pocock, 2026-09-17
+- [Canon TDD](https://newsletter.kentbeck.com/p/canon-tdd), Kent Beck, 2023-12-11
+- [Augmented Coding: Beyond the Vibes](https://newsletter.kentbeck.com/p/augmented-coding-beyond-the-vibes), Kent Beck, 2025-06-25
+- [tdd: reshape into reference-only with pre-agreed seams (#393)](https://github.com/mattpocock/skills/pull/393), Matt Pocock, 2026-06-30
+- [tdd: note what each proposed seam catches and misses (#1192)](https://github.com/mattpocock/skills/pull/1192), Matt Pocock, 2026-10-06
+- [`skills/engineering/tdd` allows for incorrect TDD tests and considers them valid RED -> GREEN (#1210)](https://github.com/mattpocock/skills/issues/1210), Teebor-Choka, 2026-10-07
+- [/implement silently skips its /tdd and /code-review steps (#479)](https://github.com/mattpocock/skills/issues/479), AlejandroFuentePinero, 2026-07-09
+
+## Practice scenarios
+
+Optional practice: more situations like the ones in the final test.
+
+```checkpoint tdd-deeper-reproduce-the-bug
+Your FastAPI booking backend lets two people book the last place in a class. You ask the agent to fix it test-first. It reports red, because pytest failed with an AttributeError on a helper it hasn't written yet. You ask for a different first test. What's the reason behind this step?
+- [x] A red on a missing name never shows the double booking, so no test guards it.
+- [ ] An AttributeError means the test mocks an internal part, which tdd forbids.
+  > Nothing is mocked here. The problem is what the failure proves, not how the test is built.
+- [ ] The first test for a bug should drive the browser, so a test on the backend can't count.
+  > Browser tests are slow enough that the red-green feedback loop stops paying for itself.
+- [ ] The helper should be written first, so the test can import it before going red.
+  > That writes code before the test. The red should come from the existing code doing the wrong thing.
+Why: A red on a missing name proves only that the name is missing. The double booking never happens in that test, so nothing guards against it coming back. A useful red comes from the existing code doing the wrong thing, here a second booking going through.
+```
+
+## Remember
+
+```flashcards
+Q: What is tdd's loop?
+A: Red → green: write a failing test first, then only enough code to pass it.
+
+Q: In tdd, what is a seam?
+A: The public boundary you test at, where you see behaviour without reaching inside.
+
+Q: Where does refactoring belong, if not in tdd's loop?
+A: In the review stage: [code-review](/learn/code-review).
+
+Q: What does tdd create?
+A: Tests at the agreed seams, each failing before its code was written, and only enough code to pass them.
+
+Q: Who rediscovered TDD, and which step does his Canon TDD keep that tdd dropped?
+A: Kent Beck. Canon TDD (2023) keeps step 4, "Optionally refactor".
+
+Q: Why does Matt say a test that fails first helps agents?
+A: It gives them a feedback loop on how their code really runs, and that failure is very hard for an agent to fake.
+
+Q: Why could tdd drop its step-by-step Workflow section?
+A: The red → green loop rests on leading words the model already holds (TDD, red/green, tracer bullet), so the Workflow was largely a no-op.
+```
 
 ## Final test
 
-```final-test scenario-seam-choice
-You're adding discount codes to a shop's checkout with `/tdd`. The agent proposes two seams: the `checkout(cart, code)` function the checkout page calls, which catches the total a customer pays but misses how the page shows it, or the discount module's `parseCode(code)` function, which catches how codes are read but misses whether checkout applies them. Which do you pick?
-- [ ] `parseCode`, because smaller functions make more precise tests.
-  > Precise, but it's the lower seam. It can't tell you whether customers pay the right total.
-- [ ] Both, plus a test for every helper in the checkout module.
-  > You can't test everything, and helpers are internals. Seams are agreed so the effort lands on what matters.
-- [x] `checkout`, since parse bugs would show up in its total too.
-  > Right. It's the higher seam: a parsing bug shows up as a wrong total, and it also catches whether the code gets applied at all.
-- [ ] Neither, until a browser test of the checkout page exists.
-  > Browser tests make the loop too slow to pay off. They come after the behaviour works.
+```final-test tdd-before-first-test
+You start tdd on a new behaviour. What happens before any test is written?
+- [x] The seams to test are written down and confirmed with you.
+- [ ] Every test for the feature is written, so the code has a target.
+- [ ] The existing code is refactored first so it's easier to test.
+- [ ] A throwaway prototype is built first to explore the design.
+Why: You can't test everything. So the agent writes down the seams first and you confirm them, which puts the testing effort on the critical paths and complex logic, not on every edge case.
 ```
 
-```final-test scenario-clock
-Your to-do app stamps a task with the current time when you tick it off, and hides tasks finished more than 30 days ago. You're writing the test "a task finished 31 days ago is hidden". What should the test fake?
-- [ ] The function that works out each task's age.
-  > That's your own code, part of what's under test. Fake it and the test only checks the fake; control the clock it reads instead.
-- [ ] Nothing: create a task and wait 31 days.
-  > Real waiting makes the test useless. Time is a boundary you're allowed to fake.
-- [ ] The database, so the test needn't set up a real one.
-  > A real test database is preferred, and faking it doesn't help: the app takes the finish time from the clock, so the clock is what the test must control.
-- [x] The clock, passed in so the test can set "today".
-  > Right. Time is a system boundary. Pass the clock in and the test can jump 31 days in a millisecond.
+```final-test tdd-tautological
+A test checks that a booking total equals the line prices added up the same way the code adds them. What's wrong with it?
+- [x] It's tautological, so it can never disagree with the code.
+- [ ] It's implementation-coupled, because it mocks an internal part.
+- [ ] It's a horizontal slice, because it was written before the code.
+Why: Both sides do the same sum, so they always match, and the test can never disagree with the code. The expected value has to come from somewhere independent, such as a known literal or a worked example.
 ```
 
-```final-test scenario-no-refactor
-A teammate who learned TDD years ago watches your `/tdd` run and says the agent keeps skipping the refactor step after each green. What do you tell them?
-- [ ] The Skill failed to load, so reinstall Matt's Skills.
-  > It's working as designed. Since version 1.1 the loop is red, then green, even though the description still mentions refactoring.
-- [x] Nothing's wrong: refactoring moved to review.
-  > Right. Version 1.1 dropped the refactor step: agents rarely did it with their own code still in context, and a separate review with a fresh context does it better.
-- [ ] It skipped a step, so remind it to refactor every cycle.
-  > There's no refactor step to skip. Tidying belongs to review, with a fresh context.
-- [ ] It's saving the refactoring for one big pass at the end.
-  > There's no end-of-loop pass either. Refactoring happens at review.
+```final-test tdd-where-to-mock
+You're writing a test with tdd, and you want to use a mock. Where may it go?
+- [x] Only at system boundaries, like outside APIs or time.
+- [ ] Around every module, so each one is tested on its own.
+- [ ] Around your own classes, since you control what they do.
+- [ ] Nowhere. A test with a mock isn't testing the real code.
+Why: A mock belongs where your code meets something you don't control, such as an outside API or the clock. Mock your own modules and the test reaches into the code's insides, so it can break when you refactor even though the behaviour hasn't changed.
 ```
 
-```final-test scenario-tickets
-You've settled a feature with `/grill-with-docs`, written a spec with `/to-spec` and split it into four tickets with `/to-tickets`. What do you type to build the first ticket?
-- [x] `/implement`, to work through the ticket
-  > Right. `/implement` runs the session, drives `tdd` for the ticket, then closes out with a review.
-- [ ] `/tdd` for the ticket's tests, then `/implement` for its code
-  > That splits the loop in two. `/implement` already calls `tdd`, so each test and its code arrive together, one slice at a time.
-- [ ] `/mattpocock-skills:code-review` on the ticket, to set standards first
-  > Review comes after the code exists. It reviews the changes, not a plan.
-- [ ] `/to-spec` again, to add the ticket's test cases
-  > The spec is done, and its seams are agreed. Tests get written during the build.
+```final-test tdd-deeper-why-no-refactor
+Why did Matt drop the refactor step from tdd's loop?
+- [x] Agents almost never performed it, and review works better as a separate session.
+- [ ] Kent Beck's Canon TDD has no refactor step, so tdd was brought in line with it.
+- [ ] Refactoring inside the loop kept turning good tests into tautological ones.
+- [ ] The longer loop no longer fit in the model's context window on big features.
+Why: Agents almost never did the step, so it wasn't earning its place, and review and building work better as separate sessions. Beck's Canon TDD isn't the reason, because it keeps a step 4, "Optionally refactor".
 ```
 
-```final-test scenario-best-fit
-Four small jobs are waiting on your project. Which one is the best fit for `/tdd`?
-- [ ] Changing the site's accent colour in a CSS file.
-  > A test of the new colour would only restate the code. Check it by eye.
-- [ ] Adding a menu link that points at a new page.
-  > That only connects two pieces, with nothing to work out. Check it by eye.
-- [ ] A browser test for a checkout page not built yet.
-  > Browser tests first make the loop too slow to pay off. They come after the behaviour works.
-- [x] A function that splits a bill between friends.
-  > Right. Clear inputs, an output you can check by hand (£30 split three ways is £10 each), and rules worth pinning down.
+```final-test tdd-deeper-compile-red
+Asked to reproduce a bug, a model's first red was 4 compile errors for a method that didn't exist yet. Why didn't that red count?
+- [x] It only proved a name was missing, so the bug itself was never reproduced.
+- [ ] It mocked an internal part of the code, so the test was implementation-coupled.
+- [ ] Several tests before any code is horizontal slicing, and that cancels any red.
+- [ ] It ran a slow browser test, so the red-green loop stopped paying for itself.
+Why: A red should show the bug happening. Compile errors on a missing method show only that a name is missing, so the pass "did not replicate the target issue". With no test that reproduces the bug, no test guards against it coming back.
 ```
 
-```final-test spot-tautological
-A shipping test says `expect(shippingCost(parcel)).toBe(parcel.kg * RATE_PER_KG)`. Spot the mistake.
-- [ ] It calls the real `shippingCost` instead of a mock.
-  > `shippingCost` is the code under test. Calling it for real through its interface is right; mocks are for boundaries.
-- [ ] It makes more than one logical assertion.
-  > It makes one. The problem is where the expected value comes from.
-- [x] Its expected value repeats the code's own formula.
-  > Right. It's tautological, so it passes even if the formula is wrong. Use a worked example from the price list instead.
-- [ ] It should test every parcel weight, not just this one.
-  > More weights checked the same way would all share the flaw. One case per test is fine; the problem is the expected value.
+```final-test tdd-cancellation-rule
+Your FastAPI booking backend needs a new rule. A booking can't be cancelled within 24 hours of its start. You want the rule built with tests that will still hold after later refactors. Which fits best?
+- [x] Write one failing test at a time, then the code to make it pass.
+  > Right: that's `/tdd`.
+- [ ] Build a quick throwaway version first to try the rule on a few cases.
+  > That's `/prototype`. A prototype has no tests and stays off main. This rule is decided, and it needs tests that last.
+- [ ] Review the change against the Spec and the coding standards.
+  > That's `/code-review`. Nothing is built yet, so there's no change to review.
+Why: The rule is decided, so it's ready to build test-first. The tests go through public interfaces and don't depend on the code's insides, so they survive later refactors.
 ```
 
-```final-test spot-side-channel
-A test named "a booked class shows on the member's timetable" calls `bookClass(member, "yoga")`, then runs its own query on the bookings table to check a row exists. Spot the mistake.
-- [x] It checks through a side channel, not the interface.
-  > Right. Read it back the way a member would, through `getTimetable(member)`, so a change to the table can't break a working feature.
-- [ ] It should fake the database instead of using a real one.
-  > A real test database is the preferred option. The problem is how the test checks the result.
-- [ ] It's tautological, because it checks a value it just set.
-  > "yoga" is an independent literal. The problem is the route the test takes to check it.
-- [ ] It tests too little: it should check every column.
-  > More columns would tie it even more tightly to the table.
+```final-test tdd-or-prototype
+You can't decide whether the booking flow in your AI agent needs three states or four. You want to push it through a few tricky cases and see which feels right before building it for real. Which fits best?
+- [x] Build throwaway code that lets you click through the cases.
+  > Right: that's `/prototype`.
+- [ ] Write a failing test for each state, then the code to pass it.
+  > That's `/tdd`. Tests pin down behaviour you've already decided. Here the design question is still open.
+- [ ] Build it now, test-first, and get the work reviewed.
+  > That's `/implement`. There's nothing settled to build yet. The question has to be answered first.
+Why: The question here is "does this state model feel right?", and nothing is decided yet. A prototype answers that fast, and it stays off main. Tests pin down behaviour you've decided, so tdd comes after, once the answer is in.
 ```
 
-```final-test spot-batch
-Asked to build a password-strength checker with `/tdd`, the agent creates a file of 15 tests and runs them: all 15 fail. Then it writes the whole checker, and all 15 pass. Spot the mistake.
-- [ ] Nothing: every test was seen red, then green.
-  > Seeing red isn't enough on its own. Fifteen tests written before any code describe imagined behaviour and lock in a structure too early.
-- [ ] It should have written the checker first.
-  > Code first lets the tests bend to fit the code, which is what the loop prevents.
-- [x] It wrote all the tests before any code.
-  > Right. That's horizontal slicing. One test, red, just enough code, green, then the next, each shaped by what the last one taught.
-- [ ] Fifteen tests is too many for one feature.
-  > The count isn't the problem; the order is.
+```final-test tdd-green-then-tidy
+The tests for your cancellation rule have gone green. The code works, but you'd like to rename a few things and pull out a helper function. What comes next?
+- [x] Leave the tidy-up for the review, once the building is done.
+  > Right: that's `/code-review`.
+- [ ] Tidy it now, as the refactor step of the red-green loop.
+  > That's `/tdd`. Refactoring is not part of the loop. Each cycle is one test and only enough code.
+- [ ] Write the pull request body first, then tidy before merging.
+  > That's `/pr`. The pull request should describe the finished change, after the review.
+Why: Refactoring isn't part of the red-green loop, so tidying waits until the building is done. The review stage then flags things like a mysterious name or duplicated code, and says how to fix them.
 ```
 
-```final-test sequence-loop
-You give `/tdd` a new behaviour to build in your project. Which order matches the Skill?
-- [ ] Agree the seam → one failing test → just enough code → refactor → next test
-  > That's classic TDD. This Skill has no refactor step: tidying happens later, at review, with a fresh context.
-- [ ] Agree the seam → write the code → write a test → see it pass
-  > Code before the test lets the test bend to fit it, and a test you only ever see pass proves little.
-- [ ] One failing test → agree its seam → just enough code → next test
-  > No test is written at a seam you haven't agreed. The seam comes before the first red.
-- [x] Agree the seam → one failing test → just enough code → next test
-  > Right. Seam first, then red, then green, one slice at a time. Refactoring waits for review.
+```final-test tdd-one-slice
+Building the cancellation rule, the agent writes one failing test, makes it pass, and only then writes the next test. It never writes all the tests up front. What's the reason behind this step?
+- [x] Each test can respond to what the last cycle taught.
+- [ ] It's less typing than writing every test for the rule at once.
+  > Typing isn't the reason. Tests written in bulk check imagined behaviour, not real behaviour.
+- [ ] A test runner can only report one failing test at a time.
+  > Test runners handle many failing tests. The one-at-a-time rule is about learning from each cycle.
+- [ ] It lets the agent leave out the tests for the hard parts of the rule.
+  > Nothing is skipped. Each slice is one seam, one test and one small piece of code.
+Why: Tests written in bulk check behaviour you've only imagined, and they fix a test structure before you understand the code. Working one test at a time, each test is a tracer bullet that responds to what the last cycle taught you.
 ```
 
-```final-test why-test-first
-A friend says: "I let the agent write the code, then ask it for tests at the end. Same result, fewer steps." What's the strongest reply?
-- [ ] "It's the same if every test passes at the end."
-  > Passing is the problem: tests shaped to fit the code pass anyway, like the comment-limit test that never checked the API.
-- [x] "Tests written afterwards fit the code, not what it should do."
-  > Right. A test that fails before the code exists, then passes, is evidence. One written afterwards may just describe what's there, gaps included.
-- [ ] "Then just ask it for twice as many tests."
-  > More tests written the same way fit the code the same way. The order matters, not the count.
-- [ ] "Tests written afterwards never catch anything, so skip them entirely."
-  > Too strong. They can catch some bugs, but nobody saw them fail, so you can't tell which ones check anything.
+```final-test tdd-agree-seams
+Before writing any test for your SQL-backed bookings endpoint, the agent lists the seams it plans to test, notes what each one catches and misses, and waits for you to confirm. What's the reason behind this step?
+- [x] So testing effort lands on the critical paths, not every edge case.
+- [ ] So it can mock every module that sits behind each agreed seam.
+  > tdd mocks only at system boundaries, never your own modules.
+- [ ] So it can write every test at once, as soon as the seams are known.
+  > Tests still come one at a time, each made to pass before the next.
+- [ ] Because the agent isn't allowed to read the code until you confirm.
+  > Nothing stops it reading the code. The confirmation is about where testing effort goes.
+Why: You can't test everything, so the agreement decides where the testing effort goes. Each proposed seam's note says what it catches and what it misses, so you can choose the ones that cover the critical paths.
 ```
 
 ```sources
-- [tdd SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/SKILL.md), with [tests.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/tests.md) and [mocking.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/mocking.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [to-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/to-spec/SKILL.md) (seams in the spec), [implement SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement/SKILL.md) and [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/implement-spec/SKILL.md) (both drive tdd), [code-review SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/code-review/SKILL.md) (reports, doesn't edit) and [codebase-design SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/codebase-design/SKILL.md) (seam, module, interface): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/README.md) (user-invoked vs model-invoked Skills): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [The /tdd Skill](https://www.aihero.dev/skills-tdd), AI Hero docs (browser tests after the behaviour; code before the test happens), updated 2026-08-24, read 2026-10-23.
-- [mattpocock/skills release v1.1.0](https://github.com/mattpocock/skills/releases/tag/v1.1.0) (refactor step dropped, seams introduced), 2026-07-08; issues [#589](https://github.com/mattpocock/skills/issues/589), [#607](https://github.com/mattpocock/skills/issues/607) and [#746](https://github.com/mattpocock/skills/issues/746), read 2026-10-23.
-- [5 Claude Code skills I use every single day](https://www.youtube.com/watch?v=EJyuu6zlQCg), Matt Pocock, 2026-03-16 (TDD as his most consistent lever 9:24–9:52; the weak refactor step 11:37–11:59; TDD needs clear module boundaries 12:05–12:27).
-- [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock at AI Engineer, 2026-04-24 (TDD in the Ralph prompt, run once on stage 57:21–57:43; confirming red, cheating in layers, warping his technique 66:42–68:34; feedback loops as the ceiling 69:45–70:30).
-- [How To De-Slop A Codebase Ruined By AI](https://www.youtube.com/watch?v=3MP8D-mdheA), Matt Pocock, 2026-04-29 (seams as where tests go, 3:45–4:40).
-- [Fixing the PR Bottleneck](https://www.youtube.com/watch?v=LlgiOCmFG_w), Matt Pocock at AI Engineer Paris, 2026-09-25 (tautological, structure-bound and unfailable tests 5:24–7:55; deep modules 8:40–9:30; standards at review, not implementation 11:35–14:00; checked on an auto-translated track).
-- [ADR 0003: tests run against a real Neon branch](https://github.com/SiddharthMuramkar/idea-to-shipped/blob/main/docs/adr/0003-tests-hit-real-postgres.md), this site's repo, read 2026-10-24.
-- [An honest review of Matt Pocock's Skills framework](https://blog.scottlogic.com/2026/10/19/an-honest-review-of-matt-pococks-skills.html), Colin Eberhardt, Scott Logic, 2026-10-19.
-- [afk.sh: chaining /implement over ready-for-agent tickets overnight, one fresh session per ticket](https://github.com/mattpocock/skills/discussions/1136), GitHub Discussion #1136, 2026-09-28, with Warshoow's comment of 2026-09-29.
+- [/implement silently skips its /tdd and /code-review steps (#479)](https://github.com/mattpocock/skills/issues/479), AlejandroFuentePinero, 2026-07-09
+- [The /tdd Skill](https://www.aihero.dev/skills-tdd), Matt Pocock, Updated Aug 24, 2026
+- [tdd: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/tdd/SKILL.md), Matt Pocock's Skills
+- [writing-for-agents: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/writing-for-agents/SKILL.md), Matt Pocock's Skills
+- [tdd: mocking.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/tdd/mocking.md), Matt Pocock's Skills
+- [tdd: tests.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/tdd/tests.md), Matt Pocock's Skills
+- [implement: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement/SKILL.md), Matt Pocock's Skills
+- [implement-spec: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement-spec/SKILL.md), Matt Pocock's Skills
+- [diagnosing-bugs: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/diagnosing-bugs/SKILL.md), Matt Pocock's Skills
+- [prototype: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/prototype/SKILL.md), Matt Pocock's Skills
+- [AI Skills with Matt Pocock](https://www.youtube.com/watch?v=4DhcSPkEbwI), The Pragmatic Engineer (Gergely Orosz) with Matt Pocock, 2026-09-17
+- [Canon TDD](https://newsletter.kentbeck.com/p/canon-tdd), Kent Beck, 2023-12-11
+- [Augmented Coding: Beyond the Vibes](https://newsletter.kentbeck.com/p/augmented-coding-beyond-the-vibes), Kent Beck, 2025-06-25
+- [tdd: reshape into reference-only with pre-agreed seams #393](https://github.com/mattpocock/skills/pull/393), Matt Pocock (mattpocock), 2026-06-30
+- [tdd: note what each proposed seam catches and misses #1192](https://github.com/mattpocock/skills/pull/1192), Matt Pocock (mattpocock), 2026-10-06
+- [`skills/engineering/tdd` allows for incorrect TDD tests and considers them valid RED -> GREEN #1210](https://github.com/mattpocock/skills/issues/1210), Teebor-Choka (issue); triage comment on mattpocock marked AI-generated, 2026-10-07
+- [tdd: nothing decides whether a change warrants the loop — only where the seams go #746](https://github.com/mattpocock/skills/issues/746), yifengingit (issue), 2026-08-05
+- [implement: call the Skill tool for tdd and code-review (e48341a)](https://github.com/mattpocock/skills/commit/e48341a3d412cfeba4b9a79d3fd0331fc376ba82), Matt Pocock, 2026-10-06
+- [ask-matt: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/SKILL.md), Matt Pocock's Skills
+- [code-review: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/code-review/SKILL.md), Matt Pocock's Skills
 ```

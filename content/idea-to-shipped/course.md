@@ -1,32 +1,38 @@
 ---
-title: Idea to shipped
+title: Idea to shipped: the main flow
 slug: idea-to-shipped
+description: Matt Pocock's main flow, Skill by Skill: grill the idea, write the Spec, cut it into Tickets, build test-first, review and ship.
+order: 4
 ---
 
-## Foundations
-- start-here
-- how-agents-work
-- context-window
-- skills
+## Before you build
+- main-flow
+- one-shared-language
+- fix-the-environment
+- setup-matt-pocock-skills
 
-## The main flow
+## Grill the idea
+- grill-before-you-build
 - grilling
+- grill-me
+- grill-with-docs
 - domain-modeling
 - prototype
-- spec-and-issues
-- tdd
+
+## Plan the work
+- context-hygiene
+- handoff
+- test-first
+- to-spec
+- small-end-to-end-tickets
+- to-tickets
+
+## Build, review, ship
+- review-spec-and-standards
 - implement
+- implement-spec
+- tdd
 - code-review
-- pr-and-ship
-- main-flow
-
-## When things go wrong
-- diagnosing-bugs
-- triage
-- wizard
-
-## Level up
-- architecture
+- pr
+- spec-driven-build-loop
 - retro
-- wayfinder
-- models-effort-ultracode

@@ -1,450 +1,429 @@
 ---
-title: Grilling
+title: grilling
 slug: grilling
-image: /photos/grilling.jpg
-imageAlt: A woman in glasses takes notes while questioning a man across an office desk.
-imageCredit: Vitaly Gariev
+summary: grilling is the interview itself: the agent questions you in rounds until you both reach a shared understanding.
 ---
 
-Before an agent writes a single line of code, let it interview you until you both want the same thing.
+## What it's for
 
-```goals
-- You'll be able to explain why misalignment is the most common way agent work goes wrong, and how a grilling session prevents it.
-- You'll be able to run a session with `/grill-me` and answer a whole round of numbered questions in one short reply.
-- You'll be able to tell a decision (yours) from a fact (the agent's job), and push back when a recommendation isn't what you want.
-- You'll be able to choose between `/grill-me` and `/grill-with-docs` (both run `/grilling` underneath), and say what to type once the interview is over.
+Say you're deciding how cancelling a yoga-studio booking should work. Asked everything at once, you'd hit questions resting on answers you haven't given. Asked one per turn, you'd crawl through the easy ones.
+
+**grilling is the interview itself: the agent questions you in rounds until you both reach a shared understanding.** You met it in [grill before you build](/learn/grill-before-you-build).
+
+The agent maps your plan as a **design tree**: a map of decisions, each branching into the ones depending on it. Each round asks the whole **frontier**: every decision whose prerequisites are already settled, so it can ask without guessing. A question that depends on one still open waits for a later round.
+
+```checkpoint quick-1
+Whether members can cancel at all is still open. When can the agent ask how late they can cancel?
+- [x] In a later round, once the question it depends on is settled.
+- [ ] In this round, numbered right after the question it depends on.
+- [ ] Never, because a question that depends on another drops out.
+Why: How late depends on whether members can cancel at all, and that's still open. A question that depends on one still open waits for a later round.
 ```
 
-## Why it matters
+For example, type `/grilling How should cancelling work?`, and round one might be:
 
-You type one sentence into Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal): "add comments to my site". The agent gets to work. Twenty minutes later you have login screens, a moderation queue and a database table you never asked for, and no way to leave a comment without an account. Nothing is broken. It's just not what you meant.
+```
+❓ Q1 - Who cancels: Can only the member who booked cancel?
+➡️ Yes, only them.
 
-Matt Pocock, a developer and teacher, publishes a popular set of Skills for Claude Code. A Skill is a short instruction file the agent loads when you type its name, like `/grill-me`, or when a task matches its description. Matt calls the problem above the most common failure in software, with or without AI: ==misalignment==. The README (front-page guide) of his Skills repo (short for repository: a project's folder, with its history tracked by a tool called Git) borrows a line from *The Pragmatic Programmer*: "No-one knows exactly what they want." You don't, at the start. And an agent can't read your mind, so every gap in your sentence gets filled with a guess. The guesses look confident, so the problem stays hidden until you use what was built.
-
-The fix is cheap. Questions cost minutes; wrong code costs hours, and a lot of tokens (the small chunks of text that AI usage is measured, and often billed, in). So you flip the direction of the conversation. Instead of you briefing the agent, ==the agent interviews you==. It asks about every decision your idea depends on, suggests an answer for each one, and doesn't stop until nothing is left to guess. That interview is a grilling session (a session is one Claude Code conversation, from starting `claude` until you clear it or quit).
-
-```callout big-idea
-A grilling session writes no code. Its output is a set of decisions you've both agreed on, sitting in the conversation, ready for the next step.
+❓ Q2 - Cut-off: Should cancelling close before class starts?
+➡️ Yes, so the place can be refilled.
 ```
 
-## The idea: a tree of decisions, asked in rounds
+Each question is worded so `yes` accepts its recommended answer. You answer by number: `Q1 yes, Q2 yes`. Your answers settle decisions. So the agent works out the new frontier, and the next round asks how many hours before class.
 
-The grilling Skill pictures your idea as a ==design tree==: each decision branches into smaller decisions that depend on it. Take the comment box on this site, used by Visitors (anyone reading it):
+Facts are the agent's job; decisions are yours. For a fact, such as which table holds bookings, it sends a subagent: a helper agent with its own fresh [context window](/learn/instruction-files). Only the questions that depend on that fact wait; it asks you the rest meanwhile.
 
-- "Do Visitors need an account to comment?" is near the root.
-- If the answer is no, a new question appears: "Then is a name required, or optional?"
-- If the answer had been yes, a different branch would open: "Which login provider?"
-
-The agent can't sensibly ask about login providers until it knows there's a login at all. So it asks in **rounds**. The **frontier** is every decision that's ready to ask: everything it depends on is already settled, so the agent isn't guessing at answers it hasn't heard. Each round asks the whole frontier at once. Every question is numbered, with a recommended answer on its own line, in a fixed format (v1 means the first version):
-
-```text
-❓ Q1 - Accounts: Can Visitors comment without an account?
-
-➡️ Yes: no login in v1, anyone can comment.
-
----
-
-❓ Q2 - Editing: Should comments be permanent once posted?
-
-➡️ Yes: no editing or deleting in v1.
+```checkpoint quick-2
+A subagent is off finding out which table holds bookings. What happens to the rest of the round?
+- [x] The agent asks you the rest meanwhile; only dependent questions wait.
+- [ ] The whole round has to wait until the subagent has reported back.
+- [ ] The agent asks you for the fact, so that the round can carry on.
+Why: Facts are the agent's job, and looking one up doesn't hold up the round. Only the questions that depend on that fact wait.
 ```
 
-Questions are worded so that a plain **"yes" accepts the recommendation**. That lets you answer a round of five in one short line. Each answer settles a branch, and whatever it unlocks joins the next round. The agent picks each round by judgement, so once in a while one of your answers changes another question from the same round. If you spot that, say so, and it reopens that branch next round.
+The session is done when the frontier is empty, with every branch of the tree visited. Even then, the agent doesn't act until you confirm you share an understanding.
 
-Two rules keep the interview honest:
-
-1. **Facts are the agent's job; decisions are yours.** If a question needs a fact it could look up (like which database the project already uses), it sends a helper agent (a sub-agent) to find out instead of asking you. It doesn't wait for that lookup: only the questions that depend on the answer wait. Decisions, like "should comments be editable?", always come to you.
-2. **It isn't over until the frontier is empty and you say so.** Every branch gets visited and nothing is silently assumed. Then it asks you to confirm that you share an understanding, and it doesn't act until you do.
-
-How long does that take? It varies: Matt's docs on AI Hero (his teaching site) say a plan can need as few as three questions or as many as fifty, and his own sessions usually run to about twenty. There's no limit; to stop early, say "let's wrap up".
-
-```scene flow
-title: The frontier moving outward (illustrative)
-node: idea | A comment box under each Lesson
-node: editing | Can comments be edited? | side
-node: accounts | Do Visitors need accounts?
-node: name | Is a name required?
-node: done | Shared understanding
-# Everything starts from your idea, however rough.
-at: idea
-# Round 1 asks what depends only on the idea: do Visitors need accounts?
-at: accounts
-# Editing depends only on the idea too, so it's asked in the same round.
-at: editing
-# You answer "no accounts". That unlocks round 2: is a name required? The login-provider question is never asked, because the answer it hung off was no.
-at: name
-# The frontier is empty. The agent asks you to confirm before anything is built.
-at: done
+```diagram
+type: cycle
+caption: "The session is done when the frontier is empty"
+steps: ["Each round asks the whole frontier", "You answer by number", "Your answers settle decisions", "the agent works out the new frontier"]
+outside: "Facts are the agent's job"
 ```
 
-```checkpoint frontier-wait
-You're grilling a book-club site. Round 1 asks "Should members vote on next month's book?" Why doesn't it also ask "How many votes does each member get?"
-- [x] It only matters if members vote, and that's still undecided.
-  > Right. It hangs off a question that's still open, so it waits for round 2, or is never asked if the answer is no.
-- [ ] The agent asks the easy questions first and saves the detailed ones for later.
-  > Difficulty doesn't set the order. Dependencies do: a question waits only if it hangs off one that's still open.
-- [ ] Each round is capped at three questions.
-  > There's no cap. A round asks the whole frontier, however many questions that is.
-- [ ] It's a fact, so the agent will look it up instead of asking.
-  > How many votes members get is a choice, not something in the project to look up. It's a decision, so it comes to you, just later.
+## When to use it
+
+- You run [grill-me](/learn/grill-me) or [grill-with-docs](/learn/grill-with-docs), the two named ways in. They start it for you.
+- You run [triage](/learn/triage), [wayfinder](/learn/wayfinder) or [improve-codebase-architecture](/learn/improve-codebase-architecture), which run it inside their own work.
+- You want a plan stress-tested with no other Skill around the interview, so you type it.
+
+```checkpoint quick-3
+You run triage, and the agent starts asking numbered rounds. What's happening?
+- [x] triage is running grilling inside its own work.
+- [ ] triage has a separate interview of its own.
+- [ ] You started grilling by mistake, so triage has stopped.
+Why: You don't need to type grilling here. triage, wayfinder and improve-codebase-architecture each run it inside their own work.
 ```
 
-## Which grilling Skill to type
+## When not to use it
 
-Some Skills only start when you type their name. Matt calls these ==user-invoked Skills==. Others, model-invoked Skills, can also be picked up by the agent on its own when a task fits their description. The grilling family uses both kinds; see [Skills](/learn/skills).
+- If you're in a repo, use [grill-with-docs](/learn/grill-with-docs) instead, because it also writes `GLOSSARY.md` and ADRs (decision records) as you go.
+- If you have no repo, use [grill-me](/learn/grill-me) instead, because it's the same interview under a name the agent never starts by itself.
+- If the answers are in someone else's head, use [to-questionnaire](/learn/to-questionnaire) instead, because it writes that person the questions.
 
-- **`/grill-me` is user-invoked.** The whole Skill is one line telling the agent to load `grilling`, under a name the agent never starts by itself. It's **stateless**: it saves nothing to disk.
-- **`/grilling` is model-invoked.** It holds the whole technique described above. You can type it yourself, and the agent may also reach for it when you say something like "grill me on this plan". It's also the engine inside other Skills: `/grill-with-docs`, `/triage`, `/wayfinder` and `/improve-codebase-architecture` all run it.
-
-Plain words can start a model-invoked Skill, but never a user-invoked one. If you write "let's grill with docs" in a sentence, the agent can't start `/grill-with-docs` for you; you have to type its name yourself, at the start of your message.
-
-The third way in is the one you'll use most on a real project: `/grill-with-docs`. It runs the same interview *plus* the domain-modeling Skill, which writes the project's terms into a glossary (`GLOSSARY.md`) as you go, and offers a short decision record (an ADR) for the rare choice that's hard to reverse. Matt makes it the first step of his Main flow (the path most work takes, from idea to shipped) whenever you're working in a project folder (Matt calls it a working directory). Files in that folder outlive the conversation, so the next session, or the next agent, can read the words you agreed on. The glossary and decision records get their own Lesson: [Domain modeling](/learn/domain-modeling).
-
-| Your situation | Reach for |
-|---|---|
-| No project folder, or not code at all: a plan, a decision, a talk, a job offer | `/grill-me` |
-| In a project folder: any change you can plan in one sitting, even if building it takes several sessions | `/grill-with-docs` |
-| A question you can't settle by talking, like how a page should look | `/prototype` (a quick throwaway build you can look at), then come back |
-| A huge, foggy effort you can't even plan in one sitting, like a big new product | `/wayfinder` |
-| You want just the interview with nothing added, or a Skill of your own that needs one | `/grilling` |
-
-```checkpoint who-can-start
-You're in your project's repo. Without typing any Skill's name, you write: "Before we build this, stress-test my plan with hard questions." Which Skill can the agent load on its own?
-- [ ] `/grill-me`
-  > `/grill-me` is user-invoked, so it only starts when you type its name. Asking for a grilling in plain words isn't enough.
-- [ ] `/grill-with-docs`
-  > Also user-invoked. The agent can't start it for you, even in a repo.
-- [x] `/grilling`
-  > Right. `/grilling` is model-invoked: the one member of the family the agent may load on its own when your words match its description.
+```checkpoint quick-4
+You're in the yoga-studio repo, and you want the interview to leave files behind. Which Skill fits?
+- [x] grill-with-docs, which also writes GLOSSARY.md and ADRs.
+- [ ] grilling, typed directly, with no other Skill around it.
+- [ ] grill-me, the same interview under a name only you start.
+Why: In a repo, use grill-with-docs. It runs the same interview, and it also writes `GLOSSARY.md` and ADRs as you go.
 ```
 
-## A session, step by step
+## What it needs to start
 
-Here's a short grilling session about the comment box on this site. It uses `/grill-with-docs` because it happens inside this site's repo. With `/grill-me` the rhythm is identical; it just skips the glossary work (sharpening terms, writing `GLOSSARY.md`). Real sessions are longer.
+A plan, a decision or an idea, and you, ready to answer: every decision is put to you, and the agent waits.
 
-```scene chat
-title: Grilling a comment box in this site's repo (illustrative)
-# You type the Skill and a rough idea. Messy is fine.
-you: `/grill-with-docs` I want a comment box under each Lesson, saved in a database. Keep v1 small.
-# The agent looks around the project, then asks round 1: the whole frontier, each with a recommendation (squeezed onto one line here; a real session puts each ➡️ on its own line).
-agent: ❓ **Q1** - **Accounts**: Can Visitors comment without an account? ➡️ Yes: no login in v1.
-agent: ❓ **Q2** - **Editing**: Should comments be permanent once posted? ➡️ Yes: no editing or deleting in v1.
-agent: ❓ **Q3** - **Order**: Should the oldest comments show first, like a conversation? ➡️ Yes.
-# You answer the whole round in one line. "Yes" accepts a recommendation; "no" plus a few words replaces it.
-you: 1 yes, 2 yes, 3 no: newest first, so a new question gets seen. And no moderation in v1.
-# It looks facts up itself instead of asking you, and writes down a word you've just settled.
-agent: I checked the project: it already has a Postgres database, so I won't ask which one to use. Added **Visitor** (anyone reading the site; no account) to GLOSSARY.md.
-# Your answers unlock round 2: questions that hung off them are now on the frontier.
-agent: ❓ **Q4** - **Name**: With no accounts, should a name be optional, shown as "Anonymous" when empty? ➡️ Yes.
-# You steer: you own the scope, it owns the small details, like CSS (the code that styles a page).
-you: 4 yes. And don't ask me about CSS or file names: decide those yourself using best practice.
-# The frontier is empty. It summarises and waits for your confirmation before building anything.
-agent: That covers every branch. Anonymous comments, optional name, permanent, newest first. Out of scope: login, editing, moderation. Is that our shared understanding?
+```checkpoint quick-5
+You start a grilling, then leave for lunch. What happens to the round's decisions?
+- [x] They wait for you, because each decision is put to you.
+- [ ] The agent settles them itself, using its recommended answers.
+- [ ] A subagent looks them up in the repo while you're away.
+Why: The interview needs you there, ready to answer. The agent puts every decision to you and waits, so nothing gets settled while you're away.
 ```
 
-```checkpoint confirm-summary
-The agent ends: "Anonymous comments, optional name, permanent, newest first. Out of scope: login, editing, moderation. Is that our shared understanding?" You actually wanted people to be able to edit a comment for five minutes. What do you do?
-- [ ] Say yes for now, and ask for editing once the code has been written.
-  > Then the code gets built on a decision you don't share. Fixing it now costs one sentence; fixing it later costs a rebuild.
-- [x] Correct it now, answer any new questions, then confirm.
-  > Right. The confirmation is there so nothing gets built on a guess. Editing anonymous comments can raise new questions (how does the site know who wrote one?), so answer that round, then say yes.
-- [ ] Start a separate grilling session just about editing.
-  > One wrong line doesn't need a new session. Correct it here, where every other decision still lives.
-- [ ] Say nothing; the agent will notice the gap when it starts to build.
-  > It can't notice what it was never told. It builds what the summary says.
+You can type `/grilling`, or the agent may start it on its own when a task fits.
+
+```checkpoint quick-6
+You never typed `/grilling`, but a task fits it. Can the interview still start?
+- [x] Yes. The agent may start it on its own when a task fits.
+- [ ] No. Only you can start it, by typing its name yourself.
+- [ ] No. It only runs when grill-me or grill-with-docs calls it.
+Why: You can type `/grilling`, but you don't have to. The agent may also start it on its own when a task fits.
 ```
 
-## Your half of the interview
+## What it creates
 
-A grilling session is only as good as your answers. The agent asks the questions, but you don't just sit and answer: as Matt's docs put it, "It's a conversation, not an interview."
+A shared understanding, with nothing left silently assumed, and nothing on disk.
 
-- **Push back.** If you answer "agreed" to forty questions, you get the agent's plan with your name on it. Disagree with recommendations when they're wrong, and say why. Saying "I don't know" is fine too. Often it means you need to see a prototype before you can decide.
-- **Own the architecture and the scope; hand over the details.** Tell the agent which branches you care about and let it decide the rest, as in the Scene above, where you handed over CSS and file names.
-- **Send facts back.** If the agent asks something it could look up, reply "look that up yourself".
-- **Spot the questions talking can't settle.** "Should comments open in a pop-up or sit under the Lesson?" is hard to answer in words. Matt calls these ungrillable: you need to *see* them. Detour through a quick throwaway build, in a fresh session so its tokens stay out of your interview. First type `/handoff`, a Skill that writes a summary of the conversation to a file and tells you where it is. In a second terminal window, start `claude` in the same folder, ask it to read that file, then type `/prototype` (if it says "unknown skill", type `/mattpocock-skills:prototype`). Once you've seen the answer, a second `/handoff` there writes it to a new file; back in the first window, ask the agent to read it. [Prototype](/learn/prototype) shows each step.
-- **Keep the scope small.** A huge idea produces hundreds of questions. Split it and grill one piece at a time.
-- **Leave plan mode off.** Plan mode, a Claude Code setting where the agent only reads and drafts a plan, rushes the agent to that plan instead of asking. And begin the grilling in a new conversation, before the agent has drafted any plan of its own.
-
-If whole rounds feel like too much, there's a supported opt-out. Add one line to your global `CLAUDE.md`, a file of standing instructions the agent reads at the start of every session: "When grilling, ask one question at a time." It lives in your home folder, at `~/.claude/CLAUDE.md`. The easy way: ask Claude Code to add the line for you. Or type `/memory` (a Built-in command: it comes with Claude Code, it isn't a Skill), pick the user file and add the line there; the file is created if it doesn't exist yet.
-
-```checkpoint steer-details
-You're grilling a plant-swap site. Two rounds in, most questions have been about button colours, fonts and what to name each page's file. You only care about who can list plants and what's left out of v1. What do you do?
-- [ ] Answer every question carefully, so nothing is silently assumed.
-  > That's grilling forever. "Nothing silently assumed" means nothing gets guessed behind your back, not that you must rule on every detail.
-- [ ] Stop and restart with a smaller idea; the questions never end.
-  > The idea isn't too big. The questions are aimed at things you don't care about, so steer instead of restarting.
-- [ ] Turn on plan mode so it focuses on the big picture.
-  > Plan mode pushes the agent to rush to a plan instead of interviewing you.
-- [x] Hand those details to it and steer it to your priorities.
-  > Right. You own the scope; the agent owns the details. Tell it which branches matter to you and to decide the rest itself, and the rounds go there.
+```checkpoint quick-7
+A grilling you typed directly has finished. What has it written to your repo?
+- [x] Nothing. It leaves a shared understanding and no files.
+- [ ] GLOSSARY.md and ADRs, with an entry for each decision.
+- [ ] A Spec, saved as soon as the frontier is empty.
+Why: What it leaves is the understanding itself. You and the agent share one, with nothing silently assumed, and there's nothing on disk.
 ```
 
-## What comes next
+## Going deeper
 
-When you confirm the summary, the decisions are sitting in the conversation, and everything in it lives in the agent's ==context window==: its working memory for that conversation, measured in tokens. As the window fills up, the model (the AI inside Claude Code that does the thinking; `/model` switches it) reasons less sharply. Matt calls the part where it still thinks clearly the Smart zone, and his Skills put it at about 150k tokens on today's best models, as a rule of thumb (see [The context window](/learn/context-window)). Type `/context` to see how full yours is.
+### Why it exists
 
-**Don't throw the decisions away.** The next step depends on the size of the work:
+A grilling stops an agent building on its own guesses, as [grill before you build](/learn/grill-before-you-build) showed. But many Skills need that same interview. If each kept its own copy, every fix would be made several times.
 
-- **It fits in the room this session has left**, like a small change: type `/implement` (Matt's Skill that builds the agreed change) in the same conversation.
-- **It's a multi-session build**: type `/to-spec` in the same conversation to turn the decisions into a spec (a written description of what to build and why), then `/to-tickets` to split it into tickets (small tasks that can each be built in one session). [Spec + tickets](/learn/spec-and-issues) covers that step.
+So the interview lives in one Skill. Matt calls grilling a **primitive**: a small building block that other Skills call. He describes it as "kept in one place so every skill that needs an interview reaches for it instead of inventing one."
 
-In his July 2026 walkthrough, Matt judged that a small cleanup fitted his remaining room, so he'd normally type `/implement` there; he took the `/to-spec` road only to demo it. The whole map lives in [The main flow](/learn/main-flow).
+One home means the fix reaches them all. When rounds moved into grilling, grill-me, grill-with-docs, triage and wayfinder all got them at once.
 
-```callout watch-out
-Don't type `/clear` after grilling. `/clear` is a Built-in command that empties the conversation, and the conversation *is* the record of your decisions. `/to-spec` writes from it, so clearing first leaves it without your decisions.
+```checkpoint quick-8
+A bug in the interview's rules gets fixed in grilling. What happens to grill-me and grill-with-docs?
+- [x] They get the fix too, because the interview has one home.
+- [ ] They keep the old rules until each one is edited as well.
+- [ ] They stop working until each one is changed to match it.
+Why: One home means the fix reaches them all. When rounds moved into grilling, grill-me, grill-with-docs, triage and wayfinder all got them at once.
 ```
 
-```checkpoint small-change-next
-Grilling settled a small change: rename one button and update its tests. The session still has plenty of room. What do you type next?
-- [ ] `/to-spec`, then `/to-tickets`
-  > That's the road for a multi-session build. For a change this small it's overhead.
-- [x] `/implement`, right here
-  > Right. The decisions are in this conversation and the work fits, so build it here.
-- [ ] `/clear`, then describe the change again
-  > Clearing empties the decisions you just made out of the conversation, and you'd have to explain them all over again.
+### How it works underneath
+
+**Matt took the design tree from Fred Brooks.** It's in his 2010 book _The Design of Design_. For original design, Brooks says a designer "can rarely sit down and a priori map out the design tree". A priori means in advance. Instead, designers discover the tree as they work: each decision opens and closes the alternatives for the next one.
+
+Say you choose a cut-off for cancelling. Only then does _how many hours before class?_ exist. Without one, it never comes up. That's why the agent can't ask everything up front: your answers grow the tree.
+
+```checkpoint quick-9
+You choose no cut-off for cancelling. What happens to the question about how many hours before class?
+- [x] It never comes up, because your answers grow the tree.
+- [ ] It still gets asked, but only in the session's last round.
+- [ ] The agent answers it for you, with its own recommendation.
+Why: That question only exists if you choose a cut-off. Your answers grow the tree, so the agent can't ask everything up front.
 ```
 
-## How Matt and others use it
+**Why rounds, not one question at a time.** The interview used to ask one question per turn. Near the end of a session the hard part is done, but the easy questions still arrive one by one. Matt's verdict: "This is incredibly frustrating and it feels dead slow."
 
-**Matt Pocock**'s README says to grill before every change you make. His habits, from his videos and docs:
+His way out was to treat the questions as a **graph**: things joined by links, so one critical question can open up many others. So each round asks only the questions that are open now. The same 13 questions then land in about 3 rounds instead of 13 turns.
 
-- **He starts vague.** In his July 2026 walkthrough he kicked off with a few vague sentences about trimming a command-line tool. The agent explored the code first, then asked. That session took six questions.
-- **Auto mode, not plan mode.** In the same video he grills in auto mode, where Claude Code skips routine permission prompts but still checks riskier actions first.
-- **His strongest model goes on grilling.** In May 2026 he argued that grilling leans on the model's own knowledge of how software works to raise things you hadn't considered, so it deserves the best model; building can use a cheaper one. (See [Models, effort & ultracode](/learn/models-effort-ultracode).)
-- **He splits big ideas first,** and usually runs two grilling sessions side by side, answering one while the other is thinking.
-- **He uses it outside code too.** He used grill-me to decide which course to make next.
-
-**Other developers:**
-
-- A Hacker News commenter now reaches for `/grill-me` instead of plan mode, and made a personal copy that asks through Claude Code's built-in question tool, for a smoother experience.
-- A Reddit post shares a prompt for building a grill-me variant that saves every question, answer and decision where an agent can read them later. Without that, the decisions live only in the chat until `/to-spec` turns them into a spec.
-
-## Try it yourself
-
-````try
-You need Claude Code installed and signed in (Anthropic's [quickstart](https://code.claude.com/docs/en/quickstart) shows how).
-
-1. In your terminal, make an empty folder and start Claude Code in it. If it asks whether you trust this folder, choose Yes.
-
-```sh
-mkdir book-club
-cd book-club
-claude
+```checkpoint quick-10
+The interview moved from one question per turn to rounds. What changed for the same 13 questions?
+- [x] They land in about 3 rounds instead of 13 turns.
+- [ ] The agent cuts them down to about 3 questions in total.
+- [ ] They all arrive at once, in one long round of 13.
+Why: The 13 questions still get asked. Each round asks only the questions that are open now, so they take far fewer turns.
 ```
 
-2. Type a slash and the word grill. If `grill-me` is in the list that pops up, delete what you typed and go on. If it isn't, delete it, type `/exit`, run this in your terminal to install Matt's Skills, then run `claude` again:
-
-```sh
-claude plugin install mattpocock-skills@claude-plugins-official
+```diagram
+type: chain
+caption: "Why rounds, not one question at a time."
+steps:
+  - "one question per turn"
+  - "it feels dead slow"
+  - "treat the questions as a graph"
+  - "each round asks only the questions that are open now"
 ```
 
-3. Check that plan mode is off: if you see "plan mode on" under the prompt box, press Shift+Tab until it changes. Any other mode is fine.
-4. Type this. It uses `/grill-me` so the practice run writes no files; in a real project you'd type `/grill-with-docs`.
+**What a round can lose.** A round only contains questions that don't depend on each other, so no answer should change another question in it. Your answers still shape what comes next, because the agent works out each next round from scratch. You still lose something, if the agent misjudges a pair.
 
-```text
-/grill-me I want a one-page site for my book club where members can leave a comment on this month's book. Keep v1 small.
+**Two rules came from bugs.** Version 1.1 of the Skills fixed both:
+
+- **The wait for your confirmation.** Many people reported sessions that ended, and then the model jumped straight into building.
+- **Facts versus decisions.** In some odd situations the model "would grill itself", exploring the code and answering with no human input. So Matt named the two kinds of information: facts you find by exploring, and decisions the user makes.
+
+```checkpoint quick-11
+Which rule came from the model exploring the code and answering with no human input?
+- [x] Facts versus decisions, who finds out and who decides.
+- [ ] The wait for your confirmation, before any building starts.
+- [ ] The limit of one question per turn, for every interview.
+Why: The model was grilling itself, so Matt named two kinds of information. The wait for your confirmation fixed a different bug, the jump straight into building.
 ```
 
-5. Answer round 1 **by number** in one reply. Accept at least one recommendation with a plain "yes" and change at least one.
-6. Push back on scope once, for example "No moderation in v1."
-7. After two or three rounds, type: "Let's wrap up. Summarise what we decided and what's out of scope."
-8. Read the summary. Reply with any corrections, and end with: "Don't build anything." If it starts creating files anyway, press Esc to stop it (or choose No if it asks permission). Type `/exit` when you're done.
+### A real example
 
-**It's working if:**
+In his August 2026 video for version 1.2, Matt shows a real session. Round one is on screen: Q1 with its recommendation underneath, then Q2, and so on. He's using **dictation**, speaking his answers instead of typing them. He agrees to the first two out loud: "Okay, Q1, I agree. Q2, I agree."
 
-- [ ] Each round arrives as numbered questions (❓ Q1, ❓ Q2…), each with its own ➡️ recommendation.
-- [ ] You answered a whole round in one short reply.
-- [ ] Replying "yes" accepted the ➡️ recommendation.
-- [ ] Round 2 asked things round 1 couldn't have, because they build on your answers.
-- [ ] Questions in one round didn't hang off each other, or you said so when one did.
-- [ ] It ended by asking you to confirm, not by writing code or files.
-- [ ] You can explain every decision, including what's out of scope, to someone who wasn't there.
+Then he says Q3 and Q4 need changing, and round two arrives in the same shape. That's what the numbers are for: you can answer a whole round by number, without quoting any question back.
 
-If the questions come without ➡️ recommendations, the `grilling` Skill probably didn't load. Ask: "Did you load the grilling skill?" If it starts building after a question or two, switch to a stronger model with `/model`.
-````
-
-## Common mistakes
-
-- **A weak model or low effort** (effort is the setting for how hard the model thinks, changed with `/effort`). Two quick questions, then it starts building. Use a stronger model, or add a line to your global `CLAUDE.md`: "never start implementing without my permission".
-- **Writing a user-invoked Skill's name in plain words.** The agent can't start it; type it yourself, slash first.
-- **The rest is covered above,** in "Your half of the interview" and "What comes next": being passive, grilling forever, grilling a question you need to see, starting too big, using plan mode, and clearing before `/to-spec`.
-
-```site-story
-My first message was messy and long:
-
-    /grilling i want to built a small site simple white background with royal blue
-    accents all over sharp layout ... one lesson per page, its for me, it teaches
-    matt pococks skills and how to build end to end projects using agentic coding
-    ... plus a comment box on each lesson saved in Neon.
-
-That was fine: turning a messy idea into decisions is the whole point.
-
-**Round 1 had 8 questions,** and it overwhelmed me. I said "one or two at a time please", and it adapted. (Big rounds are normal.)
-
-**It asked about details I didn't care about yet:** file formats, navigation, colours. So I told it to grill me on the architecture and decide the details itself using best practice. That was my biggest lesson: *I own the architecture and the scope. The agent owns the details.*
-
-**The real decisions I made.** Don't worry if the stack names mean nothing yet; each row was my call, not the agent's guess.
-
-| Decision | What I chose |
-|---|---|
-| Backend | Real REST endpoints, `GET` and `POST` `/api/comments`, so I can learn APIs by `curl`ing them |
-| Layers | endpoint → comments module → Drizzle → Neon, the same shape as FastAPI → crud → SQLAlchemy → Postgres |
-| Databases | A Neon branch each for my laptop, the tests, every preview of a proposed change, and production |
-| Tests | Against a real test database, no mocks |
-| Styling | One small plain CSS file |
-
-**We also agreed what's out:** no login, no editing or deleting comments, no moderation, no dark mode, no search, no custom domain. Saying "not now" is what made the first version shippable.
-
-**It ended by checking that we agreed.** Nothing got built on a guess.
-
-Two things I'd do differently today. I typed `/grilling` directly; in a project folder I'd now type `/grill-with-docs`, which also writes the glossary. And later, planning a new Lesson and a site redesign, I typed "you can start grilling with docs" in plain words. The agent can't start a user-invoked Skill, so it ran `/grilling` and `/domain-modeling` one after the other instead.
+```checkpoint quick-12
+Why does a round number its questions?
+- [x] So you can answer the whole round by number.
+- [ ] So the agent can ask them one at a time, in order.
+- [ ] So you can see how many rounds are still to come.
+Why: Numbers let you answer a whole round without quoting any question back. Matt does it out loud, one number after another.
 ```
 
-## Cheat sheet
+You may still read older posts that describe one question at a time. In March 2026 the interview was a few lines inside grill-me. Before version 1.1, the guidance warned that asking several questions at once was bewildering. Models sometimes did it anyway, so version 1.1 spelled out why. Version 1.2 then switched to rounds, and that's what today's Skill does.
 
-| Moment | What to do |
-|---|---|
-| Start, no project folder | `/grill-me <your rough idea>` |
-| Start, in a project folder | `/grill-with-docs <your rough idea>` |
-| Answering a round | By number, in one reply; "yes" accepts a recommendation |
-| It asks for a fact | "Look that up yourself" |
-| A question you need to see | `/handoff`, `/prototype` in a fresh session, `/handoff` back |
-| Rounds too big | `CLAUDE.md`: "When grilling, ask one question at a time." |
-| Done | Frontier empty, and you confirm the summary |
-| Next, small change | `/implement` in the same conversation |
-| Next, multi-session | `/to-spec`, then `/to-tickets`, in the same conversation; never `/clear` first |
+### Where it goes wrong
+
+**The agent starts building as soon as the questions run out.** It skipped the wait for your confirmation. Weaker and faster models "still skip the gate", the point where they should stop for you. The reliable fix is a line in your own `AGENTS.md` or `CLAUDE.md` telling the agent not to implement without permission.
+
+```checkpoint quick-13
+Your model keeps starting to build as soon as the questions run out. What's the reliable fix?
+- [x] A line in AGENTS.md or CLAUDE.md saying not to implement without permission.
+- [ ] A switch to a faster model, which stops more reliably for your answer.
+- [ ] A second run of the interview, so that it has more questions to ask.
+Why: Weaker and faster models can skip the wait for your confirmation. A line in your own `AGENTS.md` or `CLAUDE.md` is the reliable fix.
+```
+
+**Two questions in one round depend on each other.** The agent chooses the frontier by judgement; it doesn't compute it from a graph. So a linked pair can slip into one round, and one answer should have changed the other. The only guard is to tell the agent. That reopens the affected branch in the next round.
+
+**The questions keep coming.** You can't set a limit: "No, and a cap is out of scope on purpose." Some plans need three questions and some need fifty. A very long session usually means the work was too big. So tell the agent to wrap up, or break the work up and grill the pieces.
+
+```checkpoint quick-14
+A session has run very long, and the questions keep coming. What do you do?
+- [x] Tell the agent to wrap up, or break the work up.
+- [ ] Set a cap on the number of questions it may ask.
+- [ ] Widen the plan, so all the questions get asked together.
+Why: You can't set a limit on the questions. A very long session usually means the work was too big, so wrap up or grill smaller pieces.
+```
+
+**The agent answers its own questions.** This happens most when another Skill runs grilling to resolve a Ticket, and the agent takes that task as permission to keep moving. A session nobody answers "has produced the agent's opinion rather than yours." That's also why grilling has no mode that runs without you. So answer those decisions yourself.
+
+```checkpoint quick-15
+Another Skill ran grilling, and the agent answered its own questions. What have you got?
+- [x] The agent's opinion, which still needs your decisions.
+- [ ] A settled plan, since the interview reached its end.
+- [ ] Your decisions, worked out for you from the repo.
+Why: A session nobody answers has produced the agent's opinion rather than yours. So answer those decisions yourself.
+```
+
+**A whole round at once feels like too much.** One question at a time works better for some people: those who read slowly, work in a second language, or need it to focus. One user called rounds "completely unusable", because some questions relied on answers they hadn't given yet. The way back is one line in your global [`CLAUDE.md`](/learn/instruction-files) (`~/.claude/CLAUDE.md`):
+
+```
+When grilling, ask one question at a time.
+```
+
+Matt calls that "a supported setting, not a workaround."
+
+**Agreeing with a recommendation means answering no.** Older versions could word a question so that its recommendation argued against it. In October 2026, version 1.3.2 fixed that: each question is now worded so `yes` accepts the recommendation. If you still see it, answer the recommendation and say so.
+
+### Try it
+
+You'll need your practice project, with Matt's Skills installed. If you haven't set it up, do keeping-track's Try it step first.
+
+1. Open the `yoga-studio` repo in Claude Code.
+2. Type `/grilling How should cancelling a class booking work?`
+3. Read the first round. You should see numbered questions, each with its recommendation on its own `➡️` line.
+4. Check that no question in the round needs another one answered first.
+5. Answer the whole round by number, such as `Q1 yes, Q2 yes, Q3 no`, with your reason for each no.
+6. Read the next round. You should see questions the first round couldn't have asked.
+7. Watch for a fact it needs, such as whether `api/` has tables. It should look that up, not ask you.
+8. Keep answering until the questions run out. You should see it ask you to confirm, instead of starting work.
+9. Tell it you share an understanding, and that you don't want anything built yet.
+
+If a check fails, tell the agent which one, and note what changes in the next round.
+
+### Read more
+
+- [The /grilling Skill](https://www.aihero.dev/skills-grilling), Matt Pocock, aihero.dev, updated 2026-08-24
+- [v1.2: /wait-what, /writing-for-agents, Claude Code Plugin, and more](https://www.aihero.dev/skills/skills-changelog-v12-wait-what-writing-for-agents-claude-code-plugin-and-more), Matt Pocock, 2026-08-05
+- [New Skills! v1.2 brings /wait-what, /writing-for-agents, and fixes /grill-me](https://www.youtube.com/watch?v=gaDdrDdczO4) (video), Matt Pocock, 2026-08-05
+- [v1.1: /wayfinder, /to-spec, /to-tickets, /grilling improvements, and much more](https://www.aihero.dev/skills/skills-changelog-v1-1-wayfinder-to-spec-to-tickets-grilling-improvements), Matt Pocock, 2026-07-08
+- [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day), Matt Pocock, 2026-03-16
+- [The Design of Design (publisher preview)](https://api.pageplace.de/preview/DT0400.9780321702043_A23552532/preview-9780321702043_A23552532.pdf), Frederick P. Brooks, Jr., 2010
+- [Release v1.3.2](https://github.com/mattpocock/skills/releases/tag/v1.3.2), Matt Pocock, mattpocock/skills, 2026-10-29
+- [Grill-me go back to a single question at a time (#1167)](https://github.com/mattpocock/skills/issues/1167), Yamahari, with Matt Pocock's reply, 2026-10-05
+
+## Practice scenarios
+
+Optional practice: more situations like the ones in the final test.
+
+```checkpoint grilling-deeper-linked-pair
+In round two, the agent asks Q1, whether yoga classes can be booked as a block of ten, and Q2, how refunds work for a single cancelled class. You see that your answer to Q1 changes Q2. What should you do, and why? What's the reason behind this step?
+- [x] Tell the agent, because it picks the frontier by judgement and can miss a link.
+- [ ] Answer both now, because the agent computes the frontier, so Q2 can't depend on Q1.
+  > The agent chooses the frontier by judgement; it does not compute it from a graph, so a linked pair can slip into one round.
+- [ ] Answer only Q1 and skip Q2, because the agent always asks a skipped question again.
+  > Matt's guard is to tell the agent. Saying so is what reopens the affected branch in the next round.
+- [ ] Start a new session, because a round with a linked pair means the design tree is lost.
+  > Nothing is lost. Telling the agent reopens the affected branch in the next round of the same session.
+Why: The agent chooses the frontier by judgement rather than computing it, so two linked questions can share a round. The only guard is to tell it, and that reopens the affected branch in the next round.
+```
+
+## Remember
+
+```flashcards
+Q: In grilling, what is the frontier?
+A: Every decision whose prerequisites are already settled: the questions that can be asked now without guessing.
+
+Q: In grilling, whose job are the facts, and whose are the decisions?
+A: Facts are the agent's job (it sends a subagent with a fresh context window to look them up). Decisions are yours.
+
+Q: When is a grilling session done?
+A: When the frontier is empty, with every branch of the design tree visited. Even then, the agent doesn't act until you confirm you share an understanding.
+
+Q: What are the two named ways in to grilling?
+A: grill-me (no repo) and grill-with-docs (in a repo).
+
+Q: Where does grilling's "design tree" come from?
+A: Fred Brooks's The Design of Design (2010). Designers discover the design tree as they work: each decision opens and closes the alternatives for the next one.
+
+Q: How do you make grilling ask one question at a time again?
+A: Add "When grilling, ask one question at a time." to your global CLAUDE.md. Matt calls it a supported setting, not a workaround.
+
+Q: Can you cap how many questions grilling asks?
+A: No, a cap is out of scope on purpose. Tell it to wrap up, or, if sessions run very long, break the work up and grill the pieces.
+```
 
 ## Final test
 
-```final-test scenario-no-repo
-You want to stress-test your plan for a two-week cycling trip with three friends before anyone books anything. Nothing about it involves code. Which Skill do you type?
-- [ ] `/grill-with-docs`
-  > That one also writes the project's terms to `GLOSSARY.md` and may offer a decision record. A trip plan has no project folder for those files to live in.
-- [ ] `/to-spec`
-  > `/to-spec` turns an already-grilled conversation into a spec for software. You haven't been grilled yet.
-- [x] `/grill-me`
-  > Right. It's the stateless interview for anything, anywhere, code or not.
-- [ ] `/prototype`
-  > That builds a quick throwaway version of software so you can see it. A trip plan is something you can settle by talking.
+```final-test grilling-what-is-the-frontier
+In grilling, what is the frontier?
+- [x] Every decision whose prerequisites are already settled.
+- [ ] Every question in the design tree that is still unasked.
+- [ ] The one decision in the plan that the others depend on.
+- [ ] The facts a subagent still has to look up in the repo.
+Why: The frontier is what the agent can ask right now, because nothing those decisions depend on is still open. So it isn't guessing at answers it hasn't heard. Each round asks the whole frontier.
 ```
 
-```final-test scenario-repo-change
-You're in your project's repo, planning a feature that should fit in one session. Which Skill is the best place to start?
-- [ ] `/grill-me`
-  > It runs the same interview but saves nothing. In a repo, there's a better option.
-- [x] `/grill-with-docs`
-  > Right. Same interview, plus the domain-modeling Skill writing the project's terms to `GLOSSARY.md` as you go.
-- [ ] `/wayfinder`
-  > That's for huge, foggy efforts you can't plan in one sitting. A well-scoped feature starts with `/grill-with-docs`.
-- [ ] `/implement`, describing the feature as you go
-  > Building before you've agreed what to build is exactly how misalignment starts. Grill first.
+```final-test grilling-needs-a-fact
+Mid-interview, the agent needs to know which Python version your Dockerfile uses. What does it do?
+- [x] It sends a subagent to look it up, and asks you the rest meanwhile.
+- [ ] It asks you, as a numbered question with a recommended answer.
+- [ ] It sends a subagent and pauses the interview until it reports.
+Why: Finding facts is the agent's job, never yours, so it doesn't ask you. It doesn't pause either: only the questions that depend on the fact wait for the subagent.
 ```
 
-```final-test scenario-ungrillable
-Halfway through grilling a recipe site, a question comes up that matters to you: "Should each recipe show its steps on one scrolling page, or as swipeable cards?" You've tried to describe both twice and still can't choose. What's the best move?
-- [ ] Accept the agent's recommendation and move on.
-  > You'd be agreeing to something you can't evaluate, which is the passive trap.
-- [ ] Ask the agent to decide it for you as a detail.
-  > It matters to you, and how a page feels to use is a product decision, not a small detail.
-- [ ] Ask the agent for a fuller written description of each layout, then choose.
-  > More words won't help: you've read two descriptions already. This question needs something you can look at.
-- [x] Detour through `/prototype`, then bring the answer back.
-  > Right. Questions you need to see are ungrillable. Build a quick throwaway version, look at it, then answer.
+```final-test grilling-when-done
+When is a grilling session done?
+- [x] When the frontier is empty and every branch is visited.
+- [ ] After three rounds of numbered questions and answers.
+- [ ] When the agent has turned your answers into a Spec.
+Why: The session ends when there's nothing left to ask, however many rounds that takes, and it doesn't depend on any Spec. Even then, the agent doesn't act until you confirm.
 ```
 
-```final-test scenario-overwhelmed
-Grilling a running club's website, round 1 brings nine questions at once and you lose track halfway. You want smaller rounds in every grilling session from now on, not just this one. What do you do?
-- [ ] Ask it to cap the whole session at ten questions in total.
-  > A total cap doesn't make rounds smaller: round 1 could still bring nine at once.
-- [x] Tell it in `CLAUDE.md` to ask one question at a time.
-  > Right. `CLAUDE.md` is read at the start of every session, and the line "When grilling, ask one question at a time." in your global one is the documented opt-out.
-- [ ] Turn on plan mode so the agent slows down.
-  > Plan mode rushes the agent toward a plan, so it asks less, not in smaller rounds.
-- [ ] Switch from `/grill-me` to `/grilling`, which asks fewer questions.
-  > `/grill-me` is one line that loads `grilling`, so it's the same interview with the same rounds.
+```final-test grilling-deeper-why-rounds
+In version 1.2, grilling stopped asking one question per turn. What problem did Matt name?
+- [x] Late in a session, the easy questions came one per turn, which felt dead slow.
+- [ ] The model kept asking several questions at once, even when told this was bewildering.
+- [ ] Sessions ended and the model went straight into building without your confirmation.
+- [ ] The model grilled itself, exploring the code and answering without any human input.
+Why: Near the end the hard part is done, so answering easy questions one per turn felt dead slow. Rounds fix that. The other three were real problems too, but version 1.1 dealt with them, before rounds arrived.
 ```
 
-```final-test scenario-round-reply
-Round 2 asks three numbered questions, each with a ➡️ recommendation. You agree with Q4 and Q6. Q5 recommends a 500-character limit on comments, but you want 1,000. What do you reply?
-- [x] "4 yes, 5 no: 1,000 characters, 6 yes"
-  > Right. One reply per round, by number. "Yes" accepts a recommendation; "no" plus a few words replaces it.
-- [ ] "yes"
-  > That accepts all three recommendations, including the 500-character limit you didn't want.
-- [ ] "4 no, 5 yes: make it 1,000 characters, 6 no"
-  > That's backwards. Each question is worded so "yes" accepts the recommendation, so this rejects the two you agreed with.
-- [ ] "Agreed", then raise the 1,000 limit once it starts building.
-  > "Agreed" accepts all three, the 500 limit included, so the agent starts from a decision you don't hold. A few words now beat a rewrite later.
+```final-test grilling-deeper-design-tree-source
+grilling's design tree comes from Fred Brooks. What does Brooks say about the tree?
+- [x] Designers discover it as they work, as each decision opens and closes the next ones.
+- [ ] A good designer maps out the whole tree first, before making the first decision.
+- [ ] Each branch should be settled one by one, in the order the designer first wrote it.
+- [ ] The tree is fixed for each kind of project, so it can be copied from earlier work.
+Why: In original design, a designer can rarely map out the whole tree in advance. Instead, the tree is discovered as you go: each decision opens and closes the next ones. grilling works the same way, working out the frontier again after each round.
 ```
 
-```final-test spot-passive
-Lee spent an hour grilling a new feature, answering each round in one reply and taking every ➡️ recommendation as written. Now Lee dislikes what got built. Spot the mistake.
-- [ ] The session ran too long: an hour is more than grilling needs.
-  > Session length varies a lot; Matt's docs say some plans need fifty questions.
-- [ ] Answering whole rounds in one reply rushed Lee's choices.
-  > Answering a round in one reply is the intended rhythm. The problem was what Lee answered.
-- [x] Lee never pushed back, so the decisions were the agent's.
-  > Right. A grilling session only aligns you if you actually decide. Disagree, steer and say "I don't know" when it's true.
+```final-test grilling-repo-paper-trail
+You are in the repo of your FastAPI backend. You want an agent to interview you about a plan to add rate limiting, and you'd like the terms and hard decisions you settle to be written down. Which fits best?
+- [x] Run the interview while a GLOSSARY.md and ADRs are written.
+  > Right: that's `/grill-with-docs`.
+- [ ] Run the bare interview on its own, with no wrapper around it.
+  > That's `/grilling`. It runs the same interview but writes nothing down.
+- [ ] Run the stateless interview meant for plans with no repo.
+  > That's `/grill-me`. It saves nothing locally, and there is a repo here to leave a paper trail in.
+Why: All three run the same interview, so the choice comes down to what gets left behind. In a repo, the one that also runs domain-modeling writes the project's words and its hard decisions, which makes it the better one.
 ```
 
-```final-test spot-asked-for-fact
-During a grilling session the agent asks: "❓ Q2 - Language: Is your site's code written in TypeScript? ➡️ Yes, probably." What's wrong with this question?
-- [x] It asks you for a fact it should look up itself.
-  > Right. Which language the files use is a fact. Facts are the agent's job, done by a sub-agent; only decisions come to you.
-- [ ] It's too detailed for round 1, which is only for big decisions.
-  > Rounds are set by what depends on what, not by size. Nothing here hangs off an open question.
-- [ ] It offers one guess instead of listing every language it might be.
-  > Multiple choice is fine in grilling, but the format isn't the problem: you shouldn't be asked this at all.
+```final-test grilling-next-round
+An agent is interviewing you about the Docker setup for your AI agent project. You have just answered its second round of numbered questions. Some decisions are now settled, but parts of the design tree are still unvisited. What comes next? What comes next?
+- [x] The agent works out the new frontier and asks the next round.
+  > Right: that's `/grilling`.
+- [ ] The agent writes a Spec from the decisions settled so far.
+  > That's `/to-spec`. The session isn't done while branches of the design tree are still unvisited.
+- [ ] The agent starts building the settled parts, one test at a time.
+  > That's `/tdd`. The agent doesn't act until you confirm you share an understanding.
+Why: Your answers settled some decisions, and that opens up the ones depending on them. So the interview isn't over: the agent works out the new frontier and asks again, until the frontier is empty.
 ```
 
-```final-test spot-cleared-early
-Priya grilled a big feature for 45 minutes, typed `/clear` to free up space, then typed `/to-spec`. The spec is vague and misses half her decisions. What went wrong?
-- [ ] `/to-spec` ran too late; it belonged before the grilling.
-  > `/to-spec` writes from the grilled conversation. Run first, it would have no decisions to write from.
-- [x] `/clear` emptied out the decisions `/to-spec` writes from.
-  > Right. The conversation is the record of the grilling, and `/clear` emptied it out of the session. Run `/to-spec` in the same conversation. (`/resume` can reopen the old one, so the decisions aren't gone for good.)
-- [ ] Forty-five minutes was too short to settle a feature this big.
-  > Forty-five minutes is plenty. The decisions existed; then `/clear` emptied them out of the conversation.
-- [ ] Splitting the questions into rounds scattered her answers.
-  > Rounds follow the design tree, and all her answers sat in one conversation until `/clear` emptied it.
+```final-test grilling-why-look-it-up
+An agent is interviewing you about a new SQL migration for your FastAPI app. It needs to know which migration tool the repo already uses. Instead of asking you, it sends a subagent to find out, and asks you its other questions meanwhile. Why? What's the reason behind this step?
+- [x] Finding facts is never your job; your answers are kept for decisions.
+- [ ] The agent doesn't trust what you remember about the repo's tools.
+  > The rule is about whose job it is, not about trust.
+- [ ] Questions about tools wait until the last round of the interview.
+  > Only the questions that depend on the fact wait for the subagent. The rest of the frontier is asked now.
+Why: If the agent can look something up, it doesn't ask you, because finding facts is never your job. Your answers are kept for the decisions, which only you can make.
 ```
 
-```final-test sequence-multi-session
-You're in a repo, planning a feature that will take several sessions. Which order is right?
-- [ ] `/grill-with-docs` → confirm the summary → `/to-tickets` → `/to-spec`
-  > Backwards. In the Main flow `/to-tickets` splits the finished spec into tickets, so `/to-spec` comes first.
-- [ ] `/to-spec` → `/grill-with-docs` → confirm the summary → `/to-tickets`
-  > `/to-spec` writes from a grilled conversation. Before the grilling, there are no decisions for it to write from.
-- [ ] `/grill-with-docs` → confirm the summary → `/implement` in this same session
-  > That's the road for a change that fits in one session. A multi-session build needs a spec and tickets to carry the decisions across sessions.
-- [x] `/grill-with-docs` → confirm the summary → `/to-spec` → `/to-tickets`
-  > Right. Interview, agree, then turn the same conversation into a spec, and the spec into tickets.
+```final-test grilling-why-later-round
+An agent is interviewing you about login for your website. In this round it asks whether users sign in with a password or with an email link. It holds back its question about password reset emails. Why? What's the reason behind this step?
+- [x] Its answer depends on a question still open in this round.
+- [ ] The agent asks only one numbered question in each round.
+  > Each round asks the whole frontier, so a round can hold many questions.
+- [ ] Password reset is a fact a subagent can look up in the repo.
+  > Whether you need password resets depends on your decision, not on a fact in the repo.
+Why: If you choose email links, there are no passwords to reset. So the reset question depends on an answer the agent hasn't heard yet. Asking it now would mean guessing, so it waits for a later round.
 ```
 
-```final-test why-grill-first
-A friend says: "Grilling is a waste of time. The agent writes good code, so I just tell it what I want." What's the strongest reply?
-- [ ] "The agent's code is usually buggy, and grilling catches the bugs before they ship."
-  > Grilling writes no code and tests nothing. Its job is agreeing on what to build, not checking how it's built.
-- [x] "Working code can still miss what you meant, because it's built on guesses."
-  > Right. That's misalignment: every gap in a short request gets filled with a confident guess. Minutes of questions are cheaper than hours of rebuilding.
-- [ ] "Grilling writes the spec file the agent needs before it's allowed to code."
-  > No grilling Skill writes a spec. The decisions live in the conversation (`/grill-with-docs` adds glossary terms); a spec comes later, from `/to-spec`, and only for bigger builds.
-- [ ] "It's only worth it for big projects; for a small change your way is fine."
-  > Matt grills before every change. A small change just means a short session.
+```final-test grilling-deeper-skipped-gate
+You use a faster, lower-effort model to interview you about the cancellation rules for your yoga-studio API. The frontier empties, and before you say anything the agent starts writing the cancellation endpoint. Which fix does Matt give, and why? What's the reason behind this step?
+- [x] Add a line to your AGENTS.md or CLAUDE.md saying not to implement without permission.
+- [ ] Ask for a cap on the number of questions, so the session ends before it can build.
+  > A cap is out of scope on purpose, and the trouble is the skipped confirmation, not the number of questions.
+- [ ] Add "When grilling, ask one question at a time." to your global CLAUDE.md file.
+  > That line only changes how questions are asked. It does nothing about the agent skipping the wait for your confirmation.
+- [ ] Run the interview from inside another Skill, so the wrapper holds back the code.
+  > Agents answer their own questions most when another Skill runs grilling to resolve a Ticket: they take that task as permission to keep moving.
+Why: With the frontier empty, the agent should still wait until you say you share an understanding, but weaker and faster models can skip that wait. So you make the rule permanent: a line in your own AGENTS.md or CLAUDE.md telling the agent not to implement without permission.
 ```
 
 ```sources
-- [grilling SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/grilling/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [grill-me SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/grill-me/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [grill-with-docs SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/grill-with-docs/SKILL.md) and [domain-modeling SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/domain-modeling/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the Main flow, the Smart zone, the prototype detour, `/wayfinder` vs `/grill-with-docs`): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [mattpocock/skills README](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/README.md) ("The Agent Didn't Do What I Want"; user-invoked vs model-invoked): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [Claude Code quickstart](https://code.claude.com/docs/en/quickstart), Anthropic docs (installing and signing in), read 2026-10-23.
-- [The /grilling Skill](https://www.aihero.dev/skills-grilling), AI Hero docs, updated 2026-08-24, read 2026-10-23.
-- [The /grill-me Skill](https://www.aihero.dev/skills-grill-me), AI Hero docs, updated 2026-08-24, read 2026-10-23.
-- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (grilling and the `/implement` vs `/to-spec` fork at 8:24–11:23).
-- [9 Things People Get Wrong With My /grill-* skills](https://www.youtube.com/watch?v=UzMNBN6xLLA), Matt Pocock, 2026-05-25 (ungrillable questions 1:28, scope 3:44, passivity 5:41, models 8:40, parallel sessions 10:24); written version [on AI Hero](https://www.aihero.dev/things-people-get-wrong-with-grill-me-and-grill-with-docs), updated 2026-05-25.
-- [I stopped using /grill-me for coding. Here's what I use instead](https://www.youtube.com/watch?v=6BB6exR8Zd8), Matt Pocock, 2026-05-14 (when to pick grill-me vs grill-with-docs, 13:26).
-- [My "Grill Me" Skill Went Viral](https://www.aihero.dev/my-grill-me-skill-has-gone-viral), Matt Pocock, updated 2026-03-23.
-- [Hacker News discussion: /grill-me instead of plan mode](https://news.ycombinator.com/item?id=49851420), read 2026-10-23.
-- [r/SpecDrivenDevelopment: saving grill-me decisions](https://www.reddit.com/r/SpecDrivenDevelopment/comments/1tv1ruy/grillme), 2026-06-03.
+- [grilling: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/grilling/SKILL.md), Matt Pocock's Skills
+- [ask-matt: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/SKILL.md), Matt Pocock's Skills
+- [The /grill-with-docs Skill](https://www.aihero.dev/skills-grill-with-docs), Matt Pocock
+- [The /grilling Skill](https://www.aihero.dev/skills-grilling), Matt Pocock
+- [v1.1: /wayfinder, /to-spec, /to-tickets, /grilling improvements, and much more](https://www.aihero.dev/skills/skills-changelog-v1-1-wayfinder-to-spec-to-tickets-grilling-improvements), Matt Pocock, 2026-07-08
+- [Release v1.1.0 · mattpocock/skills](https://github.com/mattpocock/skills/releases/tag/v1.1.0), github-actions[bot], 2026-07-08
+- [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day), Matt Pocock, 2026-03-16
+- [The Design of Design: Essays from a Computer Scientist (publisher preview)](https://api.pageplace.de/preview/DT0400.9780321702043_A23552532/preview-9780321702043_A23552532.pdf), Frederick P. Brooks, Jr., 2010
+- [New Skills! v1.2 brings /wait-what, /writing-for-agents, and fixes /grill-me](https://www.youtube.com/watch?v=gaDdrDdczO4), Matt Pocock, 2026-08-05
+- [v1.2: /wait-what, /writing-for-agents, Claude Code Plugin, and more](https://www.aihero.dev/skills/skills-changelog-v12-wait-what-writing-for-agents-claude-code-plugin-and-more), Matt Pocock, 2026-08-05
+- [My 'Grill Me' Skill Went Viral](https://www.aihero.dev/my-grill-me-skill-has-gone-viral), Matt Pocock, 2026-03-23
+- [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock
+- [Release v1.3.2 · mattpocock/skills](https://github.com/mattpocock/skills/releases/tag/v1.3.2), Matt Pocock, 2026-10-29
+- [Grill-me go back to a single question at a time #1167](https://github.com/mattpocock/skills/issues/1167), Yamahari (issue); mattpocock (reply), 2026-10-05
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory)
+- [grill-with-docs: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/grill-with-docs/SKILL.md), Matt Pocock's Skills
 ```
