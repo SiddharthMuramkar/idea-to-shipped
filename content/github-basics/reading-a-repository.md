@@ -498,7 +498,7 @@ Why: Each test's name is a promise the code keeps. You can read the names withou
 ```
 
 ```final-test architecture-four
-Which list is a project's architecture, in the sense this lesson uses?
+A teammate asks you for the recipe site's architecture, and doesn't read code either. Which list do you give them?
 - [x] The main parts, how they connect, where data lives, and what's hard to change.
 - [ ] The main parts, how each function is written, and how each line of code reads.
 - [ ] The README, the LICENSE, the lockfile and the `.gitignore` file.

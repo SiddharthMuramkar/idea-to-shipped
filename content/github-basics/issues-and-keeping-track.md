@@ -40,12 +40,15 @@ gh issue list
 ```
 
 ```text
-#13  Search by ingredient            (enhancement)
-#12  Search ignores capital letters  (bug)
-#9   Broken link on the About page   (bug)
+Showing 3 of 3 open issues in your-name/recipes
+
+ID   TITLE                           LABELS       UPDATED
+#13  Search by ingredient            enhancement  about 1 day ago
+#12  Search ignores capital letters  bug          about 2 days ago
+#9   Broken link on the About page   bug          about 3 days ago
 ```
 
-The words in brackets are labels, which you'll meet below.
+The LABELS column shows each Issue's labels, which you'll meet below.
 
 A **coding agent** is an AI program, such as Claude Code, that edits files and runs commands for you. It needs this list even more than you do, because each new session starts with no memory of the last one. Anthropic, the company behind Claude Code, has a picture for this. It's like "engineers working in shifts, where each new engineer arrives with no memory of what happened on the previous shift."
 
@@ -185,7 +188,7 @@ Why: `needs-info` means the Issue waits for whoever opened it to answer. When th
 
 An **assignee** is a person responsible for an Issue. Click **Assignees** in the sidebar, or run `gh issue edit 12 --add-assignee @me` to take it yourself. An Issue can have up to 10 assignees, and `gh issue list --assignee @me` lists yours.
 
-An agent that works through your `gh` login acts as you. So its comments and changes appear under your name, and the Issue stays assigned to you. Some agents, such as GitHub's Copilot, can also be assigned an Issue directly.
+An agent that works through your `gh` login acts as you, and its comments and changes appear under your name. Assign its Issues to yourself, since you answer for that work. Some agents, such as GitHub's Copilot, can also be assigned an Issue directly.
 
 ```checkpoint quick-7
 You share the `recipes` repo with a friend. You start on #12 today. How do you show your friend that you're on it?
@@ -378,7 +381,7 @@ You need `gh` 2.94 or later (`gh --version`), logged in (`gh auth status`), and 
    gh issue view PARENT --web
    ```
 
-Keep both Issues open. In the Try it of [Opening a pull request](/learn/pull-requests), a pull request closes the bug.
+Keep both Issues open. The Try it in [Opening a pull request](/learn/pull-requests) opens a pull request that will close the bug.
 ````
 
 ## Going deeper
@@ -387,7 +390,7 @@ Keep both Issues open. In the Try it of [Opening a pull request](/learn/pull-req
 
 **`gh` says a label wasn't found.** Labels belong to one repo, and a new repo has only its default set. Create the label first with `gh label create <name>`.
 
-**`gh` says `unknown flag: --parent`, or shows no `Sub-issues` row.** Your `gh` is older than 2.94, which added sub-issues and blocked-by links. Run `gh --version`, then update it.
+**`gh` says `unknown flag: --parent`, or shows no `Sub-issues` row.** Your `gh` is older than 2.94, the version that added the sub-issue and blocked-by flags. Run `gh --version`, then update it.
 
 **An Issue's text says "Blocked by #12", but GitHub doesn't show it as blocked.** The blocker went in as words, not as a relationship. In a public report on Matt Pocock's Skills (#513), an agent wrote `Blocked by: #346` into an Issue's body. It then wrongly claimed GitHub had no real link to make. The fix is the real link: `gh issue edit 13 --add-blocked-by 12`.
 
@@ -425,7 +428,7 @@ Why: The frontier is the open Tickets whose blockers are all closed. #13 fits, s
 
 ## Try it: set up the practice project
 
-This part creates your **practice project**: a yoga-studio booking site that you build for real, in your own repo. The GitHub lessons don't need it, but the Skills lessons do. Later Courses, starting with [Idea to shipped: the main flow](/learn/main-flow), build their Try it steps on it.
+This part creates your **practice project**: a yoga-studio booking site that you build for real, in your own repo. When a Try it step asks for "your practice project", this is the one it means. Later Courses, starting with [Idea to shipped: the main flow](/learn/main-flow), build their Try it steps on it.
 
 It has two parts: `api/`, a FastAPI backend with Postgres in Docker, and `web/`, a small TypeScript site with Vercel previews of each pull request. If those names are new, don't worry. For now you only describe them in the README, and later Try it steps add the code.
 

@@ -181,6 +181,15 @@ One ticket per session is a rule, not a suggestion. Research tickets are the exc
 Charting happens once and settles nothing. Every session after it starts with `/clear`, takes one ticket (the one you name, or the first open one that isn't blocked or claimed), writes the answer down, turns cleared fog into tickets and stops. Only research tickets run several at once.
 ```
 
+```checkpoint check-start
+Your next change looks medium-large, and you can't yet tell whether its questions will fit in one session. Where do you start?
+- [x] A `/grill-with-docs` session, turned into a map only if it sprawls
+- [ ] `/wayfinder` straight away, so that a map catches every decision
+- [ ] `/to-spec` now, with a map only for what the Spec leaves open
+- [ ] A research ticket for each question, before any grilling starts
+Why: Matt's advice is never to start with `/wayfinder`: the work may turn out simpler than you thought, and then you've made a map you don't need. Start with `/grill-with-docs`, and say `/wayfinder let's turn this into a map` if planning gets out of hand.
+```
+
 ```checkpoint check-6
 You start a working session with the map's number and don't name a ticket. Which one does wayfinder take?
 - [ ] The newest ticket added to the map
@@ -504,14 +513,6 @@ A grilling ticket settles that the timetable lists classes by start time. It's e
 Why: Every decision, ADR or not, goes in its ticket's answer, and the map gets one line linking to it. An ADR needs all three tests (hard to reverse, surprising, a real trade-off), and the glossary holds words, not decisions.
 ```
 
-```final-test where-to-start
-Your next change looks medium-large, and you can't yet tell whether its questions will fit in one session. Where do you start?
-- [x] A `/grill-with-docs` session, turned into a map only if it sprawls
-- [ ] `/wayfinder` straight away, so that a map catches every decision
-- [ ] `/to-spec` now, with a map only for what the Spec leaves open
-- [ ] A research ticket for each question, before any grilling starts
-Why: Matt's advice is never to start with `/wayfinder`: the work may turn out simpler than you thought, and then you've made a map you don't need. Start with `/grill-with-docs`, and say `/wayfinder let's turn this into a map` if planning gets out of hand.
-```
 
 ```sources
 - [wayfinder: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/wayfinder/SKILL.md), Matt Pocock's Skills

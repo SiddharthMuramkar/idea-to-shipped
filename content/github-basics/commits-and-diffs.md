@@ -70,7 +70,11 @@ Why: Each commit's ID depends on its parent's. A new `7b2e8d0` means `9c41d5a` h
 
 ## Three places a change can be
 
-A change passes through three places before it's part of the history. The **working tree** is the files on disk, where you or the agent edit. The **staging area**, also called the **index**, is the list of exactly what goes into the next commit. The **repository** is Git's store of commits.
+A change passes through three places before it's part of the history:
+
+- The **working tree** is the files on disk, where you or the agent edit.
+- The **staging area**, also called the **index**, is the list of exactly what goes into the next commit.
+- The **repository** is Git's store of commits.
 
 Editing a file changes only the working tree. `git add` copies the file's current contents into the staging area. `git commit` turns the staging area into a new snapshot.
 
@@ -88,7 +92,7 @@ steps:
 
 The staging area takes a file as it was at the moment of `git add`. If the agent edits the file again afterwards, the commit gets the older version, and the newer edit stays behind in the working tree. Anything never added stays behind too.
 
-`git status` tells you what is where. Say an agent is partway through the search box:
+`git status` tells you what is where. Say an agent is partway through the search box. Here is its `git status`, without the hint lines:
 
 ```text
 $ git status
@@ -165,7 +169,7 @@ A **diff** is the line-by-line difference between two versions. Which two versio
 | `git show <id>` | One commit with its parent | What did this commit do? |
 | `git diff main...<branch>` | The point where the branch split from `main`, with the branch's newest commit | What has this branch done so far? |
 
-Mind the dots. With three, `git diff main...add-search` compares the branch with the commit where it split off `main`, so you see only the branch's own work. With two, `main..add-search` compares the two newest commits directly. Anything `main` gained after the split then shows up as if the branch had removed it. On a fresh branch the two agree; once `main` moves on, they don't. A pull request on GitHub shows the three-dot kind.
+Mind the dots. With three, `git diff main...add-search` compares the branch with the commit where it split off `main`, so you see only the branch's own work. With two, `main..add-search` compares the newest commit of each branch directly. Anything `main` gained after the split then shows up as if the branch had removed it. On a fresh branch the two agree; once `main` moves on, they don't. A pull request on GitHub shows the three-dot kind.
 
 Now the anatomy. Here is one file's diff from a commit on the agent's branch, printed by `git show 4e8b2a1 -- src/lib/cooking-time.ts`:
 
@@ -208,7 +212,7 @@ $ git diff --stat main...add-search
  7 files changed, 352 insertions(+), 4 deletions(-)
 ```
 
-Read a stat like a supervisor. Do the files fit the task? Is there a test beside each piece of code? Is anything there that shouldn't be? Are the big numbers explained? Here most of the added lines are `package-lock.json`, because the agent added a package. The image shows as `Bin` with sizes, because binary files have no lines.
+Read a stat like a supervisor. Do the files fit the task? Is there a test beside each piece of code? Is anything there that shouldn't be? Are the big numbers explained? Here most of the added lines are `package-lock.json`, because the agent added a package. If the task didn't call for one, ask which and why. The image shows as `Bin` with sizes, because binary files have no lines.
 
 Only then open the full diff, and only of the files that carry the behaviour you asked for. Use `git show <id> -- <file>` for one commit, or `git diff main...add-search -- <file>` for the whole branch.
 
@@ -236,7 +240,7 @@ After the search branch split off, a pull request added `docs/adr/0002-search-in
 - [ ] `git diff main..add-search`
 - [ ] `git show add-search`
 - [ ] `git diff add-search`
-Why: Three dots compare from the split point, so `main`'s new ADR stays out. Two dots compare the two newest commits, so the ADR would look deleted. `git show` shows only the branch's last commit.
+Why: Three dots compare from the split point, so `main`'s new ADR stays out. Two dots compare the newest commit of each branch, so the ADR would look deleted. `git show` shows only the branch's last commit.
 ```
 
 ## What belongs in a commit

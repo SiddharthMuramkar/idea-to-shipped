@@ -545,14 +545,6 @@ Your session has resolved "Which passes and memberships move across?", which unb
 Why: One ticket per session, research excepted, and the budget is the smart zone, not the window: quality falls off long before the window fills. The answer already lives on the ticket and the map, so clearing costs nothing and the task gets a fresh session. A full copy in the map would be a second copy that goes stale.
 ```
 
-```final-test local-claim
-A friend's project keeps its wayfinder tickets as local Markdown files. How does a session claim a ticket there?
-- [x] It saves `Status: claimed` in the file before any work
-- [ ] It sets itself as the assignee once the work goes well
-- [ ] It adds a `wayfinder:claimed` label to the file's name
-- [ ] It writes the ticket's number into the map's Notes
-Why: The Skill speaks GitHub, and a local tracker spells "assign it to yourself" as a `Status: claimed` line. Either way the claim comes first, before any work, so other sessions skip the ticket.
-```
 
 ```sources
 - [wayfinder: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/wayfinder/SKILL.md), Matt Pocock's Skills

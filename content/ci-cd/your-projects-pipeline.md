@@ -161,9 +161,9 @@ Why: Native checks run only the `lint` and `typecheck` scripts, and Vercel doesn
 
 **WCAG** (the Web Content Accessibility Guidelines) is the standard that accessibility checks test against. Two details about axe earn their place. axe finds, on average, about 57% of WCAG issues by itself; the rest need a person. And WCAG 2.2's rule on target size (tap targets at least 24 by 24 CSS pixels) is off by default. It runs only when the test asks for the `wcag22aa` tag, and Playwright's own documented example doesn't ask.
 
-Lighthouse's numbers need defining. **LCP** (Largest Contentful Paint) measures how fast the biggest piece of content appears. **CLS** (Cumulative Layout Shift) measures how much the layout jumps. **INP** (Interaction to Next Paint) measures how fast the page reacts to a tap or click. The budget above sets LCP and CLS at Google's thresholds for "good".
+Lighthouse's numbers need defining. **LCP** (Largest Contentful Paint) measures how fast the biggest piece of content appears. **CLS** (Cumulative Layout Shift) measures how much the layout jumps. The budget above sets both at Google's thresholds for "good".
 
-Lighthouse loads pages with no user, so it can't measure INP. Its stand-in is **TBT** (Total Blocking Time): how long the page was too busy to respond. Real INP comes only from real visitors, after launch.
+**INP** (Interaction to Next Paint) measures how fast the page reacts to a tap or click. Lighthouse loads pages with no user, so it can't measure INP. Its stand-in is **TBT** (Total Blocking Time): how long the page was too busy to respond. Real INP comes only from real visitors, after launch.
 
 How does a workflow find the preview? Vercel tells GitHub. A **repository_dispatch** event is one that something outside GitHub sends to start workflows. Vercel sends one each time a deployment's status changes. A workflow that listens for `vercel.deployment.success` starts once a preview has finished building, and reads its URL from `github.event.client_payload.url`.
 
