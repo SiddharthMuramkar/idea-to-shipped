@@ -79,7 +79,14 @@ const CREDITS_FILE = "image-credits.json";
 // Lesson, since listing Lessons never needs it.
 type Entry = { summary: LessonSummary; course: Course; file: string; body: string; parsed?: LessonBody };
 
-type Content = { courses: Course[]; lessons: Map<string, Entry>; credits: ImageCredit[] };
+// `manifest` is every credit in image-credits.json, including images no
+// header names (the home page's own photos).
+type Content = {
+  courses: Course[];
+  lessons: Map<string, Entry>;
+  credits: ImageCredit[];
+  manifest: ReadonlyMap<string, Credit>;
+};
 
 // Deep-freezes what every caller shares, so a caller that sorts or edits what
 // it was handed fails at once instead of changing it for everyone else.
@@ -255,7 +262,8 @@ async function readContent(root: string): Promise<Content> {
 
   if (problems.length > 0) throw new Error(problems.join("\n"));
   courses.sort(byOrder);
-  return { courses: freeze(courses), lessons, credits: freeze(imageCredits(courses)) };
+  for (const credit of credits.values()) freeze(credit);
+  return { courses: freeze(courses), lessons, credits: freeze(imageCredits(courses)), manifest: credits };
 }
 
 export function coursesFrom(root: string) {
@@ -315,6 +323,12 @@ export function coursesFrom(root: string) {
     // credit (null when the manifest has none) and everywhere it shows.
     async listCredits(): Promise<ImageCredit[]> {
       return (await load()).credits;
+    },
+
+    // The manifest's credit for any image by its path, including one that no
+    // header names, such as the home page's own photos. Null when it has none.
+    async creditFor(image: string): Promise<Credit | null> {
+      return (await load()).manifest.get(image) ?? null;
     },
   };
 }

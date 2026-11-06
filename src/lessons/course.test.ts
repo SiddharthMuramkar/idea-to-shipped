@@ -1,14 +1,12 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
+import nextConfig, { RENAMED_LESSONS } from "../../next.config";
 import { checkLessonLinks, checkPhoto, LESSON_RULES } from "./course-lint";
 import { courses, type Course, type Lesson } from "./lessons";
 
 // The content lint. Each failure says what's wrong and how to fix it, so an
 // author can fix the file without reading this code.
-
-// The Course the home page and the footer list (src/app/home-course.ts).
-const HOME_COURSE = "idea-to-shipped";
 
 // Every Slug the site has published. Comments in production point at them
 // (ADR 0004), so each must always name a Lesson, in whichever Course or Part.
@@ -93,14 +91,15 @@ describe("content/", () => {
     expect(missing).toEqual([]);
   });
 
-  test(`the ${HOME_COURSE} Course exists and is read in Parts`, () => {
-    const course = all.find(({ slug }) => slug === HOME_COURSE);
-    const problem = !course
-      ? `content/${HOME_COURSE}/course.md is missing: the home page and the footer list this Course`
-      : !course.parts
-        ? `content/${HOME_COURSE}/course.md has no Parts: list its Lessons under "## <Part title>" headings, which the home page shows`
-        : null;
-    expect(problem).toBeNull();
+  test("every renamed Slug's old address redirects permanently to its new one (next.config.ts)", async () => {
+    expect(RENAMED_LESSONS).toEqual(RENAMED_SLUGS);
+    expect(await nextConfig.redirects?.()).toEqual(
+      Object.entries(RENAMED_SLUGS).map(([from, to]) => ({
+        source: `/learn/${from}`,
+        destination: `/learn/${to}`,
+        permanent: true,
+      })),
+    );
   });
 });
 

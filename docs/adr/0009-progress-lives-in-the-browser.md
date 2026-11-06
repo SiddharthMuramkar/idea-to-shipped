@@ -1,0 +1,5 @@
+# A Visitor's progress lives in their browser, and the Final test is graded there
+
+A Lesson is Done once its Final test is submitted, whatever the score, and Done shows on the Lesson, on its card and on its Course. The record is kept in the Visitor's own browser, in localStorage under `its-progress-v1`: for each Lesson's Slug, when it was Done and the last score. The page grades the Final test itself, from the answer key it already ships, and nothing about a Visitor reaches the server. Lesson pages stay static, and Done fills in once the page's code runs. Quick checks are never saved.
+
+This sets aside ADR 0006 (an anonymous `visitor` cookie, with Answers stored and re-graded on the server) for now. Done needs neither a cookie nor a database table, works the moment a page loads, and stores nothing about anyone. The cost, which we accept: progress stays in one browser (clearing the site's data or changing device starts over), there are no crowd stats, and anyone can mark a Lesson Done by hand. ADR 0006 can still come later, as a sync on top of this record, and its rule for question ids (ADR 0005) keeps applying.

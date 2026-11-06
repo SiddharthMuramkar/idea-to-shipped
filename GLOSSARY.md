@@ -1,25 +1,29 @@
 # Idea to Shipped
 
-A site of from-zero Courses. The first, Idea to shipped, teaches Matt Pocock's Skills by building this very site.
+A free library of from-zero Courses on building software with coding agents. One of them, Idea to shipped, teaches Matt Pocock's Skills.
 
 ## Language
 
 ### Courses
 
 **Course**:
-A set of Lessons on one topic, read in a fixed order and grouped into Parts when it has them. The site can hold many; the first is Idea to shipped.
+A set of Lessons on one topic, read in a fixed order and grouped into Parts when it has them. The site is a library of Courses, each with a page of its own (`/courses/<slug>`) and a colour that tints its pictures.
 _Avoid_: Track, program, curriculum, class
 
 **Lesson**:
-One page of one Course, read in the Course's order. Its text is split into Sections, and it can hold Scenes, Checkpoints and a Final test.
+One page of one Course, read in the Course's order. Its text is split into Sections, and it can hold Scenes, Diagrams, flashcards and Quick checks; it ends with a Final test.
 _Avoid_: Page, post, chapter, article
 
 **Part**:
-One of the ordered groups a Course's Lessons are read in. Each Course names its own Parts, or has none; Idea to shipped has four: Foundations, The main flow, When things go wrong, Level up.
+One of the ordered groups a Course's Lessons are read in, under a heading in its `course.md`. Each Course names its own Parts, or has none.
 _Avoid_: Module, unit, section, chapter
 
+**Credit**:
+Who made an image and its open licence, kept for each image in `content/image-credits.json` and shown under the image and on the credits page.
+_Avoid_: Attribution, copyright
+
 **Slug**:
-A Lesson's permanent identifier, unique across every Course (e.g. `grilling`, `spec-and-issues`). Comments point at it, so it never changes, though the Lesson's title, Course, Part and place in the order can.
+A Lesson's permanent identifier, unique across every Course (e.g. `grilling`, `to-spec`). Comments and Done point at it, so it never changes, though the Lesson's title, Course, Part and place in the order can. The few that were renamed redirect from their old address (`next.config.ts`).
 _Avoid_: Lesson ID, endpoint, path
 
 ### What Idea to shipped teaches
@@ -60,19 +64,31 @@ _Avoid_: Chapter, part, step
 
 **Scene**:
 A small picture in a Section (a chat, a terminal, a flow, a file tree or a context meter), built up in numbered steps. The page shows it finished, with every step's caption listed, and doesn't step through it as you scroll.
-_Avoid_: Animation, diagram, widget, slideshow
+_Avoid_: Animation, widget, slideshow
+
+**Diagram**:
+A drawing in a Lesson (a chain, a comparison, a tree, layers, a git history or a cycle), written as a little YAML in a `diagram` block and drawn on the server, with a caption that names it. Not a Scene, which is built up in steps.
+_Avoid_: Chart, figure, Mermaid
+
+**Flashcards**:
+Question-and-answer cards in a Lesson, usually under its Remember heading, for what's worth knowing by heart. On the page each card turns over to show its answer.
+_Avoid_: Cards (on its own), quiz
 
 **Site story**:
 The box in a Lesson that tells how the author really used what it teaches while building this site, kept apart from the teaching.
 _Avoid_: Journal, case study, war story
 
-**Checkpoint**:
-A single question in a Lesson's text, placed right after the idea it checks. The reader picks an option, then opens the answer to see the right one and why each option is right or wrong; nothing is graded or saved.
-_Avoid_: Quiz, pop question, test
+**Quick check**:
+An optional question in a Lesson's text, right after the idea it checks, written as a `checkpoint` block. One tap answers it and says why; nothing is saved. On wide screens it sits in the margin beside its block.
+_Avoid_: Checkpoint (on the page), quiz, pop question, test
 
 **Final test**:
-The questions at the end of a Lesson, on everything it taught, each with its own answer to open; nothing scores or saves them. Always called the Final test in full, so it's never confused with the automated tests.
+The questions at the end of a Lesson (at least five), on everything it taught. Submitting it shows the score and why each answer is right, and marks the Lesson Done whatever the score. Always called the Final test in full, so it's never confused with the automated tests.
 _Avoid_: Test (on its own), quiz, exam
+
+**Done**:
+What a Lesson is once the Visitor has submitted its Final test, whatever the score. It shows as a green tick with the word Done, and each Course counts its Done Lessons. It's kept in the Visitor's browser only.
+_Avoid_: Complete, passed, finished, mastered
 
 ### Discussion
 
@@ -81,5 +97,5 @@ A note a Visitor leaves on one Lesson: its text and an optional name. It can't b
 _Avoid_: Message, feedback, post, reply
 
 **Visitor**:
-Anyone reading the site. Visitors have no accounts.
+Anyone reading the site. Visitors have no accounts: what they've Done lives in their own browser.
 _Avoid_: User, member, commenter, learner

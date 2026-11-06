@@ -1,17 +1,15 @@
-import type { Block, CalloutTone, Flashcard } from "@/lessons/lessons";
+import type { Block, CalloutTone } from "@/lessons/lessons";
 import { htmlToText } from "@/lessons/markdown";
 import { CopyButton } from "./copy-button";
 import { DiagramView } from "./diagram";
+import { Flashcards } from "./flashcards";
 import { Icon, type IconName } from "./icons";
-import { Checkpoint } from "./question";
+import { QuickCheck } from "./quick-check";
 import { SceneRun } from "./scene";
+import { withShuffledOptions } from "./shuffle";
 
 // What every block on a Lesson page may need to know about the page.
-export type LessonContext = {
-  slug: string;
-  // Each Checkpoint's place in the Lesson ("Checkpoint 2 of 5").
-  checkpoints: Map<string, number>;
-};
+export type LessonContext = { slug: string };
 
 const CALLOUTS: Record<CalloutTone, { label: string; icon: IconName }> = {
   tip: { label: "Tip", icon: "tip" },
@@ -143,25 +141,6 @@ function Sources({ html }: { html: string }) {
   );
 }
 
-// Every card with both sides showing: the front in bold, the back under it.
-function Flashcards({ cards }: { cards: Flashcard[] }) {
-  return (
-    <div className="flashcards">
-      <BlockLabel icon="cards">Flashcards</BlockLabel>
-      <ul className="flashcard-list">
-        {cards.map((card, i) => (
-          <li key={i} className="flashcard">
-            <p className="flashcard-front">
-              <strong dangerouslySetInnerHTML={{ __html: card.frontHtml }} />
-            </p>
-            <p className="flashcard-back" dangerouslySetInnerHTML={{ __html: card.backHtml }} />
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 // `sceneId` names the Section's Scene (a Section has at most one), so its ids
 // are unique on the page.
 export function BlockView({ block, ctx, sceneId }: { block: Block; ctx: LessonContext; sceneId: string }) {
@@ -174,14 +153,8 @@ export function BlockView({ block, ctx, sceneId }: { block: Block; ctx: LessonCo
     case "scene":
       return <SceneRun scene={block.scene} id={sceneId} />;
     case "checkpoint":
-      return (
-        <Checkpoint
-          question={block.question}
-          slug={ctx.slug}
-          number={ctx.checkpoints.get(block.question.id) ?? 1}
-          total={ctx.checkpoints.size}
-        />
-      );
+      // Shuffled here, on the server, so the order is the same on every visit.
+      return <QuickCheck question={withShuffledOptions(block.question, ctx.slug)} slug={ctx.slug} />;
     case "finalTest":
       // The Final test is a band of its own (FinalTestSection in
       // section.tsx), never a block in the text.

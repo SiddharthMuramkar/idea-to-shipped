@@ -25,16 +25,34 @@ describe("the newer blocks", () => {
     expect(box).toContain("Grill first, then <strong>build</strong>.");
   });
 
-  test("flashcards show every card, the front in bold and the back under it", async () => {
+  test("flashcards show both sides of every card until the page's code turns them into cards to flip", async () => {
     const cards = (await article()).match(/<li class="flashcard">[\s\S]*?<\/li>/g) ?? [];
     expect(cards).toEqual([
       '<li class="flashcard"><p class="flashcard-front"><strong>What does grilling produce?</strong></p><p class="flashcard-back">Decisions, not code.</p></li>',
       '<li class="flashcard"><p class="flashcard-front"><strong>Who owns the <code>details</code>?</strong></p><p class="flashcard-back">The agent.</p></li>',
     ]);
+    expect(await article()).not.toContain("flip-card");
   });
 
   test("a diagram shows its caption", async () => {
     expect(await article()).toContain("Grill, then build.");
+  });
+});
+
+describe("the margin for Quick checks", () => {
+  const full = coursesFrom(path.join(process.cwd(), "src/lessons/__fixtures__/full"));
+  const sections = async () => {
+    const html = renderToStaticMarkup(<LessonArticle lesson={(await full.getLesson("full"))!} />);
+    return [...html.matchAll(/<section class="lesson-section[^"]*" id="([^"]+)"[^>]*>/g)].map(([tag, id]) => ({
+      id,
+      rail: tag.includes("data-quick-checks"),
+    }));
+  };
+
+  test("only a Section with Quick checks and nothing else beside its text can lift them into the margin", async () => {
+    // Chat has a Quick check but also a Scene; Remember has one and no
+    // Scene; the others have none.
+    expect((await sections()).filter((section) => section.rail).map((section) => section.id)).toEqual(["remember"]);
   });
 });
 

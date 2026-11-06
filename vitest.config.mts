@@ -4,8 +4,9 @@ import { configDefaults, defineConfig } from "vitest/config";
 // live here and each project adds only what differs.
 //   content: the Lesson parser and the content lint. Plain files on disk, no
 //            database and no env files, so `npm run test:content` runs anywhere.
-//   render:  page components rendered to HTML on the server. No database and
-//            no env files either.
+//   render:  page components rendered to HTML on the server, and the logic
+//            the browser runs behind them (progress, shuffling, grading).
+//            No database and no env files either.
 //   db:      everything else. These tests hit the Neon `test` branch (ADR 0003),
 //            so they load .env.test.local and run one file at a time.
 export default defineConfig({

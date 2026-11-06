@@ -1,23 +1,20 @@
-import type { ReactNode } from "react";
 import type { Question } from "@/lessons/lessons";
-import { Icon } from "./icons";
 
-// Checkpoints and the Final test as plain server markup: native radios in a
-// fieldset, and under each question a "Show the answer" box. Nothing grades
-// the choices, so there's no Check button to pretend otherwise: the Visitor
-// picks an option, then opens the box to compare. It works the same with or
-// without JavaScript.
+// The parts of a question that work without JavaScript: native radios in a
+// fieldset, and under them a "Show the answer" box. Quick checks and the
+// Final test show these until the page's code is running (and for good if it
+// never runs), then become interactive (quick-check.tsx, final-test.tsx).
 
 // Ids and radio names are unique on the whole document, not just the Lesson:
 // Next keeps up to three visited pages mounted, so two Lessons can be in the
 // DOM at once. Slugs and question ids are kebab-case (single dashes), so "--"
 // can't appear inside either and the parts never run together.
-function questionIds(slug: string, questionId: string) {
+export function questionIds(slug: string, questionId: string) {
   const base = `q--${slug}--${questionId}`;
   return { name: base, option: (optionId: string) => `${base}--${optionId}` };
 }
 
-function QuestionFields({ question, slug, label }: { question: Question; slug: string; label?: string }) {
+export function QuestionFields({ question, slug, label }: { question: Question; slug: string; label?: string }) {
   const ids = questionIds(slug, question.id);
   return (
     <fieldset className="question-fields" data-question={question.id}>
@@ -39,7 +36,7 @@ function QuestionFields({ question, slug, label }: { question: Question; slug: s
 
 // The right answer, then why: the question's explanation (its "Why:" line),
 // and each option's own feedback, for the options that have some.
-function AnswerReveal({ question }: { question: Question }) {
+export function AnswerReveal({ question }: { question: Question }) {
   const right = question.options.find((option) => option.id === question.correctOption)!;
   const withFeedback = question.options.filter((option) => option.feedbackHtml !== "");
   return (
@@ -63,75 +60,5 @@ function AnswerReveal({ question }: { question: Question }) {
         </ul>
       )}
     </details>
-  );
-}
-
-export function Checkpoint({
-  question,
-  slug,
-  number,
-  total,
-}: {
-  question: Question;
-  slug: string;
-  number: number;
-  total: number;
-}) {
-  return (
-    <div className="question checkpoint" data-checkpoint={question.id} data-reveal>
-      <p className="question-kicker">
-        <Icon name="checkpoint" />
-        Checkpoint{total > 1 && <span className="question-count">{` ${number} of ${total}`}</span>}
-      </p>
-      <QuestionFields question={question} slug={slug} />
-      <AnswerReveal question={question} />
-    </div>
-  );
-}
-
-// `children` are any blocks written before the questions in the same Section.
-export function FinalTest({
-  questions,
-  slug,
-  id,
-  titleHtml,
-  children,
-}: {
-  questions: Question[];
-  slug: string;
-  id: string;
-  titleHtml: string;
-  children?: ReactNode;
-}) {
-  const headingId = `${id}--heading`;
-  const titled = titleHtml.trim().toLowerCase() !== "final test";
-  return (
-    <section className="final-test" id={id} aria-labelledby={headingId} data-section data-final-test>
-      <div className="final-test-inner">
-        <header className="final-test-head">
-          {titled && <p className="eyebrow">Final test</p>}
-          <h2 id={headingId} dangerouslySetInnerHTML={{ __html: titleHtml }} />
-          <p className="final-test-lead">
-            {questions.length === 1 ? "One question" : `${questions.length} questions`} on everything above.
-            Pick your answer, then open the box under it to check.
-          </p>
-        </header>
-        <div className="final-test-main">
-          {children}
-          <ol className="final-test-questions">
-            {questions.map((question, i) => (
-              <li key={question.id} className="question final-question" data-question={question.id}>
-                <QuestionFields
-                  question={question}
-                  slug={slug}
-                  label={`Question ${i + 1} of ${questions.length}`}
-                />
-                <AnswerReveal question={question} />
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
-    </section>
   );
 }

@@ -1,6 +1,6 @@
 # Idea to Shipped
 
-A site of from-zero Courses. The first, **Idea to shipped**, teaches [Matt Pocock's Skills](https://github.com/mattpocock/skills) for Claude Code, using the building of this very site as its worked example. Visitors can leave a Comment on any Lesson, with no account.
+A free library of from-zero Courses on building software with coding agents: Git and GitHub, CI/CD, how coding agents work, and [Matt Pocock's Skills](https://github.com/mattpocock/skills) for Claude Code. Every Lesson has optional Quick checks and ends with a Final test; submitting it marks the Lesson Done. Visitors need no account: their progress stays in their browser, and they can leave a Comment on any Lesson.
 
 Live at https://idea-to-shipped.vercel.app.
 
@@ -32,10 +32,12 @@ npm run dev               # http://localhost:3000
 
 Only writing Lessons? You need no database and no env file: `npm ci`, then `npm run test:content`.
 
+The pages are `/` (the Courses), `/courses/<course>`, `/learn/<slug>`, `/progress` and `/credits`. A Visitor's progress is kept in their browser's localStorage under `its-progress-v1`; to start over while you work, use "Reset my progress" on `/progress`.
+
 | Command | What it does |
 |---|---|
 | `npm run dev` | Serves the site. Lessons need nothing else; Comments need `.env.local`. |
-| `npm run test:content` | Checks every Course and Lesson in `content/` and renders every Lesson. Needs no database or env file. |
+| `npm run test:content` | Checks every Course and Lesson in `content/`, renders every Lesson and the pages, and tests the progress store, shuffling and grading. Needs no database or env file. |
 | `npm test` | Runs every test, the database tests included. |
 | `npm run lint` | Runs ESLint. |
 | `npx next typegen && npx tsc --noEmit` | Type-checks. `next typegen` writes the route types that `tsc` needs. |
@@ -49,7 +51,7 @@ Each Course is a folder in `content/`:
 - a `course.md`, whose header gives the Course's `title`, `slug` and `description` (and optionally its `order` in the list of Courses, and an `image` with its `imageAlt`), then lists its Lessons by Slug in reading order, grouped into Parts if it has them;
 - one `<slug>.md` per Lesson, whose header gives its `title`, `slug` and a one-sentence `summary` (and optionally an `image` with its `imageAlt`). Its text is Markdown plus typed blocks (goals, callouts, Scenes, flashcards, diagrams, quick-check questions, sources), and it ends with a `## Final test` of at least five questions.
 
-Every image a header names is credited once, in `content/image-credits.json`, keyed by its path, and must be openly licensed (CC0, public domain, CC BY or CC BY-SA). `npm run test:content` checks every Course, and its messages say what to fix. For a complete example, copy the one-Lesson Course in `src/lessons/__fixtures__/complete-example/`, with its `image-credits.json`. How a Lesson should read is in [docs/writing-guide.md](docs/writing-guide.md).
+Every image a header names is credited once, in `content/image-credits.json`, keyed by its path, and must be openly licensed (CC0, public domain, CC BY or CC BY-SA). A Course or Lesson without an image gets a navy picture in its Course's colour. The home page shows `public/images/home/hero.jpg` and `cta.jpg` once the manifest credits them, and Course images until then. `npm run test:content` checks every Course, and its messages say what to fix. For a complete example, copy the one-Lesson Course in `src/lessons/__fixtures__/complete-example/`, with its `image-credits.json`. How a Lesson should read is in [docs/writing-guide.md](docs/writing-guide.md).
 
 ## CI
 

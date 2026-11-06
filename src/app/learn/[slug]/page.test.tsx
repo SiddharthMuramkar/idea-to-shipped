@@ -17,40 +17,67 @@ async function lessonPage(slug: string) {
 // The page's header band, from its opening tag to its closing one.
 const hero = (html: string) => /<header class="photo-band lesson-hero"[\s\S]*?<\/header>/.exec(html)?.[0] ?? "";
 
-test("a Lesson with a photo shows it and its credit in the header, linked to its source, under its Part", async () => {
+const card = (html: string, side: "prev" | "next") =>
+  new RegExp(`<a class="lesson-card ${side}"[\\s\\S]*?</a>`).exec(html)?.[0] ?? "";
+
+test("a Lesson with a photo shows it and its credit in the header, linked to its source", async () => {
   const header = hero(await lessonPage("setup"));
   expect(header).toContain('<div class="photo-band-photo">');
   expect(header).toContain(
     '<p class="photo-credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Two_hikers_on_a_ridge.jpg">Bo Shutter · CC BY-SA 4.0</a></p>',
   );
-  expect(header).toContain("<span>Part 1 · Getting started</span>");
 });
 
-test("a Lesson without a photo has no photo or credit in its header", async () => {
+test("the header's breadcrumb links the Lesson's Course, then its Part on the Course's page", async () => {
+  const header = hero(await lessonPage("setup"));
+  expect(header).toContain(
+    '<nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="/courses/with-parts">With parts</a></li><li><a href="/courses/with-parts#part-1">Getting started</a></li></ol></nav>',
+  );
+  expect(header).toContain("<span>Lesson 2 of 3</span>");
+  expect(header).toContain('<p class="lesson-hero-lead">Get everything installed.</p>');
+});
+
+test("a Lesson without a photo gets its Course's navy picture, numbered, and no credit", async () => {
   const header = hero(await lessonPage("deploy"));
   expect(header).not.toContain("photo-band-photo");
   expect(header).not.toContain("photo-credit");
+  expect(header).toContain('<span class="art photo-band-art" style="--tone:#4f74ff" aria-hidden="true"><span class="art-numeral">03</span></span>');
   expect(header).toContain("<h1>Deploy</h1>");
 });
 
-test("a photo the credits manifest doesn't credit shows without a credit line", async () => {
-  const header = hero(await lessonPage("aside"));
-  expect(header).toContain('<div class="photo-band-photo">');
-  expect(header).not.toContain("photo-credit");
+test("Done isn't decided on the server: the header has no Done pill, and progress fills in in the browser", async () => {
+  expect(hero(await lessonPage("setup"))).not.toContain("done-pill");
 });
 
-test("as a neighbour, a Lesson without a photo gets a card without one", async () => {
+test("as a neighbour, a Lesson without a photo gets its Course's picture, with a corner for the Done tick", async () => {
   const html = await lessonPage("setup");
-  const card = (side: "prev" | "next") => new RegExp(`<a class="lesson-card ${side}"[\\s\\S]*?</a>`).exec(html)?.[0] ?? "";
   // welcome has a photo; deploy doesn't.
-  expect(card("prev")).toContain("lesson-card-photo");
-  expect(card("next")).toContain("Deploy");
-  expect(card("next")).not.toContain("lesson-card-photo");
+  expect(card(html, "prev")).toContain("<img");
+  expect(card(html, "next")).toContain("Deploy");
+  expect(card(html, "next")).toContain('<span class="art"');
+  expect(card(html, "next")).toContain('data-tick-slot="deploy"');
 });
 
-test("a Lesson in a Course without Parts shows no Part, and its neighbours come from its own Course", async () => {
+test("after a Course's last Lesson, Next goes to the next Course's first Lesson, in that Course's colour", async () => {
+  const html = await lessonPage("deploy");
+  expect(card(html, "next")).toContain('href="/learn/aside"');
+  expect(card(html, "next")).toContain("Next Course · Lesson 1");
+  expect(card(html, "prev")).toContain('href="/learn/setup"');
+});
+
+test("a Lesson in a Course without Parts shows no Part, and has no Previous at its Course's start", async () => {
   const html = await lessonPage("aside");
-  expect(hero(html)).not.toContain("Part ");
+  expect(hero(html)).toContain('<ol><li><a href="/courses/without-parts">Without parts</a></li></ol>');
   expect(html).not.toContain('class="lesson-card prev"');
   expect(html).toContain('<a class="lesson-card next" href="/learn/recap">');
+});
+
+test("the very last Lesson has no Next", async () => {
+  const html = await lessonPage("recap");
+  expect(html).not.toContain('class="lesson-card next"');
+  expect(html).toContain('<a class="lesson-card prev" href="/learn/aside">');
+});
+
+test("every Lesson keeps its Discussion", async () => {
+  expect(await lessonPage("deploy")).toContain('<section class="discussion" aria-label="Discussion"');
 });
