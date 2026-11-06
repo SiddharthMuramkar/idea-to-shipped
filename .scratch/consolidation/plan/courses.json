@@ -1,0 +1,171 @@
+[
+  {
+    "slug": "github-basics",
+    "title": "GitHub from zero",
+    "order": 1,
+    "description": "Git and GitHub for complete beginners: repositories, commits, branches, pull requests and merging, the way teams and coding agents use them.",
+    "parts": [
+      { "title": "Git and repositories", "lessons": [
+        { "slug": "what-git-and-github-are", "title": "What Git and GitHub are", "draft": null },
+        { "slug": "reading-a-repository", "title": "Reading a repository", "draft": "lmf/lessons/0002-reading-a-repository.md" },
+        { "slug": "commits-and-diffs", "title": "Commits and diffs", "draft": "lmf/lessons/0007-commits-and-diffs.md" },
+        { "slug": "branches-and-worktrees", "title": "Branches and worktrees", "draft": "skills/basics/branches-and-worktrees.md" },
+        { "slug": "push-pull-and-remotes", "title": "Push, pull and remotes", "draft": null }
+      ]},
+      { "title": "Pull requests", "lessons": [
+        { "slug": "issues-and-keeping-track", "title": "Issues: keeping track of work", "draft": "skills/basics/keeping-track.md" },
+        { "slug": "pull-requests", "title": "Opening a pull request", "draft": "lmf/lessons/0008-pull-requests.md" },
+        { "slug": "checking-a-pr", "title": "Checking a pull request before you merge", "draft": "skills/basics/checking-a-pr.md" },
+        { "slug": "merging-and-cleaning-up", "title": "Merging and cleaning up", "draft": "skills/basics/merging-and-cleaning-up.md" },
+        { "slug": "undo-and-conflicts", "title": "Undo and merge conflicts", "draft": "lmf/lessons/0009-undo-and-conflicts.md" }
+      ]},
+      { "title": "Working the GitHub way", "lessons": [
+        { "slug": "one-change-start-to-finish", "title": "One change, start to finish", "draft": "skills/basics/one-change-start-to-finish.md" },
+        { "slug": "working-with-an-agent-on-github", "title": "Working with a coding agent on GitHub", "draft": "skills/basics/your-flow-on-github.md" },
+        { "slug": "how-teams-do-it", "title": "How teams protect main", "draft": "skills/basics/how-teams-do-it.md" }
+      ]}
+    ]
+  },
+  {
+    "slug": "ci-cd",
+    "title": "CI/CD: ship safely",
+    "order": 2,
+    "description": "Continuous integration and deployment with GitHub Actions and Vercel: read a workflow, add gates, and build a gated pipeline yourself.",
+    "parts": [
+      { "title": "Pipelines", "lessons": [
+        { "slug": "what-ci-cd-is", "title": "What CI/CD is", "draft": "lmf/lessons/0010-what-ci-cd-is.md" },
+        { "slug": "reading-a-workflow", "title": "Reading a GitHub Actions workflow", "draft": "lmf/lessons/0011-reading-a-workflow.md" },
+        { "slug": "gates", "title": "Gates: checks that block", "draft": "lmf/lessons/0012-gates.md" }
+      ]},
+      { "title": "Hands on", "lessons": [
+        { "slug": "lab-gated-pipeline", "title": "Lab: a gated pipeline with GitHub Actions and Vercel", "draft": "lmf/lessons/0013-lab-gated-pipeline.md" },
+        { "slug": "agents-in-github-actions", "title": "Agents in GitHub Actions", "draft": "lmf/lessons/0015-agents-in-github-actions.md" },
+        { "slug": "your-projects-pipeline", "title": "Setting up your own project's pipeline", "draft": "lmf/lessons/0016-your-projects-pipeline.md" }
+      ]}
+    ]
+  },
+  {
+    "slug": "foundations",
+    "title": "Coding agents: the foundations",
+    "order": 3,
+    "description": "How coding agents like Claude Code work: the model and its harness, the context window, instruction files, Skills, and choosing models and effort.",
+    "parts": [
+      { "title": "Foundations", "lessons": [
+        { "slug": "start-here", "title": "Start here", "draft": "old:start-here" },
+        { "slug": "how-agents-work", "title": "How coding agents work", "draft": "old:how-agents-work" },
+        { "slug": "calling-a-model", "title": "Calling a model: what's underneath", "draft": "skills/basics/calling-a-model.md" },
+        { "slug": "context-window", "title": "The context window", "draft": "old:context-window" },
+        { "slug": "instruction-files", "title": "Instruction files", "draft": "skills/basics/instruction-files.md" },
+        { "slug": "skills", "title": "What a Skill is", "draft": "old:skills" },
+        { "slug": "models-effort-ultracode", "title": "Models, effort and ultracode", "draft": "old:models-effort-ultracode" }
+      ]}
+    ]
+  },
+  {
+    "slug": "idea-to-shipped",
+    "title": "Idea to shipped: the main flow",
+    "order": 4,
+    "description": "Matt Pocock's main flow, Skill by Skill: grill the idea, write the Spec, cut it into Tickets, build test-first, review and ship.",
+    "parts": [
+      { "title": "Before you build", "lessons": [
+        { "slug": "main-flow", "title": "The main flow, from idea to shipped", "draft": "old:main-flow" },
+        { "slug": "one-shared-language", "title": "One shared language", "draft": "skills/principles/one-shared-language.md" },
+        { "slug": "fix-the-environment", "title": "Fix the environment, not just the code", "draft": "skills/principles/fix-the-environment.md" },
+        { "slug": "setup-matt-pocock-skills", "title": "setup-matt-pocock-skills", "draft": "skills/skills/setup-matt-pocock-skills.md" }
+      ]},
+      { "title": "Grill the idea", "lessons": [
+        { "slug": "grill-before-you-build", "title": "Grill before you build", "draft": "skills/principles/grill-before-you-build.md" },
+        { "slug": "grilling", "title": "grilling", "draft": "skills/skills/grilling.md" },
+        { "slug": "grill-me", "title": "grill-me", "draft": "skills/skills/grill-me.md" },
+        { "slug": "grill-with-docs", "title": "grill-with-docs", "draft": "skills/skills/grill-with-docs.md" },
+        { "slug": "domain-modeling", "title": "domain-modeling", "draft": "skills/skills/domain-modeling.md" },
+        { "slug": "prototype", "title": "prototype", "draft": "skills/skills/prototype.md" }
+      ]},
+      { "title": "Plan the work", "lessons": [
+        { "slug": "context-hygiene", "title": "Context hygiene", "draft": "skills/principles/context-hygiene.md" },
+        { "slug": "handoff", "title": "handoff", "draft": "skills/skills/handoff.md" },
+        { "slug": "test-first", "title": "Test first", "draft": "skills/principles/test-first.md" },
+        { "slug": "to-spec", "title": "to-spec", "draft": "skills/skills/to-spec.md" },
+        { "slug": "small-end-to-end-tickets", "title": "Small Tickets that each work end to end", "draft": "skills/principles/small-end-to-end-tickets.md" },
+        { "slug": "to-tickets", "title": "to-tickets", "draft": "skills/skills/to-tickets.md" }
+      ]},
+      { "title": "Build, review, ship", "lessons": [
+        { "slug": "review-spec-and-standards", "title": "Review against the Spec and the standards", "draft": "skills/principles/review-spec-and-standards.md" },
+        { "slug": "implement", "title": "implement", "draft": "skills/skills/implement.md" },
+        { "slug": "implement-spec", "title": "implement-spec", "draft": "skills/skills/implement-spec.md" },
+        { "slug": "tdd", "title": "tdd", "draft": "skills/skills/tdd.md" },
+        { "slug": "code-review", "title": "code-review", "draft": "skills/skills/code-review.md" },
+        { "slug": "pr", "title": "pr", "draft": "skills/skills/pr.md" },
+        { "slug": "spec-driven-build-loop", "title": "The build loop in practice", "draft": "lmf/lessons/0014-spec-driven-build-loop.md" },
+        { "slug": "retro", "title": "retro", "draft": "skills/skills/retro.md" }
+      ]}
+    ]
+  },
+  {
+    "slug": "on-ramps",
+    "title": "When things go wrong, and big foggy work",
+    "order": 5,
+    "description": "What to reach for when things go wrong (triage, hard bugs, setup wizards), and how to steer work too big and foggy to plan in one sitting.",
+    "parts": [
+      { "title": "When things go wrong", "lessons": [
+        { "slug": "triage", "title": "triage", "draft": "skills/skills/triage.md" },
+        { "slug": "diagnosing-bugs", "title": "diagnosing-bugs", "draft": "skills/skills/diagnosing-bugs.md" },
+        { "slug": "wizard", "title": "wizard", "draft": "skills/skills/wizard.md" }
+      ]},
+      { "title": "Big, foggy work", "lessons": [
+        { "slug": "wayfinder", "title": "wayfinder", "draft": "skills/skills/wayfinder.md" },
+        { "slug": "wayfinder-first-session", "title": "Your first wayfinder session", "draft": "lmf/lessons/0001-wayfinder-first-session.md" },
+        { "slug": "working-the-map", "title": "Working the map", "draft": "lmf/lessons/0003-working-the-map.md" },
+        { "slug": "answers-from-other-people", "title": "Answers only other people have", "draft": "lmf/lessons/0004-answers-from-other-people.md" },
+        { "slug": "after-the-map", "title": "After the map is clear", "draft": "lmf/lessons/0005-after-the-map.md" }
+      ]}
+    ]
+  },
+  {
+    "slug": "codebase-health",
+    "title": "Codebase health and guardrails",
+    "order": 6,
+    "description": "Keep a codebase easy for agents to work in: deep modules, architecture reviews and TypeScript structure, plus guardrails on commits and git.",
+    "parts": [
+      { "title": "Codebase health", "lessons": [
+        { "slug": "improve-codebase-architecture", "title": "improve-codebase-architecture", "draft": "skills/skills/improve-codebase-architecture.md" },
+        { "slug": "codebase-design", "title": "codebase-design", "draft": "skills/skills/codebase-design.md" },
+        { "slug": "setup-ts-deep-modules", "title": "setup-ts-deep-modules", "draft": "skills/skills/setup-ts-deep-modules.md" },
+        { "slug": "migrate-to-shoehorn", "title": "migrate-to-shoehorn", "draft": "skills/skills/migrate-to-shoehorn.md" }
+      ]},
+      { "title": "Guardrails", "lessons": [
+        { "slug": "setup-pre-commit", "title": "setup-pre-commit", "draft": "skills/skills/setup-pre-commit.md" },
+        { "slug": "git-guardrails-claude-code", "title": "git-guardrails-claude-code", "draft": "skills/skills/git-guardrails-claude-code.md" }
+      ]}
+    ]
+  },
+  {
+    "slug": "more-skills",
+    "title": "More Skills: thinking, writing, running agents",
+    "order": 7,
+    "description": "The rest of the toolkit: research and questionnaires, Skills for teaching and writing, and running agents in the background.",
+    "parts": [
+      { "title": "Thinking tools", "lessons": [
+        { "slug": "ask-matt", "title": "ask-matt", "draft": "skills/skills/ask-matt.md" },
+        { "slug": "research", "title": "research", "draft": "skills/skills/research.md" },
+        { "slug": "to-questionnaire", "title": "to-questionnaire", "draft": "skills/skills/to-questionnaire.md" },
+        { "slug": "wait-what", "title": "wait-what", "draft": "skills/skills/wait-what.md" },
+        { "slug": "teach", "title": "teach", "draft": "skills/skills/teach.md" }
+      ]},
+      { "title": "Writing", "lessons": [
+        { "slug": "writing-for-agents", "title": "writing-for-agents", "draft": "skills/skills/writing-for-agents.md" },
+        { "slug": "writing-fragments", "title": "writing-fragments", "draft": "skills/skills/writing-fragments.md" },
+        { "slug": "writing-beats", "title": "writing-beats", "draft": "skills/skills/writing-beats.md" },
+        { "slug": "writing-shape", "title": "writing-shape", "draft": "skills/skills/writing-shape.md" },
+        { "slug": "scaffold-exercises", "title": "scaffold-exercises", "draft": "skills/skills/scaffold-exercises.md" }
+      ]},
+      { "title": "Running agents", "lessons": [
+        { "slug": "claude-handoff", "title": "claude-handoff", "draft": "skills/skills/claude-handoff.md" },
+        { "slug": "orca-cli", "title": "orca-cli", "draft": "skills/skills/orca-cli.md" },
+        { "slug": "chief-of-staff", "title": "chief-of-staff", "draft": "skills/skills/chief-of-staff.md" },
+        { "slug": "loop-me", "title": "loop-me", "draft": "skills/skills/loop-me.md" },
+        { "slug": "orchestration", "title": "orchestration", "draft": "skills/skills/orchestration.md" }
+      ]}
+    ]
+  }
+]

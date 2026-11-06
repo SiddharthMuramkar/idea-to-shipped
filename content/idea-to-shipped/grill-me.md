@@ -6,18 +6,18 @@ summary: How Matt Pocock's grill-me Skill has an agent interview you about an id
 
 ## What it's for
 
-Say you're wondering whether the yoga studio should charge for late cancellations. No code depends on the answer yet, so there's no repo under this question. You keep turning it over, and it stays fuzzy.
+Say you're wondering whether the yoga studio should charge for late cancellations. No code depends on the answer yet, so there's no [repo](/learn/what-git-and-github-are), a project folder that Git tracks, under this question. You keep turning it over, and it stays fuzzy.
 
 **grill-me has an agent interview you about an idea until you both understand it the same way, and it saves nothing.**
 
-It's the same interview that [grill before you build](/learn/grill-before-you-build) describes. Its [Skill](/learn/skills) file is one line, which hands over to the [grilling](/learn/grilling) Skill. That Skill runs the interview.
+It's the same interview that [grill before you build](/learn/grill-before-you-build) describes. Its [Skill](/learn/skills) file holds one line of instructions, which hands over to the [grilling](/learn/grilling) Skill. That Skill runs the interview.
 
 ```checkpoint quick-1
 You type /grill-me. Which Skill runs the interview?
 - [x] grilling, because grill-me's one line hands over to it.
 - [ ] grill-me, because its one line holds all the interview's rules.
 - [ ] grill-with-docs, because grill-me's one line hands over to it.
-Why: grill-me's file is one line, which hands over to the grilling Skill. That Skill runs the interview.
+Why: grill-me's file has one line of instructions, which hands over to the grilling Skill. That Skill runs the interview.
 ```
 
 For example, the first round might look like this:
@@ -181,7 +181,7 @@ Why does each question come with a recommended answer?
 Why: Matt added the recommended answer for speed. You accept it with one word, instead of explaining everything.
 ```
 
-Today a reworded form of that text lives in grilling, and it asks in rounds. So old posts show the history, and the current files decide how it runs. You can still get one question at a time: add `When grilling, ask one question at a time.` to your global [`CLAUDE.md`](/learn/instruction-files) (`~/.claude/CLAUDE.md`).
+Today a reworded form of that text lives in grilling, and it asks in rounds. So old posts show the history, and the current files decide how it runs. You can still get one question at a time. Add `When grilling, ask one question at a time.` to the [`CLAUDE.md` in your home folder](/learn/instruction-files) (`~/.claude/CLAUDE.md`), which applies to every project.
 
 **The design tree.** Grilling follows a [design tree](/learn/grill-before-you-build), an idea from a book: _The Design of Design_ by Frederick P. Brooks. Each decision opens the next ones. Matt's example is a search page, where you choose between advanced search and a text box. Choose advanced search, and now you must settle its filters and sorting. You keep walking the branches until you understand the whole design, before you commit to code.
 
@@ -225,7 +225,7 @@ You notice you've said yes to every question so far. What should you do?
 Why: Steering is the fix for passivity. Push back, say when the scope is drifting, and answer "I don't know" when you don't. A session with no pushback is one you didn't need.
 ```
 
-**The agent asked 200 questions.** One user reported this from Codex and asked for a limit on questions. That request was closed as not planned. Usually the scope was too large. Ask the agent to break the work into smaller pieces first, then grill each one.
+**The agent asked 200 questions.** One user reported this from Codex, OpenAI's coding agent, and asked for a limit on questions. That request was closed as not planned. Usually the scope was too large. Ask the agent to break the work into smaller pieces first, then grill each one.
 
 ```checkpoint quick-15
 Your session has reached 200 questions, with no end in sight. What do you do?
@@ -269,14 +269,14 @@ Why: The value of the session is the context you just built, so clearing it thro
 
 You'll need your practice project, the yoga-studio booking site you build for real in your own repo, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
-You'll sharpen a business decision that no code depends on yet. You're in the repo only because every Try it step happens there.
+You'll sharpen a business decision that no code depends on yet. You're in the repo because Matt's Skills are installed there. Being there also lets `git status` show you, at the end, that the session saved nothing.
 
 1. Open the `yoga-studio` repo in Claude Code, in a fresh conversation, with plan mode off.
 2. Type `/grill-me Should the studio charge for late cancellations? I haven't thought it through.` You should see numbered questions, each with a recommended answer.
 3. Reply to each question. Type "yes" to accept a recommendation, and push back on at least one.
 4. Read the next round. You should see questions opened up by your answers.
 5. Keep answering until no questions are left. Confirm that you share an understanding, and tell it to build nothing.
-6. In a second terminal, run `git status --short`. You should see nothing new from the session.
+6. In a second terminal, in the `yoga-studio` folder, run `git status --short`. You should see nothing new from the session.
 
 Once the decision touches the site's code, that's a job for [grill-with-docs](/learn/grill-with-docs).
 
@@ -419,7 +419,7 @@ Why: The questions bring out what would otherwise stay silently assumed. So the 
 In a fresh grill-me conversation, you're being interviewed about a sign-up flow for a yoga studio. Round three asks "One long form or three pages?" You keep guessing, the agent keeps rephrasing, and the scope grows with every answer. What do you do next?
 - [x] Pause the interview and build a throwaway version to look at.
   > Right: that's `/prototype`.
-- [ ] Keep answering in the same stateless interview until the frontier is empty.
+- [ ] Keep answering in the same stateless interview until no questions are left.
   > That's `/grill-me`. This is an ungrillable question. Talking it through is what makes sessions grow too long.
 - [ ] Move the interview into a repo so the answers are saved as ADRs.
   > That's `/grill-with-docs`. Saving answers doesn't help. You still need something to react to before you can answer.

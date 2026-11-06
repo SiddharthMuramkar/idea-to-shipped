@@ -1,0 +1,875 @@
+[
+ {
+  "name": "github-basics-1",
+  "lessons": [
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Git and repositories",
+    "slug": "what-git-and-github-are",
+    "file": "content/github-basics/what-git-and-github-are.md",
+    "sources": "What Git and GitHub are. NEW. Sources: C:LEARNING-NOTES.md (repository, commit, remote, origin/upstream, push), L:0007, S:basics/keeping-track.",
+    "flagged": [
+     "push-pull-and-remotes / what-git-and-github-are (c-github-1): `gh auth login` prompt wording; \"Git for Windows can also install Git Credential Manager\"; \"`gh repo fork family-cooks/recipes --clone` clones the fork and adds `upstream`\"; branches-and-worktrees: \"Once GitHub's copy is gone, and Git has noticed after a `git fetch --prune`, `-d` refuses\"; github.com page details described generally (About box, commit-count link, branch menu, Go to file)."
+    ]
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Git and repositories",
+    "slug": "reading-a-repository",
+    "file": "content/github-basics/reading-a-repository.md",
+    "sources": "Reading a repository. L:0002 (generalize) + reference/repo-files-cheatsheet.html + S:basics/seeing-the-architecture.",
+    "flagged": []
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Git and repositories",
+    "slug": "commits-and-diffs",
+    "file": "content/github-basics/commits-and-diffs.md",
+    "sources": "Commits and diffs. L:0007 + reference/commits-and-prs-cheatsheet.html.",
+    "flagged": []
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Git and repositories",
+    "slug": "branches-and-worktrees",
+    "file": "content/github-basics/branches-and-worktrees.md",
+    "sources": "Branches and worktrees. S:basics/branches-and-worktrees + S:basics/starting-work + L:0006 + reference/branches-cheatsheet.html.",
+    "flagged": [
+     "push-pull-and-remotes / what-git-and-github-are (c-github-1): `gh auth login` prompt wording; \"Git for Windows can also install Git Credential Manager\"; \"`gh repo fork family-cooks/recipes --clone` clones the fork and adds `upstream`\"; branches-and-worktrees: \"Once GitHub's copy is gone, and Git has noticed after a `git fetch --prune`, `-d` refuses\"; github.com page details described generally (About box, commit-count link, branch menu, Go to file)."
+    ]
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Git and repositories",
+    "slug": "push-pull-and-remotes",
+    "file": "content/github-basics/push-pull-and-remotes.md",
+    "sources": "Push, pull and remotes. NEW. C:LEARNING-NOTES.md, C:README.md (\"Start your own repository\"), L:0006/0007/0017.",
+    "flagged": [
+     "push-pull-and-remotes / what-git-and-github-are (c-github-1): `gh auth login` prompt wording; \"Git for Windows can also install Git Credential Manager\"; \"`gh repo fork family-cooks/recipes --clone` clones the fork and adds `upstream`\"; branches-and-worktrees: \"Once GitHub's copy is gone, and Git has noticed after a `git fetch --prune`, `-d` refuses\"; github.com page details described generally (About box, commit-count link, branch menu, Go to file)."
+    ]
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Pull requests",
+    "slug": "issues-and-keeping-track",
+    "file": "content/github-basics/issues-and-keeping-track.md",
+    "sources": "Issues: keeping track of work. S:basics/keeping-track + S:basics/reading-an-issue.",
+    "flagged": [
+     "PRACTICE PROJECT: ~30 Try-its link to issues-and-keeping-track's Try it that creates the yoga-studio repo + Spec + Tickets. c-github-2 was told to keep it as \"## Try it: set up the practice project\". VERIFY after it finishes; check every lesson that references it.",
+     "issues-and-keeping-track (c-github-2): practice project step 16 `gh api repos/{owner}/{repo}/issues/3 --jq .issue_dependencies_summary.blocked_by` counts open blockers only (unrun); \"`gh issue view 13` keeps its `Blocked by:` row after #12 closes\"; \"Writing `Closes #12, #13` closes only #12\"; \"If `gh issue view` prints `\"state\": \"MERGED\"`, you gave it the PR's number\"; \"Closing can lag a moment behind the merge\"."
+    ]
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Pull requests",
+    "slug": "pull-requests",
+    "file": "content/github-basics/pull-requests.md",
+    "sources": "Opening a pull request. L:0008 + S:basics/opening-a-pull-request + S:basics/pull-requests-and-merging.",
+    "flagged": []
+   }
+  ]
+ },
+ {
+  "name": "github-basics-2",
+  "lessons": [
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Pull requests",
+    "slug": "checking-a-pr",
+    "file": "content/github-basics/checking-a-pr.md",
+    "sources": "Checking a pull request before you merge. S:basics/checking-a-pr.",
+    "flagged": [
+     "checking-a-pr: \"Hosts such as Vercel and Netlify make one (preview) for each PR... link in a comment or among its checks\"; \"Some repos show a fifth tab, Findings\" (GitHub PR reference page). Verify."
+    ]
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Pull requests",
+    "slug": "merging-and-cleaning-up",
+    "file": "content/github-basics/merging-and-cleaning-up.md",
+    "sources": "Merging and cleaning up. S:basics/merging-and-cleaning-up + S:basics/pull-requests-and-merging (merge methods, auto-merge).",
+    "flagged": [
+     "merging-and-cleaning-up: draft links \"Spec\" to /learn/one-change-start-to-finish; Spec is now defined in /learn/working-with-an-agent-on-github (or link /learn/to-spec). Fix after c-github-2 finishes."
+    ]
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Pull requests",
+    "slug": "undo-and-conflicts",
+    "file": "content/github-basics/undo-and-conflicts.md",
+    "sources": "Undo and merge conflicts. L:0009 + S:basics/when-it-goes-wrong.",
+    "flagged": []
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Working the GitHub way",
+    "slug": "one-change-start-to-finish",
+    "file": "content/github-basics/one-change-start-to-finish.md",
+    "sources": "One change, start to finish. S:basics/one-change-start-to-finish + L:0017.",
+    "flagged": [
+     "merging-and-cleaning-up: draft links \"Spec\" to /learn/one-change-start-to-finish; Spec is now defined in /learn/working-with-an-agent-on-github (or link /learn/to-spec). Fix after c-github-2 finishes."
+    ]
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Working the GitHub way",
+    "slug": "working-with-an-agent-on-github",
+    "file": "content/github-basics/working-with-an-agent-on-github.md",
+    "sources": "Working with a coding agent on GitHub. S:basics/your-flow-on-github + S:basics/two-sessions-at-once.",
+    "flagged": [
+     "merging-and-cleaning-up: draft links \"Spec\" to /learn/one-change-start-to-finish; Spec is now defined in /learn/working-with-an-agent-on-github (or link /learn/to-spec). Fix after c-github-2 finishes."
+    ]
+   },
+   {
+    "course": "github-basics",
+    "courseTitle": "GitHub from zero",
+    "part": "Working the GitHub way",
+    "slug": "how-teams-do-it",
+    "file": "content/github-basics/how-teams-do-it.md",
+    "sources": "How teams protect main. S:basics/how-teams-do-it.",
+    "flagged": []
+   }
+  ]
+ },
+ {
+  "name": "ci-cd-1",
+  "lessons": [
+   {
+    "course": "ci-cd",
+    "courseTitle": "CI/CD: ship safely",
+    "part": "Pipelines",
+    "slug": "what-ci-cd-is",
+    "file": "content/ci-cd/what-ci-cd-is.md",
+    "sources": "What CI/CD is. L:0010 + S:basics/ci-cd + C:LEARNING-NOTES.md.",
+    "flagged": [
+     "test-first, small-end-to-end-tickets, retro: Try it assumes \"What CI/CD is\" adds the practice project's `test` CI check (from S:basics/ci-cd). Make sure what-ci-cd-is provides it, or make these Try-its self-contained (like wizard/setup-pre-commit).",
+     "retro.md: still says the CI/CD lesson's Try it \"adds one\" (a CI workflow on the practice project). Untrue unless what-ci-cd-is keeps it (c-cicd-1 was asked to keep a `test` workflow try). Re-check after c-cicd-1 finishes.",
+     "what-ci-cd-is: now has the practice-project `test` check Try it (yoga-studio, actions/checkout@v7, actions/setup-python@v7). Re-check test-first, small-end-to-end-tickets, retro, chief-of-staff references hold.",
+     "what-ci-cd-is lab Try it: Node test summary `pass 1` / `fail 1` claim."
+    ]
+   },
+   {
+    "course": "ci-cd",
+    "courseTitle": "CI/CD: ship safely",
+    "part": "Pipelines",
+    "slug": "reading-a-workflow",
+    "file": "content/ci-cd/reading-a-workflow.md",
+    "sources": "Reading a GitHub Actions workflow. L:0011 + C:.github/workflows/ci.yml + reference/ci-cd-cheatsheet.html.",
+    "flagged": [
+     "reading-a-workflow: `gh run list -R actions/checkout --workflow licensed.yml --status success` and log lines \"Each line starts with the job's name\"/\"Complete job name: Check licenses\" unverified; \"A single branch can stand in for a list\"; \"Ubuntu 24.04 to 26.04 move began in October 2026\" (runner-images #14748)."
+    ]
+   },
+   {
+    "course": "ci-cd",
+    "courseTitle": "CI/CD: ship safely",
+    "part": "Pipelines",
+    "slug": "gates",
+    "file": "content/ci-cd/gates.md",
+    "sources": "Gates: checks that block. L:0012.",
+    "flagged": [
+     "gates: `gh ruleset check --default`, `gh run list`, `gh pr view --web` on own repo (plausible)."
+    ]
+   },
+   {
+    "course": "ci-cd",
+    "courseTitle": "CI/CD: ship safely",
+    "part": "Hands on",
+    "slug": "lab-gated-pipeline",
+    "file": "content/ci-cd/lab-gated-pipeline.md",
+    "sources": "Lab: a gated pipeline with GitHub Actions and Vercel. L:0013 + C: (whole repo; follow Brad Traversy's CI/CD crash course with Vercel instead of Render; cite video timestamps from transcript.md; NEVER paste the transcript, summarize).",
+    "flagged": [
+     "lab-gated-pipeline (c-cicd-2): TS2688 claim + \"move to TypeScript 6\" only from cicd-lab LEARNING-NOTES (cicd-lab package.json still says typescript ^7.0.2); \"Auto-assign Custom Production Domains\" switch name; Vercel button names from memory (\"Add New…\", \"Import Git Repository\", \"Adjust GitHub App Permissions\", \"Visit Preview\"); previews kept \"30 days by default\"; e2e YAML is a sketch; `disableRepositoryDispatchEvents` API name only; Ignored Build Step one-liner untested. Lab squash-merges where Brad uses merge commits (stated)."
+    ]
+   },
+   {
+    "course": "ci-cd",
+    "courseTitle": "CI/CD: ship safely",
+    "part": "Hands on",
+    "slug": "agents-in-github-actions",
+    "file": "content/ci-cd/agents-in-github-actions.md",
+    "sources": "Agents in GitHub Actions. L:0015.",
+    "flagged": []
+   },
+   {
+    "course": "ci-cd",
+    "courseTitle": "CI/CD: ship safely",
+    "part": "Hands on",
+    "slug": "your-projects-pipeline",
+    "file": "content/ci-cd/your-projects-pipeline.md",
+    "sources": "Setting up your own project's pipeline. L:0016 (generalize away from Care4Mind) + reference/agentic-shipping-cheatsheet.html.",
+    "flagged": []
+   }
+  ]
+ },
+ {
+  "name": "foundations-1",
+  "lessons": [
+   {
+    "course": "foundations",
+    "courseTitle": "Coding agents: the foundations",
+    "part": "Foundations",
+    "slug": "start-here",
+    "file": "content/foundations/start-here.md",
+    "sources": "Start here (KEEP SLUG). Rewrite as the library's front door: what the site is, the courses, how a lesson works (read, quick checks, final test -> Done), what you need. I:start-here for facts only.",
+    "flagged": [
+     "start-here: \"If it's missing, a Mac offers to install it\" (Git; old draft only). Describes Done tick / browser progress / quick-check feedback: MUST match the final UI wording after E2 (e.g. labels \"Quick check\", \"Final test\", \"Done\", \"Submit test\")."
+    ]
+   },
+   {
+    "course": "foundations",
+    "courseTitle": "Coding agents: the foundations",
+    "part": "Foundations",
+    "slug": "how-agents-work",
+    "file": "content/foundations/how-agents-work.md",
+    "sources": "How coding agents work (KEEP SLUG). I:how-agents-work rewritten in the S: style (model in a harness, tools, permission modes, plan mode, CLAUDE.md, rewind).",
+    "flagged": [
+     "how-agents-work / context-window (c-found-1): Claude Code UI details from live docs (plan approval labels \"Yes, and use auto mode\"/\"Yes, manually approve edits\"/\"No, keep planning\"; mode labels; \"Alt+M on some Windows setups\"; rewind menu names; plans \"Pro, Max, Ultra, Team or Enterprise\"); `/context` example table row \"Autocompact buffer\" unconfirmed; idle-session compaction claim (~200k tokens, ~1h idle on subscription) is the agent's reading. Verify."
+    ]
+   },
+   {
+    "course": "foundations",
+    "courseTitle": "Coding agents: the foundations",
+    "part": "Foundations",
+    "slug": "calling-a-model",
+    "file": "content/foundations/calling-a-model.md",
+    "sources": "Calling a model: what's underneath. S:basics/calling-a-model.",
+    "flagged": []
+   },
+   {
+    "course": "foundations",
+    "courseTitle": "Coding agents: the foundations",
+    "part": "Foundations",
+    "slug": "context-window",
+    "file": "content/foundations/context-window.md",
+    "sources": "The context window (KEEP SLUG). I:context-window rewritten in the S: style; link to context-hygiene.",
+    "flagged": [
+     "how-agents-work / context-window (c-found-1): Claude Code UI details from live docs (plan approval labels \"Yes, and use auto mode\"/\"Yes, manually approve edits\"/\"No, keep planning\"; mode labels; \"Alt+M on some Windows setups\"; rewind menu names; plans \"Pro, Max, Ultra, Team or Enterprise\"); `/context` example table row \"Autocompact buffer\" unconfirmed; idle-session compaction claim (~200k tokens, ~1h idle on subscription) is the agent's reading. Verify."
+    ]
+   },
+   {
+    "course": "foundations",
+    "courseTitle": "Coding agents: the foundations",
+    "part": "Foundations",
+    "slug": "instruction-files",
+    "file": "content/foundations/instruction-files.md",
+    "sources": "Instruction files. S:basics/instruction-files.",
+    "flagged": []
+   },
+   {
+    "course": "foundations",
+    "courseTitle": "Coding agents: the foundations",
+    "part": "Foundations",
+    "slug": "skills",
+    "file": "content/foundations/skills.md",
+    "sources": "What a Skill is (KEEP SLUG). I:skills rewritten in the S: style.",
+    "flagged": [
+     "git-guardrails-claude-code: one-line descriptions of each blocked command are the agent's wording; verify accuracy against snapshot/skills/git-guardrails-claude-code.",
+     "skills (foundations): \"Each one answers to a short name, like `/grill-me`, and to a full name…\" (pinned docs only show full form for plugin Skills; short name from Matt's issues). Verify.",
+     "skills: \"It installs for you, in every project on this computer\"; \"Claude Code adds… `claude-plugins-official`, the first time you start it in a terminal\" (live docs only). Verify.",
+     "skills Try it: after `/reload-skills`, \"You should see how many Skills it added\"; main-flow Try it steps 3-5 predictions of /ask-matt answers. Verify plausibility.",
+     "GitHub UI claims to verify (c-github-3): Issue \"Create a branch\" button suggests a name from number+title; merge box texts \"This branch has conflicts that must be resolved\" / \"Waiting for status to be reported\"; Settings sidebar \"Code, planning, and automation\" > Rules > Rulesets; \"A new ruleset starts out disabled\"; `gh api …/branches/main --jq .protected` prints true for classic protection; Neon's rules/CODEOWNERS example (from skills snapshot 2026-11-05)."
+    ]
+   },
+   {
+    "course": "foundations",
+    "courseTitle": "Coding agents: the foundations",
+    "part": "Foundations",
+    "slug": "models-effort-ultracode",
+    "file": "content/foundations/models-effort-ultracode.md",
+    "sources": "Models, effort and ultracode (KEEP SLUG). I:models-effort-ultracode rewritten in the S: style.",
+    "flagged": [
+     "models-effort-ultracode: \"on Opus 4.8 at medium effort, one level under that model's default of high\" (agent's reading). Verify; also ultra review \"typically takes 5 to 15 minutes\". Lydia Hallie / Thariq timings (1.5, 4, 11, 67 minutes) from live blog posts."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "idea-to-shipped-1",
+  "lessons": [
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Before you build",
+    "slug": "main-flow",
+    "file": "content/idea-to-shipped/main-flow.md",
+    "sources": "The main flow (KEEP SLUG). Overview map of the flow; built from S: Main flow track + S:skills/ask-matt + I:main-flow facts.",
+    "flagged": [
+     "Flow links -> /learn/main-flow: make sure main-flow defines \"Flow\" (c-found-2 rewriting main-flow).",
+     "skills Try it: after `/reload-skills`, \"You should see how many Skills it added\"; main-flow Try it steps 3-5 predictions of /ask-matt answers. Verify plausibility."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Before you build",
+    "slug": "one-shared-language",
+    "file": "content/idea-to-shipped/one-shared-language.md",
+    "sources": "S:principles/one-shared-language",
+    "flagged": [
+     "one-shared-language: new claim \"They use one word, _spec_, for a feature's written plan, where others say _PRD_.\" (from CHANGELOG). Verify."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Before you build",
+    "slug": "fix-the-environment",
+    "file": "content/idea-to-shipped/fix-the-environment.md",
+    "sources": "S:principles/fix-the-environment",
+    "flagged": [
+     "fix-the-environment Try it: \"ask your agent to add one with a checkout step and one passing test\" (not from a source; fine as instruction)."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Before you build",
+    "slug": "setup-matt-pocock-skills",
+    "file": "content/idea-to-shipped/setup-matt-pocock-skills.md",
+    "sources": "S:skills/setup-matt-pocock-skills",
+    "flagged": []
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Grill the idea",
+    "slug": "grill-before-you-build",
+    "file": "content/idea-to-shipped/grill-before-you-build.md",
+    "sources": "S:principles/grill-before-you-build",
+    "flagged": []
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Grill the idea",
+    "slug": "grilling",
+    "file": "content/idea-to-shipped/grilling.md",
+    "sources": "S:skills/grilling (KEEP SLUG; I:grilling for facts only)",
+    "flagged": []
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Grill the idea",
+    "slug": "grill-me",
+    "file": "content/idea-to-shipped/grill-me.md",
+    "sources": "S:skills/grill-me",
+    "flagged": [
+     "skills (foundations): \"Each one answers to a short name, like `/grill-me`, and to a full name…\" (pinned docs only show full form for plugin Skills; short name from Matt's issues). Verify."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Grill the idea",
+    "slug": "grill-with-docs",
+    "file": "content/idea-to-shipped/grill-with-docs.md",
+    "sources": "S:skills/grill-with-docs",
+    "flagged": []
+   }
+  ]
+ },
+ {
+  "name": "idea-to-shipped-2",
+  "lessons": [
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Grill the idea",
+    "slug": "domain-modeling",
+    "file": "content/idea-to-shipped/domain-modeling.md",
+    "sources": "S:skills/domain-modeling",
+    "flagged": []
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Grill the idea",
+    "slug": "prototype",
+    "file": "content/idea-to-shipped/prototype.md",
+    "sources": "S:skills/prototype",
+    "flagged": [
+     "prototype: question id renamed prototype-progress-page-layouts -> prototype-timetable-page-layouts (fine: no stored ids)."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Plan the work",
+    "slug": "context-hygiene",
+    "file": "content/idea-to-shipped/context-hygiene.md",
+    "sources": "S:principles/context-hygiene",
+    "flagged": [
+     "context-hygiene: new claim \"His older posts on this talk about writing a PRD.\" (May 2026 aihero article). Verify."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Plan the work",
+    "slug": "handoff",
+    "file": "content/idea-to-shipped/handoff.md",
+    "sources": "S:skills/handoff",
+    "flagged": []
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Plan the work",
+    "slug": "test-first",
+    "file": "content/idea-to-shipped/test-first.md",
+    "sources": "S:principles/test-first",
+    "flagged": [
+     "test-first, small-end-to-end-tickets, retro: Try it assumes \"What CI/CD is\" adds the practice project's `test` CI check (from S:basics/ci-cd). Make sure what-ci-cd-is provides it, or make these Try-its self-contained (like wizard/setup-pre-commit).",
+     "Principle lessons test-first, small-end-to-end-tickets, review-spec-and-standards have exactly 5 final-test questions (minimum). Consider adding 1–2.",
+     "what-ci-cd-is: now has the practice-project `test` check Try it (yoga-studio, actions/checkout@v7, actions/setup-python@v7). Re-check test-first, small-end-to-end-tickets, retro, chief-of-staff references hold."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Plan the work",
+    "slug": "to-spec",
+    "file": "content/idea-to-shipped/to-spec.md",
+    "sources": "S:skills/to-spec",
+    "flagged": [
+     "merging-and-cleaning-up: draft links \"Spec\" to /learn/one-change-start-to-finish; Spec is now defined in /learn/working-with-an-agent-on-github (or link /learn/to-spec). Fix after c-github-2 finishes.",
+     "wayfinder lessons + spec-driven-build-loop (c-wayfinder): video chapter times (2:10, 5:39, 7:40, 9:44) and quote \"Nothing in the system merges to main.\" from LMF notes only; inference \"An agent that renames the job breaks the gate: the ruleset keeps waiting for a `test` check that never reports.\"; \"A draft can't be merged by accident, and every push to it runs the checks and refreshes its preview link.\"; `/to-spec #20, the class passes feature` assumes plain-words feature names work. Verify."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Plan the work",
+    "slug": "small-end-to-end-tickets",
+    "file": "content/idea-to-shipped/small-end-to-end-tickets.md",
+    "sources": "S:principles/small-end-to-end-tickets",
+    "flagged": [
+     "test-first, small-end-to-end-tickets, retro: Try it assumes \"What CI/CD is\" adds the practice project's `test` CI check (from S:basics/ci-cd). Make sure what-ci-cd-is provides it, or make these Try-its self-contained (like wizard/setup-pre-commit).",
+     "Principle lessons test-first, small-end-to-end-tickets, review-spec-and-standards have exactly 5 final-test questions (minimum). Consider adding 1–2.",
+     "what-ci-cd-is: now has the practice-project `test` check Try it (yoga-studio, actions/checkout@v7, actions/setup-python@v7). Re-check test-first, small-end-to-end-tickets, retro, chief-of-staff references hold."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Plan the work",
+    "slug": "to-tickets",
+    "file": "content/idea-to-shipped/to-tickets.md",
+    "sources": "S:skills/to-tickets",
+    "flagged": []
+   }
+  ]
+ },
+ {
+  "name": "idea-to-shipped-3",
+  "lessons": [
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Build, review, ship",
+    "slug": "review-spec-and-standards",
+    "file": "content/idea-to-shipped/review-spec-and-standards.md",
+    "sources": "S:principles/review-spec-and-standards",
+    "flagged": [
+     "Principle lessons test-first, small-end-to-end-tickets, review-spec-and-standards have exactly 5 final-test questions (minimum). Consider adding 1–2."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Build, review, ship",
+    "slug": "implement",
+    "file": "content/idea-to-shipped/implement.md",
+    "sources": "S:skills/implement",
+    "flagged": []
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Build, review, ship",
+    "slug": "implement-spec",
+    "file": "content/idea-to-shipped/implement-spec.md",
+    "sources": "S:skills/implement-spec",
+    "flagged": [
+     "implement-spec title is 7 words after the colon (STYLE says 2–6): ok to keep or shorten."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Build, review, ship",
+    "slug": "tdd",
+    "file": "content/idea-to-shipped/tdd.md",
+    "sources": "S:skills/tdd",
+    "flagged": [
+     "tdd: \"Matt's page on the Skill, dated August 2026, says no fix has shipped: it predates this one.\" (checked vs snapshot by agent)."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Build, review, ship",
+    "slug": "code-review",
+    "file": "content/idea-to-shipped/code-review.md",
+    "sources": "S:skills/code-review",
+    "flagged": []
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Build, review, ship",
+    "slug": "pr",
+    "file": "content/idea-to-shipped/pr.md",
+    "sources": "S:skills/pr",
+    "flagged": [
+     "gates: `gh ruleset check --default`, `gh run list`, `gh pr view --web` on own repo (plausible)."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Build, review, ship",
+    "slug": "spec-driven-build-loop",
+    "file": "content/idea-to-shipped/spec-driven-build-loop.md",
+    "sources": "The build loop in practice. L:0014 (generalize)",
+    "flagged": [
+     "wayfinder lessons + spec-driven-build-loop (c-wayfinder): video chapter times (2:10, 5:39, 7:40, 9:44) and quote \"Nothing in the system merges to main.\" from LMF notes only; inference \"An agent that renames the job breaks the gate: the ruleset keeps waiting for a `test` check that never reports.\"; \"A draft can't be merged by accident, and every push to it runs the checks and refreshes its preview link.\"; `/to-spec #20, the class passes feature` assumes plain-words feature names work. Verify."
+    ]
+   },
+   {
+    "course": "idea-to-shipped",
+    "courseTitle": "Idea to shipped: the main flow",
+    "part": "Build, review, ship",
+    "slug": "retro",
+    "file": "content/idea-to-shipped/retro.md",
+    "sources": "S:skills/retro",
+    "flagged": [
+     "test-first, small-end-to-end-tickets, retro: Try it assumes \"What CI/CD is\" adds the practice project's `test` CI check (from S:basics/ci-cd). Make sure what-ci-cd-is provides it, or make these Try-its self-contained (like wizard/setup-pre-commit).",
+     "retro.md: still says the CI/CD lesson's Try it \"adds one\" (a CI workflow on the practice project). Untrue unless what-ci-cd-is keeps it (c-cicd-1 was asked to keep a `test` workflow try). Re-check after c-cicd-1 finishes.",
+     "what-ci-cd-is: now has the practice-project `test` check Try it (yoga-studio, actions/checkout@v7, actions/setup-python@v7). Re-check test-first, small-end-to-end-tickets, retro, chief-of-staff references hold."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "on-ramps-1",
+  "lessons": [
+   {
+    "course": "on-ramps",
+    "courseTitle": "When things go wrong, and big foggy work",
+    "part": "When things go wrong",
+    "slug": "triage",
+    "file": "content/on-ramps/triage.md",
+    "sources": "S:skills/triage",
+    "flagged": [
+     "Time-sensitive phrases kept: \"still open\" (wayfinder issue #1241, shoehorn issue #22), \"Matt's page still calls this…\" (triage, diagnosing-bugs, ask-matt). Consider rewording to not depend on time."
+    ]
+   },
+   {
+    "course": "on-ramps",
+    "courseTitle": "When things go wrong, and big foggy work",
+    "part": "When things go wrong",
+    "slug": "diagnosing-bugs",
+    "file": "content/on-ramps/diagnosing-bugs.md",
+    "sources": "S:skills/diagnosing-bugs",
+    "flagged": [
+     "Time-sensitive phrases kept: \"still open\" (wayfinder issue #1241, shoehorn issue #22), \"Matt's page still calls this…\" (triage, diagnosing-bugs, ask-matt). Consider rewording to not depend on time."
+    ]
+   },
+   {
+    "course": "on-ramps",
+    "courseTitle": "When things go wrong, and big foggy work",
+    "part": "When things go wrong",
+    "slug": "wizard",
+    "file": "content/on-ramps/wizard.md",
+    "sources": "S:skills/wizard",
+    "flagged": [
+     "wizard (on-ramps): claim `the v1.2 launch post shows a wizard announcing \"7 stages · about 37 minutes\"` comes from an image, not the post text. Verify or soften.",
+     "wizard, setup-pre-commit: Try it now says the project needs a CI workflow with `- run: pytest api` (wizard) / a CI workflow (setup-pre-commit), asking the agent to add one if missing. Check coherent.",
+     "test-first, small-end-to-end-tickets, retro: Try it assumes \"What CI/CD is\" adds the practice project's `test` CI check (from S:basics/ci-cd). Make sure what-ci-cd-is provides it, or make these Try-its self-contained (like wizard/setup-pre-commit)."
+    ]
+   },
+   {
+    "course": "on-ramps",
+    "courseTitle": "When things go wrong, and big foggy work",
+    "part": "Big, foggy work",
+    "slug": "wayfinder",
+    "file": "content/on-ramps/wayfinder.md",
+    "sources": "S:skills/wayfinder",
+    "flagged": [
+     "Time-sensitive phrases kept: \"still open\" (wayfinder issue #1241, shoehorn issue #22), \"Matt's page still calls this…\" (triage, diagnosing-bugs, ask-matt). Consider rewording to not depend on time.",
+     "wayfinder lessons + spec-driven-build-loop (c-wayfinder): video chapter times (2:10, 5:39, 7:40, 9:44) and quote \"Nothing in the system merges to main.\" from LMF notes only; inference \"An agent that renames the job breaks the gate: the ruleset keeps waiting for a `test` check that never reports.\"; \"A draft can't be merged by accident, and every push to it runs the checks and refreshes its preview link.\"; `/to-spec #20, the class passes feature` assumes plain-words feature names work. Verify."
+    ]
+   },
+   {
+    "course": "on-ramps",
+    "courseTitle": "When things go wrong, and big foggy work",
+    "part": "Big, foggy work",
+    "slug": "wayfinder-first-session",
+    "file": "content/on-ramps/wayfinder-first-session.md",
+    "sources": "Your first wayfinder session. L:0001 (generalize)",
+    "flagged": []
+   },
+   {
+    "course": "on-ramps",
+    "courseTitle": "When things go wrong, and big foggy work",
+    "part": "Big, foggy work",
+    "slug": "working-the-map",
+    "file": "content/on-ramps/working-the-map.md",
+    "sources": "Working the map. L:0003",
+    "flagged": []
+   },
+   {
+    "course": "on-ramps",
+    "courseTitle": "When things go wrong, and big foggy work",
+    "part": "Big, foggy work",
+    "slug": "answers-from-other-people",
+    "file": "content/on-ramps/answers-from-other-people.md",
+    "sources": "Answers only other people have. L:0004",
+    "flagged": []
+   },
+   {
+    "course": "on-ramps",
+    "courseTitle": "When things go wrong, and big foggy work",
+    "part": "Big, foggy work",
+    "slug": "after-the-map",
+    "file": "content/on-ramps/after-the-map.md",
+    "sources": "After the map is clear. L:0005",
+    "flagged": []
+   }
+  ]
+ },
+ {
+  "name": "codebase-health-1",
+  "lessons": [
+   {
+    "course": "codebase-health",
+    "courseTitle": "Codebase health and guardrails",
+    "part": "Codebase health",
+    "slug": "improve-codebase-architecture",
+    "file": "content/codebase-health/improve-codebase-architecture.md",
+    "sources": "S:skills/improve-codebase-architecture (+ I:architecture facts)",
+    "flagged": []
+   },
+   {
+    "course": "codebase-health",
+    "courseTitle": "Codebase health and guardrails",
+    "part": "Codebase health",
+    "slug": "codebase-design",
+    "file": "content/codebase-health/codebase-design.md",
+    "sources": "S:skills/codebase-design",
+    "flagged": []
+   },
+   {
+    "course": "codebase-health",
+    "courseTitle": "Codebase health and guardrails",
+    "part": "Codebase health",
+    "slug": "setup-ts-deep-modules",
+    "file": "content/codebase-health/setup-ts-deep-modules.md",
+    "sources": "S:skills/setup-ts-deep-modules",
+    "flagged": []
+   },
+   {
+    "course": "codebase-health",
+    "courseTitle": "Codebase health and guardrails",
+    "part": "Codebase health",
+    "slug": "migrate-to-shoehorn",
+    "file": "content/codebase-health/migrate-to-shoehorn.md",
+    "sources": "S:skills/migrate-to-shoehorn",
+    "flagged": []
+   },
+   {
+    "course": "codebase-health",
+    "courseTitle": "Codebase health and guardrails",
+    "part": "Guardrails",
+    "slug": "setup-pre-commit",
+    "file": "content/codebase-health/setup-pre-commit.md",
+    "sources": "S:skills/setup-pre-commit",
+    "flagged": [
+     "wizard, setup-pre-commit: Try it now says the project needs a CI workflow with `- run: pytest api` (wizard) / a CI workflow (setup-pre-commit), asking the agent to add one if missing. Check coherent.",
+     "test-first, small-end-to-end-tickets, retro: Try it assumes \"What CI/CD is\" adds the practice project's `test` CI check (from S:basics/ci-cd). Make sure what-ci-cd-is provides it, or make these Try-its self-contained (like wizard/setup-pre-commit)."
+    ]
+   },
+   {
+    "course": "codebase-health",
+    "courseTitle": "Codebase health and guardrails",
+    "part": "Guardrails",
+    "slug": "git-guardrails-claude-code",
+    "file": "content/codebase-health/git-guardrails-claude-code.md",
+    "sources": "S:skills/git-guardrails-claude-code",
+    "flagged": [
+     "git-guardrails-claude-code: one-line descriptions of each blocked command are the agent's wording; verify accuracy against snapshot/skills/git-guardrails-claude-code."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "more-skills-1",
+  "lessons": [
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Thinking tools",
+    "slug": "ask-matt",
+    "file": "content/more-skills/ask-matt.md",
+    "sources": "S:skills/ask-matt",
+    "flagged": [
+     "Time-sensitive phrases kept: \"still open\" (wayfinder issue #1241, shoehorn issue #22), \"Matt's page still calls this…\" (triage, diagnosing-bugs, ask-matt). Consider rewording to not depend on time.",
+     "skills Try it: after `/reload-skills`, \"You should see how many Skills it added\"; main-flow Try it steps 3-5 predictions of /ask-matt answers. Verify plausibility."
+    ]
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Thinking tools",
+    "slug": "research",
+    "file": "content/more-skills/research.md",
+    "sources": "S:skills/research",
+    "flagged": []
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Thinking tools",
+    "slug": "to-questionnaire",
+    "file": "content/more-skills/to-questionnaire.md",
+    "sources": "S:skills/to-questionnaire",
+    "flagged": []
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Thinking tools",
+    "slug": "wait-what",
+    "file": "content/more-skills/wait-what.md",
+    "sources": "S:skills/wait-what",
+    "flagged": []
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Thinking tools",
+    "slug": "teach",
+    "file": "content/more-skills/teach.md",
+    "sources": "S:skills/teach",
+    "flagged": [
+     "teach: \"Codex, a model from OpenAI\" — source only says \"Copilot CLI with Codex\". Verify/soften."
+    ]
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Writing",
+    "slug": "writing-for-agents",
+    "file": "content/more-skills/writing-for-agents.md",
+    "sources": "S:skills/writing-for-agents",
+    "flagged": []
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Writing",
+    "slug": "writing-fragments",
+    "file": "content/more-skills/writing-fragments.md",
+    "sources": "S:skills/writing-fragments",
+    "flagged": []
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Writing",
+    "slug": "writing-beats",
+    "file": "content/more-skills/writing-beats.md",
+    "sources": "S:skills/writing-beats",
+    "flagged": []
+   }
+  ]
+ },
+ {
+  "name": "more-skills-2",
+  "lessons": [
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Writing",
+    "slug": "writing-shape",
+    "file": "content/more-skills/writing-shape.md",
+    "sources": "S:skills/writing-shape",
+    "flagged": []
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Writing",
+    "slug": "scaffold-exercises",
+    "file": "content/more-skills/scaffold-exercises.md",
+    "sources": "S:skills/scaffold-exercises",
+    "flagged": []
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Running agents",
+    "slug": "claude-handoff",
+    "file": "content/more-skills/claude-handoff.md",
+    "sources": "S:skills/claude-handoff",
+    "flagged": []
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Running agents",
+    "slug": "orca-cli",
+    "file": "content/more-skills/orca-cli.md",
+    "sources": "S:skills/orca-cli",
+    "flagged": [
+     "orca-cli: \"By October 2026 it was 47\" (from the snapshot's stub, Orca CLI 1.4.243); \"Orca's makers wrote it, not Matt Pocock\"."
+    ]
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Running agents",
+    "slug": "chief-of-staff",
+    "file": "content/more-skills/chief-of-staff.md",
+    "sources": "S:skills/chief-of-staff",
+    "flagged": [
+     "what-ci-cd-is: now has the practice-project `test` check Try it (yoga-studio, actions/checkout@v7, actions/setup-python@v7). Re-check test-first, small-end-to-end-tickets, retro, chief-of-staff references hold."
+    ]
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Running agents",
+    "slug": "loop-me",
+    "file": "content/more-skills/loop-me.md",
+    "sources": "S:skills/loop-me",
+    "flagged": [
+     "loop-me: \"a scheduled task in Claude's desktop app\" (docs: \"Desktop scheduled task\")."
+    ]
+   },
+   {
+    "course": "more-skills",
+    "courseTitle": "More Skills: thinking, writing, running agents",
+    "part": "Running agents",
+    "slug": "orchestration",
+    "file": "content/more-skills/orchestration.md",
+    "sources": "S:skills/orchestration",
+    "flagged": []
+   }
+  ]
+ }
+]

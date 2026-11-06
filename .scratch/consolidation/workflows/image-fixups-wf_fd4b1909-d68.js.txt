@@ -1,0 +1,54 @@
+export const meta = {
+  name: 'image-fixups',
+  description: 'Judge every lesson image for relevance and quality, then replace the weak ones and fill the gaps',
+  phases: [
+    { title: 'Judge', detail: 'one judge views every image against its lesson' },
+    { title: 'Replace', detail: 'one agent per image to replace or fill' },
+  ],
+}
+
+const S = '/tmp/claude-0/-home-user/74a692da-26dd-57ab-b4f9-90621aaa7a8a/scratchpad'
+const REPO = '/home/user/idea-to-shipped'
+
+const PICKS = {
+  type: 'object',
+  properties: {
+    replace: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          path: { type: 'string', description: 'public path, e.g. /images/lessons/tdd.jpg' },
+          slug: { type: 'string' },
+          reason: { type: 'string' },
+          searchIdeas: { type: 'array', items: { type: 'string' } },
+        },
+        required: ['path', 'slug', 'reason', 'searchIdeas'],
+      },
+    },
+    summary: { type: 'string' },
+  },
+  required: ['replace', 'summary'],
+}
+
+phase('Judge')
+const picks = await agent(`You're the art editor of Idea to Shipped, a free public learning library (repo ${REPO}). Every lesson, Course and the home page has one openly licensed photo from Wikimedia Commons in ${REPO}/public/images/{lessons,courses,home}/. Each lesson's topic is in its header (title, summary) at ${REPO}/content/<course>/<slug>.md and in ${S}/plan/course-map.md. Credits (with alt text) are in ${S}/images/credits-img-*.json.
+
+Make contact sheets so you can see them all: e.g. \`montage -label '%t' -geometry 320x200+6+6 -tile 6x <files> ${S}/images/judge-sheet-N.jpg\` (ImageMagick is installed) in batches of ~24, and view each sheet with the Read tool (view single images at full size when unsure).
+
+Pick the images to replace, at most 12 in total besides the two gaps:
+- ALWAYS include the two lessons that have no image yet: codebase-health/setup-pre-commit (a Skill that sets up checks that run before every commit: e.g. a pre-flight checklist, airport security scanner, rocket launch pad, a gatekeeper) and more-skills/to-questionnaire (turns questions only other people can answer into a questionnaire: e.g. a clipboard checklist, a survey form, a census taker).
+- Replace an image only when it's clearly weak: irrelevant or confusing for its lesson, ugly or very dark, mostly text or with distracting visible text, near-duplicate of another image on the site, or a poor fit for its Course (e.g. a warship launch for the main-flow Course card). Known suspects to look at: grilling (vintage microphone), grill-me (spotlight over theatre seats), tdd (traffic light with a street sign), context-window (very dark porthole), what-git-and-github-are vs loop-me (two similar clocks), commits-and-diffs (very wide strip), the idea-to-shipped Course image (a US Navy warship launch).
+For each pick give its public path, slug, the reason, and 3 concrete Commons search ideas.`, { label: 'judge', phase: 'Judge', schema: PICKS })
+
+if (!picks) return { error: 'judge failed' }
+
+phase('Replace')
+const done = await pipeline(picks.replace, (p) =>
+  agent(`You're an image agent for Idea to Shipped. Read ${S}/plan/IMAGES.md and follow it exactly (search through the Firecrawl scrape tool on the Commons API, licence and safety rules, preview before choosing, the fetch helper, ≤400 KB, unique files).
+
+Your one job: a new image for ${p.path} (lesson/Course slug: ${p.slug}; its topic: read its header in ${REPO}/content/ or ${REPO}/content/<course>/course.md). Why it's being replaced (or why it's missing): ${p.reason}. Search ideas: ${p.searchIdeas.join('; ')}. Use at most 3 searches.
+
+The new file must be a Commons file not already used anywhere on the site: check every \`source\` in ${S}/images/credits-*.json first. Save it over ${REPO}/public${p.path} (width 1280 for lessons, up to 1600 for Courses/home). Then write ONLY your own credits file ${S}/images/credits-img-5-${p.slug}.json holding one entry keyed "${p.path}" with title, author, license, licenseUrl, source and alt, exactly as IMAGES.md shows. Don't edit any other credits file or any lesson. Report the file you chose and why it fits, in two sentences.`, { label: `replace:${p.slug}`, phase: 'Replace' }))
+
+return { judged: picks.summary, replaced: picks.replace.map((p, i) => ({ path: p.path, reason: p.reason, result: done[i] })) }

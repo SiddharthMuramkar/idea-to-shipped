@@ -18,7 +18,7 @@ You're about to call the booking code a service in a design chat. What does code
 Why: It bans loose substitutes such as service, because consistent language is the whole point. Otherwise you can't tell whether two people mean the same thing.
 ```
 
-For example, say Ticket #13, the endpoint that creates a booking, must check capacity, save the booking and email the member:
+For example, say [Ticket](/learn/issues-and-keeping-track) #13, the endpoint that creates a booking, must check capacity, save the booking and email the member:
 
 ```python
 # Shallow: the caller must know every step
@@ -123,13 +123,13 @@ Why: A real seam has two adapters, such as production and test. With only one, n
 
 ### Why it exists
 
-Matt Pocock, who wrote the Skill, starts from the fact that an agent begins each session knowing nothing about your code: "AI is not a super-powered developer. It's a new starter with no memory."
+Matt Pocock, who wrote the Skill, starts from the idea that an agent begins each session knowing nothing about your code: "AI is not a super-powered developer. It's a new starter with no memory."
 
 You hold a map of your codebase in your head, with modules in loose groups.
 
 The agent doesn't have that map. It sees modules that can all import from each other, with no groups and no relationships.
 
-Matt ranks your codebase above your prompt or `AGENTS.md` as the biggest influence on an agent's output.
+Matt ranks your codebase above your prompt or your [instruction file](/learn/instruction-files), such as `AGENTS.md`, as the biggest influence on an agent's output.
 
 So his fix is deep modules, an idea from the book _A Philosophy of Software Design_. You own each module's interface, the agent owns the implementation behind it, and tests keep it honest.
 
@@ -207,9 +207,9 @@ Why: Once tests at the new interface exist, the old ones become waste. The rule 
 
 One line of the design-it-twice file shows what a subagent needs. It used to say: "Spawn 3+ sub-agents in parallel using the Agent tool."
 
-In July 2026, a reader filed an issue: other harnesses may not have a tool called Agent. In August, Matt dropped the tool's name and left the mechanism to the harness.
+In July 2026, a reader filed an issue: other [harnesses](/learn/how-agents-work), the programs that run a model as a coding agent, may not have a tool called Agent. In August, Matt dropped the tool's name and left the mechanism to the harness.
 
-In October, Matt fixed a second problem. Some Codex models fork the parent conversation when they spawn a subagent, so the subagent inherits the parent's context window. That throws away the point of a subagent: a clean context that sees only its brief. So the line now says "each with a fresh context window".
+In October, Matt fixed a second problem. Some models in Codex, another coding agent, fork the parent conversation when they spawn a subagent. The forked subagent inherits the parent's [context window](/learn/context-window), everything an agent can see at once. That throws away the point of a subagent: a clean context that sees only its brief. So the line now says "each with a fresh context window".
 
 ```checkpoint quick-12
 Your harness forks the conversation when it spawns a subagent. What does the subagent lose?
@@ -223,7 +223,7 @@ So a subagent is there for its clean start. Where Matt's page on this Skill disa
 
 ### Where it goes wrong
 
-**The agent went off designing without asking you anything.** In one real case, a [handoff](/learn/handoff) note said "resume in `/codebase-design` to drive the open decisions". The fresh session re-explored mapped code, running to about 105k tokens before asking anything.
+**The agent went off designing without asking you anything.** In one real case, a [handoff](/learn/handoff) note said "resume in `/codebase-design` to drive the open decisions". The fresh session re-explored mapped code, running to about 105k (105,000) [tokens](/learn/context-window), the small chunks of text a model reads and writes, before asking anything.
 
 The Skill has no overall process or stopping rule, so the agent invents one, reaching for design it twice. The fix is to name a driver Skill, one with a process and checkpoints, such as [grill-with-docs](/learn/grill-with-docs) or [tdd](/learn/tdd), and let it use these words. A triage note marked as AI-generated closed that issue without changing the Skill, so the fix stays yours.
 
@@ -272,7 +272,7 @@ Describe one module in these words, and change no code. You'll need the practice
 5. Ask: "What's the module's interface, and where's its seam?" You should see both named, with no component or service.
 6. Ask: "Which of DEEPENING.md's four kinds is Postgres?" You should see local-substitutable, if it can name a local stand-in.
 7. Ask: "Run the deletion test on one helper the module calls." You should see whether complexity vanishes or reappears in its callers.
-8. Run `gh issue comment 3 --web`, #3 being the endpoint's Ticket, and paste the answers.
+8. Run `gh issue comment 3 --web` and paste the answers. In your practice project, the endpoint's Ticket is #3, from the setup Try it. The #13 in the example above was made up.
 
 If step 2 starts reading files or proposing refactors, the agent has mistaken the reference for a driver. Stop it, and carry on from step 3.
 

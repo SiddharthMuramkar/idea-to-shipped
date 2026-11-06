@@ -128,7 +128,7 @@ Why: The type check is the last step of its checklist, and it stops there. A com
 
 ### Why it exists
 
-Testing a function that takes a big type is painful in TypeScript. Take a `Request` from express, an outside library for writing endpoints. You fake every field, or you write `as unknown as Request`. Then you import that type into every test. Matt's name for this is "A thousand tiny cuts."
+Testing a function that takes a big type is painful in TypeScript. Take a `Request` from express, an outside library for writing endpoints (web addresses that answer requests). You fake every field, or you write `as unknown as Request`. Then you import that type into every test. Matt's name for this is "A thousand tiny cuts."
 
 Matt went through dozens of open-source codebases, and every one with a large test suite had the same problem. So he released shoehorn. Years later he added this Skill, so an agent can do the clean-up for you.
 
@@ -229,7 +229,7 @@ Why can `fromPartial` fail with TS2321 on a huge, self-referencing type?
 Why: The compiler walks every member of the type, then every member of those, until it hits its depth limit. A type whose members lead back to itself can take it that far.
 ```
 
-One real case is the ComfyUI frontend's test files. There, tsgo, the native preview of TypeScript, reports 88 errors in 38 files, all from that same walk. Stock `tsc`, TypeScript's usual compiler, gets through the same files. The issue is still open. The reporter proposed a one-line change to shoehorn's partial type, and it makes all 88 errors go away. They apply a slightly wider version to their own copy with `pnpm patch`, pnpm's way of editing an installed package.
+One real case is the ComfyUI frontend's test files. There, tsgo, a preview of TypeScript 7's new compiler, reports 88 errors in 38 files, all from that same walk. TypeScript 6's compiler, `tsc`, gets through the same files. TypeScript 7 shipped in July 2026, and its `tsc` is that new compiler. The issue is still open. The reporter proposed a one-line change to shoehorn's partial type, and it makes all 88 errors go away. They apply a slightly wider version to their own copy with `pnpm patch`, pnpm's way of editing an installed package.
 
 ### Try it
 
@@ -237,8 +237,8 @@ Clean up one test in your practice project's TypeScript website, then watch `fro
 
 1. Go into the website, the subfolder with its own `package.json`: `cd web`.
 2. Start Claude Code: `claude`.
-3. Type `/migrate-to-shoehorn`, and name your test file. You should see its three questions.
-4. Answer them. Also tell it to install with `npm i -D @total-typescript/shoehorn`, and to search `*.test.tsx` files too. You should see the cast become `fromPartial()`, with its import added.
+3. Type `/migrate-to-shoehorn`. You should see its three questions.
+4. Answer them, naming your test file for the first. Also tell it to install with `npm i -D @total-typescript/shoehorn`, and to search `*.test.tsx` files too. You should see the cast become `fromPartial()`, with its import added.
 5. In a second terminal, in `web/`, run the type check yourself: `npx tsc --noEmit`. You should see no errors.
 6. Open `package.json`. You should see shoehorn under `devDependencies`.
 7. List the files that mention shoehorn: `grep -rl shoehorn . --include='*.ts' --include='*.tsx' --exclude-dir=node_modules`. You should see only test files.
@@ -380,7 +380,7 @@ Why: A function should ask only for the data it needs, and huge test objects are
 Your agent has replaced the casts in your website's tests with shoehorn helpers and added their imports. What comes next in the checklist it follows?
 - [x] Run the type check, to confirm the rewritten tests still compile.
   > Right: that's `/migrate-to-shoehorn`.
-- [ ] Open a pull request for the change and write its description.
+- [ ] Write the pull request's description, showing what changed and that it works.
   > That's `/pr`. The checklist isn't finished. Its last step, the type check, hasn't run yet.
 - [ ] Review the change against the Spec and the coding standards.
   > That's `/code-review`. First the rewrite has to be checked to compile. The checklist ends with a type check.
@@ -391,9 +391,9 @@ Why: Its checklist ends with a type check, which verifies the rewritten tests. T
 A team's tests pass real, deeply linked objects into `fromPartial`. Under tsgo, 38 of their test files fail with TS2321, "Excessive stack depth". They patch shoehorn's partial type once with `pnpm patch`, instead of editing 38 tests. Why is that the better fix?
 - [x] Every failure came from one shared type, so fixing that type once clears all 38 files and any test added later.
 - [ ] tsgo is only a preview, so its errors don't count, and the patch just silences a false alarm until it ships.
-  > The patch changes the type so the compiler stops early. Wrong member types, unknown keys and wrong nested types still error.
-- [ ] Stock `tsc` fails those same 38 files too, so the tests were broken all along and needed the type rewritten.
-  > The reporter says stock `tsc` gets through their test files. Only tsgo reports the 88 errors.
+  > The patch changes the type so the compiler stops early. Wrong member types, unknown keys and wrong nested types still error. And TypeScript 7 already ships this compiler as its `tsc`.
+- [ ] TypeScript 6's `tsc` fails those same 38 files too, so the tests were broken all along and needed the type rewritten.
+  > The reporter says TypeScript 6's `tsc` gets through their test files. Only tsgo reports the 88 errors.
 Why: All 88 errors came from the same comparison, against one shared type. So one patch to that type made them all go away, and ordinary partial mocks behave the same. That fixes the shared cause, instead of working around it in 38 files.
 ```
 

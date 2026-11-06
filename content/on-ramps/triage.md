@@ -87,7 +87,7 @@ Why: Only you can start triage, by typing `/triage`. However many reports are wa
 
 ## What it creates
 
-One category, one state: every triaged Issue should carry exactly one **category label**, `bug` (broken) or `enhancement` (a new feature). It also needs exactly one **state label**, saying where it stands:
+One category, one state: every triaged Issue should carry exactly one **category label**, `bug` (something is broken) or `enhancement` (a new feature or an improvement). It also needs exactly one **state label**, saying where it stands:
 
 - `needs-triage`: you still need to look at it.
 - `needs-info`: waiting on the reporter.
@@ -149,7 +149,7 @@ You're checking an agent brief. Which of these should it leave out?
 Why: A brief says what happens now, what should happen, and testable acceptance criteria. It leaves out file paths and line numbers, because those go stale.
 ```
 
-`wontfix` closes the Issue. Only a turned-down feature request, not a bug, gets a file in `.out-of-scope/`: a folder remembering why, so nobody argues it again. Something already built is also `wontfix`: it gets a pointer to where it lives, not a file.
+For `wontfix`, triage also closes the Issue, since a label alone never does. Only a turned-down feature request, not a bug, gets a file in `.out-of-scope/`: a folder remembering why, so nobody argues it again. Something already built is also `wontfix`: it gets a pointer to where it lives, not a file.
 
 ```checkpoint quick-10
 A feature request turns out to be built already. What does it get?
@@ -237,7 +237,7 @@ Why: The listing shows three groups, oldest first. They're the Issues waiting on
 
 **Your label names can differ.** Matt calls these labels "roles", and your tracker's labels may use other names. setup-matt-pocock-skills records which is which. If it hasn't, triage tells you to run it.
 
-**Outsiders' pull requests can join in.** A setting in `docs/agents/issue-tracker.md` brings them in. Then "a PR is an issue with attached code", with the same labels. The setting is off by default.
+**Outsiders' [pull requests](/learn/pull-requests) can join in.** A pull request (PR) is a proposed change to your project, which you review before you accept it. A setting in `docs/agents/issue-tracker.md` brings them in. Then "a PR is an issue with attached code", with the same labels. The setting is off by default.
 
 ### A real example
 
@@ -273,7 +273,7 @@ So the state label says who takes the work next: a person for a design call, an 
 
 **An agent ignores your new Tickets.** One user ran the Spec flow and saw `needs-triage` on the output, and the agent they'd left working alone ignored everything. to-tickets applies `ready-for-agent` when it publishes Tickets. So check for that label, and don't run triage over them: you'd waste the work.
 
-**An agent gets stuck on a fully briefed Issue.** The Issue waits on another one, but `ready-for-agent` lets an agent pick it up anyway. The five states have no slot for this. It's the most-filed gap on the Skill. It has two more forms: future work waiting for something to happen, and work "implemented, awaiting verification". None of these has shipped, so people add an extra label of their own beside the category. A triage comment on #139 asks whether triage still needs its own state now that Tickets carry blocking edges.
+**An agent gets stuck on a fully briefed Issue.** The Issue waits on another one, but `ready-for-agent` lets an agent pick it up anyway. The five states have no slot for this. It's the most-filed gap on the Skill. It has two more forms: future work waiting for something to happen, and work "implemented, awaiting verification". None of these has shipped, so people add an extra label of their own beside the category. A triage comment on #139 asks whether triage still needs its own state now that Tickets carry [blocking edges](/learn/to-tickets). Those are links from a Ticket to the others that must finish before it can start.
 
 ```checkpoint quick-18
 An Issue is fully briefed but waits on another Issue. Which of the five states says so?
@@ -293,7 +293,7 @@ You want triage to sort twenty Issues in one go. What must you tell it?
 Why: One user's listing returned Issue bodies but not comments, and the agent used it as its only evidence. So for a bulk pass, tell it to read each Issue's comments.
 ```
 
-**`gh` says a label wasn't found.** In Issue #616, the agent's `gh issue edit` failed with "'ready-for-human' not found". Setup used to write the label names to a file without creating the labels. Matt's page still calls this an open bug and says to run `gh label create` yourself, which works. But #616 closed in October 2026, and the current setup-matt-pocock-skills creates each configured label the tracker lacks.
+**`gh` says a label wasn't found.** In Issue #616, the agent's `gh issue edit` failed with "'ready-for-human' not found". Setup used to write the label names to a file without creating the labels. Matt's page on the Skill, dated August 2026, calls this an open bug and says to run `gh label create` yourself, which works. But #616 closed in October 2026, and the current setup-matt-pocock-skills creates each configured label the tracker lacks.
 
 ```checkpoint quick-20
 `gh` says `ready-for-human` wasn't found. Which Skill creates that label today?
@@ -305,15 +305,16 @@ Why: Setup used to write the label names to a file without creating the labels. 
 
 ### Try it
 
-Play an outsider on your practice project, and watch triage stop for you. You'll need that project, the yoga-studio booking site, open in Claude Code. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Play an outsider on your practice project, and watch triage stop for you. You'll need that project, the yoga-studio booking site, open in Claude Code. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
-1. In a terminal, file a report with no steps: `gh issue create --title "Booking a Sunday class shows an error page" --body "Please fix it."`. You should see a link ending in the Issue's number.
-2. In Claude Code, type `/triage Let's look at #N`, with that number. You should see its category and state call, with reasons. Then it stops.
-3. Tell it to go ahead with `bug` and `needs-info`.
-4. Open the Issue: `gh issue view N --web`. You should see both labels, and a comment opening with the AI disclaimer.
-5. Read the comment's questions. They should be specific, not "please provide more info".
-6. Reply as the reporter: `gh issue comment N --body "Open a Sunday class, then click Book."`.
-7. Type `/triage Show me anything that needs my attention`. You should see your Issue in the group of answered `needs-info` ones.
+1. Open a second terminal for the `gh` commands below, and go into your project folder: `cd yoga-studio`. Keep Claude Code running in the first.
+2. File a report with no steps: `gh issue create --title "Booking a Sunday class shows an error page" --body "Please fix it."`. You should see a link ending in the Issue's number.
+3. In Claude Code, type `/triage Let's look at #N`, with that number. You should see its category and state call, with reasons. Then it stops.
+4. Tell it to go ahead with `bug` and `needs-info`.
+5. Open the Issue: `gh issue view N --web`. You should see both labels, and a comment opening with the AI disclaimer.
+6. Read the comment's questions. They should be specific, not "please provide more info".
+7. Reply as the reporter: `gh issue comment N --body "Open a Sunday class, then click Book."`.
+8. Type `/triage Show me anything that needs my attention`. You should see your Issue in the group of answered `needs-info` ones.
 
 ### Read more
 
@@ -360,7 +361,7 @@ Q: Why did a triage pass label Issue #139 on Matt's repo ready-for-human?
 A: Because the fix is a design call, not a mechanical edit: Matt agreed a state is needed, but the name, blocked or paused, was still open.
 
 Q: triage fails with "'ready-for-human' not found". Which Skill creates missing labels now?
-A: [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills): on GitHub or GitLab it creates each configured label the tracker lacks. Matt's page still calls this an open bug, but #616 closed in October 2026.
+A: [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills): on GitHub or GitLab it creates each configured label the tracker lacks. Matt's page, dated August 2026, calls it an open bug, but #616 closed in October 2026.
 ```
 
 ## Final test

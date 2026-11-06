@@ -35,7 +35,7 @@ Agent: Added to GLOSSARY.md:
        _Avoid_: class
 ```
 
-The Skill also calls out a word that clashes with your [glossary](/learn/one-shared-language), or a claim your code contradicts.
+The [Skill](/learn/skills) also calls out a word that clashes with your [glossary](/learn/one-shared-language), or a claim your code contradicts.
 
 ```checkpoint quick-2
 You say partial refunds are allowed, but your code only refunds whole bookings. What does domain-modeling do?
@@ -138,7 +138,7 @@ Why does an agent use 20 words where 1 will do?
 Why: Agents are dropped into a project with no shared words, so they work out the jargon as they go. The long-winded wording is the result.
 ```
 
-He felt this in his own grilling sessions, re-explaining the project before any real work could start. So he wrote the ubiquitous language skill to record the words, and later combined it with grill-me into grill-with-docs.
+He felt this in his own grilling sessions, re-explaining the project before any real work could start. So he wrote the ubiquitous language skill (named after an idea explained below) to record the words, and later combined it with [grill-me](/learn/grill-me), his interview Skill, into grill-with-docs.
 
 That separate Skill was then removed, and its job moved into domain-modeling. So domain-modeling keeps the shared language in a file that helps agents decode the project's jargon.
 
@@ -244,7 +244,7 @@ Why: Automatic invocation is the Skill's weakest part. Models often load grillin
 
 Version 1.3 changed how Skills call each other, because naming one in prose doesn't reliably load it. They now use the **Skill tool**, the tool an agent calls to load a Skill. Matt's advice stays: if the file is unchanged at the end, invoke domain-modeling by name alongside the other Skill.
 
-**The agent raises a naming clash that was settled months ago.** It cross-references code, `GLOSSARY.md` and the ADRs, and nothing else, so it can't see a closed Issue. In issue #717 on Matt's repo, a run on a Django codebase flagged two things both called "Tool". A closed Issue had settled that months earlier. Until the Skill changes, add an instruction to search Issues to your own `docs/agents/domain.md`, which the Skills already read.
+**The agent raises a naming clash that was settled months ago.** It cross-references code, `GLOSSARY.md` and the ADRs, and nothing else, so it can't see a closed [Issue](/learn/issues-and-keeping-track): one piece of work written down on GitHub. In issue #717 on Matt's repo, a run on a Django codebase flagged two things both called "Tool". A closed Issue had settled that months earlier. Until the Skill changes, add an instruction to search Issues to your own `docs/agents/domain.md`, which the Skills already read.
 
 ```checkpoint quick-15
 Why can domain-modeling raise a naming clash that a closed Issue already settled?
@@ -263,7 +263,7 @@ You'll need your practice project, the yoga-studio booking site. If you haven't 
 1. Open the `yoga-studio` repo in Claude Code.
 2. Type `/domain-modeling A class can't be booked once it's full.` You should see the agent ask which "class" you mean, or quote your glossary or code.
 3. Answer: `One scheduled class. Call it a Session.`
-4. In a second terminal, run `cat GLOSSARY.md`. You should see a Session entry already, with an _Avoid_ line.
+4. Open a second terminal, go to the repo with `cd yoga-studio`, and run `cat GLOSSARY.md`. You should see a Session entry already, with an _Avoid_ line.
 5. In the session, ask: `Should we record an ADR that a waitlist spot is held for 24 hours? It's one setting we can change any time.` You should see it say no, because the setting is easy to reverse.
 6. In `docs/agents/domain.md`, add the settled-clash fix: `Before treating a term as unresolved, search the repo's GitHub Issues for it.` You should see the new line in `git diff`.
 7. In the session, type `/grill-with-docs make my GLOSSARY.md more concise and remove any implementation details from it`. You should see no implementation details left in the file.
@@ -307,7 +307,7 @@ A: The decision is hard to reverse, surprising without context, and the result o
 Q: In a glossary entry, what goes on the _Avoid_ line?
 A: The other words for the same concept, which you shouldn't use. Pick the best word and list the rest there.
 
-Q: Which main-flow Skill runs domain-modeling alongside grilling?
+Q: Which Skill in the [main flow](/learn/main-flow) runs domain-modeling alongside grilling?
 A: grill-with-docs.
 
 Q: What does Matt call the weakest part of domain-modeling, and what's the fix?
@@ -340,7 +340,7 @@ Why: The glossary records what this project's own words mean. A term like timeou
 ```
 
 ```final-test domain-modeling-just-reading
-An agent reads GLOSSARY.md so a Ticket's title uses the right words. Is that domain-modeling?
+An agent reads GLOSSARY.md so the title of a new Issue uses the right words. Is that domain-modeling?
 - [x] No. It's for changing the model, not only reading it.
 - [ ] Yes. Using GLOSSARY.md like this is domain-modeling.
 - [ ] Yes, as long as the agent also reads the ADRs in docs/adr/.

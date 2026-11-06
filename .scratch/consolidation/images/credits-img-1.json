@@ -1,0 +1,226 @@
+{
+  "/images/lessons/reading-a-repository.jpg": {
+    "title": "UNOG Library Filing Cabinet",
+    "author": "Credits to Mourad Ben Abdallah / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:UNOG_Library_Filing_Cabinet.JPG",
+    "alt": "An open wooden card catalogue drawer packed with index cards, with library shelves behind it."
+  },
+  "/images/lessons/branches-and-worktrees.jpg": {
+    "title": "Hand-operated railroad switch",
+    "author": "PIVISO",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Hand-operated_railroad_switch.jpg",
+    "alt": "A hand-operated railway switch, its lever and lamp beside rails that split onto two tracks."
+  },
+  "/images/lessons/what-git-and-github-are.jpg": {
+    "title": "Small clock face, Seth Thomas clock, 1876 (961021fd-324e-47f9-976b-5c24506b6dff)",
+    "author": "NPS photo",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Small_clock_face,_Seth_Thomas_clock,_1876_(961021fd-324e-47f9-976b-5c24506b6dff).jpg",
+    "alt": "A small 1876 clock dial in front of the large brass gears of a tower clock's works."
+  },
+  "/images/lessons/commits-and-diffs.jpg": {
+    "title": "Muybridge horse gallop",
+    "author": "Eadweard Muybridge",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Muybridge_horse_gallop.jpg",
+    "alt": "Twelve photos of a galloping horse and rider in sequence, each frame a moment after the one before."
+  },
+  "/images/lessons/push-pull-and-remotes.jpg": {
+    "title": "A view of the server room at The National Archives",
+    "author": "The National Archives (UK)",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:A_view_of_the_server_room_at_The_National_Archives.jpg",
+    "alt": "A dim aisle between tall server racks lit with blue and green lights in a data centre."
+  },
+  "/images/lessons/pull-requests.jpg": {
+    "title": "Night Landing IMG 5007 (12120474483)",
+    "author": "Ronnie Robertson",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Night_Landing_IMG_5007_(12120474483).jpg",
+    "alt": "Runway lights at dusk lead towards the landing light of a plane coming in to land."
+  },
+  "/images/lessons/checking-a-pr.jpg": {
+    "title": "Quality Control of Ceramic Mugs",
+    "author": "Encik Tekateki",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Quality_Control_of_Ceramic_Mugs.jpg",
+    "alt": "A hand holds a mug up beside an approved sample, with rows of patterned mugs waiting to be inspected."
+  },
+  "/images/lessons/merging-and-cleaning-up.jpg": {
+    "title": "John Day River mouth",
+    "author": "Sam Beebe",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:John_Day_River_mouth.jpg",
+    "alt": "Aerial view of the narrow John Day River flowing into the much wider Columbia River between dry hills."
+  },
+  "/images/lessons/undo-and-conflicts.jpg": {
+    "title": "1912 summer olympics tug of war",
+    "author": "Unknown author",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:1912_summer_olympics_tug_of_war.jpg",
+    "alt": "A 1912 Olympic tug of war: one team leans back hard on the rope while the other team pulls from the far end."
+  },
+  "/images/lessons/issues-and-keeping-track.jpg": {
+    "title": "Sticky notes on the wall of the Wikimedia Foundation office, 2010-10-26",
+    "author": "Ragesoss",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sticky_notes_on_the_wall_of_the_Wikimedia_Foundation_office,_2010-10-26.jpg",
+    "alt": "Rows of yellow, orange and white sticky notes, each a written-down item, arranged on an office wall."
+  },
+  "/images/lessons/one-change-start-to-finish.jpg": {
+    "title": "Roundabout interchange",
+    "author": "Petar Milošević",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Roundabout_interchange.jpg",
+    "alt": "Black-and-white aerial view of an oval roundabout looping above a busy multi-lane road, cars going round it."
+  },
+  "/images/lessons/working-with-an-agent-on-github.jpg": {
+    "title": "Holland Tandem Ameland",
+    "author": "dronepicr",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Holland_Tandem_Ameland.jpg",
+    "alt": "A black tandem bicycle, two seats and two sets of pedals on one frame, parked by sand dunes under a blue sky."
+  },
+  "/images/lessons/how-teams-do-it.jpg": {
+    "title": "Signal box lever frame - geograph.org.uk - 2998668",
+    "author": "Roger Jones",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Signal_box_lever_frame_-_geograph.org.uk_-_2998668.jpg",
+    "alt": "A signal box lever frame: a row of red, blue and black levers, several labelled for the main line."
+  },
+  "/images/lessons/what-ci-cd-is.jpg": {
+    "title": "Ford assembly line - 1913 (restored)",
+    "author": "Unknown author",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Ford_assembly_line_-_1913_(restored).jpg",
+    "alt": "Workers in 1913 stand along a moving assembly line, each adding one part to engine pieces as they pass."
+  },
+  "/images/lessons/reading-a-workflow.jpg": {
+    "title": "Paillard Mandolin-Piccolo Cylinder Music Box, Sainte Croix, Switzerland, c. 1885 detail - Nethercutt Collection - Los Angeles, CA - DSC02092",
+    "author": "Daderot",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Paillard_Mandolin-Piccolo_Cylinder_Music_Box,_Sainte_Croix,_Switzerland,_c._1885_detail_-_Nethercutt_Collection_-_Los_Angeles,_CA_-_DSC02092.jpg",
+    "alt": "A music box's metal cylinder studded with pins above a steel comb, the pins set in advance to play a tune."
+  },
+  "/images/lessons/lab-gated-pipeline.jpg": {
+    "title": "Trans-Alaska Pipeline System Luca Galuzzi 2005",
+    "author": "Luca Galuzzi (Lucag)",
+    "license": "CC BY-SA 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Trans-Alaska_Pipeline_System_Luca_Galuzzi_2005.jpg",
+    "alt": "The silver Trans-Alaska oil pipeline zigzags on supports across a forested valley towards snowy mountains."
+  },
+  "/images/lessons/gates.jpg": {
+    "title": "Bahnübergang Königskamp Tinnum 2018 N mit geschlossenen Schranken",
+    "author": "Hans G. Oberlack",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bahnübergang_Königskamp_Tinnum_2018_N_mit_geschlossenen_Schranken.jpg",
+    "alt": "A country road runs up to a level crossing whose red-and-white barriers are down, blocking the way."
+  },
+  "/images/lessons/agents-in-github-actions.jpg": {
+    "title": "Reinraum BBS Automation Blaichach",
+    "author": "Clemenspool",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Reinraum_BBS_Automation_Blaichach.jpg",
+    "alt": "A worker in a cleanroom suit checks a tablet beside a large white robot arm in a bright, spotless factory hall."
+  },
+  "/images/lessons/your-projects-pipeline.jpg": {
+    "title": "Via Appia - acquedotti 1010299",
+    "author": "Lalupa",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:Via_Appia_-_acquedotti_1010299.JPG",
+    "alt": "The tall stone arches of a Roman aqueduct stretch away across green fields under a blue sky."
+  },
+  "/images/lessons/start-here.jpg": {
+    "title": "Numbers of starting line track",
+    "author": "Santeri Viinamäki",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Numbers_of_starting_line_track.jpg",
+    "alt": "Numbered lanes curve away from the start line of a red running track beside green grass."
+  },
+  "/images/lessons/how-agents-work.jpg": {
+    "title": "Horses and Plough - Boverton - geograph.org.uk - 2072475",
+    "author": "Mick Lobb",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Horses_and_Plough_-_Boverton_-_geograph.org.uk_-_2072475.jpg",
+    "alt": "Two black shire horses in harness pull a plough across a field while the ploughman behind them holds the reins."
+  },
+  "/images/lessons/calling-a-model.jpg": {
+    "title": "DSS43 is a 70-meter-wide (230-feet-wide) radio antenna at the Deep Space Network's Canberra facility in Australia",
+    "author": "NASA/Canberra Deep Space Communication Complex",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:DSS43_is_a_70-meter-wide_(230-feet-wide)_radio_antenna_at_the_Deep_Space_Network's_Canberra_facility_in_Australia.jpg",
+    "alt": "A huge white radio dish of the Deep Space Network points up at a clear blue sky above green hills."
+  },
+  "/images/lessons/context-window.jpg": {
+    "title": "SeaDream II — View from cabin (porthole)",
+    "author": "User:Mattes",
+    "license": "CC BY 2.0 de",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/de/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:SeaDream_II_—_View_from_cabin_(porthole).JPG",
+    "alt": "A dark ship's cabin where one small round porthole shows a bright slice of blue sea and green hillside."
+  },
+  "/images/lessons/instruction-files.jpg": {
+    "title": "Sheet music on stand - Regent St Festival 2010 (photo by Garry Knight)",
+    "author": "Garry Knight from London, England",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sheet_music_on_stand_-_Regent_St_Festival_2010_(photo_by_Garry_Knight).jpg",
+    "alt": "Sheet music open on a music stand under blue light, beside a violinist's hand holding the bow ready to play."
+  },
+  "/images/lessons/skills.jpg": {
+    "title": "Drill bits 2017 G1",
+    "author": "George Chernilevsky",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Drill_bits_2017_G1.jpg",
+    "alt": "A row of steel drill bits of different sizes laid side by side, each one made for a particular job."
+  },
+  "/images/lessons/models-effort-ultracode.jpg": {
+    "title": "Pan pot knob",
+    "author": "PolBr",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Pan_pot_knob.jpg",
+    "alt": "Close-up of a sound mixer's knobs, each with its own scale, turned to different settings."
+  },
+  "/images/home/hero.jpg": {
+    "title": "Gorch Fock (Schiff, 1958) at sunset in Kiel",
+    "author": "Sascha Gniosdorz",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Gorch_Fock_(Schiff,_1958)_at_sunset_in_Kiel.jpg",
+    "alt": "A three-masted tall ship rides at anchor on calm water under a soft pink and orange sunset sky."
+  },
+  "/images/home/cta.jpg": {
+    "title": "Space Shuttle Discovery Liftoff (28024328255)",
+    "author": "NASA Hubble Space Telescope",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Space_Shuttle_Discovery_Liftoff_(28024328255).jpg",
+    "alt": "A space shuttle lifts off at night on a pillar of fire, lighting up clouds of steam reflected in the water."
+  }
+}

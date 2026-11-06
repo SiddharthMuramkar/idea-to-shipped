@@ -8,7 +8,7 @@ summary: Why your coding agent should interview you about an idea before it writ
 
 Say you ask an agent, in two lines, to add class bookings to a yoga studio's booking site. It picks defaults for the decisions you haven't made, and the result looks complete. At review, you find it handles cancellations in a way you never chose.
 
-**So before any code is written, have the agent interview you about your idea until you both understand it the same way.** Matt Pocock, who wrote the [Skills](/learn/skills) this flow uses, calls that interview **grilling**.
+**So before any code is written, have the agent interview you about your idea until you both understand it the same way.** Matt Pocock, who wrote the [Skills](/learn/skills) this lesson uses, calls that interview **grilling**.
 
 ```checkpoint quick-1
 You're about to start a new feature with an agent. What do you do before any code is written?
@@ -138,7 +138,7 @@ So grilling turns this around. Instead of guessing, the agent has to ask. To **a
 
 ### How it works underneath
 
-The idea underneath is the **design concept**: the shared understanding of what's being built, held between you and the agent. The term comes from the computer scientist Frederick Brooks, in his book _The Design of Design_. The conversation, the code and written documents such as a Spec all try to capture it, but none of them is it.
+The idea underneath is the **design concept**: the shared understanding of what's being built, held between you and the agent. Matt takes the term from _The Design of Design_, a book by the computer scientist Frederick Brooks. Brooks credits the design researcher Rachael Luck with identifying it. The conversation, the code and written documents such as a Spec all try to capture it, but none of them is it.
 
 That explains a familiar frustration: the agent writes exactly what you asked for, and it's still wrong. Usually you hadn't finished working out what you wanted. The agent filled the silences with its own assumptions. Nothing broke. There wasn't yet a whole design concept to share.
 
@@ -168,7 +168,7 @@ Why: Grilling needs a big model's good ideas. Building mostly needs what's alrea
 
 ### A real example
 
-Anthropic recommends the same move in its Claude Code docs, for when you don't yet know what you want. You could run its example on a FastAPI app:
+Anthropic recommends the same move in its Claude Code docs, for when you don't yet know what you want. Its example is about **rate limiting**: capping how many requests each user, or each [API key](/learn/calling-a-model), can send in a given time. You could run it on a FastAPI app, the Python code behind a website:
 
 ```
 I want to add rate limiting to the public API but haven't thought it through yet. Interview me until you could write the spec, then write it to SPEC.md.
@@ -254,6 +254,9 @@ You'll need your practice project, the yoga-studio booking site, with Matt's Ski
 6. Reply to each with "yes" or your own choice. You should see a new round, opened up by your answers.
 7. Carry on until no questions are left. Then confirm that you share an understanding, and tell it to build nothing.
 8. List the questions you hadn't thought of yourself, such as late cancels or refunds.
+9. In a second terminal, in the `yoga-studio` folder, run `git status --short`. You should see `README.md` from step 2, and `GLOSSARY.md` if a term was settled.
+10. Undo those edits, so the next Try it starts clean: run `git restore .`, then delete any file on a line starting `??`.
+11. Run `git status --short` again. You should see no output.
 
 Each question on your list is a default the agent would have filled in silently.
 
@@ -325,8 +328,8 @@ Why: Given a short request, an agent doesn't stop at the decisions you haven't m
 ```
 
 ```final-test grill-before-you-build-deeper-when-to
-You're about to ask an agent for a change. Which work does Matt say needs no grilling first?
-- [x] Small changes like a five-line fix, which you can check and align on afterwards.
+You're about to ask an agent for a change. Which work does Matt say needs no aligning first?
+- [x] Small changes like a five-line fix, which you can check and put right afterwards.
 - [ ] Work that spans several sessions, which is too big to grill in one go.
 - [ ] New features on a page you haven't built yet, since the agent can guess well.
 Why: A small change is cheap to put right, so you can look at it and align afterwards. Where you can, Matt says, you should "shift right". He keeps grilling for work that's large and hard to row back from, and an idea too big for one session still needs aligning, through wayfinder.

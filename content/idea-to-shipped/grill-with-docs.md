@@ -38,7 +38,7 @@ nodes:
       - label: "`GLOSSARY.md`"
         note: "the project's agreed words"
       - label: "ADRs"
-        note: "go in `docs/adr/`"
+        note: "records of hard decisions, in `docs/adr/`"
 ```
 
 One round on a waitlist might look like this:
@@ -60,7 +60,7 @@ You:   Yes to both.
 Agent: Added "Member" and "Hold" to GLOSSARY.md. Next round...
 ```
 
-The interview ends when every branch of the design tree is visited and nothing is left silently assumed. Even then, the agent doesn't act until you confirm you share an understanding.
+The agent maps the idea as a [design tree](/learn/grill-before-you-build): a map of decisions, each branching into the ones depending on it. The interview ends when every branch is visited and nothing is left silently assumed. Even then, the agent doesn't act until you confirm you share an understanding.
 
 ```checkpoint quick-2
 Every branch has been visited and nothing is assumed. What must happen before the agent acts?
@@ -115,7 +115,7 @@ Only you can start it, by typing `/grill-with-docs`.
 
 It creates two kinds of file, each only when there's something to write.
 
-`GLOSSARY.md` holds [the project's agreed words](/learn/one-shared-language). The agent writes each one the moment it's settled, with no implementation details (how the code works, like which endpoint returns what). For example:
+`GLOSSARY.md` holds [the project's agreed words](/learn/one-shared-language). The agent writes each one the moment it's settled, with no implementation details: how the code works, like which endpoint (the web address your app calls) returns what. For example:
 
 ```
 **Hold**:
@@ -124,14 +124,14 @@ _Avoid_: reservation
 ```
 
 ```checkpoint quick-6
-During the interview you settle which endpoint returns a 409. Does that go in GLOSSARY.md?
+During the interview you settle which endpoint returns a 409, the error code for a conflict, like a booking for a full class. Does that go in GLOSSARY.md?
 - [x] No. It holds the project's words, with no implementation details.
 - [ ] Yes. It holds every answer you give at any point in the interview.
 - [ ] Yes, as long as the entry stays short enough to read in one go.
 Why: GLOSSARY.md is for the project's agreed words. Which endpoint returns what is an implementation detail, so it doesn't belong there.
 ```
 
-ADRs go in `docs/adr/`: short files, each recording one decision. The agent offers one only when a decision is hard to reverse, surprising without context and the result of a real trade-off.
+ADRs (architectural decision records) go in `docs/adr/`: short files, each recording one hard decision. The agent offers one only when a decision is hard to reverse, surprising without context and the result of a real trade-off.
 
 ```checkpoint quick-7
 You pick between two libraries, and swapping later would be easy. Will the agent offer an ADR?
@@ -141,7 +141,7 @@ You pick between two libraries, and swapping later would be easy. Will the agent
 Why: All three must be true. The decision must be hard to reverse, surprising without context and the result of a real trade-off.
 ```
 
-Everything else you decide stays in the conversation, along with your shared understanding of the idea. So keep working in that same session through the Spec and Tickets, the written plan and its small tasks.
+Everything else you decide stays in the conversation, along with your shared understanding of the idea. So keep working in that same session through the Spec and Tickets, the written plan and its small tasks. If the build fits in what's left of the session, skip those and go straight to [implement](/learn/implement).
 
 ## Going deeper
 
@@ -232,7 +232,7 @@ Why did Matt rename CONTEXT.md to GLOSSARY.md?
 Why: Matt found the old name too vague. A name that says what the file is helps the agent pull it in at the right moments.
 ```
 
-Not everyone agrees a glossary improves how the agent works. The strongest objection is that a term and its plain-English expansion may get the same result. "On that view the glossary is still valuable, but the value goes to the humans."
+Not everyone agrees a glossary improves how the agent works. The strongest objection is that a term and its plain-English expansion may get the same result. Matt's own page on the Skill concludes: "On that view the glossary is still valuable, but the value goes to the humans."
 
 ### A real example
 
@@ -248,7 +248,7 @@ You're adding a new word to a repo that has a glossary. What does the agent do b
 Why: In Matt's run, the agent read the glossary first, found standalone video already defined, and raised the clash with pitches before going further.
 ```
 
-Then come the questions, each settled before the next. Matt agrees that one pitch can hold many standalone videos. A pitch's status can be idle, scheduled or shipped. A pitch can exist with zero videos. For deletes, he chooses `on delete restrict`.
+Then come the questions, each settled before the next. Matt agrees that one pitch can hold many standalone videos. A pitch's status can be idle, scheduled or shipped. A pitch can exist with zero videos. For deletes, he chooses `on delete restrict`: the database refuses to delete a record while other records still point to it.
 
 Then he asks the agent to save what they have so far. The file gains entries for the pitch and its status. (Today it asks in rounds and writes terms as they settle.) That file is called `GLOSSARY.md` today. One new term reads awkwardly, but he stops anyway: "I'm going to say that's good enough."
 
@@ -294,18 +294,18 @@ Why: The file should hold words only. Matt's fix is to ask the Skill to make it 
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site, with setup already run. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+You'll need your practice project, the yoga-studio booking site, with setup already run. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
-1. Open the `yoga-studio` repo in Claude Code.
+1. In the `yoga-studio` folder, start Claude Code: `claude`.
 2. Type `/grill-with-docs Add a waitlist for full yoga classes.` You should see numbered questions, each with a recommended answer.
 3. Answer the round. Type "yes" to accept a recommendation, or say what you'd change.
-4. In a second terminal, run `git status --short`. Once a term is settled, you should see `GLOSSARY.md` listed.
+4. In a second terminal, in the `yoga-studio` folder, run `git status --short`. Once a term is settled, you should see `GLOSSARY.md` listed: `??` if the file is new, `M` if it was already there.
 5. Run `cat GLOSSARY.md`. You should see each term with one or two sentences and no implementation detail.
 6. Keep answering until the questions run out. Then confirm you share an understanding.
 7. In the same session, run `/to-spec`. If it asks about seams (where tests watch the feature), say yes. You should see a new Spec on your Issue tracker.
 8. Check the Spec against the answers you gave.
 
-If the questions come with no recommended answers and no `GLOSSARY.md` appears, ask the agent which Skills it loaded.
+If the questions come with no recommended answers, or `git status --short` never lists `GLOSSARY.md`, ask the agent which Skills it loaded.
 
 ### Read more
 

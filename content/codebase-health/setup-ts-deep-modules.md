@@ -62,7 +62,7 @@ Why: This Skill is for when agreeing on the shape isn't enough. It makes a check
 
 - If you're still designing an interface or a seam, use [codebase-design](/learn/codebase-design) instead, because this Skill only enforces a folder shape.
 - **Layering**, rules on which packages may depend on which, is left as a commented stub in the config for you to fill in.
-- In a **monorepo**, one repo holding several separate projects, use its own package support. That's the advice of Matt Pocock, who wrote the Skill.
+- In a **monorepo**, a repo whose projects a tool links together as packages, use that tool's own package support instead. You'd see a `pnpm-workspace.yaml` file, or a `workspaces` field in `package.json`. That's the advice of Matt Pocock, who wrote the Skill.
 
 ```checkpoint quick-4
 You want a rule that `ui` must never depend on `billing`. Does this Skill write it?
@@ -74,7 +74,7 @@ Why: Which packages may depend on which is layering. The Skill leaves it as a co
 
 ## What it needs to start
 
-A TypeScript repo, not your FastAPI backend, which is Python. The Skill is user-invoked: only you can start it, by typing its name.
+A TypeScript repo. In the practice project in the Try it below, that's the website in `web/`. It isn't `api/`, the backend (the server code), written in Python with FastAPI, a Python web framework. The Skill is user-invoked: only you can start it, by typing its name.
 
 The agent first works out:
 
@@ -164,7 +164,7 @@ You add a `helpers/` subfolder to a package. What do you change in the config?
 Why: Anything in a subfolder is private, so a new subfolder never needs a config change.
 ```
 
-**One rule covers every package.** dependency-cruiser checks each import against a list of `forbidden` rules. Each rule names a `from` and a `to`, with paths written as regular expressions. Here's the rule for imports between packages, where `R` is the packages root:
+**One rule covers every package.** dependency-cruiser checks each import against a list of `forbidden` rules. Each rule names a `from` and a `to`, with paths written as regular expressions: text patterns that match paths. In them, `^` means "starts with", `[^/]+` means "one or more characters that aren't a slash", and round brackets, `( )`, capture the part they match. Here's the rule for imports between packages, where `R` is the packages root:
 
 ```js
 from: { path: `^${R}/([^/]+)/`, pathNot: `^${R}/[^/]+/tests/` },
@@ -174,7 +174,7 @@ to: {
 },
 ```
 
-- `from.path` matches a file inside a package. Its brackets capture that package's name, which dependency-cruiser calls **group matching**.
+- `from.path` matches a file inside a package. Its round brackets capture that package's name, which dependency-cruiser calls **group matching**.
 - `from.pathNot` leaves out test files, which have a rule of their own.
 - `to.path` uses `PACKAGE_INTERNALS`: anything in a package's subfolder.
 - `to.pathNot` lets an import through when its target sits in `$1`, the captured name. `$1` is a **back-reference**. Think of it like `\1` in Python's `re` module.
@@ -203,7 +203,7 @@ Why: `$1` is the importer's package, here `ui`. The target is in a subfolder of 
 
 In August 2026 a user filed an issue saying this Skill "can false-pass when dependency-cruiser cannot parse TypeScript". In other words, its check might pass when it should fail.
 
-A day later they withdrew it. The real cause was a version mismatch: `dependency-cruiser@18.2.0` doesn't support TypeScript 7. Their agent had blamed the Skill. But the Skill's proof had already refused to call the job done, because the deliberate deep import went undetected.
+A day later they withdrew it. The real cause was a version mismatch: `dependency-cruiser@18.2.0` doesn't support TypeScript 7, and no later stable release does yet. Their agent had blamed the Skill. But the Skill's proof had already refused to call the job done, because the deliberate deep import went undetected.
 
 ```checkpoint quick-11
 The check never caught the deliberate deep import. What did the Skill's proof do?
@@ -240,7 +240,7 @@ rows:
 
 The fix is to ask for `depcruise src` when the agent writes the script. If you have code outside `src/`, name those folders too. Matt's draft pull request #1225 would make that the default. It would also add a probe to the proof, a temporary app file whose deep import must fail. It hasn't merged yet.
 
-**The deep import never fails the check.** The deliberate deep import goes undetected, so the agent won't finish. Either the rules aren't wired correctly, or dependency-cruiser doesn't support your TypeScript version. Check both, and fix before finishing: a check that can't fail guards nothing.
+**The deep import never fails the check.** The deliberate deep import goes undetected, so the agent won't finish. Either the rules aren't wired correctly, or dependency-cruiser doesn't support your TypeScript version. Check both, and fix before finishing: a check that can't fail guards nothing. To check the version, run `npx depcruise --info`. An `x` beside `typescript` means it found no TypeScript it supports, so it skips your `.ts` files, and a run may report `0 modules` cruised. On TypeScript 7, move to TypeScript 6: `npm install --save-dev typescript@6`.
 
 **A newer Bun repo gets npm commands.** The Skill spots Bun only by `bun.lockb`, so "a Bun 1.2+ repo with only `bun.lock` falls through to npm". Tell the agent your repo uses Bun. The same draft pull request would fix this.
 
@@ -254,17 +254,19 @@ Why: The Skill spots Bun only by `bun.lockb`, so a repo with only `bun.lock` fal
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`. If `web/` is missing, ask your agent to set it up. `web/` beside `api/` isn't a monorepo signal. Run this Skill in `web/`, the TypeScript website, never in `api/`, the FastAPI backend.
+You'll need your practice project, the yoga-studio booking site (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`. If `web/` is missing, ask your agent to set it up. Your `web/` and `api/` sit side by side, but no tool links them as packages, so this isn't a monorepo in the sense above. Run this Skill in `web/`, the TypeScript website, never in `api/`, the FastAPI backend.
+
+`web/` must be on TypeScript 6 or older, because dependency-cruiser doesn't support TypeScript 7 yet. In `web/`, run `npx tsc --version`. If it prints `Version 7` and more numbers, ask your agent to move `web/` to TypeScript 6 (`npm install --save-dev typescript@6`) before you start.
 
 1. Open a terminal in `web/`.
 2. If there's no `src/` folder, create one: `mkdir src`. The Skill then picks `src/packages` as its packages root.
-3. Install the Skill by name, because the plugin won't give you an in-progress one: `npx skills@latest add mattpocock/skills --skill setup-ts-deep-modules`
+3. Install the Skill by name, because the plugin won't give you an in-progress one: `npx skills@latest add mattpocock/skills --skill setup-ts-deep-modules`. If it asks, choose Claude Code, in project scope.
 4. Start Claude Code, and type `/setup-ts-deep-modules`.
 5. When it writes `lint:boundaries`, ask for `depcruise src`.
-6. Let it finish. You should see the check pass, fail on the deep import, then pass again.
-7. Create `src/boundary-probe.ts`, holding one deep import: `import "./packages/example/lib/impl";`
-8. Run `npm run lint:boundaries`. You should see it fail with `entrypoint-boundary-from-app`.
-9. Delete `src/boundary-probe.ts`, then run the same command. You should see it pass.
+6. Let it finish. You should see the check pass, fail on the deep import, then pass again. If the deep import never fails, see "The deep import never fails the check" above.
+7. In your editor, or by asking the agent, create `src/boundary-probe.ts` in `web/`, holding one deep import: `import "./packages/example/lib/impl";`
+8. In a second terminal, in `web/`, run `npm run lint:boundaries`. You should see it fail with `entrypoint-boundary-from-app`.
+9. Delete the file (`rm src/boundary-probe.ts`), then run `npm run lint:boundaries` again. You should see it pass.
 
 ### Read more
 

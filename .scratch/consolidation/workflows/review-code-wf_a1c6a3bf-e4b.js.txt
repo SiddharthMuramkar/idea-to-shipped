@@ -1,0 +1,74 @@
+export const meta = {
+  name: 'review-code',
+  description: 'Find code/UI defects in one dimension, then adversarially verify each finding',
+  phases: [
+    { title: 'Find', detail: 'one finder for the dimension' },
+    { title: 'Verify', detail: 'one skeptic per finding tries to refute it' },
+  ],
+}
+
+const S = '/tmp/claude-0/-home-user/74a692da-26dd-57ab-b4f9-90621aaa7a8a/scratchpad'
+const REPO = '/home/user/idea-to-shipped'
+
+const FINDINGS = {
+  type: 'object',
+  properties: {
+    findings: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          severity: { type: 'string', enum: ['high', 'medium', 'low'] },
+          where: { type: 'string', description: 'file:line, or page URL + width' },
+          problem: { type: 'string', description: 'what goes wrong, with a concrete repro' },
+          fix: { type: 'string' },
+        },
+        required: ['id', 'severity', 'where', 'problem', 'fix'],
+      },
+    },
+    summary: { type: 'string' },
+  },
+  required: ['findings', 'summary'],
+}
+
+const VERDICT = {
+  type: 'object',
+  properties: {
+    verdict: { type: 'string', enum: ['confirmed', 'refuted'] },
+    evidence: { type: 'string' },
+    fix: { type: 'string', description: 'precise fix if confirmed: files and the change' },
+  },
+  required: ['verdict', 'evidence', 'fix'],
+}
+
+const CONTEXT = `Idea to Shipped is a Next.js 16.4 / React 19.3 learning site (no CSS framework; marked for Markdown). It was just rebuilt into a library of 7 Courses and 79 Lessons: interactive Quick checks beside paragraphs (a margin rail from 1280px), a graded Final test that marks a Lesson Done in localStorage (key its-progress-v1), Done ticks and progress on cards and Course pages, a /progress page with reset, /credits for openly licensed images, flashcards, server-rendered diagrams, deterministic option shuffling, 308 redirects for three renamed slugs, a stricter lesson parser and lint.
+Code: ${REPO} at HEAD (\`git -C ${REPO} diff fae17a9..HEAD --stat -- src next.config.ts package.json vitest.config.mts\` shows what changed). Read AGENTS.md there: this Next.js differs from older versions; its docs are in ${REPO}/node_modules/next/dist/docs/.
+A production build of HEAD, with lesson images applied, is served at http://localhost:3300 (built in ${S}/wt-build, whose .next folder holds the build output). Node 24: \`export PATH=${S}/node24bin:$PATH\`. Browser: Playwright is preinstalled (\`require('playwright')\`, \`chromium.launch()\` with no options).
+Rules: don't edit any file in ${REPO} or ${S}/wt-build; don't run next build or next dev in ${REPO}; don't stop the server on port 3300. Put throwaway scripts and screenshots in ${S}/cr-${args.dimension}/ (create it).`
+
+phase('Find')
+const found = await agent(`${CONTEXT}
+
+You review ONE dimension: ${args.dimension}.
+${args.brief}
+
+Report real defects only, each with where (file:line or URL + viewport width), severity (high: breaks a page, a feature, saved progress, or blocks keyboard/screen-reader use; medium: a visible bug or a notable gap; low: minor), a concrete repro (steps or input → wrong result), and the fix. No style nits, no taste. An empty list is a fine answer.`, { label: `find:${args.dimension}`, phase: 'Find', schema: FINDINGS })
+
+if (!found || !found.findings.length) return { dimension: args.dimension, summary: found ? found.summary : 'finder failed', confirmed: [] }
+
+const verdicts = await pipeline(found.findings, (f) =>
+  agent(`${CONTEXT}
+
+Another reviewer reported the defect below. Try hard to refute it: read the code, reproduce it in the browser at http://localhost:3300 or with a small script or test. Mark it confirmed only if you reproduced it or the code plainly shows it; otherwise refuted. If confirmed, give the precise fix (files and the change), checked against the code.
+
+Finding (${args.dimension}):
+${JSON.stringify(f, null, 1)}`, { label: `verify:${f.id}`, phase: 'Verify', schema: VERDICT }).then((v) => ({ ...f, verdict: v })))
+
+const all = verdicts.filter(Boolean)
+return {
+  dimension: args.dimension,
+  summary: found.summary,
+  confirmed: all.filter((f) => f.verdict && f.verdict.verdict === 'confirmed').map((f) => ({ id: f.id, severity: f.severity, where: f.where, problem: f.problem, fix: f.verdict.fix || f.fix, evidence: f.verdict.evidence })),
+  refuted: all.filter((f) => f.verdict && f.verdict.verdict === 'refuted').map((f) => `${f.id}: ${f.problem.slice(0, 160)}`),
+}

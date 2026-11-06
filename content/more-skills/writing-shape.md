@@ -10,7 +10,7 @@ Say you've pasted your yoga-studio booking notes into one Markdown file (plain t
 
 **writing-shape turns a pile like that into a separate article, one agreed block at a time.** A **block** is one piece of the article: a paragraph, a list, a table, a callout (a highlighted box), a quote or a code block.
 
-Matt Pocock, who wrote the Skill, calls this **exploit**: the pile is fixed, so you commit to a structure and fill it. You stop gathering.
+Matt Pocock, who wrote the [Skill](/learn/skills), calls this **exploit**: the pile is fixed, so you commit to a structure and fill it. You stop gathering.
 
 ```checkpoint quick-1
 You start writing-shape on your booking notes. What is the session's job?
@@ -106,7 +106,7 @@ Why: Only you can start writing-shape, by typing its name. The agent never loads
 
 ## What it creates
 
-One new file: the article, such as `docs/booking.md`, written block by block. Your raw material file is never edited: it's read-only to this [Skill](/learn/skills). writing-shape publishes nothing, and adds no front matter (a settings block at the top of the file) you didn't ask for.
+One new file: the article, such as `docs/booking.md`, written block by block. Your raw material file is never edited: it's read-only to this Skill. writing-shape publishes nothing, and adds no front matter (a settings block at the top of the file) you didn't ask for.
 
 ```checkpoint quick-7
 You've finished a session on `booking-pile.md`. What has happened to that file?
@@ -148,7 +148,7 @@ steps:
     note: "final shaping, headings and organization"
 ```
 
-writing-shape is still in progress. It sits in Matt's folder of beta Skills, which "can change or disappear without warning". His plugin leaves them out, so you install each one directly. They also get no docs pages, so aihero.dev, Matt's site, has no page for writing-shape.
+writing-shape is still in progress. It sits in Matt's folder of beta Skills, which "can change or disappear without warning". His **plugin**, a bundle of [Skills](/learn/skills) you can install together, leaves them out, so you install each one directly. They also get no docs pages, so aihero.dev, Matt's site, has no page for writing-shape.
 
 ```checkpoint quick-9
 You look on aihero.dev for a page on writing-shape and find nothing. Why?
@@ -278,11 +278,11 @@ Why: Your install is fine, because that version leaves the Skill out of the agen
 
 ### Try it
 
-Shape your booking notes into a page. You'll need your practice project, with its booking Spec and Tickets. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Shape your booking notes into a page. You'll need your practice project, with its booking Spec and Tickets. If you haven't set it up, do the part "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the project, install the Skill: `npx skills@latest add mattpocock/skills --skill writing-shape`. If it asks which agent, choose Claude Code. You should see it finish with no errors.
 2. Create `docs/notes/booking-pile.md`, or reuse the pile from [writing-beats](/learn/writing-beats)'s Try it.
-3. Paste in rough notes on a class booking: lines from the Spec, Ticket titles, a test name. Don't tidy them.
+3. Paste in rough notes on a class booking: lines from the Spec, Ticket titles, and a test name if your project has one. Don't tidy them.
 4. Commit the pile: `git add docs/notes/booking-pile.md && git commit -m "Add booking notes"`. You should see `1 file changed`.
 5. In a terminal, start a fresh session: `claude`.
 6. Type `/writing-shape docs/notes/booking-pile.md`. You should see the agent ask where to save the article.

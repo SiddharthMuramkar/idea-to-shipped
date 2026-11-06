@@ -91,7 +91,7 @@ You can name a direction: say, `/improve-codebase-architecture the booking modul
 - An HTML report in your computer's temp folder (a scratch space), so nothing lands in the repo. Each panel also has the benefits, a before-and-after diagram and a strength badge.
 - A grilling session on the candidate you pick. It settles the new module's shape, so the report proposes no interfaces yet: the grilling decides them.
 - New terms in `GLOSSARY.md`, your project's list of agreed words, added as decisions land.
-- An [ADR](/learn/issues-and-keeping-track), a short record of one decision and why, offered if you reject a candidate for a lasting reason, so future surveys don't suggest it again.
+- An [ADR](/learn/domain-modeling), a short record of one decision and why, offered if you reject a candidate for a lasting reason, so future surveys don't suggest it again.
 
 ```checkpoint quick-6
 The report is open, and you haven't picked a candidate yet. You run `git status`. What do you see?
@@ -101,14 +101,14 @@ The report is open, and you haven't picked a candidate yet. You run `git status`
 Why: The report goes in your computer's temp folder, so nothing lands in the repo.
 ```
 
-The candidate you pick becomes an idea you can take into the [main flow](/learn/main-flow) at [grill-with-docs](/learn/grill-with-docs).
+Once the grilling settles the new module's shape, take that decision into [to-spec](/learn/to-spec), which writes it up as a Spec. If you stop at the report instead, the candidate you want is an idea you can take into the [main flow](/learn/main-flow) at [grill-with-docs](/learn/grill-with-docs).
 
 ```checkpoint quick-7
-You've picked a candidate from the report. Where can it enter the main flow as an idea?
+You stop after the report, with one candidate you want to carry forward. Where does it go next?
 - [x] Into the main flow, as an idea at grill-with-docs.
 - [ ] Straight to implement, which refactors it at once.
 - [ ] Into an ADR, so later surveys know you chose it.
-Why: The candidate you pick becomes an idea you take into the main flow at grill-with-docs.
+Why: With no grilling yet, nothing is decided, so the candidate is still an idea. It enters the main flow at grill-with-docs.
 ```
 
 ```diagram
@@ -239,7 +239,7 @@ Why: The styling and diagram libraries load from the web when you open the page.
 
 Ask instead for inline CSS (styling written inside the page) and hand-built SVG diagrams (pictures drawn in its code).
 
-**The session fills up after a few candidates.** Work through several, and the context window fills with the report, the grilling, the glossary edits and any code changes you start, all at once. Use one candidate per session. Take that decision into [to-spec](/learn/to-spec), and turn the rest into Tickets.
+**The session fills up after a few candidates.** Work through several, and the [context window](/learn/context-window) (everything the agent can see) fills with the report, the grilling, the glossary edits and any code changes you start, all at once. Use one candidate per session. Take that decision into [to-spec](/learn/to-spec), and turn the rest into [Tickets](/learn/issues-and-keeping-track): tasks you can each pick up in a later session.
 
 ```checkpoint quick-15
 You've finished grilling one candidate, and you want to grill the next. What do you do?
@@ -265,25 +265,26 @@ A part that looks shallow, such as code that shows something only under one cond
 
 You'll need your practice project, the yoga-studio booking site, with some commits in `api/`. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. If `api/` is missing, have your agent add it. Pick what you'll build next there: say, cancelling a booking.
 
-1. Run `git status`, and commit anything it lists, so the working tree is clean.
-2. Type `/improve-codebase-architecture how can we make cancelling a booking easy?`
+1. In the `yoga-studio` folder, run `git status`, and commit anything it lists, so the working tree is clean.
+2. Start Claude Code there: `claude`.
+3. Type `/improve-codebase-architecture how can we make cancelling a booking easy?`
 
    You should see the report open, and the agent ask which candidate to explore.
 
-3. Read the strength badges. If every candidate is Speculative, stop here: it found nothing.
-4. Run `git status` again.
+4. Read the strength badges. If every candidate is Speculative, stop here: it found nothing.
+5. In a second terminal, in the same folder, run `git status` again.
 
    You should see the same clean tree: the report sits in your temp folder.
 
-5. Pick the report's top recommendation, and answer the grilling.
+6. Pick the report's top recommendation, and answer the grilling.
 
    You may see new terms land in `GLOSSARY.md`.
 
-6. If you reject it for a reason that will still hold next month, accept the ADR it offers.
+7. If you reject it for a reason that will still hold next month, accept the ADR it offers.
 
    You should see a new file in `docs/adr/`.
 
-7. If you kept it, type `/to-spec` in this session.
+8. If you kept it, type `/to-spec` in this session. If it proposes seams, confirm them.
 
    You should see a new Spec on your Issue tracker.
 
@@ -325,7 +326,7 @@ Q: How does improve-codebase-architecture differ from codebase-design?
 A: It's the survey that finds the candidates; codebase-design is the bench where you design the chosen one.
 
 Q: Where does the candidate you pick go after improve-codebase-architecture?
-A: Into the main flow at grill-with-docs, as a new idea.
+A: Once its grilling settles the new module's shape, into to-spec. If you stopped at the report, into the main flow at grill-with-docs, as a new idea.
 
 Q: What is the deletion test that improve-codebase-architecture applies?
 A: Imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across many callers, it was earning its keep.

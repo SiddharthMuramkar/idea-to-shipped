@@ -6,7 +6,7 @@ summary: research sends a second agent to read the sources that own the answer w
 
 ## What it's for
 
-Say you're planning Ticket #13, the yoga-studio endpoint that creates a booking. Two members could book the last seat at once, so you need a fact: what does Postgres, your database, do then? Reading its docs yourself stalls your own work. Asking in this session floods your agent's [context window](/learn/context-window), the text it can hold at once, with pages you won't need again, and the answer ends with the session.
+Say you're planning [Ticket](/learn/issues-and-keeping-track) #13 of a yoga-studio booking site: the endpoint (the web address your app calls) that creates a booking. Two members could book the last seat at once, so you need a fact: what does Postgres, your database, do then? Reading its docs yourself stalls your own work. Asking in this session floods your agent's [context window](/learn/context-window), the text it can hold at once, with pages you won't need again, and the answer ends with the session.
 
 **research sends a background agent to read the sources that own the answer, then leaves one cited Markdown file in your repo.**
 
@@ -19,6 +19,8 @@ You start research, then go back to your own work. What is doing the reading?
 - [ ] A nightly job, which does the reading on a fixed schedule for you.
 Why: A background agent is a second agent. It does the reading while you carry on, so your own work keeps going.
 ```
+
+research is one of Matt Pocock's [Skills](/learn/skills): a set of instructions your coding agent loads for one kind of task.
 
 For example, you type:
 
@@ -137,7 +139,7 @@ You could type a two-line prompt instead. What does research add?
 Why: Running in the background keeps your session's context clean. The primary-source rule and the cited file stay the same on every run, whatever words you used to ask.
 ```
 
-For a small question, Matt Pocock, who wrote the Skill, advises the two-line prompt.
+For a small question, Matt advises the two-line prompt.
 
 ### How it works underneath
 
@@ -161,14 +163,14 @@ Its job:
    somewhere sensible and say where.
 ```
 
-**Why it can be so short.** The two bold phrases are **leading words**: compact ideas already in the model's training. The model already knows both, so a few words are enough.
+**Why it can be so short.** The two phrases wrapped in `**` (Markdown's mark for bold), "background agent" and "primary sources", are **leading words**: compact ideas already in the model's training. The model already knows both, so a few words are enough.
 
 ```checkpoint quick-9
 How can research's Skill file stay only a few lines long?
 - [x] Two leading words pull in ideas the model already knows.
 - [ ] It links out to a long guide that the agent reads first.
 - [ ] It leaves out the method, so each run invents its own.
-Why: The two bold phrases are leading words, compact ideas already in the model's training. The model already knows both, so a few words are enough.
+Why: The two phrases marked bold, "background agent" and "primary sources", are leading words, compact ideas already in the model's training. The model already knows both, so a few words are enough.
 ```
 
 **Why a background agent.** In Claude Code it runs as a background subagent, with its own context window. So the pages it reads never fill yours.
@@ -235,7 +237,7 @@ You've started research, and two background tasks with near-identical names appe
 Why: The agent can take the Skill's line as meant for itself, and start another agent. A working run shows exactly one new background task, so you stop the duplicate.
 ```
 
-Matt's Skill page still calls it an open bug, but the bug report was closed as not planned in October 2026. Matt treats stopping this as the job of the [harness](/learn/context-hygiene), the agent tool you run. The harness decides which tools a subagent can reach and how deep nesting goes, so a limit set there holds for every Skill. A line in one Skill's text covers only that Skill, costs tokens on every run and still depends on the model obeying it.
+Matt's Skill page still calls it an open bug, but the bug report was closed as not planned in October 2026. Matt treats stopping this as the job of the [harness](/learn/how-agents-work), the agent tool you run. The harness decides which tools a subagent can reach and how deep nesting goes, so a limit set there holds for every Skill. A line in one Skill's text covers only that Skill, costs tokens on every run and still depends on the model obeying it.
 
 **A citation lands on a blog post.** The model decides which sources count as high-trust: the Skill only names the kinds. There's no list of approved sites, and nothing re-checks the sources afterwards. "Your only protection is the citation on each claim", so follow two or three. If they land on a summary of the thing, the run failed.
 
@@ -281,7 +283,8 @@ You'll need your practice project, the yoga-studio booking site. If you haven't 
 4. Carry on with something else while it reads. You should see your own session keep going.
 5. When the agent reports back, open the file at the path it gives. You should see one new Markdown file, with a link on each claim.
 6. Open two of its links, picked at random. You should land on Postgres's own docs or source, not a write-up of them.
-7. Using the file alone, decide how your booking endpoint should protect the last seat.
+7. Read the file through. You should be able to decide how your booking endpoint protects the last seat without going back to the sources yourself.
+8. Take the file into [grill-with-docs](/learn/grill-with-docs), and make that decision there.
 
 ### Read more
 

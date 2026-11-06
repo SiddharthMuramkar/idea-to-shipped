@@ -6,7 +6,7 @@ summary: How claude-handoff writes up your conversation and starts a fresh Claud
 
 ## What it's for
 
-Say you've settled every decision about [Ticket](/learn/issues-and-keeping-track) #13, the booking endpoint. Building should start now, but you want this session for other work. [handoff](/learn/handoff), a Skill that writes the conversation up as a file, would leave you with a file and a session still to open.
+Say you've settled every decision about [Ticket](/learn/issues-and-keeping-track) #13, the booking endpoint. Building should start now, but you want this session for other work. [handoff](/learn/handoff), a [Skill](/learn/skills) that writes the conversation up as a file, would leave you with a file and a session still to open.
 
 ```checkpoint quick-1
 Your decisions are settled, and building should start now. Why isn't handoff enough?
@@ -201,7 +201,7 @@ steps:
 
 **Keeping an eye on it.** `claude agents` opens **agent view**: one screen for what's running, what needs your input, and what's done. A session shows "Needs input" when it's waiting on something only you can provide, such as an answer to a question or a permission decision.
 
-**Only you can start it.** The settings block at the top of `SKILL.md` has `disable-model-invocation: true`, so an agent can't load it on its own.
+**Only you can start it.** The settings block at the top of `SKILL.md`, the file holding the Skill's instructions, has `disable-model-invocation: true`, so an agent can't load it on its own.
 
 ### A real example
 
@@ -252,7 +252,7 @@ Why: Matt calls this relitigation. It happens when the summary recorded what was
 
 Hand a small job to a background agent, then find its work. You need your practice project, with the endpoint that creates a booking. If you haven't built it, do [implement](/learn/implement)'s Try it step first. Step 1 uses `npx`, a command that runs a JavaScript package's tool without installing it.
 
-1. In the repo's main checkout, not a worktree, run `npx skills@latest add mattpocock/skills --skill claude-handoff`.
+1. In the repo's main worktree (the `yoga-studio` folder you cloned), not a linked worktree, run `npx skills@latest add mattpocock/skills --skill claude-handoff`.
 
    You should see it finish with no errors. If it asks which agent, choose Claude Code.
 
@@ -271,7 +271,7 @@ Hand a small job to a background agent, then find its work. You need your practi
 
    You should see its latest output, or what it's waiting on. If it's a question, type a reply and press `Enter`. If it's a permission prompt, press `→` to open the session and answer it, then press `←` to come back.
 
-8. When the row shows Completed or Ready for review, press `Esc` until agent view closes.
+8. When the row moves under the Completed or Ready for review heading, press `Esc` until agent view closes. If it moves under Needs input again first, repeat step 7.
 9. Run `git worktree list`.
 
    You should see a worktree under `.claude/worktrees/`.
@@ -336,7 +336,7 @@ Why: Its settings stop an agent loading it by itself, so it only runs when you t
 
 ```final-test claude-handoff-or-handoff
 You want a file a colleague can carry on from tomorrow, in Codex. Which Skill fits?
-- [x] [handoff](/learn/handoff), which writes the summary as a document and starts nothing.
+- [x] handoff, which writes the summary as a document and starts nothing.
 - [ ] claude-handoff, which writes the summary and starts a Claude Code background agent now.
 - [ ] Neither; run `/compact` first, so the colleague gets this session's summary instead.
 Why: Your colleague needs something that can travel to them and into Codex, and a file can. handoff writes that file and starts nothing. claude-handoff would start a Claude Code background agent on your machine right now, which doesn't help them.

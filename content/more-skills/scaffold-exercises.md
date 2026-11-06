@@ -12,10 +12,10 @@ Say you're writing a short course on your yoga-studio site's booking API. You've
 
 ```checkpoint quick-1
 You give scaffold-exercises a plan for a new course section. What do you get?
-- [x] The folders for the course's exercises, each with a stub `readme.md`.
+- [x] The folders for the course's exercises, each holding only a placeholder.
 - [ ] Finished exercises, with the problem code and the solutions written.
 - [ ] Lessons that teach you the topic yourself, over several sessions.
-Why: It lays out the folders for a course's exercises, each with a stub `readme.md`, from the plan you give it. The writing of the exercises is still to come.
+Why: It lays out the folders for a course's exercises, with only a placeholder in each, from the plan you give it. The writing of the exercises is still to come.
 ```
 
 Say you ask your agent to scaffold exercises from this plan:
@@ -50,12 +50,12 @@ Why: The agent fixes errors until the linter passes, and only then commits. So t
 ## When to use it
 
 - You have the plan for a new section of a course laid out like this.
-- You're renumbering or moving exercises. It renames folders with **`git mv`**, git's own command for renaming, which the Skill says "preserves git history". It then updates the numbers to keep the order, and re-runs the linter.
+- You're renumbering or moving exercises. It renames folders with **`git mv`**, git's own command for renaming, which the Skill says "preserves git history". It then updates the numbers to keep the order, and re-runs the linter. Git itself stores no record of a rename, though. Its own book calls `git mv` a convenience: a plain `mv`, then [staging](/learn/commits-and-diffs) the change, makes the same commit.
 
 ```checkpoint quick-3
 You're moving `01.03-embeddings` to `01.04-embeddings`, and you want its history kept. What does the Skill do?
 - [x] It renames the folder with `git mv`, then re-runs the linter.
-- [ ] It renames the folder with `mv`, then commits it as a new folder.
+- [ ] It renames the folder with `mv`, and skips the linter after the move.
 - [ ] It copies the folder to its new number, and leaves the old one.
 Why: The Skill uses `git mv`, which it says preserves git history. It then updates the numbers to keep the order, and re-runs the linter.
 ```
@@ -76,7 +76,7 @@ Why: teach writes lessons for you to study. scaffold-exercises only makes placeh
 
 - A plan: section names, exercise names and any subfolders you want.
 - A repo for the course. The lint step calls **`ai-hero-cli`**, the CLI (command-line tool) whose lint command checks a course's exercise folders. That command is `pnpm ai-hero-cli internal lint`, where `pnpm` runs a project's commands.
-- The Skill itself, which you install separately. Its author, Matt Pocock, leaves it out of his plugin, a bundle of his Skills you install in one step.
+- The [Skill](/learn/skills) itself, which you install separately. Its author, Matt Pocock, leaves it out of his plugin, a bundle of his Skills you install in one step.
 
 You can start it yourself, or the agent may start it for you.
 
@@ -183,13 +183,13 @@ Why: Running the linter and fixing errors is a feedback loop the agent can run a
 
 Say the agent leaves `01.01-how-a-booking-is-stored/explainer/readme.md` empty. The linter fails, because a `readme.md` must be non-empty. The agent writes a title line, runs the linter again, and this time it passes.
 
-**Who can start it.** It's [model-invoked](/learn/pr): the agent can reach for it by itself. Its file doesn't set `disable-model-invocation: true`, the setting that keeps a Skill for you alone.
+**Who can start it.** It's [model-invoked](/learn/skills): the agent can reach for it by itself. Its file doesn't set `disable-model-invocation: true`, the setting that keeps a Skill for you alone.
 
 ### A real example
 
 The section the Skill names in its first example exists. In the AI Hero `cohort-002-skill-building` repo, the folder `01-retrieval-skill-building` holds six exercises. Matt made its latest commit, in December 2025.
 
-GitHub shows `01.01-retrieval-intro`, `01.02-bm25` and `01.05-rank-fusion` as one path down to `explainer/`, with the note "This path skips through empty directories". So each holds only `explainer/`. `01.03-retrieval-with-bm25` holds `problem/` and `solution/`, and so do `01.04-embeddings` and `01.06-query-rewriting`. So a real section mixes both kinds: exercises that are ideas only, and exercises with a problem and its solution. The Skill's `git mv` example renames a folder to the same name, `01.04-embeddings`, in a section it calls `01-retrieval`.
+GitHub shows `01.01-retrieval-intro`, `01.02-bm25` and `01.05-rank-fusion` as one path down to `explainer/`, with the note "This path skips through empty directories". So each holds only `explainer/`. `01.03-retrieval-with-bm25` holds `problem/` and `solution/`, and so do `01.04-embeddings` and `01.06-query-rewriting`. So a real section mixes both kinds: exercises that are ideas only, and exercises with a problem and its solution. The Skill's `git mv` example moves `01.03-embeddings` to `01.04-embeddings`, the same name as the real exercise, in a section it calls `01-retrieval`.
 
 ```checkpoint quick-11
 On GitHub, `01.02-bm25/explainer` shows as one path. What does that tell you about `01.02-bm25`?
@@ -257,14 +257,14 @@ Why: Misc Skills aren't promoted, so the plugin leaves them out on purpose. Matt
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. First commit anything you're working on, so `git status` shows nothing to commit. Then make a branch for this run: `git switch -c try-scaffold-exercises`.
 2. Install the Skill: `npx skills@latest add mattpocock/skills --skill scaffold-exercises`. If it asks which agent, choose Claude Code.
 
    You should see its files copied into your project.
 
-3. Start a fresh session in the project.
+3. In the project folder, start a fresh Claude Code session: `claude`.
 4. Ask the agent to scaffold exercises from this plan:
 
    ```
@@ -347,7 +347,7 @@ Why: Your plan names no subfolders, so the default applies: when stubbing, the S
 ```final-test scaffold-exercises-rename
 How does scaffold-exercises rename an exercise folder when it renumbers exercises?
 - [x] With `git mv`, which it says preserves git history, then it re-runs the linter.
-- [ ] With `mv`, then a fresh commit, since git tracks the new folder as a brand-new file anyway.
+- [ ] With `mv`, then it skips the linter, since a rename can't break the layout.
 - [ ] By copying the folder under its new number and leaving the old one for students who started it.
 Why: It uses `git mv`, not `mv`, and says that preserves git history. It then updates the number prefix so the exercises stay in order, and re-runs the linter to check the layout after the move.
 ```
@@ -391,7 +391,7 @@ Why: You're the student here, and you'll learn over several sessions, so this is
 ```
 
 ```final-test scaffold-exercises-after-stubs
-In your course repo, the agent has parsed your plan, made every section and exercise folder with `mkdir -p`, and written a stub `readme.md` in each subfolder. What should happen next?
+In your course repo, the agent has parsed your plan, made every section and exercise folder, and written a stub `readme.md` in each subfolder. What should happen next?
 - [x] Run the linter, fix any errors and repeat until it passes.
   > Right: that's `/scaffold-exercises`.
 - [ ] Open a pull request now, so a reviewer can look at the new folders.
@@ -447,4 +447,5 @@ Why: The Skill's loop relies on a check that `ai-hero-cli` removed in 0.6.0, so 
 - [mattpocock/skills README.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/README.md), Matt Pocock, 2026-10-29
 - [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock
 - [wizard: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/wizard/SKILL.md), Matt Pocock's Skills
+- [Git Basics: Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository), Scott Chacon and Ben Straub (Pro Git)
 ```
