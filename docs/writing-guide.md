@@ -40,7 +40,7 @@ In this order, with the headings adjusted to the topic:
 11. **Remember**: a `flashcards` block of the facts worth keeping.
 12. **Final test**, with the sources after its questions, in the same Section.
 
-Put each Checkpoint right after the Section it checks. Two or three Scenes are plenty.
+Put each Quick check (a `checkpoint` block) right after the paragraph, list or table it checks. Two or three Scenes are plenty.
 
 ### Worked examples and exercises
 
@@ -51,7 +51,7 @@ Put each Checkpoint right after the Section it checks. Two or three Scenes are p
 
 ## Questions
 
-- Checkpoints check the Section just read; the Final test checks the goals. Every goal gets at least one Final test question, and no Checkpoint repeats one.
+- Quick checks check the block just read; the Final test checks the goals. Every goal gets at least one Final test question, and no Quick check repeats one.
 - One unambiguous right answer, from what the Lesson teaches. Wrong options are real misconceptions. No trivia (numbers to memorise) and no wording tells.
 - Test transfer, not recognition. Use a fresh situation (a book club, a recipe site), not the body's own example sentence. Don't restate the right answer's defining phrase in the prompt, and don't offer a wrong option about a retired Skill the Lesson never mentions.
 - The site shuffles the options, so no position gives the answer away. Make every wrong option as specific, and about as long, as the right one.
