@@ -251,6 +251,18 @@ describe("images and their credits", () => {
     ]);
   });
 
+  test("creditFor finds any image's credit by its path, a header's or not, and null for one the manifest lacks", async () => {
+    expect(await valid.creditFor("/photos/welcome.jpg")).toEqual(lighthouse);
+    expect(await valid.creditFor("/images/home/hero.jpg")).toEqual({
+      title: "Reading room at night",
+      author: "Cy Stacks",
+      license: "CC BY 4.0",
+      licenseUrl: "https://creativecommons.org/licenses/by/4.0",
+      source: "https://commons.wikimedia.org/wiki/File:Reading_room_at_night.jpg",
+    });
+    expect(await valid.creditFor("/images/home/cta.jpg")).toBeNull();
+  });
+
   test("an image used twice is listed once, with every place it shows", async () => {
     const shared = await coursesFrom(path.join(fixtures, "shared-image")).listCredits();
     const course = { slug: "course", title: "Shared image" };

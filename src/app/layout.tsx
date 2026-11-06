@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
 import Link from "next/link";
-import { loadHomeCourse } from "./home-course";
+import { loadCourses } from "./library";
 import { LogoMark } from "./logo";
 import "./globals.css";
 
@@ -18,13 +18,13 @@ const display = Inter_Tight({
 });
 
 export const metadata: Metadata = {
-  title: "Idea to Shipped",
+  title: { default: "Idea to Shipped", template: "%s · Idea to Shipped" },
   description:
-    "Learning Matt Pocock's skills and agentic coding by building this site.",
+    "A free library for building software with coding agents: Git and GitHub from zero, CI/CD, how coding agents work, and Matt Pocock's Skills for Claude Code. Every Lesson has quick checks and a Final test, and your progress stays in your browser.",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const { lessons: all } = await loadHomeCourse();
+  const list = await loadCourses();
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>
       <body>
@@ -39,8 +39,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               <span className="brand-word">Idea to Shipped</span>
             </Link>
             <nav className="site-nav" aria-label="Main">
-              <Link href="/#lessons">Lessons</Link>
-              <Link href="/learn/main-flow">The main flow</Link>
+              <Link href="/#courses">Courses</Link>
+              <Link href="/progress">Progress</Link>
             </nav>
           </div>
         </header>
@@ -53,17 +53,17 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <span className="brand-word">Idea to Shipped</span>
               </Link>
               <p>
-                A small course on Matt Pocock&apos;s skills and agentic coding,
-                written while building this site.
+                A free library for building software with coding agents. There are no accounts:
+                your progress stays in your browser.
               </p>
             </div>
-            <nav className="footer-lessons" aria-label="Lessons">
-              <h2 className="footer-heading">Lessons</h2>
+            <nav className="footer-courses" aria-label="Courses">
+              <h2 className="footer-heading">Courses</h2>
               <ol>
-                {all.map((l) => (
-                  <li key={l.slug}>
-                    <Link href={`/learn/${l.slug}`}>
-                      <span className="footer-number">{l.number}</span> {l.title}
+                {list.map((course, i) => (
+                  <li key={course.slug}>
+                    <Link href={`/courses/${course.slug}`}>
+                      <span className="footer-number">{i + 1}</span> {course.title}
                     </Link>
                   </li>
                 ))}
@@ -72,7 +72,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           </div>
           <div className="site-footer-base">
             <p>
-              Photos from Unsplash. <Link href="/credits">Photo credits</Link>
+              Images: openly licensed, from Wikimedia Commons. <Link href="/credits">Credits</Link>
             </p>
           </div>
         </footer>

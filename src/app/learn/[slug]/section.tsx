@@ -1,7 +1,9 @@
 import type { CSSProperties } from "react";
-import { allBlocks, type Block, type Lesson, type Section } from "@/lessons/lessons";
+import type { Block, Lesson, Section } from "@/lessons/lessons";
 import { BlockView, type LessonContext } from "./blocks";
-import { FinalTest } from "./question";
+import { FinalTest, type NextLesson } from "./final-test";
+import { QuickCheckRail } from "./quick-check-rail";
+import { withShuffledOptions } from "./shuffle";
 
 const numeral = (n: number) => String(n).padStart(2, "0");
 
@@ -19,15 +21,32 @@ export function LessonIntro({ blocks, ctx }: { blocks: Block[]; ctx: LessonConte
 
 // The Section holding the Final test becomes a navy band of its own; any
 // blocks written after the questions (usually the sources) follow it at text
-// width.
-function FinalTestSection({ section, at, ctx }: { section: Section; at: number; ctx: LessonContext }) {
+// width. The questions' options are shuffled here, on the server, so their
+// order is the same on every visit.
+function FinalTestSection({
+  section,
+  at,
+  ctx,
+  next,
+}: {
+  section: Section;
+  at: number;
+  ctx: LessonContext;
+  next: NextLesson;
+}) {
   const finalTest = section.blocks[at];
   if (finalTest.type !== "finalTest") return null;
   const sceneId = `${section.id}--scene`;
   const after = section.blocks.slice(at + 1);
   return (
     <>
-      <FinalTest questions={finalTest.questions} slug={ctx.slug} id={section.id} titleHtml={section.titleHtml}>
+      <FinalTest
+        questions={finalTest.questions.map((question) => withShuffledOptions(question, ctx.slug))}
+        slug={ctx.slug}
+        id={section.id}
+        titleHtml={section.titleHtml}
+        next={next}
+      >
         {section.blocks.slice(0, at).map((block, i) => (
           <BlockView key={i} block={block} ctx={ctx} sceneId={sceneId} />
         ))}
@@ -54,13 +73,17 @@ function FinalTestSection({ section, at, ctx }: { section: Section; at: number; 
 // up any height the stage needs beyond the text's (--rows counts the text
 // rows). The stage stays where it was written in the HTML, so on phones it
 // sits right above its captions without being copied.
+//
+// A Section whose right column holds only the numeral is marked
+// data-quick-checks when it has Quick checks: from 1280px, QuickCheckRail
+// lifts them into that column, level with their blocks, in the numeral's
+// place.
 export function LessonSection({ section, number, ctx }: { section: Section; number: number; ctx: LessonContext }) {
-  const finalAt = section.blocks.findIndex((block) => block.type === "finalTest");
-  if (finalAt !== -1) return <FinalTestSection section={section} at={finalAt} ctx={ctx} />;
-
   const { blocks } = section;
   const hasScene = blocks.some((block) => block.type === "scene");
   const ideaAt = hasScene ? -1 : blocks.findIndex((block) => block.type === "callout" && block.tone === "big-idea");
+  const railFree = !hasScene && ideaAt === -1;
+  const hasQuickChecks = blocks.some((block) => block.type === "checkpoint");
   const headingId = `${section.id}--heading`;
   const sceneId = `${section.id}--scene`;
   const rows = 1 + blocks.length - (ideaAt === -1 ? 0 : 1);
@@ -70,6 +93,7 @@ export function LessonSection({ section, number, ctx }: { section: Section; numb
       className={`lesson-section lesson-section--${hasScene ? "scene" : ideaAt === -1 ? "numeral" : "idea"}`}
       id={section.id}
       data-section
+      data-quick-checks={railFree && hasQuickChecks ? "" : undefined}
       style={{ "--rows": rows } as CSSProperties}
     >
       <h2 id={headingId} className="section-title" data-reveal>
@@ -78,7 +102,7 @@ export function LessonSection({ section, number, ctx }: { section: Section; numb
         </span>
         <span dangerouslySetInnerHTML={{ __html: section.titleHtml }} />
       </h2>
-      {!hasScene && ideaAt === -1 && (
+      {railFree && (
         <div className="stage stage--numeral" aria-hidden="true">
           <span className="stage-numeral">{numeral(number)}</span>
         </div>
@@ -99,26 +123,26 @@ export function LessonSection({ section, number, ctx }: { section: Section; numb
   );
 }
 
-// Numbers each Checkpoint in reading order, for "Checkpoint 2 of 5".
-function checkpointNumbers(lesson: Lesson): Map<string, number> {
-  const numbers = new Map<string, number>();
-  for (const block of allBlocks(lesson)) {
-    if (block.type === "checkpoint") numbers.set(block.question.id, numbers.size + 1);
-  }
-  return numbers;
-}
-
 // The Lesson's text: the intro, then every Section. Sections are numbered
 // "01", "02", … in order; the Final test's band has no number of its own.
-export function LessonArticle({ lesson }: { lesson: Lesson }) {
-  const ctx: LessonContext = { slug: lesson.slug, checkpoints: checkpointNumbers(lesson) };
+// `next` is where the Final test's "Next lesson" goes: by default the next
+// Lesson in the Course.
+export function LessonArticle({ lesson, next = lesson.next }: { lesson: Lesson; next?: NextLesson }) {
+  const ctx: LessonContext = { slug: lesson.slug };
   const numbered = lesson.sections.filter((s) => !s.blocks.some((block) => block.type === "finalTest"));
+  const nextLesson = next && { slug: next.slug, title: next.title };
   return (
     <article className="lesson-article">
+      <QuickCheckRail />
       <LessonIntro blocks={lesson.intro} ctx={ctx} />
-      {lesson.sections.map((section) => (
-        <LessonSection key={section.id} section={section} number={numbered.indexOf(section) + 1} ctx={ctx} />
-      ))}
+      {lesson.sections.map((section) => {
+        const finalAt = section.blocks.findIndex((block) => block.type === "finalTest");
+        return finalAt === -1 ? (
+          <LessonSection key={section.id} section={section} number={numbered.indexOf(section) + 1} ctx={ctx} />
+        ) : (
+          <FinalTestSection key={section.id} section={section} at={finalAt} ctx={ctx} next={nextLesson} />
+        );
+      })}
     </article>
   );
 }

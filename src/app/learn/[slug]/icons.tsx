@@ -25,6 +25,37 @@ const PATHS = {
     </>
   ),
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
+  cross: <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />,
+  // A ticked circle: Done.
+  done: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8 12.4 2.8 2.8 5.2-5.7" />
+    </>
+  ),
+  // An open book: reading a Lesson.
+  read: (
+    <>
+      <path d="M12 6.5C10.3 5.2 7.8 4.5 4 4.5v13c3.8 0 6.3.7 8 2 1.7-1.3 4.2-2 8-2v-13c-3.8 0-6.3.7-8 2z" />
+      <path d="M12 6.5v13" />
+    </>
+  ),
+  // A clipboard with a tick: the Final test.
+  test: (
+    <>
+      <rect x="5" y="4" width="14" height="17" rx="1.5" />
+      <path d="M9 4V2.8h6V4M9 12.5l2 2 4-4.5" />
+    </>
+  ),
+  // Two arrows chasing each other: turn a card over.
+  flip: (
+    <>
+      <path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7" />
+      <path d="M20 4v4.7h-4.7" />
+      <path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.3" />
+      <path d="M4 20v-4.7h4.7" />
+    </>
+  ),
   try: (
     <>
       <rect x="3" y="4" width="18" height="16" rx="2" />
