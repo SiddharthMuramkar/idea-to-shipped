@@ -1,530 +1,541 @@
 ---
 title: Reading a repository
 slug: reading-a-repository
-summary: You’ll know what a repo, an ADR, a ticket and a glossary are, what each file in your project folder does, which parts of the brief feed the wayfinder map from Lesson 1, and how to tell a wayfinder…
+summary: What each common file and folder in a repository is for, a ten-minute route through any repo, and how to see its architecture without reading code.
 ---
 
-Your Care4Mind folder looks like a wall of jargon, but it is really nine short text files and one shortcut, and each file has one job. This lesson gives every file and every strange word a plain meaning, so lines like “read the brief, snapshot, ADR-0001 and glossary” stop sounding like code.
+Say an agent has built the first version of your recipe website, or you've opened someone else's project on GitHub. The file list shows a dozen names: `README.md`, `.gitignore`, `package.json`, `docs/adr/`, `CLAUDE.md`. Which ones matter, and which do you open first? This lesson gives each common file one plain job, and a ten-minute route through any repo.
 
 ```goals
-- You’ll know what a repo, an ADR, a ticket and a glossary are, what each file in your project folder does, which parts of the brief feed the wayfinder map from Lesson 1, and how to tell a wayfinder ticket’s status from a build ticket’s.
+- Name the job of each common file and folder: README, LICENSE, `.gitignore`, `package.json` or `pyproject.toml`, `src/`, `tests/`, `docs/`, `docs/adr/`, `.github/workflows/`, `CLAUDE.md`, `AGENTS.md` and `GLOSSARY.md`.
+- Read a new repository in ten minutes, on github.com or in the terminal.
+- See a project's architecture without reading its code, and check it when a change arrives.
+- Ask an agent for a tour or a map, and check what it tells you.
 ```
 
-## First, the most surprising fact: there is no website code yet
+## Every file has one job
 
-A **repo** (repository) is just a folder whose changes are tracked over time by a tool called Git, so nothing is ever really lost. Your project repo is `~/Desktop/project1`. Right now it contains no website, no app and no code at all — only planning documents, written before any building starts.
+A **repository**, or repo, is a project folder that Git tracks, history and all. If that's new, start with [What Git and GitHub are](/learn/what-git-and-github-are). Most repos are built from the same handful of files, because tools and people look for them by name.
 
-Every file ends in `.md`. That means **Markdown**: plain text where `#` makes a heading and `**word**` makes a word bold. You can read any of them as plain text, exactly as they are. Nothing is hidden inside a database.
+**Every file in a repo has one job, so once you know the jobs, you know which file answers which question.**
+
+For example, say the `recipes` repo looks like this. Each line ends with the file's job:
 
 ```text
-project1/                              the repo (one folder)
-├── AGENTS.md                          standing orders for AI agents
-├── CLAUDE.md -> AGENTS.md             a shortcut to the same file
-├── GLOSSARY.md                        the agreed dictionary
-└── docs/
-    ├── project-brief.md               what we are going to build
-    ├── client-brief.md                what the client first asked for
-    ├── current-site.md                what the live site actually is
-    ├── adr/
-    │   └── 0001-rebuild-...md         decision no. 1, written down
-    └── agents/                        how agents should work here
-        ├── domain.md
-        ├── issue-tracker.md
-        └── triage-labels.md
+recipes/
+├── .github/
+│   └── workflows/
+│       └── ci.yml            the checks GitHub runs on each change
+├── content/                  the recipes, one Markdown file each
+├── docs/
+│   ├── adr/
+│   │   └── 0001-store-recipes-as-markdown.md   one decision, written down
+│   └── architecture.md       how the main parts fit together
+├── src/                      the website's code
+├── tests/                    the checks for that code
+├── .env.example              the settings the site needs, with no real values
+├── .gitignore                what Git leaves out
+├── AGENTS.md                 standing orders for coding agents
+├── CLAUDE.md                 the same orders, for Claude Code
+├── GLOSSARY.md               the project's agreed words
+├── LICENSE                   what others may do with the code
+├── README.md                 start here
+├── package.json              what the site needs, and its commands
+└── package-lock.json         the exact versions installed
 ```
 
-`CLAUDE.md` is not a tenth file. It is a shortcut that points at `AGENTS.md`, so whichever name a tool looks for, it reads the same standing orders. Different AI tools look for different names; the shortcut means there is still only one text to keep right, and you always edit `AGENTS.md`.
+Names that start with a dot, such as `.gitignore`, are hidden on your computer: `ls` doesn't list them, but `ls -a` does. GitHub's file list shows them. The `.git` folder, which holds the history, never shows in that list.
 
-```callout remember
-Today the repo holds only planning documents: nine plain-text Markdown files and `CLAUDE.md`, a shortcut to `AGENTS.md`. There is no website code yet, and nothing is hidden in a database.
-```
+The files fall into five kinds. Know a file's kind, and you know which questions it can answer:
 
-```checkpoint check-1
-An agent says it will “fix the Questionnaire scoring code” in `~/Desktop/project1`. Why should that make you suspicious?
-- [ ] Agents may not edit scoring code
-- [ ] Scoring code lives in the glossary
-- [x] The repo contains no code yet
-- [ ] `CLAUDE.md` says agents can’t change code
-Why: Right now the repo holds only planning documents: no website, no app and no code at all. There is no scoring code to fix, so ask what the agent is really looking at.
-```
-
-```checkpoint check-2
-An agent deletes a paragraph from `docs/project-brief.md` by mistake. Why isn’t it lost for good?
-- [x] Git tracks the folder’s changes over time
-- [ ] Markdown files keep a hidden backup copy
-- [ ] The same paragraph is still inside `CLAUDE.md`
-- [ ] A database behind the folder stores it
-Why: A repo is a folder whose changes Git tracks over time, so nothing is ever really lost. Markdown is plain text with no hidden copy, and nothing sits in a database.
-```
-
-## Three kinds of file live in this folder
-
-Every file above does exactly one of three jobs. Once you can tell which job a file does, the folder stops being confusing, because you stop expecting a file to answer questions it was never meant to answer.
-
-| Kind | Files | Plain meaning |
+| Kind | Files | Answers |
 |---|---|---|
-| Standing orders | `AGENTS.md`, everything in `docs/agents/` | Instructions to the AI agent: where things live, which words to use, how work is tracked. Not about Care4Mind’s content at all. |
-| Project facts | The two briefs, `current-site.md`, `GLOSSARY.md` | What was asked for, what exists today, and what the project’s special words mean. |
-| Decisions | Files in `docs/adr/` | One big choice per file, with the reasons, so nobody has to re-argue it later. |
+| The front door | `README.md`, `LICENSE` | What is this, how do I run it, and what may I do with it? |
+| Instructions for tools | `.gitignore`, `package.json` or `pyproject.toml`, the lockfile, `.github/workflows/`, `.env.example` | What does Git leave out, what does the project need, and what runs on each change? |
+| The code and its checks | `src/`, `tests/` | What does it do, and what does it promise? |
+| The project's knowledge | `docs/`, `docs/adr/`, `GLOSSARY.md` | How does it fit together, what was decided and why, and which words do we use? |
+| Standing orders for agents | `CLAUDE.md`, `AGENTS.md` | What must an agent know before it changes anything? |
 
-The three files in `docs/agents/` are setup files for Matt’s skills. `domain.md` tells agents to read the glossary and any ADRs before working. `issue-tracker.md` says work items will live as files under `.scratch/`. `triage-labels.md` lists the labels build tickets can carry. You rarely open them yourself; the agent does, and later in this lesson you will see why the last two matter more than they look.
-
-```callout remember
-Every file does one of three jobs: standing orders for the agent (`AGENTS.md`, `docs/agents/`), project facts (the two briefs, `current-site.md`, the glossary) or decisions (`docs/adr/`). Know a file’s job and you know which questions it can answer.
+```checkpoint which-kind-answers
+You want to know why the recipe site stores recipes as files, with no database. Which kind of file answers that?
+- [x] The project's knowledge: a decision written down in `docs/adr/`.
+- [ ] Instructions for tools: the packages listed in `package.json`.
+- [ ] The front door: the commands at the top of `README.md`.
+Why: Decisions, and the reasons for them, are the project's knowledge. In this repo, `docs/adr/0001-store-recipes-as-markdown.md` records that one.
 ```
 
-```checkpoint check-3
-You want to know where this repo’s work items will be kept. Which file tells the agent?
-- [ ] `domain.md`
-- [ ] `triage-labels.md`
-- [ ] `current-site.md`
-- [x] `issue-tracker.md`
-Why: `docs/agents/issue-tracker.md` says work items will live as files under `.scratch/`. `triage-labels.md` lists the labels build tickets can carry, and `domain.md` sends agents to the glossary and ADRs.
+## The front door: README and LICENSE
+
+A **README** is the project's front page: a file, usually `README.md`, that says what the project is and how to start. It's written in **Markdown**, plain text with light formatting: `#` makes a heading and `**word**` makes a word bold. GitHub shows the README below the file list on the repo's page.
+
+GitHub suggests a README covers what the project does, why it's useful, how to get started, where to get help and who maintains it. For example, the start of the recipe site's README:
+
+```markdown
+# Recipes
+
+A small website for sharing family recipes.
+
+## Run it on your computer
+
+1. Install the packages: `npm install`
+2. Start the site: `npm run dev`
+3. Open `localhost:3000` in your browser.
 ```
 
-```checkpoint check-4
-`triage-labels.md` lists the labels build tickets can carry. Which of the three kinds of file is it?
-- [ ] A decision, with reasons
-- [x] Standing orders for agents
-- [ ] Project facts about Care4Mind
-Why: It sits in `docs/agents/` and tells the agent how work is tracked, so it’s standing orders. It says nothing about Care4Mind’s content, which is the project-facts files’ job.
+A **license** says what other people may do with your code. Without one, default copyright applies: you keep all rights, and nobody may copy, share or build on your work. So a public repo with no license can be read, but not reused.
+
+The license text usually sits in a `LICENSE` file at the top of the repo, and GitHub names a license it recognises on the repo's page. When you create a repo on github.com, you can pick one from a list. Later, you add the file yourself. choosealicense.com, made by GitHub, helps you choose.
+
+```checkpoint no-license
+You find a public repo with useful code, and it has no LICENSE file. Can you copy its code into your own project?
+- [x] No: without a license, default copyright applies, so you have no permission to reuse it.
+- [ ] Yes: anything in a public repo may be reused, with or without a license.
+- [ ] Yes, as long as you keep the code in a private repo of your own.
+Why: Without a license, the author keeps all rights. People can read a public repo, but may not copy, share or build on the code.
 ```
 
-## The glossary: the project’s agreed dictionary
+## Instructions for tools
 
-A **glossary** is a short dictionary for one project. Its job is to stop the same thing being called three different names by three different people, or by an AI on three different days. Yours is `GLOSSARY.md` at the top of the repo, and it currently defines six words. Notice the capital letters in the other documents — _Concept_, _Questionnaire_ — that is the signal “this word has the glossary meaning.”
+These files aren't the app. They tell tools how to treat it: what Git should leave out, what to install, and what to run on every change.
 
-| Word | What it means here | Do not call it |
-|---|---|---|
-| Concept | A single idea from Indian psychology, such as _guṇa_ or _citta_, usually named by its Sanskrit term | knowledge concept, knowledge page |
-| Reference | One published work (a paper, book or website), recorded with its bibliographic details | research record, reference record |
-| Questionnaire | A set of questions with documented scoring rules that gives the person answering a result | assessment, quiz, test |
-| Content editor | Someone who adds and updates the site’s content after launch | editor (on its own), administrator |
-| Research editor | The subject-matter person who checks sources and the accuracy of References | editor (on its own), subject expert |
-| Psychology expert | The subject-matter person responsible for each Questionnaire’s scoring, interpretation and stated limitations | assessment expert, assessment owner |
+### `.gitignore`: what Git leaves out
 
-That third column is the point. Every entry has an _Avoid_ line naming the tempting wrong words, exactly as spelled in `GLOSSARY.md`. So on this project the casual short names are not harmless shortcuts: if a set of questions has no documented scoring and gives no result, it is simply not a Questionnaire, whatever a page title calls it. When an agent’s output uses an Avoid word, the glossary is how you catch it — and ticket titles are exactly where agents slip.
+`.gitignore` lists patterns for files Git should leave out of commits. They're files a tool can make again, or files that must stay private. An ignored file never shows up as a new file, so it can't be committed by accident.
 
-```callout remember
-The glossary picks one word for each thing and names the words to avoid. A capitalised word like _Questionnaire_ carries the glossary meaning, and an Avoid word in an agent’s output, above all in a ticket title, is yours to catch.
+This is the `.gitignore` in Brad Traversy's starter repo for his CI/CD crash course:
+
+```gitignore
+node_modules/
+dist/
+.env
+.env*
+!.env.example
+*.log
+.DS_Store
 ```
 
-```checkpoint check-5
-A document writes “Concept” with a capital C. What does the capital letter tell you?
-- [x] The word has its glossary meaning
-- [ ] The word begins a new heading
-- [ ] The word is a Sanskrit term
-- [ ] The word names a page title
-Why: Capitals like _Concept_ and _Questionnaire_ signal “this word has the glossary meaning.” A Concept is usually named by its Sanskrit term, but the capital is about the glossary, not the language.
+`node_modules/` holds installed packages, `dist/` holds build output, and `.env` files hold secrets such as API keys. A line starting with `!` makes an exception, so `.env.example` can still be committed. [Commits and diffs](/learn/commits-and-diffs) covers what belongs in a commit in depth.
+
+That's what `.env.example` is for. It lists the names of the settings the app reads, with no real values. The real `.env` file, with the secrets in it, stays on your computer.
+
+```checkpoint gitignore-exception
+A repo's `.gitignore` has the lines `.env*` and `!.env.example`. Which of these files can be committed?
+- [x] `.env.example`, because the `!` line makes it an exception.
+- [ ] `.env.local`, because only `.env` itself matches the patterns.
+- [ ] Neither, because `.env*` matches both files and nothing undoes it.
+Why: `.env*` leaves out every file whose name starts with `.env`. The `!` line makes one exception: `.env.example`, which holds no real values.
 ```
 
-```checkpoint check-6
-Suppose a page titled “Questionnaire” lists ten questions but has no documented scoring and gives no result. In this project’s words, what is it?
-- [ ] A Questionnaire, because of its title
-- [ ] A Concept, named by its title
-- [x] Not a Questionnaire, whatever its title
-- [ ] A Reference, since it’s published work
-Why: A Questionnaire is a set of questions with documented scoring rules that gives the person answering a result. Without those, it isn’t one, whatever a page title calls it.
+### `package.json` or `pyproject.toml`, and the lockfile
+
+A JavaScript or TypeScript project has a `package.json`. It names the packages the project needs: `dependencies` for the app, and `devDependencies` for tools used only while building and testing. Its **scripts** are named shortcuts: `npm run dev` runs whatever command is saved under `dev`.
+
+For example, these are the scripts in Brad Traversy's starter repo:
+
+```json
+"scripts": {
+  "dev": "tsx watch src/server.ts",
+  "typecheck": "tsc --noEmit",
+  "test": "node --import tsx --test test/app.test.ts",
+  "build": "tsc",
+  "start": "node dist/server.js"
+}
 ```
 
-```checkpoint check-7
-An agent’s ticket says “the editor checks this”. Why is that a problem on this project?
-- [ ] Editors only join after the launch
-- [x] “Editor” alone could mean two roles
-- [ ] Tickets must never name any roles
-- [ ] “Editor” is the Psychology expert’s title
-Why: “Editor (on its own)” is on the Avoid list for both Content editor and Research editor. The full name tells you whether it’s the person who adds content or the one who checks References.
+So `npm run dev` starts the app on your computer, and `npm test` runs its tests. You don't need to read the commands on the right. The names on the left tell you what you can do.
+
+A Python project keeps the same kind of facts in `pyproject.toml`. Its `[project]` table names the project and its `dependencies`, and `[tool.…]` tables hold settings for tools such as pytest:
+
+```toml
+[project]
+name = "recipes"
+version = "0.1.0"
+dependencies = ["fastapi", "jinja2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 ```
 
-## An ADR: one big decision, written down once
+Beside either file sits a **lockfile**: `package-lock.json` for npm, or `uv.lock` or `poetry.lock` for Python tools. It records the exact version of every package installed, so every computer installs the same thing. A tool writes it, and it's committed anyway.
 
-**ADR** stands for **Architecture Decision Record**. Ignore the “architecture” part — in plain words it is a short note that records one big decision: what was decided, why, and what follows from it. ADRs are numbered in the order they are made. On 26 October you had exactly one (the map has since added ADR-0002, Vercel and Neon), so “ADR-0001” simply means “decision record number one.”
-
-ADR-0001 is titled _Rebuild the site instead of enhancing the current one_, and its status is _accepted_. In short: the client first asked for the existing WordPress site to be improved, then approved scrapping it and building a new one, carrying over the content worth keeping by scraping the public site. The ADR gives the reasons. Three of them, in its own order, are that the linked layer the brief wants — Concepts, traditional texts, References and Questionnaires linked to one another — does not exist on the current site, so it has to be built from scratch either way; that the current content sits inside page layouts rather than tidy fields, so it has to be pulled out and restructured either way; and that there is no access to the current site’s code, database or admin login anyway.
-
-ADR-0001 also lists _consequences_ — the price of the decision. For example, every Questionnaire’s scoring has to be rebuilt, so its scoring rules must be obtained first, and scraping may not reveal them. That “reasons plus price” shape is what makes an ADR useful months later, when someone asks “wait, why aren’t we just fixing the old site?” The answer is one file, not a memory. And if the rebuild decision were ever reversed, you would not edit ADR-0001: a new ADR would supersede it, leaving the old reasoning on record.
-
-```callout remember
-An ADR is a short note recording one big decision: what was decided, why, and its price. Only decisions that are hard to reverse, surprising without context and a real trade-off, all three at once, get one.
+```checkpoint which-script
+You open a new repo's `package.json` and want to run its tests. Where do you look?
+- [x] The `scripts` section, for an entry named `test`, which `npm test` runs.
+- [ ] The `dependencies` section, for a package whose name contains "test".
+- [ ] The lockfile, which lists the exact commands each package runs.
+Why: Scripts are named shortcuts in `package.json`. `npm test` runs the command saved under `test`.
 ```
 
-```checkpoint check-8
-You decide the colour of links on the new site. It’s easy to change later, and nobody would be surprised by it. Does it get an ADR?
-- [ ] Yes, every decision gets an ADR
-- [x] No, it needs all three conditions
-- [ ] Yes, if the client approves it
-- [ ] Only once the map is finished
-Why: An ADR is offered only when a decision is hard to reverse, surprising without context and the result of a real trade-off, all three at once. A link colour fails the first two, so like most decisions it never becomes an ADR.
+### `.github/workflows/`: what runs on each change
+
+**GitHub Actions** is GitHub's built-in automation. A **workflow** is one automated process, written as a YAML file in `.github/workflows/`. YAML is a plain-text settings format, where indentation shows what belongs inside what.
+
+A workflow says when to run, such as on every pull request, and what to do, such as install the packages and run the tests. So if a repo has one, it tells you which checks guard `main`. [Reading a GitHub Actions workflow](/learn/reading-a-workflow) walks through one line by line.
+
+```checkpoint which-checks-guard-main
+You want to know which checks run every time someone opens a pull request in a repo. Where do you look?
+- [x] In `.github/workflows/`, where each YAML file says when to run and what to do.
+- [ ] In `README.md`, which lists the checks GitHub runs on pull requests.
+- [ ] In `.gitignore`, which lists the files the checks will skip.
+Why: Workflows live in `.github/workflows/`. Each one says when it runs, such as on every pull request, and what it does.
 ```
 
-```checkpoint check-9
-ADR-0001’s consequences say every Questionnaire’s scoring has to be rebuilt. What has to happen before that?
-- [ ] Scrape every Questionnaire page first
-- [ ] Write a second ADR first
-- [ ] Name the hosting platform first
-- [x] Obtain the scoring rules first
-Why: Its scoring rules must be obtained first, and scraping the public site may not reveal them. Scraping is how content comes over, but it can’t be relied on for scoring.
-```
+## The code and its checks: `src/` and `tests/`
 
-```checkpoint check-10
-ADR-0001 notes that the linked layer of Concepts, traditional texts, References and Questionnaires doesn’t exist on the current site. Why does that favour a rebuild?
-- [x] It must be built from scratch
-- [ ] WordPress cannot store any linked pages
-- [ ] The client asked for it first
-- [ ] Scraping would copy the links over
-Why: The linked layer has to be built from scratch either way, so keeping the old site saves nothing there. What the client first asked for was to improve the old site, not rebuild it.
-```
+`src/`, short for source, holds the app's own code. Names vary: some projects use `app/`, `lib/`, or one folder per part, such as `web/` and `api/`. The folder names inside are often the project's main parts, such as `src/search/` and `src/recipes/`.
 
-## Brief versus snapshot: wanted, decided, actual
+**Tests** are code that runs the app's code and checks the result. They live in `tests/` or `test/`, or beside the code, in files named like `search.test.ts` or `test_search.py`. A test run lists each test by name.
 
-A **brief** is the document that says what is to be done. You have two, and telling them apart matters. The _client brief_ is what the client originally asked for: improve the WordPress site, do not rebuild. The _project brief_ — usually just “the brief” — is the rewritten, working version after ADR-0001 overturned that. When the two disagree, the project brief wins, so the client brief is now history and original intent, not instructions.
-
-A **snapshot** is different again: not wishes or plans, but a dated record of what was actually observed. `current-site.md` is a snapshot of care4mind.org on one day — its software versions, its 33 published pages and 6 published posts, the broken and empty pages, and the three places its questionnaires are scattered. The client brief assumed more of the site worked than does; the snapshot is the evidence that corrected it, which is why you trust the snapshot for facts and the project brief for scope.
-
-| Document | Answers | Trust it for |
-|---|---|---|
-| `client-brief.md` | What did the client first want? | History and original intent |
-| `project-brief.md` | What are we actually building? | Scope, requirements, open questions |
-| `current-site.md` | What exists on the live site today? | Facts, with sources, as of 2026-10-26 |
-
-```callout remember
-The client brief is what was first asked for, the project brief is what you’re building, and the snapshot is what the live site actually was on 26 October 2026. Trust the snapshot for facts and the project brief for scope.
-```
-
-```checkpoint check-11
-The client brief assumes a page on the live site works; `current-site.md` records it as broken. Which do you trust about the live site?
-- [ ] The client brief, which came first
-- [ ] Whichever one the agent read last
-- [x] The snapshot, which records what’s observed
-- [ ] Neither, until the client confirms it
-Why: The snapshot is a dated record of what was actually observed. The client brief assumed more of the site worked than does, and the snapshot is the evidence that corrected it.
-```
-
-```checkpoint check-12
-Months from now, an agent quotes “33 published pages” from `current-site.md` as today’s count. What should you keep in mind?
-- [x] It was observed on one particular day
-- [ ] It is the brief’s target page count
-- [ ] It counts the pages the client wants
-- [ ] It includes drafts as well as pages
-Why: A snapshot records what was observed on one day, 26 October 2026 for this one. It’s evidence for that date, not a live count and not a target.
-```
-
-## The brief, section by section
-
-The project brief is the one document wayfinder will feed on most, so it is worth knowing which of its sections do what. Five of them matter directly for the map. Each one below is paired with what it becomes once charting starts, so you can read the brief with the map already in mind.
-
-| Section | What it holds | What it means for the map |
-|---|---|---|
-| Requirements | Numbered rows FR-01 to FR-09 (what the site must do) and NFR-01 to NFR-04 (qualities it must have, such as accessible and fast), each with a “Done when” check. Rows marked † are defaults the client still has to confirm. | The destination has to lead to a build that can pass every “Done when”. A ticket whose answer would break one — say, search that cannot match every spelling of a Sanskrit term — is settled wrong. |
-| Constraints | The limits no decision may break: one developer who knows Docker and SQL; no access to the current site’s code, database or admin login, so content comes over by scraping; and subject-matter calls are not the developer’s to make. | Constraints narrow every ticket before it starts. The platform question, for example, is not “what is best?” but “what fits these skills, with no access to lean on?” |
-| Roles | Who owns what: Project owner, Developer, Psychology expert and Research editor. Three of the four are still marked TBD, to be named by the client. | Roles tell you whose head an answer lives in. A TBD role means some tickets cannot be settled until a person is named — Lesson 4 is about exactly that wait. |
-| Out of scope | What this project will not do, such as a mobile app, user accounts beyond an editing login, or new psychometric instruments. | This becomes the map’s own Out of scope section. Work ruled out here never becomes a ticket, however interesting it looks mid-chart. |
-| Open questions | Twelve numbered questions the brief deliberately decides none of: platform, who runs the site after launch, which Questionnaires are in scope, where scoring rules come from, and more. | These seed the first tickets and the fog. Questions sharp enough to state precisely become tickets; the dimmer ones wait under Not yet specified until answers clear them. |
-
-Two of those sections deserve a second look, because they are easy to skim past. Out of scope is a decision, not an absence of one: the brief has already ruled those things out, so charting should copy that boundary into the map rather than rediscover it. And the open questions are honest about being open — settling them is not a failure of the brief, it is the whole job of the map from Lesson 1.
-
-```callout remember
-Read the brief with the map in mind. Requirements set the “Done when” checks, Constraints narrow every ticket, Roles say whose head an answer lives in, Out of scope is already decided, and the twelve open questions are what the map exists to settle.
-```
-
-```checkpoint check-13
-Mid-chart, someone suggests a Care4Mind mobile app. Where does the idea go?
-- [ ] It becomes a new wayfinder ticket
-- [ ] It waits under Not yet specified
-- [ ] It joins the brief’s Requirements section
-- [x] It goes on a later-phases list
-Why: A mobile app is in the brief’s Out of scope section, which says new ideas go on a later-phases list. Out of scope is a decision, so the idea never becomes a ticket, however interesting it looks.
-```
-
-```checkpoint check-14
-A requirement row in the brief carries a † mark. What does that tell you?
-- [ ] A requirement the client has dropped
-- [x] A default the client must confirm
-- [ ] A target the live site meets
-- [ ] A row ruled out of scope
-Why: † marks a standard default, chosen where the client brief set no measurable target. The client still has to confirm it: that is open question 11.
-```
-
-```checkpoint check-15
-Three of the brief’s four roles are still TBD. What does that mean for the map?
-- [ ] The developer settles those tickets alone
-- [ ] The map cannot be charted yet
-- [x] Some tickets wait for named people
-- [ ] Those roles become out of scope
-Why: Roles tell you whose head an answer lives in. Until the client names a person, the tickets that need that person’s answer cannot be settled; only those have to wait.
-```
-
-## Tickets: work that does not exist yet
-
-A **ticket** (also called an _issue_ — same thing, two names) is one small, tracked unit of work or one question to settle, written down so it can be picked up, done, and marked finished. A **spec** (specification) is the bigger document a group of build tickets is cut from: “here is the feature, in detail.” Your repo has neither yet. When they appear, they will live here:
+Test names tell you what the code promises, without reading the code. For example, a run of the recipe site's search tests might print:
 
 ```text
-.scratch/<feature>/                 one folder per chunk of work
-├── spec.md                          the feature, in detail
-└── issues/
-    ├── 01-first-ticket.md           one file per ticket
-    └── 02-second-ticket.md
-
-.scratch/<effort>/                  a wayfinder effort, from Lesson 1
-├── map.md                           the map: Destination, Notes, Decisions so far,
-│                                    Not yet specified, Out of scope
-└── issues/                          one file per question
+✓ tests/search.test.ts (3)
+  ✓ finds a recipe by one ingredient
+  ✓ ignores capital letters in the search
+  ✓ shows "No recipes found" when nothing matches
 ```
 
-Each ticket file carries a `Status:` line near the top saying whose move it is. Sorting tickets by that line is called **triage** — a hospital word for “look at each case and decide what happens to it next.” Here is the catch that catches readers of this repo: the same `Status:` line carries two different vocabularies, depending on which kind of ticket you are holding.
+Each line is a promise the code keeps. If something that matters to you has no test, that's worth asking about.
 
-| Kind of ticket | Its `Status:` line says | What else it carries |
-|---|---|---|
-| Wayfinder ticket (Lesson 1) | `claimed` while a session works it, `resolved` once its question is settled | A `Type:` line (research, prototype, grilling or task), a `Blocked by:` line when it must wait, a `## Question`, and later an `## Answer` |
-| Build ticket (later lessons) | One of five triage labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human` or `wontfix` | The piece of building work to do, cut from a spec. Comments gather under `## Comments` |
-
-So `Status: resolved` on a wayfinder ticket and `Status: ready-for-agent` on a build ticket are not two spellings of the same idea. The first means “this question has been answered”; the second means “this building work is clear enough for an agent to do alone.” If you ever see a triage label on a map ticket, or `claimed` on a build ticket, something has been filed in the wrong vocabulary.
-
-```callout remember
-The `Status:` line speaks two vocabularies: wayfinder tickets say `claimed` or `resolved`, and build tickets carry a triage label such as `ready-for-agent`. Seeing one on the other kind of ticket means it was filed wrong.
+```checkpoint promise-without-code
+You want to know whether the recipe search ignores capital letters. You don't read code. Where do you look first?
+- [x] At the test names, which say what the code promises.
+- [ ] At `package.json`, which lists what the search does.
+- [ ] At the lockfile, which records how the search was built.
+Why: A test's name says what the code promises. A test named "ignores capital letters in the search" answers the question without reading any code.
 ```
 
-```checkpoint check-16
-A ticket has a `## Question`, a `Type: research` line and `Status: ready-for-agent`. What’s wrong?
-- [x] It uses the build ticket vocabulary
-- [ ] Nothing; an agent can start now
-- [ ] Research tickets must always say `needs-info`
-- [ ] It needs a `## Comments` section
-Why: A `## Question` and a `Type:` line make it a wayfinder ticket, which only says `claimed` or `resolved`. `ready-for-agent` is a triage label for build tickets, so it’s filed in the wrong vocabulary.
+## The project's knowledge: `docs/`, ADRs and the glossary
+
+`docs/` holds longer documents: guides, and often an architecture note on how the main parts fit together. Two kinds of file in it, and one beside it, deserve a closer look.
+
+### ADRs: one decision each
+
+An **ADR**, an architecture decision record, is a short note that records one big decision: what was decided, and why. ADRs live in `docs/adr/`, numbered in order: `0001-store-recipes-as-markdown.md`, then `0002-…`. For example:
+
+```markdown
+# Store recipes as Markdown files
+
+Each recipe is a Markdown file in `content/`, not a row in a database.
+Cooks change recipes through pull requests, so the site needs no admin
+login, and every change has a history.
 ```
 
-```checkpoint check-17
-What does `Status: resolved` mean on a wayfinder ticket?
-- [ ] An agent may build it
-- [ ] The client has approved it
-- [x] Its question has an answer
-- [ ] Its code has been merged
-Why: `resolved` means the ticket’s question has been answered. “Clear enough for an agent to do alone” is a different idea, `ready-for-agent`, and it belongs on build tickets.
+Only rare decisions get one. Matt Pocock's rule asks for all three at once: hard to reverse, surprising without context, and the result of a real trade-off. Most decisions fail at least one, so most never become an ADR.
+
+When a decision changes, nobody edits the old ADR. A new ADR replaces it, and the old one is marked as superseded, so its reasoning stays on record. The idea comes from a short 2011 post by Michael Nygard.
+
+```checkpoint no-adr-needed
+You pick the colour of links on the recipe site. It's easy to change, and nobody would wonder why. Does it get an ADR?
+- [x] No, because an ADR needs all three: hard to reverse, surprising and a real trade-off.
+- [ ] Yes, because every decision about the site belongs in `docs/adr/`.
+- [ ] Yes, once the colour has been used on the site for a while.
+Why: An ADR is for a decision that is hard to reverse, surprising without context and a real trade-off, all three at once. A link colour fails the first two.
 ```
 
-```checkpoint check-18
-A spec for one feature is finished. What is cut from it next?
-- [ ] A fresh map of questions
-- [ ] A new ADR per decision
-- [ ] An updated glossary of terms
-- [x] A group of build tickets
-Why: A spec is the bigger document a group of build tickets is cut from: “here is the feature, in detail.” The map and its question tickets belong to wayfinder, not to a spec.
+### `GLOSSARY.md`: the agreed words
+
+A **glossary** is a short dictionary for one project. It picks one word for each thing, says what it means, and names the tempting wrong words to avoid. So one thing isn't called three names by three people, or by an agent on three different days.
+
+For example, two entries from the recipe site's `GLOSSARY.md`:
+
+```markdown
+**Recipe**:
+A dish with its ingredients, steps and number of servings.
+_Avoid_: dish, meal
+
+**Collection**:
+A named list of recipes that one cook saves.
+_Avoid_: folder, board
 ```
 
-## The trap: expecting every decision to become an ADR
+An Avoid word in an agent's output is yours to catch, such as a pull request titled "Add saved folders". Here, that's a Collection. [One shared language](/learn/one-shared-language) explains why the words matter so much with agents.
 
-It is tempting to picture the flow as a conveyor belt: grilling produces decisions, decisions become ADRs, ADRs become a spec, and the spec becomes tickets. That picture is wrong, and this repo shows why. From a grilling session, only two kinds of thing are guaranteed a file: a word that got pinned down goes into `GLOSSARY.md` at once, and a rare, hard-to-reverse decision that passes all three ADR gates gets an ADR. Everything else you decided lives in the conversation alone, unless something writes it down.
-
-That “something” is exactly what wayfinder adds. In Lesson 1’s map, every decision — ADR or not — is written into its ticket’s `## Answer`, and the map links to it in one line. The glossary stays a pure dictionary and the ADRs stay rare, but no settled answer depends on a chat window staying open. When you read this repo and find only one ADR, that is not missing paperwork: it is the paper trail working as designed, with the brief holding the still-open questions and future ticket files set to hold the answers.
-
-```callout remember
-Grilling guarantees a file only for pinned-down words (the glossary) and rare ADR-worthy decisions. Wayfinder writes every other decision into its ticket’s `## Answer`, so one ADR is the paper trail working, not missing paperwork.
+```checkpoint avoid-word
+An agent opens a pull request titled "Let cooks share a meal by link". What does the glossary tell you?
+- [x] "Meal" is an Avoid word: the title should say Recipe.
+- [ ] Nothing, because a title may use any word that's clear.
+- [ ] "Meal" means a Collection, so the title should say that.
+Why: The glossary lists "meal" under Avoid for Recipe. A word on an Avoid list in an agent's output is yours to catch.
 ```
 
-```checkpoint check-19
-Suppose a grilling session settles how Concept pages are ordered. It isn’t a word to pin down and isn’t ADR-worthy. Without wayfinder, where is it recorded?
-- [ ] In a new ADR anyway
-- [x] Only in the conversation itself
-- [ ] In the glossary, as notes
-- [ ] In the project brief automatically
-Why: From grilling, only pinned-down words (the glossary) and ADR-worthy decisions are guaranteed a file. Everything else lives in the conversation alone: the row Matt warns “catches people out”.
+## Standing orders for agents: `CLAUDE.md` and `AGENTS.md`
+
+An **instruction file** is a plain-text file a coding agent reads at the start of every session. It says how to run and test the project, which rules to follow, and where things live. Claude Code reads `CLAUDE.md`. Many other agents read `AGENTS.md`, and Claude Code reads it too when a repo has no `CLAUDE.md`.
+
+For example, the recipe site's `CLAUDE.md` might say:
+
+```markdown
+# recipes
+
+- Start the site with `npm run dev`. Run the tests with `npm test`.
+- Recipes live in `content/` as Markdown. Never add a database.
+- Read GLOSSARY.md and docs/adr/ before changing how recipes are stored.
 ```
 
-```checkpoint check-20
-With wayfinder charting the work, where does that same decision get written down?
-- [x] Into its ticket’s `## Answer`
-- [ ] Into a short, separate ADR
-- [ ] Into the glossary’s Avoid lines
-- [ ] Into the brief’s open questions
-Why: Wayfinder writes every decision, ADR or not, into its ticket’s `## Answer`, and the map links to it in one line. The glossary stays a pure dictionary and ADRs stay rare.
+A repo that serves several agents often keeps one text. `CLAUDE.md` holds the line `@AGENTS.md`, which pulls in `AGENTS.md`, or it's a shortcut (a symlink) to that file. Either way, you edit `AGENTS.md`.
+
+These files are context, not locks. An agent usually follows them, but nothing forces it to. [Instruction files](/learn/instruction-files) covers how to write a good one. A repo set up for Matt Pocock's Skills also has `docs/agents/`, the settings those Skills read, such as where Issues live.
+
+```checkpoint which-instruction-file
+A repo's `CLAUDE.md` contains one line, `@AGENTS.md`. You want to add a rule for every agent. Which file do you edit?
+- [x] `AGENTS.md`, because `CLAUDE.md` pulls that file in.
+- [ ] `CLAUDE.md`, under the `@AGENTS.md` line, for Claude only.
+- [ ] Both, so that the two files say the same thing.
+Why: The `@AGENTS.md` line pulls `AGENTS.md` into `CLAUDE.md`. So there's one text to keep right, and it lives in `AGENTS.md`.
 ```
 
-```checkpoint check-21
-You read through `~/Desktop/project1` and find only one ADR. What does that tell you?
-- [ ] Decisions were made but never recorded
-- [ ] Someone deleted the other ADR files
-- [ ] Grilling has not been used properly
-- [x] The paper trail is working normally
-Why: ADRs are meant to be rare. The brief holds the still-open questions and future ticket files will hold the answers, so one ADR is the design working, not missing paperwork.
+## Read a repo in ten minutes
+
+You don't read a repo top to bottom. You read it in an order that answers the big questions first:
+
+1. **The README**: what it is, and how to run it.
+2. **`package.json` or `pyproject.toml`**: what it's built with, and its commands.
+3. **The top-level folders**: the main parts.
+4. **The test names**: what it promises.
+5. **`docs/adr/` and `GLOSSARY.md`**: what was decided, and which words to use.
+6. **`CLAUDE.md` or `AGENTS.md`**: what agents are told.
+7. **`.github/workflows/`**: which checks run on each change.
+8. **The history and open work**: the last ten commits, and the open Issues and pull requests.
+
+On github.com, the README sits under the file list. The About box on the right gives the description and the license. Above the file list, a link with the number of commits opens the history. **Go to file** finds a file by name, and the Issues and Pull requests tabs show the open work.
+
+In the terminal, inside the repo's folder, the same route takes a few commands:
+
+```sh
+ls -a                   # every file and folder, hidden ones too
+cat README.md           # the front door
+git log --oneline -10   # the last ten commits
+gh repo view            # the description and the README
+gh issue list           # open Issues
+gh pr list              # open pull requests
 ```
 
-## Now that line, decoded
-
-“Read the brief, current-site snapshot, ADR-0001 and glossary.” With the words above, each part names one file, and together they are the _before you touch anything_ pack: goal, facts, settled decision, shared words.
-
-| Words in the line | File | Read it to learn |
-|---|---|---|
-| the brief | `docs/project-brief.md` | What we are building, for whom, and what is still undecided |
-| current-site snapshot | `docs/current-site.md` | What the live site provably is, as of 2026-10-26 |
-| ADR-0001 | `docs/adr/0001-rebuild-instead-of-enhancing.md` | The settled rebuild decision — do not re-argue it |
-| glossary | `GLOSSARY.md` | The exact words to use, and the ones to avoid |
-
-Skip any one of the four and a predictable mistake follows: without the brief you build the wrong scope; without the snapshot you trust the client brief’s rosier picture; without ADR-0001 you propose “just fix WordPress”; without the glossary you use an Avoid word for a Questionnaire and talk past everyone else.
-
-1. **Facts and rules** (Already done): `brief · snapshot · ADR-0001 · glossary`
-   - These four (plus the standing orders) are everything that exists today. They are the input to planning, not the plan itself.
-2. **Questions become tickets** (Next, per Lesson 1): `/wayfinder → .scratch/<name>/map.md + issues/`
-   - The brief’s twelve open questions get charted into a map, then settled one ticket per session.
-3. **Decisions become building work** (Later lessons): `/to-spec → /to-tickets → /implement`
-   - Settled decisions become a spec, the spec is cut into build tickets, and only then does code appear in this repo.
-
-```callout remember
-Brief, snapshot, ADR-0001 and glossary are the pack you read before you touch anything: goal, facts, settled decision, shared words. They are the input to planning; code appears only after the spec and build tickets.
+```checkpoint ten-minute-route
+You have ten minutes with a repo you've never seen. What do you open first?
+- [x] The README, for what the project is and how to run it.
+- [ ] The biggest file in `src/`, for how the code works.
+- [ ] The lockfile, for every package the project installs.
+Why: The README is the front door. Start there, then the package file, the folders, the test names and the decisions.
 ```
 
-```checkpoint check-22
-An agent’s plan builds the wrong things: it adds work nobody wants and misses work that is required. Which of the four files did it skip?
-- [ ] The snapshot
-- [ ] The ADR
-- [x] The brief
-- [ ] The glossary
-Why: Without the brief you build the wrong scope. Skipping the snapshot means trusting the client brief’s rosier picture instead, and skipping the glossary means using Avoid words.
+## Seeing the architecture without reading code
+
+Say someone asks where your recipe site keeps its recipes. An agent built it, and you can't answer. You don't need to read the code to fix that.
+
+**The architecture** is four things you can see without reading code: the main parts, how they connect, where data lives, and what's hard to change. For the recipe site, a map might read:
+
+- **Main parts:** the pages (`src/pages/`), the recipe loader (`src/recipes/`) and the search (`src/search/`).
+- **How they connect:** the pages ask the loader for recipes, and the search for matches.
+- **Where data lives:** Markdown files in `content/`, one per recipe, as the ADR decided.
+- **What's hard to change:** the recipe file format, because every recipe file and the loader depend on it.
+
+No architecture note in the repo? Ask the agent to draw the map, then check one folder it names with `ls`. Drawings can be wrong, so trust the files over the drawing.
+
+You decide the architecture when you plan a change, and check it when the change arrives as a pull request. `gh pr diff` with `--name-only` lists the files a pull request changed. A new folder your plan never named, or a change to the recipe format, is worth a question before you merge.
+
+A list of files shows where a change went, not what it does. So it doesn't replace reading the change itself, which [Checking a pull request before you merge](/learn/checking-a-pr) covers.
+
+```checkpoint unplanned-folder
+Your plan for a pull request changes the search only. Its changed files include a new `src/db/` folder. What do you do?
+- [x] Ask the agent why it's there, before you merge.
+- [ ] Merge, because a new folder can't change anything else.
+- [ ] Delete the folder yourself on the pull request's branch.
+Why: You check the architecture at pull request time, against your plan. A new folder the plan never named is worth a question first.
 ```
 
-```checkpoint check-23
-Going by the flow at the end of this section, when does code first appear in `~/Desktop/project1`?
-- [ ] Once wayfinder has charted the map
-- [x] After the spec and build tickets
-- [ ] Once all four files are read
-- [ ] As soon as ADR-0001 was accepted
-Why: The four files are input to planning, and the map settles questions. Settled decisions become a spec, the spec is cut into build tickets, and only then does code appear.
+### Grey boxes, and why review stays
+
+An **interface** is what a caller must know to use a part correctly, such as what the search takes in and gives back. A **grey box** is a part you judge from outside. You design its interface, tests check it, and you skip the code inside. Matt Pocock puts it this way: "You own the interface. AI owns the implementation. Tests keep it honest."
+
+A grey box needs a true map: you can say what the part is for and how it fits. Critical parts need more than that, such as code that handles money, logins or deleting data. Read those.
+
+And review doesn't go away. On the Claude Code team, every pull request gets an AI review first. When an agent wrote it, the person who ran the agent is always one of the reviewers.
+
+```checkpoint grey-box-fit
+You want to stop reading the inside of one part of the recipe site. Which part fits a grey box?
+- [x] The search: tests cover its interface, and you can say what it's for.
+- [ ] The part that takes payments: tests cover its interface too.
+- [ ] A part with no tests yet, which you can say what it's for.
+Why: A grey box needs tests at its interface and a true map of what it's for. Code that handles money is critical, so it needs more attention.
 ```
 
-## Practice
+## Tell your agent
 
-### Which file answers it?
+Two requests cover most first visits to a repo. Both change nothing. The first asks for a tour:
 
-For each question, pick the one file you would open first. You’ll see why straight away.
+> Give me a tour of this repo. For each top-level file and folder, write one line on its job. Then tell me, from the README and `package.json`, how to run the site and its tests. Change no files.
 
-```checkpoint check-24
-How many questions does the KarmaYoga Scale have on the live site today?
-- [ ] Brief
-- [x] Snapshot
-- [ ] ADR-0001
-- [ ] Glossary
-Why: A dated fact about the live site: 45 single-choice questions, recorded in `current-site.md` on 26 October 2026.
+The second asks for the map:
+
+> Draw my project's main parts in text: how they connect, where data lives, and what's hard to change. Name each part's folder. Change no files.
+
+Then check. Run `ls -a` and compare the tour with what's there. Open the README and see that the run commands match. Pick one folder from the map and run `ls` on it.
+
+If the folder isn't there, tell the agent what `ls` printed, and ask it to draw that part again from the files. Ask for at most eight parts: a map that shows every file can't fit in your head.
+
+```checkpoint drawing-wrong
+The agent's map names a `src/billing/` folder. You run `ls src/billing`, and it says there's no such folder. What do you do?
+- [x] Tell the agent what `ls` printed, and ask it to draw that part again from the files.
+- [ ] Trust the map, because the agent has read all the code and `ls` sees only part of it.
+- [ ] Ask the agent to create a `src/billing/` folder, so the project matches the map.
+Why: A drawing can be wrong, and `ls` shows what's really there. So tell the agent what you saw, and have it redraw that part from the files.
 ```
 
-```checkpoint check-25
-Why aren’t we just improving the existing WordPress site?
-- [ ] Brief
-- [ ] Snapshot
-- [x] ADR-0001
-- [ ] Glossary
-Why: A settled, hard-to-reverse decision, with its reasons and its price. Changing it would mean a new ADR, not an edit.
+## Try it
+
+````try
+You need a web browser. For the last steps, you also need Git or `gh` (see [What Git and GitHub are](/learn/what-git-and-github-are)). You'll read a real, small public repo: Brad Traversy's starter app for his CI/CD crash course.
+
+1. Open the repo in your browser: [github.com/bradtraversy/cicd-lab-starter](https://github.com/bradtraversy/cicd-lab-starter).
+2. Scroll below the file list and read the README. Find the commands it gives to get started.
+3. Click `package.json` and find `scripts`. Find the one that runs the tests.
+4. Go back and click `.gitignore`. Find the line that keeps `.env` files out, and its one exception.
+5. Open the `test` folder, then the file in it. Find the test's name: the text in quotes after `test(`.
+
+   You should see one test, promising that `/api/health` returns a healthy response.
+6. Compare the file list with the five kinds in this lesson. Note which kinds the repo has, and which it doesn't.
+7. Above the file list, click the link with the number of commits. You should see the repo's short history, newest first.
+8. In a terminal, download a copy of the repo:
+
+   ```sh
+   git clone https://github.com/bradtraversy/cicd-lab-starter.git
+   ```
+
+9. Go into it and list every file, hidden ones too:
+
+   ```sh
+   cd cicd-lab-starter && ls -a
+   ```
+
+   You should see `.git` and `.gitignore` as well as the files GitHub showed.
+10. List the history:
+
+    ```sh
+    git log --oneline
+    ```
+
+    You should see the same commits as on GitHub, one per line.
+````
+
+## Remember
+
+```flashcards
+Q: What are the five kinds of file in a typical repo?
+A: The front door (README, LICENSE), instructions for tools (`.gitignore`, `package.json` or `pyproject.toml`, lockfile, workflows), the code and its checks (`src/`, `tests/`), the project's knowledge (`docs/`, ADRs, glossary), and standing orders for agents (`CLAUDE.md`, `AGENTS.md`).
+
+Q: What happens to a public repo with no license?
+A: Default copyright applies: people can read it, but may not copy, share or build on the code.
+
+Q: What does `.gitignore` do?
+A: It lists files Git leaves out of commits, such as installed packages, build output and `.env` secrets. A `!` line makes an exception.
+
+Q: What are `package.json` scripts?
+A: Named shortcuts: `npm run dev` runs the command saved under `dev`, and `npm test` runs the one under `test`.
+
+Q: Where do GitHub Actions workflows live, and what do they tell you?
+A: In `.github/workflows/`, as YAML files. They say when checks run and what they do, so they tell you which checks guard `main`.
+
+Q: What is an ADR, and when does a decision get one?
+A: A short note recording one big decision and why. Only when it's hard to reverse, surprising without context and a real trade-off, all three.
+
+Q: What are `CLAUDE.md` and `AGENTS.md`?
+A: Instruction files: plain text an agent reads at the start of every session, with commands, rules and where things live. They're context, not locks.
+
+Q: What four things make up a project's architecture?
+A: The main parts, how they connect, where data lives, and what's hard to change. You can see all four without reading code.
+
+Q: What does `gh pr diff --name-only` tell you, and what can't it?
+A: Which files a pull request changed, so where the change went. Not what the change does.
 ```
 
-```checkpoint check-26
-Must site search find “vikshepa” as well as “vikṣepa”?
-- [x] Brief
-- [ ] Snapshot
-- [ ] ADR-0001
-- [ ] Glossary
-Why: A requirement: NFR-03 in the brief says search matches every stored spelling of a Concept’s Sanskrit term.
+## Final test
+
+```final-test file-for-question
+How do you start the recipe site on your own computer? Which file do you open first to find out?
+- [x] `README.md`, the front door, which says how to run it.
+- [ ] `GLOSSARY.md`, which lists the project's agreed words.
+- [ ] `.gitignore`, which lists the files Git leaves out.
+- [ ] `docs/adr/0001-store-recipes-as-markdown.md`, a decision.
+Why: The README says what the project is and how to start. The glossary holds words, `.gitignore` holds patterns, and an ADR holds one decision.
 ```
 
-```checkpoint check-27
-Should a ticket title say “assessment” or “Questionnaire”?
-- [ ] Brief
-- [ ] Snapshot
-- [ ] ADR-0001
-- [x] Glossary
-Why: “Assessment” is on the glossary’s Avoid list. A set of questions with documented scoring rules that gives a result is a Questionnaire.
+```final-test secret-in-repo
+An agent wants to commit `.env` "so the next person has the settings". The repo has a `.env.example`. What's the better move?
+- [x] Keep `.env` out of Git, and add the setting's name, with no value, to `.env.example`.
+- [ ] Commit `.env`, because a private repo can't leak its secrets.
+- [ ] Rename `.env` to `.env.example`, so `.gitignore` lets it through.
+Why: `.env` holds secrets and stays out of Git. `.env.example` lists the names of the settings, with no real values, so it can be committed.
 ```
 
-```checkpoint check-28
-What did the `/triguna/` page show on 26 October 2026?
-- [ ] Brief
-- [x] Snapshot
-- [ ] ADR-0001
-- [ ] Glossary
-Why: An observed fact: a leftover test message, “Hello, Mind! This is dynamic PHP running via shortcode.” Only the snapshot records what the site actually showed.
+```final-test changed-decision
+Months later, the recipe site moves its recipes into a database after all. What happens to `docs/adr/0001-store-recipes-as-markdown.md`?
+- [x] A new ADR records the change, and the old one is marked as superseded.
+- [ ] Someone edits the old ADR, so it describes the database instead.
+- [ ] Someone deletes the old ADR, because it's no longer true.
+- [ ] Nothing, because ADRs can't be replaced once accepted.
+Why: Nobody edits an old ADR. A new one replaces it, and the old one is marked as superseded, so its reasoning stays on record.
 ```
 
-```checkpoint check-29
-Which Questionnaires are in scope for the rebuild?
-- [x] Brief
-- [ ] Snapshot
-- [ ] ADR-0001
-- [ ] Glossary
-Why: A trick one: the brief lists it as open question 3 and decides nothing. Settling it is a job for the wayfinder map.
+```final-test edit-the-right-file
+`CLAUDE.md` is a shortcut (a symlink) to `AGENTS.md`. You want to change the agents' standing orders. Which file do you edit?
+- [x] `AGENTS.md`, because `CLAUDE.md` only points to it.
+- [ ] `CLAUDE.md`, because Claude Code reads that one first.
+- [ ] Both, one after the other, so they stay in step.
+- [ ] `GLOSSARY.md`, where the standing orders are kept.
+Why: A shortcut is one text with two names. You edit the real file, `AGENTS.md`, and every agent reads the same orders.
 ```
 
-### Check yourself
-
-From memory, without scrolling up.
-
-```final-test final-30
-The client brief and the project brief disagree. Which one do you follow?
-- [ ] The client brief, since it’s older
-- [x] The project brief, by its rule
-- [ ] Whichever file was edited most recently
-- [ ] Neither; ask the client to decide
-Why: The project brief says so near its top: where it differs from the client’s original, it wins. The client brief is history and original intent.
+```final-test what-tests-tell-you
+You never read code. Which part of a repo tells you best what the code promises to do?
+- [x] The test names, such as "finds a recipe by one ingredient".
+- [ ] The lockfile, which lists every package and its exact version.
+- [ ] The `.gitignore` file, which lists what Git leaves out.
+- [ ] The commit count shown above the file list on GitHub.
+Why: Each test's name is a promise the code keeps. You can read the names without reading the code itself.
 ```
 
-```final-test final-31
-In one line, what does ADR-0001 decide?
-- [ ] Keep WordPress and improve its pages
-- [ ] Switch hosting over to Vercel today
-- [ ] Drop the Questionnaires from the project
-- [x] Rebuild the site instead of patching
-Why: Rebuild the site instead of enhancing the current one. ADR-0001 says nothing about hosting; that was settled later, in ADR-0002.
+```final-test architecture-four
+Which list is a project's architecture, in the sense this lesson uses?
+- [x] The main parts, how they connect, where data lives, and what's hard to change.
+- [ ] The main parts, how each function is written, and how each line of code reads.
+- [ ] The README, the LICENSE, the lockfile and the `.gitignore` file.
+- [ ] Every file in `src/`, listed one by one, with what each one does.
+Why: The architecture is four things you can see without reading code. A map of every file is too big to carry in your head.
 ```
 
-```final-test final-32
-Months from now, you change your mind about a decision recorded in an ADR. What happens?
-- [x] A new ADR supersedes the old
-- [ ] You edit the old ADR’s text
-- [ ] You delete the old ADR file
-- [ ] Nothing; ADRs can never be revisited
-Why: ADRs aren’t rewritten. A new one records the change, and the old one gets the status “superseded by ADR-NNNN”, so its reasoning stays on record.
+```final-test check-at-pr-time
+A pull request was meant to change the search only. Which command shows, without reading code, whether it touched anything else?
+- [x] `gh pr diff` with `--name-only`, which lists the files it changed.
+- [ ] `gh repo view`, which shows the repo's description and README.
+- [ ] `git log --oneline -10`, which lists the last ten commits on `main`.
+- [ ] `ls -a`, which lists every file in your current folder.
+Why: `gh pr diff --name-only` lists the files the pull request changed. Compare that list with the plan, and ask about anything unexpected.
 ```
 
-```final-test final-33
-An agent writes “assessment owner” in a ticket title. What’s wrong?
-- [ ] Nothing, it means the same thing
-- [ ] It should say “Research editor” instead
-- [x] It’s an Avoid word: Psychology expert
-- [ ] Titles must use ticket numbers instead
-Why: “Assessment owner” is on the glossary’s Avoid list. The person responsible for each Questionnaire’s scoring is the Psychology expert.
+```final-test grey-box-limit
+A friend says: "Agents write all my code now, so I only look at the architecture and merge." What do you tell them?
+- [x] Half right: line-by-line reading is fading, but review stays, and critical parts need reading.
+- [ ] Right: once tests pass, a person no longer needs to review an agent's pull request.
+- [ ] Wrong: every line an agent writes must be read by a person, or it can't be merged.
+Why: A grey box is judged by its interface and tests, but critical parts need more. And review stays: whoever ran the agent reviews its pull request.
 ```
-
-```final-test final-34
-You want to change the agents’ standing orders. Which file do you edit?
-- [ ] `CLAUDE.md`, since Claude reads that one
-- [x] `AGENTS.md`, since the other points here
-- [ ] Both files, so they stay matched
-- [ ] `GLOSSARY.md`, where the orders are kept
-Why: `CLAUDE.md` is a symlink to `AGENTS.md`, so there is only one text. The file itself says: “Edit AGENTS.md only.”
-```
-
-## Try it: read the brief like a map-maker
-
-Open the brief in your text editor:
-
-```text
-xdg-open ~/Desktop/project1/docs/project-brief.md
-```
-
-Scroll to _Open questions_. For each of the twelve, decide which of three kinds it is: a fact the agent can find on its own, a decision that is yours to make, or an answer that lives in someone else’s head. The brief gives you a head start on the third kind, because it marks those questions “(Client)”. These three kinds are the ticket types from [Lesson 1](/learn/wayfinder-first-session) in disguise, and the third kind is all of [Lesson 4](/learn/answers-from-other-people).
-
-```callout watch-out
-Some questions mix kinds. Open question 1, platform and hosting, is your decision, but the brief says it waits on question 2, which only the client can answer. Spotting that kind of “waits on” is exactly how blocking gets wired when wayfinder charts the map.
-```
-
-## Watch and read next
-
-**Read:** your project brief, the primary source for everything Care4Mind. Start with “Open questions” and “Roles”, then skim “Requirements”.
-
-**Then, for the ideas behind the files:** Michael Nygard’s [“Documenting Architecture Decisions”](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) (2011), the short post that started ADRs; Martin Fowler’s [“UbiquitousLanguage”](https://martinfowler.com/bliki/UbiquitousLanguage.html), the idea behind a project glossary; and the “paper trail” section of Matt’s [/grill-with-docs article](https://www.aihero.dev/skills-grill-with-docs).
-
-**Watch:** the chapter at 4:30 (“Tracking decisions in your issue tracker”) of Matt’s [wayfinder walkthrough](https://www.youtube.com/watch?v=F3lL98Pj90o) shows tickets living in a tracker, the job your `.scratch/` files will do.
 
 ```sources
-- [GLOSSARY-FORMAT.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md)
-- [domain-modeling/SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md)
-- [ADR-FORMAT.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/ADR-FORMAT.md)
-- [wayfinder/SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/wayfinder/SKILL.md)
-- [The /grill-with-docs Skill, “The paper trail”](https://www.aihero.dev/skills-grill-with-docs)
+- [About the repository README file](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes), GitHub Docs
+- [Quickstart for repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories), GitHub Docs
+- [Licensing a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository), GitHub Docs
+- [Ignoring files](https://docs.github.com/en/get-started/git-basics/ignoring-files), GitHub Docs
+- [Understanding GitHub Actions](https://docs.github.com/en/actions/get-started/understand-github-actions), GitHub Docs
+- [package.json](https://docs.npmjs.com/cli/v11/configuring-npm/package-json), npm Docs
+- [Writing your pyproject.toml](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/), Python Packaging User Guide
+- [cicd-lab-starter](https://github.com/bradtraversy/cicd-lab-starter), Brad Traversy
+- [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions), Michael Nygard, 2011-11-15
+- [domain-modeling: ADR-FORMAT.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/ADR-FORMAT.md), Matt Pocock's Skills
+- [domain-modeling: GLOSSARY-FORMAT.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md), Matt Pocock's Skills
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory), Anthropic (Claude Code Docs)
+- [How To Make Codebases AI Agents Love](https://www.aihero.dev/how-to-make-codebases-ai-agents-love), Matt Pocock, 2026-02-26
+- [How the Claude Code team does code review](https://x.com/addyosmani/article/2114604912520921136), Addy Osmani, 2026-10-26
+- [gh repo view](https://cli.github.com/manual/gh_repo_view), GitHub CLI manual
+- [gh pr diff](https://cli.github.com/manual/gh_pr_diff), GitHub CLI manual
 ```

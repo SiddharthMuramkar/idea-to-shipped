@@ -1,7 +1,7 @@
 ---
 title: Fix the environment, not just the code
 slug: fix-the-environment
-summary: When your coding agent repeats a mistake, fix what lets it happen, with an automated check or a written standard, not just the one line.
+summary: When your coding agent repeats a mistake, fix what lets it happen with an automated check or a written standard, not only the broken line.
 ---
 
 ## Fixing the next run too
@@ -145,7 +145,7 @@ Why: retro looks back on a session and suggests environment changes, not code ch
 
 ### Why it exists
 
-You could correct an agent's code by hand every time. But each new session meets the same repo, with the same gaps. Matt's point is that the repo itself shapes the agent: "your code is the environment the agent operates in." Read that as the whole codebase the next session walks into, not the one line you corrected.
+You could correct an agent's code by hand every time. But each new session meets the same repo, with the same gaps. Matt Pocock, who wrote the Skills this flow uses, points out that the repo itself shapes the agent: "your code is the environment the agent operates in." Read that as the whole codebase the next session walks into, not the one line you corrected.
 
 That changes the engineer's job. Think of a platform team, which builds the tools other engineers use. Matt says "we are our agents platform team", building the environment they need to succeed.
 

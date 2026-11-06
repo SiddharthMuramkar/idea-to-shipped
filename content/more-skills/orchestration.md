@@ -1,12 +1,12 @@
 ---
-title: orchestration
+title: orchestration: one agent supervises the others
 slug: orchestration
-summary: orchestration is Orca's Skill for one agent supervising other agents.
+summary: How Orca's orchestration Skill lets one agent start other agents, answer their questions and wait for their reports, and why silence proves nothing.
 ---
 
 ## What it's for
 
-Say Tickets #13 and #14 are ready to build. **Orca**, an app that runs several coding agents side by side, can put an agent on each. But then you're checking who has a question or has finished.
+Say [Tickets](/learn/issues-and-keeping-track) #13 and #14 are ready to build. **Orca**, an app that runs several coding agents side by side, can put an agent on each. But then you're checking who has a question or has finished.
 
 **orchestration is Orca's Skill for one agent supervising other agents.**
 
@@ -65,6 +65,9 @@ steps:
 
 An agent takes this job only when you ask it to supervise or coordinate. Use it when:
 
+- You want several Tickets built at once, with one agent answering questions and waiting for results.
+- You need work done in a set order, such as #12 before #13.
+
 ```checkpoint quick-4
 You ask an agent to start a second agent in a new worktree, and nothing more. Is it now a coordinator?
 - [x] No, it takes that job only when you ask it to supervise.
@@ -72,9 +75,6 @@ You ask an agent to start a second agent in a new worktree, and nothing more. Is
 - [ ] Yes, it takes that job whenever a new worktree is created.
 Why: Starting another agent isn't enough. An agent becomes a coordinator only when you ask it to supervise.
 ```
-
-- You want several Tickets built at once, with one agent answering questions and waiting for results.
-- You need work done in a set order, such as #12 before #13.
 
 ## When not to use it
 
@@ -92,9 +92,9 @@ Why: The work has to travel to a colleague, so it needs a document that goes wit
 
 ## What it needs to start
 
-Start Orca, with its orchestration Skill installed, and ask an agent to supervise.
+Start Orca, with its orchestration [Skill](/learn/skills) installed, and ask an agent to supervise.
 
-The installed SKILL.md is only a **stub**, a small placeholder file pointing elsewhere. So the agent asks Orca's CLI, its command-line tool, to print the real guide: `orca skills get orchestration`.
+The installed SKILL.md (the Skill's instruction file) is only a **stub**, a small placeholder file pointing elsewhere. So the agent asks Orca's CLI, its command-line tool, to print the real guide: `orca skills get orchestration`.
 
 ```checkpoint quick-6
 You open orchestration's installed SKILL.md, looking for its commands. What do you find?
@@ -106,14 +106,6 @@ Why: The installed file is only a stub, a small placeholder. The agent asks the 
 
 A **Task** is Orca's word for one piece of work given to a worker. The coordinator writes a Task spec for each. A worker starts from that spec, its written brief, not the coordinator's chat, so the spec must stand on its own. Ticket #13's might read:
 
-```checkpoint quick-7
-The coordinator is about to start a worker. Why can't its spec say "carry on with what we discussed"?
-- [x] The worker starts from its spec, not from the coordinator's chat.
-- [ ] The worker can read that chat, but reading it costs too much time.
-- [ ] Orca refuses to start a worker whose spec is under a set length.
-Why: A worker starts from its spec, not that chat, so "what we discussed" means nothing to it. That's why the spec must stand on its own.
-```
-
 ```
 Target: api/bookings.py and its tests
 Change: add the booking endpoint
@@ -123,6 +115,14 @@ Observable acceptance: pytest api/test_bookings.py passes
 ```
 
 Observable acceptance is what proves it's done.
+
+```checkpoint quick-7
+The coordinator is about to start a worker. Why can't its spec say "carry on with what we discussed"?
+- [x] The worker starts from its spec, not from the coordinator's chat.
+- [ ] The worker can read that chat, but reading it costs too much time.
+- [ ] Orca refuses to start a worker whose spec is under a set length.
+Why: A worker starts from its spec, not that chat, so "what we discussed" means nothing to it. That's why the spec must stand on its own.
+```
 
 ## What it creates
 
@@ -157,7 +157,7 @@ Orca could already run several coding agents side by side. What was still missin
 Why: Running side by side isn't working together. The gap was the glue, a coordinator that makes the agents collaborate.
 ```
 
-So a maintainer of Orca, Jinwoo-H, built it, in a pull request that answered that discussion. It first shipped behind an experimental toggle in Settings. That's why it isn't one of Matt's Skills: it comes with Orca.
+So a maintainer of Orca, Jinwoo-H, built it, in a pull request that answered that discussion. It first shipped behind an experimental toggle in Settings. That's why it isn't one of Matt Pocock's Skills: it comes with Orca.
 
 Today its job fits in one line: "Use it when you need ownership, completion tracking, or a DAG." Ownership is who owns each piece of work. Completion tracking is knowing when it has finished. A **DAG** here is a plan of Tasks with dependencies between them: some wait for others, and the rest can run at once.
 
@@ -279,7 +279,7 @@ A second user confirmed it on Windows, and saw no retry after the runtime recove
 
 ### Try it
 
-Supervise two workers, then check their reports yourself. You'll need your practice project ([keeping-track](/learn/issues-and-keeping-track)'s Try it), with `api/` and `web/` (your agent can add them), and Orca, with its orchestration Skill. If the Skill is missing, run `npx skills add https://github.com/stablyai/orca --skill orchestration --global`. If Orca doesn't offer it, check Settings → Experimental → Agent Orchestration.
+Supervise two workers, then check their reports yourself. You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets it up), with `api/` and `web/` (your agent can add them), and Orca, with its orchestration Skill. If the Skill is missing, run `npx skills add https://github.com/stablyai/orca --skill orchestration --global`. If Orca doesn't offer it, check Settings → Experimental → Agent Orchestration.
 
 Here's what you'll ask for in step 2:
 
@@ -299,7 +299,7 @@ Show me both Task specs before you start them.
 
 ### Read more
 
-- [Orchestration — Orca Docs](https://www.onorca.dev/docs/cli/orchestration), Stably, Inc., undated (read 2026-10-30)
+- [Orchestration — Orca Docs](https://www.onorca.dev/docs/cli/orchestration), Stably, Inc.
 - [Multi-agent orchestration: coordinator pattern for Claude/Codex/OpenCode](https://github.com/stablyai/orca/discussions/681), heyramzi and others, 2026-04-15
 - [feat(orchestration): add inter-agent orchestration system](https://github.com/stablyai/orca/pull/1188), Jinwoo-H, 2026-04-27
 - [Recover supervised cycles missing worker_done using attempt-linked result evidence](https://github.com/stablyai/orca/issues/14829), Tauri-EPO, 2026-08-16
@@ -310,7 +310,7 @@ Show me both Task specs before you start them.
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint orchestration-deeper-outage-quiet
-Three Orca workers are building parts of your booking API. For twenty minutes the coordinator's waits come back with nothing, and you learn the Orca runtime was unreachable for part of that time. Why shouldn't you read the quiet as "nothing has finished yet"? What's the reason behind this step?
+Three Orca workers are building parts of your booking API. For twenty minutes the coordinator's waits come back with nothing, and you learn the Orca runtime was unreachable for part of that time. Why shouldn't you read the quiet as "nothing has finished yet"?
 - [x] A worker's one worker_done may have failed to send, so finished work can sit unreported.
 - [ ] Workers stop working whenever the runtime is down, so all three Tasks have already failed.
   > In the reported run the workers did not stop; one pushed three commits during the outage.
@@ -395,7 +395,7 @@ You use Orca on a FastAPI backend. Three Tickets that don't block each other are
   > Right: that's `/orchestration`.
 - [ ] Write a summary document so a fresh agent can pick up the work.
   > That's `/handoff`. It passes the work to one fresh agent. Nothing waits for results or answers questions.
-- [ ] Build the Tickets with the Main flow's implementer subagents.
+- [ ] Build the Tickets with the main flow's implementer subagents.
   > That's `/implement-spec`. Its implementer subagents are meant to talk to it sparsely, working from pointers to the Spec and Tickets. Here each worker must stop, ask and wait for an answer.
 Why: You want one agent waiting for results and answering questions while the others build. That's a coordinator's job, and Orca records who owns which work and when it has finished. A written summary only passes work along, and implement-spec's subagents are meant to have little back-and-forth.
 ```
@@ -412,7 +412,7 @@ Why: The work is going to a colleague, so what it needs is a written summary tha
 ```
 
 ```final-test orchestration-independent-wave
-Your Spec for an AI agent backend has been split into Tickets, and four of them don't depend on each other. You use Orca, and you've asked for agents to build those four in parallel while one agent supervises them and answers their questions. What comes next? What comes next?
+Your Spec for an AI agent backend has been split into Tickets, and four of them don't depend on each other. You use Orca, and you've asked for agents to build those four in parallel while one agent supervises them and answers their questions. What comes next?
 - [x] Create a Run, start all four workers, then wait for reports.
   > Right: that's `/orchestration`.
 - [ ] Split the Spec into Tickets, each declaring what blocks it.
@@ -423,7 +423,7 @@ Why: The Spec and Tickets are done, and you've asked for supervision. So the nex
 ```
 
 ```final-test orchestration-self-contained-spec
-An agent is supervising two Orca workers on your website: one fixes the contact form, one adds a sitemap. For each, it writes a Task spec naming the files in scope, the change, what not to touch, what the worker may edit, and the test that proves it's done. Why spell all that out instead of writing "carry on with what we discussed"? What's the reason behind this step?
+An agent is supervising two Orca workers on your website: one fixes the contact form, one adds a sitemap. For each, it writes a Task spec naming the files in scope, the change, what not to touch, what the worker may edit, and the test that proves it's done. Why spell all that out instead of writing "carry on with what we discussed"?
 - [x] A worker starts without the supervisor's chat, so its spec must say it all.
 - [ ] So the supervisor can trust each worker_done without checking it.
   > The supervisor still checks each worker_done against the attempt it expects.
@@ -433,7 +433,7 @@ Why: Each worker is a separate agent, maybe even a different one like Codex, tha
 ```
 
 ```final-test orchestration-deeper-commit-no-report
-An agent supervises two Orca workers on your yoga-studio repo. The worker adding a class-list test in api/ pushed a commit an hour ago, then sat idle without sending worker_done. The coordinator still won't mark that Task as succeeded. Why is that the right call? What's the reason behind this step?
+An agent supervises two Orca workers on your yoga-studio repo. The worker adding a class-list test in api/ pushed a commit an hour ago, then sat idle without sending worker_done. The coordinator still won't mark that Task as succeeded. Why is that the right call?
 - [x] A commit isn't the worker's report: a valid worker_done is what settles a Task.
 - [ ] The coordinator has no way to see a worker's commits, so it can't know anything was pushed.
   > In the reported run the coordinator checked commits by other means; a commit still isn't the report.

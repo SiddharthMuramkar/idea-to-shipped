@@ -1,14 +1,16 @@
 ---
-title: orca-cli
+title: orca-cli: hand off work inside Orca
 slug: orca-cli
-summary: In this Course, orca-cli's job: your agent starts another agent in a new Orca worktree, then stops.
+summary: How orca-cli has your agent start a new agent in its own Orca worktree, hand it the work, then stop, and how it finds the right Orca commands.
 ---
 
 ## What it's for
 
-Say Ticket #12 is merged, and Ticket #13, the booking endpoint, is next. You want another agent to own #13 while you carry on. By hand, that's a [worktree](/learn/branches-and-worktrees), a terminal, an agent and a long paste.
+Say [Ticket](/learn/issues-and-keeping-track) #12 is merged, and Ticket #13, the booking endpoint, is next. You want another agent to own #13 while you carry on. By hand, that's a [worktree](/learn/branches-and-worktrees), a terminal, an agent and a long paste.
 
-**In this Course, orca-cli's job: your agent starts another agent in a new Orca worktree, then stops.**
+**orca-cli's handoff job: your agent starts another agent in a new Orca worktree, then stops.**
+
+orca-cli comes with [Orca](/learn/orchestration), the app that runs several coding agents side by side. Orca's makers wrote it, not Matt Pocock, whose [Skills](/learn/skills) most of this course covers.
 
 The new agent starts from your **brief**, its first prompt, and owns the work from then on. That's a [full handoff](/learn/claude-handoff).
 
@@ -19,8 +21,6 @@ Your agent has handed off Ticket #13 and stopped. Who owns #13 now?
 - [ ] You, until the new agent says that it has finished.
 Why: That's what makes it a full handoff. The new agent starts from your brief and owns the work from then on.
 ```
-
-orca-cli comes with [Orca](/learn/orchestration), the app that runs several coding agents side by side, not from Matt.
 
 For example, you type:
 
@@ -81,7 +81,7 @@ Why: Outside Orca's own terminals on Linux, the name `orca` normally means the s
 
 ## What it creates
 
-- A new Orca worktree: a repo checkout that Orca tracks. `--no-parent` marks it as independent work. Leaving out `--base-branch` makes Orca start it from the repo's default base, such as your remote's `main`, not your current branch.
+- A new Orca worktree: a repo checkout that Orca tracks. `--no-parent` marks it as independent work. Leaving out `--base-branch` makes Orca start it from the repo's default base, such as `main` on your [remote](/learn/push-pull-and-remotes), not your current branch.
 - An agent started in it, with your brief.
 - A short report: the worktree's id and the agent's **handle**, the name Orca commands use to reach it. The handoff is done once those are reported and the brief arrived.
 
@@ -149,7 +149,7 @@ You update Orca and leave the installed stub as it is. Where does the agent get 
 Why: The stub only says when to use Orca and how to load the guide. The guide stays inside the program, so the two can't drift apart.
 ```
 
-Moving the guide out cut orca-cli's installed file from 331 lines to under 80. This Course's copy is 47.
+Moving the guide out cut orca-cli's installed file from 331 lines to under 80. By October 2026 it was 47.
 
 The stub gives the agent two jobs. First it picks the program, once, and reuses that choice for every later command. That's where the `orca-ide` rule lives. Then it runs `orca skills get orca-cli` with that program, and follows the guide it prints.
 
@@ -183,7 +183,7 @@ In July 2026, before the stub shipped, an Orca developer tested it. Would agents
 - Both ran `orca skills get orca-cli` before any `status`, `worktree` or `terminal` command.
 - Neither invented a subcommand from memory.
 
-The verdict was "pass". So a short file can be enough if it says where the real guide is. The record names its limits. It didn't measure an old Orca with no `skills get`, the token cost, or picking the program on Linux, WSL (Linux inside Windows) or SSH. It ran no comparison with the full file.
+The verdict was "pass". So a short file can be enough if it says where the real guide is. The record names its limits. It didn't measure an old Orca with no `skills get`, the token cost, or picking the program on Linux, WSL (Linux inside Windows) or SSH (a remote login). It ran no comparison with the full file.
 
 ```checkpoint quick-10
 You're on Linux. Does this test show that the stub will pick the right program for you?
@@ -233,7 +233,7 @@ Why: Repeating it with `--retry-launch` makes Orca replay the launch it already 
 
 ### Try it
 
-You'll need your practice project (set it up first with keeping-track's Try it step if you haven't). It needs a FastAPI app in `api/` on `main`; if it's missing, have your agent add one. You'll also need Orca, with orca-cli installed: the command is under Why it exists.
+You'll need your practice project (if you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first). It needs a FastAPI app in `api/` on `main`; if it's missing, have your agent add one. You'll also need Orca, with orca-cli installed: the command is under Why it exists.
 
 Send this request:
 
@@ -252,7 +252,7 @@ Brief: add it to the FastAPI app in api/, with a test, and don't touch web/.
 8. Open that worktree yourself, since Orca leaves it in the background.
 9. Read the new agent's chat or terminal. You should see it working from your brief.
 
-The work now belongs to the new agent, and you review it when it's done. Orca starts that agent without approval prompts, so run this only in the practice project, never in this site's repo.
+The work now belongs to the new agent, and you review it when it's done. Orca starts that agent without approval prompts, so run this only in the practice project, never in a repo you care about.
 
 ### Read more
 
@@ -261,8 +261,8 @@ The work now belongs to the new agent, and you review it when it's done. Orca st
 - [Ship orca-cli as a first-generation hybrid stub, pull request #9238](https://github.com/stablyai/orca/pull/9238), brennanb2025, 2026-07-17
 - [Per-launch model, permission mode and view for `worktree create --agent`, issue #25067](https://github.com/stablyai/orca/issues/25067), yamakura-yuma, 2026-10-03
 - [Honor Chat UI setting for worktree agent creation, pull request #27796](https://github.com/stablyai/orca/pull/27796), brennanb2025, 2026-10-12
-- [Orca skills registry & MCP](https://www.onorca.dev/docs/cli/skills), Stably, Inc., no date shown (fetched 2026-10-30)
-- [Agents & sessions](https://www.onorca.dev/docs/model/agents-sessions), Stably, Inc., no date shown (fetched 2026-10-30)
+- [Orca skills registry & MCP](https://www.onorca.dev/docs/cli/skills), Stably, Inc.
+- [Agents & sessions](https://www.onorca.dev/docs/model/agents-sessions), Stably, Inc.
 
 ## Remember
 
@@ -283,7 +283,7 @@ Q: A handoff's launch reply is lost. What does the agent do?
 A: Repeat the exact same command with `--retry-launch` and the same operation ID. Don't retry as a fresh launch: that could start a second agent. If replay says unknown or expired, inspect first.
 
 Q: Where does orca-cli's full guide live, since July 2026?
-A: Inside the `orca` program, printed by `orca skills get orca-cli`. The installed file went from 331 lines to a stub of under 80 lines then, and is 47 lines in the Course's pinned copy.
+A: Inside the `orca` program, printed by `orca skills get orca-cli`. The installed file went from 331 lines to a stub of under 80 lines then, and was 47 lines by October 2026.
 ```
 
 ## Final test
@@ -362,7 +362,7 @@ Why: The work is leaving Orca for a laptop that doesn't run it, so an Orca workt
 ```
 
 ```final-test orca-cli-why-stop
-Your agent hands a booking-page Ticket to a new agent in its own Orca worktree, with a brief as its first prompt. Then it reports the worktree id and the agent's handle, and stops. Why is starting the new agent fresh, from the brief, a good thing? What's the reason behind this step?
+Your agent hands a booking-page Ticket to a new agent in its own Orca worktree, with a brief as its first prompt. Then it reports the worktree id and the agent's handle, and stops. Why is starting the new agent fresh, from the brief, a good thing?
 - [x] The new agent starts from the brief, so it carries none of this session's history.
 - [ ] So the new agent can be supervised later through the first agent's Run and its Tasks.
   > A handoff creates no Run, Task or Dispatch and doesn't monitor completion. Supervision is orchestration's job.
@@ -372,7 +372,7 @@ Why: The brief is the new agent's first prompt, so it starts without this sessio
 ```
 
 ```final-test orca-cli-deeper-task-row
-In Orca you tell your agent: "Hand off the health-check Ticket to another agent, with a strong model and high effort." It starts a new agent in a new worktree with a brief. Then, "so it's tracked", it also runs `orca orchestration task-create` for the Ticket and stops. Orca's guide forbids that last step. Why? What's the reason behind this step?
+In Orca you tell your agent: "Hand off the health-check Ticket to another agent, with a strong model and high effort." It starts a new agent in a new worktree with a brief. Then, "so it's tracked", it also runs `orca orchestration task-create` for the Ticket and stops. Orca's guide forbids that last step. Why?
 - [x] A task row is coordinator-owned state, and a handoff has no coordinator once the first agent stops.
 - [ ] A task row is fine, but only after the new agent has made its first commit in its new worktree.
   > Timing isn't the problem. The guide forbids task-create for every full handoff, because it records coordinator-owned tracking state.

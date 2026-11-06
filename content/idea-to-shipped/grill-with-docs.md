@@ -147,7 +147,7 @@ Everything else you decide stays in the conversation, along with your shared und
 
 ### Why it exists
 
-A grilling settles a lot, but on its own it leaves nothing behind. Matt hit this when he used grill-me for coding. He puts the gap this way: "we would actually land on some really good shared language and then that wasn't documented anywhere." So each new session, he re-explained the code and the problem before any real work.
+A grilling settles a lot, but on its own it leaves nothing behind. Matt Pocock, who wrote these Skills, hit this when he used grill-me for coding. He puts the gap this way: "we would actually land on some really good shared language and then that wasn't documented anywhere." So each new session, he re-explained the code and the problem before any real work.
 
 ```checkpoint quick-8
 What sent Matt looking for more than grill-me when he was coding?
@@ -430,7 +430,7 @@ Midway through an interview about a SQL migration for your Python backend, the a
 - [ ] The Glossary then holds the migration's decisions, so it can serve as its Spec.
   > The Glossary is a glossary and nothing else, never a Spec or a place for implementation decisions.
 - [ ] With the term written down, the agent can end the interview right there.
-  > The interview goes on until every branch is visited. Settling a term just removes one source of confusion.
+  > The interview goes on until every branch is visited. Settling a term only removes one source of confusion.
 Why: With one word for two things, you and the agent can't tell which is meant. Settling it and writing it down straight away gives you, the agent and later sessions one word for one thing.
 ```
 

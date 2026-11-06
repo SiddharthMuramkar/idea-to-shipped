@@ -1,16 +1,16 @@
 ---
-title: loop-me
+title: loop-me: spec out a job you repeat
 slug: loop-me
-summary: loop-me interviews you about a job you repeat, and writes it down as a spec an agent could build.
+summary: How loop-me interviews you about a job you repeat until it's written down as a spec an agent could build, without building anything itself.
 ---
 
 ## What it's for
 
-Say you label new Issues on the yoga-studio repo by hand every morning. An agent could take that over, but the rules live in your head.
+Say you label new [Issues](/learn/issues-and-keeping-track) on the yoga-studio repo by hand every morning. An agent could take that over, but the rules live in your head.
 
 **loop-me interviews you about a job you repeat, and writes it down as a spec an agent could build.**
 
-It's a [grilling](/learn/grilling) session whose only output is that spec: a Markdown file, not a Spec on your Issue tracker. This site calls it **loop-me's workflow spec**.
+It's a [grilling](/learn/grilling) session whose only output is that spec: a Markdown file (plain text with light formatting), not a [Spec](/learn/to-spec) on your Issue tracker. To tell the two apart, this lesson calls it **loop-me's workflow spec**.
 
 ```checkpoint quick-1
 You've finished a session about your morning labelling job. What do you have?
@@ -93,7 +93,7 @@ groups:
 
 ## What it needs to start
 
-You need a folder: the current directory becomes its workspace. You install this Skill on its own, as the Try it step shows.
+You need a folder: the current directory becomes its workspace. You install this [Skill](/learn/skills) on its own, as the Try it step shows.
 
 Only you can start it, by typing `/loop-me`. The agent never starts it on its own.
 
@@ -151,13 +151,13 @@ Why: The four words are never a checklist. A spec needs no AI, no checkpoint and
 
 ### Why it exists
 
-A job you repeat is predictable, and predictable work is worth handing off. The work is spotting those jobs, then describing one well enough for an agent to build. Matt's announcement shows the aim: "Interviews you about your work and finds opportunities for delegating your day-to-day work to AI".
+A job you repeat is predictable, and predictable work is worth handing off. The work is spotting those jobs, then describing one well enough for an agent to build. Matt Pocock wrote the Skill, and his announcement shows the aim: "Interviews you about your work and finds opportunities for delegating your day-to-day work to AI".
 
 So loop-me pictures your life as loops within loops, looks for the ones worth writing down, and grills you until each spec is finished.
 
 Matt's post pitches handing work to AI, but the Skill's own text goes wider. A spec needs no AI unless the grilling shows it does. Some jobs use no AI at all.
 
-Matt sorts his Skills into buckets. loop-me sits in his in-progress one, which he labels "Beta". Skills there get no docs pages, and they can change or disappear without warning. So check the current `SKILL.md` before you rely on this Lesson. His plugin, a bundle of Skills you can install together, leaves them out, so you install this one on its own.
+Matt sorts his Skills into buckets. loop-me sits in his in-progress one, which he labels "Beta". Skills there get no docs pages, and they can change or disappear without warning. So check the current `SKILL.md` before you rely on this lesson. His plugin, a bundle of Skills you can install together, leaves them out, so you install this one on its own.
 
 ```checkpoint quick-9
 You've come to rely on loop-me. What should you expect from a Skill in the in-progress bucket?
@@ -206,7 +206,7 @@ Why: An open question means the spec isn't done, even with all four words in it.
 
 **Three other things repeat work.** They're easy to mix up with loop-me. Only loop-me's whole job is writing a spec. The other three run something.
 
-- **The Ralph loop.** This is Geoffrey Huntley's technique, and he created it. In its purest form it's a Bash loop that feeds the same prompt to an agent, again and again: `while :; do cat PROMPT.md | claude-code ; done`. Matt's guide puts it this way: "You run the same prompt repeatedly. The AI picks its own tasks from a PRD." A Ralph loop builds code. loop-me builds nothing.
+- **The Ralph loop.** This is Geoffrey Huntley's technique, and he created it. In its purest form it's a Bash loop that feeds the same prompt to an agent, again and again: `while :; do cat PROMPT.md | claude-code ; done`. Matt's guide puts it this way: "You run the same prompt repeatedly. The AI picks its own tasks from a PRD." A PRD is a product requirements document, a plan of what to build. A Ralph loop builds code. loop-me builds nothing.
 - **Claude Code's `/loop`.** It re-runs a prompt on an interval inside your session, as in `/loop 5m check the deploy`. It's for quick polling during a session.
 - **A cloud scheduled task.** This is a saved Claude Code configuration that runs in the cloud, so it keeps working when your laptop is closed. It suits work that is unattended, repeatable and tied to a clear outcome.
 
@@ -261,7 +261,7 @@ You put `/loop-me` on a `/loop` timer. What happens when the timer fires?
 Why: A scheduled fire only runs Skills Claude may start on its own. loop-me is marked `disable-model-invocation: true`, so it arrives as plain text.
 ```
 
-**A job you put on `/loop` stops after a week.** `/loop` tasks only fire while Claude Code is running and idle, and recurring ones expire 7 days after creation. So a job meant to run for months needs a cloud scheduled task, a Desktop scheduled task (which runs on your machine) or GitHub Actions. Staying on `/loop` means cancelling and recreating the task before it expires.
+**A job you put on `/loop` stops after a week.** `/loop` tasks only fire while Claude Code is running and idle, and recurring ones expire 7 days after creation. So a job meant to run for months needs a cloud scheduled task, a scheduled task in Claude's desktop app (which runs on your machine) or GitHub Actions. Staying on `/loop` means cancelling and recreating the task before it expires.
 
 ```checkpoint quick-15
 A spec's job should run for months. Why not put it on Claude Code's `/loop`?
@@ -273,7 +273,7 @@ Why: `/loop` tasks only fire while Claude Code is running and idle, and recurrin
 
 ### Try it
 
-You'll need your practice project. If you haven't set it up, do keeping-track's Try it step first.
+You'll need your practice project. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the `yoga-studio` repo, make a folder and go into it: `mkdir loops && cd loops`.
 2. Install the Skill there: `npx skills@latest add mattpocock/skills --skill loop-me`. If it asks which agent, choose Claude Code.
@@ -290,11 +290,11 @@ Stop there. Don't build or schedule the job yet.
 ### Read more
 
 - [New in-progress skill: /loop-me](https://x.com/mattpocockuk/status/2069729160600203595), Matt Pocock, 2026-06-24
-- [The in-progress bucket README](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/README.md), Matt Pocock, at commit a496f55 (2026-10-29)
+- [The in-progress bucket README](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/README.md), Matt Pocock, 2026-10-29
 - [Ralph Wiggum as a "software engineer"](https://ghuntley.com/ralph/), Geoffrey Huntley, 2025-07-14
 - [Getting Started With Ralph](https://www.aihero.dev/getting-started-with-ralph), Matt Pocock, updated 2026-01-08
-- [Run prompts on a schedule](https://code.claude.com/docs/en/scheduled-tasks), Anthropic, read 2026-10-30
-- [Automate work with scheduled tasks](https://code.claude.com/docs/en/routines), Anthropic, read 2026-10-30
+- [Run prompts on a schedule](https://code.claude.com/docs/en/scheduled-tasks), Anthropic
+- [Automate work with scheduled tasks](https://code.claude.com/docs/en/routines), Anthropic
 - [loop-me: define an observable run completion and failure boundary](https://github.com/mattpocock/skills/issues/657), qshanx, 2026-07-24
 
 ## Practice scenarios
@@ -302,7 +302,7 @@ Stop there. Don't build or schedule the job yet.
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint loop-me-deeper-succeeded-means
-Your spec for nightly Issue labelling will become a cloud scheduled task. Before you build it, you go back and get grilled on how one run proves it finished, even though the spec already names its trigger. What's the reason behind this step?
+Your spec for nightly Issue labelling will become a cloud scheduled task. Before you build it, you go back and get grilled on how one run proves it finished, even though the spec already names its trigger. Why go back?
 - [x] A run counted as Succeeded only means the session ended, reporting no failure.
 - [ ] A cloud task can't start until its spec names how many times a run may retry.
   > The docs set no such rule. The risk is a run that looks fine but did nothing checkable.
@@ -404,7 +404,7 @@ Why: A single talk doesn't repeat, so it isn't a loop, and there's no repo to ke
 ```
 
 ```final-test loop-me-why-keeps-asking
-You started a session about your weekly class-schedule email. You think the job is obvious, but the agent keeps asking questions in rounds before it will call the spec finished. What's the reason behind this step?
+You started a session about your weekly class-schedule email. You think the job is obvious, but the agent keeps asking questions in rounds before it will call the spec finished. Why does it keep asking?
 - [x] The spec isn't done until an agent could build it without asking a single question.
 - [ ] It must fill a fixed template of Trigger, Checkpoint, Push right and Brief first.
   > Those words are used only when a spec calls for them, never as a checklist.
@@ -414,7 +414,7 @@ Why: The questions keep coming because a spec with an open question would leave 
 ```
 
 ```final-test loop-me-why-asks-about-tools
-In a new, empty folder you run the Skill to spec a job you repeat. Instead of writing a spec, it first asks which tools you use, which channels you read and what you call things. What's the reason behind this step?
+In a new, empty folder you run the Skill to spec a job you repeat. Instead of writing a spec, it first asks which tools you use, which channels you read and what you call things. Why does it ask that first?
 - [x] Its notes file is empty, so it learns your world before it specifies anything.
 - [ ] It is checking which Issue tracker your repo was set up with before it begins.
   > It asks about your world, the tools and channels you use, not a repo's setup.
@@ -424,7 +424,7 @@ Why: With NOTES.md empty, loop-me knows nothing about your world yet. So it asks
 ```
 
 ```final-test loop-me-deeper-weekly-timer
-You want to be interviewed every Monday about new jobs to hand off, so you put the Skill on a seven-day `/loop` and leave your session open. A week later the Skill's name shows up as plain text, and no interview happens. What's the reason behind this step?
+You want to be interviewed every Monday about new jobs to hand off, so you put the Skill on a seven-day `/loop` and leave your session open. A week later the Skill's name shows up as plain text, and no interview happens. Why didn't the interview start?
 - [x] The Skill is user-invoked, and a scheduled fire only runs Skills Claude may start itself.
 - [ ] `/loop` can't use days as a unit, so the seven-day interval was quietly dropped.
   > `/loop` supports `d` for days. The block is the Skill's `disable-model-invocation: true` mark.

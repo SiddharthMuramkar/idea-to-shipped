@@ -43,7 +43,7 @@ Why: An entry takes a side. The best word stays, and the others go under `_Avoid
 **The glossary holds words and what they mean, and nothing else.** It isn't a Spec (the written plan for a feature), a place for rough notes, or a place to record how the code is built.
 
 ```checkpoint quick-3
-You want to note that bookings live in a Postgres table. Does that go in the glossary?
+You want to note that bookings live in a Postgres database table. Does that go in the glossary?
 - [x] No: it holds words and what they mean, and nothing else.
 - [ ] Yes: how the code is built belongs right beside the words.
 - [ ] Yes: anything about bookings can go in the Booking entry.

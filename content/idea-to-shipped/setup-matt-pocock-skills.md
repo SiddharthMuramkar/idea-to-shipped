@@ -142,7 +142,7 @@ Why: Setup doesn't create GLOSSARY.md or any ADRs. domain-modeling writes those 
 
 Repos differ. One keeps its Issues on GitHub, another in local Markdown files, another in a different Issue tracker, such as Jira or Linear. Without a setup step, every Skill that touches Issues would need its own copy of the tracker instructions.
 
-Matt puts all the differences in one place instead. The files setup writes "are the only thing that varies between repos. The skills themselves are identical everywhere."
+Matt Pocock, who wrote the Skills, puts all the differences in one place instead. The files setup writes "are the only thing that varies between repos. The skills themselves are identical everywhere."
 
 ```checkpoint quick-9
 Your next repo tracks its Issues somewhere else. What changes in the Skills themselves?

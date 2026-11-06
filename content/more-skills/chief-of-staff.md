@@ -1,27 +1,27 @@
 ---
-title: chief-of-staff
+title: chief-of-staff: one session owns a long goal
 slug: chief-of-staff
-summary: chief-of-staff makes one long session the manager of that goal: subagents do all the work, and what it learns is kept outside the session.
+summary: How chief-of-staff makes one long session own a weeks-long goal: subagents do the work, and a dated wiki keeps what it learns.
 ---
 
 ## What it's for
 
-Say you want the yoga-studio API's flaky [CI](/learn/what-ci-cd-is), which fails at random, fixed over the next few weeks, with no [Spec](/learn/issues-and-keeping-track) or [Tickets](/learn/issues-and-keeping-track) yet. One ordinary session would fill its [context window](/learn/instruction-files). A string of fresh sessions would each forget what the last one learned.
+Say you want the yoga-studio API's flaky [CI](/learn/what-ci-cd-is), which fails at random, fixed over the next few weeks, with no [Spec](/learn/issues-and-keeping-track) or [Tickets](/learn/issues-and-keeping-track) yet. One ordinary session would fill its [context window](/learn/context-window). A string of fresh sessions would each forget what the last one learned.
 
 **chief-of-staff makes one long session the manager of that goal: subagents do all the work, and what it learns is kept outside the session.**
 
 The agent becomes the goal's **Directly Responsible Individual**: the one who owns it. So it thinks on two tracks at once:
 
+- **Tactical:** how do I finish the task in hand?
+- **Strategic:** how do I change the [environment](/learn/fix-the-environment) so the _next_ task goes better?
+
 ```checkpoint quick-1
 An agent is told it's the Directly Responsible Individual for your goal. What does that make it?
 - [x] The single agent that owns the goal.
-- [ ] A helper reporting to the owner.
+- [ ] A helper reporting to whoever owns the goal.
 - [ ] One of several agents sharing the goal.
 Why: The Directly Responsible Individual is the one who owns the goal, so the goal is that agent's to pursue.
 ```
-
-- **Tactical:** how do I finish the task in hand?
-- **Strategic:** how do I change the [environment](/learn/fix-the-environment) so the _next_ task goes better?
 
 To protect its window, the session does no work itself. [Subagents](/learn/grill-before-you-build), helper agents that each start with a fresh window, do it all in the background, so the session stays free to talk with you.
 
@@ -129,7 +129,7 @@ Why: Every wiki claim has a date. A claim about code also cites the commit it wa
 
 ### Why it exists
 
-A goal that lasts for weeks outlives any one context window. Matt wants one session to carry the goal anyway. He gives it this job: it "will run for a long time, accruing tribal knowledge", helping the agent make long-term strategic decisions. Tribal knowledge is what you only learn by being there.
+A goal that lasts for weeks outlives any one context window. Matt Pocock, who wrote the Skill, wants one session to carry the goal anyway. He gives it this job: it "will run for a long time, accruing tribal knowledge", helping the agent make long-term strategic decisions. Tribal knowledge is what you only learn by being there.
 
 So the Skill keeps that session's window clear by sending out all the work, and writes what it learns into the wiki.
 
@@ -269,7 +269,7 @@ Why: Ordinary subagents on Claude Code start fresh, but by default Claude can st
 
 ### Try it
 
-You'll need your practice project with its CI check. If you haven't set those up, do [keeping track](/learn/issues-and-keeping-track)'s Try it step, then [CI/CD](/learn/what-ci-cd-is)'s. The plugin doesn't ship in-progress Skills, so install this one by name.
+You'll need your practice project with a CI check on its pull requests. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. If it has no CI check yet, ask your agent to add a GitHub Actions workflow that runs its tests on each pull request ([What CI/CD is](/learn/what-ci-cd-is) explains the idea). The plugin doesn't ship in-progress Skills, so install this one by name.
 
 1. In your `yoga-studio` repo, install it: `npx skills@latest add mattpocock/skills --skill chief-of-staff`. Choose Claude Code if asked.
 2. Start Claude Code: `claude`.
@@ -295,7 +295,7 @@ You'll need your practice project with its CI check. If you haven't set those up
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint chief-of-staff-deeper-stale-page
-Two weeks into your yoga-studio goal, a subagent follows a wiki page that says the booking endpoint "uses" a table. The table was renamed a week ago, and the subagent's change breaks. What's the reason behind this step?
+Two weeks into your yoga-studio goal, a subagent follows a wiki page that says the booking endpoint "uses" a table. The table was renamed a week ago, and the subagent's change breaks. How should the wiki handle claims like that?
 - [x] Write the claim with its date and commit, and add a new dated claim when it changes.
 - [ ] Rewrite the page whenever the code changes, so it says how the booking endpoint is now.
   > The Skill says the wiki can't keep up with the code, so a page that claims the present goes stale again.
@@ -391,7 +391,7 @@ Why: Blocking links make these Tickets a task graph. implement-spec builds every
 ```
 
 ```final-test chief-of-staff-why-subagents
-A chief-of-staff session has been running your yoga-studio goal for days. A small bug turns up in the booking endpoint, and the session starts reading the API's files to fix it itself. What's the reason behind this step?
+A chief-of-staff session has been running your yoga-studio goal for days. A small bug turns up in the booking endpoint, and the session starts reading the API's files to fix it itself. What should it do?
 - [x] Send it to a subagent, so the long session's context window stays free for the goal.
 - [ ] Fix it in the session, since a small bug isn't worth the cost of starting a subagent.
   > The Skill says all work goes to subagents, small jobs included, to protect the session's context window.
@@ -401,7 +401,7 @@ Why: The session owns the goal, so it isn't a worker. Reading files to fix a bug
 ```
 
 ```final-test chief-of-staff-why-pointers
-A chief-of-staff session is briefing a subagent to speed up the yoga-studio CI. It's about to paste two whole wiki pages and the diffs of three earlier commits into the message. What's the reason behind this step?
+A chief-of-staff session is briefing a subagent to speed up the yoga-studio CI. It's about to paste two whole wiki pages and the diffs of three earlier commits into the message. What should it do?
 - [x] Send links to the wiki pages and commits instead, and keep the message short.
 - [ ] Paste it all, so the subagent never has to go and look anything up.
   > The Skill says not to duplicate what pointers already reach. Pasted copies crowd the subagent's fresh window.
@@ -411,7 +411,7 @@ Why: Pasting fills part of the subagent's fresh window before it starts. A conte
 ```
 
 ```final-test chief-of-staff-deeper-forked-helpers
-You run chief-of-staff on a harness that forks the parent conversation whenever it spawns a subagent. Each helper starts out carrying the session's whole long history, and its answers wander off its brief. What's the reason behind this step?
+You run chief-of-staff on a harness that forks the parent conversation whenever it spawns a subagent. Each helper starts out carrying the session's whole long history, and its answers wander off its brief. What do you do?
 - [x] Ask for each subagent to start with a fresh context window, not a fork.
 - [ ] Keep the forks, since a helper that sees everything needs a shorter brief.
   > The fork inherits the parent's context window, which throws away the reason for using a subagent.

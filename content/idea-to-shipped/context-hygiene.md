@@ -173,7 +173,7 @@ The grilling is over, and you want a clean start before writing the Spec. What d
 Why: A finished grilling leaves a window full of your design decisions. Clearing it only to write the Spec throws them away.
 ```
 
-`/to-prd` was the old name of [to-spec](/learn/to-spec), from when Matt's word for a Spec was PRD.
+His older posts on this talk about writing a PRD. That was Matt's word for a Spec, and `/to-prd` was the old name of [to-spec](/learn/to-spec).
 
 So keep a window while its decisions still matter, and drop it once they're written down somewhere better.
 

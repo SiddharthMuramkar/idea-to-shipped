@@ -1,336 +1,404 @@
 ---
 title: One change, start to finish
 slug: one-change-start-to-finish
-summary: Every change goes round the same loop: Claude runs the steps, and you decide what gets built and what goes into your project.
+summary: Walk one change round the whole GitHub loop on a small recipe site: Issue, branch, commits, push, pull request, checks, review, merge and clean-up.
 ---
 
-## What happens to a change
+Say you've met each piece on its own: an Issue, a branch, a commit, a push, a pull request. Now you want to make one real change to `recipes`, your small recipe website, and you're not sure which step comes when. Or a coding agent did every step at once, commands scrolled past, and you couldn't say what happened. This lesson walks one change all the way round, so each piece has its place.
 
-Say you ask Claude to fix something. Commands scroll past, then it says it's done. You couldn't say what happened.
-
-**Every change goes round the same loop: Claude runs the steps, and you decide what gets built and what goes into your project.**
-
-```checkpoint quick-1
-In the loop, who decides what goes into your project?
-- [x] You do, while Claude runs the steps.
-- [ ] Claude does, because it runs the steps.
-- [ ] Nobody does, because every change goes in.
-Why: Every change goes round the same loop. Claude runs the steps, and you decide what gets built and what goes into your project.
+```goals
+- You'll be able to take one change round the whole loop: Issue, branch, commits, push, pull request, checks, review, merge and clean-up.
+- You'll be able to do each step yourself, in the terminal or on github.com, or ask an agent for it and check its work.
+- You'll be able to say why every pull request needs its own branch, and why a merged branch is finished.
 ```
 
 ## The loop
 
-A **repo** is your project plus the history git records.
+Every change to a project on GitHub takes the same path. It doesn't matter whether it's one line or a hundred files, or whether you or an agent types the commands. GitHub calls this way of working GitHub flow.
 
-```checkpoint quick-2
-What is a repo?
-- [x] Your project plus the history git records.
-- [ ] The tool that records your project's history.
-- [ ] Your project's files, without any history.
-Why: A repo, short for repository, is your project plus the history git records.
-```
+**Every change goes round the same loop, and whoever types the commands, you decide what gets built and what goes into `main`.**
 
-GitHub, a website, keeps a copy. You pick an **Issue**: one item on the repo's work list.
+Here's the loop. Each step links to the lesson that teaches it in full.
 
-Claude makes a **branch**: a separate line of work. `main`, GitHub's default branch, stays untouched.
-
-```checkpoint quick-3
-While Claude works on a branch, what happens to `main`?
-- [x] It stays untouched.
-- [ ] It takes each change as it's made.
-- [ ] It moves over to the new branch.
-Why: A branch is a separate line of work. `main`, GitHub's default branch, stays untouched.
-```
-
-Claude makes the change. A **commit** is a saved snapshot. A **push** copies commits to GitHub. Claude commits and pushes.
-
-```checkpoint quick-4
-How does a commit differ from a push?
-- [x] A commit saves a snapshot; a push copies commits to GitHub.
-- [ ] A commit copies work to GitHub; a push saves a snapshot.
-- [ ] A commit saves a snapshot; a push saves a second snapshot.
-Why: A commit is a saved snapshot. A push copies commits to GitHub.
-```
-
-Claude opens a **pull request** (PR): a proposal to bring your changes into `main`. That move is a **merge**.
-
-**CI** is your project's automation. CI runs **the checks**: building and testing every pull request.
-
-```checkpoint quick-5
-What are the checks that CI runs?
-- [x] Your project's automatic build and test of every pull request.
-- [ ] Your project's automatic merge of every pull request that passes.
-- [ ] The things you look at yourself before you say merge.
-Why: CI is your project's automation. The checks it runs build and test every pull request.
-```
-
-You run your **Merge check**: what you [look at](/learn/checking-a-pr) before merging. You say merge, and Claude merges it.
-
-The pull request says `Closes` and the Issue's number. The merge closes the Issue. Claude cleans up: it deletes the branch and updates your computer's `main`.
+1. Write the change down as an Issue ([Issues: keeping track of work](/learn/issues-and-keeping-track)).
+2. Make a branch from an up-to-date `main` ([Branches and worktrees](/learn/branches-and-worktrees)).
+3. Commit the change on the branch ([Commits and diffs](/learn/commits-and-diffs)).
+4. Push the branch to GitHub ([Push, pull and remotes](/learn/push-pull-and-remotes)).
+5. Open a pull request that closes the Issue ([Opening a pull request](/learn/pull-requests)).
+6. Let the checks run ([What CI/CD is](/learn/what-ci-cd-is)).
+7. Review the pull request ([Checking a pull request before you merge](/learn/checking-a-pr)).
+8. Merge it, then clean up ([Merging and cleaning up](/learn/merging-and-cleaning-up)).
 
 ```diagram
 type: chain
 caption: "Every change goes round the same loop"
 steps:
-  - "You pick an Issue"
-  - "Claude makes a branch"
-  - "Claude commits and pushes"
-  - "Claude opens a pull request"
-  - "CI runs the checks"
-  - label: "You run your Merge check"
-    note: "You say merge, and Claude merges it"
-  - "The merge closes the Issue"
-  - "Claude cleans up"
+  - "Write the change down as an Issue"
+  - "Make a branch from an up-to-date `main`"
+  - "Commit the change on the branch"
+  - "Push the branch to GitHub"
+  - "Open a pull request that closes the Issue"
+  - "Let the checks run"
+  - "Review the pull request"
+  - "Merge it, then clean up"
 ```
 
-## What stays yours
+Steps 3 to 7 can go round more than once. A red check, or a reviewer asking for a change, sends you back to step 3. You commit the fix on the same branch and push it, and the pull request updates itself.
 
-- What to build.
-- What goes in a **Spec**: an Issue describing one whole feature.
-- The Merge check.
+```checkpoint quick-1
+A reviewer asks for one more change to your open pull request. Where does that change go?
+- [x] On the same branch: commit it and push, and the pull request updates.
+- [ ] On a new branch from `main`, in a second pull request for the reviewer.
+- [ ] Straight on `main`, because the pull request has already been reviewed.
+Why: While a pull request is open, a push to its branch updates it. A red check or a reviewer's request sends you back to step 3 on the same branch.
+```
+
+## Why every pull request needs a branch
+
+A pull request holds no work of its own. It's a request: please merge this branch into that one. The branch with the new work is the **head branch**. The branch it should land on, usually `main`, is the **base branch**. With no head branch, there's nothing to ask about.
+
+So the branch is where the work happens, and the pull request is the review at the end. While the work waits on its branch, `main` stays untouched, and the checks and the review get their turn first. A commit made straight on `main` skips all of them. That's why many teams [forbid it with a rule](/learn/how-teams-do-it).
+
+```checkpoint quick-2
+You ask an agent to skip the branch and open a pull request straight away. What must it make first anyway?
+- [x] A branch holding the work, because a pull request asks to merge one branch into another.
+- [ ] A copy of the whole repo, because a pull request compares two repos side by side.
+- [ ] A commit on `main`, because a pull request reviews what's already on `main`.
+Why: A pull request asks GitHub to merge a head branch into a base branch. With no branch, there's nothing for the pull request to ask about.
+```
+
+Give each change its own branch, and start it fresh. Once a pull request is squash-merged, its branch is finished. The squash put one brand-new commit on `main`, so the branch's own commits never joined `main`'s history. A later pull request from the same branch would carry them all over again. So new work gets a new branch, from the latest `main`.
+
+Not every branch has to become a pull request. A quick experiment can be deleted. Matt Pocock's [prototype](/learn/prototype) Skill keeps its throwaway code on a branch of its own, out of `main`, and `main` keeps only the decision the prototype led to.
+
+```checkpoint quick-3
+Your pull request from `7-cooking-time` was squash-merged yesterday. Now you want cooking times on the print view too. Where do you start?
+- [x] A new branch from the latest `main`, because the old branch is finished.
+- [ ] More commits on `7-cooking-time`, because it already has the cooking-time work.
+- [ ] A rebase of `7-cooking-time`, so the old branch can carry the new work.
+Why: A squash merge puts one new commit on `main`, so the old branch's commits never join `main`'s history. A new pull request from it would carry them again. New work, new branch.
+```
+
+## The loop by hand, on `recipes`
+
+Say the cards on your `recipes` site don't show how long a recipe takes. Here's the whole loop by hand. Each step shows the terminal way, with git and `gh` (GitHub's command-line tool), and the github.com way.
+
+### Write it down as an Issue
+
+On github.com, open your repo and click the **Issues** tab, then **New issue**. Type a title, "Show the cooking time on each recipe card", and a description: what's wrong, and what done looks like. Click **Submit new issue**. GitHub gives it a number. Say it's #7.
+
+In the terminal, one command does the same:
+
+```sh
+gh issue create --title "Show the cooking time on each recipe card" --body "Each card shows the total time, for example 25 min."
+```
+
+The Issue keeps the change, and what done looks like, in one place. That place is outside your head and outside any one agent session. Later, the pull request will close it.
+
+```checkpoint quick-4
+Why write the change down as an Issue before any code?
+- [x] It keeps the change and what done looks like in one place, and the pull request can close it.
+- [ ] It makes the branch and the first commit for you, so the work can start straight away.
+- [ ] It runs the checks on the idea first, so a bad change never reaches a pull request.
+Why: The Issue keeps the change and what done looks like outside your head and outside any one session. When the pull request merges, it can close the Issue.
+```
+
+### Make a branch
+
+```sh
+git switch main
+git pull
+git switch -c 7-cooking-time
+```
+
+`git pull` comes first, so the branch starts from the latest `main`, not from whatever your computer had last week. The name follows a common habit: the Issue's number, then a few words, `<issue-number>-<short-slug>`.
+
+On github.com, the Issue's sidebar has **Create a branch**, under Development. It makes the branch on GitHub, from the default branch. Then run `git fetch` and `git switch 7-cooking-time` to work on it.
+
+```checkpoint quick-5
+Why run `git pull` on `main` before `git switch -c 7-cooking-time`?
+- [x] So the new branch starts from the latest `main`, not an old copy.
+- [ ] So the new branch is pushed to GitHub as soon as it's made.
+- [ ] So GitHub links the new branch to Issue #7 by its number.
+Why: A new branch starts from whatever `main` your computer has. `git pull` first brings that copy up to date.
+```
+
+### Commit and push
+
+Edit the files. Then look before you commit:
+
+```sh
+git status
+git diff
+git add src/recipe-card.js tests/recipe-card.test.js
+git commit -m "Show cooking time on recipe cards"
+git push -u origin 7-cooking-time
+```
+
+`git status` lists what changed, and `git diff` shows the lines. Name the files in `git add`, so nothing extra slips into the commit. Until you push, the branch exists only on your computer. `-u` links your branch to its copy on GitHub, so later you can type a plain `git push` or `git pull`.
 
 ```checkpoint quick-6
-What is a Spec?
-- [x] An Issue describing one whole feature.
-- [ ] A pull request holding one whole feature.
-- [ ] A branch holding one whole feature.
-Why: A Spec is an Issue describing one whole feature. What goes in it stays yours, along with what to build and the Merge check.
+What does `-u` in `git push -u origin 7-cooking-time` do?
+- [x] It links your branch to its copy on GitHub, so a plain `git push` works later.
+- [ ] It updates `main` on GitHub with the branch's commits as it pushes them.
+- [ ] It undoes the push if any check fails on the branch's copy on GitHub.
+Why: `-u` sets up the link between your branch and its copy on GitHub. After that, `git push` and `git pull` need no names.
 ```
 
-## One small, normal change
+### Open the pull request
 
-Take pull request #105 on this site's repo: 1 commit.
+On github.com, after the push, your repo's page shows a yellow banner with **Compare & pull request**. Click it. Check the two branch menus: base `main`, compare `7-cooking-time`. Write a title that says what changes. In the description, write `Closes #7`. Then click **Create pull request**.
 
-A **look-only command** changes nothing, so you run those yourself, to confirm what happened. `gh` is GitHub's command-line tool.
+In the terminal:
+
+```sh
+gh pr create --title "Show cooking time on recipe cards" --body "Closes #7"
+```
+
+`Closes #7` links the pull request to the Issue. When the pull request merges into `main`, GitHub closes #7 by itself. Say this pull request is #8.
 
 ```checkpoint quick-7
-Who runs a look-only command, and why?
-- [x] You do, to confirm what happened.
-- [ ] Claude does, because only it runs commands.
-- [ ] You do, because only your branch changes.
-Why: A look-only command changes nothing, so you run those yourself, to confirm what happened.
+Which line in pull request #8's description makes GitHub close Issue #7 when #8 merges into `main`?
+- [x] `Closes #7`
+- [ ] `See #7`
+- [ ] `Issue 7`
+Why: A closing word such as `Closes`, then the Issue's number, links the two. The Issue closes when the pull request merges into the default branch, `main`.
 ```
 
-Say you'd asked for that change:
+### Let the checks run, then review
 
-You say:
+If your repo has CI, automation that builds and tests every pull request, its checks start by themselves. You can watch them from the terminal:
 
-> Start Issue #99 on a new branch, then open a pull request that closes it.
-
-Claude runs:
-
-```
-git switch -c 99-lesson-audio-records
-git add .
-git commit -m "..."
-git push origin 99-lesson-audio-records
-gh pr create --title "..." --body "Closes #99"
+```sh
+gh pr checks --watch
 ```
 
-Claude edits files before `git add .`, which picks what to commit.
+On github.com, they show in the merge box at the bottom of the pull request. A red check sends you back a step: fix, commit, push, and the checks run again.
 
-Only the owner can run this, so read it.
+Then review it. Green proves only what the checks test, so run your [Merge check](/learn/checking-a-pr): read the description, the **Files changed** tab and the checks, and try the change if you can. On a shared repo, ask a teammate too. Use **Reviewers** in the pull request's sidebar, or run `gh pr edit 8 --add-reviewer <username>`.
 
-You look:
-
+```checkpoint quick-8
+Every check on pull request #8 is green. What's left before you merge?
+- [x] Your Merge check, because green proves only what the checks test.
+- [ ] Nothing, because green checks prove that the change works.
+- [ ] A second round of checks, because one green round can be luck.
+Why: The checks test only what someone wrote tests for. Your Merge check reads the description, the changed files and the checks, and tries the change if it can.
 ```
-gh pr view 105 --repo SiddharthMuramkar/skills
+
+### Merge, then clean up
+
+On github.com, in the merge box, choose **Squash and merge** from the merge button's menu, then click **Confirm squash and merge**. Then click **Delete branch**.
+
+In the terminal, one command merges and deletes the branch, on GitHub and on your computer:
+
+```sh
+gh pr merge 8 --squash --delete-branch
 ```
 
-It prints `+30 -9 • ✓ Checks passing`.
+Then check that the Issue closed, and bring your own `main` up to date:
 
-## Do it now
+```sh
+gh issue view 7 --json state
+git switch main
+git pull
+```
 
-You need `gh` logged in and your project on GitHub. Missing one? See Where it goes wrong on [the full page](/learn/one-change-start-to-finish).
+You should see `"state": "CLOSED"`. Merging on GitHub doesn't change the copy on your computer, so `git pull` brings the merged work into your `main`. If you merged on github.com, the branch is still on your computer: `git branch -d 7-cooking-time` deletes it. After a squash merge, git may refuse with "not fully merged". [Merging and cleaning up](/learn/merging-and-cleaning-up) shows how to check nothing is lost first.
 
-Open two terminals in your project's folder: one for Claude, one for look-only commands.
+```checkpoint quick-9
+Pull request #8 has merged on GitHub. Why do you still run `git pull` on your `main`?
+- [x] Merging on GitHub doesn't change your computer's copy, so the pull brings the work in.
+- [ ] The pull finishes the merge, which GitHub leaves half done until you run it.
+- [ ] The pull closes Issue #7, which GitHub leaves open until your copy catches up.
+Why: The merge happened on GitHub. Your computer's `main` only gets the merged work when you pull it.
+```
 
-You say:
+## The same loop with an agent
+
+A coding agent, such as Claude Code, can type every command above. Your job moves from typing to deciding and checking. Here's the same change, said to an agent:
+
+| You say | The agent runs | You check |
+|---|---|---|
+| "Start Issue #7 on a new branch from an up-to-date `main`." | `git switch main`, `git pull`, `git switch -c 7-cooking-time` | `git status` starts `On branch 7-cooking-time` |
+| "Make the change. Show me the diff, then commit and push." | edits, then `git add`, `git commit`, `git push -u origin 7-cooking-time` | `git status` says the working tree is clean, and `git log --oneline main..HEAD` lists its commits |
+| "Open a pull request into `main` that closes #7. Don't merge." | `gh pr create --title "…" --body "Closes #7"` | `gh pr view` shows the base, the title and `Closes #7` |
+| After your Merge check: "Squash-merge it and delete the branch." | `gh pr merge --squash --delete-branch` | `gh issue view 7 --json state` says `CLOSED` |
+
+Every command in the last column is look-only: it shows you something and changes nothing. Run those yourself, in a second terminal. Then you see the evidence, not the agent's summary of it.
+
+The agent's commands won't match these letter for letter. It picks its own branch name and files, and it may add flags. Check the steps, not the spelling.
+
+```checkpoint quick-10
+The agent says it has committed and pushed. Why do you run `git status` and `git log` yourself?
+- [x] They change nothing, and they show you the evidence instead of the agent's summary.
+- [ ] They finish the push, which the agent leaves waiting until you run them.
+- [ ] They make the agent stop, so it can't run anything else until you approve.
+Why: A look-only command only shows you something. Run it yourself, and you see what really happened.
+```
+
+To follow along at first, paste this line at the start of each session:
 
 > Before each step, tell me what you're about to do and why, and wait for me.
 
-Claude should run nothing yet. Paste this line for Claude per session, because each one starts fresh. Never save it, or unwatched sessions stall. Drop it once you're confident.
+Each session starts fresh, so paste it every time, and drop it once you're confident. Don't save it in `CLAUDE.md`, the file Claude Code reads at the start of every session. A session you aren't watching would stop and wait for an answer that never comes.
 
-```checkpoint quick-8
-How often do you paste the line for Claude?
-- [x] Once per session, because each one starts fresh.
-- [ ] Once only, because every session reads it from a file.
-- [ ] Before each step, because Claude forgets it after each reply.
-Why: Paste the line per session, because each one starts fresh.
+What stays yours, whoever types: what to build, what goes into `main`, and the word "merge". The team behind Claude Code gives the reason in one line: "A person answers for every change that ships, whoever typed it."
+
+```checkpoint quick-11
+Why not save the "wait before each step" line in `CLAUDE.md`?
+- [x] Every session reads that file, so a session nobody is watching would stop and wait.
+- [ ] Claude Code ignores instructions in `CLAUDE.md` once the session has started.
+- [ ] The line works only when you paste it, because files can't hold instructions.
+Why: Claude Code reads `CLAUDE.md` at the start of every session. A session you aren't watching would then wait for an answer nobody gives.
 ```
-
-You look:
-
-```
-gh issue list
-```
-
-You should see your open Issues. None, or an error? See Where it goes wrong.
-
-Pick one small, clear Issue, like cut-off text (#318 on `finance-agent`, an example repo). Note its number for the next Lessons, then stop.
 
 ## Going deeper
 
-### Why it exists
-
-When Claude can run every step, it's easy to stop following along. Claude writes about 90 percent of the code for Claude Code. The team behind it still keeps people for deciding what to build and for checking the proof that a change works, like test output. The team gives one more reason: "A person answers for every change that ships, whoever typed it." So the loop gives Claude the commands and leaves you the decisions.
-
-```checkpoint quick-9
-Claude typed a change, and it has shipped. Who answers for it?
-- [x] A person, whoever typed it.
-- [ ] Claude, because it typed it.
-- [ ] Nobody, once the checks passed.
-Why: The team that builds Claude Code puts it this way, "A person answers for every change that ships, whoever typed it." So the loop leaves you the decisions.
-```
-
-**GitHub flow** is GitHub's own name for this way of working: branch, pull request, merge. The branch is what makes it safe. Your changes reach `main` only when you merge.
-
-### A real example
-
-Pull request #105 is in a private repo, so here's the same path on a public one. Pull request #305 on `finance-agent` went from the branch `themes-T02` into `main`, with `Closes #267` in its description. It merged, and its branch was deleted 2 seconds later. Now look at the Issue it named.
-
-You look:
-
-```
-gh issue view 267 --repo SiddharthMuramkar/finance-agent --json state
-```
-
-You should see `"state": "CLOSED"`.
-
-At 7 commits and 19 files, #305 is bigger than #105, but it took the same path from branch to merge.
-
-```checkpoint quick-10
-What does a bigger pull request change about its path to a merge?
-- [x] Nothing. It takes the same path to a merge.
-- [ ] It adds a step, so the checks on it run twice.
-- [ ] It drops a step, so it skips the pull request.
-Why: #305 is bigger than #105, at 7 commits and 19 files, but it took the same path from branch to merge.
-```
-
-One thing differs: auto-merge was turned on 3 seconds after it opened. Auto-merge merges a pull request by itself once its required reviews and checks pass. In your loop, you say merge after your Merge check.
-
 ### Where it goes wrong
 
-**`gh` isn't found, or asks you to log in.** Install it from the [GitHub CLI manual](https://cli.github.com/manual/). You'll need a GitHub account. Then run `gh auth login` yourself, because it normally opens a browser. Take the default at each question and finish in the browser. It should say you're logged in. Then run `gh issue list` again.
+**`gh` isn't found, or asks you to log in.** Install it from the [GitHub CLI manual](https://cli.github.com/manual/). Then run `gh auth login` yourself. It usually opens your browser: take the default at each question and finish there.
 
-**`gh issue list` says `not a git repository`, or mentions git remotes.** You may be in the wrong folder: `cd` into your project and run it again. Same print? Your project isn't on GitHub yet, and the loop needs a repo there. Ask Claude to create a private one and push your project to it. Then run `gh issue list` again.
+**`gh` says `not a git repository`.** You're in the wrong folder, so `cd` into your project. If it still fails, your project isn't on GitHub yet: [Push, pull and remotes](/learn/push-pull-and-remotes) shows how to put it there.
 
-**`gh issue list` shows no Issues.** Your project has none open yet. Tell Claude the fix you want, and ask it to open an Issue. It runs `gh issue create`.
+**The pull request shows no checks.** Your repo has no CI yet. [What CI/CD is](/learn/what-ci-cd-is) explains it, and an agent can set it up for you.
 
-**`gh pr view 105` can't find the repo.** That repo is private, so only its owner can run the command. Try the public one: `gh pr view 305 --repo SiddharthMuramkar/finance-agent`. Near the top, you should see `+692 -99`.
+**The pull request lists commits you didn't make.** The branch started from an old branch instead of the latest `main`, perhaps one that was already squash-merged. Ask the agent to put only your commits on a fresh branch from the latest `main`. Check with `git log --oneline origin/main..HEAD`: it should list only your own commits.
 
-**Claude's commands don't match the ones shown.** That's normal. Claude also reads the Issue and makes the change, and it picks its own branch name and files. `origin` is git's name for the copy on GitHub. Claude may add `-u` to `git push`, which links your branch to it. Check the steps, not the spelling.
+**The Issue stayed open after the merge.** The pull request merged into some other branch, or its description had no `Closes #7`. `gh pr view 8` shows both. If the work is done, close the Issue by hand.
 
-**No checks show on your pull request.** Your project may have no CI set up yet. Ask Claude to add it.
+**The agent stops waiting before each step, late in a long session.** Compaction replaces a long conversation with a summary, and it can lose an instruction you gave only in conversation. It runs by itself in a long session, or when you type `/compact`. Paste the line again.
 
-**Claude stops waiting, late in a long session.** It usually follows the line, but nothing forces it to. Compaction replaces the session's history with a summary. It runs on its own in a long session, or when you type `/compact`, a slash command. It can lose an instruction given only in conversation. Paste the line again.
+**A session sits waiting with nobody there.** The line got saved somewhere every session reads, such as `CLAUDE.md`, or the notes Claude Code keeps itself. Run `/memory` to see both, and take the line out.
 
-```checkpoint quick-11
-Claude stops waiting late in a long session. What do you do?
-- [x] Paste the line again, because compaction can lose it.
-- [ ] Do nothing, because compaction keeps every instruction.
-- [ ] Run `/compact` again, because it can bring the line back.
-Why: Compaction replaces the session's history with a summary, and can lose an instruction given only in conversation. So paste the line again.
+```checkpoint quick-12
+The agent waited before each step all morning. After `/compact`, it starts running steps without stopping. What do you do?
+- [x] Paste the line again, because compaction can lose an instruction given only in conversation.
+- [ ] Nothing, because compaction keeps every instruction from earlier in the session.
+- [ ] Start a new session, because the line works only in the first hour of a session.
+Why: Compaction replaces the conversation with a summary, and an instruction given only in conversation can vanish with it. Pasting the line again brings it back.
 ```
-
-**A session waits with nobody there.** The line got saved somewhere every session reads, so a session you aren't watching stops and waits, with nobody there to answer. It may be in `CLAUDE.md`, the file Claude reads at the start of every session. Or Claude saved it in auto memory, notes it writes itself. Run `/memory` to see both, tell Claude to take it out, and go back to pasting it.
-
-### Read more
-
-- [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow), GitHub Docs, read 2026-11-05
-- [GitHub CLI manual](https://cli.github.com/manual/), GitHub, read 2026-11-05
-- [About repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories), GitHub Docs, read 2026-11-05
-- [About issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/learning-about-issues/about-issues), GitHub Docs, read 2026-11-05
-- [Pull requests](https://docs.github.com/en/pull-requests/reference/pull-requests), GitHub Docs, read 2026-10-29
-- [How the Claude Code team does code review](https://x.com/addyosmani/article/2114604912520921136), Addy Osmani, 2026-10-26
-- [How Claude remembers your project](https://code.claude.com/docs/en/memory), Claude Code docs, read 2026-10-29
 
 ## Remember
 
 ```flashcards
-Q: In one change, what stays yours, not Claude's?
-A: What to build, what goes in a Spec and the Merge check. Claude runs the commands that change things.
+Q: What are the steps of the loop?
+A: Issue, branch from an up-to-date `main`, commit, push, pull request that closes the Issue, checks, review, merge, clean up.
 
-Q: What does a look-only command, such as `gh pr view`, change?
-A: Nothing. It only displays information. You run it yourself, to confirm what happened.
+Q: Why does every pull request need a branch?
+A: A pull request asks to merge a head branch into a base branch. The branch holds the work; the pull request is the review at the end.
 
-Q: What makes GitHub close an Issue when a pull request merges into `main`?
-A: The pull request says `Closes` and the Issue's number, such as `Closes #99`.
+Q: A check goes red, or a reviewer asks for a change. Where does the fix go?
+A: On the same branch. Commit and push, and the open pull request updates and the checks run again.
 
-Q: How often do you paste the line for Claude, and when can you drop it?
-A: Once per session, because each session starts fresh. Drop it once you're confident.
+Q: Why start new work on a new branch after a squash merge?
+A: The squash put a brand-new commit on `main`, so the old branch's commits never joined its history. A new pull request from it would carry them again.
 
-Q: Why isn't the line for Claude saved in `CLAUDE.md`?
-A: Claude reads that file at the start of every session, so a session you aren't watching would stop and wait, with nobody there to answer.
+Q: What makes GitHub close Issue #7 when a pull request merges?
+A: The pull request says `Closes #7`, and it merges into the default branch, `main`.
+
+Q: What stays yours when an agent types the commands?
+A: What to build, what goes into `main` (your Merge check), and the word "merge". You check with look-only commands.
+
+Q: How often do you paste the "wait before each step" line?
+A: Once per session, because each session starts fresh. Again after compaction. Never save it in `CLAUDE.md`.
 ```
 
 ## Final test
 
-```final-test one-change-start-to-finish-whose-merge
-Claude tells you every check on your pull request has passed, and asks whether to merge. What do you do?
-- [x] Run your Merge check first, then say merge if you're happy with what you saw.
-- [ ] Say merge straight away, because the checks are the last step before a merge.
-- [ ] Say nothing and wait, because Claude merges on its own once the checks have passed.
-- [ ] Merge it in your second terminal, because only you may run the merge command.
-Why: The checks are CI's part of the loop. Then you run your Merge check and say merge, and Claude merges it. Claude runs the command, and the decision stays yours.
+```final-test final-loop-order
+Which order is right for one change?
+- [x] Issue, branch, commit, push, pull request, checks, review, merge.
+- [ ] Branch, commit, merge, push, Issue, pull request, checks, review.
+- [ ] Issue, pull request, branch, commit, merge, push, checks, review.
+- [ ] Commit, push, Issue, branch, review, merge, pull request, checks.
+Why: The Issue says what to do. The branch holds the work, commits record it, and a push puts it on GitHub. The pull request asks to merge it, the checks and the review come next, and the merge comes last.
 ```
 
-```final-test one-change-start-to-finish-before-merge
-Claude has made commits on a branch, pushed them and opened a pull request. Nobody has merged it. How much of that work is in `main`?
+```final-test final-why-branch
+Someone asks why you can't open a pull request without a branch. What's the answer?
+- [x] A pull request asks to merge a head branch into a base branch, so with no branch there's nothing to ask.
+- [ ] GitHub charges for pull requests without a branch, so teams avoid opening them.
+- [ ] A pull request without a branch skips the checks, so GitHub hides the button.
+- [ ] Git deletes any pull request without a branch as soon as it's merged.
+Why: The branch holds the work, and the pull request is the request to land it. No head branch, no request.
+```
+
+```final-test final-before-merge
+The agent has made commits on a branch, pushed them and opened a pull request. Nobody has merged it. How much of that work is in `main`?
 - [x] None of it. The work reaches `main` only when the pull request merges.
 - [ ] All of it, because a push copies your commits straight into `main` on GitHub.
-- [ ] All of it, because opening a pull request copies your branch into `main`.
-- [ ] The commits made so far, and any later commits wait until the pull request merges.
-Why: A branch is a separate line of work. Pushing copies its commits to GitHub, still on that branch, and they reach `main` only when you merge.
+- [ ] All of it, because opening a pull request copies the branch into `main`.
+- [ ] The commits made so far, while later commits wait for the merge.
+Why: Pushing copies the branch's commits to GitHub, still on that branch. They reach `main` only when you merge.
 ```
 
-```final-test one-change-start-to-finish-new-session
-You pasted the line for Claude in yesterday's session. You start a new session today and still want Claude to wait before each step. What do you do?
+```final-test final-whose-merge
+The agent tells you every check on your pull request has passed, and asks whether to merge. What do you do?
+- [x] Run your Merge check first, then say merge if you're happy with what you saw.
+- [ ] Say merge straight away, because the checks are the last step before a merge.
+- [ ] Say nothing and wait, because the agent merges by itself once the checks pass.
+- [ ] Close the pull request, because only you may merge, so the agent shouldn't ask.
+Why: The checks are CI's part of the loop. Then you run your Merge check and say merge. The agent can type the command, but the decision stays yours.
+```
+
+```final-test final-old-branch
+You're about to start Issue #9. `git status` says `On branch 7-cooking-time`, and that branch's pull request was squash-merged last week. What do you do?
+- [x] Switch to `main`, pull, and make a new branch for #9.
+- [ ] Start #9 here, because the merged pull request will pick up the new commits.
+- [ ] Start #9 here, then rebase the branch onto `main` before you push it.
+- [ ] Reopen the merged pull request, then add #9's work to it.
+Why: A squash-merged branch is finished. A new pull request from it would carry its old commits again, and a merged pull request takes no new work.
+```
+
+```final-test final-unstaged-edit
+The agent says it has committed and wants to push. `git status` still lists `src/recipe-card.js` under "Changes not staged for commit". What does that mean?
+- [x] That edit isn't in the commit, so neither the pull request nor the checks will see it.
+- [ ] The push will carry that edit to GitHub, along with the commit.
+- [ ] GitHub adds that edit to the pull request when it squash-merges.
+- [ ] The checks stage that edit themselves before they run the tests.
+Why: Only staged changes go into a commit, and only commits are pushed. Ask the agent to commit the edit, or to say why it shouldn't.
+```
+
+```final-test final-issue-open
+Pull request #8 merged an hour ago, but Issue #7 is still open. What's the likely cause?
+- [x] #8 merged into a branch other than `main`, or its description has no `Closes #7`.
+- [ ] GitHub closes Issues once a day, so #7 will close by itself overnight.
+- [ ] Issues close only when the merged branch is deleted from your computer too.
+- [ ] Issues close only after someone runs `git pull` on `main` on their computer.
+Why: GitHub closes the Issue when a pull request that says `Closes #7` merges into the default branch. `gh pr view 8` shows both the base branch and the description.
+```
+
+```final-test final-new-session
+You pasted the "wait before each step" line in yesterday's session. You start a new session today and still want the agent to wait. What do you do?
 - [x] Paste the line again, because each new session starts fresh.
-- [ ] Nothing, because Claude carries the line over from yesterday's session.
-- [ ] Paste it before every step, because Claude forgets it after each reply.
-- [ ] Ask Claude to reopen yesterday's session, because the line only works in there.
-Why: Each session starts fresh, so the line lasts for one session.
-```
-
-```final-test one-change-start-to-finish-deeper-long
-Claude waited before each step all morning. After `/compact` in a long session, it starts running steps without stopping. What's the likely cause, and the fix?
-- [x] The line was given only in conversation, so `/compact` lost it. Paste the line again.
-- [ ] The line only lasts an hour, so Claude has dropped it. Start a new session and carry on.
-- [ ] Your Merge check has passed, so Claude no longer needs to wait. Let it carry on.
-- [ ] The line was saved in `CLAUDE.md`, so `/compact` deleted that file. Write the file again.
-Why: An instruction given only in conversation can disappear after compaction. That's the price of pasting the line per session, and pasting it again fixes it.
+- [ ] Nothing, because the agent carries the line over from yesterday's session.
+- [ ] Paste it before every step, because the agent forgets it after each reply.
+- [ ] Save it in `CLAUDE.md`, so every session from now on waits before each step.
+Why: Each session starts fresh, so the line lasts for one session. Saving it in `CLAUDE.md` would make sessions nobody is watching stop and wait.
 ```
 
 ```sources
 - [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow), GitHub Docs
-- [About repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories), GitHub Docs
-- [Git - gitglossary Documentation](https://git-scm.com/docs/gitglossary), The Git project
-- [About issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/learning-about-issues/about-issues), GitHub Docs
-- [Branches](https://docs.github.com/en/pull-requests/reference/branches)
-- [Pull requests](https://docs.github.com/en/pull-requests/reference/pull-requests)
-- [Understanding GitHub Actions](https://docs.github.com/en/actions/get-started/understand-github-actions)
+- [Creating an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue), GitHub Docs
+- [Creating a branch to work on an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-a-branch-for-an-issue), GitHub Docs
+- [Creating a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request), GitHub Docs
+- [Pull requests](https://docs.github.com/en/pull-requests/reference/pull-requests), GitHub Docs
+- [Linking a pull request to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue), GitHub Docs
 - [Status checks](https://docs.github.com/en/pull-requests/reference/status-checks), GitHub Docs
-- [gh pr merge](https://cli.github.com/manual/gh_pr_merge), GitHub CLI manual
-- [Linking a pull request to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
-- [Git - git-pull Documentation](https://git-scm.com/docs/git-pull), The Git project
-- [How the Claude Code team does code review](https://x.com/addyosmani/article/2114604912520921136), Addy Osmani, 2026-10-26
-- [docs: record read-aloud decisions and the public site](https://github.com/SiddharthMuramkar/skills/pull/105), SiddharthMuramkar, 2026-11-04
-- [GitHub CLI manual](https://cli.github.com/manual/), GitHub CLI manual
-- [gh pr view](https://cli.github.com/manual/gh_pr_view), GitHub CLI manual
-- [Git - git-switch Documentation](https://git-scm.com/docs/git-switch), The Git project
-- [Git - Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository), Scott Chacon and Ben Straub (Pro Git)
-- [Git - git-push Documentation](https://git-scm.com/docs/git-push), The Git project
-- [gh pr create](https://cli.github.com/manual/gh_pr_create), GitHub CLI manual
-- [How Claude remembers your project](https://code.claude.com/docs/en/memory)
-- [gh issue list](https://cli.github.com/manual/gh_issue_list), GitHub CLI manual
-- [The Rate move Widget clips its end labels](https://github.com/SiddharthMuramkar/finance-agent/issues/318), SiddharthMuramkar, 2026-11-04
-- [The site follows the Mac by default, and the header menu picks any of the four Themes](https://github.com/SiddharthMuramkar/finance-agent/pull/305), SiddharthMuramkar, 2026-11-04
-- [gh auth login](https://cli.github.com/manual/gh_auth_login), GitHub CLI manual
+- [Pull request merges](https://docs.github.com/en/pull-requests/reference/pull-request-merges), GitHub Docs
+- [GitHub CLI manual](https://cli.github.com/manual/), GitHub CLI
 - [gh issue create](https://cli.github.com/manual/gh_issue_create), GitHub CLI manual
-- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
-- [to-spec: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/to-spec/SKILL.md), Matt Pocock's Skills
-- [Automatically merging a pull request](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/automatically-merging-a-pull-request), GitHub Docs
-- [cli/pkg/cmd/factory/remote_resolver.go at v2.97.0](https://github.com/cli/cli/blob/v2.97.0/pkg/cmd/factory/remote_resolver.go), The GitHub CLI project
-- [cli/pkg/cmd/auth/shared/login_flow.go at v2.97.0](https://github.com/cli/cli/blob/v2.97.0/pkg/cmd/auth/shared/login_flow.go), The GitHub CLI project
+- [gh pr create](https://cli.github.com/manual/gh_pr_create), GitHub CLI manual
+- [gh pr checks](https://cli.github.com/manual/gh_pr_checks), GitHub CLI manual
+- [gh pr edit](https://cli.github.com/manual/gh_pr_edit), GitHub CLI manual
+- [gh pr merge](https://cli.github.com/manual/gh_pr_merge), GitHub CLI manual
+- [gh issue view](https://cli.github.com/manual/gh_issue_view), GitHub CLI manual
+- [gh auth login](https://cli.github.com/manual/gh_auth_login), GitHub CLI manual
+- [git switch](https://git-scm.com/docs/git-switch), The Git project
+- [git pull](https://git-scm.com/docs/git-pull), The Git project
+- [git push](https://git-scm.com/docs/git-push), The Git project
+- [Git Basics: Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository), Scott Chacon and Ben Straub (Pro Git)
+- [How the Claude Code team does code review](https://x.com/addyosmani/article/2114604912520921136), Addy Osmani, 2026-10-26
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory), Claude Code docs
+- [prototype: SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md), Matt Pocock's Skills
 ```

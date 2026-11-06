@@ -119,7 +119,7 @@ Why: What it leaves is the understanding itself. You and the agent share one, wi
 
 A grilling stops an agent building on its own guesses, as [grill before you build](/learn/grill-before-you-build) showed. But many Skills need that same interview. If each kept its own copy, every fix would be made several times.
 
-So the interview lives in one Skill. Matt calls grilling a **primitive**: a small building block that other Skills call. He describes it as "kept in one place so every skill that needs an interview reaches for it instead of inventing one."
+So the interview lives in one Skill. Matt Pocock, who wrote it, calls grilling a **primitive**: a small building block that other Skills call. He describes it as "kept in one place so every skill that needs an interview reaches for it instead of inventing one."
 
 One home means the fix reaches them all. When rounds moved into grilling, grill-me, grill-with-docs, triage and wayfinder all got them at once.
 

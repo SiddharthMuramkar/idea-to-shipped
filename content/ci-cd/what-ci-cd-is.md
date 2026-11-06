@@ -58,7 +58,7 @@ Which of these is a gate, in the sense used here?
 - [ ] A green tick on one commit
 - [x] A check that merging waits for
 - [ ] A workflow file in the repo
-- [ ] A test the agent just wrote
+- [ ] A test the agent wrote today
 Why: A gate blocks the next step by itself. A tick, a workflow file or a test produces or reports a result; it becomes a gate only when something waits for it.
 ```
 
@@ -188,7 +188,7 @@ Why: A pull request gets a preview deployment, a test copy of the site. The live
 
 A **job** is a set of steps that run in order on one machine. The **runner** is the machine that runs it.
 
-A **workflow** says which jobs to run, and when. It’s a file in the repo’s `.github/workflows/` folder, written in **YAML**: a plain-text settings format of indented `key: value` lines. Each job in it picks a runner with `runs-on`. Brad’s says `ubuntu-latest`, the newest Ubuntu Linux that GitHub offers.
+A **workflow** says which jobs to run, and when. It’s a file in the repo’s `.github/workflows/` folder, written in **YAML**: a plain-text settings format of indented `key: value` lines. Each job in it picks a runner with `runs-on`. Brad’s says `ubuntu-latest`: GitHub’s current standard machine running Ubuntu Linux.
 
 On GitHub-hosted runners, each job gets a brand-new virtual machine (VM): a temporary computer in GitHub’s cloud, with Linux and common tools preinstalled. In Brad’s lab, the job checks out the code, sets up Node, installs the dependencies and runs the checks. When the job finishes, the VM is thrown away.
 
@@ -210,7 +210,7 @@ Why bother, when the agent already ran the checks on your laptop? Because your l
 
 GitHub Actions isn’t the only CI service. Brad names Jenkins, CircleCI and Travis CI: they differ in setup, but all of them run checks automatically whenever the code changes. These lessons use GitHub Actions only.
 
-Tests that need a real database get a throwaway one too. A workflow can start **service containers**: Docker containers (packaged programs, such as a database, that run in isolation) beside the job, created fresh for it and destroyed when it ends. A `services` block in the workflow names an image such as `postgres`, and the job reaches it over the network. Some hosted databases offer another route: Neon, for example, has GitHub Actions that make a short-lived copy of a database for a pull request and delete it afterwards.
+Tests that need a real database get a throwaway one too. A workflow can start **service containers**: Docker containers (packaged programs, such as a database, that run in isolation) beside the job, created fresh for it and destroyed when it ends. A `services` block in the workflow names the container image (the packaged program to start), such as `postgres`, and the job reaches it over the network. Some hosted databases offer another route: Neon, for example, has GitHub Actions that make a short-lived copy of a database for a pull request and delete it afterwards.
 
 ```callout remember
 CI runs on a new machine that gets the commit and the locked dependencies, nothing from your laptop, and is thrown away afterwards. A pass there can’t depend on leftovers.
@@ -384,9 +384,9 @@ Why: A gate is automatic. At the review a person decides, which is the part mach
 
 In July 2025, a user named searls opened issue #319 on Anthropic’s Claude Code GitHub Action, which runs Claude Code inside GitHub Actions. Claude had committed to their pull request, but their CI workflow never ran.
 
-The cause is a GitHub rule. Each job gets a key called `GITHUB_TOKEN`, so the job can act on the repo. Events that a workflow causes with that key don’t start new workflow runs, so a workflow’s commit can’t start a workflow that commits again, without end.
+The cause is a GitHub rule. Each job gets a key called `GITHUB_TOKEN`, so the job can act on the repo. Events that a workflow causes with that key don’t start new workflow runs, with a few exceptions, so a workflow’s commit can’t start a workflow that commits again, without end.
 
-GitHub’s docs today add an exception for pull requests. A push made with `GITHUB_TOKEN` starts no `push` run. But when a workflow creates a pull request or pushes to one with it, the `pull_request` runs start in an approval-required state. Someone with write access to the repo has to select **Approve workflows to run** in the merge box.
+The exception that matters here is for pull requests. A push made with `GITHUB_TOKEN` starts no `push` run. But when a workflow creates a pull request or pushes to one with it, the `pull_request` runs start in an approval-required state. Someone with write access to the repo has to select **Approve workflows to run** in the merge box.
 
 So a check that never ran isn’t a check that passed. When an agent pushes to a pull request from inside a workflow, look for its run, and approve it if GitHub asks. [Agents in GitHub Actions](/learn/agents-in-github-actions) runs agents this way.
 
@@ -565,7 +565,7 @@ Your agent reports: “CI is set up for the `recipes` site, so bad code can’t 
 - [x] No: a check reports but blocks nothing
 - [ ] Yes: Vercel refuses to build failing commits
 - [ ] No: workflows only run after a merge
-Why: A check becomes a gate only when something waits for it: a ruleset before merging, a Deployment Check before going live. With neither, a merged PR is built and promoted whatever its checks say. The workflow does run on pull requests; it just can’t stop anything.
+Why: A check becomes a gate only when something waits for it: a ruleset before merging, a Deployment Check before going live. With neither, a merged PR is built and promoted whatever its checks say. The workflow does run on pull requests, but it can’t stop anything.
 ```
 
 ```final-test final-missing-dependency

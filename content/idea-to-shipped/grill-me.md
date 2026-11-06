@@ -10,7 +10,7 @@ Say you're wondering whether the yoga studio should charge for late cancellation
 
 **grill-me has an agent interview you about an idea until you both understand it the same way, and it saves nothing.**
 
-It runs the interview that [grill before you build](/learn/grill-before-you-build) describes. Its [Skill](/learn/skills) file is one line, which hands over to the [grilling](/learn/grilling) Skill. That Skill runs the interview.
+It's the same interview that [grill before you build](/learn/grill-before-you-build) describes. Its [Skill](/learn/skills) file is one line, which hands over to the [grilling](/learn/grilling) Skill. That Skill runs the interview.
 
 ```checkpoint quick-1
 You type /grill-me. Which Skill runs the interview?

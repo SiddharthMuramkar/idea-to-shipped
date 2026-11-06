@@ -97,7 +97,7 @@ Why: pr writes a pull request's description and doesn't judge the code. Judging 
 
 ## What it needs to start
 
-You type `/code-review`, or you ask for a review and the agent starts it on its own.
+You type `/code-review`, or you ask for a review and the agent starts it on its own. It needs:
 
 - Your work committed, because it reads only commits.
 - A fixed point, or it asks for one.

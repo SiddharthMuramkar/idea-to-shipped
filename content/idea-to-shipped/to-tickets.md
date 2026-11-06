@@ -10,7 +10,7 @@ Say your "Booking API" [Spec](/learn/issues-and-keeping-track) is published, and
 
 **to-tickets splits a Spec into small [Tickets](/learn/issues-and-keeping-track) that each work end to end, and each names what must finish first.**
 
-Each Ticket is the [tracer bullet](/learn/small-end-to-end-tickets) you've already met: a narrow but complete path through every layer of the change (tables, API, UI, tests). You can show it working, or check it, on its own, and it fits in one fresh [context window](/learn/context-window).
+Each Ticket is a [tracer bullet](/learn/small-end-to-end-tickets): a narrow but complete path through every layer of the change (tables, API, UI, tests). You can show it working, or check it, on its own, and it fits in one fresh [context window](/learn/context-window).
 
 ```checkpoint quick-1
 You're splitting the Booking API Spec. Which of these would make a good Ticket?

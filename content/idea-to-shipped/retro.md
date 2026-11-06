@@ -8,7 +8,7 @@ summary: How retro looks back over a coding session and suggests fixes to the ag
 
 Imagine your booking endpoint (the web address your app calls) is finished. The agent hunted a long time for one file, and you corrected, by hand, an import the project doesn't allow. The endpoint works, so nobody looks back. The next agent hits the same problems.
 
-**retro looks back over a coding session and suggests changes to the agent's environment, not the code.** That's the [environment](/learn/fix-the-environment) you've met already: navigation pointers, automated checks, coding standards, instruction files and tools.
+**retro looks back over a coding session and suggests changes to the agent's environment, not the code.** The [environment](/learn/fix-the-environment) is what surrounds the agent: navigation pointers, automated checks, coding standards, instruction files and tools.
 
 ```checkpoint quick-1
 An agent's session was a struggle, but the endpoint works. What will retro suggest changing?
