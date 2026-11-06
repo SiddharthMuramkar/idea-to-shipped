@@ -53,7 +53,7 @@ PR #14 has five commits: the fix and four "fix the test" commits. With squash an
 Why: Squash and merge combines every commit in the PR into one new commit. A merge commit would add six, and rebase and merge five copies.
 ```
 
-Why squash by default? Small commits help while you work on a branch, but they often aren't worth keeping in `main`'s history. With one commit per PR, the history reads as a list of changes. One revert also takes a whole change back out, as [Undo and merge conflicts](/learn/undo-and-conflicts) shows.
+Why squash by default? Small commits help while you work on a branch, but they often aren't worth keeping in `main`'s history. With one commit per PR, the history reads as a list of changes. And a **revert**, a new commit that undoes an old one, can take a whole change back out in one go. [Undo and merge conflicts](/learn/undo-and-conflicts) shows how.
 
 Squashing has two costs. The branch's separate commits aren't kept on `main`, though the PR page still shows them. And afterwards Git doesn't see your branch as merged, which matters when you clean up, below. So after a squash, the branch is finished: new work starts on a new branch.
 
@@ -94,7 +94,7 @@ It merges, then deletes the branch on GitHub and on your computer. If you were o
 
 `gh` deletes your computer's copy of the branch even if it holds commits the PR doesn't have. So push any last commit before you merge.
 
-If something is in the way, `gh` says the PR `is not mergeable` and gives the reason, such as a required check that hasn't passed. Fix that, not the rule. `gh` may also suggest the `--admin` flag, which merges past the repo's rules. Never let an agent use it.
+If something is in the way, `gh` says the PR `is not mergeable` and gives a reason. "The base branch policy prohibits the merge" means a rule isn't met yet, such as a required check. Fix that, not the rule. `gh` may also suggest the `--admin` flag, which merges past the repo's rules. Never let an agent use it.
 
 ```checkpoint quick-4
 Your agent's `gh pr merge` fails: "is not mergeable: the base branch policy prohibits the merge". It offers to retry with `--admin`. What do you say?
@@ -116,7 +116,7 @@ Three things must be true before you can use it:
 
 To turn it on, choose a method from the merge button's menu, click **Enable auto-merge**, then **Confirm auto-merge**. With `gh`, run `gh pr merge 14 --auto --squash`. It prints that the PR "will be automatically merged via squash when all requirements are met".
 
-To turn it off, click **Disable auto-merge** in the merge box, or run `gh pr merge 14 --disable-auto`. It also turns itself off if someone without write access pushes to the branch, or if the PR's base branch changes.
+To turn it off, click **Disable auto-merge** in the merge box, or run `gh pr merge 14 --disable-auto`. It also turns itself off if someone without write access (the right to change the repo) pushes to the branch or switches its base branch.
 
 There's a catch. Auto-merge waits only for what the repo requires. It doesn't wait for the rest of your Merge check: the preview, the risk, the fresh review. So turn it on only once your own check is done.
 
@@ -195,7 +195,7 @@ On GitHub, the branch can go three ways:
 - Turn on **Automatically delete head branches**, under **Settings**, then **General**. GitHub then deletes each PR's branch after it merges.
 - Use `gh pr merge` with `--delete-branch`, as above.
 
-On your computer, bring `main` up to date and see what's left. [Push, pull and remotes](/learn/push-pull-and-remotes) explains these commands:
+On your computer, bring `main` up to date and see what's left:
 
 ```sh
 git switch main
@@ -204,11 +204,11 @@ git fetch --prune
 git branch -vv
 ```
 
-`git pull` brings the merged commit into your `main`. `git fetch --prune` makes Git forget branches that were deleted on GitHub. Then `git branch -vv` lists your branches, and one whose GitHub copy is gone shows `gone]`.
+`git pull` brings the merged commit into your `main` ([Push, pull and remotes](/learn/push-pull-and-remotes) explains pulling). `git fetch --prune` makes Git forget branches that were deleted on GitHub. Then `git branch -vv` lists your branches. One whose GitHub copy is gone shows `[origin/12-search-capitals: gone]`.
 
 Delete each finished branch with `git branch -d 12-search-capitals`. After a squash merge, Git may refuse, saying the branch is `not fully merged`. That's expected: `main` holds one new commit, not your branch's commits, so Git can't find them there.
 
-Before you force it with `git branch -D`, check that the branch holds nothing new. These two should print the same long ID:
+Before you force it with `git branch -D`, check that the branch holds nothing new. The first command prints the ID of your branch's last commit, and the second the PR's (its `headRefOid`). They should match:
 
 ```sh
 git rev-parse 12-search-capitals
@@ -308,11 +308,13 @@ You need the practice PR from the Try it in [Checking a pull request before you 
 
    You should see `main`, and no practice branch.
 
-6. See the one new commit at the top of `main`:
+6. See the new commit on `main`:
 
    ```sh
    git log --oneline -3
    ```
+
+   You should see the squash commit at the top, with your commit's message.
 ````
 
 ## Try it: watch a pull request merge itself
@@ -373,9 +375,9 @@ git switch main && git pull
 
 **Your PR says `into` another branch.** GitHub ignored its `Closes` line, so the merge closed nothing. The Issue closes when a PR into `main` says so, or when you close it by hand.
 
-**`gh` won't delete your local branch, because a worktree has it open.** Git lets only one folder be on a branch at a time. The merge itself went through: only the clean-up stopped, and `gh` prints the commands to finish. Run `git status` in that worktree first, in case it holds work you want.
+**`gh` won't delete your local branch, because a worktree has it open.** Git lets only one folder be on a branch at a time. The merge itself went through: only the clean-up stopped, and recent versions of `gh` print the commands to finish. Run `git status` in that worktree first, in case it holds work you want.
 
-**A later PR shows commits you already merged.** You kept working on a branch after it was squash-merged. A new PR from it lists the old commits again, and you may meet the same merge conflicts more than once. Start each change on a fresh branch.
+**A later PR shows commits you already merged.** You kept working on a branch after it was squash-merged. A new PR from it lists the old commits again, and you may meet the same [merge conflicts](/learn/undo-and-conflicts) more than once. Start each change on a fresh branch.
 
 **You deleted a branch you still needed.** Open the merged PR and click **Restore branch**.
 
@@ -507,11 +509,11 @@ Why: `--admin` merges past the repo's rules, which exist to stop exactly this. F
 ```
 
 ```final-test mcu-fetch-prune
-GitHub deleted your PR's branch after the merge, but `git branch -r` on your computer still lists `origin/12-search-capitals`. What fixes that?
+GitHub deleted your PR's branch after the merge, but Git on your computer still lists `origin/12-search-capitals` as if it were there. What makes Git forget it?
 - [x] `git fetch --prune`, which makes Git forget branches deleted on GitHub.
 - [ ] `git pull`, which deletes old branches as it brings in new commits.
 - [ ] `git branch -d main`, which resets the list of branches.
-- [ ] Nothing, because that line means the branch still exists on GitHub.
+- [ ] Nothing, because that line proves the branch still exists on GitHub.
 Why: Git's list of GitHub branches is only as fresh as its last fetch. `--prune` removes the ones that no longer exist on GitHub.
 ```
 

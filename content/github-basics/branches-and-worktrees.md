@@ -28,6 +28,8 @@ A **worktree** is a folder with one of the repo's branches checked out. So when 
 
 The folder you cloned or created, such as `recipes`, is the **main worktree**. A repo can also have **linked worktrees**: extra folders, each with a different branch checked out. They all share one history, the record of all commits, so a commit made in one folder can be seen from the others.
 
+For example, the recipe site could keep `main` in `recipes`, with two linked worktrees beside it: `recipes-search` on the `add-search` branch, and `recipes-list` on `shopping-list`.
+
 ```diagram
 type: git
 caption: "They all share one history"

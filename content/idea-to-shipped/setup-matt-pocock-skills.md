@@ -339,7 +339,7 @@ Q: What does the GitHub tracker template now tell agents to check before the fir
 A: The target repo, with gh repo view --json nameWithOwner. Agents in a clone or fork had filed their Specs and Tickets into mattpocock/skills itself.
 
 Q: Which labels does setup still not create for you on GitHub?
-A: wayfinder's wayfinder:map and wayfinder:<type> labels. Setup creates only the triage labels, so make wayfinder's by hand before its first run.
+A: wayfinder's `wayfinder:map` and `wayfinder:<type>` labels. Setup creates only the triage labels, so make wayfinder's by hand before its first run.
 ```
 
 ## Final test

@@ -1,7 +1,7 @@
 ---
 title: Push, pull and remotes
 slug: push-pull-and-remotes
-summary: What remotes, origin and upstream are, how clone, fetch, pull and push move commits, how to read ahead and behind, and how to sign in to GitHub from the terminal.
+summary: What remotes, origin and upstream are, how clone, fetch, pull and push move commits, how to read ahead and behind, and how to sign in to GitHub.
 ---
 
 Say you made three commits to your recipe site on your laptop. A friend opens your repo on GitHub and sees none of them. Meanwhile, they fixed a typo on github.com, and your laptop doesn't have that either. Git never syncs on its own: you send and fetch commits on purpose.

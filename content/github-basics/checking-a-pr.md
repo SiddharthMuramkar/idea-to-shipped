@@ -114,7 +114,7 @@ Open the **Checks** tab, or run `gh pr checks 14`. Its first line sums things up
 
 Two traps catch beginners. First, a failed check doesn't always stop a merge. A repo can mark some checks **required**: they must pass before the merge button works. A failed check that isn't required leaves the button working, so stopping is your job. `gh pr checks 14 --required` lists only the required ones, and [Gates: checks that block](/learn/gates) shows how to set them up.
 
-Second, read each check's name, not only its colour. A row from your host, such as Vercel, can say a deploy finished; that's not your tests. And GitHub reports a skipped job as a success.
+Second, read each check's name, not only its colour. Your **host** is the service that puts your site online, such as Vercel. Its row can say a deploy finished, and that's not your tests. And GitHub reports a skipped job as a success.
 
 ```checkpoint quick-4
 PR #14 shows a red cross on one check that isn't required. The merge button still works. What do you do?
@@ -132,7 +132,7 @@ Open it and do what the Issue's "Done when" line says. Type "Soup", then "SOUP",
 
 No preview? Run the site on your computer from the PR's branch: `gh pr checkout 14` switches you to it. Or ask your agent to run it and show you a screenshot. In Claude Code, `/verify` has the agent build and run the app and look at the result.
 
-Be careful with buttons that save or delete. A preview runs the PR's code, but each environment can have its own settings, including which database it connects to. Before you try anything that writes, ask which database the preview uses.
+Be careful with buttons that save or delete. A preview runs the PR's code, but each environment, such as preview or the live site, can have its own settings. Those include which database it connects to. Before you try anything that writes, ask which database the preview uses.
 
 ```checkpoint quick-5
 PR #14's preview adds a "Delete recipe" button. Before you press it to test it, what do you find out?
@@ -146,11 +146,11 @@ Why: Each environment can have its own settings, including its database. A previ
 
 Ask two questions of every PR. Can the change be undone cheaply? And what could it break?
 
-A **two-way door** is a change you can walk back cheaply: new search code, say, which a revert takes out again. A **one-way door** can't be walked back, such as deleting a column of saved recipes, or sending emails. As one user put it, "rolling back a commit won't unsend a batch of emails".
+A **two-way door** is a change you can walk back cheaply: new search code, say, which a revert (a new commit that undoes it) takes out again. A **one-way door** can't be walked back, such as deleting a column of saved recipes, or sending emails. As one user put it, "rolling back a commit won't unsend a batch of emails".
 
 The **blast radius** is what the change could break if it's wrong: one page, every page, or other people's data.
 
-Matt Pocock's [pr](/learn/pr) Skill writes both into a PR's description, under a heading called Merge Danger:
+Matt Pocock's [pr](/learn/pr) Skill, a set of instructions agents load to write PR descriptions, puts both under a heading called Merge Danger:
 
 ```text
 Door: two-way
@@ -171,7 +171,7 @@ Why: Deleted data can't be walked back. The agent graded its own change, so chec
 
 If the agent that wrote the change reviewed it, it would be marking its own work. A new session hasn't seen the reasoning behind the code, so it isn't swayed by it.
 
-In Claude Code, `/code-review` reviews the diff in a fresh subagent that never saw your conversation. Pass a PR number, as in `/code-review 14`, to review that PR. Or start a new session and say:
+In Claude Code, `/code-review` hands the diff to a fresh **subagent**: a helper agent that never saw your conversation. Pass a PR number, as in `/code-review 14`, to review that PR. Or start a new session and say:
 
 > Review pull request #14 against Issue #12. Report real bugs, skip style, and change nothing.
 
@@ -192,7 +192,7 @@ Why: The building session would be marking its own work. A fresh reviewer isn't 
 Every Merge check ends in one of three moves:
 
 - Wait, while a check is still running.
-- Send it back when something's wrong: a failed check, a file nobody asked for, a conflict, a preview that fails "Done when", or a risk you don't understand. Tell the agent what you found, and to push a fix to the same branch. Then run your Merge check again on the new commits.
+- Send it back when something's wrong: a failed check, a file nobody asked for, a [merge conflict](/learn/undo-and-conflicts), a preview that fails "Done when", or a risk you don't understand. Tell the agent what you found, and to push a fix to the same branch. Then run your Merge check again on the new commits.
 - Merge when the checks you rely on passed, the diff matches the description and the Issue, the preview works, and you understand the risk. [Merging and cleaning up](/learn/merging-and-cleaning-up) takes it from there.
 
 Watch for auto-merge while you check. If `gh pr view` shows a line starting `Auto-merge: enabled`, the PR will merge as soon as the repo's required checks pass. That may be before you've finished. Turn it off with `gh pr merge 14 --disable-auto`, or with **Disable auto-merge** in the merge box.

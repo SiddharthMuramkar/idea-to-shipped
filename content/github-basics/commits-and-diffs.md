@@ -22,7 +22,7 @@ Most people picture a commit as a list of changes. Git doesn't store it that way
 
 A snapshot is a picture of every file at one moment. Files that didn't change aren't copied again: the snapshot links to the copy Git already has. The changes you see in a diff are worked out afterwards, by comparing two snapshots.
 
-Besides the snapshot, a commit holds its author, a date, its message and a pointer to its **parent**, the commit before it. The very first commit has no parent, and a merge commit has two. Git computes a checksum of all of that: a 40-character ID called the commit's **SHA**, or hash. You'll usually see its first seven characters, such as `a3f9c21`, which is enough to pick out one commit.
+Besides the snapshot, a commit holds its author, a date, its message and a pointer to its **parent**, the commit before it. The very first commit has no parent, and a merge commit has two or more. Git computes a checksum of all of that: a 40-character ID called the commit's **SHA**, or hash. You'll usually see its first seven characters, such as `a3f9c21`, which is enough to pick out one commit.
 
 You can look at a raw commit. For example, here is `git cat-file -p a3f9c21` on the recipe site, with two notes added:
 

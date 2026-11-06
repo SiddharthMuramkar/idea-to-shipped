@@ -421,7 +421,7 @@ Why: The hook compares command text with fixed patterns, so another program that
 - [retro: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/retro/SKILL.md), Matt Pocock's Skills
 - [Configure permissions](https://code.claude.com/docs/en/permissions), Anthropic
 - [Prevent Cunning Models working around git-hooks · Issue #1077 · mattpocock/skills](https://github.com/mattpocock/skills/issues/1077), ACregan, 2026-09-13
-- [block-dangerous-git.sh is bypassed by any git global option (e.g. git -C <dir> push) · Issue #301 · mattpocock/skills](https://github.com/mattpocock/skills/issues/301), stoneLeaf, 2026-06-03
+- [block-dangerous-git.sh is bypassed by any git global option (e.g. `git -C <dir> push`) · Issue #301 · mattpocock/skills](https://github.com/mattpocock/skills/issues/301), stoneLeaf, 2026-06-03
 - [git-guardrails: hook fails open when jq is missing, allowing every command it claims to block · Issue #1293 · mattpocock/skills](https://github.com/mattpocock/skills/issues/1293), nabeelkhawaja3-hash, 2026-10-17
 - [setup-matt-pocock-skills: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/setup-matt-pocock-skills/SKILL.md), Matt Pocock's Skills
 - [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic

@@ -22,7 +22,7 @@ Say you've fixed the search bug in your recipe site on its own branch, and pushe
 A PR always compares two [branches](/learn/branches-and-worktrees):
 
 - the **head branch**, which holds your work, such as `12-search-capitals`;
-- the **base branch**, where the work should land. That's usually `main`, the repo's **default branch**: the one GitHub shows first, and the base for new PRs.
+- the **base branch**, where the work should land, usually `main`.
 
 ```diagram
 type: git
@@ -35,6 +35,8 @@ branches:
     commits: 2
     merge: { into: "base: main", label: "when the pull request merges" }
 ```
+
+`main` is usually the repo's **default branch**: the one GitHub shows first, and the base for new PRs.
 
 A PR shows what its head branch adds since it split off from the base. GitHub compares from the commit where the head branch began, called the **merge base**. So work that lands on `main` in the meantime doesn't appear in your PR's changes.
 
@@ -150,7 +152,9 @@ Risk: small. Only the search box changes, and a revert undoes it.
 
 A description like "Fixed stuff" leaves the reviewer to work everything out from the changes. "Tests pass", with nothing shown, is a claim, not evidence.
 
-Templates help. A repo can keep a PR template, such as `.github/pull_request_template.md`, that every new description starts from. Matt Pocock's [pr](/learn/pr) Skill gives agents a template of its own: Summary, Evidence, and Merge Danger, which says how risky merging is.
+Templates help. A repo can keep a PR template, such as `.github/pull_request_template.md`, that every new description starts from.
+
+Agents can follow a template too. A **Skill** is a named set of instructions an agent loads for one job. Matt Pocock's [pr](/learn/pr) Skill gives agents a description template of its own: Summary, Evidence, and Merge Danger, which says how risky merging is.
 
 ```checkpoint quick-6
 Your agent's PR description says only "Tests pass." What do you ask for?
@@ -177,7 +181,7 @@ In **Files changed**, read one file at a time. When you've read a file, tick **V
 
 A **check** is one automated job's result on the PR's latest commit. It shows a yellow dot while it runs, then a green tick or a red cross. Checks usually come from **CI** (continuous integration), which runs your tests on every push. [What CI/CD is](/learn/what-ci-cd-is) sets it up.
 
-The **merge box** at the bottom of the Conversation tab says whether the PR can merge right now. If it can't, it says what's in the way, such as a failing check or a merge conflict. [Checking a pull request before you merge](/learn/checking-a-pr) reads it line by line.
+The **merge box** at the bottom of the Conversation tab says whether the PR can merge right now. If it can't, it says what's in the way, such as a failing check or a **merge conflict**: two changes to the same lines that Git can't combine by itself. [Checking a pull request before you merge](/learn/checking-a-pr) reads it line by line.
 
 From the terminal, three commands cover the page:
 
@@ -364,7 +368,7 @@ Why: A one-way door is a change that's hard to undo. Calling it out tells the re
 
 **`gh pr create` says there are no commits between `main` and your branch.** Your commit isn't on this branch. `git log --oneline main..HEAD` lists the branch's own commits. If it prints nothing, ask where the commit went.
 
-**`git push` is refused, with a warning about a private email address.** Your commit carries an email that your GitHub account keeps private. Set the repo's `user.email` to your GitHub `noreply` address, fix the commit, and push again.
+**`git push` is refused, with a warning about a private email address.** Your commit carries an email that your GitHub account keeps private. Set the repo's `user.email` to your GitHub `noreply` address, the stand-in address GitHub gives you for commits. Then fix the commit, and push again.
 
 **`gh pr view` finds no pull request.** It looks for the current branch's PR, and you may be on another branch. Name the PR instead: `gh pr view 14`.
 
