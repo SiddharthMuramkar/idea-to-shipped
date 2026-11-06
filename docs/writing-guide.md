@@ -1,6 +1,15 @@
-# Writing guide for the Idea to shipped Course
+# Writing guide
 
-How an Idea to shipped Lesson should read. `npm run test:content` checks a Lesson's format and the Course's house rules, and its messages say how to fix what it finds. This guide covers what it can't check. The Grilling Lesson is the model for voice, depth and structure.
+How a Lesson should read. `npm run test:content` checks a Lesson's format and the rules every Course follows, and its messages say how to fix what it finds. This guide covers what it can't check. The Grilling Lesson is the model for voice, depth and structure.
+
+## The format, in brief
+
+`src/lessons/__fixtures__/complete-example/` is a whole Course of one Lesson, using every block kind: copy it to start a Course or a Lesson. In short:
+
+- **Headers.** A Lesson's: `title`, `slug`, a `summary` of one plain sentence (at most 200 characters; cards show it), and optionally `image` with `imageAlt`. A `course.md`'s: `title`, `slug`, `description`, and optionally `order` and `image` with `imageAlt`. Credits for every image go in `content/image-credits.json`, keyed by the image's path, never in a header.
+- **Typed blocks**, fenced at the top level: `goals`, `callout tip` / `watch-out` / `big-idea` / `remember` (what to keep from a Section), `try`, `scene <type>`, `site-story`, `flashcards` (each card a `Q: …` line, then its `A: …` line, with a blank line between cards), `diagram` (a little YAML with a `type` and a `caption`), `checkpoint <id>`, `final-test <id>` and `sources`.
+- **Questions** have a one-paragraph prompt, 2 to 6 options (exactly one `- [x]`), and a `Why: …` line after the options explaining the answer, or `> ` feedback under every option. The site shuffles the options.
+- **The Final test** is the Lesson's last `##` Section, titled "Final test": at least 5 `final-test` blocks back to back, then optionally the `sources`, and nothing else. Submitting it marks the Lesson Done.
 
 ## Voice
 
@@ -27,9 +36,9 @@ In this order, with the headings adjusted to the topic:
 7. **How Matt and others use it**: cited habits, saying when and where ("in his July 2026 walkthrough"), then other developers.
 8. **Try it yourself**: the exact prompt to type, numbered steps, and an "It's working if:" checklist.
 9. **Common mistakes**: bullets with a bold lead-in. Don't restate a whole earlier Section; point back to it in one line.
-10. The Site story.
-11. **Cheat sheet**: a short table or list.
-12. **Final test**, then the sources.
+10. The Site story, where there's real material for one (see below).
+11. **Remember**: a `flashcards` block of the facts worth keeping.
+12. **Final test**, with the sources after its questions, in the same Section.
 
 Put each Checkpoint right after the Section it checks. Two or three Scenes are plenty.
 
@@ -45,8 +54,8 @@ Put each Checkpoint right after the Section it checks. Two or three Scenes are p
 - Checkpoints check the Section just read; the Final test checks the goals. Every goal gets at least one Final test question, and no Checkpoint repeats one.
 - One unambiguous right answer, from what the Lesson teaches. Wrong options are real misconceptions. No trivia (numbers to memorise) and no wording tells.
 - Test transfer, not recognition. Use a fresh situation (a book club, a recipe site), not the body's own example sentence. Don't restate the right answer's defining phrase in the prompt, and don't offer a wrong option about a retired Skill the Lesson never mentions.
-- Spread the right answers across a, b, c and d.
-- A wrong option's feedback says why it's wrong; the right one's says why it's right.
+- The site shuffles the options, so no position gives the answer away. Make every wrong option as specific, and about as long, as the right one.
+- The `Why:` line says why the right answer is right. Feedback under an option, when you add it, says why that option is wrong or right.
 - Question ids are permanent once published (ADR 0005), so make them descriptive.
 
 ## Facts the whole Course agrees on

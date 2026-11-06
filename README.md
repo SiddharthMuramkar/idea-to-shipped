@@ -44,7 +44,12 @@ Only writing Lessons? You need no database and no env file: `npm ci`, then `npm 
 
 ## Content
 
-Each Course is a folder in `content/`: a `course.md` that lists its Lessons by Slug in reading order, grouped into Parts if it has them, and one `<slug>.md` per Lesson. `npm run test:content` checks them, and its messages say what to fix. For a complete example, copy the one-Lesson Course in `src/lessons/__fixtures__/complete-example/`. How an Idea to shipped Lesson should read is in [docs/writing-guide.md](docs/writing-guide.md).
+Each Course is a folder in `content/`:
+
+- a `course.md`, whose header gives the Course's `title`, `slug` and `description` (and optionally its `order` in the list of Courses, and an `image` with its `imageAlt`), then lists its Lessons by Slug in reading order, grouped into Parts if it has them;
+- one `<slug>.md` per Lesson, whose header gives its `title`, `slug` and a one-sentence `summary` (and optionally an `image` with its `imageAlt`). Its text is Markdown plus typed blocks (goals, callouts, Scenes, flashcards, diagrams, quick-check questions, sources), and it ends with a `## Final test` of at least five questions.
+
+Every image a header names is credited once, in `content/image-credits.json`, keyed by its path, and must be openly licensed (CC0, public domain, CC BY or CC BY-SA). `npm run test:content` checks every Course, and its messages say what to fix. For a complete example, copy the one-Lesson Course in `src/lessons/__fixtures__/complete-example/`, with its `image-credits.json`. How a Lesson should read is in [docs/writing-guide.md](docs/writing-guide.md).
 
 ## CI
 
