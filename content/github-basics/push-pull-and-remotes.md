@@ -18,7 +18,7 @@ Say you made three commits to your recipe site on your laptop. A friend opens yo
 
 A **remote** is a copy of your repo that lives somewhere else, usually on GitHub. Your repo knows each remote by a short name and an address, its URL. [What Git and GitHub are](/learn/what-git-and-github-are) covers why you'd want an online copy at all.
 
-**Your repo and its copy on GitHub change only when you tell them to: `git push` sends your commits up, and `git pull` brings new ones down.**
+**Your repo and GitHub's copy change only when you say so: `git push` sends commits up, and `git pull` brings new ones down.**
 
 `origin` is the usual name for your own repo on GitHub. `git clone` gives that name to the remote it cloned from, and most tools expect it. The name isn't special to Git, though. It's only the default.
 
@@ -52,7 +52,7 @@ Why: `origin` is your own repo on GitHub, where you push. `upstream` is the repo
 
 ## Get a repo: clone it, or connect one you made
 
-There are two ways to end up with a repo on your computer that's linked to GitHub. Either the repo is already on GitHub and you clone it, or you made it on your computer and connect it to a new GitHub repo.
+There are two ways to end up with a repo on your computer that's linked to GitHub. If the repo is already on GitHub, you clone it. If you made it on your computer, you connect it to a new GitHub repo.
 
 ### Clone a repo that's on GitHub
 
@@ -79,7 +79,7 @@ Why: Download ZIP gives the files, not the repo. A clone brings the whole histor
 
 Say you made the `recipes` repo on your laptop first, with a commit or two. Create an empty repo on GitHub to receive it. In the top-right corner of github.com, open the + menu and choose New repository. Name it `recipes`, pick private or public, and leave the README, `.gitignore` and license off.
 
-It must start empty. If GitHub's repo held a commit of its own, such as a README, your first push would be refused, because GitHub would hold work your repo doesn't. Then connect the two, and push:
+It must start empty. If GitHub's repo held a commit of its own, such as a README, your first push would be refused. GitHub would hold work your repo doesn't. Then connect the two, and push:
 
 ```sh
 git remote add origin https://github.com/YOUR-USERNAME/recipes.git
@@ -148,7 +148,7 @@ A **remote-tracking branch**, such as `origin/main`, is Git's memory of where a 
 
 `git fetch` downloads new commits from `origin` and moves those bookmarks. It changes none of your files and none of your own branches, so it's safe at any time. `git pull` is a fetch, then a second step: it brings the new commits into the branch you're on.
 
-When you have no new commits of your own, the pull is a **fast-forward**: your branch's label moves ahead to the newest commit, and there's nothing to combine. For example, after a friend fixed a typo on github.com:
+When you have no new commits of your own, the pull is a **fast-forward**. Your branch's label moves ahead to the newest commit, and there's nothing to combine. For example, after a friend fixed a typo on github.com:
 
 ```text
 $ git fetch
@@ -224,9 +224,9 @@ A **merge** joins the two lines of work. Run `git fetch`, then `git merge origin
 
 A **rebase** replays your branch's commits on top of the newest `main`. Run `git fetch`, then `git rebase origin/main`. The history ends up in one straight line, but your commits are replaced by new copies with new IDs. So pushing needs `git push --force-with-lease`, which replaces GitHub's copy only if nobody else pushed to it since your last fetch.
 
-Pro Git puts the rule for rebasing in one line: "Do not rebase commits that exist outside your repository and that people may have based work on." If you're unsure, merge. On a repo that squash-merges its pull requests, the extra merge commit vanishes into the squash anyway.
+Pro Git sums up the rule: "Do not rebase commits that exist outside your repository and that people may have based work on." If you're unsure, merge. On a repo that squash-merges its pull requests, the extra merge commit vanishes into the squash anyway.
 
-On github.com, a pull request can show an Update branch button, which merges `main` into its branch. A menu beside it offers to update with a rebase instead. GitHub shows the button only when the repo asks branches to be up to date before merging, or a setting asks it to always suggest updates.
+On github.com, a pull request can show an Update branch button, which merges `main` into its branch. A menu beside it offers to update with a rebase instead. GitHub shows the button only in two cases. Either the repo asks branches to be up to date before merging, or a setting asks GitHub to always suggest updates.
 
 If both sides changed the same lines, Git stops with a **merge conflict** and waits for you to choose. [Undo and merge conflicts](/learn/undo-and-conflicts) shows how to read and resolve one.
 
@@ -246,7 +246,7 @@ The simplest helper is the GitHub CLI. `gh auth login` signs you in through your
 
 Git for Windows can also install Git Credential Manager, a helper that signs you in through the browser in the same way. Without a helper, Git asks for a username and password, and the "password" it wants is a personal access token you make on GitHub.
 
-Remote addresses come in two kinds. An HTTPS address, such as `https://github.com/sam-lee/recipes.git`, works everywhere, even behind strict firewalls, and uses a token through a helper. An SSH address, such as `git@github.com:sam-lee/recipes.git`, uses a key pair instead: a private key that stays on your computer, and a public key you add to your GitHub account. Picking SSH in `gh auth login` can make and upload a key for you. Either works, and HTTPS with `gh auth login` is the simplest start. `git remote -v` shows which kind a repo uses, and `git remote set-url origin` with a new address switches it.
+Remote addresses come in two kinds. An HTTPS address, such as `https://github.com/sam-lee/recipes.git`, works everywhere, even behind strict firewalls, and uses a token through a helper. An SSH address, such as `git@github.com:sam-lee/recipes.git`, uses a key pair instead. The private key stays on your computer, and you add the public key to your GitHub account. Picking SSH in `gh auth login` can make and upload a key for you. Either works, and HTTPS with `gh auth login` is the simplest start. `git remote -v` shows which kind a repo uses, and `git remote set-url origin` with a new address switches it.
 
 ```checkpoint password-prompt
 You push over HTTPS for the first time, with no helper set up, and Git asks for a password. What do you enter?
@@ -260,7 +260,7 @@ Why: GitHub removed password sign-in for Git. When Git asks for a password, it n
 
 A **fork** is a new repo that starts as a copy of someone else's, under your account, with its own settings. It stays connected to the original, which GitHub calls the upstream repo. You fork to propose changes to a project you can't push to.
 
-On github.com, open the repo and click Fork, in the top-right corner. Pick yourself as the owner, and create the fork. Then clone your fork, not the original.
+On github.com, open the repo and click Fork, in the top-right corner. Pick your account under Owner, and create the fork. Then clone your fork, not the original.
 
 In that clone, `origin` is your fork. Add the original as `upstream`:
 
@@ -268,7 +268,7 @@ In that clone, `origin` is your fork. Add the original as `upstream`:
 git remote add upstream https://github.com/family-cooks/recipes.git
 ```
 
-`gh repo fork family-cooks/recipes --clone` does both steps for you. To bring in new work from the original, use the Sync fork button on your fork's page, or run `git fetch upstream`, then `git merge upstream/main`, then push. To propose your change, push a branch to your fork and open a pull request into the original repo.
+`gh repo fork family-cooks/recipes --clone` does both steps for you. To bring in new work from the original, use the Sync fork button on your fork's page. Or run `git fetch upstream`, then `git merge upstream/main`, then push. To propose your change, push a branch to your fork and open a pull request into the original repo.
 
 One trap: in a clone of a fork, `gh` treats the original repo as the default for Issues and pull requests. That's handy for a pull request, but a new Issue can land in someone else's repo. Agents working in forks have filed Issues into the wrong repo this way. Before the first `gh issue create`, check the target with `gh repo view --json nameWithOwner`.
 
@@ -288,7 +288,7 @@ Pushing is where an agent's mistakes leave your computer, so ask for exactly wha
 
 Then check it yourself. `git status` should say your branch is up to date with `origin/add-search`. `git ls-remote --heads origin add-search` asks GitHub directly whether the branch is there. On github.com, the branch shows in the branch menu.
 
-Two habits keep pushes safe with agents. If a push is refused, the fix is to fetch and combine, not to force it. And Git can run checks of its own before a push, called hooks: `--no-verify` skips them, so don't let an agent use it to get past one. [git-guardrails-claude-code](/learn/git-guardrails-claude-code) is a Skill that blocks risky Git commands, pushes included, so you run those yourself.
+Two habits keep pushes safe with agents. If a push is refused, the fix is to fetch and combine, not to force it. And Git can run checks of its own before a push, called hooks. `--no-verify` skips them, so don't let an agent use it to get past one. [git-guardrails-claude-code](/learn/git-guardrails-claude-code) is a Skill that blocks risky Git commands, pushes included, so you run those yourself.
 
 ```checkpoint refused-push-agent
 An agent's push is refused, because GitHub has commits it doesn't have. It offers to run `git push --force`. What do you tell it?

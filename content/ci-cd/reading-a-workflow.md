@@ -85,7 +85,7 @@ Why: By default, jobs run at the same time. One waits for another only if you gi
 
 ## Brad’s ci.yml: when it runs, and what it may touch
 
-Here is the workflow from Brad Traversy’s lab, exactly as it appears in his gist. In [the lab](/learn/lab-gated-pipeline) you’ll have an agent add it to your own copy of his starter app. Read it once from top to bottom, then take it apart in two halves below.
+Here is the workflow from Brad Traversy’s lab, exactly as it appears in his gist, the GitHub page of commands and code that goes with his CI/CD crash course. In [the lab](/learn/lab-gated-pipeline) you’ll have an agent add it to your own copy of his starter app. Read it once from top to bottom, then take it apart in two halves below.
 
 ```yaml
 name: CI

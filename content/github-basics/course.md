@@ -6,9 +6,11 @@ order: 1
 ---
 
 ## Git and repositories
+- what-git-and-github-are
 - reading-a-repository
 - commits-and-diffs
 - branches-and-worktrees
+- push-pull-and-remotes
 
 ## Pull requests
 - issues-and-keeping-track

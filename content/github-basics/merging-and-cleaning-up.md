@@ -1,396 +1,544 @@
 ---
 title: Merging and cleaning up
 slug: merging-and-cleaning-up
-summary: Squash into one commit by default, confirm the Issue closed, then clean up.
+summary: Choose how a pull request lands on main, merge it or set auto-merge, then check its Issue closed, delete the branch and update your main.
 ---
+
+Say PR #14 in your recipe site's repo has passed your [Merge check](/learn/checking-a-pr). The merge button offers three ways to merge, and you're not sure which to pick. Afterwards, Issue #12 might stay open without anyone noticing, and old branches pile up on GitHub and on your computer.
+
+```goals
+- Choose between a merge commit, squash and merge, and rebase and merge.
+- Merge a pull request on github.com or with `gh pr merge`.
+- Use auto-merge safely, and turn it off.
+- Confirm the Issue closed, and close it by hand when it didn't.
+- Delete the branch on GitHub and on your computer, and bring your `main` up to date.
+- Ask a coding agent to merge and tidy up, and check what's left.
+```
 
 ## After the Merge check
 
-Say your pull request has passed your [Merge check](/learn/checking-a-pr). Which of GitHub's three merges do you pick? The Issue might stay open unnoticed, and old branches pile up.
+**Squash and merge by default, confirm the Issue closed, then clean up.**
 
-**Squash into one commit by default, confirm the Issue closed, then clean up.**
+Those are three separate moves, and each can go wrong on its own:
+
+1. Merge with a method you chose, not whichever the button showed first.
+2. Check that the Issue the PR was for is now closed.
+3. Delete the branch, and bring your own copy of `main` up to date.
 
 ```checkpoint quick-1
 Your Merge check has passed. What are the next three moves?
-- [x] Squash into one commit, confirm the Issue closed, then clean up.
-- [ ] Clean up first, then squash, then confirm the Issue closed.
-- [ ] Use a merge commit, then clean up, then read the Issue.
-Why: Squash into one commit by default, confirm the Issue closed, then clean up.
+- [x] Merge with the method you chose, confirm the Issue closed, then clean up.
+- [ ] Clean up the branch first, then merge, then read the Issue.
+- [ ] Merge with any method, then open a new PR for the clean-up.
+Why: Squash and merge by default, confirm the Issue closed, then clean up. Each move can go wrong on its own, so check each one.
 ```
 
-## Which merge
+## Three ways to merge
 
-- **Squash and merge** combines the commits into one on `main`. Your default: it suits one change on a short-lived branch.
-- **Merge commit** keeps every commit, for when each must stay in the history.
-- **Rebase and merge** adds each commit onto `main`, for teams wanting a straight-line history.
+GitHub offers three ways to merge a pull request. All three put the same files on `main`. They differ in which commits `main` gets:
+
+| Method | What `main` gets | Suits |
+|---|---|---|
+| **Create a merge commit** | Every commit from the branch, plus one extra **merge commit** that joins the two lines of history | A team that wants every commit kept |
+| **Squash and merge** | One new commit holding all the changes | One change on a short-lived branch, often with small "fix" commits |
+| **Rebase and merge** | Each commit copied onto `main`, one by one, with new IDs and no merge commit | A team that wants a straight-line history of tidy commits |
+
+For example, say PR #14 has three commits: the fix, "Fix a typo" and "Fix the failing test". Squash and merge puts one commit on `main`. A merge commit puts four there: the three, plus the merge commit. Rebase and merge puts three copies.
 
 ```checkpoint quick-2
-You're merging one change from a short-lived branch. Which merge fits?
-- [x] Squash and merge, which combines its commits into one.
-- [ ] Merge commit, which keeps every commit on `main`.
-- [ ] Rebase and merge, which adds each commit onto `main`.
-Why: Squash and merge combines all the pull request's commits into one commit on `main`. It suits one change on a short-lived branch, so it's your default.
+PR #14 has five commits: the fix and four "fix the test" commits. With squash and merge, how many new commits land on `main`?
+- [x] One, holding all the changes.
+- [ ] Five, one for each commit.
+- [ ] Six: the five, plus a merge commit.
+Why: Squash and merge combines every commit in the PR into one new commit. A merge commit would add six, and rebase and merge five copies.
+```
+
+Why squash by default? Small commits help while you work on a branch, but they aren't worth keeping in `main`'s history. With one commit per PR, the history reads as a list of changes, and one revert takes a whole change back out ([Undo and merge conflicts](/learn/undo-and-conflicts) shows how).
+
+Squashing has two costs. The branch's separate commits aren't kept on `main`, though the PR page still shows them. And Git no longer sees your branch as merged, which matters when you clean up, below. So after a squash, the branch is finished: new work starts on a new branch.
+
+When you squash, GitHub suggests a commit message, and you can edit it before you confirm. For a PR with one commit, it suggests that commit's message. For two or more, it suggests the PR's title and a list of its commits. So the PR's title often becomes the line on `main`.
+
+A repo chooses which methods to allow, under **Settings**, then **General**, in the **Pull Requests** section. Allow only one, and only that button appears. Pick a merge commit instead of a squash when each commit must stay separate in the history.
+
+```checkpoint quick-3
+Your team wants every commit from each PR kept on `main`, with a clear point where each PR joined. Which method fits?
+- [x] Create a merge commit.
+- [ ] Squash and merge.
+- [ ] Rebase and merge.
+Why: A merge commit keeps every commit from the branch and adds one commit marking the merge. A squash keeps one commit, and a rebase adds no merge commit.
+```
+
+## Merging it
+
+On github.com:
+
+1. Open the PR's **Conversation** tab and scroll down to the merge box.
+2. Open the menu on the merge button, and choose **Squash and merge**. Then click **Squash and merge**.
+3. Check the suggested commit message, and edit it if you need to. Then click **Confirm squash and merge**.
+4. Click **Delete branch** when GitHub offers it.
+
+With `gh`:
+
+```sh
+gh pr merge 14 --squash --delete-branch
+```
+
+It merges, then deletes the branch on GitHub and on your computer. If you were on that branch, it first switches you to `main` and pulls it. You should see something like:
+
+```text
+✓ Squashed and merged pull request your-name/recipes#14 (Make search ignore capital letters)
+✓ Deleted local branch 12-search-capitals and switched to branch main
+✓ Deleted remote branch 12-search-capitals
+```
+
+`gh` deletes your computer's copy of the branch even if it holds commits the PR doesn't have. So push any last commit before you merge.
+
+If something is in the way, `gh` says the PR `is not mergeable` and gives the reason, such as a required check that hasn't passed. Fix that, not the rule. `gh` may also suggest the `--admin` flag, which merges past the repo's rules. Never let an agent use it.
+
+```checkpoint quick-4
+Your agent's `gh pr merge` fails: "is not mergeable: the base branch policy prohibits the merge". It offers to retry with `--admin`. What do you say?
+- [x] No. Find out what's blocking the merge, such as a check, and fix that.
+- [ ] Yes, because `--admin` is the normal way to merge your own PRs.
+- [ ] Yes, but only if the agent squashes the commits as well.
+Why: The repo's rules are blocking the merge for a reason. `--admin` merges past them, which is what those rules exist to stop.
+```
+
+## Auto-merge
+
+**Auto-merge** merges a PR by itself once all its required reviews and checks pass. It's handy when the last check takes a while: you set it, and the merge happens when that check goes green.
+
+Three things must be true before you can use it:
+
+- The repo allows it: under **Settings**, then **General**, select **Allow auto-merge**.
+- The repo's plan has it. GitHub Free offers it only in public repos. Private repos need a paid plan, such as GitHub Pro or Team.
+- The PR can't merge yet. The option shows only while something is still pending, such as a required check that's running.
+
+To turn it on, choose a method from the merge button's menu, click **Enable auto-merge**, then **Confirm auto-merge**. With `gh`, run `gh pr merge 14 --auto --squash`. It prints that the PR "will be automatically merged via squash when all requirements are met".
+
+To turn it off, click **Disable auto-merge** in the merge box, or run `gh pr merge 14 --disable-auto`. It also turns itself off if someone without write access pushes to the branch, or if the PR's base branch changes.
+
+There's a catch. Auto-merge waits only for what the repo requires. It doesn't wait for the rest of your Merge check: the preview, the risk, the fresh review. So turn it on only once your own check is done.
+
+```checkpoint quick-5
+Your PR can already merge, and you can't find the Enable auto-merge button. Why not?
+- [x] It shows only on a PR that can't merge yet, while something is still pending.
+- [ ] It shows only after every check on the PR has passed.
+- [ ] It shows only on repos that have no rules at all.
+Why: Auto-merge waits for something still pending, such as a required check that's running. A PR that can already merge has nothing to wait for.
 ```
 
 ## Did the Issue close?
 
-On `finance-agent`, pull request #305 merged into `main` saying `Closes #267`.
+If the PR said `Closes #12` and merged into `main`, GitHub should have closed #12. Check it:
 
-You look:
-
-```
-gh issue view 267 --repo SiddharthMuramkar/finance-agent --json state
+```sh
+gh issue view 12 --json state
 ```
 
-You should see `"state": "CLOSED"`.
-
-If yours says `OPEN`, run three checks with `gh pr view <pr-number>`:
-
-- It says `Merged`.
-- It says `into main`. A pull request into any other branch closes nothing.
-- Its body says `Closes` and the Issue's number.
-
-```checkpoint quick-3
-Which pull request closes its Issue when it merges?
-- [x] One into `main` whose body says `Closes` and the number.
-- [ ] One into any branch whose body says `Closes` and the number.
-- [ ] One into `main` whose title names the Issue in any words.
-Why: It has to have merged, into `main`, and its body has to say `Closes` and the Issue's number. A pull request into any other branch closes nothing.
+```json
+{
+  "state": "CLOSED"
+}
 ```
 
-If it merged without that line and the work is finished, close the Issue by hand, below. Anything else? See [Where it goes wrong](/learn/merging-and-cleaning-up).
+On github.com, the Issue shows **Closed**, and its timeline names the PR that closed it.
 
-## Closing by hand
+Still `OPEN`? Look again after a few seconds, since closing can lag a moment behind the merge. Then check three things with `gh pr view 14`:
 
-You say:
+- It says `Merged`. If not, nothing reached `main`, and nothing closed.
+- It says `into main`, the default branch. A PR into any other branch closes nothing.
+- Its description says `Closes #12`, or fixes or resolves, with one keyword per Issue. Words like "Part of #12" close nothing.
 
-> Close `#<issue-number>`, naming pull request `#<pr-number>` in a comment.
+If `gh issue view` prints `"state": "MERGED"`, you gave it the PR's number by mistake. Issues and PRs share one set of numbers, so use the Issue's.
 
-Some Issues get no code. Close those by hand, with a comment first to record why.
-
-```checkpoint quick-4
-An Issue will get no code. How does it get closed?
-- [x] By hand, with a comment first to record why.
-- [ ] By a merge, with `Closes` and its number in the body.
-- [ ] By hand, with no comment, since closing records why.
-Why: Some Issues get no code. Close those by hand, with a comment first to record why.
+```checkpoint quick-6
+Which pull request closes Issue #12 when it merges?
+- [x] One into `main` whose description says `Closes #12`.
+- [ ] One into any branch whose description says `Closes #12`.
+- [ ] One into `main` whose title mentions #12 in any words.
+Why: It has to merge into the default branch, usually `main`, and its description needs a closing keyword with the Issue's number.
 ```
 
-Say you've decided against one.
+## Closing an Issue by hand
 
-You say:
+Some Issues won't close by themselves: the PR forgot its `Closes` line, or the work needed no code at all. Close those by hand, with a comment saying why, so the next reader knows.
 
-> Close `#<issue-number>` as not planned, with a comment first saying `<reason>`.
+On github.com, open the Issue and write your comment. Next to **Close issue**, open the menu to pick a reason, such as completed or not planned. Then click **Close issue**.
 
-Either way, look again: you should see `"state": "CLOSED"`.
+With `gh`:
 
-## Closing a Spec
+```sh
+gh issue close 12 --comment "Fixed by #14."
+gh issue close 9 --reason "not planned" --comment "We removed the About page."
+```
 
-Closing every [sub-issue](/learn/issues-and-keeping-track) doesn't close their [Spec](/learn/one-change-start-to-finish). So give it its own `Closes` line in the last pull request, or close it by hand.
+Closed one by mistake? `gh issue reopen 12` opens it again.
 
-```checkpoint quick-5
-Every sub-issue of a Spec has closed. What closes the Spec?
-- [x] Its own `Closes` line in the last pull request, or by hand.
-- [ ] Nothing more, because its last sub-issue closing closes it too.
-- [ ] Pulling `main`, because that updates the Spec's state on GitHub.
-Why: Closing every sub-issue doesn't close their Spec. So give it its own `Closes` line in the last pull request, or close it by hand.
+Parents need this too. Closing every sub-issue doesn't close the parent ([Issues: keeping track of work](/learn/issues-and-keeping-track) explains sub-issues). So give the parent its own `closes #10` in the last PR, or close it by hand once its last sub-issue closes. `gh issue view 10 --json state,subIssuesSummary` shows both its state and how many sub-issues are done.
+
+```checkpoint quick-7
+You decide the "search by ingredient" Issue won't be built after all. How does it get closed?
+- [x] By hand, as not planned, with a comment first saying why.
+- [ ] By a merge, with `Closes` and its number in some other PR.
+- [ ] By the `wontfix` label, which closes the Issue when you add it.
+Why: Work that will never happen has no PR to close it. Close it by hand, choose "not planned", and leave a comment so the next reader knows why.
 ```
 
 ## Cleaning up
 
-- Branch: delete it, so nobody uses it by accident.
-- `main`: pull it, so your copy has the merged work.
-- [Worktree](/learn/branches-and-worktrees), if you made one: type `/exit` in its session, and choose remove if asked. Kept it? From your project's folder, have Claude run `git worktree remove .claude/worktrees/318-clipped-labels`.
+GitHub keeps the PR, its conversation and its commits when the branch goes. What deleting prevents is someone, you or an agent, picking up an old branch by mistake.
 
-```checkpoint quick-6
-Why delete a branch after merging it?
-- [x] So nobody uses it by accident.
-- [ ] So your copy has the merged work.
-- [ ] So GitHub can close the Issue.
-Why: Delete the branch, so nobody uses it by accident. Pulling `main` is what gives your copy the merged work.
+On GitHub, the branch can go three ways:
+
+- Click **Delete branch** on the merged PR. A **Restore branch** button brings it back if you need it.
+- Turn on **Automatically delete head branches**, under **Settings**, then **General**. GitHub then deletes each PR's branch after it merges.
+- Use `gh pr merge` with `--delete-branch`, as above.
+
+On your computer, bring `main` up to date and see what's left. [Push, pull and remotes](/learn/push-pull-and-remotes) explains these commands:
+
+```sh
+git switch main
+git pull
+git fetch --prune
+git branch -vv
 ```
 
-## Do it now
+`git pull` brings the merged commit into your `main`. `git fetch --prune` makes Git forget branches that were deleted on GitHub. Then `git branch -vv` lists your branches, and one whose GitHub copy is gone shows `gone]`.
 
-Merge check passed? Go back to your first session, on your Issue's branch. Not passed? Have that session fix and push, then check again.
+Delete each finished branch with `git branch -d 12-search-capitals`. After a squash merge, Git may refuse, saying the branch is `not fully merged`. That's expected: `main` holds one new commit, not your branch's commits, so Git can't find them there.
 
-New session? Paste [the line for Claude](/learn/one-change-start-to-finish) first.
+Before you force it with `git branch -D`, check that the branch holds nothing new. These two should print the same long ID:
 
-Still in the review session in your second terminal? Type `/exit`.
-
-You say:
-
-> Squash-merge this pull request and delete its branch.
-
-Claude runs:
-
-```
-gh pr merge --squash --delete-branch
+```sh
+git rev-parse 12-search-capitals
+gh pr view 14 --json headRefOid --jq .headRefOid
 ```
 
-An error? See [Where it goes wrong](/learn/merging-and-cleaning-up).
+If they match, the branch holds only work that's already in the PR, so `-D` is safe. If they differ, the branch has a commit the PR lacks. Put it on a fresh branch with its own PR first.
 
-You look:
+Used a [worktree](/learn/branches-and-worktrees) for this work? Remove it from your project's main folder with `git worktree remove <folder>`. Git removes only a clean worktree, with nothing left uncommitted.
 
-```
-gh issue view <issue-number> --json state
-```
+Then start your next change on a fresh branch, from an up-to-date `main`.
 
-You should see `"state": "CLOSED"`. If it's `OPEN`, run the three checks above.
-
-You look:
-
-```
-git branch
+```checkpoint quick-8
+After a squash merge, `git branch -d 12-search-capitals` says the branch is not fully merged. What's going on?
+- [x] `main` holds one new squash commit, so Git can't find the branch's own commits there.
+- [ ] The merge failed, so the branch's work never reached `main`.
+- [ ] GitHub still has the branch, so Git refuses to delete your copy.
+Why: Squash and merge writes a new commit instead of keeping the branch's commits. Check that the branch's last commit matches the PR's, then `git branch -D` is safe.
 ```
 
-You should see `* main` and no Issue branch: `--delete-branch` moved you to `main` and pulled it.
+## With a coding agent
 
-That's your first real change merged into `main`. Whether it's online depends on how your project deploys. Take a moment, then stop.
+An agent can do the merging and most of the tidying through `gh` and `git`. Say what to do, and what not to:
 
-```checkpoint quick-7
-You've confirmed the Issue closed, and `git branch` shows `* main` with no branch for your Issue. What now?
-- [x] Your first real change has merged, so stop.
-- [ ] Your change still needs a merge, so go on.
-- [ ] Your branch still needs pushing, so go on.
-Why: That's your first real change merged into `main`. Take a moment, then stop.
+> Squash-merge PR #14 and delete its branch. Don't use `--admin`. Then show me `gh issue view 12 --json state` and `git branch -vv`.
+
+It runs something like:
+
+```sh
+gh pr merge 14 --squash --delete-branch
+gh issue view 12 --json state
+git fetch --prune
+git branch -vv
 ```
+
+Then check its report against these:
+
+- `gh pr view 14` says `Merged`.
+- Issue #12 says `"state": "CLOSED"`. If not, run the three checks above.
+- `git branch` shows `* main`, and no `12-search-capitals`.
+
+If you want the agent to merge later, once a check finishes, ask for auto-merge only after your Merge check is done:
+
+> My Merge check passed. Turn on auto-merge with squash for PR #14.
+
+```checkpoint quick-9
+Your agent reports: "Merged PR #14, and Issue #12 is closed." What do you run to check the second claim?
+- [x] `gh issue view 12 --json state`, looking for CLOSED.
+- [ ] `gh pr view 14`, looking for the word Merged.
+- [ ] `git branch -vv`, looking for a branch marked gone.
+Why: Only the Issue's own state shows whether it closed. `gh pr view` checks the merge, and `git branch -vv` checks the clean-up.
+```
+
+## Try it: merge your practice PR
+
+````try
+You need the practice PR from the Try it in [Checking a pull request before you merge](/learn/checking-a-pr), marked ready for review, and the numbers of its two Issues. Run these in your practice repo.
+
+1. Squash-merge the PR and delete its branch. Add the PR's number if you're not on its branch.
+
+   ```sh
+   gh pr merge --squash --delete-branch
+   ```
+
+   You should see `Squashed and merged pull request`, then `Deleted local branch` and `Deleted remote branch`.
+
+2. Check that the bug closed, with its number in place of `BUG`:
+
+   ```sh
+   gh issue view BUG --json state
+   ```
+
+   You should see `"state": "CLOSED"`.
+
+3. Check the parent, with its number in place of `PARENT`:
+
+   ```sh
+   gh issue view PARENT --json state,subIssuesSummary
+   ```
+
+   You should see `"state": "OPEN"`, with `"completed": 1` and `"total": 1`. Closing its sub-issue didn't close it.
+
+4. Close the parent by hand:
+
+   ```sh
+   gh issue close PARENT --comment "Practice done: its only sub-issue is closed."
+   ```
+
+5. Tidy your copy:
+
+   ```sh
+   git switch main
+   git pull
+   git fetch --prune
+   git branch -vv
+   ```
+
+   You should see `main`, and no practice branch.
+
+6. See the one new commit at the top of `main`:
+
+   ```sh
+   git log --oneline -3
+   ```
+````
+
+## Try it: watch a pull request merge itself
+
+This one uses your practice project, the yoga-studio booking site from [Issues: keeping track of work](/learn/issues-and-keeping-track), with a CI check on its pull requests. You'll make `main` wait for that check with **branch protection**: a branch rule that blocks merging until checks pass. Then you'll watch a PR merge itself.
+
+````try
+You'll need the practice project. If you haven't set it up, do its Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. No CI check yet? The Try it in [What CI/CD is](/learn/what-ci-cd-is) adds one, called `test`.
+
+1. On GitHub Free, make the repo public first. Free has auto-merge and protected branches only in public repos.
+
+   ```sh
+   gh repo edit --visibility public --accept-visibility-change-consequences
+   ```
+
+2. Turn on auto-merge: in **Settings**, under **General**, select **Allow auto-merge**.
+3. In **Settings**, click **Branches**, then **Add classic branch protection rule**.
+4. Type `main` as the branch name pattern. Select **Require status checks to pass before merging**.
+5. Search for your CI check, select it, and click **Create**.
+6. Create a practice Ticket, so your booking Ticket, #3, stays open. Note its number.
+
+   ```sh
+   gh issue create --title "Try auto-merge" --body "Practice."
+   ```
+
+7. Start its branch:
+
+   ```sh
+   git switch main && git pull && git switch -c try-auto-merge
+   ```
+
+8. Change one line of `README.md`, then commit and push:
+
+   ```sh
+   git commit -am "Try auto-merge" && git push -u origin HEAD
+   ```
+
+9. Open a PR into `main`, with your practice Ticket's number in place of `N`:
+
+   ```sh
+   gh pr create --title "Try auto-merge" --body "Closes #N"
+   ```
+
+10. While the checks run, click **Enable auto-merge**, then **Confirm auto-merge**. If they finish first, the button won't show: push another small commit and try again.
+
+You should see the PR merge by itself once the checks pass, and the Ticket's Issue close. Then go back:
+
+```sh
+git switch main && git pull
+```
+````
 
 ## Going deeper
 
-### Why it exists
-
-GitHub's default button makes a merge commit, which adds all your branch's commits to `main`. Work-in-progress commits help while you're on a branch, but they aren't necessarily worth keeping in the history. So squash by default. The cost is that those separate commits aren't kept on `main`, so pick a merge commit when they matter.
-
-```checkpoint quick-8
-What does squashing cost you?
-- [x] Your branch's separate commits aren't kept on `main`.
-- [ ] Your pull request's history isn't kept on GitHub.
-- [ ] Your branch's changes aren't brought into `main`.
-Why: The cost is that those separate commits aren't kept on `main`, so pick a merge commit when they matter.
-```
-
-Cleanup can feel risky, but GitHub keeps your pull request and commit history when the branch goes. The one exception is a commit you never pushed: `--delete-branch` deletes your local branch anyway, so push first. What deleting prevents is someone using an old branch by accident.
-
-### A real example
-
-Pull request #91 on this site's repo landed the last eight sub-issues of Spec #57. Its body gives each its own line, with the Spec last:
-
-```
-Closes #62
-Closes #63
-Closes #64
-Closes #67
-Closes #68
-Closes #70
-Closes #71
-Closes #72
-Closes #57
-```
-
-That repo is private, so here's the same kind of list on a public one. Pull request #89 on `finance-agent` went into `main` with 14 commits, using squash and merge, so `main` got one commit. Its branch was deleted 2 seconds after the merge. Its body says it implements a Spec, #77, then gives that Spec and its 4 sub-issues a `Closes` line each.
-
-You look:
-
-```
-gh issue view 77 --repo SiddharthMuramkar/finance-agent --json closedByPullRequestsReferences --jq '.closedByPullRequestsReferences[].number'
-```
-
-You should see `89`, the pull request that closed the Spec. `--jq` picks one field out of the JSON.
-
-Now a Spec no pull request closed: #57 on `finance-agent`, which isn't the #57 on this site's repo.
-
-You look:
-
-```
-gh issue view 57 --repo SiddharthMuramkar/finance-agent --json state,subIssuesSummary
-```
-
-You should see `"state": "OPEN"`, with `"completed": 19` and `"total": 19`.
-
-All 19 sub-issues are closed, and GitHub left the Spec open. Its newest comment says it has shipped and is now with its owner. A merged pull request saying `Closes` with its number would close it, and so would closing it by hand.
-
-```checkpoint quick-9
-All 19 of a Spec's sub-issues are closed. What does GitHub do to the Spec?
-- [x] It leaves the Spec open.
-- [ ] It closes the Spec too.
-- [ ] It reopens the sub-issues.
-Why: All 19 sub-issues are closed, and GitHub left the Spec open. A merged pull request saying `Closes` with its number would close it, and so would closing it by hand.
-```
-
 ### Where it goes wrong
 
-**Your pull request says `Merged`, and your Issue says `OPEN`.** Pull request #306 on `finance-agent` shows why that happens.
+**Your PR says `Merged`, and your Issue says `OPEN`.** Look at the PR's description. "Part of #12" or "Related to #12" only mention the Issue. If the work is finished, close the Issue by hand, naming the PR.
 
-You look:
+**Your PR says `into` another branch.** GitHub ignored its `Closes` line, so the merge closed nothing. The Issue closes when a PR into `main` says so, or when you close it by hand.
 
-```
-gh pr view 306 --repo SiddharthMuramkar/finance-agent
-```
+**`gh` won't delete your local branch, because a worktree has it open.** Git lets only one folder be on a branch at a time. The merge itself went through: only the clean-up stopped, and `gh` prints the commands to finish. Run `git status` in that worktree first, in case it holds work you want.
 
-You should see `Merged`, `into main` and `Part of #248`.
+**A later PR shows commits you already merged.** You kept working on a branch after it was squash-merged. A new PR from it lists the old commits again, and you may meet the same merge conflicts more than once. Start each change on a fresh branch.
 
-`Part of` isn't a closing word, so #248 stayed open. If yours is the same and the work is finished, close the Issue by hand.
+**You deleted a branch you still needed.** Open the merged PR and click **Restore branch**.
+
+**Auto-merge turned itself off.** Someone without write access pushed to the branch, or the base branch changed. Check the new commits, then turn it on again.
 
 ```checkpoint quick-10
-A merged pull request says `Part of` and an Issue's number. What happens to that Issue?
-- [x] It stays open, because `Part of` isn't a closing word.
-- [ ] It closes, because the pull request merged into `main`.
-- [ ] It closes, because `Part of` counts the same as `Closes`.
-Why: `Part of` isn't a closing word, so #248 stayed open. If yours is the same and the work is finished, close the Issue by hand.
+You squash-merged a branch yesterday. Today you want to add to the same work, and the old branch is still on your computer. Where does the new work go?
+- [x] On a fresh branch, because a new PR from the old one would list the squashed commits again.
+- [ ] On the old branch, because a squash merge empties it, so nothing old can come back.
+- [ ] Straight on `main`, because a squashed piece of work can't have another PR.
+Why: Squash merging suits short-lived branches. Keep working on the old branch, and later PRs from it can include commits already squashed into `main`.
 ```
-
-**All three checks hold, and your Issue says `OPEN`.** GitHub closed #77 on `finance-agent` 3 seconds after #89 merged, so look again. Still `OPEN`? Close it by hand, naming the pull request.
-
-**Your pull request doesn't say `Merged`.** It hasn't merged, so nothing reached `main` and nothing closed. Have Claude explain what `gh pr merge` printed. Fix that, then merge again.
-
-**Your pull request says `into` another branch.** GitHub ignored its `Closes`. The Issue closes when a pull request into `main` says so, as #89 did after building on another branch.
-
-**`gh` prints `"state": "MERGED"`.** You gave `gh issue view` your pull request's number. Issues and pull requests share one set of numbers, so use the Issue's.
-
-```checkpoint quick-11
-`gh issue view` prints `"state": "MERGED"`. What does that tell you?
-- [x] You gave it your pull request's number, not the Issue's.
-- [ ] You gave it the right number, and the Issue has closed.
-- [ ] You gave it an Issue's number, and that Issue has merged.
-Why: Issues and pull requests share one set of numbers, so `gh issue view` can read a pull request's number. Use the Issue's.
-```
-
-**`gh` stops at `'main' is already used by worktree`.** Your session is in a worktree, and your project's folder is already on `main`. Git lets only one folder be on a branch. The merge went through, and only the cleanup stopped. First run `git status` in the worktree. If it lists work you want, have Claude put it on a fresh branch. Then exit a `claude -w` session, and choose remove if asked. For a worktree you made yourself, have Claude run `git worktree remove <worktree-folder>` from your project's folder. If `git branch` still lists the Issue's branch, delete it as the next entry says. Then have Claude delete the branch on GitHub if it's still there, and update `main`.
-
-**Git says a branch is `not fully merged`.** After a squash, that can be expected: `main` holds one new commit, so `git branch -d` can't find your branch's commits there. A commit made after the merge prints the same message, and `-D` would lose it. So compare your branch's last commit with the pull request's.
-
-You look:
-
-```
-git rev-parse <branch>
-gh pr view <pr-number> --json headRefOid --jq .headRefOid
-```
-
-You should see the same long id twice. If so, have Claude run `git branch -D <branch>`, which deletes it anyway. If not, don't delete it. Have Claude show what differs. A commit the pull request lacks goes on a fresh branch with its own pull request. No such commit? Then `-D` is safe.
-
-**`git worktree remove` says `contains modified or untracked files`.** Only a clean worktree can be removed: no new files you haven't committed, and no uncommitted changes. In that folder, run `git status` yourself to see what's left, before anyone reaches for `--force`, which removes it anyway.
-
-**`git worktree remove` says `locked`.** A `claude -w` session locks its worktree while it runs, and one `--force` won't get past that. Don't force it twice. Exit the session, and choose remove if asked. Terminal closed without exiting? Have Claude run `git worktree unlock <worktree-folder>` first.
-
-**A later pull request shows commits you already merged.** You kept working on the branch after squashing it, so later pull requests can include those commits. A **conflict** (two changes git can't combine by itself) gets more likely too. So start each change on a fresh branch. You'll meet conflicts again in [When it goes wrong](/learn/undo-and-conflicts).
-
-```checkpoint quick-12
-You squashed a branch, and now have more work. Where does it go?
-- [x] On a fresh branch.
-- [ ] On the same branch.
-- [ ] Straight on `main`.
-Why: Later pull requests from the same branch can include commits you already merged. So start each change on a fresh branch.
-```
-
-**#57 says `CLOSED`.** Its owner may have closed it since. The sub-issue counts still show all 19 closed.
-
-### Read more
-
-- [Pull request merges](https://docs.github.com/en/pull-requests/reference/pull-request-merges), GitHub Docs, read 2026-10-29
-- [Closing an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/closing-an-issue), GitHub Docs, read 2026-11-05
-- [Linking a pull request to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue), GitHub Docs, read 2026-10-29
-- [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow), GitHub Docs, read 2026-11-05
-- [gh pr merge](https://cli.github.com/manual/gh_pr_merge), GitHub, read 2026-11-05
-- [gh issue close](https://cli.github.com/manual/gh_issue_close), GitHub, read 2026-11-05
-- [git branch](https://git-scm.com/docs/git-branch), The Git project, read 2026-11-05
-- [git worktree](https://git-scm.com/docs/git-worktree), The Git project, read 2026-10-29
-- [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees), Claude Code docs, read 2026-10-30
-- [Home on every visit, sign in where you meant to go, and Sign out (#77)](https://github.com/SiddharthMuramkar/finance-agent/pull/89), SiddharthMuramkar, 2026-11-03
-- [Small leftovers from the tutor lanes](https://github.com/SiddharthMuramkar/finance-agent/pull/306), SiddharthMuramkar, 2026-11-04
-- [Insight-led Topics: a smarter, more intuitive Tutor, piloted on present value](https://github.com/SiddharthMuramkar/finance-agent/issues/57), SiddharthMuramkar, 2026-11-03
 
 ## Remember
 
 ```flashcards
-Q: Which merge is your default, and when do you use another?
-A: Squash and merge. Use a merge commit when each commit must stay in the history, and rebase when your team wants a straight-line history.
+Q: Which merge method is your default, and when do you pick another?
+A: Squash and merge. Pick a merge commit when each commit must stay in the history, and rebase and merge for a straight-line history of tidy commits.
 
-Q: How do you confirm an Issue closed after a merge?
-A: Run `gh issue view` with its number and `--json state`, and look for `"state": "CLOSED"`.
+Q: What does squash and merge put on `main`?
+A: One new commit holding all the PR's changes. The separate commits stay visible on the PR's page.
 
-Q: An Issue stays open after a merge. What three things do you check on the pull request?
-A: It says `Merged`, it says `into main`, and its body says `Closes` with the Issue's number.
+Q: What does auto-merge wait for, and what doesn't it wait for?
+A: It waits for the repo's required reviews and checks. It doesn't wait for your preview, your risk call or a fresh review.
 
-Q: You've decided against an Issue. How do you close it?
-A: Have Claude post a comment saying why, then close it as not planned.
+Q: Why can't you see the Enable auto-merge button?
+A: The repo doesn't allow auto-merge, your plan doesn't offer it, or the PR can already merge.
 
-Q: Every sub-issue of a Spec has closed. How does the Spec itself close?
-A: Through its own `Closes` line in a merged pull request, or by hand. Closing its sub-issues doesn't close it.
+Q: An Issue stays open after its PR merged. What three things do you check on the PR?
+A: It says `Merged`, it says `into main`, and its description says `Closes` with the Issue's number.
 
-Q: What's on your cleanup list after a merge?
-A: Delete the branch, pull `main`, and remove the worktree if you made one.
+Q: `gh issue view` prints `"state": "MERGED"`. What went wrong?
+A: You gave it the PR's number. Issues and PRs share one set of numbers, so use the Issue's.
 
-Q: Why does `git branch -d` say `not fully merged` after a squash merge?
-A: `main` holds one new commit, so git can't find your branch's own commits there. Check your branch's last commit matches the pull request's `headRefOid`, then use `git branch -D`.
+Q: Does closing every sub-issue close the parent?
+A: No. Give the parent its own `Closes` line, or close it by hand.
 
-Q: `gh issue view` with `--json state` prints `"state": "MERGED"`. What went wrong?
-A: You gave it your pull request's number. Issues and pull requests share one set of numbers, so use the Issue's.
+Q: What does `git fetch --prune` do?
+A: It makes Git forget the branches that were deleted on GitHub.
+
+Q: After a squash merge, `git branch -d` says not fully merged. What do you do?
+A: Check that the branch's last commit matches the PR's `headRefOid`. If it does, `git branch -D` is safe.
+
+Q: Where does your next change start after a squash merge?
+A: On a fresh branch, from an up-to-date `main`.
 ```
 
 ## Final test
 
-```final-test merging-and-cleaning-up-which-merge
-Your pull request holds one fix in five small commits, on a branch you made this morning. Nobody needs those commits later. Which merge do you ask for?
+```final-test mcu-which-merge
+Your PR holds one fix in five small commits, on a branch you made this morning. Nobody needs those commits later. Which merge do you ask for?
 - [x] Squash and merge, because one change on a short-lived branch suits one commit on `main`.
-- [ ] A merge commit, because every pull request has to keep each of its commits on `main`.
-- [ ] Rebase and merge, because a squash is refused on any branch with more than one commit.
+- [ ] A merge commit, because every PR has to keep each of its commits on `main`.
+- [ ] Rebase and merge, because a squash is refused on a branch with more than one commit.
 - [ ] Any of the three, because they all leave exactly the same history on `main`.
-Why: Squash and merge combines the commits into one, which suits one change on a short-lived branch. A merge commit is for when each commit must stay in the history, and rebase is for a team that wants a straight-line history.
+Why: Squash and merge combines the commits into one, which suits one change on a short-lived branch. A merge commit keeps them all, and rebase copies each one.
 ```
 
-```final-test merging-and-cleaning-up-stays-open
-A pull request merged into `main`, and its Issue still says `OPEN`. Its body never says `Closes`. The work is finished. What do you do?
-- [x] Have Claude close the Issue by hand, with a comment naming the pull request.
-- [ ] Wait a while, because GitHub closes every Issue a merged pull request worked on.
-- [ ] Have Claude undo the pull request, because an open Issue means the merge failed.
-- [ ] Have Claude merge the pull request again, so that GitHub reads its body a second time.
-Why: With no `Closes` in its body, the pull request gave GitHub nothing to close. The merge itself worked, and the work is on `main`. So close the Issue by hand, with a comment naming the pull request.
+```final-test mcu-same-files
+What's the difference between the three merge methods?
+- [x] They put the same files on `main`, but different commits.
+- [ ] They put different files on `main`, depending on the method.
+- [ ] Only squash and merge brings the branch's changes to `main`.
+- [ ] Only a merge commit lets GitHub close the linked Issue.
+Why: All three land the same changes. A merge commit keeps every commit and adds one, squash makes one new commit, and rebase copies each commit.
 ```
 
-```final-test merging-and-cleaning-up-spec-stays-open
-The last sub-issue of your Spec has closed. No pull request says `Closes` with the Spec's number. What happens to the Spec?
-- [x] It stays open. A merged pull request's `Closes` line would close it, or you can close it by hand.
-- [ ] It closes by itself, because GitHub closes a parent when its last sub-issue closes.
-- [ ] It closes when you next pull `main`, because pulling is what updates an Issue's state.
-- [ ] Its sub-issues reopen, because a parent can't stay open once all of them have closed.
-Why: Closing every sub-issue doesn't close their Spec. A Spec with all its sub-issues closed can still say `OPEN`. So give it its own `Closes` line in the last pull request, or close it by hand.
+```final-test mcu-stays-open
+A PR merged into `main`, and its Issue still says `OPEN` a minute later. Its description never says `Closes`. The work is finished. What do you do?
+- [x] Close the Issue by hand, with a comment naming the PR.
+- [ ] Wait longer, because GitHub closes every Issue a merged PR worked on.
+- [ ] Revert the PR, because an open Issue means the merge failed.
+- [ ] Merge the PR again, so GitHub reads its description a second time.
+Why: With no closing keyword, the PR gave GitHub nothing to close. The merge worked, so close the Issue by hand and say which PR did the work.
 ```
 
-```final-test merging-and-cleaning-up-deeper-after-a
-You squash-merged a branch yesterday. Today you want to add to the same work, and the old branch is still on your machine. Where does the new work go?
-- [x] On a fresh branch, because a later pull request from the old one can include the squashed commits.
-- [ ] On the old branch, because a squash merge removes its commits, so nothing can come back.
-- [ ] On the old branch, because git refuses a new branch until an older one has been deleted.
-- [ ] Straight on `main`, because a squash merge turns off pull requests for that piece of work.
-Why: Squash merging works best for short-lived branches. Keep working on the same branch and later pull requests can include commits already squashed into `main`, which makes conflicts more likely. So start a fresh branch.
+```final-test mcu-parent-closes
+Your last PR finishes the final sub-issue, #13, of the parent Issue #10. How can that same PR also close #10?
+- [x] Give it a keyword for each: `Closes #13, closes #10`.
+- [ ] Nothing extra: a parent closes when its last sub-issue closes.
+- [ ] Write `Closes #13, #10`, so one keyword covers both.
+- [ ] Mention #10 anywhere in the PR's title.
+Why: Closing every sub-issue doesn't close the parent, and GitHub needs one keyword per Issue. Or close the parent by hand afterwards.
+```
+
+```final-test mcu-after-squash
+You squash-merged a branch yesterday and want to add to the same work today. The old branch is still on your computer. Where does the new work go?
+- [x] On a fresh branch from an up-to-date `main`.
+- [ ] On the old branch, because squash merging emptied it.
+- [ ] On the old branch, because Git refuses new branches until old ones go.
+- [ ] Straight on `main`, because squashed work can't have another PR.
+Why: A new PR from a squash-merged branch can list the already-merged commits again, and conflicts get more likely. Start fresh.
+```
+
+```final-test mcu-not-fully-merged
+After a squash merge, `git branch -d` refuses: the branch is not fully merged. What do you do?
+- [x] Check that the branch's last commit matches the PR's `headRefOid`, then use `git branch -D`.
+- [ ] Use `git branch -D` straight away, because the message is always wrong after a merge.
+- [ ] Leave the branch for ever, because Git says some of its work is unmerged.
+- [ ] Merge the PR a second time, so Git sees the branch as merged.
+Why: After a squash, Git can't find the branch's commits on `main`, so it refuses. If the branch holds nothing newer than the PR, the forced delete loses nothing.
+```
+
+```final-test mcu-auto-merge-wait
+Auto-merge is on for your PR, and the last required check is still running. You haven't tried the preview yet. What happens if the check passes now?
+- [x] The PR merges, because auto-merge waits only for what the repo requires.
+- [ ] Nothing, because auto-merge waits until you've tried the preview.
+- [ ] The PR merges only after a fresh agent has reviewed it.
+- [ ] The PR turns into a draft until you confirm the merge.
+Why: Auto-merge merges once the required reviews and checks pass. Your own looks aren't among them, so turn it on only after your Merge check.
+```
+
+```final-test mcu-state-merged
+You run `gh issue view 14 --json state` to see whether your Issue closed, and it prints `"state": "MERGED"`. What does that tell you?
+- [x] You gave it a PR's number, since Issues and PRs share one set of numbers.
+- [ ] The Issue merged into `main` along with its PR.
+- [ ] The Issue closed, and GitHub calls a closed Issue merged.
+- [ ] The Issue is waiting for its PR to merge.
+Why: An Issue is open or closed, never merged. A PR can be merged, and it shares the repo's numbers with the Issues, so use the Issue's number.
+```
+
+```final-test mcu-admin
+Your agent's merge fails with "not mergeable", and it proposes `gh pr merge 14 --squash --admin`. What do you say?
+- [x] No: find out what's blocking the merge, such as a required check, and fix that.
+- [ ] Yes, because `--admin` only changes who is shown as merging the PR.
+- [ ] Yes, because a failed merge always means GitHub is confused.
+- [ ] Yes, but only after you delete the branch on GitHub.
+Why: `--admin` merges past the repo's rules, which exist to stop exactly this. Fix what the rules are pointing at instead.
+```
+
+```final-test mcu-fetch-prune
+GitHub deleted your PR's branch after the merge, but `git branch -r` on your computer still lists `origin/12-search-capitals`. What fixes that?
+- [x] `git fetch --prune`, which makes Git forget branches deleted on GitHub.
+- [ ] `git pull`, which deletes old branches as it brings in new commits.
+- [ ] `git branch -d main`, which resets the list of branches.
+- [ ] Nothing, because that line means the branch still exists on GitHub.
+Why: Git's list of GitHub branches is only as fresh as its last fetch. `--prune` removes the ones that no longer exist on GitHub.
 ```
 
 ```sources
-- [Finish v2: land the last eight Tickets and bring the site back up](https://github.com/SiddharthMuramkar/skills/pull/91), SiddharthMuramkar, 2026-10-30
-- [Home on every visit, sign in where you meant to go, and Sign out (#77)](https://github.com/SiddharthMuramkar/finance-agent/pull/89), SiddharthMuramkar, 2026-11-03
-- [Run parallel sessions with worktrees (Claude Code Docs)](https://code.claude.com/docs/en/worktrees), Anthropic
-- [Git - git-push Documentation](https://git-scm.com/docs/git-push), The Git project
-- [Pull request merges](https://docs.github.com/en/pull-requests/reference/pull-request-merges)
-- [gh pr merge](https://cli.github.com/manual/gh_pr_merge), GitHub CLI manual
-- [The site follows the Mac by default, and the header menu picks any of the four Themes](https://github.com/SiddharthMuramkar/finance-agent/pull/305), SiddharthMuramkar, 2026-11-04
-- [gh pr view](https://cli.github.com/manual/gh_pr_view), GitHub CLI manual
-- [Linking a pull request to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
-- [Small leftovers from the tutor lanes](https://github.com/SiddharthMuramkar/finance-agent/pull/306), SiddharthMuramkar, 2026-11-04
-- [Go-live: model sweep, 50-turn replay and production switches](https://github.com/SiddharthMuramkar/finance-agent/issues/248), SiddharthMuramkar, 2026-11-04
+- [Pull request merges](https://docs.github.com/en/pull-requests/reference/pull-request-merges), GitHub Docs
+- [About merge methods on GitHub](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/about-merge-methods-on-github), GitHub Docs
+- [Configuring commit squashing for pull requests](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/configuring-commit-squashing-for-pull-requests), GitHub Docs
+- [Merging a pull request](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/merging-a-pull-request), GitHub Docs
+- [Automatically merging a pull request](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/automatically-merging-a-pull-request), GitHub Docs
+- [Managing auto-merge for pull requests in your repository](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-auto-merge-for-pull-requests-in-your-repository), GitHub Docs
+- [Managing a branch protection rule](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule), GitHub Docs
+- [Managing the automatic deletion of branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-the-automatic-deletion-of-branches), GitHub Docs
+- [Deleting and restoring branches in a pull request](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/deleting-and-restoring-branches-in-a-pull-request), GitHub Docs
+- [Linking a pull request to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue), GitHub Docs
 - [Closing an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/closing-an-issue), GitHub Docs
-- [setup-matt-pocock-skills: issue-tracker-github.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/setup-matt-pocock-skills/issue-tracker-github.md), Matt Pocock's Skills
-- [gh issue close](https://cli.github.com/manual/gh_issue_close), GitHub CLI manual
-- [Insight-led Topics: a smarter, more intuitive Tutor, piloted on present value](https://github.com/SiddharthMuramkar/finance-agent/issues/57), SiddharthMuramkar, 2026-11-03
-- [v2 Spec: planning docs (the brief, ADR 0006, the Glossary words, the research notes)](https://github.com/SiddharthMuramkar/skills/pull/73), SiddharthMuramkar, 2026-10-30
+- [Adding sub-issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues), GitHub Docs
 - [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow), GitHub Docs
-- [Git - git-pull Documentation](https://git-scm.com/docs/git-pull), The Git project
-- [Commands (Claude Code Docs)](https://code.claude.com/docs/en/commands), Anthropic
-- [finance-agent/vercel.json](https://github.com/SiddharthMuramkar/finance-agent/blob/main/vercel.json), SiddharthMuramkar
-- [git-worktree](https://git-scm.com/docs/git-worktree)
-- [Git - git-branch Documentation](https://git-scm.com/docs/git-branch), The Git project
-- [cli/pkg/cmd/pr/merge/merge.go at v2.97.0](https://github.com/cli/cli/blob/v2.97.0/pkg/cmd/pr/merge/merge.go), The GitHub CLI project
-- [Git - git-switch Documentation](https://git-scm.com/docs/git-switch), The Git project
+- [gh pr merge](https://cli.github.com/manual/gh_pr_merge), GitHub CLI manual
+- [gh pr view](https://cli.github.com/manual/gh_pr_view), GitHub CLI manual
 - [gh issue view](https://cli.github.com/manual/gh_issue_view), GitHub CLI manual
-- [Merge conflicts](https://docs.github.com/en/pull-requests/reference/merge-conflicts), GitHub Docs
+- [gh issue close](https://cli.github.com/manual/gh_issue_close), GitHub CLI manual
+- [gh repo edit](https://cli.github.com/manual/gh_repo_edit), GitHub CLI manual
+- [cli/cli: pkg/cmd/pr/merge/merge.go](https://github.com/cli/cli/blob/trunk/pkg/cmd/pr/merge/merge.go), The GitHub CLI project
+- [git-branch](https://git-scm.com/docs/git-branch), The Git project
+- [git-fetch](https://git-scm.com/docs/git-fetch), The Git project
+- [git-pull](https://git-scm.com/docs/git-pull), The Git project
+- [git-switch](https://git-scm.com/docs/git-switch), The Git project
+- [git-worktree](https://git-scm.com/docs/git-worktree), The Git project
+- [v1.3: /implement-spec, /pr, /retro, and GLOSSARY.md](https://www.aihero.dev/skills/skills-changelog-v13-implement-spec-pr-retro-and-glossary-md), Matt Pocock, 2026-10-05
 ```

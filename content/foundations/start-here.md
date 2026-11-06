@@ -31,7 +31,7 @@ Each Course is a set of lessons, best read in order the first time. Each link op
 1. **[GitHub from zero](/learn/what-git-and-github-are).** Git is the tool that saves snapshots of your project, and GitHub is the website that stores it online. You go from your first repository to proposing, reviewing and merging changes.
 2. **[CI/CD: ship safely](/learn/what-ci-cd-is).** Checks that run by themselves on every change, before it reaches your live site. You build them with GitHub Actions, which runs the checks, and Vercel, which hosts the site.
 3. **[Coding agents: the foundations](/learn/how-agents-work).** How an agent like Claude Code works, what fills its context window (everything it can see at once), instruction files, Skills, and choosing models. This page opens it, so the link goes to its next lesson.
-4. **[Idea to shipped: the main flow](/learn/main-flow).** Matt Pocock's path from a rough idea to merged code, one Skill at a time. You get interviewed about the idea, write a plan, split it into small pieces, then build, review and ship.
+4. **[Idea to shipped: the main flow](/learn/main-flow).** The Course the library is named after: Matt Pocock's path from a rough idea to merged code, one Skill at a time. You get interviewed about the idea, write a plan, split it into small pieces, then build, review and ship.
 5. **[When things go wrong, and big foggy work](/learn/triage).** What to reach for when bug reports pile up or a bug resists you. And how to steer work too big to plan in one sitting.
 6. **[Codebase health and guardrails](/learn/improve-codebase-architecture).** How to keep code easy for agents to work in, plus safety checks on commits and Git.
 7. **[More Skills: thinking, writing, running agents](/learn/ask-matt).** The rest of the toolkit: research, teaching and writing Skills, and agents that run in the background.
@@ -46,13 +46,13 @@ Why: CI/CD: ship safely covers checks that run by themselves on every change, be
 
 ## How a lesson works
 
-Every lesson has the same shape:
+Most lessons have the same shape:
 
 - **Read.** It opens with a problem you'd recognise, then the idea, with a worked example. Many lessons then have a part called **Going deeper**: why it exists, how it works underneath, a real example, what goes wrong, and further reading.
 - **Quick checks.** Short questions appear right after the idea they test. They're optional. Pick an answer to see whether it's right, and why. They don't count, so guess freely.
 - **Try it.** Numbered steps to do it yourself, with exact commands and what you should see.
 - **Remember.** Cards to flip, for the facts worth keeping.
-- **The Final test.** At the end come 5 to 10 questions on the whole lesson. Answer them all, then submit. You see your score, with the right answer and an explanation for each question.
+- **The Final test.** Every lesson ends with 5 to 10 questions on the whole lesson. Answer them all, then submit. You see your score, with the right answer and an explanation for each question.
 
 **Submitting the Final test marks the lesson Done, with a green tick, whatever your score.** You can retake the test any time.
 
