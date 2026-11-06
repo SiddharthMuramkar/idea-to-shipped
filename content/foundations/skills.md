@@ -6,7 +6,7 @@ summary: What a Skill is, who can start one, how to install Matt Pocock's Skills
 
 ## What a Skill is
 
-Say you've told your coding agent how you like commit messages three days running. Every session starts with an empty [context window](/learn/context-window), the agent's working memory, so tomorrow you'll explain it again. You could write the rules in your [instruction file](/learn/instruction-files), but that file loads in every session, even the ones that never make a commit.
+Say you've told your [coding agent](/learn/how-agents-work), an AI that reads and changes your project for you, how you like commit messages three days running. Every session starts with an empty [context window](/learn/context-window), the agent's working memory, so tomorrow you'll explain it again. You could write the rules in your [instruction file](/learn/instruction-files), but that file loads in every session, even the ones that never make a commit.
 
 **A Skill is a folder with a `SKILL.md` file: instructions for one kind of task, which the agent loads only when that task comes up.**
 
@@ -129,7 +129,7 @@ claude plugin install mattpocock-skills@claude-plugins-official
 
 The part before the `@` is the plugin, and the part after it is the marketplace. It installs for you, in every project on this computer, and it updates itself. If Claude Code was already open, type `/reload-plugins` there, or restart it.
 
-Then type `/` in Claude Code to see the Skills. Each one answers to a short name, like `/grill-me`, and to a full name with the plugin in front, like `/mattpocock-skills:grill-me`.
+Then type `/` in Claude Code to see the Skills. Each one answers to a full name with the plugin in front, like `/mattpocock-skills:grill-me`. Most also answer to a short name, like `/grill-me`. The exceptions are short names another command already uses, such as `/code-review` (more in Where it goes wrong, below).
 
 The other route is the skills.sh installer:
 
@@ -262,7 +262,7 @@ Why: A user-invoked Skill keeps nothing in the context window, so the agent pays
 
 **Which copy runs.** If a personal Skill and a project Skill share a name, the personal one runs. A plugin's Skills load alongside both, because their full names start with the plugin's name.
 
-**Edits count straight away.** Claude Code watches the Skills folders, so an edit to a Skill takes effect within the session. A Skills folder that didn't exist when the session started needs `/reload-skills`.
+**Edits count straight away.** Claude Code watches the Skills folders, so an edit to a Skill takes effect within the session. A Skills folder that didn't exist when the session started isn't watched, though. Type `/reload-skills` to load it, and again after each later change there, or restart Claude Code.
 
 ```checkpoint quick-11
 You write "go ahead and" followed by a Skill's name, in the middle of your message. What happens?
@@ -324,9 +324,16 @@ Why: A short code-review can reach Claude Code's own review, even when a Skill m
 
 You'll need Claude Code installed and signed in (see [start here](/learn/start-here)), plus Git. If Claude Code asks permission to create or change a file this exercise names, choose Yes.
 
-1. Make a practice repo: `mkdir skills-practice && cd skills-practice && git init`.
+1. Make a practice repo, and move into it:
+
+```sh
+mkdir skills-practice
+cd skills-practice
+git init
+```
+
 2. Start Claude Code: `claude`. If it asks whether you trust the folder, choose Yes.
-3. Type `/skills`, then type `grill` to filter the list. You should see Matt's grill Skills. If not, type `/exit`, run the plugin install from above, and start `claude` again.
+3. Type `/skills`, then type `grill` to filter the list. You should see Matt's grill Skills. Press Esc to close the list. If they weren't there, type `/exit`, run the plugin install from above, and start `claude` again.
 4. Type `/setup-matt-pocock-skills`. Answer "local markdown" for the Issue tracker, and keep the default labels if it asks.
 5. If it asks which file to create, choose `CLAUDE.md`. You should see drafts before it writes anything.
 6. Paste this message, to make a Skill of your own:
@@ -342,10 +349,11 @@ Start your answer with "Repo tour:". Then list the top-level files and folders, 
 7. Type `/reload-skills`, since the Skills folder is new. You should see how many Skills it added.
 8. Ask in plain words: `what's in this repo?` You should see an answer that starts with "Repo tour:". If not, ask once more.
 9. Paste: `Add the line disable-model-invocation: true to the frontmatter of .claude/skills/repo-tour/SKILL.md, below the description.`
-10. Type `/clear`, then ask `what's in this repo?` again. The answer shouldn't start with "Repo tour:" now, because the agent can't start the Skill.
-11. Start it yourself: type a slash and repo-tour. You should see "Repo tour:" again.
-12. Ask the router: `/ask-matt I want to add a README to this repo. What do I type next?` You should see it name a Skill to type, then stop.
-13. Check what setup wrote: open `CLAUDE.md`, and look in `docs/agents/`. Then type `/exit`.
+10. Type `/reload-skills` again. Claude Code doesn't watch the new Skills folder, so each change there needs a reload.
+11. Type `/clear`, then ask `what's in this repo?` again. The answer shouldn't start with "Repo tour:" now, because the agent can't start the Skill.
+12. Start it yourself: type a slash and repo-tour. You should see "Repo tour:" again.
+13. Ask the router: `/ask-matt I want to add a README to this repo. What do I type next?` You should see it name a Skill to type, then stop.
+14. Check what setup wrote: open `CLAUDE.md`, and look in `docs/agents/`. Then type `/exit`.
 
 ### Read more
 
@@ -397,7 +405,7 @@ Sam signs in to Claude Code on a new laptop. He (1) runs the plugin install, (2)
 - [x] Step 2: the two routes are alternatives, so now every Skill appears twice.
 - [ ] Step 1: the plugin doesn't carry the Skills he needs for a repo.
 - [ ] Step 3: setup should run only after the first grilling session.
-- [ ] Step 4: `/grill-with-docs` can't run until a Spec exists.
+- [ ] Step 4: `/grill-with-docs` can't run until a written plan exists.
 Why: The plugin is a complete route on its own. Pick one route per agent, because installing both gives you every Skill twice. Setup belongs once per repo, before the other engineering Skills.
 ```
 
@@ -411,7 +419,7 @@ Why: A Skill can call model-invoked ones like `/tdd`, never a user-invoked one. 
 ```
 
 ```final-test skills-spot-edited-plugin
-Lee wanted `/implement` to close each Ticket when it finished. He opened the plugin's copy of its `SKILL.md` and added a line. It worked, then a week later it stopped. Spot the mistake.
+Lee wanted `/implement` to close the Issue it worked on when it finished. He opened the plugin's copy of its `SKILL.md` and added a line. It worked, then a week later it stopped. Spot the mistake.
 - [x] The line belonged in his own `CLAUDE.md`, which no update replaces.
 - [ ] The line belonged in the Skill's description, not in its body.
 - [ ] He should have run setup again after he edited the file.

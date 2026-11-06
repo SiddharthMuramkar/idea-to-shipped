@@ -36,7 +36,7 @@ recipes/
 ├── .env.example              the settings the site needs, with no real values
 ├── .gitignore                what Git leaves out
 ├── AGENTS.md                 standing orders for coding agents
-├── CLAUDE.md                 the same orders, for Claude Code
+├── CLAUDE.md                 pulls in AGENTS.md, for Claude Code
 ├── GLOSSARY.md               the project's agreed words
 ├── LICENSE                   what others may do with the code
 ├── README.md                 start here
@@ -172,7 +172,9 @@ Why: Scripts are named shortcuts in `package.json`. `npm test` runs the command 
 
 **GitHub Actions** is GitHub's built-in automation. A **workflow** is one automated process that it runs, and each workflow is a file in `.github/workflows/`.
 
-Workflow files are written in YAML, a plain-text settings format where indentation shows what belongs inside what. A workflow says when to run, such as on every pull request, and what to do, such as install the packages and run the tests. So if a repo has one, it tells you which checks guard `main`. [Reading a GitHub Actions workflow](/learn/reading-a-workflow) walks through one line by line.
+Workflow files are written in YAML, a plain-text settings format where indentation shows what belongs inside what. A workflow says when to run, such as on every pull request, and what to do, such as install the packages and run the tests. So if a repo has one, it tells you which checks run on each change. [Reading a GitHub Actions workflow](/learn/reading-a-workflow) walks through one line by line.
+
+A workflow file doesn't decide whether a failing check blocks a merge into `main`. That's up to a setting on GitHub, such as a **ruleset**: a named list of rules for a branch. [How teams protect main](/learn/how-teams-do-it) shows how to read a repo's rules.
 
 ```checkpoint which-checks-guard-main
 You want to know which checks run every time someone opens a pull request in a repo. Where do you look?
@@ -186,7 +188,7 @@ Why: Workflows live in `.github/workflows/`. Each one says when it runs, such as
 
 `src/`, short for source, holds the app's own code. Names vary: some projects use `app/`, `lib/`, or one folder per part, such as `web/` and `api/`. The folder names inside are often the project's main parts, such as `src/search/` and `src/recipes/`.
 
-**Tests** are code that runs the app's code and checks the result. They live in `tests/` or `test/`, or beside the code, in files named like `search.test.ts` or `test_search.py`. A test run lists each test by name.
+**Tests** are code that runs the app's code and checks the result. They live in `tests/` or `test/`, or beside the code, in files named like `search.test.ts` or `test_search.py`. Each test has a name, and many test tools print every name as the tests run. With pytest, a Python test tool, add `-v` to see them.
 
 Test names tell you what the code promises, without reading the code. For example, a run of the recipe site's search tests might print:
 
@@ -223,9 +225,9 @@ Cooks change recipes through pull requests, so the site needs no admin
 login, and every change has a history.
 ```
 
-Only rare decisions get one. Matt Pocock's rule asks for all three at once: hard to reverse, surprising without context, and the result of a real trade-off. Most decisions fail at least one, so most never become an ADR.
+Only rare decisions get one. A rule from Matt Pocock, a developer and teacher, asks for all three at once: hard to reverse, surprising without context, and the result of a real trade-off. Most decisions fail at least one, so most never become an ADR.
 
-When a decision changes, nobody edits the old ADR. A new ADR replaces it, and the old one is marked as superseded, so its reasoning stays on record. The idea comes from a short 2011 post by Michael Nygard.
+When a decision changes, nobody rewrites the old ADR. A new ADR replaces it, and the old one is only marked as superseded, so its reasoning stays on record. The idea comes from a short 2011 post by Michael Nygard.
 
 ```checkpoint no-adr-needed
 You pick the colour of links on the recipe site. It's easy to change, and nobody would wonder why. Does it get an ADR?
@@ -265,7 +267,7 @@ Why: The glossary lists "meal" under Avoid for Recipe. A word on an Avoid list i
 
 An **instruction file** is a plain-text file a coding agent reads at the start of every session. It says how to run and test the project, which rules to follow, and where things live. Claude Code reads `CLAUDE.md`. Many other agents read `AGENTS.md`, and Claude Code reads it too when a repo has no `CLAUDE.md`.
 
-For example, the recipe site's `CLAUDE.md` might say:
+For example, the recipe site's `AGENTS.md` might say:
 
 ```markdown
 # recipes
@@ -275,9 +277,11 @@ For example, the recipe site's `CLAUDE.md` might say:
 - Read GLOSSARY.md and docs/adr/ before changing how recipes are stored.
 ```
 
-A repo that serves several agents often keeps one text. `CLAUDE.md` holds the line `@AGENTS.md`, which pulls in `AGENTS.md`, or it's a shortcut (a symlink) to that file. Either way, you edit `AGENTS.md`.
+A repo that serves several agents often keeps one text, as the recipe site does. Its `CLAUDE.md` holds one line, `@AGENTS.md`, which pulls in `AGENTS.md`. In other repos, `CLAUDE.md` is a shortcut (a symlink) to that file. Either way, you edit `AGENTS.md`.
 
-These files are context, not locks. An agent usually follows them, but nothing forces it to. [Instruction files](/learn/instruction-files) covers how to write a good one. A repo set up for Matt Pocock's Skills also has `docs/agents/`, the settings those Skills read, such as where Issues live.
+These files are context, not locks. An agent usually follows them, but nothing forces it to. [Instruction files](/learn/instruction-files) covers how to write a good one.
+
+A **Skill** is a set of instructions an agent loads for one kind of task (see [What a Skill is](/learn/skills)). A repo set up for Matt Pocock's Skills also has `docs/agents/`, the settings those Skills read, such as where Issues live.
 
 ```checkpoint which-instruction-file
 A repo's `CLAUDE.md` contains one line, `@AGENTS.md`. You want to add a rule for every agent. Which file do you edit?
@@ -334,7 +338,7 @@ Say someone asks where your recipe site keeps its recipes. An agent built it, an
 
 No architecture note in the repo? Ask the agent to draw the map, then check one folder it names with `ls`. Drawings can be wrong, so trust the files over the drawing.
 
-You decide the architecture when you plan a change, and check it when the change arrives as a pull request. `gh pr diff` with `--name-only` lists the files a pull request changed. A new folder your plan never named, or a change to the recipe format, is worth a question before you merge.
+You decide the architecture when you plan a change, and check it when the change arrives as a pull request. `gh pr diff 14 --name-only` lists the files pull request #14 changed. With no number, it picks the pull request for the branch you're on. A new folder your plan never named, or a change to the recipe format, is worth a question before you merge.
 
 A list of files shows where a change went, not what it does. So it doesn't replace reading the change itself, which [Checking a pull request before you merge](/learn/checking-a-pr) covers.
 
@@ -387,7 +391,7 @@ Why: A drawing can be wrong, and `ls` shows what's really there. So tell the age
 ## Try it
 
 ````try
-You need a web browser. For the last steps, you also need Git or `gh` (see [What Git and GitHub are](/learn/what-git-and-github-are)). You'll read a real, small public repo: Brad Traversy's starter app for his CI/CD crash course.
+You need a web browser. For the last steps, you also need a terminal with Git installed (see [What Git and GitHub are](/learn/what-git-and-github-are)). You'll read a real, small public repo: Brad Traversy's starter app for his CI/CD crash course.
 
 1. Open the repo in your browser: [github.com/bradtraversy/cicd-lab-starter](https://github.com/bradtraversy/cicd-lab-starter).
 2. Scroll below the file list and read the README. Find the commands it gives to get started.
@@ -410,7 +414,7 @@ You need a web browser. For the last steps, you also need Git or `gh` (see [What
    cd cicd-lab-starter && ls -a
    ```
 
-   You should see `.git` and `.gitignore` as well as the files GitHub showed.
+   You should see the files GitHub showed, plus `.git`, the folder that holds the history. You'll also see `.`, which means this folder, and `..`, the one above it.
 10. List the history:
 
     ```sh
@@ -436,7 +440,7 @@ Q: What are `package.json` scripts?
 A: Named shortcuts: `npm run dev` runs the command saved under `dev`, and `npm test` runs the one under `test`.
 
 Q: Where do GitHub Actions workflows live, and what do they tell you?
-A: In `.github/workflows/`, as YAML files. They say when checks run and what they do, so they tell you which checks guard `main`.
+A: In `.github/workflows/`, as YAML files. They say when checks run and what they do. Whether a failing check blocks a merge is up to a setting on GitHub, such as a ruleset.
 
 Q: What is an ADR, and when does a decision get one?
 A: A short note recording one big decision and why. Only when it's hard to reverse, surprising without context and a real trade-off, all three.
@@ -447,8 +451,8 @@ A: Instruction files: plain text an agent reads at the start of every session, w
 Q: What four things make up a project's architecture?
 A: The main parts, how they connect, where data lives, and what's hard to change. You can see all four without reading code.
 
-Q: What does `gh pr diff --name-only` tell you, and what can't it?
-A: Which files a pull request changed, so where the change went. Not what the change does.
+Q: What does `gh pr diff 14 --name-only` tell you, and what can't it?
+A: Which files pull request #14 changed, so where the change went. Not what the change does.
 ```
 
 ## Final test
@@ -473,10 +477,10 @@ Why: `.env` holds secrets and stays out of Git. `.env.example` lists the names o
 ```final-test changed-decision
 Months later, the recipe site moves its recipes into a database after all. What happens to `docs/adr/0001-store-recipes-as-markdown.md`?
 - [x] A new ADR records the change, and the old one is marked as superseded.
-- [ ] Someone edits the old ADR, so it describes the database instead.
+- [ ] Someone rewrites the old ADR, so it describes the database instead.
 - [ ] Someone deletes the old ADR, because it's no longer true.
 - [ ] Nothing, because ADRs can't be replaced once accepted.
-Why: Nobody edits an old ADR. A new one replaces it, and the old one is marked as superseded, so its reasoning stays on record.
+Why: Nobody rewrites an old ADR. A new one replaces it, and the old one is only marked as superseded, so its reasoning stays on record.
 ```
 
 ```final-test edit-the-right-file
@@ -508,11 +512,11 @@ Why: The architecture is four things you can see without reading code. A map of 
 
 ```final-test check-at-pr-time
 A pull request was meant to change the search only. Which command shows, without reading code, whether it touched anything else?
-- [x] `gh pr diff` with `--name-only`, which lists the files it changed.
+- [x] `gh pr diff <number> --name-only`, which lists the files it changed.
 - [ ] `gh repo view`, which shows the repo's description and README.
 - [ ] `git log --oneline -10`, which lists the last ten commits on `main`.
 - [ ] `ls -a`, which lists every file in your current folder.
-Why: `gh pr diff --name-only` lists the files the pull request changed. Compare that list with the plan, and ask about anything unexpected.
+Why: With the pull request's number, `gh pr diff <number> --name-only` lists the files it changed. Compare that list with the plan, and ask about anything unexpected.
 ```
 
 ```final-test grey-box-limit

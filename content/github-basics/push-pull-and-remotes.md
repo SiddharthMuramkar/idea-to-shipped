@@ -18,7 +18,7 @@ Say you made three commits to your recipe site on your laptop. A friend opens yo
 
 A **remote** is a copy of your repo that lives somewhere else, usually on GitHub. Your repo knows each remote by a short name and an address, its URL. [What Git and GitHub are](/learn/what-git-and-github-are) covers why you'd want an online copy at all.
 
-**Your repo and GitHub's copy change only when you say so: `git push` sends commits up, and `git pull` brings new ones down.**
+**Nothing moves between your repo and GitHub's copy by itself: `git push` sends your commits up, and `git pull` brings new ones down.**
 
 `origin` is the usual name for your own repo on GitHub. `git clone` gives that name to the remote it cloned from, and many tools and guides assume it. The name isn't special to Git, though. It's only the default.
 
@@ -108,7 +108,9 @@ git push -u origin add-search
 
 That sends `add-search` to `origin`, creating the branch on GitHub. `-u`, short for `--set-upstream`, records GitHub's `add-search` as your branch's **upstream**: the branch on GitHub it tracks. After that, a plain `git push` or `git pull` on that branch knows where to go.
 
-The output ends with two useful lines. GitHub replies with a link to open a pull request, and Git confirms the tracking:
+This is a second meaning of "upstream". A branch's upstream is the one branch it tracks, here `add-search` on `origin`. It has nothing to do with the remote named `upstream` above.
+
+The output ends with two useful lines. GitHub replies with a link to open a pull request, a request to merge your branch into `main` ([Opening a pull request](/learn/pull-requests)). Then Git confirms the tracking:
 
 ```text
 $ git push -u origin add-search
@@ -122,7 +124,7 @@ branch 'add-search' set up to track 'origin/add-search'.
 
 Forget `-u` on a new branch, and a plain `git push` stops with "The current branch add-search has no upstream branch". Git then prints the command to run, with `--set-upstream`. `git push -u origin HEAD` also works: it pushes the branch you're on, under the same name.
 
-A push sends commits, and only commits. Edits you haven't committed stay on your computer. [Commits and diffs](/learn/commits-and-diffs) shows how to check that nothing was left out.
+A push sends commits, and only commits. Edits you haven't committed stay on your computer. That goes for a [coding agent](/learn/what-git-and-github-are) too: an AI program, such as Claude Code, that edits files and runs commands for you. [Commits and diffs](/learn/commits-and-diffs) shows how to check that nothing was left out.
 
 Many repos refuse pushes straight to `main`, so changes arrive through pull requests instead. [How teams protect main](/learn/how-teams-do-it) shows how. Editors have buttons for all this: VS Code's Sync Changes pulls first, then pushes.
 
@@ -144,7 +146,7 @@ Why: A push sends commits, and only commits. An edit that isn't in a commit neve
 
 ## Fetch and pull: bring new commits down
 
-A **remote-tracking branch**, such as `origin/main`, is Git's memory of where a branch on GitHub was the last time Git talked to GitHub. Think of it as a bookmark. It lives on your computer, and it moves only when you fetch, pull or push.
+A **remote-tracking branch**, such as `origin/main`, is Git's memory of where a branch on GitHub was the last time Git talked to GitHub. Think of it as a bookmark. It lives on your computer, and it moves only when you fetch, pull or push. `git branch -r` lists your remote-tracking branches.
 
 `git fetch` downloads new commits from `origin` and moves those bookmarks. It changes none of your files and none of your own branches, so it's safe at any time. `git pull` is a fetch, then a second step: it brings the new commits into the branch you're on.
 
@@ -198,7 +200,9 @@ Those numbers are only as fresh as your last fetch. `git status` doesn't ask Git
 
 `git branch -vv` shows the same for every branch at once, such as `[origin/add-search: ahead 2, behind 1]`. [Branches and worktrees](/learn/branches-and-worktrees) explains its other marks.
 
-When the two sides have diverged, Git won't guess how to combine them. `git push` is refused, because GitHub holds work you don't have. A plain `git pull` stops too, without changing anything, and you choose how to combine: merge or rebase.
+When the two sides have diverged, Git won't guess how to combine them. `git push` is refused, because GitHub holds work you don't have. A plain `git pull` usually stops too, without changing your branch, and you choose how to combine: merge or rebase.
+
+A setting can choose for you, though. The Git for Windows installer sets `pull.rebase false` by default. With it, `git pull` merges straight away, and may open an editor for the merge commit's message. `git config pull.rebase` shows whether your Git has that setting.
 
 ```checkpoint stale-up-to-date
 A teammate pushed to `main` five minutes ago, but `git status` says your `main` is up to date with `origin/main`. Why?
@@ -224,7 +228,7 @@ A **merge** joins the two lines of work. Run `git fetch`, then `git merge origin
 
 A **rebase** replays your branch's commits on top of the newest `main`. Run `git fetch`, then `git rebase origin/main`. The history ends up in one straight line, but your commits are replaced by new copies with new IDs. So pushing needs `git push --force-with-lease`, which replaces GitHub's copy only if nobody else pushed to it since your last fetch.
 
-Pro Git sums up the rule: "Do not rebase commits that exist outside your repository and that people may have based work on." If you're unsure, merge. On a repo that squash-merges its pull requests, the extra merge commit vanishes into the squash anyway.
+Pro Git sums up the rule: "Do not rebase commits that exist outside your repository and that people may have based work on." If you're unsure, merge. On a repo that squash-merges its pull requests, the extra merge commit vanishes anyway: a squash merge lands the whole pull request on `main` as one new commit ([Merging and cleaning up](/learn/merging-and-cleaning-up)).
 
 On github.com, a pull request can show an Update branch button, which merges `main` into its branch. A menu beside it offers to update with a rebase instead. GitHub shows the button only in two cases. Either the repo asks branches to be up to date before merging, or a setting asks GitHub to always suggest updates.
 
@@ -270,7 +274,9 @@ git remote add upstream https://github.com/family-cooks/recipes.git
 
 `gh repo fork family-cooks/recipes --clone` does both steps for you. To bring in new work from the original, use the Sync fork button on your fork's page. Or run `git fetch upstream`, then `git merge upstream/main`, then push. To propose your change, push a branch to your fork and open a pull request into the original repo.
 
-One trap: when `gh` clones or creates a fork, it makes the original repo the default for Issues and pull requests. That's handy for a pull request, but a new Issue can land in someone else's repo. Agents working in forks have filed Issues into the wrong repo this way. Before the first `gh issue create`, check the target with `gh repo view --json nameWithOwner`.
+One trap: when `gh` clones or creates a fork, it makes the original repo the default for Issues and pull requests. That's handy for a pull request, but a new Issue can land in someone else's repo. Agents working in forks have filed Issues into the wrong repo this way. Before the first `gh issue create`, check the target with `gh repo view --json nameWithOwner`. If it names the original, run `gh repo set-default` and pick your fork.
+
+A fork also starts with its Issues tab turned off. To file Issues in your fork, turn them on in the fork's Settings, under Features.
 
 ```checkpoint fork-default
 You cloned your fork of `family-cooks/recipes` with `gh`. You want to file an Issue in your own fork. What do you check first?
@@ -284,11 +290,13 @@ Why: When `gh` clones a fork, it makes the original the default repo. A quick ch
 
 Pushing is where an agent's mistakes leave your computer, so ask for exactly what you want. For example:
 
-> Push the `add-search` branch to `origin` and set its upstream. Don't force-push, and don't push to `main`. Then show me `git status` and `git log --oneline -3 origin/add-search`.
+> Push the `add-search` branch to `origin` and set it to track `origin/add-search`. Don't force-push, and don't push to `main`. Then show me `git status` and `git log --oneline -3 origin/add-search`.
 
 Then check it yourself. `git status` should say your branch is up to date with `origin/add-search`. `git ls-remote --heads origin add-search` asks GitHub directly whether the branch is there. On github.com, the branch shows in the branch menu.
 
-Two habits keep pushes safe with agents. If a push is refused, the fix is to fetch and combine, not to force it. And Git can run checks of its own before a push, called hooks. `--no-verify` skips them, so don't let an agent use it to get past one. [git-guardrails-claude-code](/learn/git-guardrails-claude-code) is a Skill that blocks risky Git commands, pushes included, so you run those yourself.
+Two habits keep pushes safe with agents. If a push is refused, the fix is to fetch and combine, not to force it. And a repo can have hooks: scripts, set up by you or by a tool, that Git runs at set moments, such as just before a push. `--no-verify` skips the pre-push hook, so don't let an agent use it to get past one.
+
+[git-guardrails-claude-code](/learn/git-guardrails-claude-code) is one of Matt Pocock's Skills: a set of instructions an agent loads for one kind of task ([What a Skill is](/learn/skills)). It sets up a check in Claude Code that stops the agent before it runs risky Git commands, every `git push` included, so you run those yourself.
 
 ```checkpoint refused-push-agent
 An agent's push is refused, because GitHub has commits it doesn't have. It offers to run `git push --force`. What do you tell it?
@@ -325,7 +333,7 @@ You need Git, a GitHub account, and a way to sign in from the terminal, such as 
    git push -u origin main
    ```
 
-   You should see `branch 'main' set up to track 'origin/main'.` If Git says there's no `main`, your branch has another name, such as `master`: rename it with `git branch -m main`, then push again.
+   You should see `branch 'main' set up to track 'origin/main'.` If Git says `error: src refspec main does not match any`, your branch has another name, such as `master`: rename it with `git branch -m main`, then push again.
 5. Reload the repo's page on github.com. You should see your README and your commits.
 6. On github.com, open `README.md`, click the pencil icon to edit it, add a line, and commit the change to `main`.
 7. Back in the terminal, ask Git:
@@ -370,7 +378,7 @@ You need Git, a GitHub account, and a way to sign in from the terminal, such as 
     git push -u origin add-notes
     ```
 
-    You should see GitHub's link to create a pull request for `add-notes`. Keep it for [Opening a pull request](/learn/pull-requests).
+    You should see GitHub's link to create a pull request for `add-notes`. You won't need it: [Opening a pull request](/learn/pull-requests) starts its own branch.
 13. Read the tracking:
 
     ```sh
@@ -378,6 +386,15 @@ You need Git, a GitHub account, and a way to sign in from the terminal, such as 
     ```
 
     You should see `add-notes` tracking `[origin/add-notes]`, and `main` tracking `[origin/main]`.
+14. Tidy up the practice branch, here and on GitHub:
+
+    ```sh
+    git switch main
+    git push origin --delete add-notes
+    git branch -D add-notes
+    ```
+
+    `git push origin --delete` deletes the branch on GitHub. `-D` forces the local delete, which you need because `add-notes` was never merged. You should see `Deleted branch add-notes`.
 ````
 
 ## Remember
@@ -393,7 +410,7 @@ Q: What does `git clone` set up?
 A: The full history, a folder named after the repo, a remote called `origin`, the default branch checked out, and that branch tracking GitHub's copy.
 
 Q: What does `-u` do in `git push -u origin add-search`?
-A: It records `origin/add-search` as the branch's upstream, so later a plain `git push` or `git pull` knows where to go.
+A: It records `origin/add-search` as the branch's upstream: the branch it tracks, not the remote named `upstream`. Later, a plain `git push` or `git pull` knows where to go.
 
 Q: What's the difference between `git fetch` and `git pull`?
 A: Fetch downloads new commits and moves the `origin/` names, changing none of your files. Pull fetches, then brings the commits into your branch.
@@ -439,8 +456,8 @@ You want to look at a teammate's new commits on GitHub before they touch your wo
 - [x] `git fetch`, then look at `origin/main` with `git log`.
 - [ ] `git pull`, then undo it if you don't like the commits.
 - [ ] `git push`, which shows GitHub's commits as it sends yours.
-- [ ] `git clone` again, into a second folder beside the first.
-Why: `git fetch` downloads the commits and moves Git's memory of GitHub, without changing your files or branches. Then you can read them first.
+- [ ] `git status`, which asks GitHub for the new commits and lists them.
+Why: `git fetch` downloads the commits and moves Git's memory of GitHub, without changing your files or branches. Then you can read them first. `git status` never asks GitHub: it compares with that memory.
 ```
 
 ```final-test behind-what-next

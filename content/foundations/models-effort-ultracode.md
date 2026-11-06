@@ -10,7 +10,7 @@ Say you ask Claude Code to fix a typo on the yoga-studio booking site. It works 
 
 **The model decides how capable Claude is; effort decides how much work it does on each turn.**
 
-Claude Code, Anthropic's coding agent, gives you four dials in all. Each one spends **tokens**, the small chunks of text that use is counted and paid in (see [calling a model](/learn/calling-a-model)).
+Claude Code, Anthropic's coding agent, gives you four dials in all. Each one spends **tokens**, the small chunks of text that use is counted and paid in (see [the context window](/learn/context-window)).
 
 | Dial | What it decides | How you set it |
 |---|---|---|
@@ -22,7 +22,7 @@ Claude Code, Anthropic's coding agent, gives you four dials in all. Each one spe
 Out of the box, Claude Code runs Claude Opus 5.5 at medium effort on most plans. Anthropic's advice is to leave the defaults alone until a task costs more time or tokens than it should.
 
 ```checkpoint quick-1
-You want Claude to test more edge cases and check its work more before it answers. Which dial do you turn?
+You want Claude to test more edge cases (unusual inputs that tend to break code) and check its work more before it answers. Which dial do you turn?
 - [x] Effort, which sets how much work it does on each turn.
 - [ ] The model, which sets how much work it does on each turn.
 - [ ] Fast mode, which makes the same model check its work faster.
@@ -56,7 +56,7 @@ You need one quick rename, so you type `/model haiku`, do it, and quit. Which mo
 Why: `/model` saves your choice as the default for new sessions, and typing a name works like Enter. To switch for one session only, open the picker and press `s` on the row.
 ```
 
-Which model for which job? Matt Pocock, a developer and teacher who publishes a popular set of Skills, splits it by what the step leans on. A grilling, where the agent interviews you about a plan ([grill before you build](/learn/grill-before-you-build)), leans on what the model learned in training. So it needs a big model. Building from a clear plan leans on what's in front of it, so a smaller model can do.
+Which model for which job? Matt Pocock, a developer and teacher, publishes a popular set of [Skills](/learn/skills), instructions an agent loads for one kind of task. He splits the choice by what the step leans on. A grilling, where the agent interviews you about a plan ([grill before you build](/learn/grill-before-you-build)), leans on what the model learned in training. So it needs a big model. Building from a clear plan leans on what's in front of it, so a smaller model can do.
 
 ```checkpoint quick-3
 You'll be interviewed about a fuzzy idea, then an agent will build from the finished plan. Following Matt, how do you split the models?
@@ -114,7 +114,7 @@ steps:
     note: "Yes: pick a bigger model."
 ```
 
-So you can blame the model only once you know the task was clear and the work was done. Matt makes the same point in [implement](/learn/implement): if one Ticket keeps running past a fresh session, split it rather than raise effort.
+So you can blame the model only once you know the task was clear and the work was done. Matt makes the same point in [implement](/learn/implement): if one Ticket, a small planned piece of work, keeps outgrowing one fresh [context window](/learn/context-window), split it rather than raise effort.
 
 ```checkpoint quick-5
 You're on Sonnet. You described a time-zone bug clearly, and Claude read the right files, ran the tests and checked its work. Its fix takes the wrong approach twice. What do you change?
@@ -220,11 +220,11 @@ rows:
 
 ### A real example
 
-Thariq Shihipar, writing on the claude.dev blog in September 2026, ran the same builds at each effort level. One build took 1.5 minutes on low, 4 on medium, 11 on high and 67 on max.
+Thariq Shihipar, writing on the claude.dev blog in September 2026, ran the same builds at four effort levels, all but xhigh. One build took 1.5 minutes on low, 4 on medium, 11 on high and 67 on max.
 
 Across his tests, more effort cut the failures that came from missed edge cases. It didn't fix the failures where the model took the wrong approach. That's the three questions at work: effort fixes skipped work, and a wrong approach after real work points to the model.
 
-Matt runs below the defaults, not above them. In his July 2026 walkthrough, he ran his whole flow on Opus 4.8 at medium effort, one level under that model's default of high. He also told viewers "you really don't have to use the same setup as me."
+Matt runs at or below the defaults, not above them. In his July 2026 walkthrough, he ran his whole flow on Opus 4.8 at medium effort, one level under that model's default of high. He also told viewers "you really don't have to use the same setup as me." By October 2026 he was on Opus 5.5 at medium, that model's default, and thinking about moving to low.
 
 ```checkpoint quick-10
 In Thariq's tests, what did more effort fix?

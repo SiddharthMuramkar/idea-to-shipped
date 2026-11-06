@@ -39,13 +39,14 @@ steps: ["the model asks for a tool", "Claude Code runs it", "the result goes bac
 outside: "answers in words"
 ```
 
-For example, say the search box on your recipe website has a failing test. "Fix the failing tests" might take five trips round the loop:
+A **session** is one conversation with Claude Code, turn after turn, from starting `claude` until you quit or clear it.
 
-1. Run the tests, to see what fails.
-2. Read the error: a test expects a search for "pancakes" to find "Pancakes".
-3. Read `src/search.js`, the file the error points to.
-4. Edit that file, so searches ignore capital letters.
-5. Run the tests again. They pass, so the model answers in words: "Fixed. Search now ignores capital letters."
+For example, say the search box on your recipe website has a failing test. "Fix the failing tests" might take four trips round the loop:
+
+1. Run the tests, to see what fails. The result shows the error: a test expects a search for "pancakes" to find "Pancakes".
+2. Read `src/search.js`, the file the error points to.
+3. Edit that file, so searches ignore capital letters.
+4. Run the tests again. They pass, so the model answers in words: "Fixed. Search now ignores capital letters."
 
 Each result shapes the next call. So if no tool call happened, nothing happened, whatever the reply says. Press **Ctrl+O** to open the transcript, which shows every tool call and its result. Press it again to close it.
 
@@ -77,12 +78,10 @@ A **permission mode** sets which tool calls run on their own, and which stop for
 |---|---|---|---|
 | Auto | auto mode on | Almost everything, after a safety check on risky actions | Long tasks, with fewer interruptions |
 | Manual | manual mode on | Reads only | Watching every step |
-| Accept edits | accept edits on | Reads, file edits, and common file commands such as `mkdir` and `mv` | Changes you'll review afterwards |
+| Accept edits | accept edits on | Reads, file edits, and common file commands such as `mkdir`, `mv` and `rm` | Changes you'll review afterwards |
 | Plan | plan mode on | Reads and exploring, with no edits until you approve a plan | Looking before anything changes |
 
 New sessions start in **auto mode**. Reads and edits inside your project run straight away. A second model, the **classifier**, checks other actions first, such as commands, and blocks risky ones, like a deploy to your live site.
-
-From auto, one press of Shift+Tab goes to Manual, the next to Accept edits, then Plan. (On some Windows setups, the key is Alt+M.)
 
 ```checkpoint quick-4
 You start Claude Code in a new folder and ask for a small script. It creates the file without asking you. Nothing is broken. What's going on?
@@ -91,6 +90,8 @@ You start Claude Code in a new folder and ask for a small script. It creates the
 - [ ] The session started in plan mode, which writes files as it plans.
 Why: Auto mode is where new sessions start, and it lets reads and edits inside your project run straight away. One press of Shift+Tab takes you to Manual, which asks before edits.
 ```
+
+From auto, one press of Shift+Tab goes to Manual, the next to Accept edits, then Plan. (On some Windows setups, the key is Alt+M.)
 
 In Manual, reads and searches inside your project never ask, because they can't change anything. Edits ask. Commands ask too, apart from a built-in set of read-only ones.
 
@@ -134,7 +135,7 @@ Why: Changing a plan costs a sentence, and changing code costs a rebuild. Approv
 
 ## Standing instructions
 
-A **session** is one conversation with Claude Code, from starting `claude` until you quit or clear it. Each new session starts blank, with none of the last one's conversation in it. So Claude Code reads a few files at the start of every session. The main one is `CLAUDE.md`, a Markdown file (plain text with light formatting) that you write. It holds standing instructions, such as the command that runs your tests. Keep it short, with a line for each thing the agent can't learn from your code or that you've had to correct twice. [Instruction files](/learn/instruction-files) covers where these files go and what belongs in them.
+Each new session starts blank, with none of the last one's conversation in it. So Claude Code reads a few files at the start of every session. The main one is `CLAUDE.md`, a Markdown file (plain text with light formatting) that you write. It holds standing instructions, such as the command that runs your tests. Keep it short, with a line for each thing the agent can't learn from your code or that you've had to correct twice. [Instruction files](/learn/instruction-files) covers where these files go and what belongs in them.
 
 ```checkpoint quick-7
 Yesterday you told the agent to run the tests before every commit. In today's new session, it doesn't. Why, and what's the fix?
@@ -199,6 +200,8 @@ Your `CLAUDE.md` says "never read `.env`", a file of secret keys. Can you count 
 Why: What the model reads shapes what it tries to do, with no guarantee. A deny rule is enforced by Claude Code itself, in every mode.
 ```
 
+A deny rule on a file still has a gap. It covers Claude's file tools and the file commands Claude Code recognises, such as `cat`, but not a script that opens the file itself. For secrets, also turn on the **sandbox** with `/sandbox`: a fence your operating system keeps around every command the agent runs, which even a script can't get past.
+
 ### How it works underneath
 
 **The loop is an API call, repeated.** Claude Code sends the conversation to Claude, and Claude's reply asks for a tool. Claude Code runs it, adds the result to the conversation, and calls Claude again. [Calling a model](/learn/calling-a-model) builds that loop in a short Python script.
@@ -213,19 +216,17 @@ Why: What the model reads shapes what it tries to do, with no guarantee. A deny 
 | Web | `WebSearch`, `WebFetch` | Search the web, and read a page |
 | Code intelligence | Added by a plugin | Show type errors, and jump to a definition |
 
-Other tools manage the work itself. One starts a **subagent**: a helper agent with its own fresh context window, which does one job and reports back a summary. Claude Code sends broad searches of your code to a built-in subagent called Explore. That keeps all the reading out of your conversation.
+Other tools manage the work itself. One starts a **subagent**: a helper agent with its own fresh context window, which does one job and reports back a summary. Claude usually hands broad searches of your code to a built-in subagent called Explore. That keeps all the reading out of your conversation.
 
 ```checkpoint quick-11
 To answer your question, the agent has to search across your whole codebase. Where does that reading usually happen?
 - [x] In a subagent called Explore, which reports back a summary.
 - [ ] In your conversation, where every file it reads stays visible.
 - [ ] On Anthropic's servers, which keep a copy of your codebase.
-Why: Claude Code sends broad searches of your code to its built-in Explore subagent. Explore works in its own context window and reports back a summary.
+Why: Claude usually hands broad searches to Claude Code's built-in Explore subagent. Explore works in its own context window and reports back a summary.
 ```
 
 **Auto mode checks in a fixed order.** Your own allow, ask and deny rules come first. Then reads and file edits inside your project go through. Everything else goes to the classifier, which blocks anything that goes beyond your request. After three blocks in a row, or twenty in total, auto mode pauses and goes back to asking you.
-
-Anthropic is clear about the limit: auto mode "reduces permission prompts but does not guarantee safety."
 
 ```checkpoint quick-12
 In auto mode, the classifier has blocked three of the agent's actions in a row. What happens next?
@@ -235,13 +236,15 @@ In auto mode, the classifier has blocked three of the agent's actions in a row. 
 Why: After three blocks in a row, or twenty in total, auto mode pauses and asks you instead.
 ```
 
+Anthropic is clear about the limit: auto mode "reduces permission prompts but does not guarantee safety."
+
 ### A real example
 
-Matt Pocock is a developer and teacher who publishes a popular set of Skills for coding agents. In January 2026, he used plan mode for almost everything, even small bug fixes.
+Matt Pocock is a developer and teacher who publishes a popular set of [Skills](/learn/skills) for coding agents: named sets of instructions an agent loads for one job. In January 2026, he used plan mode for almost everything, even small bug fixes.
 
 Within months, he'd stopped. He found that Claude Code plans too early in plan mode, "creating a document before we've truly understood each other."
 
-Now he has the agent interview him first, with a Skill that records the decisions as it goes. In his July 2026 walkthrough of his whole workflow, he does that interview in auto mode, with plan mode off.
+Now he has the agent interview him first, with his [grill-with-docs](/learn/grill-with-docs) Skill, which records the decisions as it goes. In his July 2026 walkthrough of his whole workflow, he does that interview in auto mode, with plan mode off.
 
 So plan mode fits a change you've already decided. When what to build is still open, have the agent interview you first, as [grill before you build](/learn/grill-before-you-build) shows.
 
@@ -266,7 +269,7 @@ You're about to let the agent clean up an old folder of files. What should you d
 - [x] Commit with Git, because rewind can't undo files deleted by commands.
 - [ ] Switch to Accept edits, because it asks before every delete.
 - [ ] Nothing, because rewind restores anything the agent deletes.
-Why: A cleanup often runs commands such as `rm`, and rewind doesn't track files changed only by commands. A commit gives you a way back.
+Why: A cleanup often runs commands such as `rm`, and rewind doesn't track files changed only by commands. Accept edits runs `rm` on files inside your project without asking. A commit gives you a way back.
 ```
 
 **The plan asked you nothing.** That's Matt's complaint. Pick "No, keep planning" and name what it guessed, or have it interview you before it plans.
@@ -428,7 +431,7 @@ Why: Switch to plan mode before you describe the change, or a new session in aut
 ```
 
 ```final-test deeper-deny-rule
-A rule must hold every time, whatever the model decides: the agent may never read your `.env` file of secret keys. Where does that rule belong?
+A rule must hold every time, whatever the model decides: Claude's file tools may never read your `.env` file of secret keys. Where does that rule belong?
 - [x] In a deny rule, added with `/permissions`, which Claude Code enforces.
 - [ ] In `CLAUDE.md`, written in capitals so the model can't miss it.
 - [ ] In your first message of each session, before you ask for anything.

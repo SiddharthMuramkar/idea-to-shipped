@@ -18,7 +18,7 @@ On your site, _class_ means one lesson to some people and a weekly course to oth
 Why: A shared language gives each word one meaning. If _class_ means two things, nobody can be sure which one a sentence is about.
 ```
 
-In most repos, those words live in the project's **glossary**: one file, `GLOSSARY.md`, at the top level of the repo.
+With Matt Pocock's [Skills](/learn/skills), those words live in the project's **glossary**: usually one file, `GLOSSARY.md`, at the top level of the repo.
 
 ## What an entry looks like
 
@@ -81,7 +81,7 @@ Why: A missing word is a signal. Either the agent is inventing language the proj
 
 ## Where it shows up
 
-A shared language is your first **Principle**: one of the ideas behind how Matt's [Flows](/learn/main-flow), his set paths through the Skills, are designed. It comes first because [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills), which writes that instruction into `docs/agents/`, runs before your first Flow.
+A shared language is one of the ideas behind how Matt's [Flows](/learn/main-flow), his set paths through the Skills, are designed. The instruction to use the glossary's words is in place from the start, because [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills), which writes it into `docs/agents/`, runs before your first Flow.
 
 Two Skills show it at work:
 
@@ -210,7 +210,7 @@ Why: Splitting a bloated file gives you several bloated files. The cleanup comes
 
 **The output sounds right but is wrong.** The agent has the right words but not the right ideas behind them. Matt warns: "The right nouns on top of the wrong concepts produce output that reads as correct and is not." Get the ideas straight first: a word you don't understand yourself means nothing once it's written down.
 
-**Later sessions repeat a wrong claim.** A glossary an agent wrote and nobody reviewed fills with confident claims, and later sessions treat them as true. That's worse than no glossary at all. So read each new entry, as you'd read code in a pull request.
+**Later sessions repeat a wrong claim.** A glossary an agent wrote and nobody reviewed fills with confident claims, and later sessions treat them as true. That's worse than no glossary at all. So read each new entry, as you'd read code in a [pull request](/learn/pull-requests).
 
 ```checkpoint quick-12
 An agent wrote your glossary and nobody read it. You're about to start a new session. What's the risk?
@@ -232,18 +232,19 @@ Why: An agent may respond the same to plain English, and a glossary may mostly k
 
 ### Try it
 
-Write a small glossary by hand, then watch an agent use it. You'll need your practice project, the yoga-studio booking site in your own repo. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Write a small glossary by hand, then watch an agent use it. You'll need your practice project, the yoga-studio booking site in your own repo. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Open `docs/agents/domain.md` in your practice project. You should see the heading "Use the glossary's vocabulary".
 2. At the repo root, create a file called `GLOSSARY.md`.
 3. Add this entry on three lines: `**Booking**:`, then `One member's place in one class.`, then `_Avoid_: reservation, appointment, slot`.
 4. Add an entry for the person who teaches a class, in the same shape. Say what the person is, in one or two sentences.
-5. Start Claude Code at the repo root.
+5. Start Claude Code at the repo root: `claude`.
 6. Send this message: `Read GLOSSARY.md, then name the endpoint that lets a member reserve a place in a class.` You should see a name built on _booking_, such as `create_booking`.
-7. In your shell, run `git grep -n reservation`. You should see no lines, or lines showing where your code uses that word.
-8. Commit `GLOSSARY.md` on a branch, and merge it through a pull request.
+7. Type `/exit` to leave Claude Code.
+8. In the terminal, run `git grep -n reservation`. You should see no lines, or lines showing where your code uses that word.
+9. Commit `GLOSSARY.md` on a [branch](/learn/branches-and-worktrees), and merge it through a [pull request](/learn/pull-requests), the way [One change, start to finish](/learn/one-change-start-to-finish) shows.
 
-Each line from step 7 is a place where your code and the glossary disagree. Keep the file to words only, with no decisions or code details in it.
+Each line from step 8 is a place where your code and the glossary disagree. Keep the file to words only, with no decisions or code details in it.
 
 ### Read more
 
@@ -258,7 +259,7 @@ Each line from step 7 is a place where your code and the glossary disagree. Keep
 ## Remember
 
 ```flashcards
-Q: In most repos, where is the shared language written down?
+Q: With Matt Pocock's Skills, where is a project's shared language usually written down?
 A: In `GLOSSARY.md`, at the root of the repo.
 
 Q: What stops jargon arriving in the first place?

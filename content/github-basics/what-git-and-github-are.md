@@ -24,12 +24,14 @@ For example, here is the start of the recipe site's history, as Git lists it. Ea
 
 ```text
 $ git log --oneline
-9c41d5a Show cooking time on each recipe
+9c41d5a (HEAD -> main) Show cooking time on each recipe
 7b2e8d0 Add a page for each recipe
 5d6c0f2 Add a README
 ```
 
-The command `git log --oneline` printed that list. Nothing in it needed the internet. GitHub would show the same three versions, but only after you send them there.
+The command `git log --oneline` printed that list. On the newest line, `(HEAD -> main)` marks where you are: on `main`, the project's main line of work.
+
+Nothing in that list needed the internet. GitHub would show the same three versions, but only after you send them there.
 
 ```checkpoint two-jobs
 A teammate in another city wants to see the recipe site's history. What do you need besides Git?
@@ -73,7 +75,7 @@ GitHub is a website that hosts Git repositories. A **remote** is a copy of your 
 
 To **push** is to send your new commits up to a remote, and to **pull** is to bring new commits down from it. Neither happens by itself. You'll do both in [Push, pull and remotes](/learn/push-pull-and-remotes).
 
-To **clone** is the third move: downloading a full copy of a repo from GitHub, with every version of every file. On github.com, a repo's page lists its files, shows its README file below them, and has a green Code button for copying the repo's address.
+To **clone** is the third move: downloading a full copy of a repo from GitHub, with every version of every file. On github.com, a repo's page lists its files and has a green Code button for copying the repo's address. Below the files it shows the **README**: a file, usually `README.md`, that says what the project is and how to start.
 
 On top of the copy, GitHub adds tools for working together. Each one has its own tab on a repo's page:
 
@@ -106,7 +108,7 @@ The two names are easy to mix up. This table keeps them apart:
 
 Git came first. Linus Torvalds and the Linux community built it in 2005, to manage the code of Linux. GitHub came later, as a place to host Git repos and work on them together.
 
-You can use Git with no GitHub at all. You can also edit a file on github.com with no Git installed, and GitHub makes the commit for you. But most work, and every coding agent, uses Git on your computer.
+You can use Git with no GitHub at all. You can also edit a file on github.com with no Git installed, and GitHub makes the commit for you. But most work uses Git on your computer, and so does a coding agent in your terminal.
 
 Other sites host Git repos too, such as GitLab and Bitbucket. Git works the same there, but the website's buttons and names differ: GitLab calls a pull request a merge request.
 
@@ -120,7 +122,7 @@ Why: A commit is made in the repo on your computer. It reaches GitHub only when 
 
 ## Install Git and tell it who you are
 
-A **terminal** is a window where you type commands, one line at a time, and read what they print. On macOS, open the Terminal app. On Linux, open your terminal app. On Windows, use Git Bash, which comes with Git for Windows.
+A **terminal** is a window where you type commands, one line at a time, and read what they print. On macOS, open the Terminal app. On Linux, open your terminal app. On Windows, use Git Bash, which comes with Git for Windows. No Git Bash in your Start menu? Install Git for Windows first (below), then open Git Bash.
 
 First, check whether Git is already there:
 
@@ -130,7 +132,7 @@ git --version
 
 If you see a version, such as `git version 2.56.0`, Git is installed. If not, install it:
 
-- On macOS, running `git --version` offers to install Apple's Command Line Tools, which include Git. Accept it. If you use Homebrew, `brew install git` works too.
+- On macOS, running `git --version` offers to install Apple's Command Line Tools, which include Git. Accept it. If you use Homebrew, a tool that installs programs from the terminal, `brew install git` works too.
 - On Windows, download Git for Windows from git-scm.com and run the installer. It adds Git Bash.
 - On Linux, use your package manager: `sudo apt install git` on Debian or Ubuntu, or `sudo dnf install git` on Fedora.
 
@@ -182,8 +184,8 @@ The **GitHub CLI**, `gh`, is GitHub's own command-line tool: CLI is short for co
 
 You don't need `gh` to use GitHub, because the everyday actions all have a button on github.com. Coding agents use it a lot, though, and later lessons show its commands next to the click paths. To install it:
 
-- On macOS, with Homebrew: `brew install gh`
-- On Windows: `winget install --id GitHub.cli --source winget`
+- On macOS, with Homebrew: `brew install gh`. No Homebrew? Install it from [brew.sh](https://brew.sh), then run the commands it shows under "Next steps". Or skip `gh` for now.
+- On Windows: `winget install --id GitHub.cli --source winget`. Then close the terminal and open a new window: one that was open during the install won't find `gh`.
 - On Linux: follow GitHub's instructions for your distribution, linked from cli.github.com.
 
 Sign in once, in your own terminal:
@@ -192,7 +194,14 @@ Sign in once, in your own terminal:
 gh auth login
 ```
 
-It asks a few questions. If it asks where you use GitHub, pick GitHub.com. Pick HTTPS for Git, and say yes when it offers to authenticate Git with your GitHub credentials. Then choose to log in with a web browser: `gh` shows a one-time code, and you paste it into the page that opens.
+It asks a few questions, and their order can change between versions of `gh`. Answer them like this:
+
+- Where you use GitHub: pick GitHub.com.
+- How to authenticate: pick Login with a web browser.
+- Protocol for Git operations: pick HTTPS.
+- Authenticate Git with your GitHub credentials: say yes.
+
+It may also print a tip about expiring tokens, which you can ignore. Then `gh` shows a one-time code. Press Enter to open your browser, and paste the code into the page that opens.
 
 `gh` keeps a **token**, a long password-like key that proves who you are, in your computer's credential store. Because you said yes, Git uses the same login when you push. To check, run `gh auth status`: it should say you're logged in to github.com, with your username.
 
@@ -248,7 +257,7 @@ Why: GitHub flow starts with a branch. You commit and push on it, open a pull re
 ## Try it
 
 ````try
-You need a terminal and about ten minutes. On Windows, use Git Bash. This makes a practice `recipes` repo on your computer, with one commit.
+You need a terminal and about ten minutes. On Windows, use Git Bash, and if you don't have it yet, install Git for Windows first (see above). This makes a practice `recipes` repo on your computer, with one commit.
 
 1. Check that Git is installed:
 
@@ -275,7 +284,7 @@ You need a terminal and about ten minutes. On Windows, use Git Bash. This makes 
    git config --global init.defaultBranch main
    ```
 
-5. Make a folder for the practice project, and go into it:
+5. Make a folder for the practice repo, and go into it:
 
    ```sh
    mkdir recipes && cd recipes
@@ -443,5 +452,6 @@ Why: A token proves who you are, like a password. Run `gh auth login` in your ow
 - [gh auth login](https://cli.github.com/manual/gh_auth_login), GitHub CLI manual
 - [gh auth status](https://cli.github.com/manual/gh_auth_status), GitHub CLI manual
 - [Installing gh on Windows](https://github.com/cli/cli/blob/trunk/docs/install_windows.md), GitHub CLI
+- [Installing gh on macOS](https://github.com/cli/cli/blob/trunk/docs/install_macos.md), GitHub CLI
 - [11 Tips For AI Coding With Ralph Wiggum](https://www.aihero.dev/tips-for-ai-coding-with-ralph-wiggum), Matt Pocock, 2026-01-08
 ```

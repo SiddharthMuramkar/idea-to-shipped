@@ -73,7 +73,7 @@ A member asks which class has space, and the answer is in your database. How can
 Why: Claude can't see your database. A tool, a function in your code, is how it gets at that data.
 ```
 
-Claude never runs anything itself. A **tool call** is Claude asking your code to run a tool, then getting the output. For example, with a `list_classes` function:
+Claude never runs anything itself. A **tool call** is Claude asking your code to run a tool, then getting the output.
 
 ```checkpoint quick-5
 You've given Claude a `list_classes` tool, and it wants to use it. What does it do?
@@ -82,6 +82,8 @@ You've given Claude a `list_classes` tool, and it wants to use it. What does it 
 - [ ] It asks Anthropic to run the tool, then reads the output.
 Why: Claude never runs anything itself. A tool call is Claude asking your code to run a tool, then getting the output.
 ```
+
+For example, with a `list_classes` function:
 
 ```
 Claude's reply:
@@ -215,7 +217,9 @@ The post's advice is to find "the simplest solution possible", and to start with
 
 ### A real example
 
-Anthropic built a coding agent for SWE-bench tasks, which ask for edits to many files from a written description. The model kept getting relative file paths wrong once the agent had moved out of the root folder.
+Anthropic built a coding agent for SWE-bench tasks, which ask for edits to many files from a written description. The model kept getting relative file paths wrong once the agent had moved out of the root folder, the project's top folder.
+
+A **relative path**, like `src/app.py`, starts from the folder you're in, so it points somewhere else once you move to another folder. An **absolute path**, like `/home/you/project/src/app.py`, starts from the top of the disk, so it works from anywhere.
 
 The fix was in the tool, not the prompt. Anthropic changed the tool to always require absolute paths, and the model then used it flawlessly.
 
@@ -233,7 +237,7 @@ So a tool deserves as much care as a prompt: Anthropic says it "spent more time 
 
 **Your key stops working, and Anthropic emails you.** You probably committed it to a public repository, one of the most frequent causes of leaked keys. GitHub scans public repositories for Claude keys, and Anthropic "automatically deactivates the exposed API key." On your own machine, keep your next key in a `.env` file listed in `.gitignore`, the file that tells Git what to leave out.
 
-**The SDK refuses to run in your website.** Anthropic's TypeScript SDK is off by default in a browser, "to avoid exposing your secret API credentials." Make the call from your backend instead. In January 2024 a developer asked for a way round it, in issue #248 on the SDK's GitHub page. In August 2024 the SDK shipped the switch, named `dangerouslyAllowBrowser`. It adds an extra request line called `anthropic-dangerous-direct-browser-access`.
+**The SDK refuses to run in your website.** Anthropic's TypeScript SDK is off by default in a browser, "to avoid exposing your secret API credentials." Make the call from your backend instead. In January 2024 a developer asked for a way round it, in issue #248 on the SDK's GitHub page. In August 2024 the SDK shipped the switch, named `dangerouslyAllowBrowser`. It adds an extra header, a labelled piece of information sent with a request, called `anthropic-dangerous-direct-browser-access`.
 
 **The API refuses your request with `tool_use ids were found without tool_result blocks immediately after`.** Each `tool_use` block needs a `tool_result` in the next message, and one is missing or comes after text. One agent crashed or timed out mid-run, leaving tool calls in its saved history with no results. After that, "every subsequent message hits the same orphaned tool_use in history". So send one `tool_result` for every `tool_use` block, before any text.
 
@@ -257,11 +261,13 @@ Why: Agents mean higher costs and the potential for compounding errors. So add a
 
 ### Try it
 
-You'll need a Git repository to work in, and Python 3.10 or later. You'll also need an account on the **Claude Console**, Anthropic's site for API keys, with credit on it. Your practice project works, and so does a new folder where you've run `git init`. Each call is charged to your account, so this script caps its loop.
+You'll need a Git repository to work in, and Python 3.10 or later. You'll also need an account on the **Claude Console**, Anthropic's site for API keys, with credit on it. Your practice project works (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), and so does a new folder where you've run `git init`. Each call is charged to your account, so this script caps its loop.
+
+On Windows, use Git Bash for these steps, as in [What Git and GitHub are](/learn/what-git-and-github-are).
 
 1. In the Claude Console, open the **API keys** page and create a key.
 2. From the repo root, make the folders: `mkdir -p api/scripts`.
-3. Keep key files out of git: `echo .env >> .gitignore`.
+3. Keep key files and the packages you'll install out of git: `echo .env >> .gitignore`, then `echo .venv/ >> .gitignore`.
 4. Create `api/.env`, with your key in place of the placeholder:
 
 ```
@@ -270,7 +276,7 @@ ANTHROPIC_API_KEY=your-api-key-here
 
 5. Check that git ignores it: `git check-ignore api/.env`. You should see `api/.env`.
 6. Make a **virtual environment**, a separate space for this project's Python packages: `python3 -m venv .venv`. On Windows, type `python` instead of `python3`.
-7. Turn it on: `source .venv/bin/activate`. On Windows, use `.venv\Scripts\activate` instead.
+7. Turn it on: `source .venv/bin/activate`. In Git Bash on Windows, use `source .venv/Scripts/activate` instead.
 8. Install the packages: `pip install anthropic python-dotenv`.
 9. Save this as `api/scripts/agent_loop.py`. The tool returns two made-up classes.
 

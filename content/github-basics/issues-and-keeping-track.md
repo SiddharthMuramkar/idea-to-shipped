@@ -40,17 +40,18 @@ gh issue list
 ```
 
 ```text
-Showing 3 of 3 open issues in your-name/recipes
+Showing 4 of 4 open issues in your-name/recipes
 
 ID   TITLE                           LABELS       UPDATED
 #13  Search by ingredient            enhancement  about 1 day ago
 #12  Search ignores capital letters  bug          about 2 days ago
+#10  Better search                                about 1 day ago
 #9   Broken link on the About page   bug          about 3 days ago
 ```
 
 The LABELS column shows each Issue's labels, which you'll meet below.
 
-A **coding agent** is an AI program, such as Claude Code, that edits files and runs commands for you. It needs this list even more than you do, because each new session starts with no memory of the last one. Anthropic, the company behind Claude Code, has a picture for this. It's like "engineers working in shifts, where each new engineer arrives with no memory of what happened on the previous shift."
+A **coding agent** is an AI program, such as Claude Code, that edits files and runs commands for you. It needs this list even more than you do, because each new session starts fresh: unless told, it doesn't know what's planned or finished. Anthropic, the company behind Claude Code, has a picture for this. It's like "engineers working in shifts, where each new engineer arrives with no memory of what happened on the previous shift."
 
 So the notes have to live where the next shift can read them, and an Issue is such a place. [How coding agents work](/learn/how-agents-work) explains why each session starts fresh.
 
@@ -58,8 +59,8 @@ So the notes have to live where the next shift can read them, and an Issue is su
 Tomorrow, a fresh agent session will pick up the search bug. Where should today's notes about it be?
 - [x] In Issue #12, where any later session or person can read them.
 - [ ] In today's chat with the agent, which tomorrow's session reads by itself.
-- [ ] In the agent's memory, which carries each session's notes to the next.
-Why: Each new agent session starts with no memory of the last one. Notes in Issue #12 are there for whoever picks the work up next, person or agent.
+- [ ] In the agent's memory, which saves today's whole chat for tomorrow.
+Why: Each new agent session starts fresh: unless told, it doesn't know what's planned or finished. Notes in Issue #12 are there for whoever picks the work up next, person or agent.
 ```
 
 ## Writing a good Issue
@@ -174,7 +175,7 @@ Some teams add labels that say what an Issue needs next. Sorting Issues this way
 | `needs-info` | Wait for whoever opened it to answer a question. If that's you, post your answer. |
 | `ready-for-agent` | Nothing yet. It's fully described, so an agent can build it when you start it. |
 | `ready-for-human` | Do it yourself, or hand it to a person: an agent can't. |
-| `wontfix` | Nothing. It won't be done, so close it and say why. |
+| `wontfix` | No work. It won't be done: close it, with a comment saying why. |
 
 A label never opens or closes an Issue. A `wontfix` Issue stays open until someone closes it.
 
@@ -244,7 +245,7 @@ Use one for small steps that land in the same pull request.
 A **sub-issue** is a whole Issue hung under another one, its **parent**. Each sub-issue has its own number, its own conversation and, usually, its own pull request. Use sub-issues when the pieces are big enough to build and check one at a time.
 
 - On github.com, open the parent. Below its description, click **Create sub-issue**. To hang an Issue that already exists, use the arrow beside that button and choose **Add existing issue**.
-- With `gh`, `gh issue create --title "Search by ingredient" --parent 10` makes a new sub-issue of #10. `gh issue edit 10 --add-sub-issue 12` hangs an existing one.
+- With `gh`, `gh issue create --title "Show a message when nothing matches" --parent 10` makes a new sub-issue of #10. `gh issue edit 10 --add-sub-issue 12,13` hangs two existing ones, #12 and #13.
 
 A parent can hold up to 100 sub-issues, and sub-issues can have sub-issues of their own.
 
@@ -337,7 +338,7 @@ Why: An agent's "done" is a claim. The Issue's state on GitHub shows what happen
 ## Try it: file your first Issues
 
 ````try
-You need `gh` 2.94 or later (`gh --version`), logged in (`gh auth status`), and a repo of your own to practise in. No repo yet? `gh repo create recipes --public --clone --add-readme` makes one and downloads it.
+You need `gh` 2.94 or later (`gh --version`), logged in (`gh auth status`), and a practice repo of your own on GitHub, such as `recipes`. No repo yet? `gh repo create recipes --public --clone --add-readme` makes one and downloads it.
 
 1. Go into the repo's folder:
 
@@ -410,7 +411,7 @@ Why: Words in a description don't make a relationship. GitHub records "blocked b
 
 Matt Pocock's Skills build a whole workflow on Issues. A **Spec** is a parent Issue that describes one whole feature: its problem and its planned solution. A **Ticket** is one of its sub-issues: one slice of the feature, small enough to build in one agent session. [to-spec](/learn/to-spec) writes the Spec, and [to-tickets](/learn/to-tickets) splits it into Tickets, joined by blocked-by links.
 
-The **frontier** is the open Tickets whose blockers are all closed: the ones you can start now. Close a blocker, and the Tickets that waited on it join the frontier. Tickets that don't block each other can even be built at the same time, each in its own session.
+The **frontier** is the open Tickets whose blockers are all closed: the ones you can start now. Close a blocker, and any Ticket that was waiting only on it joins the frontier. Tickets that don't block each other can even be built at the same time, each in its own session.
 
 In a July 2026 video, Matt opens one such Spec with 11 sub-issues, and calls each Ticket "a single context window session". The **context window** is everything an agent can see at once ([The context window](/learn/context-window) explains it). Most of the acceptance criteria stay in the Spec, so each Ticket can be short.
 
@@ -428,16 +429,16 @@ Why: The frontier is the open Tickets whose blockers are all closed. #13 fits, s
 
 ## Try it: set up the practice project
 
-This part creates your **practice project**: a yoga-studio booking site that you build for real, in your own repo. When a Try it step asks for "your practice project", this is the one it means. Later Courses, starting with [Idea to shipped: the main flow](/learn/main-flow), build their Try it steps on it.
+This part creates your **practice project**: a yoga-studio booking site that you build for real, in a new repo of your own. It's separate from the practice repo you used above, such as `recipes`. When a Try it step asks for "your practice project", this is the one it means. Other Try it steps build on it. The first is in [Merging and cleaning up](/learn/merging-and-cleaning-up), later in this Course. Many more follow in the Courses after this one, starting with [What CI/CD is](/learn/what-ci-cd-is).
 
 It has two parts: `api/`, a FastAPI backend with Postgres in Docker, and `web/`, a small TypeScript site with Vercel previews of each pull request. If those names are new, don't worry. For now you only describe them in the README, and later Try it steps add the code.
 
 The setup installs Matt Pocock's Skills. Then it creates the project's first Spec, "Booking API", with two Tickets. #2 adds the bookings table. #3 adds the endpoint that creates a booking, and it's blocked by #2.
 
 ````try
-You'll need Claude Code, Node.js, and `gh` 2.94 or later (`gh --version`), logged in.
+You'll need `gh` 2.94 or later (`gh --version`), logged in, and Node.js, which gives you the `npx` command in step 5. You'll also need Claude Code: [Start here](/learn/start-here) covers the plan it needs and how to install it.
 
-1. Create and clone the repo. You should see a new `yoga-studio` folder.
+1. Create and clone the repo. If you're still in `recipes` from the Try it above, run `cd ..` first, so the new repo lands beside it, not inside it. You should see a new `yoga-studio` folder.
 
    ```sh
    gh repo create yoga-studio --private --clone --add-readme
@@ -456,7 +457,7 @@ You'll need Claude Code, Node.js, and `gh` 2.94 or later (`gh --version`), logge
    git add README.md && git commit -m "Describe the project" && git push -u origin HEAD
    ```
 
-5. Install Matt's Skills, if you haven't yet. Choose all of them, for Claude Code, in project scope.
+5. Install Matt's Skills, if you haven't yet. Choose all of them, for Claude Code, in project scope: installed into this repo, not your whole computer. [What a Skill is](/learn/skills) explains these choices.
 
    ```sh
    npx skills@latest add mattpocock/skills
@@ -470,7 +471,7 @@ You'll need Claude Code, Node.js, and `gh` 2.94 or later (`gh --version`), logge
 
 7. Type `/setup-matt-pocock-skills`, and accept its recommended answers, starting with GitHub as the tracker. If it asks which file to create, choose `CLAUDE.md`. Then approve its drafts.
 8. Open `docs/agents/issue-tracker.md`. You should see its "Blocking" and "Count open blockers" lines.
-9. Back in the terminal, commit and push the new files:
+9. Type `/exit` to quit Claude Code, or open a second terminal in `yoga-studio`. Then commit and push the new files:
 
    ```sh
    git add -A && git commit -m "Set up the Skills" && git push
@@ -536,7 +537,7 @@ Q: What is a GitHub Issue?
 A: One piece of work written down on GitHub: a title, a description and a conversation, with a number such as #12.
 
 Q: What does an open Issue tell everyone?
-A: The work is still waiting. A closed Issue means it's done.
+A: The work is still waiting. A closed Issue means it's done, or that it won't be done.
 
 Q: What makes a good "Done when" line?
 A: Something you could see or run, such as "Soup, SOUP and soup all show Tomato soup".
@@ -571,7 +572,7 @@ A friend tells you the About page of your recipe site has a broken link. You tra
 - [ ] A new line in the README, so everyone who opens the repo sees it.
 - [ ] A message to your coding agent, which keeps it for later sessions.
 - [ ] A new branch named after the bug, so the work has somewhere to live.
-Why: Every piece of work gets its own Issue, open until it's done. A README line isn't tracked, and each new agent session starts with no memory of the last one.
+Why: Every piece of work gets its own Issue, open until it's done. A README line isn't tracked, and each new agent session starts fresh, so a message to the agent isn't a record of the work.
 ```
 
 ```final-test lt-done-when
@@ -652,7 +653,7 @@ Your agent says it finished #12 and committed the fix. `gh issue view 12 --json 
 - [ ] The fix failed, because GitHub closes an Issue as soon as its fix is committed.
 - [ ] Nothing is wrong, because an agent's report is what marks an Issue as done.
 - [ ] The Issue will close by itself within the hour, once GitHub sees the commit.
-Why: A commit doesn't close an Issue. A merged pull request with a closing keyword does, or a person does it by hand. Until then, the tracker says the work is waiting.
+Why: Committing the fix didn't close #12. A merged pull request with a closing keyword closes it, or a person does it by hand. Until then, the tracker says the work is waiting.
 ```
 
 ```sources

@@ -16,11 +16,13 @@ You start a new Claude Code session this morning. How much of yesterday's chat i
 Why: Every session starts with a fresh context window, so yesterday's chat isn't in it. That's why you end up typing the same thing again.
 ```
 
-**An instruction file is a Markdown file of standing instructions that an agent reads at the start of every session.**
+**An instruction file is a Markdown file (plain text with light formatting) of standing instructions that an agent reads at the start of every session.**
 
 Claude Code's instruction file is called `CLAUDE.md`. You write something down once, and Claude reads it each time.
 
 ## The two you'll use
+
+One lives in your home folder, and one in your **repo**, short for repository: a project folder that Git tracks (see [what Git and GitHub are](/learn/what-git-and-github-are)).
 
 - **Your home folder: `~/.claude/CLAUDE.md`**. (`~` is shorthand for your home folder.) Your personal preferences for every project on your computer. Only you see it.
 - **The repo root: `CLAUDE.md`** (or `.claude/CLAUDE.md`). Instructions for this project, in its top folder. It's committed, so everyone working on the repo gets the same file.
@@ -60,7 +62,7 @@ You start Claude Code inside your repo's `api/` folder. Which `CLAUDE.md` files 
 Why: It loads `CLAUDE.md` from the folder you start in and from every folder above it, plus your home folder's file. Folders below aren't part of that load.
 ```
 
-To check, run `/context`, a slash command showing what's loaded in your session. Look under "Memory files", the instruction files, which lists what loaded at launch.
+To check, run `/context all`, a slash command showing what's loaded in your session. Look under "Memory files", the instruction files, which lists what loaded at launch. Without `all`, `/context` can hide that list.
 
 A `CLAUDE.md` inside a subfolder, like `app/migrations/CLAUDE.md`, doesn't load at the start. It loads the first time Claude works on a file in that subfolder.
 
@@ -244,16 +246,16 @@ Why: Matt says to delete a generated file, because what `/init` writes is either
 You'll need Claude Code and your practice project, the yoga-studio repo. If you haven't set it up, do the Try it in [keeping track](/learn/issues-and-keeping-track) first.
 
 1. Start Claude Code at the root of your practice project: `claude`.
-2. Type `/context`. You should see the files that loaded, listed under "Memory files".
+2. Type `/context all`. You should see the files that loaded, listed under "Memory files".
 3. Open a second terminal at the repo root.
 4. Make sure the folder exists: `mkdir -p api`.
 5. Create a rule from your shell, not by asking Claude: `echo "Give every endpoint a test." > api/CLAUDE.md`.
 6. Create a file for Claude to read: `echo "hello" > api/notes.txt`.
 7. Back in Claude Code, type `Read api/notes.txt`. You should see a `Loaded` line with the path of `api/CLAUDE.md`.
-8. Type `/context` again. You won't see that file under "Memory files", which lists what loaded at launch.
+8. Type `/context all` again. You won't see that file under "Memory files", which lists what loaded at launch.
 9. Open your repo's root instruction file. Add a line you'd like Claude to follow, then test it. Can the agent learn it only from this file? Does it matter in both `api/` and `web/`? If either answer is no, delete the line.
 10. Clean up from your shell: `rm api/CLAUDE.md api/notes.txt`.
-11. Commit any line you kept on a [branch](/learn/branches-and-worktrees), and merge it through a [pull request](/learn/pull-requests).
+11. Commit any line you kept on a [branch](/learn/branches-and-worktrees), open a [pull request](/learn/pull-requests), and merge it (see [Merging and cleaning up](/learn/merging-and-cleaning-up)).
 
 ### Read more
 
@@ -277,7 +279,7 @@ Q: When your home folder's CLAUDE.md and the repo's CLAUDE.md both load, does on
 A: No. They're joined together, and the repo's comes after yours.
 
 Q: How do you see which instruction files loaded at launch?
-A: Run `/context` and look under "Memory files".
+A: Run `/context all` and look under "Memory files".
 
 Q: What did the 2026 study of `AGENTS.md`-style context files find about task success and cost?
 A: They didn't generally improve task success, and they raised inference cost by over 20% on average.
@@ -362,7 +364,7 @@ Why: His bar keeps a line only if the agent can't find it in the repo and it mat
 - [Never Run Claude /init](https://www.aihero.dev/never-run-claude-init), Matt Pocock, 2026-02-24 (updated)
 - [Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?](https://arxiv.org/abs/2602.11988), Thibaud Gloaguen, Niels Mündler-Sasahara, Mark Niklas Müller, Veselin Raychev, Martin Vechev, 2026-02-12 (v1); 2026-09-29 (v3)
 - [skills/AGENTS.md at a496f55 · mattpocock/skills](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/AGENTS.md), Matt Pocock
-- [Feature Request: Support AGENTS.md. · Issue #6235 · anthropics/claude-code](https://github.com/anthropics/claude-code/issues/6235), coygeek (opened); comments by many, 2025-08-21
+- [Feature Request: Support AGENTS.md. · Issue #6235 · anthropics/claude-code](https://github.com/anthropics/claude-code/issues/6235), DylanLIiii (opened); comments by many, 2025-08-21
 - [BUG CLAUDE.md instructions completely ignored after context compaction · Issue #19471 · anthropics/claude-code](https://github.com/anthropics/claude-code/issues/19471), OWT-GwanHeeCho (opened); comments by many, 2026-01-20
 - [Compaction | AI Coding Dictionary](https://www.aihero.dev/ai-coding-dictionary/compaction), Matt Pocock
 - [retro: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/retro/SKILL.md), Matt Pocock's Skills

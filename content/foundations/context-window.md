@@ -6,7 +6,7 @@ summary: An agent sees only what's in its context window, and it reasons best wh
 
 ## What the agent can see
 
-Say you're two hours into one long session with Claude Code. Early on you said "don't touch the `payments` folder", and for an hour the work was good. Now it has edited a payments file, re-broken a test it fixed earlier, and described a function that doesn't exist. Nothing crashed. The agent got worse.
+Say you're two hours into one long session with Claude Code, Anthropic's coding agent. (A session is one conversation, from starting `claude` until you clear or quit.) Early on you said "don't touch the `payments` folder", and for an hour the work was good. Now it has edited a payments file, re-broken a test it fixed earlier, and described a function that doesn't exist. Nothing crashed. The agent got worse.
 
 **The agent knows only what's in its context window, and it reasons best while that window is far from full.**
 
@@ -28,7 +28,7 @@ Some of the window is full before you type anything:
 
 - Claude Code's built-in instructions, called the **system prompt**, and the list of tools it can use;
 - your `CLAUDE.md` files and auto memory, the notes Claude Code keeps for itself (see [Instruction files](/learn/instruction-files));
-- the name and short description of each Skill, a named set of instructions for one job, whose full text loads only when it's used;
+- the name and short description of each Skill the agent can start on its own (a Skill is a named set of instructions for one job), whose full text loads only when it's used. A Skill that only you can start, like `/handoff`, stays out of the window until you type it;
 - the tool names of any **MCP servers**, connectors that link the agent to other services.
 
 Then everything you do adds to it: what you type, what the agent replies, and every tool result. File reads and command output are often the biggest part. One big file or a long test log can add thousands of tokens at once.
@@ -84,7 +84,7 @@ The line has nothing to do with the window's size. Most current Claude models ha
 title: Two tasks in one session, on a 1M window (illustrative)
 zone: 15
 # You start `claude`. Before you type, Claude Code's instructions, tools, `CLAUDE.md` and Skill descriptions are in the window.
-fill: 2% | Startup, about 20k
+fill: 3.5% | Startup, about 35k
 # You build a search box for your recipe website: file reads, test runs, edits.
 fill: 9% | First task, about 90k
 # You start an unrelated task on top. Around 150k you leave the smart zone, with 85% of the window still free. Nothing warns you.
@@ -92,7 +92,7 @@ fill: 16% | Second task, about 160k
 # The agent re-breaks a test it fixed in the first task. The fix was a `/clear` between the two tasks.
 fill: 18% | End of the second task, about 180k
 # You type `/clear` before the next task. The window drops back to its startup cost.
-fill: 2% | After /clear, about 20k
+fill: 3.5% | After /clear, about 35k
 ```
 
 ```checkpoint quick-4
@@ -219,20 +219,20 @@ Why: n tokens make n² pairs, so twice the tokens means four times the pairs. Ev
 
 - the project's main `CLAUDE.md`, and auto memory, read again from disk;
 - your Skills' descriptions, and the Skills you used, each cut to fit a budget;
-- the plan, if you wrote one in plan mode;
-- up to five of the files it read or edited most recently.
+- the plan the agent wrote, if you used [plan mode](/learn/how-agents-work), where it plans before it edits;
+- up to five of the files it read or edited, picking the ones changed most recently (a file over 5,000 tokens comes back as just its path).
 
 Everything else lives on only in the summary, if at all. Instructions you gave only in chat are the usual casualty.
-
-**Compaction can happen while you're away.** On a Claude subscription, a session past about 200k tokens that sits idle for about an hour gets compacted. So after lunch, you may carry on from a summary. To choose how full the window gets before Claude Code compacts by itself, use `/autocompact`, as in `/autocompact 500k`.
 
 ```checkpoint quick-13
 A long session compacts. Which of these does Claude Code read again from disk afterwards?
 - [x] The project's main `CLAUDE.md`, and auto memory.
 - [ ] Every instruction you typed during the session.
 - [ ] Every file the agent read during the session.
-Why: The project's main `CLAUDE.md` and auto memory are read again from disk. Instructions said only in chat live on only in the summary, and at most five recent files are read again.
+Why: The project's main `CLAUDE.md` and auto memory are read again from disk. Instructions said only in chat live on only in the summary, and at most five recently changed files are read again.
 ```
+
+**Compaction can happen while you're away.** On a Claude subscription, a session past about 200k tokens that sits idle for about an hour gets compacted. So after lunch, you may carry on from a summary. To choose how full the window gets before Claude Code compacts by itself, use `/autocompact`, as in `/autocompact 500k`.
 
 ### A real example
 

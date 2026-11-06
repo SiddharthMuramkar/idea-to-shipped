@@ -4,7 +4,7 @@ slug: commits-and-diffs
 summary: Read git log, git show and a diff, know what belongs in a commit and what a good message looks like, and check what an agent committed.
 ---
 
-Say an agent finishes a search box for your recipe site and reports "done, committed". Its branch holds six commits, 40 files and over 2,000 added lines. Nobody reads that line by line, and you don't need to. You need to know what a commit is, and where an unfinished change can hide. Then a few commands tell you whether a commit does what you asked.
+Say an agent finishes a search box for your recipe site and reports "done, committed". Its branch holds six commits, seven files and over 350 added lines. Nobody reads that line by line, and you don't need to. You need to know what a commit is, and where an unfinished change can hide. Then a few commands tell you whether a commit does what you asked.
 
 ```goals
 - Read `git log`, `git show` and a diff, and decide whether a commit does what you asked.
@@ -24,18 +24,19 @@ A snapshot is a picture of every file at one moment. Files that didn't change ar
 
 Besides the snapshot, a commit holds its author, a date, its message and a pointer to its **parent**, the commit before it. The very first commit has no parent, and a merge commit has two or more. Git computes a checksum of all of that: a 40-character ID called the commit's **SHA**, or hash. You'll usually see its first seven characters, such as `a3f9c21`, which is enough to pick out one commit.
 
-You can look at a raw commit. For example, here is `git cat-file -p a3f9c21` on the recipe site, with two notes added:
+You can look at a raw commit. For example, here is `git cat-file -p a3f9c21` on the recipe site, trimmed, with two notes added:
 
 ```text
 tree 6f1e0b8c2d9a4e7f3b5c1a8d0e2f4b6c8a1d3e5f     ← the snapshot
-parent 9c41d5a7e3b2f1c0d9e8a7b6c5d4e3f2a1b0c9d8   ← the commit before
+parent 8f2d4b7c1e9a05d3b6f8e2a4c7d1b9e0f3a5c6d8   ← the commit before
 author Sam Lee <sam@example.com> 1793079217 +0000
 committer GitHub <noreply@github.com> 1793079217 +0000
+…
 
 Add the number of servings to each recipe (#4)
 ```
 
-The `tree` line is the snapshot, and the `parent` line is the link back. The committer is GitHub, not Sam, because the commit was made on github.com when its pull request was merged. The author wrote the work; the committer made the commit.
+The `tree` line is the snapshot, and the `parent` line is the link back. The committer is GitHub, not Sam, because the commit was made on github.com when its pull request was merged. The author wrote the work; the committer made the commit. GitHub also signs the commits it makes, so a real one has a `gpgsig` block where the `…` is.
 
 Because every commit names its parent, the history is a chain, and each ID depends on everything before it. Change one old commit, and every commit after it gets a new ID. So `a3f9c21` means one exact state of the project, with one exact history behind it.
 
@@ -44,8 +45,8 @@ Because every commit names its parent, the history is a chain, and each ID depen
 ```text
 $ git log --oneline
 a3f9c21 (HEAD -> main, origin/main) Add the number of servings to each recipe (#4)
-9c41d5a Show cooking time on each recipe (#3)
-7b2e8d0 Add a page for each recipe (#2)
+8f2d4b7 Show cooking time on each recipe (#3)
+b3e6a90 Add a page for each recipe (#2)
 e2b18c4 Set up the site and its tests (#1)
 5d6c0f2 Add a README
 ```
@@ -63,11 +64,11 @@ Why: A commit is a snapshot of all the files. Unchanged ones link to copies Git 
 ```
 
 ```checkpoint ids-downstream
-An agent rewrites the message of `7b2e8d0`, an older commit on `main`. What happens to `9c41d5a` and `a3f9c21`?
+An agent rewrites the message of `b3e6a90`, an older commit on `main`. What happens to `8f2d4b7` and `a3f9c21`?
 - [x] They both get new IDs, because each ID covers its parent's ID.
 - [ ] They keep their IDs, because only that one message changed.
 - [ ] Git deletes them, because their parent no longer exists.
-Why: Each commit's ID depends on its parent's. A new `7b2e8d0` means `9c41d5a` has a new parent, so it gets a new ID, and so on down the chain.
+Why: Each commit's ID depends on its parent's. A new `b3e6a90` means `8f2d4b7` has a new parent, so it gets a new ID, and so on down the chain.
 ```
 
 ## Three places a change can be
@@ -103,8 +104,8 @@ Changes to be committed:
 	modified:   src/search/search.ts
 
 Changes not staged for commit:
-	modified:   src/search/search.ts
 	modified:   README.md
+	modified:   src/search/search.ts
 
 Untracked files:
 	tests/search.test.ts
@@ -123,8 +124,8 @@ Agents often use the short form, `git status -s`. It has two columns: the left o
 
 ```text
 $ git status -s
-MM src/search/search.ts
  M README.md
+MM src/search/search.ts
 ?? tests/search.test.ts
 ```
 
@@ -173,7 +174,7 @@ A **diff** is the line-by-line difference between two versions. Which two versio
 
 Mind the dots. With three, `git diff main...add-search` compares the branch with the commit where it split off `main`, so you see only the branch's own work. With two, `main..add-search` compares the newest commit of each branch directly. Anything `main` gained after the split then shows up as if the branch had removed it. On a fresh branch the two agree; once `main` moves on, they don't. A pull request on GitHub shows the three-dot kind.
 
-Now the anatomy. Here is one file's diff from a commit on the agent's branch, printed by `git show 4e8b2a1 -- src/lib/cooking-time.ts`:
+Now the anatomy. Here is one file's diff from a commit on another branch, `long-cooking-times`, printed by `git show 6c1d0e7 -- src/lib/cooking-time.ts`:
 
 ```diff
 diff --git a/src/lib/cooking-time.ts b/src/lib/cooking-time.ts
@@ -232,7 +233,7 @@ A hunk header reads `@@ -12,4 +12,7 @@`. What happened in that region?
 - [x] It grew by three lines.
 - [ ] Seven lines were deleted.
 - [ ] Line 12 moved to line 7.
-- [ ] Four lines were added.
+- [ ] It shrank by three lines.
 Why: Before, 4 lines from line 12. After, 7 lines from line 12. The region is three lines longer.
 ```
 
@@ -253,17 +254,17 @@ Commit what people and agents write: code, tests, settings and docs. Leave out w
 
 The **lockfile** is the exception: made by a tool, but committed. `package.json` names the packages the project needs. `package-lock.json` records the exact version of every package installed, including the packages those packages pulled in. Committing it means your laptop, the checks on GitHub and the server that runs the site all install the same thing.
 
-That's why automated checks install with `npm ci`, not `npm install`. `npm install` can rewrite the lockfile. `npm ci` needs a lockfile, and deletes any existing `node_modules` first. It never writes to `package.json` or the lockfile, and it stops with an error if the two disagree. pnpm's version of the same idea is `pnpm install --frozen-lockfile`.
+That's why automated checks install with `npm ci`, not `npm install`. `npm install` can rewrite the lockfile. `npm ci` needs a lockfile, and deletes any existing `node_modules` first. It never writes to `package.json` or the lockfile, and it stops with an error if the lockfile doesn't match what `package.json` asks for. pnpm's version of the same idea is `pnpm install --frozen-lockfile`.
 
-So when an agent adds a package, `package.json` and the lockfile must change in the same commit. If only one did, the checks fail at the install step.
+So when an agent adds a package, `package.json` and the lockfile must change in the same commit. If `package.json` changed and the lockfile didn't, the checks fail at the install step. If only the lockfile changed, the install passes without the new package, and the failure comes later, wherever the code uses it.
 
 Secrets are the hard rule. A key that reaches a commit stays in that snapshot. Deleting the file in a later commit doesn't touch the earlier one, and scrubbing it out means rewriting history. That's why GitHub's first step for a leaked secret is to revoke or replace it.
 
-If you ever see `.env`, `.env.local` or a key in a diff, stop. Get a new key first, then add the missing `.gitignore` line.
+If you ever see `.env`, `.env.local` or a key in a diff, stop. Get a new key first. A `.gitignore` line alone won't help now, because Git already tracks the file. Untrack it with `git rm --cached .env.local`, which removes it from the staging area but keeps it on your disk. Then add the missing `.gitignore` line, and commit both.
 
 ```checkpoint env-in-stat
 The stat for an agent's commit includes `.env.local | 2 +`. What do you do first?
-- [x] Replace the key it holds, then fix `.gitignore`.
+- [x] Replace the key, then untrack the file and fix `.gitignore`.
 - [ ] Delete the file in another commit, then carry on.
 - [ ] Nothing, because the repo is private anyway.
 - [ ] Squash the commit before you merge it.
@@ -276,7 +277,7 @@ An agent adds a package. The stat shows `package.json` changed, but not `package
 - [ ] Install the new package and pass anyway.
 - [ ] Update the lockfile for you, then carry on.
 - [ ] Skip installing the new package quietly.
-Why: `npm ci` stops with an error when `package.json` and the lockfile disagree. Both must change in the same commit.
+Why: `npm ci` stops with an error when `package.json` asks for a package the lockfile doesn't have. Both must change in the same commit.
 ```
 
 ```checkpoint why-lockfile
@@ -347,7 +348,7 @@ Why: `ci` is the usual type for CI changes, and "add" is imperative. "Added" isn
 
 ## After an agent says "done"
 
-Many agents commit to whatever branch is open, without making a branch or asking. The [implement](/learn/implement) Skill works that way, for example. So check the branch before work starts: it's the first line of `git status`.
+Many agents commit to whatever branch is open, without making a branch or asking. For example, Matt Pocock's [implement](/learn/implement) **Skill**, a named set of instructions an agent loads for one job, works that way. So check the branch before work starts: it's the first line of `git status`.
 
 When the agent says done, there is a commit for you to read. Four read-only commands, run in the agent's folder, do the check:
 
@@ -358,7 +359,7 @@ When the agent says done, there is a commit for you to read. Four read-only comm
 | `git show --stat HEAD` | Files that fit the task: code with its tests, no secrets, no build output, no lockfile change you didn't expect |
 | `git show HEAD -- <file>` | The behaviour itself, in the one or two files that carry it |
 
-Here the two dots are right: `main..HEAD` lists the commits on your branch that `main` doesn't have.
+In `git log`, the dots mean something else: `main..HEAD` lists the commits on your branch that `main` doesn't have. So here two dots are right.
 
 For example, say you asked for tablespoons in the units the recipe page converts. The agent's message ends: "The units test checks the new unit too." Its stat, trimmed to the files:
 
@@ -383,10 +384,10 @@ No test file. Is the message wrong? This is where you open one file's diff, inst
 
 The commit adds one entry to `UNITS`. The existing test, in `tests/units.test.ts`, is named "converts every unit in UNITS both ways". So the new unit is tested, and the claim holds. One question, answered from the diff, not from the agent's summary.
 
-If you use Matt Pocock's Skills, one gap matters here. [code-review](/learn/code-review) reviews `git diff <fixed-point>...HEAD`, so it sees committed work only, and implement runs it before its own commit. So after implement says done, run code-review yourself, with `main` as the fixed point.
+If you use Matt Pocock's Skills, one gap matters here. [code-review](/learn/code-review) reviews `git diff <fixed-point>...HEAD`, so it sees committed work only, and implement runs it before its own commit. So after implement says done, run code-review yourself, with `main` as the fixed point, the branch it compares your work against.
 
 ```checkpoint committed-on-main
-You asked an agent to build a feature without checking the branch first. `git status` now starts "On branch main". What happened?
+You asked an agent to build a feature without checking the branch first. It reports "done, committed", and `git status` starts "On branch main". What happened?
 - [x] The work was committed onto `main`, the branch that was open.
 - [ ] The agent made a new branch for the work, named after the task.
 - [ ] The agent opened a pull request, so `main` is untouched.
@@ -452,7 +453,7 @@ And the rules in one place:
 - One logical change per commit, with an imperative subject of about 50 characters, a blank line, and a body that says why.
 - The lockfile changes in the same commit as `package.json`.
 - Nothing `.gitignore` covers, no build output, and never a secret. If one lands, replace the key first.
-- With a squash merge, the pull request's title becomes the line on `main`.
+- With a squash merge, the pull request's title, or a lone commit's subject, becomes the line on `main`.
 
 ```checkpoint cheat-sheet-pick
 You want to list the commits on your branch that `main` doesn't have yet. Which command?
@@ -500,7 +501,7 @@ You need Git and a practice repo with at least one commit. The Try it in [What G
    git diff
    ```
 
-   You should see one line starting with `+`: `+Family recipes, shared.`
+   You should see one added line: `+Family recipes, shared.`
 6. Stage it:
 
    ```sh
@@ -627,7 +628,7 @@ Why: With two or more commits, GitHub's default makes the pull request's title t
 
 ```final-test leaked-key
 An agent's branch is pushed, and its stat shows `.env | 3 +`, a file with your payment provider's key. The agent offers to delete the file in a new commit. What comes first?
-- [x] Replace the key, then add the missing `.gitignore` line.
+- [x] Replace the key, then untrack the file and add the `.gitignore` line.
 - [ ] Let it delete the file, which removes the key from the history.
 - [ ] Merge the pull request first, then delete the file on `main`.
 Why: The key is in a snapshot that's already on GitHub. A later commit doesn't touch that snapshot, so the key must be revoked or replaced first.
