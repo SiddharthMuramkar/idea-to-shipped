@@ -1,0 +1,746 @@
+/*
+ * A Diagram (see diagram.tsx): a figure in the Lesson's text column, its
+ * drawing on a soft panel with the caption under it. Each type lays itself
+ * out for the panel's width: narrow first (a phone), then wider from 30rem
+ * of figure, so nothing ever pushes the page sideways. A drawing that still
+ * can't fit scrolls inside its own panel.
+ *
+ * Lines and arrows are 1.5px in a muted ink with 7px heads; boxes are square
+ * and white, like the site's cards. Blue marks what's active (a frontier
+ * node, a branch), green what's done (a settled node, a merge).
+ */
+.figure {
+  --stroke-color: color-mix(in srgb, var(--muted) 78%, transparent);
+  --stroke: 1.5px solid var(--stroke-color);
+  --arrow-head: 7px;
+  container: diagram / inline-size;
+  min-width: 0;
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.canvas {
+  padding: var(--space-s);
+  overflow-x: auto;
+  background: var(--bg-soft);
+  border-top: 3px solid var(--blue);
+}
+
+@container diagram (min-width: 30rem) {
+  .canvas {
+    padding: var(--space-l);
+  }
+}
+
+/* Under the drawing; screen readers read it as the figure's name. */
+.caption {
+  margin-top: var(--space-xs);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-wrap: pretty;
+}
+
+/*
+ * A Diagram's lists are real lists, drawn without markers or indents. Two
+ * classes, so these beat a Lesson's ".prose li" and ".prose ol" in any order
+ * the stylesheets load. Only the block margins are reset, so a drawing can
+ * still centre itself.
+ */
+.figure .list {
+  margin-block: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.figure .item {
+  margin-block: 0;
+}
+
+/* A box: a step, a node or a layer. */
+.node {
+  position: relative;
+  min-width: 0;
+  padding: var(--space-xs) var(--space-s);
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  box-shadow: 0 1px 2px rgb(10 20 51 / 0.06);
+  overflow-wrap: anywhere;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+}
+
+/* A note sits under its label. */
+.note {
+  display: block;
+  color: var(--muted);
+}
+
+/* A box with a link opens that Lesson from anywhere on it, and its edge turns blue on hover. */
+.node a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.node a::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+}
+
+.node:has(a:hover) {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+
+.mark {
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.22em;
+}
+
+/* --------------------------------------------------------------------------
+   chain: steps in order, joined by arrows. Top to bottom, the boxes are as
+   wide as the widest, centred, and a group's bracket sits to their right.
+   Left to right (a short chain in a wide figure), the boxes share the row
+   equally and a group's bracket sits under its steps.
+   -------------------------------------------------------------------------- */
+.chain {
+  --chain-gap: var(--space-l);
+  display: grid;
+  row-gap: var(--chain-gap);
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.step {
+  position: relative;
+}
+
+/* The arrow into a step: a line across the gap before it, then its head. */
+.arrowed::before,
+.arrowed::after {
+  content: "";
+  position: absolute;
+}
+
+.arrowed::before {
+  bottom: 100%;
+  left: 50%;
+  height: var(--chain-gap);
+  margin-left: -0.75px;
+  border-left: var(--stroke);
+}
+
+.arrowed::after {
+  bottom: calc(100% + 1.5px);
+  left: 50%;
+  width: var(--arrow-head);
+  height: var(--arrow-head);
+  border-right: var(--stroke);
+  border-bottom: var(--stroke);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* A parallel step's boxes: side by side down, stacked across. */
+.parallel {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-xs);
+}
+
+/* Groups: the boxes keep their places, and the bracket gets its own column (down) or row (across). */
+.groupSteps {
+  display: grid;
+  gap: var(--chain-gap);
+}
+
+.bracket {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.bracket::before {
+  content: "";
+  flex: none;
+  align-self: stretch;
+  width: var(--space-xs);
+  border: var(--stroke);
+  border-left: 0;
+}
+
+.chain.grouped {
+  grid-template-columns: minmax(0, auto) fit-content(9rem);
+  column-gap: var(--space-s);
+}
+
+.chain > .step {
+  grid-column: 1;
+}
+
+.chain > .group {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+@container diagram (min-width: 30rem) {
+  .across,
+  .across.grouped {
+    grid-template-columns: repeat(var(--chain-steps), minmax(0, 1fr));
+    column-gap: var(--chain-gap);
+    width: auto;
+    margin-inline: 0;
+  }
+
+  .across .arrowed::before {
+    top: 50%;
+    right: 100%;
+    bottom: auto;
+    left: auto;
+    width: var(--chain-gap);
+    height: auto;
+    margin: -0.75px 0 0;
+    border-left: 0;
+    border-top: var(--stroke);
+  }
+
+  .across .arrowed::after {
+    top: 50%;
+    right: calc(100% + 1.5px);
+    bottom: auto;
+    left: auto;
+    border-bottom: 0;
+    border-top: var(--stroke);
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .across .parallel {
+    grid-auto-flow: row;
+    height: 100%;
+  }
+
+  .across.grouped {
+    grid-template-rows: auto auto;
+  }
+
+  .across > .step {
+    grid-row: 1;
+    grid-column: auto;
+  }
+
+  .across > .group {
+    grid-row: 1 / span 2;
+    grid-column: span var(--group-span);
+    grid-template-columns: none;
+    grid-template-rows: subgrid;
+  }
+
+  .across .groupSteps {
+    grid-template-columns: repeat(var(--group-span), minmax(0, 1fr));
+    gap: 0 var(--chain-gap);
+  }
+
+  .across .bracket {
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    padding-top: var(--space-xs);
+    text-align: center;
+  }
+
+  .across .bracket::before {
+    justify-self: stretch;
+    width: auto;
+    height: var(--space-xs);
+    margin-bottom: var(--space-2xs);
+    border: var(--stroke);
+    border-top: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   compare: a real table across the panel, its header row bold and every
+   cell top-aligned. The columns share the width equally; a row label's
+   column takes a little less.
+   -------------------------------------------------------------------------- */
+.figure .table {
+  display: table;
+  width: 100%;
+  margin: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: inherit;
+}
+
+.figure .table :is(th, td) {
+  padding: var(--space-xs) var(--space-s);
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--ink);
+  text-align: start;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.figure .table thead th {
+  background: var(--blue-soft);
+  font-weight: 700;
+}
+
+.figure .table tbody th {
+  font-weight: 600;
+}
+
+/* The blank corner over the row labels. */
+.figure .labelled thead td:first-child {
+  width: 30%;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  background: transparent;
+}
+
+.figure .table tfoot td {
+  color: var(--muted);
+}
+
+/*
+ * A narrow figure gives the words the room: each column is at least as wide
+ * as its longest word, so none breaks mid-word. A table that still can't fit
+ * scrolls in its panel.
+ */
+@container diagram (max-width: 29.99rem) {
+  .figure .table {
+    table-layout: auto;
+  }
+
+  .figure .table :is(th, td) {
+    padding: var(--space-xs);
+    overflow-wrap: break-word;
+  }
+
+  .figure .labelled thead td:first-child {
+    width: auto;
+  }
+}
+
+.yes {
+  color: var(--good);
+}
+
+.no {
+  color: var(--muted);
+}
+
+/* An empty cell's dash is quieter than a check or a cross. */
+.blank {
+  color: var(--line-strong);
+}
+
+/* --------------------------------------------------------------------------
+   tree: indented lines with elbow connectors, like a file tree, centred in
+   the panel. Each level sits --tree-indent further in, joined to the line
+   down from its parent by an elbow.
+   -------------------------------------------------------------------------- */
+.tree {
+  --tree-indent: var(--space-l);
+  --tree-rail: var(--space-s);
+  /* Down to the middle of a node's first line: the item's top space, the node's edge and padding, half a line. */
+  --tree-elbow: calc(var(--space-xs) + 1px + var(--space-xs) + 1.45em * 0.5);
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.treeNode {
+  display: flex;
+  gap: var(--space-xs);
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* frontier: outlined in blue. settled and closed: filled green, with a check. */
+.frontier {
+  border-color: var(--blue);
+  box-shadow: inset 0 0 0 1px var(--blue);
+}
+
+.done {
+  border-color: color-mix(in srgb, var(--good) 45%, var(--bg));
+  background: var(--good-soft);
+}
+
+.treeCheck {
+  margin-top: 0.15em;
+  color: var(--good);
+}
+
+/* A link: a line under its from node, an arrow, then its label and the node it points to. */
+.links {
+  position: relative;
+  display: grid;
+  gap: var(--space-2xs);
+  padding-top: var(--space-2xs);
+}
+
+.link {
+  display: flex;
+  gap: var(--space-xs);
+  padding-left: var(--tree-indent);
+  color: var(--muted);
+}
+
+/* A node with children: the line down to them runs on past its links. */
+.links:has(+ .children)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--tree-rail);
+  border-left: var(--stroke);
+}
+
+.linkArrow {
+  margin-top: 0.15em;
+}
+
+.linkTo {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.children > li {
+  position: relative;
+  padding: var(--space-xs) 0 0 var(--tree-indent);
+}
+
+/* The line down from the parent, then across to this node. The last child's stops at its own node. */
+.children > li::before,
+.children > li::after {
+  content: "";
+  position: absolute;
+  left: var(--tree-rail);
+}
+
+.children > li::before {
+  top: 0;
+  bottom: 0;
+  border-left: var(--stroke);
+}
+
+.children > li:last-child::before {
+  bottom: auto;
+  height: var(--tree-elbow);
+}
+
+.children > li::after {
+  top: var(--tree-elbow);
+  width: calc(var(--tree-indent) - var(--tree-rail));
+  border-top: var(--stroke);
+}
+
+/* --------------------------------------------------------------------------
+   layers: boxes across the panel. Nested, each box holds the boxes inside
+   it, a level's boxes alternating white and soft so each edge shows; stacked,
+   the top level is one joined stack, top to bottom.
+   -------------------------------------------------------------------------- */
+.nested,
+.inside {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+/* Two classes, to beat the lists' own reset above. */
+.figure .inside {
+  margin-top: var(--space-xs);
+}
+
+/* A box that holds boxes keeps them a little in from its sides and bottom. */
+.layer:has(> .inside) {
+  padding: var(--space-xs) var(--space-m) var(--space-m);
+}
+
+.inside > .layer {
+  background: var(--bg-soft);
+}
+
+.inside .inside > .layer {
+  background: var(--bg);
+}
+
+.inside .inside .inside > .layer {
+  background: var(--bg-soft);
+}
+
+.stacked {
+  display: grid;
+}
+
+.stacked > .layer + .layer {
+  margin-top: -1px;
+}
+
+@container diagram (max-width: 29.99rem) {
+  .layer:has(> .inside) {
+    padding: var(--space-xs) var(--space-s) var(--space-s);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   git: one lane per branch, across the panel. The trunk's line and commits
+   are muted ink, other branches' blue, and merge commits green. Lanes touch,
+   so the lines between them join up; each lane's SVG fills its row. The
+   names' column is as wide as the longest name, up to a limit, in every
+   lane. Every slot keeps some room, so a busy history scrolls in its panel
+   rather than piling its dots up.
+   -------------------------------------------------------------------------- */
+.git {
+  --git-name: 11rem;
+  min-width: calc(7rem + var(--git-slots) * 1rem);
+}
+
+.lanes {
+  display: grid;
+  grid-template-columns: fit-content(var(--git-name)) minmax(0, 1fr);
+  column-gap: var(--space-m);
+}
+
+.lane {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+@container diagram (max-width: 29.99rem) {
+  .git {
+    --git-name: 7rem;
+  }
+
+  .lanes {
+    column-gap: var(--space-s);
+  }
+}
+
+.laneName {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2xs);
+  /* The name's first line sits level with the lane's line. */
+  padding: calc(var(--git-line-y) - 0.725em) 0 var(--space-s);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.trunk .laneName {
+  color: var(--muted);
+}
+
+.branch .laneName {
+  color: var(--blue);
+}
+
+/* A worktree: a small tag under its branch's name, at the start of its lane. */
+.worktree {
+  width: fit-content;
+  max-width: 100%;
+  padding: 0 0.45em;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.8em;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.track {
+  position: relative;
+  display: grid;
+  align-content: start;
+  padding: calc(2 * var(--git-line-y)) 0 var(--space-s);
+}
+
+.lines {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.lines line {
+  stroke-width: 1.5px;
+}
+
+.lines line.trunk {
+  stroke: var(--muted);
+}
+
+.lines line.branch {
+  stroke: var(--blue);
+}
+
+/* Commits: a ring of the panel's colour keeps each dot clear of the lines. */
+.lines circle {
+  stroke: var(--bg-soft);
+  stroke-width: 2px;
+}
+
+.lines circle.trunk {
+  fill: var(--muted);
+}
+
+.lines circle.branch {
+  fill: var(--blue);
+}
+
+.lines circle.merged {
+  fill: var(--good);
+}
+
+/*
+ * A merge's label sits beside its merge commit, under the lane's line: after
+ * it, or ending before it in the right half. It covers any line behind it.
+ */
+.mergeLabel {
+  position: relative;
+  width: fit-content;
+  max-width: calc((1 - var(--merge-at)) * 100% - var(--space-xs));
+  margin-left: calc(var(--merge-at) * 100% + var(--space-xs));
+  padding: 0 var(--space-2xs);
+  background: var(--bg-soft);
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.mergeLabel.endsAtMerge {
+  justify-self: end;
+  max-width: calc(var(--merge-at) * 100% - var(--space-xs));
+  margin-left: 0;
+  margin-right: calc((1 - var(--merge-at)) * 100% + var(--space-xs));
+  text-align: end;
+}
+
+.gitNote {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+/* --------------------------------------------------------------------------
+   cycle: the steps top to bottom, joined by arrows like a vertical chain,
+   and one return arrow up the right side, from the last step into the
+   first. outside is a dashed box: under the loop in a narrow figure, beside
+   it in a wide one.
+   -------------------------------------------------------------------------- */
+.cycle {
+  --cycle-gap: var(--space-l);
+  /* How far right of the steps the return arrow runs. */
+  --cycle-rail: var(--space-l);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-l);
+}
+
+.loop {
+  display: grid;
+  width: min(16rem, 100% - var(--cycle-rail));
+  row-gap: var(--cycle-gap);
+  margin-right: var(--cycle-rail);
+}
+
+/* The arrow down into each step after the first. */
+.cycleStep + .cycleStep::before,
+.cycleStep + .cycleStep::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+}
+
+.cycleStep + .cycleStep::before {
+  bottom: 100%;
+  height: var(--cycle-gap);
+  margin-left: -0.75px;
+  border-left: var(--stroke);
+}
+
+.cycleStep + .cycleStep::after {
+  bottom: calc(100% + 1.5px);
+  width: var(--arrow-head);
+  height: var(--arrow-head);
+  border-right: var(--stroke);
+  border-bottom: var(--stroke);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* The return arrow's piece beside each step: up the whole side of the middle ones. */
+.back {
+  position: absolute;
+  top: -2px;
+  bottom: calc(-1 * var(--cycle-gap) - 2px);
+  left: calc(100% + 1px);
+  width: var(--cycle-rail);
+  border-right: var(--stroke);
+}
+
+/* Into the first step from the right, with the arrow's head. */
+.cycleStep:first-child .back {
+  top: calc(50% - 0.75px);
+  border-top: var(--stroke);
+}
+
+.cycleStep:first-child .back::before {
+  content: "";
+  position: absolute;
+  top: -0.75px;
+  left: 1.5px;
+  width: var(--arrow-head);
+  height: var(--arrow-head);
+  border-bottom: var(--stroke);
+  border-left: var(--stroke);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Out of the last step, to the right and up. */
+.cycleStep:last-child .back {
+  bottom: auto;
+  height: calc(50% + 2.75px);
+  border-bottom: var(--stroke);
+}
+
+.outside {
+  width: min(16rem, 100%);
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+}
+
+@container diagram (min-width: 30rem) {
+  .cycle {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-xl);
+  }
+
+  .loop {
+    flex: 0 1 16rem;
+    width: auto;
+  }
+
+  .outside {
+    flex: 0 1 10rem;
+    width: auto;
+  }
+}
