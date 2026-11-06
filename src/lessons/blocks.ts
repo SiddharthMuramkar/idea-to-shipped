@@ -1,7 +1,11 @@
 import type { Token, Tokens } from "marked";
-import { countWordsIn, htmlToText, lex, renderInline, renderTokens, type Fail } from "./markdown";
+import { parseDiagram, type Diagram } from "./diagrams";
+import { htmlToText, lex, renderInline, renderTokens, type Fail } from "./markdown";
 import { parseQuestion, type Question } from "./questions";
 import { parseScene, type Scene } from "./scenes";
+
+// One flip card: a question on the front, its answer on the back.
+export type Flashcard = { frontHtml: string; backHtml: string };
 
 export type Block =
   | { type: "prose"; html: string }
@@ -12,7 +16,9 @@ export type Block =
   | { type: "callout"; tone: CalloutTone; html: string }
   | { type: "try"; html: string }
   | { type: "siteStory"; html: string }
-  | { type: "sources"; html: string };
+  | { type: "sources"; html: string }
+  | { type: "flashcards"; cards: Flashcard[] }
+  | { type: "diagram"; diagram: Diagram };
 
 export type Section = { id: string; title: string; titleHtml: string; blocks: Block[] };
 
@@ -27,6 +33,8 @@ const KINDS = [
   "try",
   "site-story",
   "sources",
+  "flashcards",
+  "diagram",
 ] as const;
 type Kind = (typeof KINDS)[number];
 
@@ -58,11 +66,16 @@ const LANGUAGES = new Set([
 // Words authors reach for instead of a kind: a callout tone or Scene type on
 // its own, or a near synonym. "tip" is two letters from "try", so without
 // these it would suggest "try", and "test" is too far from "final-test" to
-// be caught as a near miss, so it would quietly show as code.
+// be caught as a near miss, so it would quietly show as code. "mermaid" is
+// another site's diagram syntax, which this one can't draw.
 const HINTS = new Map(Object.entries({
   tip: "callout tip",
   "watch-out": "callout watch-out",
   "big-idea": "callout big-idea",
+  remember: "callout remember",
+  card: "flashcards",
+  cards: "flashcards",
+  mermaid: "diagram",
   chat: "scene chat",
   terminal: "scene terminal",
   flow: "scene flow",
@@ -138,23 +151,8 @@ function slugify(text: string): string {
   return slug || "section";
 }
 
-// Running text is what a reader reads as prose, so the code and headings
-// inside these blocks don't count.
-export function countProseWords(blocks: Block[]): number {
-  return blocks.reduce((total, block) => {
-    if (!["prose", "callout", "try", "siteStory"].includes(block.type)) return total;
-    const text = htmlToText(
-      (block as { html: string }).html
-        .replace(/<pre[\s\S]*?<\/pre>/g, " ")
-        .replace(/<code[\s\S]*?<\/code>/g, " ")
-        .replace(/<h[1-6][\s\S]*?<\/h[1-6]>/g, " ")
-        .replace(/<[^>]*>/g, " "),
-    );
-    return total + countWordsIn(text);
-  }, 0);
-}
-
-const CALLOUT_TONES = ["tip", "watch-out", "big-idea"] as const;
+// "remember" is the box of what to keep from a Section.
+const CALLOUT_TONES = ["tip", "watch-out", "big-idea", "remember"] as const;
 export type CalloutTone = (typeof CALLOUT_TONES)[number];
 
 const ARG: Partial<Record<Kind, string>> = {
@@ -181,10 +179,57 @@ function parseGoals(file: string, body: string): string[] {
 function calloutTone(file: string, tone: string | undefined): CalloutTone {
   if (!(CALLOUT_TONES as readonly (string | undefined)[]).includes(tone)) {
     throw new Error(
-      `${file}: callout: the tone must be tip, watch-out or big-idea (got "${tone ?? ""}")`,
+      `${file}: callout: the tone must be tip, watch-out, big-idea or remember (got "${tone ?? ""}")`,
     );
   }
   return tone as CalloutTone;
+}
+
+// Each card is a "Q: …" line, then its "A: …" line right under it, with a
+// blank line between cards. Each side is one line of inline Markdown, since
+// it's drawn on a card, not as a page of text.
+function parseFlashcards(file: string, body: string): Flashcard[] {
+  const fail: Fail = (problem) => new Error(`${file}: flashcards: ${problem}`);
+  const cards: Flashcard[] = [];
+  // The question whose "A: …" line should come next.
+  let front: string | null = null;
+  // A card has just ended with no blank line yet, so another can't start.
+  let touching = false;
+  const unanswered = (question: string) =>
+    fail(`"Q: ${question}" has no answer: put its "A: …" line right under it`);
+
+  for (const raw of body.split("\n")) {
+    const line = raw.trimEnd();
+    if (line === "") {
+      if (front !== null) throw unanswered(front);
+      touching = false;
+      continue;
+    }
+    const side = /^([QA]):(.*)$/.exec(line);
+    if (!side) {
+      throw fail(
+        /^\s+[QA]:/.test(line)
+          ? `"${line.trim()}": start each "Q:" and "A:" line at the beginning of the line`
+          : `"${line.trim()}" isn't a "Q: …" or "A: …" line: write each card as one "Q: …" line and one "A: …" line, with a blank line between cards`,
+      );
+    }
+    const text = side[2].trim();
+    if (side[1] === "Q") {
+      if (front !== null) throw unanswered(front);
+      if (touching) throw fail(`"Q: ${text}": put a blank line between one card and the next`);
+      if (text === "") throw fail('a "Q:" line needs its question after the colon');
+      front = text;
+    } else {
+      if (front === null) throw fail(`"A: ${text}" has no question: put a "Q: …" line right above it`);
+      if (text === "") throw fail(`"Q: ${front}" has an empty answer: write it after the "A:"`);
+      cards.push({ frontHtml: renderInline(front, fail), backHtml: renderInline(text, fail) });
+      front = null;
+      touching = true;
+    }
+  }
+  if (front !== null) throw unanswered(front);
+  if (cards.length === 0) throw fail('needs at least one card: a "Q: …" line with an "A: …" line under it');
+  return cards;
 }
 
 export function parseBody(file: string, body: string): LessonBody {
@@ -272,6 +317,12 @@ export function parseBody(file: string, body: string): LessonBody {
         return;
       case "sources":
         blocks.push({ type: "sources", html: renderBody(file, kind, text) });
+        return;
+      case "flashcards":
+        blocks.push({ type: "flashcards", cards: parseFlashcards(file, text) });
+        return;
+      case "diagram":
+        blocks.push({ type: "diagram", diagram: parseDiagram(file, text) });
         return;
       case "scene": {
         const scene = parseScene(file, args[0], text);

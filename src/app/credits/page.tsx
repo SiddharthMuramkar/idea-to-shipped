@@ -2,63 +2,64 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { homePhotos } from "@/app/home-photos";
-import { courses, type Photo } from "@/lessons/lessons";
-import { unsplash } from "./unsplash";
+import { courses, type Credit, type ImageUse } from "@/lessons/lessons";
 
-export const metadata: Metadata = { title: "Photo credits · Idea to Shipped" };
+export const metadata: Metadata = { title: "Image credits · Idea to Shipped" };
 
-// Every Course's Lessons: each one's photo shows on its own page.
-async function loadLessons() {
+// Every image a Course or Lesson header uses, with its credit.
+async function loadCredits() {
   "use cache";
-  return courses.listLessons();
+  return courses.listCredits();
 }
 
-function PhotoBy({ photo }: { photo: Photo }) {
-  const links = unsplash[photo.image];
+// "<title> by <author>, <license>", the title linked to where the image comes
+// from and the licence to its terms.
+function CreditBy({ credit }: { credit: Credit | null }) {
+  if (!credit) return <span className="credit-by">Credit to come.</span>;
   return (
     <span className="credit-by">
-      {links ? (
-        <>
-          Photo by <a href={links.profile}>{photo.imageCredit}</a> on{" "}
-          <a href={links.page}>Unsplash</a>
-        </>
-      ) : (
-        <>Photo by {photo.imageCredit} on Unsplash</>
-      )}
+      <a href={credit.source}>{credit.title}</a> by {credit.author},{" "}
+      {credit.licenseUrl ? <a href={credit.licenseUrl}>{credit.license}</a> : credit.license}
     </span>
   );
 }
 
+// Where an image shows: a Lesson's page, or its Course's header.
+function UsedOn({ use }: { use: ImageUse }) {
+  return use.lesson ? (
+    <Link href={`/learn/${use.lesson.slug}`} className="credit-lesson">
+      {use.course.title}: {use.lesson.title}
+    </Link>
+  ) : (
+    <span className="credit-lesson">{use.course.title}</span>
+  );
+}
+
 export default async function Credits() {
-  const all = await loadLessons();
+  const credits = await loadCredits();
   return (
     <div className="container">
-      <h1>Photo credits</h1>
+      <h1>Image credits</h1>
       <p>
-        Every photo on this site comes from{" "}
-        <a href="https://unsplash.com">Unsplash</a>, under the{" "}
-        <a href="https://unsplash.com/license">Unsplash Licence</a>. Thank you to
-        the photographers listed here.
+        Who made each image on this site, and the licence it&apos;s shared under. Thank you to
+        everyone listed here.
       </p>
 
-      <h2>Lesson photos</h2>
+      <h2>Course and Lesson images</h2>
       <ul className="credit-list">
-        {all.map(
-          (l) =>
-            l.photo && (
-              <li key={l.slug} className="credit">
-                <span className="credit-photo">
-                  <Image src={l.photo.image} alt={l.photo.imageAlt} fill sizes="160px" />
-                </span>
-                <span>
-                  <Link href={`/learn/${l.slug}`} className="credit-lesson">
-                    Lesson {l.number}: {l.title}
-                  </Link>
-                  <PhotoBy photo={l.photo} />
-                </span>
-              </li>
-            ),
-        )}
+        {credits.map(({ image, imageAlt, credit, usedBy }) => (
+          <li key={image} className="credit">
+            <span className="credit-photo">
+              <Image src={image} alt={imageAlt} fill sizes="160px" />
+            </span>
+            <span>
+              {usedBy.map((use) => (
+                <UsedOn key={`${use.course.slug}/${use.lesson?.slug ?? ""}`} use={use} />
+              ))}
+              <CreditBy credit={credit} />
+            </span>
+          </li>
+        ))}
       </ul>
 
       <h2>Home page photos</h2>
@@ -72,7 +73,7 @@ export default async function Credits() {
               <Link href="/" className="credit-lesson">
                 Home: {p.label}
               </Link>
-              <PhotoBy photo={p} />
+              <CreditBy credit={p.credit} />
             </span>
           </li>
         ))}

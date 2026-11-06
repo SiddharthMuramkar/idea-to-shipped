@@ -17,10 +17,12 @@ async function lessonPage(slug: string) {
 // The page's header band, from its opening tag to its closing one.
 const hero = (html: string) => /<header class="photo-band lesson-hero"[\s\S]*?<\/header>/.exec(html)?.[0] ?? "";
 
-test("a Lesson with a photo shows it and its credit in the header, under its Part", async () => {
+test("a Lesson with a photo shows it and its credit in the header, linked to its source, under its Part", async () => {
   const header = hero(await lessonPage("setup"));
   expect(header).toContain('<div class="photo-band-photo">');
-  expect(header).toContain('<p class="photo-credit">Photo: Bo Shutter / Unsplash</p>');
+  expect(header).toContain(
+    '<p class="photo-credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Two_hikers_on_a_ridge.jpg">Bo Shutter · CC BY-SA 4.0</a></p>',
+  );
   expect(header).toContain("<span>Part 1 · Getting started</span>");
 });
 
@@ -29,6 +31,12 @@ test("a Lesson without a photo has no photo or credit in its header", async () =
   expect(header).not.toContain("photo-band-photo");
   expect(header).not.toContain("photo-credit");
   expect(header).toContain("<h1>Deploy</h1>");
+});
+
+test("a photo the credits manifest doesn't credit shows without a credit line", async () => {
+  const header = hero(await lessonPage("aside"));
+  expect(header).toContain('<div class="photo-band-photo">');
+  expect(header).not.toContain("photo-credit");
 });
 
 test("as a neighbour, a Lesson without a photo gets a card without one", async () => {

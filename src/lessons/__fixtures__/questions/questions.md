@@ -3,7 +3,6 @@ title: questions
 slug: questions
 image: /photos/x.jpg
 imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 ## Why plans fail

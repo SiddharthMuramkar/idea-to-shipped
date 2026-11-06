@@ -3,7 +3,6 @@ title: nested-callout
 slug: nested-callout
 image: /photos/x.jpg
 imageAlt: A photo.
-imageCredit: Ada Lens
 ---
 
 ## Section

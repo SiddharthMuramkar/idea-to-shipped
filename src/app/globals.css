@@ -375,12 +375,19 @@ button:hover,
   color: var(--amber);
 }
 
-/* "Photo: <name> / Unsplash", small, under the title. */
+/* "Image: <author> · <license>", small, under the title. */
 .photo-credit {
   margin: 0;
   color: var(--on-dark-muted);
   font-size: 0.8rem;
   letter-spacing: 0.02em;
+}
+
+/* The credit links to the image's source page in its own colour: link blue
+   would vanish on a photo. */
+.photo-credit a,
+.figure-credit a {
+  color: inherit;
 }
 
 /* A Lesson as a photo card (see lesson-card.tsx): square-edged photo on top,
@@ -1454,13 +1461,16 @@ html:not([data-header]):has([data-hero]) .site-header {
   padding: var(--space-m) var(--space-l) var(--space-l);
 }
 
-.callout--tip {
+/* A "Remember" box looks like a tip; its label and icon tell them apart. */
+.callout--tip,
+.callout--remember {
   background: var(--bg);
   border: 1px solid var(--line);
   border-left: 4px solid var(--blue);
 }
 
-.callout--tip .block-label {
+.callout--tip .block-label,
+.callout--remember .block-label {
   color: var(--blue);
 }
 
@@ -2425,7 +2435,7 @@ samp.term-line {
   color: var(--link-on-dark);
 }
 
-.final-test-main > :is(.callout--tip, .callout--watch-out, .try, .site-story) {
+.final-test-main > :is(.callout--tip, .callout--remember, .callout--watch-out, .try, .site-story) {
   color: var(--text);
 }
 

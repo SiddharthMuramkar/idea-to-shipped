@@ -1,0 +1,16 @@
+{
+  "/images/courses/example-course.jpg": {
+    "title": "Planning at a whiteboard",
+    "author": "Ada Lens",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Planning_at_a_whiteboard.jpg"
+  },
+  "/images/lessons/grilling-an-idea.jpg": {
+    "title": "An interview across a desk",
+    "author": "Unknown author",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:An_interview_across_a_desk.jpg"
+  }
+}

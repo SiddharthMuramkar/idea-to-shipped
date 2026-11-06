@@ -37,8 +37,11 @@ function QuestionFields({ question, slug, label }: { question: Question; slug: s
   );
 }
 
+// The right answer, then why: the question's explanation (its "Why:" line),
+// and each option's own feedback, for the options that have some.
 function AnswerReveal({ question }: { question: Question }) {
   const right = question.options.find((option) => option.id === question.correctOption)!;
+  const withFeedback = question.options.filter((option) => option.feedbackHtml !== "");
   return (
     <details className="question-answer">
       <summary>Show the answer</summary>
@@ -46,14 +49,19 @@ function AnswerReveal({ question }: { question: Question }) {
         <strong>Answer: </strong>
         <span dangerouslySetInnerHTML={{ __html: right.html }} />
       </p>
-      <ul className="question-answer-list">
-        {question.options.map((option) => (
-          <li key={option.id} data-correct={option.id === question.correctOption ? "" : undefined}>
-            <span className="question-answer-option" dangerouslySetInnerHTML={{ __html: option.html }} />{" "}
-            <span dangerouslySetInnerHTML={{ __html: option.feedbackHtml }} />
-          </li>
-        ))}
-      </ul>
+      {question.explanationHtml !== null && (
+        <p className="question-explanation" dangerouslySetInnerHTML={{ __html: question.explanationHtml }} />
+      )}
+      {withFeedback.length > 0 && (
+        <ul className="question-answer-list">
+          {withFeedback.map((option) => (
+            <li key={option.id} data-correct={option.id === question.correctOption ? "" : undefined}>
+              <span className="question-answer-option" dangerouslySetInnerHTML={{ __html: option.html }} />{" "}
+              <span dangerouslySetInnerHTML={{ __html: option.feedbackHtml }} />
+            </li>
+          ))}
+        </ul>
+      )}
     </details>
   );
 }
