@@ -47,7 +47,7 @@ Why: The main flow starts by grilling the idea. Planning, building, review, ship
 1. **Grill.** Before any code, the agent interviews you until you both understand the idea the same way ([grill before you build](/learn/grill-before-you-build)). In a repo, type `/grill-with-docs` ([grill-with-docs](/learn/grill-with-docs)). It writes the words you settle into `GLOSSARY.md` as you go, with [domain-modeling](/learn/domain-modeling). With no repo, use [grill-me](/learn/grill-me), which saves nothing. Both run the same interview, [grilling](/learn/grilling).
 2. **Detour, only if talk can't settle a question.** Some questions need something you can run or see, like a tricky booking rule or a screen. [prototype](/learn/prototype) answers it with throwaway code, in a fresh session that [handoff](/learn/handoff) bridges out and back.
 3. **Plan, only if the build spans sessions.** [to-spec](/learn/to-spec) turns the conversation into a **Spec**: one Issue that describes the whole feature. [to-tickets](/learn/to-tickets) splits it into **Tickets**, one Issue per small piece of work, [each working end to end](/learn/small-end-to-end-tickets) and naming what must finish first. Here you also agree where tests will check the feature from outside ([test first](/learn/test-first)).
-4. **Build.** [implement](/learn/implement) builds one Ticket, or a small change, test-first with [tdd](/learn/tdd). Next it runs [code-review](/learn/code-review), which checks the work [against the Spec and the standards](/learn/review-spec-and-standards). Then it commits the work, saving it as a snapshot in Git ([commits](/learn/commits-and-diffs)), and stops: it opens no pull request. [implement-spec](/learn/implement-spec) builds a whole Spec in one run. Helper agents build its Tickets in parallel, and everything lands on one branch, a separate line of work in Git. When every Ticket is in, it runs code-review once, over that branch.
+4. **Build.** [implement](/learn/implement) builds one Ticket, or a small change, test-first with [tdd](/learn/tdd). Next it runs [code-review](/learn/code-review), which checks the work [against the Spec and the standards](/learn/review-spec-and-standards). Then it commits the work, saving it as a snapshot in Git ([commits](/learn/commits-and-diffs)), and stops: it opens no pull request. [implement-spec](/learn/implement-spec) builds a whole Spec in one run. Helper agents build its Tickets in parallel, and everything lands on one branch, a separate line of work in Git. When every Ticket has landed, it runs code-review once, over that branch.
 5. **Ship.** The work goes up as a pull request, a proposed change that's reviewed before it joins the main code, and [pr](/learn/pr) shapes its description. [The build loop in practice](/learn/spec-driven-build-loop) takes a whole Spec to merged pull requests.
 6. **Learn.** [retro](/learn/retro) looks back over the session and suggests fixes to the agent's environment, not the code. Run it before you clear the session.
 
@@ -93,7 +93,7 @@ Everything in a session lives in its [context window](/learn/context-window), th
 - **One unbroken window for the grilling, the Spec and the Tickets.** Don't `/clear` (empty the window) or `/compact` (swap the history for a summary) until after `/to-tickets`. to-spec doesn't interview you again: it writes from the conversation.
 - **A fresh window for each Ticket.** Each Ticket is self-contained, so `/clear` between them.
 - **retro in the session it looks back on,** before you clear. After clearing, name that session after `/retro`.
-- **Near the smart zone's limit before the Tickets exist?** Don't push on. `/compact` at the nearest phase boundary, and carry on.
+- **Near the smart zone's limit before the Tickets exist?** Don't push on. `/compact` at the nearest phase boundary (the gap between two chunks of work, like the end of the grilling), and carry on.
 
 For example, for the waitlist:
 
@@ -141,7 +141,7 @@ Matt's Skills split on one question: who can start them.
 |---|---|
 | `/grill-with-docs`, `/grill-me`, `/to-spec`, `/to-tickets`, `/implement`, `/implement-spec`, `/retro`, `/handoff` | `/grilling`, `/domain-modeling`, `/prototype`, `/tdd`, `/code-review`, `/pr` |
 
-- **The junctions are yours.** The flow never moves on until you type the next name, at the start of your message. Writing "now write the spec" in plain words won't start to-spec.
+- **The junctions are yours.** The flow never moves on until you type the next name. Put it at the start of your message to run it. Writing "now write the spec" in plain words won't start to-spec.
 - **A Skill only you can start can call the agent's kind, but never another of yours.** That's why `/implement` can run `/tdd` and `/code-review` for you, but can't start `/retro`.
 - **Some names aren't Skills.** `/clear`, `/compact` and `/context` are commands built into Claude Code.
 
@@ -272,14 +272,14 @@ Why: Tickets from to-tickets are born ready for an agent. Triage is the on-ramp 
 
 ### Try it
 
-You'll need your practice project, the yoga-studio repo, with Matt's Skills set up. If you haven't set it up, do the Try it in [keeping track](/learn/issues-and-keeping-track) first. This writes no code.
+You'll need your practice project, the yoga-studio repo, with Matt's Skills set up. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. This writes no code.
 
 1. Go to the project: `cd yoga-studio`.
 2. Start Claude Code: `claude`.
 3. Type `/ask-matt I want members to add a note to a booking. Just give me the sequence, and where I should /clear or /compact.` You should see it start with `/grill-with-docs`, then go to `/implement` in the same window.
 4. Type `Now say the idea is a waitlist that emails members when a place frees up, and it needs several sessions. Same question.` You should see `/to-spec` and `/to-tickets` appear.
 5. Type `I'm still grilling the waitlist, and I'm near the end of the smart zone. What do I do?` You should see `/compact` at the nearest phase boundary.
-6. Check the answers against the map: no clear or compact before `/to-tickets`, and `/retro` before you clear.
+6. Check the first two answers against the map: no clear or compact before `/to-tickets`, and `/retro` before you clear. The third answer's `/compact` is the exception, for a session near the smart zone's limit.
 7. Check that it stopped each time without starting any of it. Then type `/exit`.
 
 If it says some Skills aren't installed, that's the quirk from Where it goes wrong: they are. Don't start the work it names yet.
@@ -377,7 +377,7 @@ You type "ok, start the build now" after `/to-tickets` has run, instead of a Ski
 - [x] It's a Skill only you can start, by typing its name at the start of a message.
 - [ ] It needs `/clear` to run first, and only then will plain words start it.
 - [ ] The agent can start it, but only once every Ticket has been triaged.
-Why: The junctions on the main flow are yours. The flow never moves on until you type the next Skill's name at the start of your message.
+Why: The junctions on the main flow are yours. Plain words can't start a Skill only you can start: type its name at the start of your message to run it.
 ```
 
 ```final-test main-flow-flaky-test

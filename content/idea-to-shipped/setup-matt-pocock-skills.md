@@ -46,7 +46,7 @@ You've renamed one triage label. What do you do?
 - [x] Edit the files in docs/agents/ yourself, with no re-run.
 - [ ] Run setup again, so it rewrites every file in docs/agents/.
 - [ ] Edit the triage Skill's own files, so it uses the new name.
-Why: A small change doesn't need a re-run. You run setup again only to switch Issue trackers or start from scratch.
+Why: A small change doesn't need a re-run. You run setup again to switch Issue trackers or start from scratch.
 ```
 
 ## When not to use it
@@ -126,7 +126,7 @@ An Issue can't move until the person who reported it replies. Which label fits?
 Why: `needs-info` marks an Issue waiting on its reporter. `needs-triage` means someone still needs to look at it, and `wontfix` means it won't be done.
 ```
 
-It doesn't create `GLOSSARY.md` or any ADRs. domain-modeling writes those later, once a term is settled.
+It doesn't create `GLOSSARY.md` or any ADRs. domain-modeling writes those later, once a term or decision is settled.
 
 ```checkpoint quick-8
 Setup has finished, and your repo has no GLOSSARY.md. What does that mean?
@@ -258,7 +258,7 @@ You updated the Skills, and one now does something different from what the docs 
 Why: Setup writes those files from templates, and the templates change between versions. So your files can go stale, and a re-run brings them up to date.
 ```
 
-**Setup ran, but Codex doesn't know about it.** Codex, another coding agent, reads `AGENTS.md`. Setup edits `CLAUDE.md` if it exists, because it checks which file exists, not which agent you're running. This gap, Issue #558, is still open. You can move the block to `AGENTS.md` by hand, or make `CLAUDE.md` a one-line pointer to `AGENTS.md`.
+**Setup ran, but Codex doesn't know about it.** Codex, another coding agent, reads `AGENTS.md`. Setup edits `CLAUDE.md` if it exists, because it checks which file exists, not which agent you're running. This gap, Issue #558, is still open. You can move the block to `AGENTS.md` by hand. To keep Claude Code reading the block too, move the rest of `CLAUDE.md` there as well, and leave just one line in `CLAUDE.md`: `@AGENTS.md`, which pulls in `AGENTS.md`. A re-run still edits `CLAUDE.md`, even when it holds only that line, so check which file the block lands in.
 
 ```checkpoint quick-16
 Your repo has a CLAUDE.md, and you run setup from Codex. Where does the block go?
@@ -314,7 +314,7 @@ Your repo has a CLAUDE.md left from Claude Code, but you now work in Codex. Setu
   > Setup did write its block. The rule picks the file that exists, not the harness that's running.
 - [ ] Codex can't read files under docs/agents/, so the tracker doc has to be pasted into every prompt.
   > The tracker doc is fine. Codex never reaches it, because the pointer to it sits in a file Codex doesn't read.
-Why: Setup picks the file that exists, not the one your agent reads, so it edited CLAUDE.md. Codex reads AGENTS.md, so it never reaches the pointer. Issue #558 reports this gap, and it's still open. You can move the block to AGENTS.md by hand, or make CLAUDE.md a one-line pointer at AGENTS.md.
+Why: Setup picks the file that exists, not the one your agent reads, so it edited CLAUDE.md. Codex reads AGENTS.md, so it never reaches the pointer. Issue #558 reports this gap, and it's still open. You can move the block to AGENTS.md by hand, or move all of CLAUDE.md there and make CLAUDE.md a one-line pointer to it. A re-run still edits CLAUDE.md, so check where the block lands.
 ```
 
 ## Remember
@@ -330,7 +330,7 @@ Q: What are the five default triage labels?
 A: needs-triage, needs-info, ready-for-agent, ready-for-human and wontfix.
 
 Q: When do you need to run setup-matt-pocock-skills again?
-A: Normally only to switch issue trackers or start from scratch. Smaller changes go straight into docs/agents/.
+A: To switch issue trackers or start from scratch, and after you update the Skills, so docs/agents/ is rewritten from the new templates. Smaller changes, like a renamed label, go straight into docs/agents/.
 
 Q: Why does switching the issue tracker never mean editing a Skill's own files?
 A: Setup's docs/agents/ files are the only thing that varies between repos. The Skills are identical everywhere and read the tracker doc at run time. If setup edited a SKILL.md, something went wrong.

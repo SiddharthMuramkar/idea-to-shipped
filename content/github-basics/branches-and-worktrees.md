@@ -89,7 +89,7 @@ Give it a short name that says what the work is, so others can see it at a glanc
 
 Edits you haven't committed don't belong to any branch yet. So they come along to a branch you create, which is handy when you started on `main` by mistake.
 
-You can also make a branch on github.com. Open the branch menu above the file list, type a new name, and choose to create the branch. That branch is on GitHub only, until you fetch it.
+You can also make a branch on github.com. Open the branch menu above the file list, type a new name, and choose to create the branch. That branch is on GitHub only. To work on it on your computer, run `git fetch`, which downloads what's new on GitHub, then `git switch` to it.
 
 With an agent, ask for the routine and a stop. For example:
 
@@ -119,16 +119,18 @@ Why: Edits you haven't committed don't belong to any branch yet, so they come al
 
 You'll also meet the older command, `git checkout`. `git checkout <branch>` switches, and `git checkout -b <name>` creates and switches. Many tutorials and agents still use it.
 
-`git branch` lists your branches, and `*` marks the one you're on. `git branch -vv` adds each branch's last commit and, in brackets, its copy on GitHub. For example:
+`git branch` lists your branches, and `*` marks the one you're on. `git branch -vv` adds each branch's last commit and, in brackets, its copy on GitHub. For example, run from `recipes-search`:
 
 ```text
 $ git branch -vv
 * add-search    4e8b2a1 [origin/add-search: ahead 2] Find recipes by ingredient
-  main          a3f9c21 [origin/main] Add the number of servings to each recipe (#4)
++ main          a3f9c21 (/home/sam/recipes) [origin/main] Add the number of servings to each recipe (#4)
 + shopping-list 1f0c7d3 (/home/sam/recipes-list) [origin/shopping-list] Add the shopping list page
 ```
 
-A name starting with `origin/` is Git's memory of a branch on GitHub. The marks do most of the reading for you:
+A name starting with `origin/` is Git's memory of a branch on GitHub. `git fetch` brings that memory up to date, without touching your files or your own branches. `git fetch --prune` also makes Git forget the branches GitHub has deleted. [Push, pull and remotes](/learn/push-pull-and-remotes) covers both.
+
+The marks do most of the reading for you:
 
 | You see | It means |
 |---|---|
@@ -169,16 +171,18 @@ git branch -d add-search
 
 A **squash merge** is different. It lands the branch's work on `main` as one brand-new commit, so the branch's own commits never join `main`'s history. Once GitHub's copy is gone, and Git has noticed after a `git fetch --prune`, `-d` refuses. It says the branch isn't fully merged, even though nothing would be lost.
 
-First check that nothing would be lost. `git diff add-search <squash-commit>`, with the squash commit's ID from `git log` on `main`, should print nothing. Then force the delete with `git branch -D add-search`. [Merging and cleaning up](/learn/merging-and-cleaning-up) covers the full sweep after each merge.
+That's because `-d` compares the branch with `origin/add-search`, Git's memory of its copy on GitHub, while that name exists. The prune removes it, so `-d` compares with the branch you're on, `main`, instead, and finds commits `main` doesn't have.
+
+First check that nothing would be lost: the branch's last commit should be the pull request's last commit. `git log -1 --oneline add-search` shows the branch's. The pull request's Commits tab lists its commits oldest first, so compare with the last one there. If they're the same commit, force the delete with `git branch -D add-search`. If not, keep the branch until you know why. [Merging and cleaning up](/learn/merging-and-cleaning-up) shows the same check with `gh`, and covers the full sweep after each merge.
 
 Once its pull request is squash-merged, never reuse the branch. A later pull request from it can carry the commits already squashed into `main`. New work, new branch.
 
 ```checkpoint squash-d-refuses
 Your pull request from `add-search` was squash-merged, GitHub deleted its copy, and you ran `git fetch --prune`. `git branch -d add-search` refuses: not fully merged. What do you do?
-- [x] Check that `git diff add-search <squash-commit>` prints nothing, then use `-D`.
+- [x] Check that the branch's last commit is the pull request's last commit, then use `-D`.
 - [ ] Leave the branch, because `-d` says the work isn't on `main` yet.
 - [ ] Merge the pull request again, so Git counts the branch as merged.
-Why: A squash lands the work as a brand-new commit, so `-d` can't see it. If the diff with the squash commit is empty, nothing is lost, and the forced `-D` is safe.
+Why: A squash lands the work as a brand-new commit, so `-d` can't see it. If the branch's last commit is the pull request's, nothing is lost, and the forced `-D` is safe.
 ```
 
 ```checkpoint reuse-merged-branch
@@ -207,13 +211,15 @@ git worktree list
 
 Ask for a branch that's already checked out, such as `main`, and Git refuses, unless you add `--force`, an option that overrides the refusal. Done with a worktree? `git worktree remove ../recipes-list` removes it.
 
-A worktree has a cost. It starts fresh: gitignored files, such as your `.env`, aren't there, and packages aren't installed, so run `npm install` in it. So a worktree pays only when separate pieces of work run at once. A second terminal that only looks isn't a second session.
+A worktree has a cost. It starts fresh: gitignored files, the ones your `.gitignore` keeps out of Git, aren't there. It has no `.env`, the file that holds your secrets, and no installed packages, so run `npm install` in it. [Reading a repository](/learn/reading-a-repository) explains `.gitignore`, `.env` and packages.
+
+So a worktree pays only when separate pieces of work run at once. A second terminal that only looks isn't a second session.
 
 Claude Code builds worktrees in. `claude --worktree add-search`, or `claude -w add-search`, makes a worktree under `.claude/worktrees/add-search/` on a new branch named `worktree-add-search`. You can also ask, mid-session, to work in a worktree. Add `.claude/worktrees/` to your `.gitignore`, or those folders show up as untracked files in your main worktree.
 
 To carry gitignored files into each new Claude Code worktree, add a `.worktreeinclude` file at the project root, written like a `.gitignore`. Claude Code copies the gitignored files it matches, such as `.env`, into every worktree it creates.
 
-Tools that run many agents at once rely on this. The [implement-spec](/learn/implement-spec) Skill, which builds a whole plan with helper agents, runs each helper in its own worktree on its own branch.
+Tools that run many agents at once rely on worktrees. The [implement-spec](/learn/implement-spec) Skill, which builds a whole plan with helper agents, gives each piece of the plan its own helper, in its own worktree on its own branch. Then it merges their work into one shared branch.
 
 ```checkpoint one-session-branch
 You're about to start one piece of work, and it's the only session you have running. What do you need?
@@ -236,7 +242,7 @@ A new Claude Code worktree is missing your gitignored `.env`, so the site won't 
 - [x] A `.worktreeinclude` file at the project root, listing `.env` in `.gitignore` syntax.
 - [ ] A `--force` flag on the next worktree, which brings gitignored files along.
 - [ ] A commit of `.env` to `main`, so every worktree gets a copy of it.
-Why: A worktree holds only what Git tracks, so gitignored files aren't there. Claude Code copies the gitignored files `.worktreeinclude` matches into each new worktree.
+Why: A worktree holds only what Git tracks, so gitignored files aren't there. Claude Code copies the gitignored files `.worktreeinclude` matches into each new worktree. And `.env` holds your secrets, so it never goes into a commit.
 ```
 
 ## Going deeper
@@ -271,7 +277,7 @@ recipes/.git/worktrees/recipes-search/ private to recipes-search: its HEAD, its 
 recipes-search/.git                    a file that points back to that private folder
 ```
 
-A **ref** is a name that points to something Git stores, such as a commit. Every branch is a ref. Every ref is shared, except three special kinds that Git keeps per worktree for its own bookkeeping.
+A **ref** is a name that points to something Git stores, such as a commit. Every branch is a ref, and so is `HEAD`. Nearly every ref is shared. The exceptions are `HEAD`, which each worktree keeps for itself, and a few special refs that Git keeps per worktree for its own bookkeeping.
 
 So here's what's shared, and what each worktree keeps for itself:
 
@@ -331,13 +337,13 @@ Why: Each worktree has its own HEAD and index, so the amend and the wrong branch
 
 ### Where it goes wrong
 
-**Git refuses to make the worktree.** You asked for a branch that another worktree already has checked out, such as `main`. Add `-b` and a new name to make a new branch instead.
+**Git refuses to make the worktree.** Read its message. If it says the branch is already checked out, or already used by a worktree, another folder has that branch, such as `main`: add `-b` and a new name to make a new branch instead. If it says a branch of that name already exists, `-b` asked for a name that's taken. Pick a new name, or leave out `-b` and name the existing branch after the folder: `git worktree add ../recipes-search add-search`.
 
 **The tests passed in a worktree, but the key test never ran.** A worktree holds only what Git tracks. So gitignored files aren't there: test data files, local databases, credentials, your `.env`. Tests that read them "can silently skip there", as Matt puts it. List those files in `.worktreeinclude`, or run that check in the main worktree.
 
 **Two branches added one thing under two names.** Each agent sees only its own work in progress. For example, two branches can each add the same field, one as `cookTime` and the other as `cookingMinutes`. Git keeps the folders apart, so nothing clashes until the branches merge. Matt's summary: "worktrees do not remove collisions, they move them to merge time". When two pieces of work touch one shared file, run them one after the other.
 
-**A new Claude Code worktree misses something merged minutes ago.** It starts from Git's saved copy of GitHub's default branch. Claude Code refreshes that copy only if the repo hasn't been fetched in the last 24 hours, so it can lag. `git pull origin main` catches your branch up.
+**A new Claude Code worktree misses something merged minutes ago.** It starts from Git's saved copy of GitHub's default branch. Claude Code refreshes that copy only if the repo hasn't been fetched in the last 24 hours, so it can lag. While its branch has no commits of its own, `git pull origin main` catches it up. If the agent has already committed there, Git usually stops and asks how to combine the two: [Push, pull and remotes](/learn/push-pull-and-remotes) shows how.
 
 **Claude Code asks "keep or remove" as you leave a worktree session.** Removing deletes the worktree's folder and its branch, along with all the work in them. Say keep until the work is merged. To come back, run the `claude --worktree <name> --resume` command it prints.
 
@@ -383,7 +389,7 @@ Before you delete any branch, ask: is it `main`? Is a folder using it, or does i
 
 ```checkpoint safe-to-delete
 Which branch is safe to delete?
-- [x] One whose pull request was squash-merged, with an empty diff against the squash commit and no folder using it.
+- [x] A squash-merged one whose last commit matches the pull request's, with no folder using it.
 - [ ] One with commits GitHub doesn't have yet, which another worktree has checked out right now.
 - [ ] `main`, once every feature branch has been merged into it through pull requests.
 Why: Never `main`. A branch that a folder is using, or that holds unmerged work, is live. A merged branch with nothing new on it is a leftover.
@@ -452,15 +458,22 @@ You need Git and a practice repo on `main`, such as the `recipes` repo from [Wha
    git -C ../recipes-try-a stash --include-untracked
    ```
 
-   You should see `try.txt` gone from `recipes-try-a`.
-10. List stashes from the second worktree:
+   You should see `Saved working directory and index state WIP on try-a`.
+10. Look in the first worktree:
+
+    ```sh
+    ls ../recipes-try-a
+    ```
+
+    You should see the repo's files, such as `README.md`, but no `try.txt`.
+11. List stashes from the second worktree:
 
     ```sh
     git -C ../recipes-try-b stash list
     ```
 
     You should see the stash you made in `recipes-try-a`.
-11. Clean up:
+12. Clean up:
 
     ```sh
     git stash drop
@@ -493,8 +506,8 @@ A: When two or more sessions run at once. With one session, a plain branch is en
 Q: In `git branch -vv`, what do `*`, `+` and `gone` mean?
 A: `*`: this folder has the branch checked out. `+`: another worktree has it. `gone`: GitHub's copy was deleted.
 
-Q: Why does `git branch -d` refuse after a squash merge, and what do you do?
-A: The squash made a brand-new commit, so the branch's own commits never joined `main`. Check `git diff <branch> <squash-commit>` prints nothing, then use `-D`.
+Q: After a squash merge, GitHub deletes the branch and you run `git fetch --prune`. Why does `git branch -d` then refuse, and what do you do?
+A: With GitHub's copy pruned, `-d` checks `main`, and the squash put a brand-new commit there, not the branch's own commits. Check that the branch's last commit is the pull request's, then use `-D`.
 
 Q: What do all the worktrees of one repo share, and what does each keep for itself?
 A: They share the history, nearly every ref (the stash included) and the config file. Each keeps its own files, its own `HEAD` and its own index.
@@ -552,12 +565,12 @@ Why: `gone` means GitHub's copy no longer exists. It shows once `git fetch --pru
 ```
 
 ```final-test squash-then-delete
-`add-search` was squash-merged, its GitHub copy was deleted, and `git fetch --prune` has run. `git branch -d add-search` refuses, though `git diff add-search <squash-commit>` prints nothing. Why?
+`add-search` was squash-merged, its GitHub copy was deleted, and `git fetch --prune` has run. `git branch -d add-search` refuses, saying it's not fully merged, though the branch's last commit is the pull request's last commit. Why?
 - [x] The squash made a brand-new commit, so the branch's own commits aren't in `main`'s history.
 - [ ] Its pull request is still open on GitHub, waiting for a review.
 - [ ] Git never deletes a branch that was ever pushed to GitHub.
 - [ ] The branch is checked out in a worktree that Claude Code made.
-Why: A squash merge lands the work as one new commit. The files match, but `-d` sees commits `main` doesn't contain, so it refuses. `-D` is safe once the diff is empty.
+Why: A squash merge lands the work as one new commit. The work is on `main`, but `-d` sees commits `main` doesn't contain, so it refuses. `-D` is safe, because the branch's last commit is the pull request's.
 ```
 
 ```final-test shared-stash

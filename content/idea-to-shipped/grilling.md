@@ -8,7 +8,7 @@ summary: How Matt Pocock's grilling Skill interviews you in rounds of questions 
 
 Say you're deciding how cancelling a yoga-studio booking should work. Asked everything at once, you'd hit questions resting on answers you haven't given. Asked one per turn, you'd crawl through the easy ones.
 
-**grilling is the interview itself: the agent questions you in rounds until you both reach a shared understanding.** [Grill before you build](/learn/grill-before-you-build) explains why it comes before any code.
+**grilling is the interview itself: the agent questions you in rounds until you both reach a shared understanding.** It's one of Matt Pocock's [Skills](/learn/skills): instructions an agent loads for one kind of task. [Grill before you build](/learn/grill-before-you-build) explains why it comes before any code.
 
 The agent maps your plan as a **design tree**: a map of decisions, each branching into the ones depending on it. Each round asks the whole **frontier**: every decision whose prerequisites are already settled, so it can ask without guessing. A question that depends on one still open waits for a later round.
 
@@ -109,7 +109,7 @@ A shared understanding, with nothing left silently assumed, and nothing on disk.
 A grilling you typed directly has finished. What has it written to your repo?
 - [x] Nothing. It leaves a shared understanding and no files.
 - [ ] GLOSSARY.md and ADRs, with an entry for each decision.
-- [ ] A Spec, saved as soon as the frontier is empty.
+- [ ] A Spec, the written plan for a feature, saved at the end.
 Why: What it leaves is the understanding itself. You and the agent share one, with nothing silently assumed, and there's nothing on disk.
 ```
 
@@ -200,7 +200,7 @@ You may still read older posts that describe one question at a time. In March 20
 
 ### Where it goes wrong
 
-**The agent starts building as soon as the questions run out.** It skipped the wait for your confirmation. Weaker and faster models "still skip the gate", the point where they should stop for you. The reliable fix is a line in your own `AGENTS.md` or `CLAUDE.md` telling the agent not to implement without permission.
+**The agent starts building as soon as the questions run out.** It skipped the wait for your confirmation. Weaker and faster models "still skip the gate", the point where they should stop for you. The reliable fix is a line in your own `AGENTS.md` or `CLAUDE.md`, the [instruction file](/learn/instruction-files) your agent reads at the start of every session, telling it not to implement without permission. When a repo has a `CLAUDE.md`, as the practice project does, Claude Code reads it instead of `AGENTS.md` by default. So put the line in `CLAUDE.md`.
 
 ```checkpoint quick-13
 Your model keeps starting to build as soon as the questions run out. What's the reliable fix?
@@ -222,7 +222,7 @@ A session has run very long, and the questions keep coming. What do you do?
 Why: You can't set a limit on the questions. A very long session usually means the work was too big, so wrap up or grill smaller pieces.
 ```
 
-**The agent answers its own questions.** This happens most when another Skill runs grilling to resolve a Ticket, and the agent takes that task as permission to keep moving. A session nobody answers "has produced the agent's opinion rather than yours." That's also why grilling has no mode that runs without you. So answer those decisions yourself.
+**The agent answers its own questions.** This happens most when another Skill runs grilling to resolve a ticket, such as a [wayfinder](/learn/wayfinder) decision ticket: an [Issue](/learn/issues-and-keeping-track) that asks one question. The agent takes that task as permission to keep moving. A session nobody answers "has produced the agent's opinion rather than yours." That's also why grilling has no mode that runs without you. So answer those decisions yourself.
 
 ```checkpoint quick-15
 Another Skill ran grilling, and the agent answered its own questions. What have you got?
@@ -245,6 +245,8 @@ Matt calls that "a supported setting, not a workaround."
 ### Try it
 
 You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+
+You'll type `/grilling` here to see the bare interview on its own, in a real repo where the agent can look facts up. For real work in a repo, [grill-with-docs](/learn/grill-with-docs) is the better choice, because it also writes `GLOSSARY.md` and ADRs as you go.
 
 1. Open the `yoga-studio` repo in Claude Code.
 2. Type `/grilling How should cancelling a class booking work?`
@@ -359,11 +361,11 @@ Why: In original design, a designer can rarely map out the whole tree in advance
 You are in the repo of your FastAPI backend. You want an agent to interview you about a plan to add rate limiting, and you'd like the terms and hard decisions you settle to be written down. Which fits best?
 - [x] Run the interview while a GLOSSARY.md and ADRs are written.
   > Right: that's `/grill-with-docs`.
-- [ ] Run the bare interview on its own, with no wrapper around it.
+- [ ] Run the bare interview on its own, with no other Skill around it.
   > That's `/grilling`. It runs the same interview but writes nothing down.
-- [ ] Run the stateless interview meant for plans with no repo.
+- [ ] Run the interview that saves nothing, meant for plans with no repo.
   > That's `/grill-me`. It saves nothing locally, and there is a repo here to leave a paper trail in.
-Why: All three run the same interview, so the choice comes down to what gets left behind. In a repo, the one that also runs domain-modeling writes the project's words and its hard decisions, which makes it the better one.
+Why: All three run the same interview, so the choice comes down to what gets left behind. In a repo, grill-with-docs is the better one: it also writes `GLOSSARY.md` and ADRs, the project's words and its hard decisions.
 ```
 
 ```final-test grilling-next-round
@@ -404,8 +406,8 @@ You use a faster, lower-effort model to interview you about the cancellation rul
   > A cap is out of scope on purpose, and the trouble is the skipped confirmation, not the number of questions.
 - [ ] Add "When grilling, ask one question at a time." to your global CLAUDE.md file.
   > That line only changes how questions are asked. It does nothing about the agent skipping the wait for your confirmation.
-- [ ] Run the interview from inside another Skill, so the wrapper holds back the code.
-  > Agents answer their own questions most when another Skill runs grilling to resolve a Ticket: they take that task as permission to keep moving.
+- [ ] Run the interview from inside another Skill, so that Skill holds back the code.
+  > Agents answer their own questions most when another Skill runs grilling to resolve a ticket: they take that task as permission to keep moving.
 Why: With the frontier empty, the agent should still wait until you say you share an understanding, but weaker and faster models can skip that wait. So you make the rule permanent: a line in your own AGENTS.md or CLAUDE.md telling the agent not to implement without permission.
 ```
 

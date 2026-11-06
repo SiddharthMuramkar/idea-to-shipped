@@ -107,14 +107,14 @@ You want a check that runs before a commit is even made. Which fits?
 Why: A pre-commit hook runs automatically inside `git commit`, before the commit is made. Lint and a type check both work without running the code.
 ```
 
-A repo with no pre-commit hook, and no CI job running lint, type check and tests, has no **guardrail**: no automatic check that catches mistakes. That's a problem in itself: a missed chance, not a neutral default.
+A repo with no pre-commit hook, and no CI job running lint, type check or tests, has no **guardrail**: no automatic check that catches mistakes. That's a problem in itself: a missed chance, not a neutral default.
 
 ```checkpoint quick-8
 Which of these repos has no guardrail?
 - [x] One with tests on disk, but no pre-commit hook and no CI job running them.
 - [ ] One with no pre-commit hook, but with a CI job running its lint and tests.
 - [ ] One with no CI job at all, but with a pre-commit hook running its lint.
-Why: A repo has no guardrail when it has no pre-commit hook and no CI job running its lint, type check and tests. Having tests that nothing runs automatically doesn't count.
+Why: A repo has no guardrail when it has no pre-commit hook and no CI job running its lint, type check or tests. Having tests that nothing runs automatically doesn't count.
 ```
 
 ## Keep instruction files small
@@ -214,6 +214,8 @@ rows:
     cells: ["each line came from a bad agent behaviour", "gets shorter over time, not longer"]
 ```
 
+[Claude Code's own docs](https://code.claude.com/docs/en/memory) side with Mitchell here. They suggest adding to `CLAUDE.md` when Claude makes the same mistake a second time.
+
 When the two disagree, retro's `SKILL.md`, the file holding its instructions, decides. It says to use these files "incredibly sparingly", so it sides with Matt, and so should you.
 
 ```checkpoint quick-15
@@ -256,15 +258,15 @@ A lint rule keeps failing on good code, and retro hasn't flagged it. What do you
 Why: retro sees only one session, so it won't flag an old check. You prune checks yourself, and a rule that fires constantly on good code is the sign to remove it.
 ```
 
-**The repo gets messier as the agents work.** This is software entropy: things drift towards a more disordered state. Matt warns that "agents are producing software entropy at a higher rates than ever." He likes the metaphor of a garden, which left alone gathers weeds. So tend it: run retro on a sample of sessions when you have a free moment. It won't tidy the code ([improve-codebase-architecture](/learn/improve-codebase-architecture), a later Skill, does that), but it proposes checks that stop the same mess coming back.
+**The repo gets messier as the agents work.** This is software entropy: things drift towards a more disordered state. Matt warns that "agents are producing software entropy at a higher rates than ever." He likes the metaphor of a garden, which left alone gathers weeds. So tend it: run retro on a sample of sessions when you have a free moment. It won't reshape the code ([improve-codebase-architecture](/learn/improve-codebase-architecture), a later Skill, finds the code worth reshaping), but it proposes checks that stop the same mess coming back.
 
 ### Try it
 
 Turn one mistake into a check, and watch the check catch it. You'll need your practice project, the yoga-studio booking site, on an up-to-date `main` with nothing uncommitted. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
-It also needs a [CI](/learn/what-ci-cd-is) check: a GitHub Actions workflow, `.github/workflows/ci.yml`, that runs on every pull request. If it has none yet, ask your agent to add one with a checkout step and one passing test, and merge it before step 1.
+It also needs a CI check called `test`: a GitHub Actions workflow, `.github/workflows/ci.yml`, that runs on every pull request. The Try it "On GitHub: a `test` check for your practice project", in [What CI/CD is](/learn/what-ci-cd-is), adds it. If you haven't done that Try it, do it first.
 
-1. Create a branch: `git switch -c ban-legacy-db`.
+1. Update `main` and create a branch: `git switch main && git pull && git switch -c ban-legacy-db`.
 2. In `.github/workflows/ci.yml`, add this step after the checkout step, indented 6 spaces to match the `- uses:` line:
 
 ```yaml
@@ -274,11 +276,11 @@ It also needs a [CI](/learn/what-ci-cd-is) check: a GitHub Actions workflow, `.g
 
 3. Commit it: `git add .github/workflows/ci.yml && git commit -m "ci: ban legacy_db"`.
 4. Push it: `git push -u origin ban-legacy-db`.
-5. Open the pull request: `gh pr create --fill`. You should see the new step pass, and the pull request go green.
-6. Add the mistake: `mkdir -p api && echo 'import legacy_db' > api/demo.py`. Commit it and push.
-7. You should see the step fail and the pull request go red. The step's log shows `api/demo.py:1:import legacy_db`.
-8. Remove the mistake: `git rm api/demo.py`. Commit and push. You should see green again.
-9. Pick a mistake your agent has made more than once, and sort it.
+5. Open the pull request: `gh pr create --fill`. Then watch its checks: `sleep 10 && gh pr checks --watch`. You should see `test` pass, and the pull request go green.
+6. Add the mistake: `mkdir -p api && echo 'import legacy_db' > api/demo.py`. Commit it and push: `git add api/demo.py && git commit -m "add a banned import" && git push`.
+7. Watch again: `sleep 10 && gh pr checks --watch`. You should see `test` fail, and the pull request go red. Then run `gh pr view --web`, and click the **Checks** tab, then `test`. The log of its No legacy_db imports step shows `api/demo.py:1:import legacy_db`.
+8. Remove the mistake, then commit and push: `git rm api/demo.py && git commit -m "remove the banned import" && git push`. Watch once more with `sleep 10 && gh pr checks --watch`. You should see `test` pass again.
+9. Pick a mistake your agent has made more than once, and sort it. No repeat mistake yet? Say your agent keeps writing code that doesn't match the surrounding style, and sort that.
 10. If it's mechanical, add a step like this one, and make it fail once, as you did here. If it's a judgement call, add one line to `CODING_STANDARDS.md`.
 11. Run `git diff main -- CLAUDE.md`. You should see no output: your `CLAUDE.md` didn't grow.
 12. Commit and push step 10's change.

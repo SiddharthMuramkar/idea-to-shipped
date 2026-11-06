@@ -40,6 +40,14 @@ branches:
 
 A PR shows what its head branch adds since it split off from the base. GitHub compares from the commit where the head branch began, called the **merge base**. So work that lands on `main` in the meantime doesn't appear in your PR's changes.
 
+```checkpoint quick-2
+Two other PRs landed on `main` after your branch split off. Do their changes show up among your PR's changes?
+- [x] No. A PR shows what its own branch adds since it split off.
+- [ ] Yes. A PR shows every difference between the two branches.
+- [ ] Only once your PR has merged into `main`.
+Why: GitHub compares from the merge base, the commit where your branch began. Work that landed on `main` later isn't part of your PR.
+```
+
 A PR is a GitHub thing, not a Git thing. Git stores the branches and their [commits](/learn/commits-and-diffs). The PR's title, description, comments and reviews live on GitHub. After the merge the page stays, so you can still read why a change was made.
 
 For example, `gh pr view 14`, run with GitHub's command-line tool, starts like this:
@@ -60,14 +68,6 @@ Here `main` is the base and `12-search-capitals` is the head. `+3 -1` counts the
 Why: The head branch holds the work, and the base branch is where it should land. The PR is the proposal to merge one into the other.
 ```
 
-```checkpoint quick-2
-Two other PRs landed on `main` after your branch split off. Do their changes show up among your PR's changes?
-- [x] No. A PR shows what its own branch adds since it split off.
-- [ ] Yes. A PR shows every difference between the two branches.
-- [ ] Only once your PR has merged into `main`.
-Why: GitHub compares from the merge base, the commit where your branch began. Work that landed on `main` later isn't part of your PR.
-```
-
 ## When to open one
 
 **Open a pull request when its branch holds one whole change, finished and ready to check.**
@@ -84,7 +84,7 @@ Your branch fixes the search bug. You're tempted to add a vegetarian filter to t
 Why: A PR should hold one whole change. Two changes in one PR are slower to check, more likely to hide a bug, and harder to undo apart.
 ```
 
-Not finished, but want the work seen? Open a **draft pull request**. It shows the work, its changes and its checks like any PR, but nobody can merge it. When it's done, mark it ready: click **Ready for review** in the merge box, or run `gh pr ready`.
+Not finished, but want the work seen? Open a **draft pull request**. It shows the work, its changes and its checks like any PR, but nobody can merge it. When it's done, mark it ready: click **Ready for review** in the merge box (the panel at the bottom of the PR's page that says whether it can merge), or run `gh pr ready`.
 
 Drafts suit agents. An agent can open a draft as soon as it has pushed. Its checks start, and you can follow along, while merging stays locked until you decide.
 
@@ -145,16 +145,12 @@ Closes #12
 
 Before: searching "Soup" showed no recipes.
 After: "Soup", "SOUP" and "soup" all show Tomato soup (screenshot below).
-Tests: `npm test` passes, including a new test for "SOUP".
+Tests: before the fix, the new test for "SOUP" failed (`fail 1`). Now `npm test` prints `pass 6` and `fail 0`.
 
 Risk: small. Only the search box changes, and a revert undoes it.
 ```
 
 A description like "Fixed stuff" leaves the reviewer to work everything out from the changes. "Tests pass", with nothing shown, is a claim, not evidence.
-
-Templates help. A repo can keep a PR template, such as `.github/pull_request_template.md`, that every new description starts from.
-
-Agents can follow a template too. A **Skill** is a named set of instructions an agent loads for one job. Matt Pocock's [pr](/learn/pr) Skill gives agents a description template of its own: Summary, Evidence, and Merge Danger, which says how risky merging is.
 
 ```checkpoint quick-6
 Your agent's PR description says only "Tests pass." What do you ask for?
@@ -163,6 +159,10 @@ Your agent's PR description says only "Tests pass." What do you ask for?
 - [ ] Nothing more, since a passing test needs no further evidence.
 Why: "Tests pass" with nothing shown is a claim. Evidence is real output from a run, or a screenshot for a change you can see.
 ```
+
+Templates help. A repo can keep a PR template, such as `.github/pull_request_template.md`, that every new description starts from.
+
+Agents can follow a template too. A **Skill** is a named set of instructions an agent loads for one job. Matt Pocock's [pr](/learn/pr) Skill gives agents a description template of its own: Summary, Evidence, and Merge Danger, which says how risky merging is.
 
 ## Reading the PR page
 
@@ -179,9 +179,17 @@ Some repos show a fifth tab, **Findings**, with results from automated code scan
 
 In **Files changed**, read one file at a time. When you've read a file, tick **Viewed** and it folds away. If the file changes again later, GitHub clears the tick, so you reread only what moved. To comment on a line, hover over it and click the `+` beside it.
 
+```checkpoint quick-7
+You ticked Viewed on `search.js` in Files changed. Then your agent pushed a fix to that file. What happens to the tick?
+- [x] GitHub clears it, so you know to read the file again.
+- [ ] It stays, and the file stays folded away.
+- [ ] GitHub submits your review, because the file changed.
+Why: If a file changes after you mark it viewed, GitHub unmarks it. So after a fix, you reread only the files that moved.
+```
+
 A **check** is one automated job's result on the PR's latest commit. It shows a yellow dot while it runs, then a green tick or a red cross. Checks usually come from **CI** (continuous integration), which runs your tests on every push. [What CI/CD is](/learn/what-ci-cd-is) sets it up.
 
-The **merge box** at the bottom of the Conversation tab says whether the PR can merge right now. If it can't, it says what's in the way, such as a failing check or a **merge conflict**. A merge conflict means two changes touch the same lines, and Git can't combine them by itself. [Checking a pull request before you merge](/learn/checking-a-pr) reads it line by line.
+The **merge box** at the bottom of the Conversation tab says whether the PR can merge right now. If it can't, it says what's in the way, such as a failing check or a **merge conflict**. A merge conflict means two changes touch the same lines, and Git can't combine them by itself. [Undo and merge conflicts](/learn/undo-and-conflicts) shows how to resolve one.
 
 From the terminal, three commands cover the page:
 
@@ -189,14 +197,6 @@ From the terminal, three commands cover the page:
 gh pr view 14     # title, state and description (--web opens the page)
 gh pr diff 14     # the diff (--name-only lists only the file names)
 gh pr checks 14   # each check and its result
-```
-
-```checkpoint quick-7
-You ticked Viewed on `search.js` in Files changed. Then your agent pushed a fix to that file. What happens to the tick?
-- [x] GitHub clears it, so you know to read the file again.
-- [ ] It stays, and the file stays folded away.
-- [ ] GitHub submits your review, because the file changed.
-Why: If a file changes after you mark it viewed, GitHub unmarks it. So after a fix, you reread only the files that moved.
 ```
 
 ## Reviews, and changing a PR
@@ -211,10 +211,6 @@ Comments you add on lines while reviewing stay pending, seen only by you, until 
 
 Two rules matter when you work alone or with agents. You can't approve your own PR. And an agent working through your `gh` login opens PRs as you, so its PRs count as yours.
 
-Request changes blocks nothing by itself. It stops a merge only when a rule on the branch requires pull requests, which [How teams protect main](/learn/how-teams-do-it) covers. Working alone, you send work back by telling the agent what to fix.
-
-To change a PR, push more commits to the same branch. The PR updates by itself, and its checks run again. You don't open a new PR.
-
 ```checkpoint quick-8
 Your agent opened PR #14 using your `gh` login. You try to approve it. What happens?
 - [x] GitHub won't let you, because authors can't approve their own PRs.
@@ -222,6 +218,10 @@ Your agent opened PR #14 using your `gh` login. You try to approve it. What happ
 - [ ] It's approved, but only once every check has passed.
 Why: Pull request authors cannot approve their own pull requests. The agent opened #14 as you, so you're its author.
 ```
+
+Request changes blocks nothing by itself. It stops a merge only when a rule on the branch requires pull requests, which [How teams protect main](/learn/how-teams-do-it) covers. Working alone, you send work back by telling the agent what to fix.
+
+To change a PR, push more commits to the same branch. The PR updates by itself, and its checks run again. You don't open a new PR.
 
 ```checkpoint quick-9
 A check failed on your agent's PR. Where should the fix go?
@@ -276,9 +276,15 @@ Why: Auto-merge merges once the repo's required checks and reviews pass, whateve
 ## Try it
 
 ````try
-You need the practice repo and the bug Issue from the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track). Put your bug's number in place of `BUG` below.
+You need the repo and the bug Issue from the first Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track), "file your first Issues". That's your practice repo, such as `recipes`, not the `yoga-studio` practice project. Put your bug's number in place of `BUG` below.
 
-1. Start a branch from an up-to-date `main`:
+1. Go into that repo's folder:
+
+   ```sh
+   cd recipes
+   ```
+
+2. Start a branch from an up-to-date `main`:
 
    ```sh
    git switch main
@@ -286,20 +292,20 @@ You need the practice repo and the bug Issue from the Try it in [Issues: keeping
    git switch -c BUG-practice-fix
    ```
 
-2. Add a line to `README.md`, in your editor or with this command:
+3. Add a line to `README.md`, in your editor or with this command:
 
    ```sh
    echo "Search ignores capital letters now." >> README.md
    ```
 
-3. Commit the change, and push the branch:
+4. Commit the change, and push the branch:
 
    ```sh
    git commit -am "Note the search fix in the README"
    git push -u origin HEAD
    ```
 
-4. Open a draft PR that closes the bug:
+5. Open a draft PR that closes the bug:
 
    ```sh
    gh pr create --draft --title "Practice fix for search" --body "Closes #BUG"
@@ -307,7 +313,7 @@ You need the practice repo and the bug Issue from the Try it in [Issues: keeping
 
    You should see a link ending in the PR's number.
 
-5. Read it back:
+6. Read it back:
 
    ```sh
    gh pr view
@@ -315,7 +321,7 @@ You need the practice repo and the bug Issue from the Try it in [Issues: keeping
 
    You should see `Draft`, then `into main from BUG-practice-fix`, and `Closes #BUG` in the description.
 
-6. Check the link to the Issue:
+7. Check the link to the Issue:
 
    ```sh
    gh pr view --json closingIssuesReferences --jq '.closingIssuesReferences[].number'
@@ -323,7 +329,7 @@ You need the practice repo and the bug Issue from the Try it in [Issues: keeping
 
    You should see your bug's number.
 
-7. Open the page, and visit each of its four tabs:
+8. Open the page, and visit each of its four tabs:
 
    ```sh
    gh pr view --web
@@ -350,7 +356,7 @@ Why: Agents write code quickly, but someone still has to read it before it reach
 
 ### A real example
 
-Matt Pocock's own public repo shows a description doing its job. In September 2026 he opened PR #1120 on `mattpocock/skills`, to release a new version of his Skills. Its body has the three parts of his template.
+Matt Pocock's own public repo shows a description doing its job. In September 2026 he opened PR #1120 on `mattpocock/skills`, to release a new version of his Skills. Three Skills moved out of `in-progress/`, his folder for beta Skills, and into his plugin, a bundle of his Skills you install in one step. He calls that graduating them. The PR removed one Skill, and renamed the glossary file the Skills read, from `CONTEXT.md` to `GLOSSARY.md`. Its body has the three parts of his template.
 
 The Summary sketches the change as a small file tree, with `+` for folders added and `-` for folders removed. The Evidence gives a before and an after: the plugin listed 25 Skills, then 27, with a validation command passing. The Merge Danger part calls the change "two-way for the graduations, one-way-ish for the removal and the glossary rename". Two-way means easy to walk back, and one-way means hard to undo. [Checking a pull request before you merge](/learn/checking-a-pr) explains these doors.
 
@@ -368,7 +374,7 @@ Why: A one-way door is a change that's hard to undo. Calling it out tells the re
 
 **`gh pr create` says there are no commits between `main` and your branch.** Your commit isn't on this branch. `git log --oneline main..HEAD` lists the branch's own commits. If it prints nothing, ask where the commit went.
 
-**`git push` is refused, with a warning about a private email address.** Your commit carries an email that your GitHub account keeps private. Set the repo's `user.email` to your GitHub `noreply` address, the stand-in address GitHub gives you for commits. Then fix the commit, and push again.
+**`git push` is refused, with a warning about a private email address.** Your commit carries an email that your GitHub account keeps private. Find your `noreply` address, the stand-in address GitHub gives you for commits, on the Emails page of your GitHub settings. Set it for this repo with `git config user.email "YOUR-NOREPLY-ADDRESS"`. Then give the commit that address with `git commit --amend --reset-author --no-edit`, and push again. A plain `--amend` keeps the private address.
 
 **`gh pr view` finds no pull request.** It looks for the current branch's PR, and you may be on another branch. Name the PR instead: `gh pr view 14`.
 
