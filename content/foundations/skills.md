@@ -8,7 +8,7 @@ summary: What a Skill is, who can start one, how to install Matt Pocock's Skills
 
 Say you've told your coding agent how you like commit messages three days running. Every session starts with an empty [context window](/learn/context-window), the agent's working memory, so tomorrow you'll explain it again. You could write the rules in your [instruction file](/learn/instruction-files), but that file loads in every session, even the ones that never make a commit.
 
-**A Skill is a folder with a `SKILL.md` file inside: instructions for one kind of task, which the agent loads only when that task comes up.**
+**A Skill is a folder with a `SKILL.md` file: instructions for one kind of task, which the agent loads only when that task comes up.**
 
 Claude Code, Anthropic's coding agent, reads Skills, and so do other agents such as Codex. A `SKILL.md` has two parts. At the top, between two `---` lines, is the **frontmatter**: a few settings written as `key: value`. Below it is the body, the instructions, written in Markdown (plain text with a few marks, like `#` for a heading).
 
@@ -56,7 +56,7 @@ steps:
     note: "load only when the body sends the agent to them"
 ```
 
-Matt Pocock, a developer and teacher who publishes a popular free set of Skills, calls this **progressive disclosure**: "the agent pulls in knowledge only when needed."
+Matt Pocock is a developer and teacher who publishes a popular free set of Skills. He calls this **progressive disclosure**: "the agent pulls in knowledge only when needed."
 
 ```checkpoint quick-2
 You add a Skill with a two-line description and a 300-line body. In a new session where nobody mentions its task, what's in the context window?
@@ -198,7 +198,7 @@ Type /grill-with-docs. If the build spans sessions,
 /to-spec and /to-tickets come next.
 ```
 
-It places you on a route: the [main flow](/learn/main-flow) from idea to shipped code, an on-ramp such as a bug, codebase upkeep, or a standalone Skill. It says what to type next and where to clear the session, then it stops. You type the Skill it names. [ask-matt](/learn/ask-matt) covers it in full.
+It places you on a route: the [main flow](/learn/main-flow), an on-ramp such as a bug, codebase upkeep, or a standalone Skill. It says what to type next and where to clear the session, then it stops. You type the Skill it names. [ask-matt](/learn/ask-matt) covers it in full.
 
 ```checkpoint quick-8
 You describe a bug report to `/ask-matt`. It says `/triage` fits, explains why, and does nothing more. What's going on?

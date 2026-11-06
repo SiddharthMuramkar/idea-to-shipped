@@ -4,26 +4,54 @@ slug: reading-a-workflow
 summary: Read any workflow file and say what runs, when, on which machine, with which permissions, and which check name it reports.
 ---
 
-On 27 October this course’s own repo ran its first workflow. A rented Ubuntu machine copied the files, ran one script, and 11 seconds later a green tick called `check` appeared on `main`. About thirty lines of YAML decided all of it: when it ran, on what, with which permissions, and what the tick is called. Soon an agent will write the same kind of file for Care4Mind, and you’re the one who has to read it.
+Say an agent adds a file called `ci.yml` to your `recipes` repo and opens a pull request. A minute later a green tick appears on the PR, with a name beside it. About thirty lines of YAML decided all of that: when the check ran, on which machine, with which permissions, and what the tick is called. You’re the one who has to read that file and say whether it’s right.
 
 ```goals
-- You’ll be able to read any workflow file and say what runs, when, on which machine, with which permissions, and which check name it reports. You’ll also know where to look when that check goes red.
+- You’ll be able to read any workflow file and say what runs, when, on which machine, with which permissions, and which check name it reports.
+- You’ll be able to spot the one-line mistakes that make a check skip, fail or never report.
+- You’ll know where to look when a check goes red or gets stuck, and what the usual causes are.
 ```
 
 ## Six words before any YAML
 
-**GitHub Actions** is GitHub’s built-in way to run work on its machines when something happens in your repo. CI (continuous integration, Lesson 10) is what you’ll use it for first. You already read Docker Compose files, so the YAML will feel familiar: indentation is structure, and a dash starts a list item. What’s new is the vocabulary. Six words cover every workflow you’ll read.
+**GitHub Actions** is GitHub’s built-in way to run work on its machines when something happens in your repo. CI, from [What CI/CD is](/learn/what-ci-cd-is), is what you’ll use it for first.
+
+**An event starts a workflow, each job in it runs on a fresh runner, and each job reports one check (a pass or fail on the commit), named after the job.**
+
+Workflows are written in YAML: plain-text settings, where `key: value` sets something, a leading `-` starts a list item, and indentation (spaces, never tabs) shows what belongs inside what. What’s new is the vocabulary. Six words cover every workflow you’ll read.
 
 | Word | What it is | In Brad’s lab |
 |---|---|---|
 | **Workflow** | One YAML file in `.github/workflows/`. A repo can have several. | `ci.yml` |
 | **Event** | What happens on GitHub (or outside it) that starts the workflow: a push, a PR opened, a label added, a timer. | A push to `main`, a PR into `main` |
-| **Job** | A list of steps that all run on one runner. Jobs in one workflow run side by side unless one waits for another. | `verify` |
+| **Job** | A list of steps that all run on one runner. | `verify` |
 | **Step** | One task inside a job: either a shell command or an action. | Four steps |
 | **Action** | A packaged, reusable step that someone published. | `actions/checkout`, `actions/setup-node` |
 | **Runner** | The machine that runs one job at a time. | `ubuntu-latest` |
 
-The runner is the word that explains the rest. GitHub’s runners are fresh virtual machines, made for one job and thrown away after it. Nothing from your laptop is there: no code, no `node_modules`, not your Node version. The machine has only GitHub’s standard tools, such as a default Node (22, on 27 October) and the `gh` command. Every step in a CI job exists to rebuild, from that bare start, what your laptop already has. That’s the point. A check that passes on a blank machine can’t be relying on something only you have installed.
+These names nest inside each other: GitHub Actions runs workflows, a workflow holds jobs, and a job holds steps.
+
+```diagram
+type: layers
+caption: "These names nest inside each other"
+mode: nested
+layers:
+  - label: "GitHub Actions"
+    note: "GitHub’s built-in way to run work on its machines"
+    children:
+      - label: "Workflow"
+        note: "One YAML file in `.github/workflows/`"
+        children:
+          - label: "Job"
+            note: "A list of steps that all run on one runner"
+            children:
+              - label: "Step"
+                note: "One task inside a job: either a shell command or an action"
+```
+
+By default, a workflow’s jobs run at the same time. A job waits for another only if you give it `needs:` naming that job.
+
+The runner is the word that explains the rest. GitHub’s runners are fresh virtual machines (temporary computers in GitHub’s cloud), made for one job and thrown away after it. Nothing from your laptop is there: no code, no `node_modules` folder of installed packages, not your Node version. The machine has only GitHub’s standard tools, such as a default version of Node and `gh`, GitHub’s command-line tool. Every step in a CI job exists to rebuild, from that bare start, what your laptop already has. That’s the point. A check that passes on a blank machine can’t be relying on something only you have installed.
 
 ```callout remember
 An event starts a workflow. Each job gets its own fresh runner. Inside a job, steps run in order on that one machine, and each step is either a shell command or a packaged action.
@@ -47,9 +75,17 @@ In a step, what is `actions/checkout@v7`?
 Why: It follows `uses:`, so it’s an action: published code from the `actions/checkout` repo, version 7. It copies your repo’s files onto the blank runner. A shell command would follow `run:`.
 ```
 
+```checkpoint quick-3
+Your workflow has two jobs, and neither has `needs:`. What happens when it runs?
+- [x] Both run at the same time, since neither one waits
+- [ ] The first runs to the end, and then the second starts
+- [ ] Only the first runs, unless it’s told to start the second
+Why: By default, jobs run at the same time. One waits for another only if you give it `needs:` naming that job.
+```
+
 ## Brad’s ci.yml: when it runs, and what it may touch
 
-Here is the workflow from Brad Traversy’s lab, exactly as it appears in his gist. In Lesson 13 you’ll have an agent add it to your own copy of his starter app. Read it once from top to bottom, then we’ll take it apart in two halves.
+Here is the workflow from Brad Traversy’s lab, exactly as it appears in his gist. In [the lab](/learn/lab-gated-pipeline) you’ll have an agent add it to your own copy of his starter app. Read it once from top to bottom, then take it apart in two halves below.
 
 ```yaml
 name: CI
@@ -88,11 +124,11 @@ jobs:
         run: npm run verify
 ```
 
-`name: CI` is the workflow’s display name. You’ll see it in the Actions tab and next to each run. It is _not_ the name of the check; that comes from the job, in the next section.
+`name: CI` is the workflow’s display name. You’ll see it in the Actions tab and next to each run. It is _not_ the name of the check; that comes from the job, in the next part.
 
-`on` lists the events that start the workflow. Here there are two. `push` with `branches: [main]` fires when commits land on `main`; once a ruleset blocks direct pushes, that only happens when a PR is merged. `pull_request` with `branches: [main]` needs more care. For pull requests the filter is matched against the branch the PR _targets_, its base, not the branch it came from. So every PR into `main` runs it, whatever the agent called its own branch. With no `types` listed, it runs when a PR is opened or reopened and every time new commits are pushed to it (GitHub calls that `synchronize`).
+`on` lists the events that start the workflow. Here there are two. `push` with `branches: [main]` fires when commits land on `main`; once a ruleset (a set of rules on a branch) blocks direct pushes, that only happens when a PR is merged. `pull_request` with `branches: [main]` needs more care. For pull requests the filter is matched against the branch the PR _targets_, its base, not the branch it came from. So every PR into `main` runs it, whatever the agent called its own branch. With no `types` listed, it runs when a PR is opened or reopened, and every time new commits are pushed to it (GitHub calls that `synchronize`).
 
-One fact surprises most people. On an open PR, the code that gets checked out isn’t the agent’s branch as it was pushed. GitHub makes a test merge of the branch into `main`, and CI checks that, which is what you’d actually get by merging. It follows that a PR with a merge conflict (Lesson 9) gets no run at all until the conflict is fixed.
+One fact surprises most people. On an open PR, the code that gets checked out isn’t the agent’s branch as it was pushed. GitHub makes a test merge of the branch into `main`, and CI checks that, which is what you’d actually get by merging. It follows that a PR with a merge conflict (see [Undo and merge conflicts](/learn/undo-and-conflicts)) gets no run at all until the conflict is fixed.
 
 `permissions` limits a key you never see. At the start of every job, GitHub creates a short-lived token, the `GITHUB_TOKEN`, so that steps can talk to GitHub on the workflow’s behalf. `permissions` sets what that token may do, and the rule is strict: once you name one permission, every permission you didn’t name is set to none. `contents: read` lets the job read the code, which is all a check needs. It can’t push, comment, label or approve. This is called **least privilege**: grant only the access the job needs.
 
@@ -131,18 +167,20 @@ Why: Naming one permission sets all the others to none. Writing a comment needs 
 
 ## Brad’s ci.yml: the job, its name and its steps
 
-Under `jobs:`, the key `verify` is the **job id**: the label the file uses internally. `name: Verify` is the job’s **display name**. Each job reports one check, and this is how it gets its name: **the check is called whatever the job’s `name:` says. If the job has no `name:`, the job id is used instead.** So Brad’s job reports a check called `Verify`. The workflow name (`CI`) and the file name (`ci.yml`) play no part. `Verify` is the exact string a ruleset requires and a Vercel Deployment Check selects.
+Under `jobs:`, the key `verify` is the **job id**: the label the file uses internally. `name: Verify` is the job’s **display name**. Each job reports one check, and this is how it gets its name: **the check is called whatever the job’s `name:` says. If the job has no `name:`, the job id is used instead.**
+
+So Brad’s job reports a check called `Verify`. The workflow name (`CI`) and the file name (`ci.yml`) play no part. `Verify` is the exact string that a ruleset requires and that a Vercel Deployment Check selects: the setting, met in [What CI/CD is](/learn/what-ci-cd-is), that holds a release until the check passes.
 
 That’s why renaming a job is the quiet way to break a gate. Change `name: Verify` to `name: Verify app`, and the new check can pass while the ruleset waits forever for one called `Verify`. Keep job names unique across workflows too. Two jobs called `Verify` in two files report clashing checks, and the gates can read the wrong one.
 
-`runs-on: ubuntu-latest` picks the runner: a fresh Linux virtual machine from GitHub. “Latest” is a label that moves. This course’s run on 27 October got Ubuntu 24.04, and the run carried a notice that `ubuntu-latest` is moving to Ubuntu 26.04 over the following weeks. If an exact version matters, the label `ubuntu-24.04` pins it. `timeout-minutes: 10` tells GitHub to cancel the job after ten minutes. Without it, a hung test could hold the runner for the default 360 minutes. A cancelled job doesn’t count as a pass.
+`runs-on: ubuntu-latest` picks the runner: a fresh Linux virtual machine from GitHub. “Latest” is a label that moves. From time to time GitHub points it at a newer Ubuntu release, after announcing the change: the move from Ubuntu 24.04 to 26.04 began in October 2026. Each run’s log records which version it got, and if an exact version matters, a label such as `ubuntu-24.04` pins it. `timeout-minutes: 10` tells GitHub to cancel the job after ten minutes. Without it, a hung test could hold the runner for the default 360 minutes. A cancelled job doesn’t count as a pass.
 
 Then the `steps`, in order, on that one machine. Each step has a `name` for the log, and then either `uses:` or `run:`. **`uses:`** runs a published action. `@v7` pins the major version: you still get the action’s fixes, but a breaking v8 can’t arrive unannounced. `with:` passes the action its inputs. **`run:`** is a shell command, typed on the runner as you would in a terminal.
 
 | Step | What it does on the blank machine |
 |---|---|
 | `uses: actions/checkout@v7` | Copies the repo’s files onto the runner (on a PR, the test merge). |
-| `uses: actions/setup-node@v7` `node-version: 24`, `cache: npm` | Sets up Node 24 in place of the machine’s default. `cache: npm` saves npm’s store of downloaded packages under a key made from `package-lock.json` and restores it on the next run, so installs download less. It does not cache `node_modules`. |
+| `uses: actions/setup-node@v7` with `node-version: 24`, `cache: npm` | Sets up Node 24 in place of the machine’s default. `cache: npm` saves npm’s store of downloaded packages under a key made from `package-lock.json`, and restores it on the next run, so installs download less. It does not cache `node_modules`. |
 | `run: npm ci` | A clean install, exactly as the lockfile says. It deletes any `node_modules` first, never edits `package.json` or the lockfile, and stops with an error if the two disagree. |
 | `run: npm run verify` | Brad’s one script: `npm run typecheck && npm test && npm run build`. `&&` stops at the first failure, so the step fails, the job fails, and the check goes red. |
 
@@ -179,92 +217,92 @@ A test hangs and never exits. With `timeout-minutes: 10`, what happens?
 Why: `timeout-minutes` is the longest a job may run before GitHub cancels it. Without it the limit is 360 minutes. A cancelled job isn’t a pass, so the check blocks the merge.
 ```
 
-## A second real workflow: this course’s check.yml
+## A second real workflow: GitHub’s own licensed.yml
 
-This course sits behind the same kind of gate, set up on 27 October. Care4Mind has nothing like it running yet, so this is the nearest real example. Here is the whole file, as it is on `main`:
+Workflows differ, so read one more. This one is real and public: `licensed.yml`, from GitHub’s own `actions/checkout` repo, the home of the action in Brad’s first step. Going by its name, its one job checks the licenses of the packages the action depends on.
 
 ```yaml
-# The course's CI. Its one job, "check", is the check that the "Protect main"
-# ruleset and Vercel's Deployment Checks both require, by that exact name.
-name: Course check
+name: Licensed
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-permissions:
-  contents: read
+  push: {branches: main}
+  pull_request: {branches: main}
 
 jobs:
-  check:
-    name: check
+  test:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-
+    name: Check licenses
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: 24
-
-      - name: Check links, quizzes and what gets deployed
-        run: node scripts/check-course.mjs
+      - uses: actions/checkout@v7
+      - run: npm ci
+      - run: npm run licensed-check
 ```
 
-Read it the way you just read Brad’s, and only five things differ. The workflow is called `Course check`. The job id and its `name:` are both `check`, so whichever one you look at, the check is `check`. The timeout is five minutes. There is no `npm ci` and no `cache:`. And the last step runs `node scripts/check-course.mjs`, not `npm run verify`. The script uses only what ships with Node, so there is nothing to install and nothing to cache. It checks every link, every quiz (including that each answer in a question has the same number of words, which is why the options in these quizzes are evenly matched), and the list of files Vercel may publish.
+Read it the way you read Brad’s, and six things differ:
 
-Two gates read that one word. The ruleset “Protect main” won’t let a PR merge until a check called `check` has passed. The Vercel Deployment Check holds each production deployment back from being promoted (made live on the real domain) until GitHub’s `check` has passed on that commit. Lesson 12 is about those two gates. For now, see what a rename would do. Say an agent “tidies” `name: check` into `name: Course check`. Its PR shows a new check, `Course check`, passing. But `check` sits at “Expected”, waiting for a result nothing will ever send, and the PR can’t merge.
+- **The workflow’s name** is `Licensed`. It labels the runs in the Actions tab, and plays no part in the check’s name.
+- **The triggers are Brad’s, written on one line each.** YAML lets you write a short set of keys between braces, and a single branch can stand in for a list. So `push: {branches: main}` means the same as Brad’s three lines under `push:`.
+- **There’s no `permissions` key.** The token then gets the default access set in the repository’s or the organization’s settings, so the file alone doesn’t tell you what the job may do.
+- **The job id is `test`, and its `name:` is `Check licenses`.** So the check is called `Check licenses`. The order of keys inside a job doesn’t matter: `name:` can come after `runs-on:`.
+- **There’s no `timeout-minutes`,** so a hung job could run for the default 360 minutes.
+- **There’s no `setup-node` step, and the steps have no names.** `npm ci` runs on whatever Node the runner image has preinstalled, which changes when GitHub updates the image. Without a `name:`, the log labels each step by what it runs, such as “Run npm ci”.
+
+The same repo shows the naming rule from the other side. Its main workflow, `test.yml`, has a job with the id `build` and no `name:`, so that check is called `build`.
+
+Names matter because gates read them. In the lab, two gates read one word, `Verify`. The ruleset “Protect main” won’t let a PR merge until a check called `Verify` has passed. The Vercel Deployment Check holds each production deployment back from being promoted (made live on the real domain) until `Verify` has passed on that commit. [Gates: checks that block](/learn/gates) sets up both. For now, see what a rename does. Say an agent “tidies” `name: Verify` into `name: Verify app`. Its PR shows a new check, `Verify app`, passing. But `Verify` sits at “Expected”, waiting for a result nothing will ever send, and the PR can’t merge.
 
 ```callout remember
-Read a job’s `name:` and you know its check’s name. On this repo it’s `check`, and both the ruleset and Vercel wait for exactly that word.
+Read a job’s `name:` and you know its check’s name; with no `name:`, it’s the job id. Read what a file leaves out, too: no `permissions` means the repo’s defaults, no `timeout-minutes` means 360 minutes, and no `setup-node` means the runner’s own Node.
 ```
 
 ```checkpoint check-9
-Why has this course’s `check.yml` no `npm ci` step?
-- [ ] Vercel installs the packages after the merge
-- [ ] The cache keeps node_modules from earlier runs
-- [ ] GitHub runners install every package by default
-- [x] The script has no dependencies to install
-Why: `check-course.mjs` uses only what ships with Node, so there’s nothing to install or cache. Every runner starts blank, so a project with dependencies always needs an install step.
+What is the check from `licensed.yml` called?
+- [ ] `Licensed`
+- [ ] `test`
+- [x] `Check licenses`
+- [ ] `licensed.yml`
+Why: The job has `name: Check licenses`, so the check carries that name. `test` is the job id, used only when there’s no `name:`. `Licensed` is the workflow’s name, and the file name plays no part.
+```
+
+```checkpoint check-node
+`licensed.yml` has no `setup-node` step. Which Node runs its `npm ci`?
+- [x] The Node preinstalled on the runner image
+- [ ] Node 24, read from the engines field
+- [ ] The Node installed on your own laptop
+- [ ] None: npm ci fails without setup-node
+Why: Without setup-node, the step uses the Node that comes with the runner image, which changes when GitHub updates the image. `engines` never switches a Node version, and the runner has nothing from your laptop.
 ```
 
 ```checkpoint check-10
-An agent’s PR changes this course’s job to `name: course-check`. What does the PR show?
+In the lab, an agent’s PR changes Brad’s job to `name: verify-app`. What does the PR show?
 - [ ] A passing check, and the merge allowed
-- [x] A required check named check, never reported
-- [ ] A failing check named course-check, blocking merge
+- [x] A required check named Verify, never reported
+- [ ] A failing check named verify-app, blocking merge
 - [ ] Nothing changes: rulesets follow the new name
-Why: The renamed job reports `course-check`, which can pass. But the ruleset waits for `check`, and nothing reports that any more, so it stays at “Expected” and the PR can’t merge. Rulesets don’t follow renames.
+Why: The renamed job reports `verify-app`, which can pass. But the ruleset waits for `Verify`, and nothing reports that any more, so it stays at “Expected” and the PR can’t merge. Rulesets don’t follow renames.
 ```
 
 ## Triggers, secrets and concurrency you’ll meet later
 
-CI workflows are the simple kind. The workflows in Lessons 15 and 16, which run agents and wire Care4Mind to Vercel, use more keys. You only need to recognise them now.
+CI workflows are the simple kind. Workflows that run agents, or that react to Vercel deployments, use more keys: you’ll meet them in [Agents in GitHub Actions](/learn/agents-in-github-actions) and [Setting up your own project’s pipeline](/learn/your-projects-pipeline). You only need to recognise them now.
 
 Five more triggers come up again and again. Each one answers “what starts this workflow?” differently.
 
 | Trigger | What starts it | Where you’ll meet it |
 |---|---|---|
 | `workflow_dispatch` | A person: it adds a “Run workflow” button in the Actions tab (only once the file is on the default branch). | Testing a workflow by hand |
-| `schedule` with `cron` | A timer, in UTC unless you set a `timezone`. `cron: '30 3 * * *'` is 03:30 UTC, which is 09:00 in India. Runs on the default branch, and can be late at busy times such as the top of the hour. | Nightly jobs |
-| `issues` or `pull_request` with `types: [labeled]` | Someone adding a label. This is how a label can start an agent. | Lesson 15 |
-| `repository_dispatch` | A system outside GitHub, through GitHub’s API. Vercel sends these when a deployment changes state, for example `vercel.deployment.success`. | Lesson 16 |
-| `pull_request_target` | The same PR activity as `pull_request`, but it runs the workflow from the default branch with the base repo’s secrets and a read/write token. Safe only while it never runs the PR’s own code. | Lesson 15 |
+| `schedule` with `cron` | A timer, in UTC unless you set a `timezone`. `cron: '30 3 * * *'` is 03:30 UTC every day. It runs on the default branch, and can be late at busy times such as the start of every hour. | Nightly jobs |
+| `issues` or `pull_request` with `types: [labeled]` | Someone adding a label. This is how a label can start an agent. | [Agents in GitHub Actions](/learn/agents-in-github-actions) |
+| `repository_dispatch` | A system outside GitHub, through GitHub’s API. Vercel sends these when a deployment changes state, for example `vercel.deployment.success`. | [Setting up your own project’s pipeline](/learn/your-projects-pipeline) |
+| `pull_request_target` | The same PR activity as `pull_request`, but it runs the workflow from the default branch with the base repo’s secrets and a read/write token. Safe only while it never runs the PR’s own code. | [Agents in GitHub Actions](/learn/agents-in-github-actions) |
 
-One trap with the button: a check from a run you started by hand doesn’t count. Rulesets accept checks only from runs started by PR and push events (plus a few others). “I ran it manually and it passed” never unblocks a PR.
+One trap with the button: a check from a run you started by hand doesn’t count. Rulesets accept checks only from runs started by events such as `pull_request` and `push`, plus a few others. “I ran it manually and it passed” never unblocks a PR.
 
-**Secrets.** `${{ secrets.NAME }}` pulls in a value you stored, encrypted, in the repo’s settings, such as Care4Mind’s Neon database URL. The `${{ … }}` marks an expression that GitHub fills in before the step runs. GitHub replaces known secret values with `***` in logs. That’s the `token: ***` you’ll see in this course’s log. But GitHub says plainly that masking isn’t guaranteed: a value that has been encoded or cut up can slip through. So the rule is simple: never print a secret. Pass it to a step through `env:` or `with:`, never through `echo`.
+**Secrets.** `${{ secrets.NAME }}` pulls in a value you stored, encrypted, in the repo’s settings, such as a database password. The `${{ … }}` marks an **expression**: something GitHub fills in before the step runs. GitHub replaces known secret values with `***` in logs, which is the `token: ***` you’ll see under a checkout step. But GitHub says plainly that masking isn’t guaranteed: a value that has been encoded or cut up can slip through. So the rule is plain too: never print a secret. Pass it to a step through `env:` or `with:`, never through `echo`.
 
-**Concurrency.** By default, every push starts its own run, even while an older run for the same branch is still going. An agent that pushes five commits in a minute starts five runs, and only the last one matters. A `concurrency` group allows one run at a time per group. `cancel-in-progress: true` cancels the older run when a newer one arrives:
+**Concurrency.** By default, every push starts its own run, even while an older run for the same branch is still going. An agent that pushes five commits in a minute starts five runs, and only the last one matters. A `concurrency` group allows one run at a time per group, and `cancel-in-progress: true` cancels the older run when a newer one arrives:
 
-```text
+```yaml
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -284,7 +322,7 @@ Why: The `issues` event fires on many kinds of activity; `types: [labeled]` narr
 ```
 
 ```checkpoint check-12
-An agent’s workflow has `run: echo ${{ secrets.NEON_URL }}`. Should you accept it?
+An agent’s workflow has `run: echo ${{ secrets.DATABASE_URL }}`. Should you accept it?
 - [ ] Yes: GitHub always hides secrets in logs
 - [ ] Yes: secrets are visible only to you
 - [ ] No: secrets only work inside run steps
@@ -314,7 +352,7 @@ gh run view <id>                 # one run: its jobs and any notices
 gh run view <id> --log-failed    # only the output of the steps that failed
 ```
 
-Most red checks are one of five things, and the step that failed usually tells you which:
+Most red or stuck checks are one of these six, and the step that failed usually tells you which:
 
 | You see | It usually means | Ask the agent to |
 |---|---|---|
@@ -322,7 +360,8 @@ Most red checks are one of five things, and the step that failed usually tells y
 | `npm run verify` fails, with a test name in the log | A real failure. The gate did its job. | Fix the code, or explain why the test is wrong |
 | Passes on your laptop, fails in CI on syntax or a missing API | CI is using a different Node version from yours or production’s | Make `node-version` match `engines` |
 | Cancelled at exactly 10 minutes | Something hung: a server that never closed, a prompt waiting for input | Find what hung, rather than raise the timeout |
-| The required check stuck at “Expected” | Nothing reported a check by that name: a branch filter that doesn’t match, a merge conflict, or a renamed job | Show you the `on` block and the job’s `name:` |
+| The required check stuck at “Expected” | Nothing reported a check by that name: a branch or path filter that skipped the workflow, a merge conflict, or a renamed job | Show you the `on` block and the job’s `name:` |
+| A check passed, but the merge is still blocked | A newer commit was pushed since: required checks must pass on the latest commit | Wait for the run on the newest commit |
 
 ```callout remember
 Read a failure from the outside in: which check, which job, which step, then the log lines. `gh run view <id> --log-failed` takes you straight to the step that broke. “Expected” means nothing reported that check name at all.
@@ -350,7 +389,7 @@ Why: `npm ci` won’t fix a mismatch itself. Ask the agent to run `npm install` 
 Your PR shows `Verify` as “Expected”, waiting for a status, and the Actions tab has no run for it. What’s likeliest?
 - [ ] A test failed in the verify step
 - [x] The workflow’s branch filter skipped this PR
-- [ ] The secret NEON_URL was printed in logs
+- [ ] A secret was printed in the logs
 - [ ] The job hit its ten-minute timeout limit
 Why: “Expected” means nothing has reported that check at all. A failing test or a timeout would show a red run. With no run, the usual causes are a filter that doesn’t match (such as `branches: [master]`) or a merge conflict. If a run exists but under another name, the job was renamed.
 ```
@@ -359,12 +398,18 @@ Why: “Expected” means nothing has reported that check at all. A failing test
 
 Each snippet has one deliberate problem. Read it the way you’d read an agent’s diff.
 
-```checkpoint practice-17
-Care4Mind’s default branch is `main`. What’s wrong?`on:
+Your repo’s default branch is `main`, and an agent wrote this trigger:
+
+```yaml
+on:
   pull_request:
     branches: [master]
   push:
-    branches: [master]`
+    branches: [master]
+```
+
+```checkpoint practice-17
+What’s wrong with the trigger above?
 - [ ] It runs twice on every PR
 - [x] PRs into main never trigger it
 - [ ] It runs only on forked PRs
@@ -372,11 +417,17 @@ Care4Mind’s default branch is `main`. What’s wrong?`on:
 Why: There is no branch called `master`, so neither filter ever matches. No PR into `main` runs it, and neither does a push to `main`. A required check would wait at “Expected” forever. Older repos used `master`; always match the real default branch.
 ```
 
-```checkpoint practice-18
-The ruleset on `main` requires a check called `Verify`. An agent changed one line:`jobs:
+The ruleset on `main` requires a check called `Verify`. An agent changed one line of Brad’s job:
+
+```yaml
+jobs:
   verify:
     name: Verify app
-    runs-on: ubuntu-latest`
+    runs-on: ubuntu-latest
+```
+
+```checkpoint practice-18
+What’s wrong with the agent’s change above?
 - [ ] Names with spaces are invalid in YAML
 - [ ] The job id must be capitalised too
 - [ ] The ubuntu-latest runner cannot run named jobs
@@ -384,13 +435,19 @@ The ruleset on `main` requires a check called `Verify`. An agent changed one lin
 Why: The check is now called `Verify app`. It may pass, but nothing reports `Verify`, so the required check waits at “Expected” and no PR can merge. Spaces in a job name are fine, and the id doesn’t matter while `name:` is set.
 ```
 
-```checkpoint practice-19
-What’s wrong with these steps?`- uses: actions/setup-node@v7
+An agent wrote these steps:
+
+```yaml
+- uses: actions/setup-node@v7
   with:
     node-version: 24
     cache: npm
 - run: npm install
-- run: npm run verify`
+- run: npm run verify
+```
+
+```checkpoint practice-19
+What’s wrong with the steps above?
 - [x] A lockfile mismatch gets silently patched, not reported
 - [ ] The npm cache works only with Yarn projects
 - [ ] setup-node does not install npm on Ubuntu runners
@@ -398,8 +455,10 @@ What’s wrong with these steps?`- uses: actions/setup-node@v7
 Why: When the lockfile and `package.json` disagree, `npm install` can quietly rewrite the lockfile on the runner, so CI tests something nobody committed. `npm ci` stops with an error instead. npm comes with Node, and `cache: npm` is for npm.
 ```
 
-```checkpoint practice-20
-This job should post “Verify passed” on the PR. Why will it fail?`permissions:
+This job should post “Verify passed” on the PR:
+
+```yaml
+permissions:
   contents: read
 
 jobs:
@@ -409,7 +468,11 @@ jobs:
       - run: gh pr comment $URL --body 'Verify passed'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          URL: ${{ github.event.pull_request.html_url }}`
+          URL: ${{ github.event.pull_request.html_url }}
+```
+
+```checkpoint practice-20
+Why will the job above fail?
 - [ ] The gh tool is not installed on runners
 - [ ] Secrets can never be passed through env blocks
 - [x] The token can only read, so commenting fails
@@ -417,11 +480,17 @@ jobs:
 Why: Naming `contents: read` sets every other permission to none, so the token can’t write a comment. It needs `pull-requests: write` as well. GitHub CLI comes preinstalled on GitHub’s runners, `env:` is the recommended way to pass a secret, and `gh pr comment` accepts a PR URL.
 ```
 
-```checkpoint practice-21
-Brad’s `package.json` sets `engines.node` to `24.x`, and Vercel deploys with that. What’s wrong?`- uses: actions/setup-node@v7
+Brad’s `package.json` sets `engines.node` to `24.x`, and Vercel deploys with that. An agent wrote this step:
+
+```yaml
+- uses: actions/setup-node@v7
   with:
     node-version: 20
-    cache: npm`
+    cache: npm
+```
+
+```checkpoint practice-21
+What’s wrong with the step above?
 - [ ] setup-node reads engines first, so this line is ignored
 - [ ] The npm cache key breaks when Node versions differ
 - [ ] npm ci always refuses to run below Node 24
@@ -429,20 +498,26 @@ Brad’s `package.json` sets `engines.node` to `24.x`, and Vercel deploys with t
 Why: `node-version` decides which Node the runner gets; `engines` doesn’t switch it. So CI passes or fails on Node 20 while production runs Node 24. A mismatched `engines` makes npm print a warning, not stop. Set `node-version: 24`.
 ```
 
-```checkpoint practice-22
-Care4Mind’s ruleset requires `Verify` on every PR. What’s wrong with this trigger?`on:
+Your ruleset requires `Verify` on every PR, and the workflow’s trigger is this:
+
+```yaml
+on:
   push:
-    branches: [main]`
+    branches: [main]
+```
+
+```checkpoint practice-22
+What’s wrong with the trigger above?
 - [ ] Pushes to main are blocked by this trigger
 - [x] PRs get no check until after they merge
-- [ ] It runs on every branch, not just main
+- [ ] It runs on every branch, not only main
 - [ ] It also needs workflow_dispatch to run at all
 Why: Only pushes to `main` start it, and a PR’s commits are pushed to its own branch. So PRs never get the check: with the ruleset they wait at “Expected” forever, and without one they merge unchecked. Add `pull_request` to `main`.
 ```
 
 ## Tell your agent
 
-Use this in the Lesson 13 lab, in your copy of Brad’s starter. Care4Mind will get the same shape later, with its own commands.
+Use this in [the lab](/learn/lab-gated-pipeline), in your copy of Brad’s starter. A project of your own gets the same shape, with its own commands.
 
 ```text
 Add .github/workflows/ci.yml: run on pull requests to main and pushes to main, permissions contents: read, one job with id verify and name Verify, on ubuntu-latest with a 10-minute timeout. Steps: checkout, setup-node 24 with npm cache, npm ci, npm run verify. Run npm ci and npm run verify locally before you push. Don’t rename the job later: the ruleset requires it by name. When the PR is open, tell me the exact check name it reports.
@@ -450,22 +525,191 @@ Add .github/workflows/ci.yml: run on pull requests to main and pushes to main, p
 
 ## Try it
 
-These three commands only read; they change nothing. The first lists this course’s latest workflow runs. The second prints the first 40 lines of one run’s log: put a run ID from the first list in place of `<id>`. The third shows the workflow file.
+````try
+Read a real workflow’s runs, and one run’s log, on GitHub’s public `actions/checkout` repo. These commands only read; they change nothing.
+
+**You need:** `gh`, the GitHub CLI, logged in to your GitHub account. If it isn’t set up, see [One change, start to finish](/learn/one-change-start-to-finish).
+
+1. List the latest runs of `licensed.yml` that passed, so each one has a full log. Each line shows the result, the run’s title, the workflow (`Licensed`), the branch, the event (`push` or `pull_request`), the run ID, how long it took and how long ago.
 
 ```sh
-gh run list -R SiddharthMuramkar/learn-matt-flow --limit 5
-gh run view -R SiddharthMuramkar/learn-matt-flow <id> --log | head -40
-cat ~/Desktop/learn-matt-flow/.github/workflows/check.yml
+gh run list -R actions/checkout --workflow licensed.yml --status success --limit 5
 ```
 
-On 27 October the list had one run: `Course check` on `main`, event `push`, `success`, 11 seconds. You may see more by now. In the log, find four things, all inside “Set up job” and the checkout step. The operating system block (Ubuntu 24.04 that day). “GITHUB_TOKEN Permissions”, listing only `Contents: read` and `Metadata: read`. “Complete job name: check”: there’s your check’s name. And `token: ***` under the checkout step: a secret, masked.
+2. Pick a run ID from that list and print the start of its log, with the ID in place of `<id>`. Each line starts with the job’s name, `Check licenses`.
 
-## Check yourself
+```sh
+gh run view -R actions/checkout <id> --log | head -80
+```
 
-From memory, without scrolling up.
+3. In the log, find four things. Inside “Set up job”: the **Operating System** lines (the Ubuntu version this run got), the **GITHUB_TOKEN Permissions** lines (what this run’s token may do, here from the repo’s defaults), and the line **Complete job name: Check licenses**. Then, under the checkout step, `token: ***`: a secret, masked.
+4. Open the file in your browser and match each line to what you saw: `https://github.com/actions/checkout/blob/main/.github/workflows/licensed.yml`.
+
+**It’s working if:**
+
+- [ ] The run list shows `Licensed` runs, with `push` or `pull_request` as the event.
+- [ ] You found the Ubuntu version, the token’s permissions and `Complete job name: Check licenses` in the log.
+- [ ] You can point at the line in `licensed.yml` that gives the check its name.
+````
+
+## Cheat sheet
+
+Everything from [What CI/CD is](/learn/what-ci-cd-is) and this lesson, on one page.
+
+**Words**
+
+- **Check:** the pass/fail result one CI job reports on a commit, named after the job’s `name:`, or its id if there’s none. Gates require it by that name: rename the job and they wait forever.
+- **Gate:** an automatic check that blocks the next step, merging or going live. A check alone only reports.
+- **CI:** small changes merged into `main` at least daily, each checked by an automated build with tests. Green means the checks found nothing, not that the code is right.
+- **Continuous delivery · continuous deployment:** always ready, and a person clicks to go live · every change that passes the gates goes live with no click.
+- **Runner:** the machine that runs one job. GitHub’s are fresh VMs, thrown away after the job, with only the commit, the locked dependencies and GitHub’s tools.
+- **Workflow · job · step · action:** one YAML file in `.github/workflows/` · steps run in order on one runner, reporting one check · one shell command (`run:`) or action (`uses:`) · a published, reusable step.
+- **Preview deployment · promote:** a test copy of the site for one branch or PR, at its own URL · give a deployment the production domain. On Vercel, a built deployment isn’t always live.
+
+**Brad’s ci.yml, annotated**
+
+```yaml
+name: CI                     # Actions tab label, not the check
+
+on:
+  push:                      # commits land on main, such as a merge
+    branches:
+      - main
+  pull_request:              # opened, reopened, new commits
+    branches:
+      - main                 # the PR's base; CI tests the PR merged into it
+
+permissions:
+  contents: read             # read code only; anything unnamed is none
+
+jobs:
+  verify:                    # job id: the check name only if no name:
+    name: Verify             # THE check name the gates require
+    runs-on: ubuntu-latest   # fresh VM; "latest" moves, ubuntu-24.04 pins
+    timeout-minutes: 10      # cancels a hung job (default 360)
+
+    steps:                   # in order, on that one runner
+      - name: Check out repository
+        uses: actions/checkout@v7    # an action, major version 7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24           # match engines (24.x)
+          cache: npm                 # npm's download store, not node_modules
+
+      - name: Install dependencies
+        run: npm ci                  # exactly the lockfile, or an error
+
+      - name: Verify application
+        run: npm run verify          # first failure turns the check red
+```
+
+GitHub’s `licensed.yml` has the same triggers on one line each, no `permissions`, the job id `test` named `Check licenses`, no timeout and no `setup-node`. Any `write` permission needs a visible reason. Secrets: `${{ secrets.NAME }}`, passed through `env:` or `with:`, never `echo`ed. `concurrency` with `cancel-in-progress: true` cancels a stale run when a newer push arrives.
+
+**Triggers**
+
+| Trigger | Starts it | Watch for |
+|---|---|---|
+| `push` to `main` | Commits landing on `main` | The only run on the merged commit itself |
+| `pull_request` to `main` | A PR opened, reopened or pushed to | `branches` means the base. A PR with a merge conflict gets no run. |
+| `workflow_dispatch` | The “Run workflow” button (file on the default branch) | Its checks don’t count on a PR |
+| `schedule` + `cron` | A timer, in UTC unless you set `timezone`; default branch | Can run late at the start of the hour |
+| `issues` or `pull_request`, `types: [labeled]` | Someone adding a label | How a label starts an agent |
+| `repository_dispatch` | An outside system, through GitHub’s API | Vercel sends one when a deployment changes state |
+| `pull_request_target` **(danger)** | PR activity, run from the default branch with secrets and a read/write token | Never run the PR’s own code under it |
+
+**Red or stuck**
+
+| Symptom | Likely cause |
+|---|---|
+| Passes locally; CI says “Cannot find module” | A file never committed, or a package missing from `package.json` |
+| `npm ci` fails: not “in sync”, or no lockfile | `package.json` changed without the lockfile, or `package-lock.json` never committed |
+| `verify` fails with a test name | A real failure: the gate worked |
+| Passes locally, fails in CI on syntax | A different Node version: match `node-version` to `engines` |
+| Cancelled at exactly the timeout | Something hung; don’t raise the timeout |
+| Required check “Expected”, no run | A branch or path filter that skipped it, a merge conflict, or no `pull_request` trigger |
+| “Expected”, but a run passed under another name | The job was renamed |
+| A check passed, but the merge is still blocked | A newer commit: required checks must pass on the latest one |
+
+```sh
+gh pr checks <n> --watch          # wait for every check on PR n
+gh run list --limit 5             # latest runs and their IDs
+gh run view <id> --log-failed     # only the failed steps' output
+```
+
+**Tell your agent**
+
+```text
+Add a verify script that runs typecheck, tests and build, stopping at the
+first failure. Then add .github/workflows/ci.yml on pull requests and pushes
+to main, contents: read, one job named Verify on ubuntu-latest with a
+10-minute timeout: checkout, setup-node 24 with npm cache, npm ci, npm run
+verify. Run npm ci and npm run verify locally before you push. Never rename
+the job: the gates require it by name.
+```
+
+```text
+The check on PR N is red or stuck. Show me gh run view <id> --log-failed
+and the likely cause. Fix the code or the workflow, not the gate: never
+rename the job, disable the ruleset or Force Promote without asking me.
+```
+
+## Read next
+
+- **Read:** [GitHub Docs, Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax), about 15 minutes if you read only four sections: `on`, `permissions`, `jobs.<job_id>.name` and `jobs.<job_id>.steps`. Every key in this lesson comes from that page, and it’s where to look when an agent’s workflow uses one you don’t know.
+- **Keep handy:** the cheat sheet above, the first time you review a workflow an agent wrote.
+
+## Remember
+
+```flashcards
+Q: Event, workflow, job, step: how do they fit together?
+A: An event starts a workflow, one YAML file in `.github/workflows/`. Each job in it gets its own fresh runner, and its steps run in order on that one machine.
+
+Q: In a step, what’s the difference between `uses:` and `run:`?
+A: `uses:` runs a published action, such as `actions/checkout@v7`. `run:` is a shell command, typed on the runner as in a terminal.
+
+Q: Do a workflow’s jobs run one after another, or at the same time?
+A: At the same time, by default. A job waits for another only if you give it `needs:` naming that job.
+
+Q: For `pull_request`, what does `branches: [main]` match?
+A: The branch the PR targets, its base. So every PR into `main` runs it, whatever the agent named its own branch.
+
+Q: On an open PR, what code does CI check out?
+A: A test merge of the PR’s branch into `main`: what you’d get by merging. A PR with a merge conflict gets no run.
+
+Q: You name one permission under `permissions`. What happens to the rest?
+A: Every permission you didn’t name is set to none. A CI check needs `contents: read` and nothing more.
+
+Q: What is a check called?
+A: Whatever its job’s `name:` says, or the job id if there’s no `name:`. The workflow’s name and the file’s name play no part.
+
+Q: An agent renames a job that a ruleset requires. What happens?
+A: The renamed check can pass, but the gates wait for the old name, which sits at “Expected” forever, so the PR can’t merge.
+
+Q: What does `cache: npm` keep between runs?
+A: npm’s store of downloaded packages, keyed on `package-lock.json`. Not `node_modules`, builds or test results.
+
+Q: A workflow has no `timeout-minutes`. How long can a hung job run?
+A: 360 minutes, GitHub’s default, before it’s cancelled. A cancelled job doesn’t count as a pass.
+
+Q: Does a run you started with the Run workflow button count for a ruleset?
+A: No. Required checks count only from runs started by events such as `pull_request` and `push`.
+
+Q: How do you pass a secret to a step safely?
+A: As `${{ secrets.NAME }}` through `env:` or `with:`. Never `echo` it: masking in logs isn’t guaranteed.
+
+Q: What does `concurrency` with `cancel-in-progress: true` do?
+A: It allows one run at a time per group, and cancels the older run when a newer push arrives.
+
+Q: A required check says “Expected”, and there’s no run. What are the usual causes?
+A: A branch or path filter that skipped the workflow, a merge conflict, or a renamed job.
+```
+
+## Final test
 
 ```final-test final-23
-An agent’s Care4Mind workflow is open in front of you. Which key tells you what machine each job runs on?
+An agent’s workflow for your `recipes` site is open in front of you. Which key tells you what machine each job runs on?
 - [ ] `on`
 - [ ] `uses`
 - [x] `runs-on`
@@ -483,7 +727,7 @@ Why: Once any permission is named, every one not named is none, `contents` inclu
 ```
 
 ```final-test final-25
-In the Lesson 13 lab you keep Brad’s file but change `name: Verify` to `name: verify-app`. What must the ruleset require?
+In the lab you keep Brad’s file, but change `name: Verify` to `name: verify-app`. What must the ruleset require?
 - [ ] `Verify`
 - [ ] `verify`
 - [ ] `CI`
@@ -509,46 +753,67 @@ In Brad’s workflow, Verify shows “in progress” for ten minutes, then ends 
 Why: `timeout-minutes: 10` cancels the job at ten minutes. A lockfile mismatch fails fast in `npm ci`, printing a secret doesn’t stop a run, and a skipped run never shows “in progress”.
 ```
 
-## Read next
+```final-test final-watch-checks
+An agent has pushed to PR 12, and it should report back only once every check on the PR has a result. What does it run?
+- [x] `gh pr checks 12 --watch`
+- [ ] `gh run list --limit 5`
+- [ ] `gh run view <id> --log-failed`
+- [ ] `git log --oneline -n 5`
+Why: `gh pr checks 12 --watch` waits until every check on the PR finishes. It doesn’t show logs; for those, the agent runs `gh run view` with `--log-failed`.
+```
 
-**Read:** [GitHub Docs, Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax), about 15 minutes if you read only four sections: `on`, `permissions`, `jobs.<job_id>.name` and `jobs.<job_id>.steps`. Every key in this lesson comes from that page, and it’s where to look when an agent’s workflow uses one you don’t know.
+```final-test final-write-permission
+An agent’s first CI workflow for your `recipes` site runs lint, typecheck and tests, and nothing else. At the top it sets `permissions: contents: write`. What’s your response?
+- [ ] Widen it: add pull-requests write as well
+- [ ] Accept it: checkout needs write to copy
+- [x] Question it: a check needs only read
+- [ ] Drop it: let the repo default decide
+Why: `contents: read` lets the job read the code, which is all a check needs, checkout included. That’s least privilege. An agent that comments on PRs needs `pull-requests: write`, but this workflow doesn’t comment. Dropping the line leaves the token on the repo’s default access instead of the minimum.
+```
 
-Keep the CI/CD cheat sheet open the first time you review a workflow an agent wrote.
+```final-test final-job-id-change
+An agent’s PR changes the job id in Brad’s `ci.yml` from `verify:` to `checks:`, and leaves `name: Verify` as it was. Its run passes. What do the gates see?
+- [x] A passing check, still reported as Verify
+- [ ] The check named Verify waits at Expected
+- [ ] A new check, checks, that nothing requires
+- [ ] The ruleset renames its required check itself
+Why: The check takes the job’s `name:`; the id is used only when there’s no `name:`. So the PR reports `Verify` as before, and both gates still find it. Change `name:` instead, and every PR waits at “Expected”, because rulesets don’t follow renames.
+```
+
+```final-test final-expected-conflict
+A PR on your `recipes` repo has had its required check at “Expected” all morning. The Actions tab shows no `pull_request` run for it, though the same workflow ran on yesterday’s PRs. The agent started the workflow with the Run workflow button on its branch, and that run passed. What now?
+- [ ] Merge it: the manual run already passed
+- [ ] Disable the ruleset until the check arrives
+- [x] Check the PR for a merge conflict
+- [ ] Raise the job’s timeout and wait longer
+Why: A run started by hand doesn’t count: rulesets accept checks only from runs started by events such as `pull_request` and `push`. No `pull_request` run at all, from a workflow that works on other PRs, points to a merge conflict: GitHub doesn’t run `pull_request` workflows on a PR that has one. Once the agent fixes the conflict and pushes, the check runs.
+```
 
 ```sources
-- [GitHub Docs, Understanding GitHub Actions](https://docs.github.com/en/actions/get-started/understand-github-actions)
-- [Brad Traversy, CI/CD crash course](https://www.youtube.com/watch?v=B7GM6F3BP6A)
-- [Ubuntu 24.04 runner image](https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md)
-- [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#name)
-- [gist](https://gist.github.com/bradtraversy/b6b1e16322cf60d8f41fbda71b1c607e)
-- [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onpull_requestpull_request_targetbranchesbranches-ignore)
-- [GitHub Docs, Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request)
-- [GITHUB_TOKEN](https://docs.github.com/en/actions/concepts/security/github_token)
-- [Workflow syntax, permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)
-- [GitHub Docs, Troubleshooting rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/troubleshooting-rules)
-- [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname)
-- [actions/checkout](https://github.com/actions/checkout/blob/main/.github/workflows/licensed.yml)
-- [test.yml](https://github.com/actions/checkout/blob/main/.github/workflows/test.yml)
-- [Vercel, Deployment Checks](https://vercel.com/docs/deployment-checks)
-- [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
-- [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#choosing-github-hosted-runners)
-- [runner-images #14748](https://github.com/actions/runner-images/issues/14748)
-- [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idtimeout-minutes)
-- [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsuses)
-- [actions/setup-node README](https://github.com/actions/setup-node)
-- [npm docs, npm ci](https://docs.npmjs.com/cli/v11/commands/npm-ci)
-- [check.yml on GitHub](https://github.com/SiddharthMuramkar/learn-matt-flow/blob/main/.github/workflows/check.yml)
-- [GitHub Docs, Status checks](https://docs.github.com/en/pull-requests/reference/status-checks)
-- [Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)
-- [Vercel for GitHub](https://vercel.com/docs/git/vercel-for-github)
-- [Securely using pull_request_target](https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target)
-- [Troubleshooting required status checks](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks)
-- [GitHub Docs, Secrets](https://docs.github.com/en/actions/concepts/security/secrets)
-- [Using secrets in GitHub Actions](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets)
-- [Control the concurrency of workflows and jobs](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency)
-- [GitHub Docs, Using workflow run logs](https://docs.github.com/en/actions/how-tos/monitor-workflows/use-workflow-run-logs)
-- [gh run view](https://cli.github.com/manual/gh_run_view)
-- [gh pr checks](https://cli.github.com/manual/gh_pr_checks)
-- [gh run list](https://cli.github.com/manual/gh_run_list)
-- [Vercel, Node.js versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions)
+- [CI/CD Made Simple: Build a Real Pipeline](https://www.youtube.com/watch?v=B7GM6F3BP6A), Brad Traversy, 2026-10-05
+- [CI/CD Crash Course: Commands and Code](https://gist.github.com/bradtraversy/b6b1e16322cf60d8f41fbda71b1c607e), Brad Traversy
+- [Understanding GitHub Actions](https://docs.github.com/en/actions/get-started/understand-github-actions), GitHub Docs
+- [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax), GitHub Docs
+- [Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows), GitHub Docs
+- [GITHUB_TOKEN](https://docs.github.com/en/actions/concepts/security/github_token), GitHub Docs
+- [Troubleshooting rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/troubleshooting-rules), GitHub Docs
+- [Troubleshooting required status checks](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks), GitHub Docs
+- [Status checks](https://docs.github.com/en/pull-requests/reference/status-checks), GitHub Docs
+- [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches), GitHub Docs
+- [licensed.yml in actions/checkout](https://github.com/actions/checkout/blob/main/.github/workflows/licensed.yml), GitHub
+- [test.yml in actions/checkout](https://github.com/actions/checkout/blob/main/.github/workflows/test.yml), GitHub
+- [actions/setup-node README](https://github.com/actions/setup-node), GitHub
+- [runner-images issue #14748: ubuntu-latest moves to Ubuntu 26.04](https://github.com/actions/runner-images/issues/14748), GitHub
+- [npm ci](https://docs.npmjs.com/cli/v11/commands/npm-ci), npm Docs
+- [Deployment Checks](https://vercel.com/docs/deployment-checks), Vercel Docs
+- [Vercel for GitHub](https://vercel.com/docs/git/vercel-for-github), Vercel Docs
+- [Node.js versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions), Vercel Docs
+- [Securely using pull_request_target](https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target), GitHub Docs
+- [Secrets](https://docs.github.com/en/actions/concepts/security/secrets), GitHub Docs
+- [Using secrets in GitHub Actions](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets), GitHub Docs
+- [Control the concurrency of workflows and jobs](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency), GitHub Docs
+- [Using workflow run logs](https://docs.github.com/en/actions/how-tos/monitor-workflows/use-workflow-run-logs), GitHub Docs
+- [gh run view](https://cli.github.com/manual/gh_run_view), GitHub CLI manual
+- [gh pr checks](https://cli.github.com/manual/gh_pr_checks), GitHub CLI manual
+- [gh run list](https://cli.github.com/manual/gh_run_list), GitHub CLI manual
 ```

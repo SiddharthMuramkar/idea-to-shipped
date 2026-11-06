@@ -1,466 +1,451 @@
 ---
 title: The context window
 slug: context-window
-summary: An agent can only think about what fits in one window of text, and it thinks best while that window is far from full. Here's how to keep it there.
+summary: An agent sees only what's in its context window, and it reasons best while that window is far from full. Learn to read it, clear it and compact it.
 ---
 
-An agent can only think about what fits in one window of text, and it thinks best while that window is far from full. Here's how to keep it there.
+## What the agent can see
 
-```goals
-- You'll be able to say what fills an agent's context window, and read `/context` to find what's taking the room.
-- You'll be able to explain why an agent gets worse long before its window is full, and spot the signs that it has left the Smart zone.
-- You'll be able to choose between continuing, `/clear`, `/handoff`, a subagent and `/compact` at a Phase boundary, in Matt's order.
-- You'll be able to say when `/handoff` is the right move and what its file carries.
+Say you're two hours into one long session with Claude Code. Early on you said "don't touch the `payments` folder", and for an hour the work was good. Now it has edited a payments file, re-broken a test it fixed earlier, and described a function that doesn't exist. Nothing crashed. The agent got worse.
+
+**The agent knows only what's in its context window, and it reasons best while that window is far from full.**
+
+The **context window** is everything the model sees when it answers. That's Claude Code's own instructions, the whole conversation so far, and every result its tools have handed back. If something isn't in the window, the agent doesn't know it exists. A new session starts with a fresh window, as [How coding agents work](/learn/how-agents-work) showed.
+
+The window is measured in **tokens**: the small chunks of text a model reads and writes. A token is about three-quarters of an English word, so 1,000 tokens is roughly 750 words. Window size, cost and speed are all counted in tokens. In token counts, "k" means thousand, so 150k is 150,000 tokens.
+
+```checkpoint quick-1
+The agent reads a document of about 3,000 words. Roughly how many tokens does that add to the window?
+- [x] About 4,000, since a token is about three-quarters of a word.
+- [ ] About 3,000, since each word is exactly one token.
+- [ ] About 750, since each token holds about four words.
+Why: A token is about three-quarters of an English word, so 1,000 tokens is roughly 750 words. 3,000 words is about 4,000 tokens.
 ```
 
-## Why it matters
+## What fills it
 
-You're two hours into one long conversation with Claude Code (Anthropic's coding agent: an AI that reads your files, runs commands and writes code from your terminal). Early on you told it "never edit the migrations folder" (the scripts that change your database). For an hour it did great work. Now it has edited a migration, re-broken a test it fixed earlier, and described a function that doesn't exist. No error, no crash. The agent just got worse.
+Some of the window is full before you type anything:
 
-The usual cause: the conversation got too long. Everything the agent knows about your work has to fit in one window of text, and the fuller that window, the worse it reasons.
+- Claude Code's built-in instructions, called the **system prompt**, and the list of tools it can use;
+- your `CLAUDE.md` files and auto memory, the notes Claude Code keeps for itself (see [Instruction files](/learn/instruction-files));
+- the name and short description of each Skill, a named set of instructions for one job, whose full text loads only when it's used;
+- the tool names of any **MCP servers**, connectors that link the agent to other services.
 
-Matt Pocock, a developer and teacher who publishes a popular set of Skills for Claude Code, says the mistake he sees most often is ==not thinking about the context window==. (A Skill is a short instruction file the agent loads when you type its name, like `/handoff`, or when a task matches its description; see [Skills](/learn/skills).)
+Then everything you do adds to it: what you type, what the agent replies, and every tool result. File reads and command output are often the biggest part. One big file or a long test log can add thousands of tokens at once.
 
-## The idea: tokens and the window
+```checkpoint quick-2
+You open a brand-new session and type nothing. Already, part of the window is used. Where did those tokens come from?
+- [x] Instructions, the tool list, `CLAUDE.md`, notes and Skill descriptions.
+- [ ] Your last conversation, which Claude Code reloads so you don't start cold.
+- [ ] Every file in the project, which the agent reads before you ask anything.
+Why: The system prompt, the tool list, your `CLAUDE.md` files, auto memory and Skill descriptions load before you type. Files enter the window only when the agent reads them.
+```
 
-**Tokens.** Models (the AI behind the agent) read tokens, not words: small chunks of text, roughly three-quarters of an English word each, so 1,000 tokens is about 750 words. Everything is counted in tokens: what you pay, how fast it runs and how much fits. In token counts, k means thousand and M means million.
+Every request sends the whole window, not only the newest message. So a session that has piled up three unrelated tasks re-reads all three on every turn of the fourth. [Calling a model](/learn/calling-a-model) shows why: your code sends the whole list of messages with every call.
 
-**The context window** is everything the model sees when it answers: its instructions, the whole conversation so far, and every result its tools (the actions Claude Code lets it take, like reading a file, searching or running a command) have handed back. If something isn't in the window, the model doesn't know it exists. A session (one Claude Code conversation, from starting `claude` until you clear it or quit) slowly fills the window, and the next session starts without any of that conversation. Matt compares agents to the man in *Memento* who wakes up with no memory of yesterday.
+## Reading `/context`
 
-**What's in it before you type anything:**
+Type `/context` to see what's filling the window. It's a **built-in command**: part of Claude Code itself, not a Skill. It shows the total used, and a row for each kind of content.
 
-- Claude Code's system prompt (its built-in instructions) and the list of tools it can use
-- your `CLAUDE.md`, a file of standing instructions for the project (see [How coding agents work](/learn/how-agents-work))
-- notes Claude Code saved for itself in earlier sessions in this project (auto memory, on by default)
-- the names and one-line descriptions of your Skills (a Skill's full text loads only when it's used, and Skills only you can start keep even their descriptions out)
-- the names of tools from MCP servers, connectors that link the agent to other services (their full details load only when used)
-
-**What fills it as you work:** every message, every file the agent reads, every command's output and the text of every Skill it loads. File reads are usually the biggest cost.
-
-Type `/context` to see the breakdown. It's a Built-in command: it comes with Claude Code and isn't a Skill. It shows the total used, then a row per category. Here's an example from a long session with a 1M-token window and a heavy setup (over a hundred Skills, hundreds of MCP tools), rounded:
+For example, a long session on a 1M-token window might show this (rounded, made-up numbers):
 
 | Row | Tokens |
 |---|---|
-| Messages: the conversation, file reads and command output | 166k |
-| System tools | 16k |
-| Skills | 10k |
 | System prompt | 4k |
-| MCP tools (details loaded only when used) | 4k |
-| Memory files (your `CLAUDE.md` and auto memory) | under 1k |
-| Free space | 762k |
-| Autocompact buffer (kept free for compacting, or summarising, the conversation) | 33k |
+| System tools | 16k |
+| MCP tools | 4k |
+| Memory files (`CLAUDE.md` and auto memory) | 1k |
+| Skills | 10k |
+| Messages (the conversation, file reads and command output) | 150k |
+| Free space | 785k |
+| Autocompact buffer (kept free for compacting) | 30k |
 
-The total is about 205k of 1M, nearly all of it conversation. The system prompt and tools alone are about 20k, so even a plain setup starts there.
+Nearly all of the used space is Messages. The startup rows are small, and much the same in every session. So when a window gets heavy, the conversation is usually what to shrink.
 
-```checkpoint startup-tokens
-You open a brand-new session in a project and type nothing. `/context` already shows about 20k tokens used. Where did they come from?
-- [x] Instructions, tool lists and saved notes loaded at startup.
-  > Right. The system prompt, tools, `CLAUDE.md`, any auto-memory notes and Skill descriptions are in the window before you type a word.
-- [ ] Your whole last conversation, which Claude Code reloads so you don't start cold.
-  > A new session starts without the previous conversation; only short auto-memory notes carry over. That's why handoffs and `CLAUDE.md` exist.
-- [ ] Every file in the project, which the agent reads in advance.
-  > Files enter the window only when the agent reads them, as you work.
-- [ ] Your token usage so far this month.
-  > `/context` shows what's in this session's window, not your bill.
+```checkpoint quick-3
+`/context` shows Skills at 10k, System tools at 16k and Messages at 150k. Which row is usually the one to shrink?
+- [x] Messages, the conversation itself.
+- [ ] Skills, by removing most of them.
+- [ ] System tools, by turning some off.
+Why: The startup rows are small, and much the same in every session. The conversation is nearly all of the used space, so it's what to shrink.
 ```
 
-## The Smart zone: quality, not size
+## The smart zone
 
-Answers don't stay equally good until the window is full. Each new token has to be weighed against every token already there, so the more the window holds, the thinner the model's attention is spread. (Matt likens it to adding a team to a football league: each new team adds a match against every other.) Models also weigh the start and end of a long conversation more than the middle. Anthropic calls the result context rot.
+Answers don't stay equally good until the window is full. Anthropic's engineers call the effect **context rot**: as the tokens in a window grow, the model gets worse at recalling what's in them.
 
-Matt borrows a picture from Dex Horthy, who runs the company HumanLayer. Every session has a **Smart zone** at the start, where the model reasons sharply, and a dumb zone after it, where it gets sloppy, forgetful and confidently wrong. Same model, same tools, just more context.
+Matt Pocock, who publishes a popular set of Skills, borrows a picture from Dex Horthy of the company HumanLayer. Early in a session, the agent is in the **smart zone**: sharp, focused, good at recall. As the session grows, it drifts into the **dumb zone**: sloppier, more forgetful, more confidently wrong. It's the same model with the same tools, only more context.
 
-Where's the line? Matt's `ask-matt` Skill (his guide to which of his Skills fits your situation) puts the Smart zone at about 150k tokens on today's best models, as a rule of thumb. He has said 100k to 140k at other times. Treat it as a budget, not a law.
+Where's the line? ask-matt, Matt's guide to which of his Skills fits, puts the smart zone at about 150k tokens on today's best models. He has given lower figures before, so treat it as a rule of thumb.
 
-The line has nothing to do with window size. Current Claude models run with 1M-token windows by default, and a session can slip into the dumb zone with over 80% of its window still free. At an April 2026 workshop, Matt's take on 1M windows was that Claude Code had "shipped a lot more dumb zone": good for finding facts in huge documents, less good for coding. ==The Smart zone is your budget; the window size isn't.==
-
-**The signs** you've left it: the agent forgets an instruction from many turns (message-and-reply rounds) ago, repeats a mistake it already fixed, or says something its own context contradicts. There's never an error message, so watch the count with `/context`, or with a status line (a line under the prompt box) showing tokens used, which Matt calls essential. To get one, type `/statusline` and describe what it should show.
-
-**The fix is removing context, not adding it.** Pasting the ignored instruction again, in capitals, adds tokens to a window that already holds too many. What works is a smaller window, using the moves below.
+The line has nothing to do with the window's size. Current Claude models have 1M-token windows, so a session can be deep in the dumb zone with most of its window still free. **Plan around the smart zone, not the window.**
 
 ```scene meter
-title: One feature on a 1M window (illustrative)
+title: Two tasks in one session, on a 1M window (illustrative)
 zone: 15
-# You start `claude`. Before you type, the system prompt, tools, `CLAUDE.md` and Skill descriptions are already loaded.
+# You start `claude`. Before you type, Claude Code's instructions, tools, `CLAUDE.md` and Skill descriptions are in the window.
 fill: 2% | Startup, about 20k
-# `/grill-with-docs`: the agent interviews you about the feature. Helpers it sends to look up facts report back briefly, so their reading stays out of your window.
-fill: 7% | Grilling, about 70k
-# `/to-spec` and `/to-tickets` turn the decisions into a written plan and a list of small tasks (tickets), in the same window so they build on the same thinking.
-fill: 10% | Spec and tickets, about 100k
-# Planning is done and the decisions now live in files, so you type `/clear`. The window drops back to its startup cost.
-fill: 2% | After clear, about 20k
-# `/implement` builds ticket 1: file reads, test runs, edits.
-fill: 9% | Ticket 1, about 90k
-# You skip the `/clear` and start ticket 2 on top. Around 150k you leave the Smart zone, with 85% of the window still free. Nothing warns you.
-fill: 16% | Ticket 2, about 160k
-# Ticket 2 ends with the agent re-breaking a test it fixed in ticket 1. The fix was the `/clear` you skipped.
-fill: 19% | End of ticket 2, about 190k
+# You build a search box for your recipe website: file reads, test runs, edits.
+fill: 9% | First task, about 90k
+# You start an unrelated task on top. Around 150k you leave the smart zone, with 85% of the window still free. Nothing warns you.
+fill: 16% | Second task, about 160k
+# The agent re-breaks a test it fixed in the first task. The fix was a `/clear` between the two tasks.
+fill: 18% | End of the second task, about 180k
+# You type `/clear` before the next task. The window drops back to its startup cost.
+fill: 2% | After /clear, about 20k
 ```
 
-```checkpoint quality-not-size
-`/context` says 17% of a 1M window is used. The agent has started ignoring a naming rule you set early on, and it has re-broken a test it fixed an hour ago. What's the best explanation?
-- [ ] Past the Smart zone, Claude Code quietly drops your early messages.
-  > With 83% of the window free, nothing has been cut. Your early messages are all still there.
-- [x] It has drifted past the Smart zone; free space doesn't help.
-  > Right. About 170k tokens is past Matt's rule of thumb, whatever the window size. Quality drops long before the window fills.
-- [ ] It only reads your most recent message.
-  > It reads the whole window on every turn. The trouble is how much is in there.
-- [ ] Your rule was worded too loosely; reword it and it will stick.
-  > It followed the rule early on, so the wording worked. What changed is how much is in the window.
+```checkpoint quick-4
+`/context` says 17% of a 1M window is used. The agent has started ignoring a rule you set early on, and it re-broke a test it had fixed. What's the best explanation?
+- [x] It has drifted past the smart zone, and free space doesn't help.
+- [ ] Claude Code has quietly deleted your early messages to save room.
+- [ ] The agent only ever reads the newest message in the conversation.
+Why: About 170k tokens is past the smart zone, whatever the window's size. Quality drops long before the window fills.
 ```
 
-## Tools for a crowded window
+There's no error message when you leave it. Watch for the signs instead. The agent forgets an instruction from many turns ago, repeats a mistake it already fixed, or says something its own context contradicts. Matt keeps a token count on screen in a **status line**, the line under the prompt box. To set one up, type `/statusline` and describe what it should show.
 
-Like `/context`, `/clear`, `/compact` and `/btw` are Built-in commands, not Skills.
+The fix is less context, not more. Pasting the ignored instruction again, in capitals, adds tokens to a window that already holds too many.
 
-**`/clear`** empties the working context and starts a fresh conversation. Your files and `CLAUDE.md` are untouched. The old conversation isn't deleted either: `/resume` lists it, and you can switch back to it as its own session. Nothing from it carries into the fresh one. It's instant and frees everything but the startup cost.
-
-**`/compact`** replaces the conversation with a summary and carries on from there. You can steer what it keeps: `/compact focus on the API changes`. It can take a minute, it costs tokens, and it's lossy. In Matt's 2025 demo it shrank 77k tokens of messages to about 4k, keeping the intent and dropping the detail.
-
-**Auto-compact** is Claude Code compacting for you, on by default. It fires only when the window is nearly full: far into the dumb zone, when the model is least able to judge what to keep, as Thariq Shihipar of Anthropic points out. (`/autocompact` sets when it fires.) Idle compaction is newer: a conversation of 200k tokens or more, left untouched for nearly an hour with your computer awake, gets compacted and marked with a line starting "Compacted while idle". Either way, ==a rule you only said in chat may not survive==. Put lasting rules in your project's main `CLAUDE.md`, which is reloaded from disk after every compaction.
-
-**`/btw`** asks a side question, like `/btw which file did we change first?`. It answers from what it knows and what's already in the conversation, without reading files or running commands, and the answer never joins the conversation.
-
-**Subagents.** A subagent is a helper agent with its own fresh context window. It does a job, like searching thirty files, and hands back only a short report, so all that reading stays out of your window. Claude Code starts them on its own for big searches, and you can ask: "Use a subagent to find every file that calls `getLessonBySlug`." The catch: whatever the report leaves out, you never see. Thariq's test: will you need the raw output again, or just the conclusion?
-
-```checkpoint side-question
-Halfway through building a feature, you wonder what a regular-expression flag the agent just used means. You'll never need the answer for this feature. What do you type?
-- [ ] `/clear`, then ask.
-  > That throws away the feature work to ask one small question.
-- [ ] `/compact`, then ask.
-  > Compacting mid-task makes the agent lose the thread, and the answer still lands in the conversation.
-- [x] `/btw`, then your question.
-  > Right. A `/btw` answer is shown to you but never joins the conversation, so the feature work stays as it was.
-- [ ] Your question, then `/compact` to tidy up afterwards.
-  > The answer joins the conversation first, and then you pay for a lossy summary in the middle of the work.
+```checkpoint quick-5
+Deep into a session, the agent keeps ignoring a naming rule you set at the start. What helps most?
+- [x] A smaller window, starting at the next good stopping point.
+- [ ] The rule again, in capitals, so the agent can't miss it.
+- [ ] A longer explanation of the rule, with three examples.
+Why: The fix is less context, not more. Repeating or explaining the rule adds tokens to a window that already holds too many.
 ```
 
-## At a Phase boundary: Matt's order
+## Making room
 
-When do you use which? Matt's answer is in his `ask-matt` Skill, in a file beside it called `PHASE-BOUNDARIES.md`.
+Like `/context`, these are built-in commands:
 
-A **Phase** is a chunk of work inside a session: the grilling (the agent interviewing you about your plan), the implementation, the QA (checking by hand that it works). It ends when you feel that piece is done. The gap before the next one is the Phase boundary, the ==only place to decide what happens to your context==. Mid-Phase, keep going or hand the rest to subagents; compacting mid-Phase makes the agent lose the thread. Forking a side task to another session with `/handoff` is fine mid-Phase too, because it leaves your own context as it is.
+- **`/clear`** starts a new conversation with an empty window. Your files and `CLAUDE.md` stay as they are. The old conversation isn't deleted: `/resume` lists it, so you can go back. It's instant and costs nothing.
+- **`/compact`** replaces the conversation with a summary, then carries on from there. You can say what to keep: `/compact focus on the search changes`. It reads the whole conversation to write the summary, so it takes a while and costs tokens. And it's lossy: a summary keeps the gist and drops detail.
+- **`/btw`** asks a side question, such as `/btw what was that file called?`. It answers from what's already in the conversation, without reading files or running commands. The question and its answer never join the conversation.
 
-At the boundary, ask five questions in order. The first yes wins.
-
-1. **Can you continue?** Yes if the next Phase needs this one firsthand, or if it fits in the Smart zone you have left. Grilling into implementation is the classic yes: the build wants the reasoning itself, not a summary of it. Continuing costs nothing and loses nothing, but only while the agent is still sharp: near the Smart zone's edge, the next Phase would run in the dumb zone.
-2. **Is everything here irrelevant to what's next?** Then `/clear`. It's the cheapest move. But a mistake only goes one way: clear a context you still needed and the *why* behind your decisions is gone from the session you carry on in.
-3. **Does the work need to travel?** Then `/handoff` (next section).
-4. **Can the next task run without you?** Matt calls this AFK, away from keyboard. Send it to a subagent and leave your session untouched. Automated review of the diff (the changes you've made) is the usual case.
-5. **Otherwise, `/compact`**, with an instruction such as `/compact we're going to QA this area`. Matt calls it "the default, not the first reach": the tree lands there often, but only after the cheaper or more precise options say no.
-
-Every move except continuing means the next Phase works from something secondhand (a summary, a file or a helper's report), or from nothing at all after `/clear`, instead of the session as it happened. That's the price, and why continuing comes first.
-
-Matt's Main flow, his path from idea to shipped (see [The main flow](/learn/main-flow)), turns this into fixed rules. Keep `/grill-with-docs` (grilling that also writes down the project's terms), `/to-spec` (turns the decisions into a spec, a written description of what to build) and `/to-tickets` (splits the spec into tickets, tasks small enough for one session) in one unbroken window; don't clear or compact until after `/to-tickets`. Then build each ticket with `/implement` and `/clear` between them, since each ticket stands on its own. If you near the Smart zone before `/to-tickets`, `/compact` at the nearest boundary. And run `/retro`, which reviews how the work went, in that session before you clear.
-
-```scene flow
-title: One feature, five decisions (illustrative)
-node: continue | 1. Can you continue
-node: clear | 2. Irrelevant? Clear
-node: handoff | 3. Travelling? Hand off
-node: subagent | 4. Runs AFK? Subagent
-node: compact | 5. Otherwise compact
-# Grilling a dark-mode toggle ends at about 50k tokens. The build needs that reasoning firsthand, so question 1 says yes: **continue**.
-at: continue
-# Mid-build you spot a messy settings file that's out of scope. Forking a side task is the one handoff that happens mid-Phase: you `/handoff` it to a second agent and keep building.
-at: handoff
-# The toggle works. A review of the diff should come from fresh eyes, not the tired end of the build, and needs no steering from you, so a **subagent** takes it.
-at: subagent
-# QA is next. It needs the gist of the build, not every word, and the window is near the Smart zone's edge, so question 1 says no. The context still matters (not 2), nothing is travelling (not 3), and QA needs you (not 4): `/compact we're going to QA dark mode`.
-at: compact
-# QA passes and you run `/retro`. The next task is an unrelated bug that nothing here helps with: `/clear`.
-at: clear
+```checkpoint quick-6
+Halfway through a task, you wonder what a word in the agent's last reply means. You won't need the answer for the task. What do you type?
+- [x] `/btw`, then your question, so nothing joins the conversation.
+- [ ] `/clear`, then your question, so the window is empty first.
+- [ ] `/compact`, then your question, so there's room for the answer.
+Why: A `/btw` question and its answer never join the conversation, so the task's window stays as it was. Clearing would throw the task away, and compacting mid-task loses detail.
 ```
 
-```checkpoint mid-phase-fork
-Halfway through building a reading-list page for a book-club site, you notice an unrelated bug in its sign-up form. The build isn't finished and you don't want to lose your place. What fits Matt's rules?
-- [ ] `/compact` now, then fix the bug before going back.
-  > Compacting mid-Phase makes the agent lose the thread of the build.
-- [ ] `/clear` now and fix the bug, then restart the build.
-  > That throws away the half-done build's reasoning for an unrelated job.
-- [ ] `/handoff` the build to a fresh session, then fix the bug here.
-  > The build isn't travelling. Its new session would work from a summary, and the bug would fill this window instead.
-- [x] `/handoff` the bug to a second session and keep building.
-  > Right. Forking a side task is the one handoff that fits mid-Phase, because your own context stays as it is.
+Claude Code also compacts on its own as the window nears its limit. That's long past the smart zone, so it won't keep the agent sharp. And a summary can drop a rule you only said in chat. Put lasting rules in `CLAUDE.md` instead: Claude Code reads the project's main one again from disk after every compaction.
+
+```checkpoint quick-7
+Early on, you told the agent "don't touch the payments folder". Hours later, after the conversation was compacted, it edits a payments file. Where should the rule have gone?
+- [x] In the project's `CLAUDE.md`, which is read again after compaction.
+- [ ] In a `/btw` question, which keeps rules out of the summary.
+- [ ] In the first message, written twice so the summary keeps it.
+Why: A summary keeps the gist, not every line, so a rule said only in chat can be lost. The project's main `CLAUDE.md` is read again from disk after every compaction.
 ```
 
-## `/handoff`: when the work has to travel
+For a big search, ask for a **subagent**: a helper agent with its own fresh context window. It does the reading in its own window and hands back a short report, so only the report lands in yours. For example: "Use a subagent to find every file that mentions `recipe_id`." The catch is that what the report leaves out, you never see.
 
-`/handoff` is the one Skill this Lesson has you run. It's user-invoked: only you can start it, by typing `/handoff` at the start of a message, optionally followed by what the next session is for.
+## When to start fresh
 
-It summarises the conversation into one markdown file (plain text with light formatting) in your computer's temporary folder, not your project. The file:
+The first rule is simple: new task, new session. Type `/clear` when you switch to unrelated work. Anthropic's docs explain that an old conversation "crowds out the files you need next and costs tokens on every message."
 
-- sums up the unfinished work: where it stands, the reasons behind it and the next steps, aimed at the purpose you gave
-- includes a "suggested skills" section naming the Skills the next agent should load
-- points to specs, plans, decision records (why a choice was made), tickets, commits (Git's saved snapshots) and diffs by path or link instead of copying them in
-- has keys, passwords and personal details removed
+The second rule is for corrections. Say you've corrected the agent twice on the same thing, and it's still wrong. Anthropic suggests `/clear`, then one better prompt that includes what you learned. A third correction mostly adds to a window that already holds two failed attempts.
 
-Matt's docs say what it buys is "portability, not compression". So it's narrow, and there are only ==four reasons to reach for it==:
-
-1. **Switching harness**, the program that drives the model: say, from Claude Code to Codex, OpenAI's coding agent. The new one can't see the old conversation.
-2. **Moving to another folder or repo** (a project folder tracked by Git). A prototype folder is the usual case.
-3. **Sending the work to a colleague.**
-4. **Forking a side task you found mid-Phase**, while you carry on with the main one.
-
-Anything else, like moving from grilling to building in the same folder, isn't a handoff: go back to the tree.
-
-For the fourth, you don't end your session: you hand a copy of what matters to a second agent and keep working. Matt's prototype detour works this way: `/handoff` out, `/prototype` (a quick throwaway build that answers one question) in a fresh session, then `/handoff` the answer back. See [Prototype](/learn/prototype).
-
-Habits from Matt's docs: temporary folders get emptied, so if you won't open the next session soon, copy the file somewhere safe. Point the next session at the file's path; pasting the text into a terminal command can silently cut it short. Read it first and soften anything stated as fact that was only assumed; the next agent won't re-check. And if something will still be true next month, it belongs in `CLAUDE.md`, not a handoff.
-
-```scene chat
-title: Forking a side task mid-grilling (illustrative)
-# Grilling a recipe site, you notice the ingredient parser needs a rewrite. It's out of scope, so you hand it off and say what the next session is for.
-you: `/handoff` Next session: rewrite the ingredient parser. Out of scope for this feature.
-# The agent writes one markdown file to your temporary folder, not your project.
-agent: Wrote `/var/folders/…/T/handoff-ingredient-parser.md`. It covers what's broken and why, points to `src/parser.ts` by path instead of copying it, and suggests the `/tdd` Skill (Matt's test-first way of building).
-# Your grilling carries on in the same session. Ruling the parser out even settles a question.
-agent: With the parser out of scope, question 4 no longer applies. Question 5: should recipes show metric units only? I recommend yes.
-# In a second terminal, you start a fresh session in the same repo and point it at the file.
-you: Read /var/folders/…/T/handoff-ingredient-parser.md, then continue.
-# The new agent picks up the work without asking you to explain it again. `/tdd` starts by agreeing with you what the tests should check.
-agent: Loading `/tdd`, as the handoff suggests. Before any test: which parts should we test? I propose `parseQuantity()`, which reads amounts like "2 1/2 cups".
+```checkpoint quick-8
+You've corrected the agent twice about how a page should look, and it's still wrong. What does Anthropic suggest?
+- [x] `/clear`, then one better prompt that includes what you learned.
+- [ ] A third correction, written in more detail than the first two.
+- [ ] `/compact`, so the two failed attempts are summarised away.
+Why: A third correction adds to a window that already holds two failed attempts. A fresh window with one better prompt works better almost every time.
 ```
 
-```checkpoint handoff-reason
+Within one piece of work, the call is harder. Matt makes it at each **phase boundary**: the gap after a chunk of work, such as planning, building or checking. He asks five questions in order, and the first yes wins:
+
+1. **Can you continue?** Yes, if the next chunk needs this conversation firsthand, or still fits in the smart zone. Continuing costs nothing and loses nothing.
+2. **Is everything here irrelevant now?** Then `/clear`, the cheapest move.
+3. **Does the work have to travel?** Then `/handoff`, below.
+4. **Can the next job run without you?** Then send it to a subagent, and leave your session as it is.
+5. **Otherwise, `/compact`**, with an instruction about what comes next.
+
+Compacting in the middle of a chunk makes the agent lose the thread, so make these calls at a boundary. [Context hygiene](/learn/context-hygiene) explains each question. It also shows how Matt's main flow uses them. All the planning shares one window, then each Ticket, a small piece of the build, gets a fresh one.
+
+```checkpoint quick-9
+You've finished building a search box at about 60k tokens. Next you'll check it by hand with the agent, a short job. What do Matt's questions say?
+- [x] Continue, because the check fits in the smart zone you have left.
+- [ ] `/compact`, so the check starts from a cleaner summary.
+- [ ] `/clear`, so the check starts with an empty window.
+Why: The first question wins: the next chunk fits in the smart zone you have left, so you continue. Continuing costs nothing and keeps the build firsthand.
+```
+
+**`/handoff`** is one of Matt's Skills. It writes the state of the conversation into one Markdown file, for a fresh session to read. Use it only when the work has to travel. That means a move to another agent tool, folder or repo, a hand-over to a colleague, or a side task you split off for a second session. [handoff](/learn/handoff) covers it in full.
+
+```checkpoint quick-10
 Which of these is a job for `/handoff`?
-- [ ] You'll keep building in the same folder and want a lighter context.
-  > Nothing travels, so the tree goes on past question 3, usually to `/compact`.
-- [ ] A ticket is done and the next one is fully written down.
-  > The old context is disposable, so `/clear` is cheaper.
-- [x] A teammate will finish the feature on her laptop tomorrow.
-  > Right. Sending the work to a colleague is one of the four reasons: the work has to travel.
-- [ ] You want the diff reviewed while you step away.
-  > A tightly scoped job that needs no steering goes to a subagent.
+- [x] A colleague will finish the feature on her own computer tomorrow.
+- [ ] You'll keep working in the same folder, and want a lighter window.
+- [ ] You want the agent's changes reviewed while you step away.
+Why: Handing work to a colleague means it has to travel. A lighter window in the same folder is a job for `/compact`, and a review that runs without you fits a subagent.
 ```
 
-## How Matt and others use it
+## Going deeper
 
-**Matt Pocock:**
+### Why it exists
 
-- **He'd rather clear.** In his October 2025 video on context windows, he said he'd start to worry with only about 50k of a 200k window left, and clear then; `/compact` was for keeping the gist. At his April 2026 workshop he went further: he dislikes compacting, because a cleared session always starts from the same known state.
-- **He sizes work to the Smart zone.** In his July 2026 walkthrough, each ticket is sized to one Smart zone, and he clears between tickets.
-- **He hands off most while grilling.** In his May 2026 video on the Skill, he forked an out-of-scope task mid-grilling, and handed off to a prototype session that grew to 169k tokens, far more than would have fitted beside the grilling. He always says what the next session is for.
-- **Reviews get a fresh window** (April 2026 workshop), so the reviewer isn't stuck in the dumb zone at the end of the build.
+If windows hold a million tokens, why manage them at all? Because two costs grow with every token. Answers get worse as context rot sets in. And every request sends the whole conversation, so a long one costs more on every turn.
 
-**Others:**
+Anthropic's own advice has relaxed. With 1M-token windows and automatic compaction, its docs say running out is now rare. They've dropped the old rule to manage the window aggressively. But they still advise `/clear` between tasks, "because a focused context gets you better answers and costs less."
 
-- Thariq Shihipar (Anthropic's blog, April 2026) treats every finished turn as a decision point.
-- Anthropic's help centre suggests: if your next prompt would make sense in a brand-new terminal, clear first.
-- Nowshad Jawad (May 2026) used `/handoff` mid-grilling to send a naming refactor to a second session, then carried on.
+Matt goes further. He sizes each task to fit in one smart zone, and starts the next in a fresh window. So both agree on the habit, even if they weigh it differently: give each window one job.
 
-## Try it yourself
-
-````try
-You need Claude Code installed and signed in. Step 1 uses Git, the tool that tracks and copies code projects (type `git --version` to check). If it isn't found, install it (see [Start here](/learn/start-here)), or skip step 1: on [the site's GitHub page](https://github.com/SiddharthMuramkar/idea-to-shipped) choose Code, then Download ZIP, and unzip it. In your terminal, type `cd` and a space, drag the folder with `src` inside onto the window, and press Enter.
-
-1. In your terminal, copy this site's code and go into it:
-
-```sh
-git clone https://github.com/SiddharthMuramkar/idea-to-shipped
-cd idea-to-shipped
+```checkpoint quick-11
+Anthropic's docs say running out of context is now rare. Why do they still advise `/clear` between tasks?
+- [x] A focused context gives better answers and costs less.
+- [ ] Claude Code stops working once the window is half full.
+- [ ] `/clear` saves the old conversation as a summary for later.
+Why: Running out is rare with 1M-token windows, but a focused context still gets better answers, and it costs less on every request.
 ```
 
-2. Step 9 uses Matt's Skills, so install them if you haven't. Then start Claude Code, choosing Yes if it asks whether you trust this folder:
+### How it works underneath
+
+**Why more tokens means worse answers.** Models are built so that every token attends to, or weighs, every other token. That makes n² pairs for n tokens: double the tokens, and you get four times the pairs. Anthropic describes an "attention budget" that every new token draws on. Matt's picture is a football league, where each new team adds a match against every other team.
+
+```checkpoint quick-12
+You double the number of tokens in a window. What happens to the number of token pairs the model weighs?
+- [x] It grows to four times as many.
+- [ ] It doubles, along with the tokens.
+- [ ] It stays the same as before.
+Why: n tokens make n² pairs, so twice the tokens means four times the pairs. Every new token draws on the model's attention budget.
+```
+
+**What comes back after a compaction.** When Claude Code compacts, it summarises the conversation, then puts some things back:
+
+- the project's main `CLAUDE.md`, and auto memory, read again from disk;
+- your Skills' descriptions, and the Skills you used, each cut to fit a budget;
+- the plan, if you wrote one in plan mode;
+- up to five of the files it read or edited most recently.
+
+Everything else lives on only in the summary, if at all. Instructions you gave only in chat are the usual casualty.
+
+**Compaction can happen while you're away.** On a Claude subscription, a session past about 200k tokens that sits idle for about an hour gets compacted. So after lunch, you may carry on from a summary. To choose how full the window gets before Claude Code compacts by itself, use `/autocompact`, as in `/autocompact 500k`.
+
+```checkpoint quick-13
+A long session compacts. Which of these does Claude Code read again from disk afterwards?
+- [x] The project's main `CLAUDE.md`, and auto memory.
+- [ ] Every instruction you typed during the session.
+- [ ] Every file the agent read during the session.
+Why: The project's main `CLAUDE.md` and auto memory are read again from disk. Instructions said only in chat live on only in the summary, and at most five recent files are read again.
+```
+
+### A real example
+
+At an April 2026 workshop, someone asked Matt whether the new 1M-token window was worth using. He had recorded his Claude Code course on a 200k window, and the 1M window was announced on the day he launched it.
+
+His take was that Claude Code had "shipped a lot more dumb zone." A huge window is good for retrieval, such as finding one fact in a pile of long documents. It's less good for coding. He put the smart zone at about 100k then, and said he expected it to grow.
+
+So the window grew five times over, and the smart zone grew far less. That's why you plan by the smart zone. Today, ask-matt puts it at about 150k.
+
+```checkpoint quick-14
+Your model's window grows from 200k to 1M tokens. By Matt's account, what is a huge window good for?
+- [x] Retrieval, such as finding one fact in a pile of long documents.
+- [ ] Coding, since the agent now stays sharp for five times as long.
+- [ ] Nothing at all, since the extra room is never used by the model.
+Why: Matt said the bigger window shipped "a lot more dumb zone": good for retrieval, less good for coding. The smart zone grew far less than the window did.
+```
+
+### Where it goes wrong
+
+**The agent ignores a rule you gave early on.** It may be past the smart zone, or a compaction may have dropped the rule. Shrink the window at the next boundary, and move the rule into `CLAUDE.md`.
+
+**Saying it again, louder, made it worse.** Every repeat adds tokens. Anthropic adds that piling on emphasis mostly makes Claude over-apply a rule. Remove context instead.
+
+**A fresh session is sure about a decision you never made.** A summary flattened it. Matt calls this the failure mode of reaching for `/compact` first. Give `/compact` a focus, or continue if the next chunk fits.
+
+```checkpoint quick-15
+After a `/compact`, the agent is confidently wrong about a decision you made earlier. What happened, and what helps next time?
+- [x] The summary flattened it, so give `/compact` a focus.
+- [ ] The agent read an old file, so delete the file first.
+- [ ] Compaction lost your files, so restore them from Git.
+Why: A summary keeps the gist and drops detail, and a decision can get flattened. A focus instruction tells the summary what the next chunk needs.
+```
+
+**You cleared too soon, and lost the why.** Reading back the changes won't tell you why they were made. But `/clear` isn't final: `/resume` reopens the old conversation.
+
+**One session holds every task.** Unrelated tasks spend the same smart zone, and every request re-reads them all. New task, new session.
+
+### Try it
+
+You'll need Claude Code installed and signed in, and Git ([Start here](/learn/start-here) covers both). You'll fill a window on purpose, then shrink it, in a copy of Matt Pocock's public Skills repository.
+
+1. Copy the repository and go into it:
 
 ```sh
-claude plugin install mattpocock-skills@claude-plugins-official
+git clone https://github.com/mattpocock/skills
+cd skills
+```
+
+2. Start Claude Code. If it asks whether you trust this folder, choose Yes.
+
+```sh
 claude
 ```
 
-3. Type `/context`. Note the total used, the Messages row, and the biggest row of used tokens (not Free space or the buffer).
-4. Fill the window on purpose. Type this, then `/context` again (if it asks permission to read files, choose Yes):
+3. Type `/context`. Note the total used, and the Messages row.
+4. Fill the window. Type this, then `/context` again. If it asks permission to read files, choose Yes.
 
 ```text
-Without using a subagent, read every .ts and .tsx file in src/app yourself and give me a one-line summary of each.
+Without using a subagent, read every SKILL.md file in this repo yourself, and give me a one-line summary of each.
 ```
 
-5. Type `/btw how many files did you just read?`. Read the answer, press Esc to close it, then type `/context`.
-6. Type `/compact keep only the one-line summaries`, then `/context`. Then ask: "Without reading any files, which file handles the comments API?"
-7. Type `/clear`, then `/context`. Type `/resume` to see the old conversation still listed, then press Esc to close the list.
-8. Ask for the same reading through a helper, then `/context`:
+5. Type `/btw how many files did you read?`. Read the answer, press Esc to close it, then type `/context`.
+6. Type `/compact keep only the one-line summaries`, then `/context`.
+7. Ask: "Without reading any files, which Skill is about test-driven development?"
+8. Type `/clear`, then `/context`. Type `/resume` to see the old conversation listed, then press Esc.
+9. Ask for the same reading through a helper, then type `/context`:
 
 ```text
-Use a subagent to read every .ts and .tsx file in src/app and report back only a one-line summary of each.
+Use a subagent to read every SKILL.md file in this repo, and report back only a one-line summary of each.
 ```
 
-9. Optional: type `/handoff Next session: write a glossary of this repo's terms`. Ask for the file's path if it isn't shown. To read the file, open a second terminal, type `cat` and a space, paste the path and press Enter.
+10. Type `/exit` when you're done.
 
-Press Esc to stop the agent at any point, and type `/exit` when you're done.
+You should see:
 
-**It's working if:**
+- Messages grow a lot in step 4, and much less in step 9.
+- No growth in Messages from the `/btw` question in step 5.
+- Messages drop after `/compact`, and the agent name the Skill in step 7 without reading anything.
+- Messages near zero after `/clear`, with the old conversation still listed in `/resume`.
 
-- [ ] You can name the biggest used row in your first `/context`.
-- [ ] Messages grew clearly in step 4, and much less in step 8.
-- [ ] `/btw` answered without Messages growing.
-- [ ] After `/compact`, Messages dropped, and the agent named the comments file from its summary without reading anything.
-- [ ] After `/clear`, Messages was near zero, but `/resume` still listed the old conversation.
-- [ ] (Optional) The handoff file is short, points to files by path, has a suggested-skills section and holds no secrets.
-````
+### Read more
 
-## Common mistakes
+- [Explore the context window](https://code.claude.com/docs/en/context-window), Anthropic
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
+- [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), Anthropic, 2025-09-29
+- [Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone), AI Coding Dictionary, Matt Pocock
+- [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock, AI Engineer, 2026-04-24
+- [ask-matt: PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/PHASE-BOUNDARIES.md), Matt Pocock's Skills
 
-- **The kitchen-sink session.** Unrelated tasks in one session all spend the same Smart zone. New task, new session.
-- **Pasting big files.** Give the path and let the agent read what it needs.
-- **Everything else from this Lesson:** reading free space as headroom, re-explaining instead of shrinking the window, rules only in chat, letting auto-compact pick the moment, `/compact` first or mid-Phase, clearing before `/to-tickets`, and `/handoff` when nothing travels.
+## Remember
 
-```site-story
-**The Main flow kept the rule.** When I built [The main flow](/learn/main-flow), the grilling, `/to-spec` and `/to-tickets` all ran in one session, and I never typed `/clear`. Then `/implement-spec` sent a helper agent to each ready ticket, each in its own worktree (a separate checkout of the code), so the building ran in the helpers' own windows, not mine.
+```flashcards
+Q: What is a token, roughly?
+A: A small chunk of text, about three-quarters of an English word. 1,000 tokens is roughly 750 words.
 
-**A handoff, but not the Skill.** When the course work moved to a new computer, its handoff was a file committed to the repo, `.scratch/course-rewrite/HANDOFF.md`: where the branch and drafts are, the plan, and how I like to work. Like a `/handoff` file, it points to branches and review files instead of copying them, and leaves out the env files, which hold secrets. Unlike one, it's in the repo, so it travelled with the code.
+Q: What's in the context window before you type anything?
+A: The system prompt and tool list, your `CLAUDE.md` files and auto memory, Skill descriptions, and MCP tool names.
 
-**My prototype skipped the bridge.** I typed just `/prototype` and kept the throwaway code on its own Git branch (a separate line of work), `prototype/lesson-page`. Matt's flow would `/handoff` out to a prototype session and back.
+Q: What is the smart zone, and how big is it?
+A: The part of a session where the model still reasons sharply. Matt's ask-matt puts it at about 150k tokens on today's best models, whatever the window's size.
+
+Q: What's the difference between `/clear` and `/compact`?
+A: `/clear` empties the window (the old conversation stays in `/resume`). `/compact` replaces the conversation with a summary, which is lossy.
+
+Q: What does `/btw` do?
+A: It answers a side question from what's already in the conversation, without tools. Neither the question nor the answer joins the conversation.
+
+Q: Which instructions survive a compaction?
+A: The project's main `CLAUDE.md`, which Claude Code reads again from disk. A rule you only said in chat may not survive.
+
+Q: When do you need `/handoff`?
+A: When the work has to travel: to another agent tool, folder or repo, to a colleague, or as a side task for a second session.
 ```
-
-## Cheat sheet
-
-| Moment | What to do |
-|---|---|
-| See what's filling the window | `/context` |
-| A quick side question | `/btw <question>` |
-| A big search where you only need the answer | Ask for a subagent |
-| Phase over; the next one needs it firsthand or fits, well inside the Smart zone | Continue |
-| Phase over; nothing here matters next | `/clear` |
-| Another tool, folder or person, or a side task to fork | `/handoff <what the next session is for>` |
-| The next task can run without you | A subagent |
-| None of the above | `/compact <what to keep>` |
-| A rule that must last | `CLAUDE.md`, not chat |
-| Main flow | Grill, spec and tickets in one window; `/clear` between tickets |
 
 ## Final test
 
 ```final-test read-context-rows
-An hour into a session, the agent contradicts a decision you made together earlier. `/context` shows Messages 150k, System tools 16k, Skills 10k, System prompt 4k and Free space 787k. Which row is the one to shrink, and how?
-- [ ] Free space: use it up before reaching for `/clear`.
-  > Free space isn't headroom. About 180k is used, past Matt's rule of thumb, and quality has already slipped.
-- [ ] Skills: uninstall most of them at the next Phase boundary.
-  > 10k is small, and it's the same in every session. The big row is elsewhere.
-- [x] Messages: shrink it at the next Phase boundary.
-  > Right. The conversation is nearly all of the total, and contradicting its own context is a classic sign. Let Matt's tree pick clear, hand off or compact.
-- [ ] System tools: switch off the built-in ones.
-  > That's a fixed startup cost, and the agent needs those tools to work.
+An hour into a session, the agent contradicts a decision you made together earlier. `/context` shows Messages 150k, System tools 16k, Skills 10k, System prompt 4k and Free space 785k. Which row do you shrink, and when?
+- [x] Messages, at the next phase boundary.
+- [ ] Free space, by using it up before you do anything else.
+- [ ] Skills, by uninstalling most of them right away.
+- [ ] System tools, by switching off the built-in tools.
+Why: The conversation is nearly all of the used space, and contradicting its own context is a classic sign of the dumb zone. Shrink it at the next boundary. The startup rows are small, and the agent needs its tools.
 ```
 
-```final-test scenario-mid-phase-reading
-You're grilling a change to a recipe site. One question turns on whether any of about forty files rounds servings in a way that breaks with fractions, and checking means reading each one. Once you know, you won't look at those files again this Phase. What do you do?
-- [ ] Ask the agent to read all forty here, so it knows them firsthand.
-  > Forty files of raw code would eat your Smart zone, and you'll never need that text again.
-- [x] Have a subagent read them and send back a short report.
-  > Right. The reading happens in the helper's own window; only the conclusion lands in yours. Grilling does the same on its own when a question needs a fact.
-- [ ] Type `/clear` first, so there's room for the reading.
-  > That throws away the grilling to make room for work a helper could do elsewhere.
-- [ ] Type `/compact` first, then do the reading.
-  > Compacting mid-Phase loses the thread, and the forty reads still land in your window afterwards.
+```final-test quality-not-size
+Your model has a 1M-token window. You reason that you can work until about 900k tokens before quality drops. What's wrong with that plan?
+- [x] Quality drops past the smart zone, about 150k, whatever the window's size.
+- [ ] Claude Code deletes the oldest messages once the window is a quarter full.
+- [ ] Nothing, since quality holds steady until the window is completely full.
+Why: The smart zone has nothing to do with the window's size. A session can be deep in the dumb zone with most of its window still free, so plan around the smart zone.
 ```
 
-```final-test scenario-next-ticket
-You've just finished `/implement` on ticket 2 of 5 for a book-club site. `/context` shows 90k tokens. What do you do before ticket 3?
-- [x] `/clear` first, then run `/implement` on ticket 3.
-  > Right. Matt's Main flow clears between tickets: ticket 3 starts fresh from its own write-up, and clearing is the cheapest move.
-- [ ] `/compact`, so ticket 2's reasoning carries into ticket 3.
-  > Ticket 3 works from its ticket and the spec, not ticket 2's reasoning. You'd pay for a summary of context it doesn't need.
-- [ ] `/handoff` to a fresh session in the same folder.
-  > Nothing is travelling. Same tool, same folder: no file needed.
-- [ ] Keep going: 90k is well inside a 1M window.
-  > The 1M window isn't the limit; the Smart zone is. Each ticket is sized to fill a fresh one, and ticket 2's 90k is only weight, so Matt clears between tickets.
-```
-
-```final-test scenario-near-zone
-In a repo, you've finished `/grill-with-docs` and `/to-spec` for a multi-session build. `/context` shows 160k tokens, and you haven't run `/to-tickets` yet. What does `ask-matt` say to do?
-- [ ] Keep going; most of the 1M window is still free.
-  > Free space isn't the limit. At 160k you'd write the tickets in the dumb zone.
-- [ ] `/clear`, then run `/to-tickets` in a fresh window.
-  > No clearing until after `/to-tickets`, so the tickets build on the same thinking as the spec.
-- [x] `/compact` here, saying what the tickets need.
-  > Right. Near the Smart zone before `/to-tickets`, compact at the nearest Phase boundary and carry on.
-- [ ] `/handoff` to a new session in this folder.
-  > Nothing is travelling, so a handoff file buys nothing that `/compact` doesn't.
-```
-
-```final-test scenario-afk-translate
-You've finished building a CSV export for a book-club site, at about 140k tokens. Before QA, its 30 new error messages need translating into Spanish with the site's glossary, and you'll be at lunch while that runs. Which move does Matt's tree pick?
-- [ ] `/compact`, then translate them in this session.
-  > Question 4 comes before 5: a job that needs no steering can run in its own window and leave yours as it is.
-- [ ] `/clear`, then translate them in this session.
-  > QA still needs the build's reasoning, so this context isn't irrelevant. Clearing drops it.
-- [ ] `/handoff` the translating to a fresh session.
-  > Nothing is travelling: same tool, same folder, same person.
-- [x] A subagent, which reports back when done.
-  > Right. At 140k you're near the Smart zone's edge, so you can't continue, and the context still matters. A job you needn't steer runs AFK in a fresh window, and your session stays as it was for QA.
+```final-test side-question
+Halfway through building a feature, you wonder what an unusual setting in the agent's last command does. You'll never need the answer for this feature. What do you type?
+- [x] `/btw`, then your question.
+- [ ] `/clear`, then your question.
+- [ ] `/compact`, then your question.
+- [ ] Your question, then `/compact` to tidy up.
+Why: A `/btw` answer never joins the conversation, so the feature's window stays as it was. The other moves either throw the work away or pay for a lossy summary mid-task.
 ```
 
 ```final-test spot-rule-in-chat
-Early in a long session, Sam told the agent "don't touch anything in the payments folder". Hours later, after a line saying the conversation had been compacted, the agent edits a payments file. Spot the mistake.
-- [ ] Sam should have typed the rule again every few messages to keep it fresh.
-  > That fills the window faster, and the rule still lives only in the conversation.
-- [ ] Sam should have turned auto-compact off for good.
-  > Then the window shrinks only when you remember to `/clear` or `/compact`, and the rule still lives only in the conversation, so the next summary can drop it just the same. Where the rule lived was the problem.
-- [x] Sam should have put the rule in `CLAUDE.md`.
-  > Right. A summary keeps the gist, not every line. The project's `CLAUDE.md` is reloaded from disk after compacting, so the rule survives.
-- [ ] Sam should have given the rule with `/btw`.
-  > A `/btw` answer never enters the conversation, so a rule given that way wouldn't stick at all.
+Early in a long session, Sam told the agent "don't touch anything in the payments folder". Hours later, after a line saying the conversation was compacted, the agent edits a payments file. Spot the mistake.
+- [x] Sam should have put the rule in the project's `CLAUDE.md`.
+- [ ] Sam should have typed the rule again every few messages.
+- [ ] Sam should have given the rule as a `/btw` question.
+- [ ] Sam should have turned automatic compaction off for good.
+Why: A summary keeps the gist, not every line. The project's `CLAUDE.md` is read again from disk after compaction, so the rule survives. A `/btw` question never joins the conversation, and repeating the rule fills the window faster.
 ```
 
 ```final-test spot-louder-rule
 Deep into a long session, Raj's agent keeps naming files the old way, though he set a new rule early on. So he pastes in the team's whole 40-page style guide, "so it can't miss it". Spot the mistake.
-- [x] He should shrink the window at the next Phase boundary.
-  > Right. Past the Smart zone, more tokens make it worse. Start a smaller window at a boundary, and put the rule in `CLAUDE.md`.
-- [ ] He should switch to a bigger-window model at the next Phase boundary.
-  > Window size isn't the limit; the Smart zone is. A bigger window just holds more dumb zone, whenever you switch.
-- [ ] He should have the agent repeat the rule after every edit.
-  > Still adding tokens. The model can see the rule; its attention is spread too thin to keep hold of it.
-- [ ] He should let auto-compact run first, then paste it.
-  > Auto-compact fires only when the window is nearly full, far into the dumb zone. Waiting for it means more work done badly.
+- [x] He's adding context when the window needs less.
+- [ ] He should have pasted the guide in capitals instead.
+- [ ] He should switch to a model with a bigger window.
+Why: Past the smart zone, more tokens make it worse. He should shrink the window at the next boundary, and put the rule in `CLAUDE.md`. A bigger window only holds more dumb zone.
 ```
 
-```final-test spot-compact-before-qa
-Ana finishes building a search box at 60k tokens. Next she'll check it by hand with the agent, a short job. She types `/compact` first, "to start QA clean". Spot the mistake.
-- [ ] She should `/clear` instead, for a cleaner start.
-  > QA still needs what the build did, and question 1 already says yes. Clearing drops the why from the session she tests in.
-- [ ] She should have compacted mid-build, before it got heavy.
-  > Compacting mid-Phase makes the agent lose the thread, and 60k was never heavy.
-- [ ] She should `/handoff` instead, so nothing is lost.
-  > Nothing is travelling, and a handoff file is a summary too.
-- [x] She should carry on in this session and start QA now.
-  > Right. A short QA fits easily in the Smart zone left at 60k, so question 1 says yes. Continuing costs nothing and keeps the build firsthand.
+```final-test big-reading
+To settle one question, the agent must read about forty files of your recipe website. Once you know the answer, you won't need those files again this session. What do you do?
+- [x] Have a subagent read them and send back a short report.
+- [ ] Have the agent read all forty here, so it knows them firsthand.
+- [ ] Type `/clear` first, so there's room for all the reading.
+Why: The reading happens in the subagent's own window, and only the report lands in yours. Forty files read here would spend your smart zone on text you'll never need again.
 ```
 
-```final-test spot-handoff-file
-Before sending a half-built feature to a colleague, Dev reads the file `/handoff` wrote, as Matt advises. It has a summary of where the work stands and why, a suggested-skills section, `[removed]` where an API key was, and the whole 300-line spec from the repo pasted in. Spot the mistake.
-- [ ] The suggested-skills section: the colleague can pick their own Skills.
-  > That section is part of every handoff file: it tells the next agent which Skills to load.
-- [x] The pasted spec: the colleague needs only a path or link to it.
-  > Right. A handoff file refers to specs, tickets and commits by path or link instead of copying them, so it stays short.
-- [ ] The removed key: the colleague will need it to run the code.
-  > Keys, passwords and personal details are taken out on purpose. The colleague gets their own key another way.
-- [ ] The summary of the work: the colleague can read the diff instead.
-  > Where the work stands, why, and what comes next are the core of the file. A diff doesn't carry the why.
+```final-test spot-compact-before-check
+Ana finishes building a search box at 60k tokens. Next she'll check it by hand with the agent, a short job. She types `/compact` first, "to start clean". Spot the mistake.
+- [x] She should carry on in this session, as the check fits in the smart zone.
+- [ ] She should `/clear` instead, because a clean start is always cheaper.
+- [ ] She should have compacted halfway through the build, before it got heavy.
+- [ ] She should `/handoff` instead, so that nothing from the build is lost.
+Why: The first of Matt's questions says continue: the check fits in the smart zone left at 60k. Continuing costs nothing and keeps the build firsthand. Nothing is travelling, and compacting mid-build loses the thread.
 ```
 
-```final-test sequence-prototype-detour
-Grilling a sign-up flow, you hit a question you can only answer by seeing it: one long form, or three short pages? The prototype will live in its own folder. Which order does Matt's detour follow?
-- [ ] `/prototype` here → `/compact` → back to grilling
-  > Building in the grilling session spends its Smart zone on throwaway code, and the summary flattens the thread.
-- [x] `/handoff` → `/prototype` in a fresh session there → `/handoff` back
-  > Right. The work travels out to the prototype folder and the answer travels back, while your grilling session stays as it was.
-- [ ] `/clear` → `/prototype` → describe the answer from memory
-  > Clearing throws away the grilling you still need when you come back.
-- [ ] `/handoff` → `/prototype` in a fresh session → `/clear` the grilling session
-  > The grilling still needs the answer. Hand it back; don't clear the session you're returning to.
+```final-test handoff-colleague
+Your teammate will finish a half-built feature on her own computer tomorrow. Which move fits?
+- [x] `/handoff`, because the work has to travel to a colleague.
+- [ ] `/compact`, because the summary is saved for her to read.
+- [ ] `/clear`, because she'll start her own session anyway.
+Why: A colleague is one of the four reasons the work has to travel, and `/handoff` writes a file another session can read. A compacted summary stays in your session, and `/clear` keeps nothing for her.
+```
+
+```final-test two-corrections
+You've told the agent twice that the recipe page's photos should sit on the left. Its third try still puts them on the right. What's the best next move?
+- [x] `/clear`, then one better prompt that includes what you've learned.
+- [ ] A third correction, written in capitals so it stands out.
+- [ ] `/btw`, asking it why it keeps getting the photos wrong.
+Why: A third correction adds to a window that already holds two failed attempts. Anthropic suggests a fresh window and one better prompt instead.
+```
+
+```final-test deeper-after-compaction
+After a long session compacts, which of these does Claude Code read again from disk?
+- [x] The project's main `CLAUDE.md`, and auto memory.
+- [ ] Every instruction you typed in the conversation.
+- [ ] Every `/btw` question and answer from the session.
+Why: The project's main `CLAUDE.md` and auto memory are read again from disk. Instructions said only in chat live on only in the summary, and `/btw` exchanges never joined the conversation.
 ```
 
 ```sources
-- [handoff SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/handoff/SKILL.md): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [ask-matt SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md) (the Smart zone, context hygiene in the Main flow) and [PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/PHASE-BOUNDARIES.md) (the five ordered questions): pinned to mattpocock-skills 1.3.1, read 2026-10-23.
-- [tdd SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/SKILL.md) (agree what to test first) and [grilling SKILL.md](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/productivity/grilling/SKILL.md) (facts looked up by a sub-agent): pinned to mattpocock-skills 1.3.1, read 2026-10-24.
-- [The /handoff Skill](https://www.aihero.dev/skills-handoff), AI Hero docs (the four reasons, the fork case, practical habits), updated 2026-08-24, read 2026-10-23.
-- [AI Coding Dictionary: Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone) and [Token](https://www.aihero.dev/ai-coding-dictionary/token), Matt Pocock, updated 2026-09-24 and 2026-07-01, read 2026-10-23.
-- [Most devs don't understand how context windows work](https://www.youtube.com/watch?v=-uW5-TaVXu4), Matt Pocock, 2025-10-22 (the most common mistake 0:17, lost in the middle 3:45–4:52, `/context` and when he'd clear (50k left) 5:10–5:54, the compact demo 5:56–6:57).
-- [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock at AI Engineer, 2026-04-24 (Smart zone and dumb zone, credited to Dex Horthy 3:12–4:17; the *Memento* framing 7:27–7:35; status line 9:38–10:05; dislikes compacting 10:36–10:56; 1M windows 37:24–38:31; review in a fresh window 65:47–66:24).
-- [/handoff is my new favourite skill](https://www.youtube.com/watch?v=dtAJ2dOd3ko), Matt Pocock, 2026-05-21 (dumb zone around 120k 2:02–3:06, forking an out-of-scope task 4:56–7:16, the prototype round trip and 169k session 7:20–9:13, always stating the purpose 11:29–11:40).
-- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (the Smart zone at 140k 10:28–10:58, one ticket per Smart zone 12:25–12:37, clearing between tickets 13:53–14:39).
-- [Explore the context window](https://code.claude.com/docs/en/context-window), [Commands](https://code.claude.com/docs/en/commands), [Interactive mode](https://code.claude.com/docs/en/interactive-mode) (`/btw`), [Settings](https://code.claude.com/docs/en/settings-reference) (auto-compact and idle compaction) and [Create custom subagents](https://code.claude.com/docs/en/sub-agents), Claude Code docs, read 2026-10-23 (Claude Code 2.1.309).
-- [Using Claude Code: session management and 1M context](https://claude.com/blog/using-claude-code-session-management-and-1m-context), Thariq Shihipar, Anthropic blog, 2026-04-15.
-- [Models, usage, and limits in Claude Code](https://support.claude.com/en/articles/14552983), Claude Help Center, read 2026-10-23.
-- [The Two Matt Pocock Skills I Use in Almost Every AI Coding Session](https://medium.com/@anmjawad007/the-two-matt-pocock-skills-i-use-in-almost-every-ai-coding-session-57c468938145), Nowshad Jawad, 2026-05-29.
+- [Explore the context window](https://code.claude.com/docs/en/context-window), Anthropic
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works), Anthropic
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
+- [Commands](https://code.claude.com/docs/en/commands), Anthropic
+- [Interactive mode](https://code.claude.com/docs/en/interactive-mode), Anthropic
+- [How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop), Anthropic
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory), Anthropic
+- [Create custom subagents](https://code.claude.com/docs/en/sub-agents), Anthropic
+- [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), Anthropic Applied AI team, 2025-09-29
+- [Token](https://www.aihero.dev/ai-coding-dictionary/token), AI Coding Dictionary, Matt Pocock
+- [Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone), AI Coding Dictionary, Matt Pocock
+- [ask-matt: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/SKILL.md), Matt Pocock's Skills
+- [ask-matt: PHASE-BOUNDARIES.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/PHASE-BOUNDARIES.md), Matt Pocock's Skills
+- [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock (AI Engineer channel), 2026-04-24
 ```

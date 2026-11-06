@@ -67,9 +67,9 @@ You ask an agent to skip the branch and open a pull request straight away. What 
 Why: A pull request asks GitHub to merge a head branch into a base branch. With no branch, there's nothing for the pull request to ask about.
 ```
 
-Give each change its own branch, and start it fresh. Once a pull request is squash-merged, its branch is finished. The squash put one brand-new commit on `main`, so the branch's own commits never joined `main`'s history. A later pull request from the same branch would carry them all over again. So new work gets a new branch, from the latest `main`.
+Give each change its own branch, and start it fresh. Once a pull request is [squash-merged](/learn/merging-and-cleaning-up), with all its commits combined into one, its branch is finished. The squash put one brand-new commit on `main`, so the branch's own commits never joined `main`'s history. A later pull request from the same branch would carry them all over again. So new work gets a new branch, from the latest `main`.
 
-Not every branch has to become a pull request. A quick experiment can be deleted. Matt Pocock's [prototype](/learn/prototype) Skill keeps its throwaway code on a branch of its own, out of `main`, and `main` keeps only the decision the prototype led to.
+Not every branch has to become a pull request. A quick experiment can be deleted. Matt Pocock's [prototype](/learn/prototype) Skill keeps its throwaway code on a branch of its own, out of `main`. Only the decision the prototype led to reaches `main`.
 
 ```checkpoint quick-3
 Your pull request from `7-cooking-time` was squash-merged yesterday. Now you want cooking times on the print view too. Where do you start?
@@ -135,7 +135,7 @@ git commit -m "Show cooking time on recipe cards"
 git push -u origin 7-cooking-time
 ```
 
-`git status` lists what changed, and `git diff` shows the lines. Name the files in `git add`, so nothing extra slips into the commit. Until you push, the branch exists only on your computer. `-u` links your branch to its copy on GitHub, so later you can type a plain `git push` or `git pull`.
+`git status` lists what changed, and `git diff` shows the lines. Name the files in `git add`, so nothing extra slips into the commit. Only what you stage goes into the commit, and only commits get pushed, so an edit you didn't stage reaches neither GitHub nor the checks. Until you push, the branch exists only on your computer. `-u` links your branch to its copy on GitHub, so later you can type a plain `git push` or `git pull`.
 
 ```checkpoint quick-6
 What does `-u` in `git push -u origin 7-cooking-time` do?
@@ -175,7 +175,7 @@ gh pr checks --watch
 
 On github.com, they show in the merge box at the bottom of the pull request. A red check sends you back a step: fix, commit, push, and the checks run again.
 
-Then review it. Green proves only what the checks test, so run your [Merge check](/learn/checking-a-pr): read the description, the **Files changed** tab and the checks, and try the change if you can. On a shared repo, ask a teammate too. Use **Reviewers** in the pull request's sidebar, or run `gh pr edit 8 --add-reviewer <username>`.
+Then review it. Green proves only what the checks test, so run your [Merge check](/learn/checking-a-pr). Read the description, the **Files changed** tab and the checks, and try the change if you can. On a shared repo, ask a teammate too. Use **Reviewers** in the pull request's sidebar, or run `gh pr edit 8 --add-reviewer <username>`.
 
 ```checkpoint quick-8
 Every check on pull request #8 is green. What's left before you merge?
@@ -251,6 +251,54 @@ Why not save the "wait before each step" line in `CLAUDE.md`?
 - [ ] The line works only when you paste it, because files can't hold instructions.
 Why: Claude Code reads `CLAUDE.md` at the start of every session. A session you aren't watching would then wait for an answer nobody gives.
 ```
+
+## Try it
+
+````try
+You need git and `gh`, logged in with `gh auth login`. You'll make a public practice repo, take one change round the loop, then delete the repo.
+
+1. Make the practice repo and go into it:
+
+```sh
+gh repo create loop-practice --public --add-readme --clone
+cd loop-practice
+```
+
+2. Write the change down as an Issue. `gh` prints its address, ending in `/issues/1`:
+
+```sh
+gh issue create --title "Add a first recipe" --body "Add pancakes.md with one line."
+```
+
+3. Make a branch, commit the change, and push it:
+
+```sh
+git switch -c 1-first-recipe
+echo "Serves 4. Ready in 20 minutes." > pancakes.md
+git add pancakes.md
+git commit -m "Add a first recipe"
+git push -u origin 1-first-recipe
+```
+
+4. Open the pull request. `gh` prints its address, ending in `/pull/2`:
+
+```sh
+gh pr create --title "Add a first recipe" --body "Closes #1"
+```
+
+5. Read it, as your Merge check: `gh pr view 2`. You should see `Closes #1` and one changed file. This repo has no CI, so there are no checks to wait for.
+6. Merge it, and check the Issue closed:
+
+```sh
+gh pr merge 2 --squash --delete-branch
+gh issue view 1 --json state
+```
+
+7. You should see `"state": "CLOSED"`. Then run `git switch main` and `git pull`, and `cat pancakes.md` shows the recipe line.
+8. Delete the practice repo: on github.com, open its **Settings**, scroll to the bottom, and click **Delete this repository**.
+
+To practise with an agent, ask it for steps 2 to 4, one at a time. Check each with the look-only commands in the table above.
+````
 
 ## Going deeper
 

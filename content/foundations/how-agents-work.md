@@ -30,7 +30,7 @@ The model acts through **tool calls**. A tool call is a short, structured reques
 
 Claude Code checks the call against your permission settings, and runs it if allowed. The output goes back to the model as a **tool result**. The model reads it, then writes the next call.
 
-That cycle is the **agent loop**: the model asks for a tool, Claude Code runs it, the result goes back, and the model picks the next step. It repeats until the model answers in words, with no tool call. Your message, and everything the agent does before it answers, is one **turn**.
+That cycle is the **agent loop**. The model asks for a tool, Claude Code runs it, the result goes back, and the model picks the next step. It repeats until the model answers in words, with no tool call. Your message, and everything the agent does before it answers, is one **turn**.
 
 ```diagram
 type: cycle
@@ -97,12 +97,12 @@ In Manual, reads and searches inside your project never ask, because they can't 
 ```checkpoint quick-5
 You're in Manual mode. Which of these runs without stopping for your approval?
 - [x] Searching every file in the project for the word `recipe`.
-- [ ] Editing one line of a file the agent has just read.
+- [ ] Editing one line of a file the agent read a moment ago.
 - [ ] Deleting a temporary file with the `rm` command.
 Why: In Manual, reads and searches inside your project never ask. Edits ask, and so do commands that aren't read-only.
 ```
 
-When a mode asks, you get a **permission prompt**. It offers Yes, a "don't ask again" Yes for that kind of command, and No. A plain No stops the turn. To steer instead, move to No, press Tab, type what to do differently, and press Enter. The agent reads your note and carries on.
+When a mode asks, you get a **permission prompt**. It offers Yes, a "don't ask again" Yes, and No. A plain No stops the turn. To steer instead, move to No, press Tab, type what to do differently, and press Enter. The agent reads your note and carries on.
 
 Picking a mode is a trade. Anthropic warns that in Manual, "after the tenth prompt you start approving without reading". Too loose, and the agent does things you'd have wanted to see first.
 
@@ -134,7 +134,7 @@ Why: Changing a plan costs a sentence, and changing code costs a rebuild. Approv
 
 ## Standing instructions
 
-A **session** is one conversation with Claude Code, from starting `claude` until you quit or clear it. Each new session starts blank, with none of the last one's conversation in it. So Claude Code reads a few files at the start of every session. The main one is `CLAUDE.md`: a Markdown file (plain text with light formatting) of standing instructions that you write, such as the command that runs your tests. Keep it short, with a line for each thing the agent can't learn from your code or that you've had to correct twice. [Instruction files](/learn/instruction-files) covers where these files go and what belongs in them.
+A **session** is one conversation with Claude Code, from starting `claude` until you quit or clear it. Each new session starts blank, with none of the last one's conversation in it. So Claude Code reads a few files at the start of every session. The main one is `CLAUDE.md`, a Markdown file (plain text with light formatting) that you write. It holds standing instructions, such as the command that runs your tests. Keep it short, with a line for each thing the agent can't learn from your code or that you've had to correct twice. [Instruction files](/learn/instruction-files) covers where these files go and what belongs in them.
 
 ```checkpoint quick-7
 Yesterday you told the agent to run the tests before every commit. In today's new session, it doesn't. Why, and what's the fix?
@@ -146,7 +146,7 @@ Why: A new session has none of yesterday's conversation. Claude Code reads `CLAU
 
 ## Stepping back with rewind
 
-Before each message you send that starts a turn, Claude Code saves a **checkpoint**: the state of your files, so the agent's edits can be undone. To step back, press **Esc twice** with the prompt box empty, or type `/rewind`. Pick the message to go back to, then choose what to restore:
+Before each message that starts a turn, Claude Code saves a **checkpoint**: the state of your files, so the agent's edits can be undone. To step back, press **Esc twice** with the prompt box empty, or type `/rewind`. Pick the message to go back to, then choose what to restore:
 
 - **Restore code and conversation**: both go back to that point.
 - **Restore conversation**: the chat goes back, and your files stay as they are.
@@ -239,9 +239,9 @@ Why: After three blocks in a row, or twenty in total, auto mode pauses and asks 
 
 Matt Pocock is a developer and teacher who publishes a popular set of Skills for coding agents. In January 2026, he used plan mode for almost everything, even small bug fixes.
 
-Within months, he'd stopped. He found that Claude Code "tends to spit out a plan really early when in plan mode, creating a document before we've truly understood each other."
+Within months, he'd stopped. He found that Claude Code plans too early in plan mode, "creating a document before we've truly understood each other."
 
-Now he has the agent interview him first, and he records the decisions as they go. In his July 2026 walkthrough of his whole workflow, he does that interview in auto mode, with plan mode off.
+Now he has the agent interview him first, with a Skill that records the decisions as it goes. In his July 2026 walkthrough of his whole workflow, he does that interview in auto mode, with plan mode off.
 
 So plan mode fits a change you've already decided. When what to build is still open, have the agent interview you first, as [grill before you build](/learn/grill-before-you-build) shows.
 
@@ -308,7 +308,7 @@ Plan how to add an omelette recipe to recipes.txt. Ask me anything you're unsure
 ```
 
 5. Answer its questions, and read the plan. At the menu, choose **Yes, manually approve edits**.
-6. When it asks to edit `recipes.txt`, read the change, and choose Yes. If it asks to run a command, move to No, press Tab, type `skip that, just edit the file`, and press Enter.
+6. When it asks to edit `recipes.txt`, read the change, and choose Yes. If it asks to run a command, move to No, press Tab, type `skip that and edit the file`, and press Enter.
 7. With the prompt box empty, press Esc twice. Pick your message from step 4, then choose **Restore code**.
 8. Type `!cat recipes.txt` and press Enter. The `!` runs a command yourself, and the agent then comments on its output. You should see only the pancakes line.
 9. Type `/exit` to quit.
@@ -389,7 +389,7 @@ Why: Accept edits lets file edits and common file commands through, and other co
 For the third session running, you've told the agent "this project uses pnpm, not npm" (two tools that install a project's packages). What do you do about it?
 - [x] Add one short line about it to the project's `CLAUDE.md`.
 - [ ] Keep telling it at the start of each session in this project.
-- [ ] Ask it to remember, so the next session picks up this conversation.
+- [ ] Paste today's whole conversation into each new session's first message.
 Why: Each session starts blank, and Claude Code reads `CLAUDE.md` at the start of every one. A correction you've had to make twice is a line for that file.
 ```
 
@@ -406,12 +406,12 @@ Why: Restore code and conversation puts both the files and the chat back to befo
 Jo found the permission prompts annoying, so she now starts Claude Code with `--dangerously-skip-permissions`, on the laptop she uses for everything. Spot the mistake.
 - [x] Bypass is for isolated containers, not the laptop with all her files.
 - [ ] Bypass still asks before commands, so it only cuts the edit prompts.
-- [ ] Auto mode is just as risky, so the mode she picked doesn't matter.
+- [ ] Auto mode is as risky as Bypass, so her choice of mode doesn't matter.
 Why: That option turns on Bypass permissions, which runs everything without asking. Auto mode would cut her prompts and keep the classifier's check on risky actions.
 ```
 
 ```final-test spot-rm-rewind
-Sam asked the agent to tidy up. It edited the README with its file tools, then ran `rm -r drafts`, deleting a folder it had never edited. Sam pressed Esc twice, picked that request and chose Restore code, expecting the folder back. Spot the mistake.
+Sam asked the agent to tidy up. It edited a notes file with its file tools, then ran `rm -r drafts`, deleting a folder it had never edited. Sam pressed Esc twice, picked that request and chose Restore code, expecting the folder back. Spot the mistake.
 - [x] Rewind can't restore files that only a command changed.
 - [ ] He should have chosen Restore code and conversation instead.
 - [ ] He should have typed `/rewind`, as Esc twice only rewinds the chat.

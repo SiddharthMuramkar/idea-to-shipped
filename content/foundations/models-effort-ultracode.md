@@ -37,11 +37,11 @@ You pick a model by its **alias**, a short name that points at the current versi
 
 | Alias | What it's for |
 |---|---|
-| `opus` | Complex reasoning. It's the default, and it handles most coding well |
+| `opus` | Complex reasoning. It's the default on most plans, and it handles most coding well |
 | `sonnet` | Daily coding, for less than Opus costs on routine work |
 | `haiku` | Simple, quick tasks, and helper agents doing simple jobs |
 | `fable` | Your hardest, longest work: root-cause hunts, outages, architecture. Never the default: you pick it |
-| `opusplan` | Opus while you plan, then Sonnet to carry out the plan |
+| `opusplan` | Opus while Claude plans in [plan mode](/learn/how-agents-work), then Sonnet to carry out the plan |
 | `default` | Clears your choice and goes back to your account's default |
 
 Type `/model` to open a picker. **`/model` saves your choice as the default for new sessions.** Pressing Enter on a row, or typing a name such as `/model sonnet`, switches and saves.
@@ -68,9 +68,9 @@ Why: The interview leans on what the model learned in training, so it needs a bi
 
 ## How hard it works: effort
 
-**Effort** is more than thinking time. It sets how much work Claude does before it comes back to you: how long it thinks, how many files it reads, and how much it checks.
+**Effort** is more than thinking time. It sets how much work Claude does before it replies: how long it thinks, how many files it reads, and how much it checks.
 
-At a higher level, Claude tests more **edge cases** (unusual inputs that tend to break code), verifies more of its work, and makes more choices on its own. At a lower level, it gets you a starting point sooner, and would rather ask you than dig.
+At a higher level, Claude tests more **edge cases**, the unusual inputs that tend to break code. It also verifies more of its work and makes more choices on its own. At a lower level, it gets you a starting point sooner, and would rather ask you than dig.
 
 | Level | Use it for |
 |---|---|
@@ -80,7 +80,7 @@ At a higher level, Claude tests more **edge cases** (unusual inputs that tend to
 | `xhigh` | Deeper reasoning, at a higher token spend |
 | `max` | Hard problems Claude works through without you, like hunting for a security hole. Prone to overthinking |
 
-Type `/effort` to open a slider. Pressing Enter, or typing a level such as `/effort high`, sets it and saves it as your default. Press `s` in the slider to set it for this session only. `max` always lasts for the current session only, and `/effort auto` clears your saved level.
+Type `/effort` to open a slider. Pressing Enter, or typing a level such as `/effort high`, sets it and saves it as your default. Press `s` in the slider to set it for this session only. `max` lasts for the current session only, and `/effort auto` clears your saved level.
 
 For one tricky question, put the word `ultrathink` anywhere in your prompt. Claude reasons harder on that turn only, and your effort setting doesn't change. Phrases like "think hard" are ordinary words, not settings.
 
@@ -114,7 +114,7 @@ steps:
     note: "Yes: pick a bigger model."
 ```
 
-So you can blame the model only once you know the task was clear and the work was done. Matt makes the same point from the task's side in [implement](/learn/implement): if one Ticket keeps running past a fresh session, split it rather than raise effort.
+So you can blame the model only once you know the task was clear and the work was done. Matt makes the same point in [implement](/learn/implement): if one Ticket keeps running past a fresh session, split it rather than raise effort.
 
 ```checkpoint quick-5
 You're on Sonnet. You described a time-zone bug clearly, and Claude read the right files, ran the tests and checked its work. Its fix takes the wrong approach twice. What do you change?
@@ -128,7 +128,7 @@ Why: It had what it needed and clearly did the work, so effort and the task aren
 
 Normally Claude works through a task turn by turn, and every result lands in its [context window](/learn/context-window), its working memory. A **dynamic workflow** works differently. Claude writes a short script, and the script runs many **subagents**: helper agents, each with its own fresh context window.
 
-The script holds the plan and the results along the way, so only the final answer comes back to your conversation. That suits jobs one conversation can't hold, like a bug sweep across a whole codebase, or a 500-file migration (moving every file onto a new library).
+The script holds the plan and the results along the way, so only the final answer comes back to your conversation. That suits jobs one conversation can't hold, like a bug sweep across a whole codebase. Another is a 500-file migration: moving every file onto a new library.
 
 **Ultracode** is how you hand big jobs to workflows. It's a setting, not an effort level: it runs at whatever effort you've set. You use it in one of two ways:
 
@@ -141,7 +141,7 @@ For example:
 ultracode: check every page in web/ for links to pages that don't exist. Don't change anything.
 ```
 
-Claude writes a script, shows you its planned phases, and asks before it runs. It runs in the background, so you can keep working. Type `/workflows` to watch each phase, its agents and their token use.
+Claude writes a script, shows you its planned phases, and asks before it runs. In auto mode, the [permission mode](/learn/how-agents-work) new sessions start in, it asks only before your first workflow. The run happens in the background, so you can keep working. Type `/workflows` to watch each phase, its agents and their token use.
 
 With ultracode on, one request can become several workflows in a row: one to understand the code, one to change it, and one to check it. So each request uses more tokens and takes longer, and you reach your plan's limits sooner. Turn it on for the big job, then off.
 
@@ -157,7 +157,7 @@ Why: Ultracode is a setting, not an effort level. It runs at whatever effort you
 
 **Fast mode** runs the same Opus model up to 2.5 times faster, at a higher price per token. It isn't a different model, so the quality is the same. Type `/fast` to turn it on or off.
 
-It works on Opus models only, not Sonnet or Haiku. Turning it on from another model switches you to Opus, and a ↯ icon shows while it's on. On a subscription plan, you pay for it from **usage credits**, paid use on top of your plan, and it stays on for later sessions until you turn it off.
+It works on Opus models only, not Sonnet or Haiku. Turning it on from another model switches you to Opus, and a ↯ icon shows while it's on. On a subscription plan, you pay for it from **usage credits**, paid use on top of your plan. It stays on for later sessions until you turn it off.
 
 **The first time you turn it on in a conversation, you pay the full fast-mode price for everything already in that conversation.** So turn it on at the start, for work where you wait on every reply, like live debugging. Leave it off for long runs you won't watch.
 
@@ -191,7 +191,7 @@ Why: `max` tends to overthink ordinary tasks. You pay more for an answer that ma
 
 **The model is fixed; your prompt steers it.** A model's knowledge lives in its **weights**: billions of numbers set during training, and read-only after that. Your prompt and your files steer what it predicts, but they don't teach it anything that lasts. So switching models is the only way to get more knowledge.
 
-**Effort travels with your request.** The level is sent along with your message, and the model was trained to behave differently at each level. It decides step by step whether, and how much, to think. At a higher level it often makes a plan first, then drops the steps it no longer needs, like testing other theories once one has found the bug.
+**Effort travels with your request.** The level is sent along with your message, and the model was trained to behave differently at each level. It decides step by step whether, and how much, to think. At a higher level it often makes a plan first. Then it drops the steps it no longer needs, like testing other theories once one has found the bug.
 
 **An analogy.** Lydia Hallie, on the Claude Code team, compares the models to people: Fable is a specialist, Opus an expert, and Sonnet a really good generalist. Opus at low effort is like five minutes with an expert. Sonnet at high effort is like giving a generalist the whole afternoon. The model is roughly how capable; effort is roughly how thorough.
 
@@ -220,11 +220,11 @@ rows:
 
 ### A real example
 
-Thariq Shihipar, writing on Anthropic's claude.dev blog in September 2026, ran the same builds at each effort level. One build took 1.5 minutes on low, 4 on medium, 11 on high and 67 on max.
+Thariq Shihipar, writing on the claude.dev blog in September 2026, ran the same builds at each effort level. One build took 1.5 minutes on low, 4 on medium, 11 on high and 67 on max.
 
 Across his tests, more effort cut the failures that came from missed edge cases. It didn't fix the failures where the model took the wrong approach. That's the three questions at work: effort fixes skipped work, and a wrong approach after real work points to the model.
 
-The defaults are also what the experts use. In his July 2026 walkthrough, Matt ran his whole flow on Opus 4.8 at medium effort, and told viewers "you really don't have to use the same setup as me."
+Matt runs below the defaults, not above them. In his July 2026 walkthrough, he ran his whole flow on Opus 4.8 at medium effort, one level under that model's default of high. He also told viewers "you really don't have to use the same setup as me."
 
 ```checkpoint quick-10
 In Thariq's tests, what did more effort fix?
@@ -414,4 +414,5 @@ Why: Fast mode runs the same Opus model faster, so the quality is the same and y
 - [The /implement Skill](https://www.aihero.dev/skills-implement), Matt Pocock
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16
 - [Your effort level is TOO DAMN HIGH](https://www.youtube.com/watch?v=iQb3F9UzBR4), Matt Pocock, 2026-07-15
+- [Your effort level is STILL TOO HIGH](https://www.youtube.com/watch?v=JgEsphDAXnY), Matt Pocock, 2026-10-13
 ```

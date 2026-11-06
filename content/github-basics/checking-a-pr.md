@@ -1,409 +1,479 @@
 ---
 title: Checking a pull request before you merge
 slug: checking-a-pr
-summary: Green proves only what the checks test, so run your Merge check before you say merge.
+summary: Green checks prove only what they test. Read the description, the diff, the checks and the preview, and weigh the risk, before you merge.
 ---
+
+Say your coding agent has opened PR #14 to fix the search bug in your recipe site. Every check is green, and the agent asks: "Shall I merge?" You may not read code well yet, and the agent sounds sure. Green feels like a yes, but it only answers part of the question.
+
+```goals
+- Say what a green check proves, and what it can't.
+- Read a pull request in order: the description, the diff, the checks, then the preview.
+- Spot the files in a diff that need a slow read: database changes, workflow files, lockfiles and secrets.
+- Try the change on a preview deployment, or have it run for you.
+- Weigh the risk: can the change be undone cheaply, and what could it break?
+- Get a fresh review, then decide: merge, send it back, or wait.
+```
 
 ## What green proves
 
-Say your pull request's checks are green (passed), and Claude asks whether to merge. You don't read app code, so what do you look at?
+A **check** is the pass-or-fail result of one automated job, such as running the tests or building the site. [CI](/learn/what-ci-cd-is) runs them on every push, and a [pull request](/learn/pull-requests) shows each one with a tick or a cross.
 
-**Green proves only what the checks test, so run your Merge check before you say merge.**
+**Green proves only what the checks test, so look at the rest yourself before you merge.**
+
+For example, say the `recipes` tests check that searching "soup" finds Tomato soup. A PR could pass them all and still break the home page, if no test ever opens it. Checks run only what someone wrote them to run.
+
+Addy Osmani has described how the team behind Claude Code reviews code. They call "did someone read the code?" an imprecise measure. They ask instead: "what could go wrong with this change, and what check - automated or human - is the right one to catch it?" Each layer of checking catches some problems and misses others.
+
+So the automated checks are one layer, and the other looks are yours. Together they make your **Merge check**: the short routine you run before you say merge. Read a PR in this order:
+
+```diagram
+type: chain
+caption: "Read a pull request in this order, then decide."
+steps:
+  - "The description: the claim"
+  - "Files changed: the evidence"
+  - "The checks: what verified it"
+  - "The preview: try it yourself"
+  - "The risk: can it be undone?"
+  - "Decide: merge, send back or wait"
+```
 
 ```checkpoint quick-1
-What does a green check prove?
-- [x] Only what the checks test.
-- [ ] That the change works on the live site.
-- [ ] That nobody needs to look at the change.
-Why: Green proves only what the checks test, so you run your Merge check before you say merge.
+Every check on PR #14 is green. What has that proved?
+- [x] That the checks that ran passed, and nothing beyond what they test.
+- [ ] That the change works everywhere on the live site.
+- [ ] That nobody needs to look at the change before it merges.
+Why: Green proves only what the checks test. A page no test opens can still be broken, so the rest of your Merge check still matters.
 ```
 
-Pull request #78 on this site's repo merged itself, with `All checks were successful`. Then every page of the live site said "The Course has problems".
+## The description: the claim
+
+The description is the author's claim: what changed, why, and how they know it works. When an agent wrote the PR, the description is the agent's account of its own work. So read it first, then test it against everything else.
+
+Look for three things:
+
+- The Issue: `Closes #12`, and a change that matches #12's "Done when" line.
+- Evidence from a real run: test output, or a screenshot before and after. Claude Code's guide is blunt: "'All tests pass' on its own tells you very little."
+- The risk: what could break, and whether it's easy to undo. That comes up again below.
 
 ```checkpoint quick-2
-Every check on a pull request passed. Does that keep the live site safe after the merge?
-- [x] No. Every page of the live site still broke after one such merge.
-- [ ] Yes. A pull request whose checks all passed can't break the live site.
-- [ ] Yes. GitHub undoes the merge by itself if the live site breaks.
-Why: #78 merged itself, with `All checks were successful`. Then every page of the live site said "The Course has problems".
+PR #14's description says "Fixed search. Tests pass." and nothing else. What do you ask the agent for first?
+- [x] The Issue it closes, and the test output as evidence.
+- [ ] A longer paragraph explaining how search works inside.
+- [ ] A second PR that holds only the tests.
+Why: A description should name the Issue and show evidence from a real run. "Tests pass" with nothing shown is only a claim.
 ```
 
-## The Merge check
+## Files changed: the evidence
 
-- CI: whether your build and tests passed.
-- The **preview**: a test copy of the site, at its own web address.
-- A fresh agent's review: the agent that wrote the change would be marking its own work. A new session hasn't seen its reasoning.
-- The **Merge Danger** line: how risky merging is.
-- Any SQL migration: often hard to undo, and you can read SQL.
+The **Files changed** tab, or `gh pr diff`, shows exactly what `main` would gain. Start with the list of files:
+
+```sh
+gh pr diff 14 --name-only
+```
+
+```text
+src/search.js
+src/search.test.js
+```
+
+For each file, ask: did the Issue need this? A search fix that also edits the About page, or deletes tests, needs a reason. Ask for it, or ask for that part to go in a PR of its own.
+
+Some files need a slow read, whatever the Issue says. Two are about what the change does:
+
+- A **migration**: a file that changes how a database stores data, such as removing a column. Many can't be undone without losing data.
+- A **workflow file**, in `.github/workflows/`: it defines the checks themselves. A PR that edits its own checks can make itself pass.
+
+Two more are about what the change brings in:
+
+- A **lockfile**, such as `package-lock.json`: it pins the exact versions of the packages your project uses. A big change there means new or upgraded packages.
+- A **secret**: a password or key, often in a file like `.env`. Once it's pushed, it's on GitHub, so replace the key first ([Undo and merge conflicts](/learn/undo-and-conflicts) explains why).
+
+Size matters too. Hundreds of lines across dozens of files, for one small Issue, is too much to check. Ask for a split.
 
 ```checkpoint quick-3
-Why does the review come from a new session?
-- [x] The agent that wrote the change would be marking its own work.
-- [ ] A new session is the only kind that can run `gh pr checks`.
-- [ ] A new session merges the pull request as soon as it has looked.
-Why: The agent that wrote the change would be marking its own work. A new session hasn't seen its reasoning.
+Every check on PR #14 is green, but Files changed also edits `.github/workflows/ci.yml`, which the Issue never mentioned. What do you do?
+- [x] Ask why, or ask for that change in a PR of its own.
+- [ ] Merge it, because the green checks cover the workflow file too.
+- [ ] Merge it, because workflow files never affect the site.
+Why: A workflow file defines the checks themselves. Green checks don't vouch for a change to the checks, least of all one nobody asked for.
 ```
 
-**You ran the agent, so you answer for its work.**
+## The checks: what verified it
+
+Open the **Checks** tab, or run `gh pr checks 14`. Its first line sums things up, such as `All checks were successful` or `Some checks were not successful`. Here's what each state means:
+
+| You see | It means | What happens next |
+|---|---|---|
+| A yellow dot | Still running, or waiting its turn | Wait. `gh pr checks 14 --watch` waits with you. |
+| A red cross | The check failed | The author fixes it on the same branch and pushes. The checks run again. |
+| A green tick on every check | Everything that ran passed | Go on with the rest of your Merge check. |
+| `no checks reported` | Nothing ran at all | Nothing is proved. Ask why CI didn't run. |
+| "Waiting for status to be reported" | A check the repo requires never started | Look at the workflow, not the code. Often a job was renamed. |
+
+Two traps catch beginners. First, a failed check doesn't always stop a merge. A repo can mark some checks **required**: they must pass before the merge button works. A failed check that isn't required leaves the button working, so stopping is your job. `gh pr checks 14 --required` lists only the required ones, and [Gates: checks that block](/learn/gates) shows how to set them up.
+
+Second, read each check's name, not only its colour. A row from your host, such as Vercel, can say a deploy finished; that's not your tests. And GitHub reports a skipped job as a success.
 
 ```checkpoint quick-4
-Claude wrote the change, and you ran Claude. Who answers for it?
-- [x] You do, because you ran the agent.
-- [ ] Claude does, because Claude wrote it.
-- [ ] Nobody does, once the checks have passed.
-Why: You ran the agent, so you answer for its work, whoever typed the change.
+PR #14 shows a red cross on one check that isn't required. The merge button still works. What do you do?
+- [x] Stop and find out why it failed, because a working button doesn't make it safe.
+- [ ] Merge it, because a check that isn't required doesn't matter.
+- [ ] Wait, because a failed check turns green by itself after a while.
+Why: Only required checks block the merge button. A failure in any check still means something went wrong, so stopping at it is your call.
 ```
 
-## The Merge Danger line
+## The preview: try it yourself
 
-A **two-way door** is a change you can walk back cheaply. A **one-way door** can't be walked back, like dropping a column.
+A **preview deployment** is a temporary copy of your site, built from the PR's branch, at its own web address. Hosts such as Vercel and Netlify make one for each PR. The link usually appears in a comment on the PR, or among its checks.
+
+Open it and do what the Issue's "Done when" line says. Type "Soup", then "SOUP", and look for Tomato soup each time. Then try one nearby thing that shouldn't have changed, such as opening a recipe.
+
+No preview? Run the site on your computer from the PR's branch: `gh pr checkout 14` switches you to it. Or ask your agent to run it and show you a screenshot. In Claude Code, `/verify` has the agent build and run the app and look at the result.
+
+Be careful with buttons that save or delete. A preview runs the PR's code, but each environment can have its own settings, including which database it connects to. Before you try anything that writes, ask which database the preview uses.
 
 ```checkpoint quick-5
-What makes a change a one-way door?
-- [x] It can't be walked back, like dropping a column.
-- [ ] You can walk it back cheaply, like dropping a column.
-- [ ] It only ever touches one file, like dropping a column.
-Why: A two-way door is a change you can walk back cheaply. A one-way door can't be walked back, like dropping a column.
+PR #14's preview adds a "Delete recipe" button. Before you press it to test it, what do you find out?
+- [x] Which database the preview uses, so you don't delete real recipes.
+- [ ] Which branch the preview was built from, so it matches the PR.
+- [ ] Which check the preview passed, so the button is safe to press.
+Why: Each environment can have its own settings, including its database. A preview pointed at the real database deletes real recipes.
 ```
 
-The **blast radius** is what the change could break.
+## The risk: can it be undone?
 
-The agent grades its own change, so be most suspicious of two-way with a small blast radius.
+Ask two questions of every PR. Can the change be undone cheaply? And what could it break?
+
+A **two-way door** is a change you can walk back cheaply: new search code, say, which a revert takes out again. A **one-way door** can't be walked back, such as deleting a column of saved recipes, or sending emails. As one user put it, "rolling back a commit won't unsend a batch of emails".
+
+The **blast radius** is what the change could break if it's wrong: one page, every page, or other people's data.
+
+Matt Pocock's [pr](/learn/pr) Skill writes both into a PR's description, under a heading called Merge Danger:
+
+```text
+Door: two-way
+Blast Radius: search
+```
+
+Read a two-way door with a small blast radius quickly, and a one-way door slowly. But remember who wrote the line: the agent, grading its own change. Matt's advice is to be most suspicious when it says "two-way, small blast radius". Check that call against the diff. A migration or a workflow change rarely deserves it.
 
 ```checkpoint quick-6
-When should a Merge Danger line make you most suspicious?
-- [x] When it says two-way with a small blast radius.
-- [ ] When it says one-way with a large blast radius.
-- [ ] When it says one-way with a small blast radius.
-Why: The agent grades its own change, so be most suspicious of two-way with a small blast radius.
+The description says `Door: two-way`, but Files changed holds a migration that removes a column. What do you make of it?
+- [x] Don't trust the line. Removing a column is a one-way door, so slow down.
+- [ ] Trust the line, because the agent that wrote the change knows it best.
+- [ ] Ignore the migration, because green checks make any change two-way.
+Why: Deleted data can't be walked back. The agent graded its own change, so check its door call against the diff.
 ```
 
-## Do it now
+## A fresh review
 
-In your project's folder, use your [pull request](/learn/pull-requests)'s number. Stuck? See [Where it goes wrong](/learn/checking-a-pr).
+If the agent that wrote the change reviewed it, it would be marking its own work. A new session hasn't seen the reasoning behind the code, so it isn't swayed by it.
 
-You look:
+In Claude Code, `/code-review` reviews the diff in a fresh subagent that never saw your conversation. Pass a PR number, as in `/code-review 14`, to review that PR. Or start a new session and say:
 
-```
-gh pr checks <number>
-```
+> Review pull request #14 against Issue #12. Report real bugs, skip style, and change nothing.
 
-You should see `All checks were successful`, and a row for your build or tests. No such row? CI hasn't run, so nothing's proved. One failed? Stop and read [When it goes wrong](/learn/undo-and-conflicts).
+Keep "skip style". Claude Code's guide warns that a reviewer asked to find problems "will always find something". Fix every finding, and you add code you don't need, so pick the findings that matter.
 
-You look:
-
-```
-gh pr view <number> --comments
-```
-
-You should see `Door:`, `Blast Radius:` and a `Preview` link. No `Door:` line? Ask Claude to update the body with `/pr`.
-
-No link? Your project may not deploy (put online) by itself:
-
-You say:
-
-> Deploy a preview of this branch.
-
-Open the web address Claude gives. None? Type `/verify` there, so Claude runs and checks the app.
-
-On the preview, or in `/verify`'s result, check your [line for done](/learn/issues-and-keeping-track). Will that save data? Ask Claude which database first.
-
-You look:
-
-```
-gh pr diff <number> --name-only
-```
-
-You should see the changed files' names. A migration among them? Read it with `cat`.
-
-Start a new, read-only session in your second terminal: no worktree or line for Claude.
-
-You say:
-
-> Review pull request `<number>` against its Issue and Merge Danger line. Report real bugs, skip style, change nothing.
-
-You should see bugs listed, or none.
-
-Your line for done holds, and nothing worries you? In your first session:
-
-You say:
-
-> My Merge check passed. Don't merge yet or turn on auto-merge.
-
-Otherwise, tell it to push a fix to this branch, not merge. Then run your Merge check again.
+A review informs your decision; it doesn't make it. On the Claude Code team, "Agent approvals don't count as human approvals", and whoever runs an agent is a required reviewer of its PRs. **You ran the agent, so you answer for its work.**
 
 ```checkpoint quick-7
-Your Merge check hasn't passed. What happens next?
-- [x] Claude pushes a fix to this branch, and you run your Merge check again.
-- [ ] Claude merges this pull request, and you fix what you saw straight after.
-- [ ] Claude opens a new pull request, and you leave this one open as it is.
-Why: You tell Claude to push a fix to this branch, not merge. Then you run your Merge check again.
+The session that built PR #14 offers to review it too. What do you do?
+- [x] Use a fresh session or `/code-review`, which hasn't seen the reasoning behind the change.
+- [ ] Accept, because the session that built the change knows it best.
+- [ ] Skip the review, because green checks have already reviewed the code.
+Why: The building session would be marking its own work. A fresh reviewer isn't swayed by the reasoning that produced the code.
 ```
 
-Then stop.
+## Decide: merge, send it back, or wait
+
+Every Merge check ends in one of three moves:
+
+- Wait, while a check is still running.
+- Send it back when something's wrong: a failed check, a file nobody asked for, a conflict, a preview that fails "Done when", or a risk you don't understand. Tell the agent what you found, and to push a fix to the same branch. Then run your Merge check again on the new commits.
+- Merge when the checks you rely on passed, the diff matches the description and the Issue, the preview works, and you understand the risk. [Merging and cleaning up](/learn/merging-and-cleaning-up) takes it from there.
+
+Watch for auto-merge while you check. If `gh pr view` shows a line starting `Auto-merge: enabled`, the PR will merge as soon as the repo's required checks pass. That may be before you've finished. Turn it off with `gh pr merge 14 --disable-auto`, or with **Disable auto-merge** in the merge box.
+
+```checkpoint quick-8
+Every check is green and there are no conflicts, but on the preview "SOUP" still finds nothing. What's your move?
+- [x] Send it back: tell the agent what you saw, and to push a fix to the same branch.
+- [ ] Merge it, because green checks outrank what you saw on the preview.
+- [ ] Wait, because a preview catches up with the checks after a while.
+Why: The preview fails the Issue's "Done when" line, so the change isn't finished. A fix pushed to the same branch updates the PR, and you check again.
+```
+
+## Your Merge check with an agent
+
+When an agent hands you a PR, here's the routine as commands. They only read, so they're safe to run at any time:
+
+```sh
+gh pr view 14               # the claim: description, Closes line, any Auto-merge line
+gh pr diff 14 --name-only   # the evidence: which files changed
+gh pr diff 14               # the lines themselves: + added, - removed
+gh pr checks 14             # what verified it
+```
+
+Then ask for what's missing:
+
+> Show me the test output for PR #14, and give me the preview link.
+
+When your check finds a problem, say what you saw and what not to do:
+
+> On the preview, "SOUP" still finds nothing. Push a fix to this same branch. Don't merge, and don't turn on auto-merge.
+
+When it reports back, run the routine again. The agent's message is a claim; the PR is the evidence.
+
+```checkpoint quick-9
+Your agent says: "Fixed. I pushed a new commit to PR #14." What do you do next?
+- [x] Run your Merge check again on the updated PR.
+- [ ] Merge it, since the agent has fixed what you found.
+- [ ] Close #14, since a new commit needs a new PR.
+Why: The agent's message is a claim, and the new commit may have changed more than you asked. The PR shows what happened, so check it again.
+```
+
+## Try it
+
+````try
+You need the draft PR from the Try it in [Opening a pull request](/learn/pull-requests), and to be on its branch in your practice repo.
+
+1. Read the claim:
+
+   ```sh
+   gh pr view
+   ```
+
+   You should see `Draft`, `Closes #` with your bug's number, and no line starting `Auto-merge:`.
+
+2. List the evidence:
+
+   ```sh
+   gh pr diff --name-only
+   ```
+
+   You should see `README.md`, and nothing else.
+
+3. Read the change itself:
+
+   ```sh
+   gh pr diff
+   ```
+
+   You should see your new line, starting with `+`.
+
+4. Look for checks:
+
+   ```sh
+   gh pr checks
+   ```
+
+   You'll probably see `no checks reported`. Your practice repo has no CI yet, so nothing is proved. [What CI/CD is](/learn/what-ci-cd-is) adds a check.
+
+5. Open the page, click **Files changed**, and tick **Viewed** on `README.md`:
+
+   ```sh
+   gh pr view --web
+   ```
+
+6. Nothing worries you, so mark the PR ready for review:
+
+   ```sh
+   gh pr ready
+   ```
+
+   Run `gh pr view` again: `Draft` has become `Open`.
+
+Leave it open. The Try it in [Merging and cleaning up](/learn/merging-and-cleaning-up) merges it.
+````
 
 ## Going deeper
 
-### Why it exists
+### How one team layers its checks
 
-You don't read app code, so you need another way to judge a change. Claude Code's team asks: "what could go wrong with this change, and what check - automated or human - is the right one to catch it?"
+Addy Osmani's account shows the Claude Code team running checks in layers. Most of the reviewing happens before a PR exists. Claude runs something, such as the tests or the build, and shows the result instead of saying it's done. Then a subagent reviews the diff with fresh context.
 
-That team runs layers of checks, because each one catches some bugs and misses others. So no one part of your Merge check is the whole check.
-
-```checkpoint quick-8
-Why does that team run layers of checks?
-- [x] Each one catches some bugs and misses others.
-- [ ] Each one catches every bug the one before found.
-- [ ] Each one replaces the need for a person to answer.
-Why: That team runs layers of checks, because each one catches some bugs and misses others. So no one part of your Merge check is the whole check.
-```
-
-That team also counts whoever runs an agent as a required reviewer of its pull request, and an agent's approval doesn't count as a person's. So a fresh agent's review informs your decision, and doesn't replace it.
-
-```checkpoint quick-9
-What does a fresh agent's review do to your decision?
-- [x] It informs your decision, and doesn't replace it.
-- [ ] It replaces your decision, and counts as a person's.
-- [ ] It delays your decision until a second agent agrees.
-Why: An agent's approval doesn't count as a person's on that team. So a fresh agent's review informs your decision, and doesn't replace it.
-```
-
-### A real example
-
-#78 had auto-merge on, which merges a pull request by itself once its required reviews and checks pass. It merged about 6 minutes after it opened. All 3 of its checks were green. Its Merge Danger line said `Door: two-way` and `Blast Radius: content-check`, naming only the check on this site's Lessons. It had no review on GitHub, and its preview link sat in a comment.
-
-Then every page of the live site said "The Course has problems". Pages read each image file's header, its opening bytes. But those files shipped only with the one route serving images, so other pages couldn't read them. A fix was committed about 4 minutes after the merge, on the merged branch, so it didn't reach `main`. You'll meet that again in [When it goes wrong](/learn/undo-and-conflicts). #91 brought the fix into `main` about 2 hours after the merge.
-
-So green checks and an agent's own door call weren't enough, and auto-merge didn't wait for the rest. Keep it off until your Merge check is done.
+After that, every PR gets an automated review before a person looks, plus blocking checks such as tests and builds. Some paths always need a person's approval, including "any CI workflow file". That's the same instinct as reading workflow files slowly: a change to the checks needs more than the checks. [How teams protect main](/learn/how-teams-do-it) shows the rest of such a setup.
 
 ```checkpoint quick-10
-Why keep auto-merge off until your Merge check is done?
-- [x] It doesn't wait for the rest of your Merge check.
-- [ ] It runs the rest of your Merge check for you.
-- [ ] It stops the checks on the pull request from running.
-Why: Green checks and an agent's own door call weren't enough, and auto-merge didn't wait for the rest. So keep it off until your Merge check is done.
+On that team, which kind of file always needs a person's approval, however small the change?
+- [x] A CI workflow file, which defines the checks.
+- [ ] A test file, which the checks already run.
+- [ ] Any file under ten lines, since small changes hide bugs.
+Why: Some paths always need another approval there, including any CI workflow file. A change to the checks can't be vouched for by the checks.
 ```
-
-#78's repo is private, so only its owner can run `gh pr checks 78 --repo SiddharthMuramkar/skills`. A pull request on `finance-agent`, which is public, shows the Merge Danger line.
-
-You look:
-
-```
-gh pr view 305 --repo SiddharthMuramkar/finance-agent
-```
-
-You should see `Door: two-way`, then `Blast Radius: sitewide`.
-
-#184 on that repo shows the last part. It changes 26 files, and one is a SQL migration.
-
-You look:
-
-```
-gh pr diff 184 --repo SiddharthMuramkar/finance-agent --name-only
-```
-
-You should see `drizzle/0028_learners_contract.sql` in the list.
-
-That file has 15 lines like `ALTER TABLE "sessions" ALTER COLUMN "learner_id" DROP DEFAULT;`. You can read that: it removes a default, not a column, so no data goes. But a row written without a `learner_id` now fails.
-
-```checkpoint quick-11
-What does `DROP DEFAULT` do in that migration?
-- [x] It removes a default, not a column, so no data goes.
-- [ ] It removes a column, so that column's data goes.
-- [ ] It removes each table's rows, so no data stays.
-Why: You can read that yourself. It removes a default, not a column, so no data goes. But a row written without a `learner_id` now fails.
-```
-
-So ask whether the running code always names one. The pull request's body answers: "every app write on main already names its Learner". It also keeps auto-merge off: the migration must be rehearsed and applied to production (the live site real people use) before the merge.
 
 ### Where it goes wrong
 
-**`gh pr view` shows `Auto-merge: enabled`.** Your pull request will merge once its required reviews and checks pass, perhaps before your Merge check is done.
+**No preview link appears.** Your project may not deploy branches by itself. Ask your agent to deploy a preview of this branch, or to run the site and show you the result.
 
-You say:
+**A required check says "Waiting for status to be reported" for a long time.** That check never started. Often its job was renamed, or its workflow doesn't run for this kind of change. Fix the workflow, not the code.
 
-> Turn off auto-merge on this pull request.
+**`gh pr checks` is green, but every row is from your host.** A row such as `Vercel` reports a deploy, not your tests. With no test row, CI hasn't run, so ask why.
 
-Claude runs:
+**The review always finds something.** A reviewer asked to find problems always does. Pick the findings that would really break something, and leave style alone.
 
+**The risk line is missing, or out of date.** It was written at one moment, and later commits can leave it stale. Ask the agent to rewrite the description and update it on GitHub. It runs `gh pr edit 14 --body-file <file>`.
+
+**A migration isn't in your folder.** You're on another branch. `gh pr diff 14` shows every change, wherever you are.
+
+```checkpoint quick-11
+`gh pr checks 14` is all green, but the only row is your host's, saying the deployment completed. What has been proved about your tests?
+- [x] Nothing yet. That row reports a deploy, so ask why no test check ran.
+- [ ] That every test passed, because the deploy runs the tests first.
+- [ ] That the change works, because a deploy can't finish with a bug in it.
+Why: Read each check's name, not only its colour. A host's row says a deploy finished, and that says nothing about your tests.
 ```
-gh pr merge <number> --disable-auto
-```
-
-**`gh pr checks` shows more than `0 pending checks`.** Some are still running, so you have no answer yet. `gh pr checks <number> --watch` waits until they finish.
-
-**`gh pr checks` says `no checks reported`.** `gh pr checks 1 --repo SiddharthMuramkar/finance-agent` prints that line. Nothing reported means nothing is proved. If yours stays that way, ask Claude to set up CI.
-
-**`gh pr checks` is green, but with only `Vercel` rows.** Vercel is the host that puts `finance-agent` online. Its row says `Deployment has completed`, so it reports a deploy, not your tests. A CI row looks like `CI/check (pull_request)`. With no such row, CI hasn't run, so ask Claude why.
-
-**A failed check may not stop the merge.** `gh pr checks 306 --repo SiddharthMuramkar/finance-agent` prints `Some checks were not successful`, yet #306 merged. The failed check's comment says "This job is not a required check." Only required checks must pass first. So stopping at a failed check is your job.
-
-```checkpoint quick-12
-A check on your pull request has failed. Does that stop the merge?
-- [x] Only if the check is required, so stopping is your job.
-- [ ] Always, because a failed check blocks every merge.
-- [ ] Never, because checks have no say in a merge.
-Why: #306 merged with a failed check, and that check's comment says it isn't required. Only required checks must pass first.
-```
-
-**The review always finds something.** A reviewer asked to find problems always finds some, and fixing every finding adds code you don't need. So pick the ones that matter.
-
-**Claude can't deploy a preview.** `finance-agent` doesn't deploy branches by itself, so Claude must. If your project has no host at all, `/verify` comes with Claude Code and needs no setup. Claude builds and runs the app, then looks at the result.
-
-**`vercel` asks for confirmation.** `vercel` is the host's command for a preview. Your folder isn't linked to a Vercel project yet. `--yes` skips the questions, and `--project` names the project when your folder's name doesn't match.
-
-You say:
-
-> Link this folder to my existing Vercel project, then deploy a preview.
-
-Claude runs:
-
-```
-vercel link --yes --project <name>
-vercel
-```
-
-**The preview could touch real data.** Every environment can define its own environment variables, including its database connection. So ask Claude which database your preview uses before you try anything that writes.
-
-```checkpoint quick-13
-What do you ask before you try anything that writes on a preview?
-- [x] Which database your preview uses.
-- [ ] Which branch your preview came from.
-- [ ] Which check your preview passed.
-Why: Every environment can define its own environment variables, including its database connection. So ask Claude which database your preview uses.
-```
-
-**The door call looks too easy.** The changed lines often hide whether a change can be reversed. As one user put it, "rolling back a commit won't unsend a batch of emails". So write down what your repo always treats as one-way, such as schema migrations, where Claude will read it.
-
-**There's no `Door:` line, or it's out of date.** `/pr` writes that line, at one point in time, and later commits can leave it stale. `/pr` covers only the body, so ask for the update too.
-
-You say:
-
-> Rewrite this pull request's body with `/pr`, keep its `Closes` line, and update it on GitHub.
-
-Claude runs:
-
-```
-gh pr edit <number> --body-file <file>
-```
-
-**The migration isn't in your folder.** Your folder is on another branch. `gh pr diff <number>` prints every change, so find the file's name there. Its new lines start with `+`.
-
-### Read more
-
-- [gh pr checks](https://cli.github.com/manual/gh_pr_checks), GitHub, read 2026-11-05
-- [gh pr view](https://cli.github.com/manual/gh_pr_view), GitHub, read 2026-11-05
-- [gh pr diff](https://cli.github.com/manual/gh_pr_diff), GitHub, read 2026-11-05
-- [gh pr edit](https://cli.github.com/manual/gh_pr_edit), GitHub, read 2026-11-05
-- [gh pr merge](https://cli.github.com/manual/gh_pr_merge), GitHub, read 2026-11-05
-- [Status checks](https://docs.github.com/en/pull-requests/reference/status-checks), GitHub Docs, read 2026-11-05
-- [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow), GitHub Docs, read 2026-11-05
-- [Automatically merging a pull request](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/automatically-merging-a-pull-request), GitHub Docs, read 2026-10-30
-- [Environments](https://vercel.com/docs/deployments/environments), Vercel, read 2026-10-29
-- [vercel link](https://vercel.com/docs/cli/link), Vercel, read 2026-11-05
-- [The /pr Skill](https://www.aihero.dev/skills-pr), Matt Pocock, updated 2026-10-05
-- [How the Claude Code team does code review](https://x.com/addyosmani/article/2114604912520921136), Addy Osmani, 2026-10-26
-- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic, read 2026-10-30
-- [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic, read 2026-10-30
-- [The site follows the Mac by default, and the header menu picks any of the four Themes](https://github.com/SiddharthMuramkar/finance-agent/pull/305), SiddharthMuramkar, 2026-11-04
-- [Small leftovers from the tutor lanes](https://github.com/SiddharthMuramkar/finance-agent/pull/306), SiddharthMuramkar, 2026-11-04
-- [Each person signs in with their own passcode (contract migration)](https://github.com/SiddharthMuramkar/finance-agent/pull/184), SiddharthMuramkar, 2026-11-03
 
 ## Remember
 
 ```flashcards
-Q: What are the five parts of the Merge check?
-A: CI, the preview, a fresh agent's review, the Merge Danger line and any SQL migration.
+Q: What does a green check prove?
+A: Only what that check tests. It can't speak for anything no check covers, such as a page no test opens.
 
-Q: What does a green `gh pr checks` prove?
-A: Only what the checks test. It can't speak for anything they don't test, such as the live site working.
+Q: In what order do you read a pull request?
+A: The description (the claim), Files changed (the evidence), the checks (what verified it), then the preview. Then weigh the risk and decide.
 
-Q: Why must the review come from a fresh agent?
-A: The agent that wrote the change would be marking its own work. A new session hasn't seen its reasoning.
-
-Q: What's a two-way door, and what's a one-way door?
-A: A two-way door is a change you can walk back cheaply. A one-way door can't be walked back, like dropping a column.
-
-Q: When should a Merge Danger line make you most suspicious?
-A: When it says two-way with a small blast radius, because the agent that wrote the change is grading it.
-
-Q: Your pull request has no Merge Danger line. How do you get one?
-A: Ask Claude to run `/pr` and put its Merge Danger part in the pull request's body.
-
-Q: Your project doesn't make a preview by itself, and the change is one you can try. What do you say?
-A: Deploy a preview of this branch. Then try the change at its web address.
-
-Q: Claude wrote the change, and you ran Claude. Who answers for it?
-A: You do. Whoever ran the agent answers for its work.
-
-Q: Why keep auto-merge off until your Merge check is done?
-A: It merges a pull request by itself once its required reviews and checks pass, so it won't wait for the rest of your Merge check.
+Q: Which files deserve a slow read in any diff?
+A: Migrations, workflow files in `.github/workflows/`, lockfiles, and anything holding a secret.
 
 Q: Does a failed check always stop a merge?
-A: No. Only required checks must pass first, so stopping at a failed check is your job.
+A: No. Only required checks must pass first, so stopping at any failed check is your job.
+
+Q: What does `no checks reported` prove?
+A: Nothing. No check ran, so ask why CI didn't run.
+
+Q: What is a preview deployment?
+A: A temporary copy of your site, built from the PR's branch, at its own web address.
+
+Q: What do you ask before you try anything that writes on a preview?
+A: Which database the preview uses.
+
+Q: What's a two-way door, and what's a one-way door?
+A: A two-way door is a change you can walk back cheaply. A one-way door can't be walked back, such as deleting stored data.
+
+Q: When should a risk line make you most suspicious?
+A: When it says "two-way, small blast radius", because the agent that wrote the change is grading it.
+
+Q: Why must the review come from a fresh session?
+A: The session that wrote the change would be marking its own work. A fresh one hasn't seen its reasoning.
+
+Q: Who answers for an agent's pull request?
+A: You do. Whoever ran the agent answers for its work.
 ```
 
 ## Final test
 
-```final-test checking-a-pr-green-then-what
-`gh pr checks` on your pull request says `All checks were successful`, and Claude asks whether to merge. What do you do?
-- [x] Run the rest of your Merge check first, because green proves only what the checks test.
+```final-test cpr-green-then-what
+`gh pr checks` on your PR says `All checks were successful`, and your agent asks whether to merge. What do you do?
+- [x] Finish your Merge check first: the description, the diff, the preview and the risk.
 - [ ] Say merge straight away, because green proves the change works on the live site.
-- [ ] Read all the app code yourself first, because green proves nothing at all about a change.
-- [ ] Ask Claude if it's confident, then say merge, because it knows what its checks covered.
-Why: Green means the checks that ran have passed, and it can't speak for anything they don't test. So the preview, the review, the Merge Danger line and any SQL migration still need your look.
+- [ ] Read every line of code yourself first, because green proves nothing at all.
+- [ ] Ask the agent if it's confident, then merge, because it knows what its checks cover.
+Why: Green means the checks that ran passed, and it can't speak for anything they don't test. The rest of your Merge check still needs your look.
 ```
 
-```final-test checking-a-pr-who-reviews
+```final-test cpr-who-reviews
 The session that built your change offers to review it before you merge. What do you do?
-- [x] Start a new session for the review, because that one hasn't seen the reasoning behind the change.
-- [ ] Accept the offer, because the session that built the change knows the reasoning behind it best.
-- [ ] Skip the review, because a pull request with green checks has been reviewed already by CI.
-- [ ] Accept the offer and ask it to look twice, because a second look makes the review a fresh one.
-Why: The agent that wrote the change would be marking its own work. A new session starts fresh, so it isn't swayed by the reasoning that produced the code.
+- [x] Start a fresh session or run `/code-review`, because it hasn't seen the reasoning behind the change.
+- [ ] Accept, because the session that built the change knows its reasoning best.
+- [ ] Skip the review, because a PR with green checks has already been reviewed by CI.
+- [ ] Accept, and ask it to look twice, because a second look makes the review a fresh one.
+Why: The agent that wrote the change would be marking its own work. A fresh reviewer isn't swayed by the reasoning that produced the code.
 ```
 
-```final-test checking-a-pr-door-and-drop
-Your pull request's Merge Danger line says `Door: two-way`. Its one SQL migration has a `DROP COLUMN` in it. What do you make of that?
-- [x] Don't trust the line. Dropping a column is a one-way door, so slow down before you decide.
+```final-test cpr-door-and-drop
+Your PR's risk line says `Door: two-way`. Its one migration removes a column of saved recipes. What do you make of that?
+- [x] Don't trust the line. Removing a column is a one-way door, so slow down before you decide.
 - [ ] Trust the line. The agent that wrote the change is the best judge of which door it is.
 - [ ] Ignore the migration. A change whose checks are green is a two-way door, whatever it does.
-- [ ] Ignore the line. Merge Danger only describes how a change looks, not what it does to data.
-Why: A destructive migration is a one-way door, and the agent that wrote the change is grading its own work. So read the file yourself, and be suspicious when the line says two-way.
+- [ ] Ignore the line. Risk lines only describe how a change looks, not what it does to data.
+Why: Deleted data can't be walked back, so that's a one-way door. The agent graded its own change, so read the migration yourself.
 ```
 
-```final-test checking-a-pr-deeper-auto-merge-on
+```final-test cpr-auto-merge-on
 You're part way through your Merge check. `gh pr view` shows `Auto-merge: enabled`, and the checks are still running. What do you do?
-- [x] Have Claude turn auto-merge off, because it merges once the requirements pass, whatever you've looked at.
-- [ ] Carry on as you were, because auto-merge can't act until you've tried the preview yourself.
-- [ ] Carry on as you were, because auto-merge holds the merge until an agent's review has finished.
-- [ ] Close the pull request and open a new one, because auto-merge can't be turned off once it's on.
-Why: Auto-merge merges a pull request by itself once its required reviews and checks pass. Your preview and your other looks aren't among those, so turn it off with `gh pr merge --disable-auto` until your Merge check is done.
+- [x] Turn auto-merge off, because it merges once the required checks pass, whatever you've looked at.
+- [ ] Carry on, because auto-merge can't act until you've tried the preview yourself.
+- [ ] Carry on, because auto-merge waits for an agent's review to finish.
+- [ ] Close the PR and open a new one, because auto-merge can't be turned off once it's on.
+Why: Auto-merge merges a PR by itself once its required reviews and checks pass. Your preview and your other looks aren't among those, so turn it off with `gh pr merge --disable-auto`.
+```
+
+```final-test cpr-failed-not-required
+One check on your PR has failed, but it isn't a required check, and the merge button works. What's true?
+- [x] Only required checks block the button, so stopping at this failure is your call.
+- [ ] The failure doesn't matter, because GitHub would block the merge if it did.
+- [ ] The check will be rerun at merge time, so you can merge now.
+- [ ] A failed check always blocks the merge, so the button is broken.
+Why: A repo can require some checks and not others. A failed check that isn't required leaves the button working, but something still went wrong.
+```
+
+```final-test cpr-no-checks
+`gh pr checks` on your PR says `no checks reported`. What has been proved about the change?
+- [x] Nothing. No check ran, so ask why CI didn't run.
+- [ ] That it's safe, because GitHub reports only the checks that fail.
+- [ ] That it's small, because GitHub skips the checks on small changes.
+- [ ] That it passed, because no news from CI is good news.
+Why: A check can only prove something if it ran. With no checks reported, nothing is proved, so find out why CI didn't run.
+```
+
+```final-test cpr-workflow-edit
+Every check is green, but Files changed also edits `.github/workflows/ci.yml`, which the Issue never asked for. What do you do?
+- [x] Send it back: ask why, or ask for that change in a PR of its own.
+- [ ] Merge it, because a green run covers the workflow change too.
+- [ ] Merge it, and look at the workflow file some other day.
+- [ ] Wait, because GitHub will flag the workflow change if it matters.
+Why: A workflow file defines the checks themselves, so green checks can't vouch for a change to them. A change nobody asked for needs a reason.
+```
+
+```final-test cpr-waiting-status
+After your agent renamed a CI job, the merge box says "Waiting for status to be reported" for the only required check, and has for twenty minutes. What do you look at first?
+- [x] The workflow and its job name, because the required check never started.
+- [ ] The changed code, because the check is still busy running the tests.
+- [ ] Nothing, because waiting longer will let the check finish.
+- [ ] The PR's description, because the check reads its risk line.
+Why: That message means a required check never reported. A renamed job is a common cause, so fix the workflow, not the code.
+```
+
+```final-test cpr-preview-db
+The preview of your PR adds a "Delete recipe" button. Before you try it, what do you ask?
+- [x] Which database the preview uses.
+- [ ] Which branch the preview was built from.
+- [ ] Which reviewer approved the preview.
+- [ ] Which check built the preview's page.
+Why: Each environment can have its own settings, including its database. If the preview uses the real one, pressing the button deletes real recipes.
+```
+
+```final-test cpr-who-answers
+Your agent wrote the change, and you ran the agent. Who answers for the change once it merges?
+- [x] You do, because you ran the agent.
+- [ ] The agent does, because it wrote every line.
+- [ ] Nobody does, once the checks have passed.
+- [ ] The reviewer does, because it said the change was fine.
+Why: Whoever runs an agent answers for its work. A review informs your decision, but the decision, and the change, are yours.
 ```
 
 ```sources
 - [How the Claude Code team does code review](https://x.com/addyosmani/article/2114604912520921136), Addy Osmani, 2026-10-26
 - [Status checks](https://docs.github.com/en/pull-requests/reference/status-checks), GitHub Docs
-- [Pinned pages, outside links and real images](https://github.com/SiddharthMuramkar/skills/pull/78), SiddharthMuramkar, 2026-10-30
+- [Troubleshooting required status checks](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks), GitHub Docs
+- [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches), GitHub Docs
+- [Reviewing proposed changes in a pull request](https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-proposed-changes-in-a-pull-request), GitHub Docs
 - [Automatically merging a pull request](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/automatically-merging-a-pull-request), GitHub Docs
-- [Finish v2: land the last eight Tickets and bring the site back up](https://github.com/SiddharthMuramkar/skills/pull/91), SiddharthMuramkar, 2026-10-30
-- [gh pr checks](https://cli.github.com/manual/gh_pr_checks), GitHub CLI manual
-- [Understanding GitHub Actions](https://docs.github.com/en/actions/get-started/understand-github-actions)
-- [Environments](https://vercel.com/docs/deployments/environments)
-- [The /pr Skill](https://www.aihero.dev/skills-pr), Matt Pocock, 2026-10-05
-- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
-- [How Claude remembers your project](https://code.claude.com/docs/en/memory)
-- [pr: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/pr/SKILL.md), Matt Pocock's Skills
-- [The site follows the Mac by default, and the header menu picks any of the four Themes](https://github.com/SiddharthMuramkar/finance-agent/pull/305), SiddharthMuramkar, 2026-11-04
 - [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow), GitHub Docs
-- [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic
+- [gh pr checks](https://cli.github.com/manual/gh_pr_checks), GitHub CLI manual
 - [gh pr view](https://cli.github.com/manual/gh_pr_view), GitHub CLI manual
-- [finance-agent/vercel.json](https://github.com/SiddharthMuramkar/finance-agent/blob/main/vercel.json), SiddharthMuramkar
-- [vercel link](https://vercel.com/docs/cli/link), Vercel
-- [gh pr edit](https://cli.github.com/manual/gh_pr_edit), GitHub CLI manual
 - [gh pr diff](https://cli.github.com/manual/gh_pr_diff), GitHub CLI manual
-- [Each person signs in with their own passcode (contract migration)](https://github.com/SiddharthMuramkar/finance-agent/pull/184), SiddharthMuramkar, 2026-11-03
+- [gh pr checkout](https://cli.github.com/manual/gh_pr_checkout), GitHub CLI manual
+- [gh pr ready](https://cli.github.com/manual/gh_pr_ready), GitHub CLI manual
+- [gh pr edit](https://cli.github.com/manual/gh_pr_edit), GitHub CLI manual
 - [gh pr merge](https://cli.github.com/manual/gh_pr_merge), GitHub CLI manual
-- [docs: use finance-agent as the repo name in the spec](https://github.com/SiddharthMuramkar/finance-agent/pull/1), SiddharthMuramkar, 2026-11-01
-- [Small leftovers from the tutor lanes](https://github.com/SiddharthMuramkar/finance-agent/pull/306), SiddharthMuramkar, 2026-11-04
+- [Environments](https://vercel.com/docs/deployments/environments), Vercel
+- [The /pr Skill](https://www.aihero.dev/skills-pr), Matt Pocock, 2026-10-05
+- [pr: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/pr/SKILL.md), Matt Pocock's Skills
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
+- [Commands](https://code.claude.com/docs/en/commands), Anthropic
+- [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic
 ```

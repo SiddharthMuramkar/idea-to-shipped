@@ -1,13 +1,13 @@
 ---
 title: Undo and merge conflicts
 slug: undo-and-conflicts
-summary: Pick the right undo from where a mistake lives, revert what's already on GitHub instead of rewriting it, and resolve a merge conflict yourself or through an agent.
+summary: Pick the right undo from where a mistake lives, revert what's on GitHub instead of rewriting it, and resolve a merge conflict yourself or through an agent.
 ---
 
 Say a coding agent rewrote the wrong recipe in your `recipes` site. Or a pull request you merged this morning broke the home page. Or GitHub says your pull request has conflicts, and its merge button won't work. Git can undo almost anything, but each undo fits one situation, and the wrong one can throw work away for good.
 
 ```goals
-- You'll be able to say where a mistake lives (in a file, staged, in a commit on your computer, or on GitHub) and pick the undo that fits.
+- You'll be able to say where a mistake lives, from a file on your computer to GitHub, and pick the undo that fits.
 - You'll be able to undo a merged pull request with a revert, and say why a commit on GitHub is never rewritten.
 - You'll be able to get a lost commit back with the reflog.
 - You'll be able to read a merge conflict, resolve it in the terminal, on github.com or through an agent, and check the result.
@@ -19,7 +19,12 @@ Git has several undo commands with similar names, and each one works on a differ
 
 **Before you undo anything, ask where the mistake lives: the further a change has travelled, the gentler its undo must be.**
 
-A change can be in four places. You met three of them in [Commits and diffs](/learn/commits-and-diffs): the files in your folder (the working tree), the list of changes for your next commit (the staging area), and a commit on your computer. The fourth is GitHub, once the commit is [pushed](/learn/push-pull-and-remotes) and perhaps merged into `main`.
+A change can be in four places. You met the first three in [Commits and diffs](/learn/commits-and-diffs):
+
+- the files in your folder, called the working tree;
+- the staging area, the list of changes for your next commit;
+- a commit on your computer;
+- GitHub, once the commit is [pushed](/learn/push-pull-and-remotes), and perhaps merged into `main`.
 
 | Where the mistake lives | How you can tell | The undo | What happens |
 |---|---|---|---|
@@ -107,7 +112,7 @@ Once a commit is on GitHub, the rules change. Other people, other branches and t
 
 Git can't change a commit. Amend makes a new commit and moves the branch label onto it, and reset moves the label back to an older one. While only your computer has the old commit, nobody notices. Once GitHub has it, anything built on it still points at it. Now two versions of the history live side by side, and someone has to untangle them.
 
-The Pro Git book gives the rule for rebasing in one line: don't rebase commits that exist outside your repository and that people may have based work on. The same goes for amend and reset. And "shared" means more than "pushed". A commit that another branch, another worktree or a teammate has built on is shared, even if it never reached GitHub.
+The Pro Git book gives the rule for rebasing in one line. Don't rebase commits that exist outside your repository and that people may have based work on. The same goes for amend and reset. And "shared" means more than "pushed". A commit that another branch, another worktree or a teammate has built on is shared, even if it never reached GitHub.
 
 Putting rewritten commits on GitHub takes a **force push** (`git push --force`). A normal push only moves GitHub's branch forward, to a commit that already contains everything the branch had. Git calls that a **fast-forward**. A rewrite moves the branch sideways, so `git push` refuses unless you force it. A force push to a shared branch can wipe other people's commits from it, which is why teams [block force pushes on `main`](/learn/how-teams-do-it).
 
@@ -132,7 +137,7 @@ You merge a revert of pull request #8. What does `main`'s history hold afterward
 Why: A revert is a new commit that does the opposite of an old one, so the mistake and its undo both stay in the history.
 ```
 
-Say pull request #8 added cooking times to your recipe cards. It was squash-merged this morning, and it broke the home page. You can undo it three ways:
+Say pull request #8 added cooking times to your recipe cards. It was [squash-merged](/learn/merging-and-cleaning-up) this morning, and it broke the home page. You can undo it three ways:
 
 - On github.com, open pull request #8 and click **Revert** near the bottom. GitHub makes a new branch and opens a new pull request that cancels #8. Check it and merge it like any other. No button? You need write access to the repo.
 - In the terminal, `gh pr revert 8` does the same.
@@ -177,7 +182,7 @@ Find the last line before the mistake. Here it's `HEAD@{1}`. Put a new branch on
 git branch rescued 9c8d7e6
 ```
 
-The reflog has two limits. It lives only on your computer, so GitHub can't show it. And it records commits, never edits: work that was never committed, and was then thrown away by `git restore` or `git reset --hard`, was never in it. Lines for commits that no branch holds expire after 30 days by default.
+The reflog has two limits. It lives only on your computer, so GitHub can't show it. And it records commits, never edits. Work that was never committed, then thrown away by `git restore` or `git reset --hard`, was never in it. Lines for commits that no branch holds expire after 30 days by default.
 
 ```checkpoint quick-7
 An agent's `git reset --hard HEAD~3` has made three unpushed commits disappear from `git log`. What gets them back?
@@ -221,9 +226,17 @@ Why: `reset --hard` would throw away your uncommitted edits. The new branch keep
 
 ## Merge conflicts: what they are
 
-A merge combines two branches. Git usually manages it alone, because the two sides changed different files, or different lines. A **merge conflict** is the case git can't settle: both branches changed the same lines in different ways, or one deleted a file that the other edited. Git won't guess which version is right. It stops, marks the spots, and waits for someone to decide.
+A merge combines two branches. Git usually manages it alone, because the two sides changed different files, or different lines. A **merge conflict** is the case git can't settle. Both branches changed the same lines in different ways, or one deleted a file that the other edited. Git won't guess which version is right. It stops, marks the spots, and waits for someone to decide.
 
-Say pull requests #11 (quicker pancakes) and #12 (vegan pancakes) both changed the same line of `recipes/pancakes.md`. #11 merges first. Now #12 conflicts: its line and `main`'s line differ, and git can't pick. On GitHub, #12 says "This branch has conflicts that must be resolved", and its merge button stays off until someone resolves them. In the terminal, `gh pr view 12 --json mergeable` prints `"mergeable": "CONFLICTING"`. GitHub Actions also won't start #12's pull request checks until the conflict is fixed.
+Say pull requests #11 (quicker pancakes) and #12 (vegan pancakes) both changed the same line of `recipes/pancakes.md`. #11 merges first. Now #12 conflicts: its line and `main`'s line differ, and git can't pick. On GitHub, #12 says "This branch has conflicts that must be resolved", and its merge button stays off until someone resolves them. In the terminal, `gh pr view 12 --json mergeable` prints `"mergeable": "CONFLICTING"`. GitHub Actions, GitHub's own automation for checks, also won't start #12's pull request checks until the conflict is fixed.
+
+```checkpoint quick-conflict-github
+Pull request #12 has a merge conflict that nobody has resolved yet. What else is true on GitHub?
+- [x] Its merge button stays off, and its GitHub Actions pull request checks won't start.
+- [ ] Its merge button works, and GitHub keeps whichever of the two lines is newer.
+- [ ] Its checks run as usual, and they fail on the line that both branches changed.
+Why: GitHub won't merge a pull request with a conflict, and GitHub Actions won't run `pull_request` checks on it either. Resolving the conflict, and pushing, starts them.
+```
 
 ### Reading a conflicted file
 
@@ -259,7 +272,7 @@ You can resolve a conflict in the terminal, in the browser, or through an agent.
 Say you're resolving #12. From your project's folder:
 
 1. Switch to the pull request's branch and get its latest commits: `git switch 12-vegan-pancakes`, then `git pull`.
-2. Fetch GitHub's latest `main` and merge it in: `git fetch origin`, then `git merge origin/main`. Git prints `CONFLICT (content): Merge conflict in recipes/pancakes.md`.
+2. Run `git fetch origin`, which downloads GitHub's latest commits without touching your files. Then merge GitHub's `main` in with `git merge origin/main`. Git prints `CONFLICT (content): Merge conflict in recipes/pancakes.md`.
 3. Run `git status`. It lists the file under "Unmerged paths".
 4. Open the file. Keep one side, the other, or a mix, and delete all three marker lines.
 5. Run `git diff --check`. It warns about any marker you missed, so it should print nothing.

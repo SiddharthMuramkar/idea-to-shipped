@@ -86,7 +86,7 @@ A phone app for members.
 
 The _Destination_ is where this effort ends. _Notes_ hold standing preferences for the effort, and any Skills every session should use. _Decisions so far_ has one line per settled ticket, linking to it. _Not yet specified_ and _Out of scope_ are explained below.
 
-A **ticket** is one question in its own Issue. Its label records its type, and GitHub's own blocked-by links record which tickets have to be settled first. Here is what #23 might look like. Notice that it states the question and its limits, and gives no hint of the answer:
+Each **ticket** is one question in its own Issue. Its label records its type, and GitHub's own blocked-by links record which tickets have to be settled first. Here is what #23 might look like. Notice that it states the question and its limits, and gives no hint of the answer:
 
 ```text
 Which payment service will take the studio's payments? #23
@@ -140,7 +140,7 @@ Why: A ticket states its question and its limits, its type, and which tickets mu
 
 ## How the sessions go
 
-Matt's advice is never to start with `/wayfinder`. Start with a [grill-with-docs](/learn/grill-with-docs) session instead, and if planning gets out of hand, say `/wayfinder let's turn this into a map`. That way you never build a map for work that turns out simple. From then on, every session is one of three kinds:
+Matt's advice is never to start with `/wayfinder`. Start with a [grill-with-docs](/learn/grill-with-docs) session instead, and if planning gets out of hand, say `/wayfinder let's turn this into a map`. That way you never build a map for work that turns out simple. Either way, every wayfinder session is one of three kinds:
 
 1. **Chart the map, once.** Type `/wayfinder` and your idea, or `/wayfinder let's turn this into a map` inside a grilling that has outgrown its session.
    - It asks where this effort ends: the _destination_.
@@ -219,7 +219,7 @@ Every ticket has one of four types, and the type decides how it gets settled. Wa
 | Prototype | Yes (HITL) | The agent makes a rough draft (a sketch, an outline, a stub) for you to react to. |
 | Task | Sometimes | Someone does work that must happen before a decision, such as signing up for a service so it can be tried. |
 
-That's why **"I don't know" is a fine answer** while charting. A fact you don't know becomes the agent's job, or a research ticket: the grilling Skill says finding facts is the agent's job, never yours. An answer that belongs to someone else, like the studio owner's refund rules, becomes a task. You collect it with a [to-questionnaire](/learn/to-questionnaire), as [Answers only other people have](/learn/answers-from-other-people) shows; wayfinder itself sends nothing. A question that's still too vague goes into the fog.
+That's why **"I don't know" is a fine answer** while charting. A fact you don't know becomes a research ticket, or the agent looks it up: the grilling Skill says finding facts is the agent's job, never yours. An answer that belongs to someone else, like the studio owner's refund rules, becomes a task. You collect it with a [to-questionnaire](/learn/to-questionnaire), as [Answers only other people have](/learn/answers-from-other-people) shows; wayfinder itself sends nothing. A question that's still too vague goes into the fog.
 
 ```callout remember
 A ticket's type decides how it gets settled and whether you're needed: research runs without you, grilling and prototypes need you, and a task does work that must happen before a decision. So "I don't know" is fine: an unknown fact becomes the agent's job, someone else's answer becomes a task, and a vague question goes into the fog.

@@ -1,12 +1,12 @@
 ---
 title: Instruction files
 slug: instruction-files
-summary: An instruction file is a Markdown file of standing instructions that an agent reads at the start of every session.
+summary: What CLAUDE.md and AGENTS.md files are, which ones Claude Code loads in a session, and which lines are worth keeping in them.
 ---
 
 ## What an instruction file is
 
-Say you told Claude Code yesterday to run `pytest` before every commit. Today you start a new session, and you're typing the same thing again. Every session starts with a fresh **context window**: everything an agent can see at once. Yesterday's chat isn't in it.
+Say you told Claude Code, Anthropic's coding agent, to run the tests with `pytest` (a Python testing tool) before every [commit](/learn/commits-and-diffs). That was yesterday. Today you start a new session, and you're typing the same thing again. Every session starts with a fresh **context window**: everything an agent can see at once (see [the context window](/learn/context-window)). Yesterday's chat isn't in it.
 
 ```checkpoint quick-1
 You start a new Claude Code session this morning. How much of yesterday's chat is in its context window?
@@ -50,7 +50,7 @@ Now every session in that repo starts with all three lines.
 
 ## Which ones load
 
-When you start Claude Code in a folder, it loads `CLAUDE.md` from that folder and from every folder above it, plus your home folder's file. So at the root of your FastAPI repo, it reads `~/.claude/CLAUDE.md` and the repo's `CLAUDE.md`.
+When you start Claude Code in a folder, it loads `CLAUDE.md` from that folder and from every folder above it, plus your home folder's file. So at the root of the yoga-studio repo, it reads `~/.claude/CLAUDE.md` and the repo's `CLAUDE.md`.
 
 ```checkpoint quick-3
 You start Claude Code inside your repo's `api/` folder. Which `CLAUDE.md` files load at the start?
@@ -105,15 +105,7 @@ Why: Claude reads a repo's `AGENTS.md` when there's no `CLAUDE.md` in your folde
 
 ## Why the Skills care
 
-[setup-matt-pocock-skills](/learn/setup-matt-pocock-skills) writes an **Agent skills block** into the repo's `CLAUDE.md`, or into `AGENTS.md` if that's the file the repo already has. The block points the Skills that need them at your settings in `docs/agents/`. For example:
-
-```checkpoint quick-6
-A repo has only an `AGENTS.md`, and you run [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills). What happens to that file?
-- [x] It gets an Agent skills block, pointing the Skills at `docs/agents/`.
-- [ ] It's renamed to `CLAUDE.md`, because that's the name Claude Code reads.
-- [ ] It's left alone, and a new `CLAUDE.md` gets the Agent skills block.
-Why: The Skill writes its block into `CLAUDE.md`, or into `AGENTS.md` if that's the file the repo already has. The block points the Skills that need them at your settings in `docs/agents/`.
-```
+Matt Pocock, a developer and teacher, publishes a popular set of Skills. A Skill is a set of instructions an agent loads for one kind of task (see [what a Skill is](/learn/skills)). His setup Skill, [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills), writes an **Agent skills block** into the repo's `CLAUDE.md`, or into `AGENTS.md` if that's the file the repo already has. The block points the Skills that need them at your settings in `docs/agents/`. For example:
 
 ```
 ## Agent skills
@@ -123,7 +115,15 @@ Why: The Skill writes its block into `CLAUDE.md`, or into `AGENTS.md` if that's 
 GitHub Issues on this repo. See `docs/agents/issue-tracker.md`.
 ```
 
-That's how the Skills find your Issue tracker (see [keeping track](/learn/issues-and-keeping-track)).
+That's how the Skills find your Issue tracker, the place a project's to-do items live (see [keeping track](/learn/issues-and-keeping-track)).
+
+```checkpoint quick-6
+A repo has only an `AGENTS.md`, and you run [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills). What happens to that file?
+- [x] It gets an Agent skills block, pointing the Skills at `docs/agents/`.
+- [ ] It's renamed to `CLAUDE.md`, because that's the name Claude Code reads.
+- [ ] It's left alone, and a new `CLAUDE.md` gets the Agent skills block.
+Why: The Skill writes its block into `CLAUDE.md`, or into `AGENTS.md` if that's the file the repo already has. The block points the Skills that need them at your settings in `docs/agents/`.
+```
 
 ## Going deeper
 
@@ -185,7 +185,7 @@ You're about to add a repository overview to your `CLAUDE.md`. What does the 202
 Why: The study found repository overviews didn't help, and the files raised inference cost by over 20% on average. The files are useful for specifying non-standard coding practices.
 ```
 
-**Matt's February 2026 bar.** Keep a line only if it's both **undiscoverable** and **globally relevant**. Undiscoverable means the agent can't find it by reading the repo. Globally relevant means it matters in every session. A list of scripts fails, because the agent can read them in `package.json`, the settings file listing a web project's scripts and packages. Guidance for one kind of task belongs in a Skill, which "the agent can pull in when relevant". His newer [retro](/learn/retro) Skill also keeps short pointers to other files, like the Agent skills block.
+**Matt's bar.** Keep a line only if it's both **undiscoverable** and **globally relevant**. Undiscoverable means the agent can't find it by reading the repo. Globally relevant means it matters in every session. A list of scripts fails, because the agent can read them in `package.json`, the settings file listing a web project's scripts and packages. Guidance for one kind of task belongs in a Skill, which "the agent can pull in when relevant". His newer [retro](/learn/retro) Skill also keeps short pointers to other files, like the Agent skills block.
 
 ### A real example
 
@@ -241,7 +241,7 @@ Why: Matt says to delete a generated file, because what `/init` writes is either
 
 ### Try it
 
-You'll need Claude Code and your practice project. If you haven't set the project up, do keeping-track's Try it step first.
+You'll need Claude Code and your practice project, the yoga-studio repo. If you haven't set it up, do the Try it in [keeping track](/learn/issues-and-keeping-track) first.
 
 1. Start Claude Code at the root of your practice project: `claude`.
 2. Type `/context`. You should see the files that loaded, listed under "Memory files".
@@ -253,14 +253,14 @@ You'll need Claude Code and your practice project. If you haven't set the projec
 8. Type `/context` again. You won't see that file under "Memory files", which lists what loaded at launch.
 9. Open your repo's root instruction file. Add a line you'd like Claude to follow, then test it. Can the agent learn it only from this file? Does it matter in both `api/` and `web/`? If either answer is no, delete the line.
 10. Clean up from your shell: `rm api/CLAUDE.md api/notes.txt`.
-11. Commit any line you kept on a branch, and merge it through a pull request.
+11. Commit any line you kept on a [branch](/learn/branches-and-worktrees), and merge it through a [pull request](/learn/pull-requests).
 
 ### Read more
 
-- [Never Run Claude /init](https://www.aihero.dev/never-run-claude-init), Matt Pocock, updated 24 February 2026
-- [A Complete Guide To AGENTS.md](https://www.aihero.dev/a-complete-guide-to-agents-md), Matt Pocock, updated 18 January 2026
-- [How Claude remembers your project](https://code.claude.com/docs/en/memory), Anthropic, taken 29 October 2026
-- [Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?](https://arxiv.org/abs/2602.11988), Thibaud Gloaguen and others, 12 February 2026 (revised 29 September 2026)
+- [Never Run Claude /init](https://www.aihero.dev/never-run-claude-init), Matt Pocock, updated 2026-02-24
+- [A Complete Guide To AGENTS.md](https://www.aihero.dev/a-complete-guide-to-agents-md), Matt Pocock, updated 2026-01-18
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory), Anthropic
+- [Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?](https://arxiv.org/abs/2602.11988), Thibaud Gloaguen and others, 2026-02-12 (revised 2026-09-29)
 - [Feature Request: Support AGENTS.md (#6235)](https://github.com/anthropics/claude-code/issues/6235), anthropics/claude-code, opened 21 August 2025
 - [CLAUDE.md instructions completely ignored after context compaction (#19471)](https://github.com/anthropics/claude-code/issues/19471), anthropics/claude-code, opened 20 January 2026
 
@@ -292,7 +292,7 @@ A: Under 200 lines. Longer files use more context and reduce how well Claude fol
 ## Final test
 
 ```final-test instruction-files-which-load
-You start Claude Code at the root of your FastAPI repo. You have `~/.claude/CLAUDE.md`, and the repo has a `CLAUDE.md`. Which does it read?
+You start Claude Code at the root of your yoga-studio repo. You have `~/.claude/CLAUDE.md`, and the repo has a `CLAUDE.md`. Which does it read?
 - [x] Both: your home folder's file first, then the repo's.
 - [ ] Only the repo's. It replaces your home folder's file.
 - [ ] Only your home folder's. Repo files load only when you ask.
@@ -317,10 +317,34 @@ Why: At the start, Claude Code loads the folder you started in and the folders a
 
 ```final-test instruction-files-deeper-must-hold
 Your `CLAUDE.md` says "never push to main", yet an agent pushed. Where do the docs say to put a rule that must block an action whatever Claude decides?
-- [x] In a PreToolUse hook, which runs as a shell command whatever Claude decides.
+- [x] In a hook, which runs as a shell command at a fixed point, whatever Claude decides.
 - [ ] In `CLAUDE.local.md` as well, so the same rule is read twice each session.
 - [ ] In a file the `CLAUDE.md` imports with `@path`, so it reloads on every message.
 Why: An instruction file is context, so Claude tries to follow it but nothing forces it to. Reading the rule twice doesn't change that. A hook does, because it runs as a shell command at a fixed point, whatever Claude decides.
+```
+
+```final-test instruction-files-concrete
+You're adding a testing rule to the repo's `CLAUDE.md`. Which line is Claude most likely to follow?
+- [x] Run pytest before every commit.
+- [ ] Test your changes properly.
+- [ ] Be careful with the tests.
+Why: The file is context, not a setting, so Claude tries to follow it with no guarantee, least of all when a line is vague. A line concrete enough to check works best.
+```
+
+```final-test instruction-files-overview
+A teammate wants to add a long overview of the repo's folders to `CLAUDE.md`, "to help the agent". What did the 2026 study of these files find?
+- [x] Repository overviews didn't help, and the files raised the cost of running the model by over 20%.
+- [ ] Repository overviews were the one kind of line that clearly raised the agents' task success.
+- [ ] The files made no difference to cost, so any extra line is free to add and keep.
+Why: The study found the files didn't generally improve task success, raised inference cost by over 20% on average, and that repository overviews didn't help. They're useful for non-standard coding practices.
+```
+
+```final-test instruction-files-local-md
+Your project relies on `AGENTS.md`, with no `CLAUDE.md`. You add a `CLAUDE.local.md` for your own notes, and Claude stops following `AGENTS.md`. Why?
+- [x] `CLAUDE.local.md` counts as a `CLAUDE.md`, so Claude reads it instead of `AGENTS.md`.
+- [ ] `CLAUDE.local.md` is kept out of git, so it deletes `AGENTS.md` from your folder.
+- [ ] Claude reads only one file per session, and it always picks the newest one.
+Why: Claude reads `AGENTS.md` only when there's no `CLAUDE.md` in your folder or above it, and `CLAUDE.local.md` counts as one. To keep both, type `/config` and set Project instructions to `claude-md-and-agents-md`.
 ```
 
 ```final-test instruction-files-deeper-the-bar

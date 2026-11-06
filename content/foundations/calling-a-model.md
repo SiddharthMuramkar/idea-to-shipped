@@ -6,11 +6,13 @@ summary: Calling Claude is an ordinary API call, and an agent is typically that 
 
 ## One call to the model
 
-Say you want your **practice project**, the yoga-studio booking site you build in your own repo, to answer: "Which class on Monday has space?"
+In [How coding agents work](/learn/how-agents-work), Claude Code ran tools for the model. But what does that look like in code? Say you're building a booking site for a yoga studio, the **practice project** in this library's Skills lessons. You want it to answer: "Which class on Monday has space?"
 
 **Calling Claude is an ordinary API call, and an agent is typically that call in a loop.**
 
-**Anthropic** is the company that makes Claude. Its **SDK**, a package of ready-made code for calling a service from your language, installs with `pip install anthropic`. One call sends your messages and gets Claude's reply back. `client` talks to Anthropic and `model` picks which Claude. Each message has a `role` (who speaks) and `content` (what they said):
+An **API** is how one program asks another for something: here, your code asks Anthropic's servers for Claude's reply.
+
+**Anthropic** is the company that makes Claude. Its **SDK**, a package of ready-made code for calling a service from your programming language, installs for Python with `pip install anthropic`. One call sends your messages and gets Claude's reply back. `client` talks to Anthropic and `model` picks which Claude. Each message has a `role` (who speaks) and `content` (what they said):
 
 ```python
 from anthropic import Anthropic
@@ -18,7 +20,7 @@ from anthropic import Anthropic
 client = Anthropic()
 message = client.messages.create(
     model="claude-opus-5-5",
-    max_tokens=1024,  # the most tokens Claude may write in one reply
+    max_tokens=1024,  # the most tokens (word-sized chunks of text) Claude may write in one reply
     messages=[{"role": "user", "content": "Which class on Monday has space?"}],
 )
 ```
@@ -35,7 +37,7 @@ Why: To carry on a conversation, your code sends the whole list of messages with
 
 ## The API key stays on the server
 
-`Anthropic()` reads your **API key** from the `ANTHROPIC_API_KEY` environment variable. Treat the key like a credit card number: whoever has it runs up charges on your account.
+`Anthropic()` reads your **API key**, the secret that proves the call is yours. It finds the key in the `ANTHROPIC_API_KEY` **environment variable**, a named setting your computer passes to programs. Treat the key like a credit card number: whoever has it runs up charges on your account.
 
 ```checkpoint quick-2
 You paste your API key into a public chat by mistake. What can a stranger do with it?
@@ -45,7 +47,7 @@ You paste your API key into a public chat by mistake. What can a stranger do wit
 Why: Treat the key like a credit card number: whoever has it runs up charges on your account. So a key out in public can cost you money.
 ```
 
-So it lives in an environment variable on the server, never in the browser and never in a file you commit.
+So it lives in an environment variable on the server, never in the browser and never in a file you commit to Git.
 
 Anthropic's SDK for **TypeScript**, a language often used for websites, refuses to run in a web browser by default, so the key isn't exposed.
 
@@ -57,11 +59,11 @@ You try Anthropic's TypeScript SDK in a web page, with its default settings. Wha
 Why: Anthropic's SDK for TypeScript refuses to run in a web browser by default. That way the key isn't exposed.
 ```
 
-So in your practice project, the call belongs in the FastAPI backend, not the TypeScript website.
+So on the yoga-studio site, the call belongs in the **backend**, the part that runs on a server. It doesn't go in the website code that runs in visitors' browsers.
 
 ## A tool call
 
-Claude can't see your database, so you give it a [tool](/learn/fix-the-environment): a function in your code. You describe it with a name, a description and a **JSON Schema**, a JSON description of the shape some data must have.
+Claude can't see your database, so you give it a [tool](/learn/how-agents-work): a function in your code. You describe it with a name, a description and a **JSON Schema**. That's a description of the shape some data must have, written in JSON, a common text format for data.
 
 ```checkpoint quick-4
 A member asks which class has space, and the answer is in your database. How can Claude find out?
@@ -135,9 +137,9 @@ Why: Claude Code runs on the same loop, so running a command is a tool call.
 
 ### Why it exists
 
-Matt's Skills talk about agents, tool calls and [subagents](/learn/grill-before-you-build) without opening them up. All three are built from a call like the one in the short part, and that explains how they behave.
+Claude Code and Matt Pocock's Skills talk about agents, tool calls and [subagents](/learn/how-agents-work) without opening them up. All three are built from a call like the one above, and that explains how they behave.
 
-An **LLM**, or large language model, is what this Course calls a model. Matt says LLMs are "kind of like the guy from Memento": they continually forget, and keep resetting back to the base state. He's talking about sessions, and the same holds for each API call. So your code sends the whole history every time.
+An **LLM**, or large language model, is the kind of model Claude is. Matt says LLMs are "kind of like the guy from Memento", a film whose hero can't form new memories. They continually forget, and keep resetting back to the base state. He's talking about sessions, and the same holds for each API call. So your code sends the whole history every time.
 
 ```checkpoint quick-9
 You call Claude twice, and the second call sends only your new message. What does Claude know of the first?
@@ -147,7 +149,7 @@ You call Claude twice, and the second call sends only your new message. What doe
 Why: LLMs continually forget, and that holds for each API call. So your code sends the whole history every time.
 ```
 
-A subagent is built the same way. Your agent calls another LLM with its own fresh context window, and that LLM reports a summary back. So when [ask-matt](/learn/ask-matt) offers you a subagent, that's the offer: the job goes to its own context window, and you get a report back.
+A subagent is built the same way. Your agent calls another LLM with its own fresh context window (everything a model can see at once), and that LLM reports a summary back. [ask-matt](/learn/ask-matt) is Matt's guide to his other Skills. So when it offers you a subagent, that's the offer: the job goes to its own context window, and you get a report back.
 
 ### How it works underneath
 
@@ -229,9 +231,9 @@ So a tool deserves as much care as a prompt: Anthropic says it "spent more time 
 
 ### Where it goes wrong
 
-**Your key stops working, and Anthropic emails you.** You probably committed it to a public repo, one of the most frequent causes of leaked keys. GitHub scans public repos for Claude keys, and Anthropic "automatically deactivates the exposed API key." On your own machine, keep your next key in a `.env` file listed in `.gitignore`.
+**Your key stops working, and Anthropic emails you.** You probably committed it to a public repository, one of the most frequent causes of leaked keys. GitHub scans public repositories for Claude keys, and Anthropic "automatically deactivates the exposed API key." On your own machine, keep your next key in a `.env` file listed in `.gitignore`, the file that tells Git what to leave out.
 
-**The SDK refuses to run in your website.** Anthropic's TypeScript SDK is off by default in a browser, "to avoid exposing your secret API credentials." Make the call from your backend instead. In January 2024 a developer asked for a way round it in issue #248. In August 2024 the SDK shipped the switch, named `dangerouslyAllowBrowser`. It adds an extra request line called `anthropic-dangerous-direct-browser-access`.
+**The SDK refuses to run in your website.** Anthropic's TypeScript SDK is off by default in a browser, "to avoid exposing your secret API credentials." Make the call from your backend instead. In January 2024 a developer asked for a way round it, in issue #248 on the SDK's GitHub page. In August 2024 the SDK shipped the switch, named `dangerouslyAllowBrowser`. It adds an extra request line called `anthropic-dangerous-direct-browser-access`.
 
 **The API refuses your request with `tool_use ids were found without tool_result blocks immediately after`.** Each `tool_use` block needs a `tool_result` in the next message, and one is missing or comes after text. One agent crashed or timed out mid-run, leaving tool calls in its saved history with no results. After that, "every subsequent message hits the same orphaned tool_use in history". So send one `tool_result` for every `tool_use` block, before any text.
 
@@ -255,7 +257,7 @@ Why: Agents mean higher costs and the potential for compounding errors. So add a
 
 ### Try it
 
-You'll need your practice project, Python 3.10 or later, and an account on the **Claude Console**, Anthropic's site for API keys, with credit on it. If you haven't set the project up, do [keeping-track](/learn/issues-and-keeping-track)'s Try it step first. Each call is charged to your account, so this script caps its loop.
+You'll need a Git repository to work in, and Python 3.10 or later. You'll also need an account on the **Claude Console**, Anthropic's site for API keys, with credit on it. Your practice project works, and so does a new folder where you've run `git init`. Each call is charged to your account, so this script caps its loop.
 
 1. In the Claude Console, open the **API keys** page and create a key.
 2. From the repo root, make the folders: `mkdir -p api/scripts`.
@@ -267,8 +269,10 @@ ANTHROPIC_API_KEY=your-api-key-here
 ```
 
 5. Check that git ignores it: `git check-ignore api/.env`. You should see `api/.env`.
-6. Install the packages in a virtual environment: `pip install anthropic python-dotenv`.
-7. Save this as `api/scripts/agent_loop.py`. The tool returns two made-up classes.
+6. Make a **virtual environment**, a separate space for this project's Python packages: `python3 -m venv .venv`. On Windows, type `python` instead of `python3`.
+7. Turn it on: `source .venv/bin/activate`. On Windows, use `.venv\Scripts\activate` instead.
+8. Install the packages: `pip install anthropic python-dotenv`.
+9. Save this as `api/scripts/agent_loop.py`. The tool returns two made-up classes.
 
 ```python
 import json
@@ -324,16 +328,16 @@ for block in response.content:
         print(block.text)
 ```
 
-8. Run it: `python api/scripts/agent_loop.py`. You should see `tool_use`, then `end_turn`, then Claude's answer.
+10. Run it: `python api/scripts/agent_loop.py`. You should see `tool_use`, then `end_turn`, then Claude's answer.
 
-Keep this script out of `web/`. The TypeScript website should never see the key.
+Keep this script and the key on the server side. Code that runs in a browser should never see the key.
 
 ### Read more
 
-- [How tool use works](https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works), Anthropic docs, read 2026-10-30
-- [Tutorial: Build a tool-using agent](https://platform.claude.com/docs/en/agents-and-tools/tool-use/build-a-tool-using-agent), Anthropic docs, read 2026-10-30
+- [How tool use works](https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works), Anthropic docs
+- [Tutorial: Build a tool-using agent](https://platform.claude.com/docs/en/agents-and-tools/tool-use/build-a-tool-using-agent), Anthropic docs
 - [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents), Erik S. and Barry Zhang, Anthropic, 2024-12-19
-- [How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop), Anthropic's Claude Code docs, read 2026-10-30
+- [How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop), Anthropic's Claude Code docs
 - [API key best practices: keep your keys safe and secure](https://support.claude.com/en/articles/9767949-api-key-best-practices-keep-your-keys-safe-and-secure), Anthropic Help Center, 2026-10-19
 - [Add a dangerouslyAllowBrowser option (issue #248)](https://github.com/anthropics/anthropic-sdk-typescript/issues/248), jkomoros and others, opened 2024-01-06
 - [Full Walkthrough: Workflow for AI Coding](https://www.youtube.com/watch?v=-QFHIoCo-Ko), Matt Pocock, AI Engineer, 2026-04-24
@@ -354,15 +358,15 @@ Q: What does `dangerouslyAllowBrowser` do in Anthropic's TypeScript SDK?
 A: It lets the SDK run in a web browser, which is off by default so the API key isn't exposed. It adds the `anthropic-dangerous-direct-browser-access` header. It shipped in August 2024, after issue #248.
 
 Q: Building its SWE-bench agent, what did Anthropic change to stop file-path mistakes?
-A: The tool, not the prompt. The model slipped on relative paths once it left the root folder, so the tool was changed to require absolute paths, and the model then used it flawlessly.
+A: The tool, not the prompt. The model slipped on relative paths once it left the root folder. So the tool was changed to require absolute paths, and the model then used it flawlessly.
 ```
 
 ## Final test
 
 ```final-test calling-a-model-where-the-key-lives
-In the practice project, where should the Anthropic API key live?
-- [x] In an environment variable on the FastAPI backend, which makes the call to Claude.
-- [ ] In a constant in the TypeScript website, so the browser can call Claude directly.
+On the yoga-studio booking site, where should the Anthropic API key live?
+- [x] In an environment variable on the backend, which makes the call to Claude.
+- [ ] In a constant in the website's TypeScript code, so the browser can call Claude directly.
 - [ ] In a settings file committed to the repo, so every developer gets the same key.
 Why: Whoever has the key runs up charges on your account, so it has to stay where nobody else can read it. The website is out, since a key in a browser is exposed. That's why Anthropic's TypeScript SDK won't run there by default. A committed file is out too, since keys committed to public repos are a frequent cause of leaks. That leaves an environment variable on the backend.
 ```
@@ -397,6 +401,22 @@ Your script saved Claude's reply asking for two tools, then crashed before runni
 - [ ] Claude sees no results, so it quietly asks for the same two tools again in its reply.
 - [ ] The API drops the unanswered `tool_use` blocks and answers from the rest of the history.
 Why: Claude's saved reply asked for two tools, so the API expects a `tool_result` for each in the next message. They're missing, so it rejects the request with "tool_use ids were found without tool_result blocks immediately after". Sending the history again changes nothing: every later message hits the same orphaned `tool_use`.
+```
+
+```final-test calling-a-model-second-call
+Your booking site asks Claude "Which class on Monday has space?" and gets a good answer. Then it asks "And on Tuesday?", sending only that new message, and Claude seems lost. What's wrong?
+- [x] Each call stands alone, so your code must send the whole list of messages.
+- [ ] The API forgot the first question, because its memory lasts a few seconds.
+- [ ] Claude needs a tool call before it can answer a follow-up question.
+Why: Models continually forget, and that holds for each API call. To carry on a conversation, your code sends the whole list of messages with every call, the first one included.
+```
+
+```final-test calling-a-model-fix-the-tool
+Your agent keeps giving one tool the wrong file paths once it has moved out of the project's root folder. Which fix matches what Anthropic did for its SWE-bench agent?
+- [x] Change the tool so that it always requires absolute paths.
+- [ ] Add a sentence to the prompt asking for more careful paths.
+- [ ] Raise `max_tokens`, so the model has more room to think.
+Why: Anthropic fixed the tool, not the prompt. Once the tool required absolute paths, the model used it flawlessly. So a tool deserves as much care as a prompt.
 ```
 
 ```sources

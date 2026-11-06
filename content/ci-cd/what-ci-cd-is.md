@@ -15,7 +15,7 @@ Say an agent opens a pull request on your `recipes` site. Does the change work? 
 
 ## Why now: agents write, gates check
 
-Brad Traversy opens his CI/CD crash course with a claim: coding and software development are “no longer synonymous”. People build whole apps with agents without understanding every line, and he isn’t there to criticise that. His point is what must surround that code before it reaches users: tests, gates, and a pipeline that catches problems first.
+Brad Traversy, a web development teacher on YouTube, opens his CI/CD crash course with a claim: coding and software development are “no longer synonymous”. People build whole apps with agents without understanding every line, and he isn’t there to criticise that. His point is what must surround that code before it reaches users: tests, gates that stop a failing change, and a **pipeline** (the chain of automatic steps every change goes through) that catches problems first.
 
 **With CI/CD, a machine tests every change and keeps merged work ready to go live.**
 
@@ -30,13 +30,13 @@ You want every pull request tested, with nobody having to ask. Which idea is tha
 Why: CI is the testing half. CD and continuous deployment are about getting merged work live.
 ```
 
-Agents make this urgent. **Ralph**, a loop that runs an agent over and over on its own, shows why. Matt Pocock puts it this way: “A human might commit once or twice a day. Ralph can pile dozens of commits into a repo in hours.” If those commits are poor, the code gets worse fast. Your job moves from typing to checking, and you can’t read that fast, so the first round of checking has to be done by machines, on every change.
+Agents make this urgent. **Ralph**, a loop that runs an agent over and over on its own, shows why. Matt Pocock, who writes about coding with agents at AI Hero, puts it this way: “A human might commit once or twice a day. Ralph can pile dozens of commits into a repo in hours.” If those commits are poor, the code gets worse fast. Your job moves from typing to checking, and you can’t read that fast, so the first round of checking has to be done by machines, on every change.
 
-Machine checks suit agents, too. An agent doesn’t get frustrated by repetition: when its code fails a check, it tries again. That’s why Matt’s [retro](/learn/retro) Skill treats a repo with no automatic checks as a problem in itself.
+Machine checks suit agents, too. An agent doesn’t get frustrated by repetition: when its code fails a check, it tries again. That’s why Matt’s [retro](/learn/retro), a [Skill](/learn/skills) that looks back over a coding session, treats a repo with no automatic checks as a problem in itself.
 
-Two words carry the rest of these lessons. A **check** is the pass/fail result one CI job reports on a commit: the green tick or red cross you’ve seen next to a [pull request](/learn/pull-requests). A **gate** is an automatic check that blocks the next step, such as merging or going live. A check on its own only reports. It becomes a gate when something is set up to wait for it.
+Two words carry the rest of these lessons. A **check** is the pass/fail result that one CI job, a set of automated steps, reports on a commit: the green tick or red cross you’ve seen next to a [pull request](/learn/pull-requests). A **gate** is an automatic check that blocks the next step, such as merging or going live. A check on its own only reports. It becomes a gate when something is set up to wait for it.
 
-Say an agent has written a CI workflow for your `recipes` site, with jobs for lint, types and tests, and pushed it on a branch. It runs only on pull requests and on pushes to `main`, so until one of those happens it has run zero times. And with no **ruleset** on `main` (a named list of rules for a branch, as in [How teams protect main](/learn/how-teams-do-it)), even a red result can’t stop a merge. Brad points out the same gap after his first green run: even if a test failed, “we could still merge.”
+Say an agent has written a CI workflow for your `recipes` site (the file that tells GitHub which jobs to run, and when), with jobs that check its code and run its tests, and pushed it on a branch. It runs only on pull requests and on pushes to `main`, so until one of those happens it has run zero times. And with no **ruleset** on `main` (a named list of rules for a branch, as in [How teams protect main](/learn/how-teams-do-it)), even a red result can’t stop a merge. Brad points out the same gap after his first green run: even if a test failed, “we could still merge.”
 
 You don’t have to write any of this by hand. Brad’s advice is to tell your agent to add these guardrails, as long as you know the words to ask with. This lesson is the words. [Reading a GitHub Actions workflow](/learn/reading-a-workflow), [Gates: checks that block](/learn/gates) and [the lab](/learn/lab-gated-pipeline) are the wiring.
 
@@ -64,16 +64,18 @@ Why: A gate blocks the next step by itself. A tick, a workflow file or a test pr
 
 ## CI: merge often, check every change
 
-Martin Fowler’s definition of CI has two halves: everyone merges their work into the shared code at least daily, and an automated build that includes the tests checks every merge. Put plainly: land small changes often, and have a machine check each one. CI is much older than agents. Kent Beck developed it in the 1990s, as part of a method called Extreme Programming.
+Martin Fowler, a long-time writer on software design, defines CI in two halves: everyone merges their work into the shared code at least daily, and an automated build that includes the tests checks every merge. Put plainly: land small changes often, and have a machine check each one. CI is much older than agents. Kent Beck developed it in the 1990s, as part of a method called Extreme Programming.
 
 GitHub’s docs say the same in GitHub’s terms. A CI workflow builds your code and runs your tests when something happens, such as a push, and shows the results on the pull request. All green means ready to review or merge. It doesn’t mean the code is right: a check catches only what it was written to catch.
 
-Brad lists what CI usually checks: types, tests, lint and the build. His lab app is a tiny web server written in TypeScript, a version of JavaScript that adds types. Here is what each check catches, and its command in the lab.
+Brad’s lab app is a tiny web server written in TypeScript: JavaScript plus **types**, labels that say what kind of value each name holds, such as a number or some text. Brad lists what CI usually checks: the types, the tests, lint (rules about style and risky patterns) and the build.
+
+Here is what each check catches, and its command in the lab. Each command runs through npm, the tool that installs a JavaScript project’s packages and runs its scripts.
 
 | Check | What it catches | In Brad’s lab |
 |---|---|---|
-| **Typecheck** | Code that breaks TypeScript’s type rules. In the lab it’s `tsc --noEmit`: the TypeScript compiler, writing no output files. | `npm run typecheck` |
-| **Tests** | Code that doesn’t do what a test says it should | `npm test`, with Node’s built-in test runner |
+| **Typecheck** | Code that breaks TypeScript’s type rules. In the lab it’s `tsc --noEmit`: TypeScript’s compiler, the tool that turns it into JavaScript, run without writing any files. | `npm run typecheck` |
+| **Tests** | Code that doesn’t do what a test says it should | `npm test`, with the test runner built into Node.js, the program that runs JavaScript outside a browser |
 | **Lint** | Broken rules about style and risky patterns, found by a **linter** such as ESLint | Not in the lab |
 | **Build** | Code that can’t be turned into the version that runs for users | `npm run build`, which runs `tsc` |
 
@@ -136,14 +138,14 @@ The CD half is about **production**: the real, live version of the app that user
 | Who decides when | A person, with a click | Nobody: it’s automatic |
 | Brad’s words | “it does need that human” | “it happens automatically once those required checks pass” |
 
-Brad’s definitions match Fowler’s, and he says his project uses continuous deployment. Then he slips. Setting up Render, the host in his video, he leaves Auto-Deploy on “On Commit” and rightly calls it continuous deployment. A minute later, in the same chapter, he says “And again, continuous delivery”, because each push now deploys automatically. By his own definition that’s continuous deployment: no human decides. People say “CD” for both, so when you prompt an agent, say the full word.
+Brad’s definitions match Fowler’s, and he says his project uses continuous deployment. Then he slips. His video puts the app on Render, a hosting service that runs it on Render’s servers. Setting Render up, he leaves Auto-Deploy on “On Commit” and rightly calls it continuous deployment. A minute later, in the same chapter, he says “And again, continuous delivery”, because each push now deploys automatically. By his own definition that’s continuous deployment: no human decides. People say “CD” for both, so when you prompt an agent, say the full word.
 
-Vercel, the host the lab uses in Render’s place, makes two kinds of deployment from a site’s GitHub repo. A **deployment** is one build of one commit, at its own web address.
+Vercel, the hosting service the lab uses in Render’s place, makes two kinds of deployment from a site’s GitHub repo. A **deployment** is one build of one commit, at its own web address.
 
 - A **production deployment** changes production. You get one when you push or merge into the production branch (the live one, usually `main`), or run `vercel --prod`. A new project’s first deployment is always a production one.
 - A **preview deployment** is a test copy of the site, at its own address. You get one when you open a pull request, or push to any other branch. The live site stays as it is.
 
-A production deployment goes live when it is **promoted**: given the production domain, the site’s real address. By default Vercel promotes each one as soon as it’s built. The lab adds a gate. When a PR merges into `main`, Vercel builds a production deployment, holds it until GitHub’s `Verify` check passes on that commit, then promotes it with nobody clicking. That’s still continuous deployment, held back by a check. [Gates: checks that block](/learn/gates) sets up the hold.
+A production deployment goes live when it is **promoted**: given the production domain, the site’s real address. By default Vercel promotes each one as soon as it’s built. The lab adds a gate. When a PR merges into `main`, Vercel builds a production deployment, holds it until GitHub’s check (called `Verify` in Brad’s lab) passes on that commit, then promotes it with nobody clicking. That’s still continuous deployment, held back by a check. [Gates: checks that block](/learn/gates) sets up the hold.
 
 ```callout remember
 Delivery: always ready, and a person clicks to go live. Deployment: every change that passes the gates goes live by itself. On Vercel a pull request gets a preview deployment, and a merge into `main` gets a production deployment, which goes live when it’s promoted.
@@ -190,7 +192,7 @@ A **job** is a set of steps that run in order on one machine. The **runner** is 
 
 A **workflow** says which jobs to run, and when. It’s a file in the repo’s `.github/workflows/` folder, written in **YAML**: a plain-text settings format of indented `key: value` lines. Each job in it picks a runner with `runs-on`. Brad’s says `ubuntu-latest`: GitHub’s current standard machine running Ubuntu Linux.
 
-On GitHub-hosted runners, each job gets a brand-new virtual machine (VM): a temporary computer in GitHub’s cloud, with Linux and common tools preinstalled. In Brad’s lab, the job checks out the code, sets up Node, installs the dependencies and runs the checks. When the job finishes, the VM is thrown away.
+On GitHub-hosted runners, each job gets a brand-new virtual machine (VM): a temporary computer in GitHub’s cloud, with Linux and common tools preinstalled. In Brad’s lab, the job checks out the code, sets up Node, installs the dependencies (the published packages the app needs) and runs the checks. When the job finishes, the VM is thrown away.
 
 So each run starts clean. The fresh machine has none of your files on it. A job’s first step fetches the code, and later steps can use it, because they share one runner.
 
@@ -210,7 +212,7 @@ Why bother, when the agent already ran the checks on your laptop? Because your l
 
 GitHub Actions isn’t the only CI service. Brad names Jenkins, CircleCI and Travis CI: they differ in setup, but all of them run checks automatically whenever the code changes. These lessons use GitHub Actions only.
 
-Tests that need a real database get a throwaway one too. A workflow can start **service containers**: Docker containers (packaged programs, such as a database, that run in isolation) beside the job, created fresh for it and destroyed when it ends. A `services` block in the workflow names the container image (the packaged program to start), such as `postgres`, and the job reaches it over the network. Some hosted databases offer another route: Neon, for example, has GitHub Actions that make a short-lived copy of a database for a pull request and delete it afterwards.
+Tests that need a real database get a throwaway one too. A workflow can start **service containers**: Docker containers (packaged programs, such as a database, that run in isolation) beside the job, created fresh for it and destroyed when it ends. A `services` block in the workflow names the container image (the packaged program to start), such as `postgres` for the Postgres database, and the job reaches it over the network. Some hosted databases offer another route: Neon, for example, has GitHub Actions that make a short-lived copy of a database for a pull request and delete it afterwards.
 
 ```callout remember
 CI runs on a new machine that gets the commit and the locked dependencies, nothing from your laptop, and is thrown away afterwards. A pass there can’t depend on leftovers.
@@ -275,7 +277,7 @@ In Brad’s workflow, the last two steps are these:
 
 `npm ci` is `npm install` for machines. It needs a lockfile, clears out `node_modules`, and installs exactly the locked versions. If `package.json` disagrees with the lockfile, it stops with an error instead of quietly updating it. Same commit, same versions, every run. A project that uses pnpm, another package manager, does the same with `pnpm install --frozen-lockfile`.
 
-One trap before the lab. Brad’s `package.json` declares Node 24 in its `engines` field. That records which Node the project expects, but npm treats it as advice and doesn’t change the Node you have. Say your laptop runs Node 22: `npm run verify` there uses 22, while CI uses the 24 its workflow asks for. The fix, as Brad’s gist says, is to install or switch to Node 24 before you start.
+One trap before the lab. Brad’s `package.json` declares Node 24 in its `engines` field. That records which Node the project expects, but npm treats it as advice and doesn’t change the Node you have. Say your laptop runs Node 22: `npm run verify` there uses 22, while CI uses the 24 its workflow asks for. The fix, as Brad’s gist says, is to install or switch to Node 24 before you start. (A gist is a GitHub page of shared notes and code; Brad’s holds every command and file from his video.)
 
 Many projects have the parts but no single command: a README that lists lint, typecheck, tests and build one by one, and a CI workflow that runs them as separate steps. [Setting up your own project’s pipeline](/learn/your-projects-pipeline) closes that gap.
 
@@ -314,7 +316,7 @@ Why: `engines` only records what the project expects, and npm treats it as advic
 
 A change an agent writes passes four stops on its way to users. They are also the map of the next three lessons.
 
-1. **Pre-commit hook**, on your laptop, at each commit. A **hook** is a script Git runs at a set moment. A pre-commit hook runs before each commit, and if it fails, there’s no commit. Matt’s [setup-pre-commit](/learn/setup-pre-commit) Skill writes the three-line hook shown below: format the staged files with Prettier, then typecheck, then test.
+1. **Pre-commit hook**, on your laptop, at each commit. A **hook** is a script Git runs at a set moment. A pre-commit hook runs before each commit, and if it fails, there’s no commit. Matt’s [setup-pre-commit](/learn/setup-pre-commit) Skill writes the three-line hook shown below: format the staged files with Prettier, a code formatter, then typecheck, then test.
 2. **Required check**, on GitHub, before merge. The workflow runs the checks on a fresh runner for every PR. A ruleset on `main` makes the check required: no green, no merge. In Brad’s lab the ruleset is called “Protect main”, and it requires `Verify`.
 3. **Review and preview**, by you, before merge. You read the PR and open its preview deployment. A person decides here, so it isn’t a gate in the sense used here: it’s the part machines can’t do. [Gates: checks that block](/learn/gates) nicknames it the look gate, because you hold it, but nothing automatic blocks there.
 4. **Deployment Check, then promote**, on Vercel, before release. After the merge, Vercel builds the production deployment and holds it until the required checks pass on `main`. Then it promotes it. “Force Promote” skips the wait.
@@ -476,7 +478,7 @@ Add a CI workflow that runs your practice project’s tests on every pull reques
 
 1. Make a branch: `git switch -c add-ci`.
 2. Make the folders: `mkdir -p api .github/workflows`.
-3. Name what CI installs: `echo pytest > api/requirements.txt`. If `api/requirements.txt` already exists, add a `pytest` line to it instead.
+3. Name what CI installs, pytest (a tool that runs Python tests): `echo pytest > api/requirements.txt`. If `api/requirements.txt` already exists, add a `pytest` line to it instead.
 4. Add a test that passes, as `api/test_smoke.py`:
 
 ```python

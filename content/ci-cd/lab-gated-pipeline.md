@@ -17,7 +17,7 @@ The lab puts three lessons into practice: [What CI/CD is](/learn/what-ci-cd-is),
 
 ## The end state
 
-Brad's starter is a tiny web app. It uses Express, a small Node.js framework for web servers, and TypeScript, which is JavaScript with types. It has a home page, a health endpoint at `/api/health` that answers "I'm running", and one test. By the end of the lab, five pieces surround it:
+Brad's starter is a tiny web app. It uses Express, a small Node.js framework for web servers, and TypeScript, which is JavaScript with types. It has a home page, a health endpoint at `/api/health` that answers `{"status":"ok"}` while the app runs, and one test. By the end of the lab, five pieces surround it:
 
 | Piece | Where it lives | Its job |
 |---|---|---|
@@ -95,7 +95,7 @@ Each step below follows the same pattern. First, what Brad does, with the time t
 | Preview Environments (31:33) | Switches previews on; Render deletes each one on merge | Already on, behind a Vercel login, kept after the merge | 9 |
 
 ```callout remember
-Install Node 24 before step 1: `engines` sets Vercel's Node, not yours. On GitHub Free, make the repo public, so its ruleset works.
+Install Node 24 before Step 1: `engines` sets Vercel's Node, not yours. On GitHub Free, make the repo public, so its ruleset works.
 ```
 
 ```checkpoint local-node-22
@@ -209,7 +209,7 @@ You should see your one commit on the repo's Code tab, with `package-lock.json` 
 
 The repo must start empty. A README would be a first commit on GitHub that your machine lacks, so GitHub would refuse your push. If `git push` asks for a password, see [Push, pull and remotes](/learn/push-pull-and-remotes): GitHub wants a token or the GitHub CLI's sign-in instead.
 
-Squash merging turns each pull request into one commit on `main`. Brad merges with a merge commit instead, and step 4 shows what that changes. Automatic deletion removes a pull request's branch on GitHub once it merges, which Brad does by hand.
+Squash merging turns each pull request into one commit on `main`. Brad merges with a merge commit instead, and Step 4 shows what that changes. Automatic deletion removes a pull request's branch on GitHub once it merges, which Brad does by hand.
 
 ```checkpoint readme-ticked
 You ticked Add a README when you created the repo on GitHub. What happens when you push `main`?
@@ -236,10 +236,10 @@ You need your Vercel account, signed in with GitHub.
 3. Not listed? Click Adjust GitHub App Permissions, and give Vercel access to the repo.
 4. Leave every setting as Vercel fills it in. Click Deploy.
 5. When the deployment is Ready, open the project and click its domain.
-6. Check the health endpoint. Use your own domain in place of the example:
+6. Check the health endpoint. Put your project's domain in place of `YOUR_PRODUCTION_URL`:
 
 ```sh
-curl https://cicd-lab.vercel.app/api/health
+curl https://YOUR_PRODUCTION_URL/api/health
 ```
 
 You should see the home page say "CI/CD Lab" and "Version development". `curl` prints `{"status":"ok"}`.
@@ -247,7 +247,7 @@ You should see the home page say "CI/CD Lab" and "Version development". `curl` p
 
 How did Vercel find the app? It looks for a file that imports `express`, in a fixed list of places. The file is called `app`, `index` or `server`, at the root or in `src`, in JavaScript or TypeScript. It must default-export the app or call `listen`. `src/app.ts` imports `express` and ends with `export default app`, so it qualifies. `src/server.ts` imports `./app.js`, not `express`, so it doesn't.
 
-On Render, `npm start` runs a server that listens all the time. On Vercel the app becomes a **Vercel Function**: code that Vercel runs whenever a request arrives. Vercel also reads `engines`, so it builds with the newest Node 24, as Render did.
+On Render, `npm start` runs a server that listens all the time. On Vercel the app becomes a **Vercel Function**: code that Vercel runs whenever a request arrives. Vercel also reads `engines`, so it builds with the newest Node 24, as Render did. It builds the app, but it never runs your tests: that's CI's job, from Step 4.
 
 Two URLs matter from now on. A **deployment** is one build of one commit, at its own URL, such as `cicd-lab-a1b2c3d4e-your-account.vercel.app`. The **Production URL** is your project's main address, such as `cicd-lab.vercel.app`, with a few extra letters if that name is taken. It always shows the newest production deployment that has gone live.
 
@@ -385,7 +385,7 @@ GitHub shows the check as `CI / Verify (pull_request)`: the workflow's name, the
 
 Why `-D`? Brad's `git branch -d` works because a merge commit keeps the branch's commits in `main`. A squash makes one new commit instead, so `-d` says the branch is "not fully merged". An empty `git diff` proves `main` already holds everything, so `-D` (delete anyway) loses nothing.
 
-The second run matters later. The squash commit on `main` is brand new, and the pull request's green check belongs to a different commit. The push run gives the new commit its own `Verify`. That's the one Vercel's Deployment Check will wait for in step 6.
+The second run matters later. The squash commit on `main` is brand new, and the pull request's green check belongs to a different commit. The push run gives the new commit its own `Verify`. That's the one Vercel's Deployment Check will wait for in Step 6.
 
 ```checkpoint squash-branch-d
 After the squash merge, `git branch -d feature/github-actions-ci` refuses. What's the safe next move?
@@ -435,7 +435,7 @@ gh api repos/YOUR_USERNAME/cicd-lab/rules/branches/main
 You should see Protect main listed as Active. The `gh api` output lists `pull_request` and `required_status_checks`, with `"context": "Verify"`.
 ````
 
-The new-ruleset form starts at Disabled, which saves the rules without enforcing them. That's why step 3 matters. The rules call lists only rules GitHub enforces, so `[]` means nothing protects `main`.
+The new-ruleset form starts at Disabled, which saves the rules without enforcing them. That's why you switch it to Active. The rules call lists only rules GitHub enforces, so `[]` means nothing protects `main`.
 
 An empty bypass list means nobody can skip the rules, you included. With 0 required approvals, every change still arrives as a pull request, so `Verify` runs on it. Nobody has to approve it, which is right when you work alone. From now on, a `git push` straight to `main` is refused, so work on branches.
 
@@ -467,7 +467,7 @@ To **promote** a deployment is to make it the one your Production URL shows. Ver
 You should see `Verify` listed under Deployment Checks.
 ````
 
-Vercel's docs list two conditions for checks from GitHub. The project must be linked to the repo through Vercel for GitHub, which your import in step 3 did. And automatic aliasing must be on, so Vercel promotes by itself once the checks pass. It's on unless you turned it off.
+Vercel's docs list two conditions for checks from GitHub. The project must be linked to the repo through Vercel for GitHub, which your import in Step 3 did. And automatic aliasing must be on, so Vercel promotes by itself once the checks pass. It's on unless you turned it off.
 
 The release gate has a bypass too: Force Promote, on a deployment's page, promotes it even with checks failing. Keep it for emergencies, and never make it the agent's call.
 
@@ -555,17 +555,17 @@ Here Vercel differs most. Render never starts the deploy. Vercel builds a produc
 ```
 
 ````try
-1. In Settings → Rules → Rulesets → Protect main, set Enforcement status to Disabled. Save.
+1. In Settings → Rules → Rulesets → Protect main, set Enforcement status to Disabled. Click Save changes.
 2. On the red pull request, click Squash and merge, then confirm.
 3. In Vercel, open Deployments. Open the new production deployment.
 4. Wait for its Deployment Checks: `Verify` fails, and the deployment isn't promoted.
 5. Open your Production URL. It still shows the deployment from before.
 6. On GitHub, open the merged pull request. Click Revert, then Create pull request.
 7. When the revert's `Verify` is green, squash-merge it.
-8. Set Protect main back to Active, in the same sitting. Save.
-9. Keep your local `feature/version-endpoint` branch: step 8 finishes it.
+8. Set Protect main back to Active, in the same sitting. Click Save changes.
+9. Keep your local `feature/version-endpoint` branch: Step 8 finishes it.
 
-You should see the rules call from step 5 list `pull_request` and `required_status_checks` again.
+You should see the rules call from Step 5 list `pull_request` and `required_status_checks` again.
 ````
 
 Switching a gate off is its bypass, and nothing reminds you to switch it back. The bad commit also reached `main`: the release gate kept it from users, not from history. The revert, a new pull request that undoes the merge, cleaned `main` up through both gates. [Undo and merge conflicts](/learn/undo-and-conflicts) covers reverts.
@@ -618,11 +618,11 @@ git commit -m "feat: add version endpoint"
 git push -u origin feature/version-endpoint
 ```
 
-5. Skipped the optional part? Your open pull request updates by itself. Did it? Open a new pull request.
+5. Skipped the optional part? Your open pull request updates itself. Took it? Open a new pull request.
 6. When `Verify` is green, squash-merge it.
 7. In Vercel, watch the new production deployment wait for `Verify`, then go live.
 8. Open your Production URL with `/api/version` on the end.
-9. Clean up, as in step 4. The diff should print nothing:
+9. Clean up as after Step 4. The diff should print nothing:
 
 ```sh
 git switch main
@@ -687,8 +687,8 @@ git push -u origin feature/preview-demo
 6. Open your Production URL in another tab, and compare the two.
 7. Once `Verify` is green, squash-merge the pull request.
 8. Reload your Production URL once Vercel promotes the new deployment.
-9. Open the preview link from step 5 again.
-10. Clean up the branch, as in step 8.
+9. Open the preview link again.
+10. Clean up as after Step 8: update `main`, check the diff, then delete `feature/preview-demo`.
 
 You should see the new line on the preview but not on production. After the merge, it's on production too, and the old preview link still works.
 ````
@@ -726,17 +726,17 @@ Most of these fail quietly. Nothing errors; a gate waits, or the build stops wit
 | Trap | What you see | What to do |
 |---|---|---|
 | The job name is the check name | After a rename, pull requests wait for `Verify` forever, and Vercel never promotes | Rename the job only together with both gates |
-| A check is easiest to pick once it has run | `Verify` isn't offered when you search for it | Let it run first; step 4's pull request does that |
+| A check is easiest to pick once it has run | `Verify` isn't offered when you search for it | Let it run first; Step 4's pull request does that |
 | The ruleset form starts at Disabled | Red pull requests still merge; the rules call prints `[]` | Set Enforcement status to Active |
 | A private repo on GitHub Free | The ruleset doesn't protect `main` | Make the repo public, or use GitHub Pro |
 | Previews sit behind a Vercel login | `curl` on a preview gets a login page | Open previews in a browser logged in to Vercel |
 | Your Node isn't 24 | Your local results differ from CI's | Install Node 24, and check `node --version` |
 | No lock file in Git | CI fails at the `npm ci` step | Commit `package-lock.json` |
 | The app file moved, or lost its default export | "No entrypoint found which imports express", or routes stop answering | Keep `src/app.ts` importing `express`, ending with `export default app` |
-| TypeScript 7 on Vercel | The build fails with `TS2688: Cannot find type definition file for 'node'` | Move to TypeScript 6, as in step 3 |
+| TypeScript 7 on Vercel | The build fails with `TS2688: Cannot find type definition file for 'node'` | Move to TypeScript 6, as in Step 3 |
 | A fix set for Production only | Production builds, then the first preview fails | Fix the cause in the code, not in one environment |
 
-The last row needs a word. Vercel hands **environment variables**, named settings, to your build, and each one applies only to the environments you tick: Production, Preview or Development. Some guides suggest the variable `VERCEL_EXPERIMENTAL_BACKENDS=1` for Express builds, which swaps in Vercel's newer, experimental builder. Set it for Production only, and previews build without it. That builder also has a known crash on TypeScript 7, so it isn't a fix for the `TS2688` error.
+The last row needs a word. Vercel hands **environment variables**, named settings, to your build. Each one applies only to the environments you tick: Production, Preview or Development. Vercel offers an opt-in variable, `VERCEL_EXPERIMENTAL_BACKENDS=1`, that swaps in a newer, experimental builder for Express. Set it for Production only, and previews build without it. That builder also has a known crash on TypeScript 7, so it doesn't fix the `TS2688` error.
 
 ```checkpoint red-pr-still-merges
 You created the ruleset, yet a pull request with a red ✗ still merges. What do you check first?
@@ -800,10 +800,10 @@ gh pr list -R YOUR_USERNAME/cicd-lab --state all
 
 You should see the rules list `pull_request`, with `required_approving_review_count: 0`, and `required_status_checks`, with `"context": "Verify"`. If you picked GitHub Actions as the check's source, it also shows `integration_id: 15368`. If it prints `[]`, the ruleset is Disabled: switch it back on.
 
-The runs list shows CI runs for both `pull_request` and `push` events, with the red one from step 7 among them. The pull request list shows CI, the version endpoint and the preview demo. If you took the optional part, it also shows a revert and a second version pull request.
+The runs list shows CI runs for both `pull_request` and `push` events, with the red one from Step 7 among them. The pull request list shows CI, the version endpoint and the preview demo. If you took the optional part, it also shows a revert and a second version pull request.
 ````
 
-Keep the lab, if you like, as a sandbox: try any gate change here before you make it on a real project. To delete it, start in Vercel: Settings → General → Delete Project removes the project and its deployments. Then, on GitHub, Settings → General has Archive this repository (it stays, read-only) and Delete this repository. Deleting with `gh repo delete` needs one more permission first: `gh auth refresh -s delete_repo`. Delete the local folder last.
+Keep the lab, if you like, as a sandbox: try any gate change here before you make it on a real project. To delete it, start in Vercel. In the project's Settings → General, Delete Project removes the project and its deployments. Then, on GitHub, Settings → General offers Archive this repository (it stays, read-only) and Delete this repository. Deleting with `gh repo delete` needs one more permission first: `gh auth refresh -s delete_repo`. Delete the local folder last.
 
 ## Remember
 

@@ -101,7 +101,7 @@ The tempting shortcut is to ask the agent for "sensible defaults" and move on. W
 
 The rebuild adds a second reason. A refund rule is a promise the studio makes to its members, and it costs money when it's wrong. Those rules belong to the studio owner, not to you and not to an agent. A guessed rule, such as "full refund up to two hours before class", would put words in the studio owner's mouth, on a page members pay through.
 
-Say your notes even plan for a studio owner who never replies: the new system copies today's front-desk rules exactly, and nothing new is invented. Notice that this fallback still needs the rules to be written down somewhere. In the export example in [Working the map](/learn/working-the-map), refunds showed up only as notes on cash payments, so even the fallback depends on getting answers from people.
+Say your notes even plan for a studio owner who never replies: the new system copies today's front-desk rules exactly, and nothing new is invented. Notice that this fallback still needs the rules to be written down somewhere. In the export example in [Working the map](/learn/working-the-map), refunds showed up only as notes on cash payments, so even the fallback depends on asking whoever runs the front desk today.
 
 ```callout remember
 Never let the agent fill in a person's side of a question. However plausible its answer sounds, it breaks the ticket, and on the rebuild a guessed refund rule would put words in the studio owner's mouth, on a page members pay through.
@@ -446,10 +446,10 @@ Why: The decision waits on the task ticket, and the rest of the frontier carries
 
 ```final-test answers-come-back
 The studio owner's answers come back. What happens next?
-- [ ] Paste them into the map's Notes
-- [ ] Send a second questionnaire at once
-- [ ] Turn them straight into an ADR
-- [x] A session records them on the task ticket and closes it
+- [ ] Paste them into the map's Notes part
+- [ ] Send a second questionnaire straight away
+- [ ] Turn them straight into a new ADR
+- [x] Record them on the task ticket, then close it
 Why: A session that names the task records the facts and closes it. Decisions built on those facts get their own sessions.
 ```
 
