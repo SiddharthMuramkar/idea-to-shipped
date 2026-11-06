@@ -1,14 +1,14 @@
 ---
 title: Context hygiene
 slug: context-hygiene
-summary: Keep the grilling, the Spec and the Tickets in one unbroken context window, then give each Ticket a fresh window.
+summary: When to keep your coding agent's context window and when to clear it: one window from grilling to Tickets, then a fresh one per Ticket.
 ---
 
 ## What context hygiene is
 
-Say an agent has been [grilling](/learn/grill-before-you-build) you about a made-up Booking API, and the Spec comes next. If you run `/clear` now, which empties the window, it forgets most of what you decided. If you never clear, it reasons worse.
+Say an agent has been [grilling](/learn/grill-before-you-build) you about a made-up Booking API, and the Spec, the written plan, comes next. If you run `/clear` now, which empties the window, it forgets most of what you decided. If you never clear, it reasons worse.
 
-**Context hygiene** means choosing on purpose what's in an agent's [context window](/learn/instruction-files), everything it can see at once. A **session** is one run of the agent. On the [main flow](/learn/issues-and-keeping-track), that means:
+**Context hygiene** means choosing on purpose what's in an agent's [context window](/learn/context-window), everything it can see at once. A **session** is one run of the agent.
 
 ```checkpoint quick-1
 Which of these is context hygiene?
@@ -17,6 +17,8 @@ Which of these is context hygiene?
 - [ ] Clearing your agent's window after every message you send.
 Why: Context hygiene means choosing on purpose what's in the context window, which is everything an agent can see at once. It isn't about tidy code or constant clearing.
 ```
+
+On the [main flow](/learn/main-flow), where the grilling becomes a Spec and the Spec is cut into small tasks called Tickets, that means one rule:
 
 **Keep the grilling, the Spec and the Tickets in one unbroken context window, then give each Ticket a fresh window.**
 
@@ -145,9 +147,9 @@ How would you notice a session sliding past the smart zone?
 Why: There's no error message and no visible boundary. You notice it in the agent's work, when it forgets an instruction or repeats a mistake it had already corrected.
 ```
 
-Matt calls this the **dumb zone**: past the smart zone, the agent gets sloppier and more forgetful. The model's attention gets strained, and it starts making worse decisions.
+Matt Pocock, who wrote the Skills in this flow, calls this the **dumb zone**: past the smart zone, the agent gets sloppier and more forgetful. The model's attention gets strained, and it starts making worse decisions.
 
-Matt's number has moved, so don't learn one figure as fact. In May 2026 he put the dumb zone around 120k tokens for most state-of-the-art models. Release 1.2.0, in August 2026, moved the figure from ~120k to ~150k tokens. Today's ask-matt says ~150k. His AI Coding Dictionary gives a range of 125K-150K tokens, and says the figure is debated. The current Skill file decides, so the Course uses ~150k, as an estimate.
+Matt's number has moved, so don't learn one figure as fact. In May 2026 he put the dumb zone around 120k tokens for most state-of-the-art models. Release 1.2.0, in August 2026, moved the figure from ~120k to ~150k tokens. Today's ask-matt says ~150k. His AI Coding Dictionary gives a range of 125K-150K tokens, and says the figure is debated. The current Skill file decides, so use ~150k, as an estimate.
 
 ```diagram
 type: chain
@@ -271,7 +273,7 @@ So check before you clear. Go through the Spec's promises, and check that each o
 
 ### Try it
 
-Watch a decision disappear from the window. You'll need your practice project. If you haven't set it up, do keeping-track's Try it step first.
+Watch a decision disappear from the window. You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In your practice project, start a new Claude Code session.
 2. Type `A member can book at most two classes a day. Don't save that anywhere.`
@@ -283,11 +285,11 @@ The limit lived only in the window, and `/clear` took it. So write down what mat
 
 ### Read more
 
-- [Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone), AI Coding Dictionary, Matt Pocock, no date shown (pinned 2026-10-30)
-- [Compaction](https://www.aihero.dev/ai-coding-dictionary/compaction), AI Coding Dictionary, Matt Pocock, no date shown (pinned 2026-10-30)
+- [Smart zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone), AI Coding Dictionary, Matt Pocock
+- [Compaction](https://www.aihero.dev/ai-coding-dictionary/compaction), AI Coding Dictionary, Matt Pocock
 - [9 Things People Get Wrong With /grill-me and /grill-with-docs](https://www.aihero.dev/things-people-get-wrong-with-grill-me-and-grill-with-docs), Matt Pocock, 2026-05-25
 - [v1.2: /wait-what, /writing-for-agents, Claude Code Plugin, and more](https://www.aihero.dev/skills/skills-changelog-v12-wait-what-writing-for-agents-claude-code-plugin-and-more), Matt Pocock, 2026-08-05
-- [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock, at commit a496f55 (pinned 2026-10-30)
+- [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock, 2026-10-29
 - [Quick tip when using /to-tickets](https://x.com/mattpocockuk/status/2087111966854730148), Matt Pocock on X, 2026-08-11
 - [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), Anthropic's Applied AI team, 2025-09-29
 - [Context engineering with Dex Horthy](https://newsletter.pragmaticengineer.com/p/context-engineering-with-dex-horthy), Gergely Orosz, The Pragmatic Engineer, 2026-07-15

@@ -1,7 +1,7 @@
 ---
-title: implement
+title: implement: turn decided work into a commit
 slug: implement
-summary: implement turns work that's already decided into a commit: it builds it, tests it, reviews it, and never reopens the plan.
+summary: How implement builds decided work test-first, reviews it and commits it without reopening the plan, and what it leaves for you to do.
 ---
 
 ## What it's for
@@ -12,7 +12,7 @@ The deciding is done, and your [Tickets](/learn/issues-and-keeping-track) are wr
 
 Say you're building the yoga-studio booking site, and Ticket #12 (List bookings) is next. You start a fresh session and type:
 
-```
+```text
 /implement #12
 ```
 
@@ -21,7 +21,7 @@ The agent then works in a fixed order:
 1. It fetches Ticket #12 from the [Issue tracker](/learn/issues-and-keeping-track) and states its title. If the reference is unclear, it asks.
 2. Where it can, it builds test-first with [tdd](/learn/tdd), at seams agreed up front. A seam is a place where tests check the code from outside.
 3. It runs the type check and single test files often, and the full test suite once at the end. The type check catches wrong types before the code runs.
-4. It runs [code-review](/learn/code-review), whose subagents review the work.
+4. It runs [code-review](/learn/code-review), whose [subagents](/learn/context-window), helper agents with a fresh context, review the work.
 5. It commits to the current branch.
 
 ```checkpoint quick-1
@@ -60,7 +60,7 @@ Why: implement-spec builds the whole Spec in one run, with agents working in par
 
 ## What it needs to start
 
-Only you can start implement, by typing `/implement`. It needs:
+Only you can start implement, by typing `/implement`.
 
 ```checkpoint quick-4
 Your Tickets are ready and the agent is idle. Will it start implement by itself?
@@ -69,6 +69,8 @@ Your Tickets are ready and the agent is idle. Will it start implement by itself?
 - [ ] Yes, but only once you've cleared the context window.
 Why: Only you can start implement, by typing /implement. The agent doesn't start it by itself, however ready the Tickets are.
 ```
+
+It needs:
 
 - A Spec or a Ticket, ideally one whose blockers are all done. For small work, the settled conversation is enough. Say so when you start it.
 - Ideally, [seams](/learn/test-first) agreed up front.
@@ -96,7 +98,7 @@ implement has committed its work on Ticket #12. What state is the Ticket in?
 Why: implement stops at the commit. It opens no pull request and closes nothing, so the Ticket stays open until you close it the way your Issue tracker closes work.
 ```
 
-Say your repo closes work through pull requests, as in [pull requests and merging](/learn/merging-and-cleaning-up). You open a pull request marked as closing the Ticket, with `Closes #12`. If the agent writes it, [pr](/learn/pr), the Skill with the template for a pull request's description, shapes its body. Merging that pull request into `main` closes Ticket #12.
+Say your repo closes work through pull requests, as in [Merging and cleaning up](/learn/merging-and-cleaning-up). You open a pull request marked as closing the Ticket, with `Closes #12`. If the agent writes it, [pr](/learn/pr), the Skill with the template for a pull request's description, shapes its body. Merging that pull request into `main` closes Ticket #12.
 
 ```checkpoint quick-7
 Your repo closes work through pull requests, and implement has finished. Who opens the pull request?
@@ -134,7 +136,7 @@ groups:
 
 The deciding happens before the build, when you grill the idea and write the Spec and Tickets. A fresh agent told to "build this" often redesigns that work as it builds.
 
-Matt built implement to do the opposite: "It never reopens the plan." There's no interview, no clarifying round, and no proposal of a different approach. Whatever was settled upstream, in the steps before it, is the input.
+Matt Pocock built implement to do the opposite: "It never reopens the plan." There's no interview, no clarifying round, and no proposal of a different approach. Whatever was settled upstream, in the steps before it, is the input.
 
 ```checkpoint quick-8
 Halfway through a Ticket, the agent sees a design it likes better. What does implement have it do?
@@ -150,7 +152,7 @@ So implement is the step where deciding stops and building starts.
 
 **Seams agreed before the code.** A test at a seam watches what the code does from outside, so it doesn't depend on how the code works inside. Say Ticket #13 names its seam:
 
-```
+```text
 Ticket #13: the endpoint that creates a booking
 Seam: test through POST /bookings
 ```
@@ -205,7 +207,7 @@ So check that the title is the Ticket you meant.
 
 ### Where it goes wrong
 
-**The tests appeared after the code.** An open Issue on Matt's repo reports that "TDD and code-review almost never run." One user saw the agent write the code first and add tests after. So the passing suite didn't show that those tests could catch the old behaviour. Another user's 1,125 session transcripts held 17 implement runs, with no tdd call in any of them.
+**The tests appeared after the code.** An Issue on Matt's repo reports that "TDD and code-review almost never run." One user saw the agent write the code first and add tests after. So the passing suite didn't show that those tests could catch the old behaviour. Another user's 1,125 session transcripts held 17 implement runs, with no tdd call in any of them.
 
 Users there blame the weak spot above: no seam gets agreed, so nothing triggers tdd. All these reports are older than an October 2026 change. implement now tells the agent to call tdd with the Skill tool, which loads a Skill by name.
 
@@ -249,7 +251,7 @@ A Ticket keeps going over one fresh context window. What do you change?
 Why: Over 100k tokens alone is normal for a non-trivial Ticket. If one keeps going over a fresh window, it's likely too big, so split it rather than raising the effort level.
 ```
 
-**Commits landed on the wrong branch, and a stash vanished.** You met this report in [branches and worktrees](/learn/branches-and-worktrees). Several implement sessions ran side by side in one checkout. They shared one working directory, one index (git's list of what goes in the next commit) and one HEAD. In a single afternoon, a stash (work set aside with `git stash`) vanished and commits landed on the wrong branch.
+**Commits landed on the wrong branch, and a stash vanished.** You may have met this report in [Branches and worktrees](/learn/branches-and-worktrees). Several implement sessions ran side by side in one checkout. They shared one working directory, one index (git's list of what goes in the next commit) and one HEAD. In a single afternoon, a stash (work set aside with `git stash`) vanished and commits landed on the wrong branch.
 
 The fix: Matt's rule is "one invocation, one ticket." For several Tickets at once, use [implement-spec](/learn/implement-spec), which gives each one its own worktree. Some people run separate implement sessions in their own worktrees instead. Either way, the stash list is shared across worktrees too, so worktrees alone don't fix the stash case.
 
@@ -292,7 +294,7 @@ You'll need your practice project. It needs an open Ticket whose blockers are al
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint implement-why-review
-An agent has finished a Ticket that adds a SQL migration, and all the tests pass. Before committing, it still reviews its diff on two axes: the repo's coding standards and the Spec. Why bother, when the tests are green? What's the reason behind this step?
+An agent has finished a Ticket that adds a SQL migration, and all the tests pass. Before committing, it still reviews its diff on two axes: the repo's coding standards and the Spec. Why bother, when the tests are green?
 - [x] Passing tests don't prove it meets the standards or the Spec.
 - [ ] To write the pull request's body from what the diff has changed.
   > The review checks the diff; it doesn't write the pull request body.
@@ -302,7 +304,7 @@ Why: Tests only show the code works as tested. They don't prove it follows the r
 ```
 
 ```checkpoint implement-deeper-why-commit-before
-An agent finishes a yoga-studio Ticket, with all tests green and nothing committed yet. It runs the two-axis review against main, and the review reports an empty diff. Why did the review see nothing? What's the reason behind this step?
+An agent finishes a yoga-studio Ticket, with all tests green and nothing committed yet. It runs the two-axis review against main, and the review reports an empty diff. Why did the review see nothing?
 - [x] It reviews the diff from a fixed point to HEAD, and uncommitted changes aren't in it.
 - [ ] It skips any Ticket whose tests are green, since passing tests already prove the work.
   > Green tests aren't why. The review compares HEAD with a fixed point, and work that isn't committed isn't in HEAD.
@@ -312,7 +314,7 @@ Why: The review reads a git diff from a fixed point (the commit, branch or tag i
 ```
 
 ```checkpoint implement-deeper-why-tests-came-last
-You built a booking Ticket with the build-one-Ticket Skill. The diff has tests, but the trace shows the code was written first and no test-first Skill call ever ran. Neither the Spec nor the Ticket named any seams. Why did the test-first step drop out? What's the reason behind this step?
+You built a booking Ticket with the build-one-Ticket Skill. The diff has tests, but the trace shows the code was written first and no test-first Skill call ever ran. Neither the Spec nor the Ticket named any seams. Why did the test-first step drop out?
 - [x] No seam was agreed upstream, and nothing inside the build step agrees one itself.
 - [ ] The test-first step only runs when the full test suite is already failing at the start.
   > A failing suite isn't the trigger. Tests go at pre-agreed seams, and here none were agreed anywhere.
@@ -322,7 +324,7 @@ Why: implement asks for test-first work at pre-agreed seams, but nothing inside 
 ```
 
 ```checkpoint implement-deeper-why-runs-collided
-You ran two build sessions side by side in one yoga-studio checkout, one Ticket each. By the end of the afternoon a stash had vanished and some commits sat on the wrong branch. Why did the two runs collide? What's the reason behind this step?
+You ran two build sessions side by side in one yoga-studio checkout, one Ticket each. By the end of the afternoon a stash had vanished and some commits sat on the wrong branch. Why did the two runs collide?
 - [x] Both sessions shared one working directory, one index and one HEAD, so each saw the other's git moves.
 - [ ] Each session reopened the plan and rewrote the other Ticket's code to fit its own design.
   > The build step never reopens the plan. The damage was to git state: a stash and branches that both sessions shared.
@@ -433,7 +435,7 @@ Why: The work fits this context window and you've already talked it through, so 
 ```
 
 ```final-test implement-close-the-ticket
-You're working Ticket #12 of your website's Spec, on its own branch. The code is built, the review's findings are fixed, and the commits are on the branch. This repo closes work through pull requests, and CI checks every pull request. What comes next? What comes next?
+You're working Ticket #12 of your website's Spec, on its own branch. The code is built, the review's findings are fixed, and the commits are on the branch. This repo closes work through pull requests, and CI checks every pull request. What comes next?
 - [x] Open a pull request into main with "Closes #12" and a body shaped for review; merge once checks pass.
   > Right: that's `/pr`.
 - [ ] Open a pull request into main with "Closes #12" and a body shaped for review; merge before checks finish.
@@ -446,7 +448,7 @@ Why: Building stops at a commit, so Ticket #12 is still open. In this repo, work
 ```
 
 ```final-test implement-next-ticket
-Ticket #12's pull request is merged into main, and #12 is closed. You've already looked back over #12's session for fixes to the agent's environment, and they're committed. Ticket #13, for the same website, was blocked only by #12. What do you do next? What comes next?
+Ticket #12's pull request is merged into main, and #12 is closed. You've already looked back over #12's session for fixes to the agent's environment, and they're committed. Ticket #13, for the same website, was blocked only by #12. What do you do next?
 - [x] Clear the context, then build #13 on a new branch from the updated main.
   > Right: that's `/implement`.
 - [ ] Build #13 on a new branch from main, in this same context window.

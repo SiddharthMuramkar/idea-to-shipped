@@ -1,12 +1,12 @@
 ---
-title: claude-handoff
+title: claude-handoff: carry on in a background agent
 slug: claude-handoff
-summary: claude-handoff hands your conversation to a fresh background agent now: a second agent that works while you carry on.
+summary: How claude-handoff writes up your conversation and starts a fresh Claude Code agent in the background with it, so you can carry on here.
 ---
 
 ## What it's for
 
-Say you've settled every decision about Ticket #13, the booking endpoint. Building should start now, but you want this session for other work. [handoff](/learn/handoff), a Skill that writes the conversation up as a file, would leave you with a file and a session still to open.
+Say you've settled every decision about [Ticket](/learn/issues-and-keeping-track) #13, the booking endpoint. Building should start now, but you want this session for other work. [handoff](/learn/handoff), a Skill that writes the conversation up as a file, would leave you with a file and a session still to open.
 
 ```checkpoint quick-1
 Your decisions are settled, and building should start now. Why isn't handoff enough?
@@ -76,9 +76,9 @@ Why: The next agent starts where you are, which is the current working directory
 
 ## When not to use it
 
-- If you want a file for later, another harness or a colleague, use [handoff](/learn/handoff) instead, because it writes a document and starts nothing.
+- If you want a file for later, another [harness](/learn/context-hygiene) or a colleague, use [handoff](/learn/handoff) instead, because it writes a document and starts nothing.
 - If you only need room in this session, use `/compact` instead, because it replaces the session's history with a summary.
-- If you want a **full handoff**, giving another agent the work and ownership, then stopping, use [orca-cli](/learn/orca-cli) instead, because it does that in Orca.
+- If you want a **full handoff**, giving another agent the work and ownership, then stopping, use [orca-cli](/learn/orca-cli) instead, because it does that in Orca, an app that runs agents side by side.
 
 ```checkpoint quick-5
 You want another agent to own the work, and this one to stop. Which fits?
@@ -104,7 +104,7 @@ Why: Only you can start it, by typing `/claude-handoff`. An agent never loads it
 
 ## What it creates
 
-- A handoff summary in your computer's temporary folder. Its "suggested skills" part names the Skills the next agent should load. It points at Specs, Issues and commits by path or URL instead of copying them. It leaves out API keys, passwords and personal details, because the summary becomes the agent's prompt.
+- A handoff summary in your computer's temporary folder. Its "suggested skills" part names the Skills the next agent should load. It points at Specs, [Issues](/learn/issues-and-keeping-track) and commits by path or URL instead of copying them. It leaves out API keys, passwords and personal details, because the summary becomes the agent's prompt.
 - A named background agent, started with that summary and listed in `claude agents`. The name, such as "Fix login bug", shows in the list `claude agents` prints and in the terminal title.
 
 ```checkpoint quick-7
@@ -121,7 +121,7 @@ Why: The summary points at Specs, Issues and commits by path or URL instead of c
 
 [handoff](/learn/handoff) stops at a file. Nothing happens until you open a new session and point it at that file.
 
-Matt describes claude-handoff as "Identical to the existing `handoff` skill, with one substantive difference". The summary goes straight to a fresh background agent, as its first prompt.
+Matt Pocock, who wrote it, describes claude-handoff as "Identical to the existing `handoff` skill, with one substantive difference". The summary goes straight to a fresh background agent, as its first prompt.
 
 So claude-handoff writes the summary, then starts the next agent itself. Until October 2026 it skipped the file. Today it saves one too, for a reason you'll see in A real example. What still sets it apart is that it starts the new agent.
 
@@ -278,14 +278,14 @@ Hand a small job to a background agent, then find its work. You need your practi
 
 ### Read more
 
-- [skills/in-progress/README.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/README.md), Matt Pocock, fetched 2026-10-30
+- [The in-progress bucket README](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/README.md), Matt Pocock
 - [Add claude-handoff skill (in-progress), #421](https://github.com/mattpocock/skills/pull/421), Matt Pocock, 2026-07-02
 - [feat(spawn): generalise claude-handoff into agent-agnostic spawn skill, #647](https://github.com/mattpocock/skills/pull/647), Matt Pocock, 2026-07-23
 - [Feedback from using claude-handoff, #562](https://github.com/mattpocock/skills/issues/562), shihyuho, 2026-07-14
 - [claude-handoff: pass the summary to claude --bg without shell interpolation, #1185](https://github.com/mattpocock/skills/pull/1185), Matt Pocock, 2026-10-06
 - [claude-handoff: background agent asks the user open questions, splitting decisions across two sessions, #1307](https://github.com/mattpocock/skills/issues/1307), fabiandistlerkb, 2026-10-20
-- [Handoff, AI Coding Dictionary](https://www.aihero.dev/ai-coding-dictionary/handoff), Matt Pocock, fetched 2026-10-30
-- [Manage multiple agents with agent view](https://code.claude.com/docs/en/agent-view), Anthropic, fetched 2026-10-30
+- [Handoff, AI Coding Dictionary](https://www.aihero.dev/ai-coding-dictionary/handoff), Matt Pocock
+- [Manage multiple agents with agent view](https://code.claude.com/docs/en/agent-view), Anthropic
 
 ## Remember
 
@@ -394,7 +394,7 @@ Why: This is a fresh reading job, not this conversation carrying on, so no summa
 ```
 
 ```final-test claude-handoff-why-no-copies
-You ran the background handoff with a Spec Issue and three Ticket Issues already on GitHub. The summary it wrote only links to them by URL instead of copying their text in. Why is that the right call? What's the reason behind this step?
+You ran the background handoff with a Spec Issue and three Ticket Issues already on GitHub. The summary it wrote only links to them by URL instead of copying their text in. Why is that the right call?
 - [x] The Issues already hold that text; the summary points at them and stays short.
 - [ ] The background agent can't read long prompts, so the summary has to stay under a page.
   > Nothing in the Skill limits the prompt's length. It says to reference existing artifacts instead of duplicating them.
@@ -404,7 +404,7 @@ Why: Those Issues already hold the text, so copying it would only make the summa
 ```
 
 ```final-test claude-handoff-deeper-decisions-still
-Planning a waitlist for full yoga classes, two decisions are still open: how long a held spot lasts, and who gets told. You want a background agent to build the waitlist. You settle both decisions in this session before handing off. Why? What's the reason behind this step?
+Planning a waitlist for full yoga classes, two decisions are still open: how long a held spot lasts, and who gets told. You want a background agent to build the waitlist. You settle both decisions in this session before handing off. Why?
 - [x] The background agent is out of your line of sight, so its questions would split the decisions across two sessions.
 - [ ] A background agent can't put questions to you at all, so any decision left open in the summary would be dropped.
   > It can ask: agent view shows a session as Needs input when it waits on an answer only you can give. The trouble is that you'd be answering in two places.

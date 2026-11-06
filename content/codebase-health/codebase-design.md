@@ -1,7 +1,7 @@
 ---
-title: codebase-design
+title: codebase-design: words for designing deep modules
 slug: codebase-design
-summary: codebase-design gives you and your agents shared words for the shape of code, aimed at deep modules.
+summary: codebase-design gives you and your agents shared words for the shape of code, aimed at deep modules: a lot of behaviour behind a small interface.
 ---
 
 ## What it's for
@@ -18,7 +18,7 @@ You're about to call the booking code a service in a design chat. What does code
 Why: It bans loose substitutes such as service, because consistent language is the whole point. Otherwise you can't tell whether two people mean the same thing.
 ```
 
-For example, say Ticket #13's endpoint must check capacity, save the booking and email the member:
+For example, say Ticket #13, the endpoint that creates a booking, must check capacity, save the booking and email the member:
 
 ```python
 # Shallow: the caller must know every step
@@ -68,7 +68,7 @@ Why: Locality is what depth buys maintainers: fix a bug once, fixed everywhere. 
 ## When to use it
 
 - You've chosen a module to reshape, and need to settle its interface or seam.
-- You want alternatives first. **Design it twice** has several subagents each design a radically different interface, and the agent compares them.
+- You want alternatives first. **Design it twice** has several subagents (helper agents the main agent starts) each design a radically different interface, and the agent compares them.
 
 ```checkpoint quick-4
 You've picked the booking module, and you want very different interfaces to choose from. What does design it twice do?
@@ -123,7 +123,7 @@ Why: A real seam has two adapters, such as production and test. With only one, n
 
 ### Why it exists
 
-Matt's starting point is that an agent starts each session knowing nothing about your code: "AI is not a super-powered developer. It's a new starter with no memory."
+Matt Pocock, who wrote the Skill, starts from the fact that an agent begins each session knowing nothing about your code: "AI is not a super-powered developer. It's a new starter with no memory."
 
 You hold a map of your codebase in your head, with modules in loose groups.
 
@@ -263,7 +263,7 @@ Why: Depth is a property of the interface, not of where files sit. So judge a mo
 
 ### Try it
 
-Describe one module in these words, and change no code. You'll need the practice project's booking endpoint. [keeping track](/learn/issues-and-keeping-track)'s Try it step sets up the project, and [implement](/learn/implement)'s builds the endpoint.
+Describe one module in these words, and change no code. You'll need the practice project's booking endpoint. The Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets up the project, and the one in [implement](/learn/implement) builds the endpoint.
 
 1. In the practice project, start a session: `claude`.
 2. Type `/codebase-design`. You should see it give you the words and stop, without reading your code.
@@ -290,7 +290,7 @@ If step 2 starts reading files or proposing refactors, the agent has mistaken th
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint codebase-design-deeper-fresh-context
-Your agent's harness forks the parent conversation each time it spawns a subagent. You're about to have three subagents each design a radically different interface for the booking module. Why does the Skill now say each must start with a fresh context window? What's the reason behind this step?
+Your agent's harness forks the parent conversation each time it spawns a subagent. You're about to have three subagents each design a radically different interface for the booking module. Why does the Skill now say each must start with a fresh context window?
 - [x] A fork carries the whole parent conversation, so no subagent gets a clean context with only its brief.
 - [ ] Fresh windows let the three subagents share notes, so their designs agree on one answer sooner.
   > The point is independent, radically different designs. A fresh window isolates each subagent; it doesn't make them share anything.
@@ -393,7 +393,7 @@ Why: Tests go at a seam, so you have to settle the seam first. tdd itself calls 
 ```
 
 ```final-test codebase-design-compare-interfaces
-An architecture survey of your website's backend turned up a candidate you like: deepen the booking module. While you're being grilled on it, you want to see a few very different interfaces before choosing one. What comes next? What comes next?
+An architecture survey of your website's backend turned up a candidate you like: deepen the booking module. While you're being grilled on it, you want to see a few very different interfaces before choosing one. What comes next?
 - [x] Have subagents each design a different interface to compare.
   > Right: that's `/codebase-design`.
 - [ ] Run the architecture survey again to turn up more candidates.
@@ -404,7 +404,7 @@ Why: You have the candidate, and what you need now is alternative interfaces for
 ```
 
 ```final-test codebase-design-tests-reach-inside
-Tests for the email module in your Python worker reach inside it and check a private retry counter. They break every time you refactor, even when the emails sent are exactly the same. Why are these tests a problem? What's the reason behind this step?
+Tests for the email module in your Python worker reach inside it and check a private retry counter. They break every time you refactor, even when the emails sent are exactly the same. Why are these tests a problem?
 - [x] Tests should cross the same seam callers use, not reach past it.
 - [ ] The tests need more mocks of the module's internal parts.
   > More mocks of internals would tie the tests even tighter to the implementation.
@@ -414,7 +414,7 @@ Why: These tests break when only the code inside changes, so they're testing pas
 ```
 
 ```final-test codebase-design-deeper-resume-as-driver
-Yesterday's design session on your booking API ended with a handoff note: "resume in codebase-design and drive the open decisions". Today's fresh session re-reads code that was already mapped and designs for a long time before asking you anything. Why did this happen? What's the reason behind this step?
+Yesterday's design session on your booking API ended with a handoff note: "resume in codebase-design and drive the open decisions". Today's fresh session re-reads code that was already mapped and designs for a long time before asking you anything. Why did this happen?
 - [x] The Skill is a vocabulary with no process or stopping rule, so the agent made a process up.
 - [ ] The handoff note was too short, and listing every file would have kept the agent on track.
   > The agent re-explored code the note's session had already mapped. Nothing in the Skill told it to stop or check in, whatever the note listed.

@@ -1,12 +1,12 @@
 ---
-title: writing-for-agents
+title: writing-for-agents: write documents agents read
 slug: writing-for-agents
-summary: writing-for-agents is a reference for writing any document an agent reads, so the agent works the same each run.
+summary: How to write a document an agent reads, such as a Skill or CLAUDE.md, so it takes little room and the agent works the same each run.
 ---
 
 ## What it's for
 
-Say you ask an agent to point your booking site's [`CLAUDE.md`](/learn/instruction-files) at your migration notes. It writes a paragraph explaining what a migration is. The agent already knows that, so those words cost room and change nothing.
+Say you ask an agent to point your booking site's [`CLAUDE.md`](/learn/instruction-files) at your migration notes. It writes a paragraph explaining what a migration is (a script that changes a database's tables). The agent already knows that, so those words cost room and change nothing.
 
 ```checkpoint quick-1
 An agent's draft of a `CLAUDE.md` line explains what a migration is. What's wrong with that?
@@ -24,7 +24,7 @@ Have the agent review that paragraph with this Skill, and you might get one line
 Before writing a SQL migration, read docs/migrations.md.
 ```
 
-That line is a [context pointer](/learn/implement-spec): it stays in the agent's context, names material kept elsewhere, and says when to reach for it. The pointer's wording, not its target, decides when the agent reaches the material.
+That line is a [context pointer](/learn/implement-spec): it stays in the agent's [context](/learn/context-window), names material kept elsewhere, and says when to reach for it. The pointer's wording, not its target, decides when the agent reaches the material.
 
 ```checkpoint quick-2
 The agent keeps missing your migration notes. What do you change first?
@@ -65,7 +65,7 @@ layers:
 
 ## When to use it
 
-- You're creating or editing a [Skill](/learn/issues-and-keeping-track), or changing an `AGENTS.md` or `CLAUDE.md`.
+- You're creating or editing a [Skill](/learn/skills), or changing an instruction file such as `AGENTS.md` or `CLAUDE.md`.
 - You're writing any other document an agent reads, such as a [Spec](/learn/issues-and-keeping-track).
 
 ```checkpoint quick-4
@@ -139,7 +139,7 @@ A line explains what the model already knows. What's the Skill's default fix?
 Why: A line like that is a no-op. It costs context and changes no behaviour, so the default fix is to delete, not to explain.
 ```
 
-The Skill started out narrower. In v1.0.0, Matt replaced `write-a-skill` with `writing-great-skills`, a reference for writing and editing Skills well. Then he spotted a wider use:
+The Skill started out narrower. In v1.0.0 of his Skills, Matt Pocock replaced `write-a-skill` with `writing-great-skills`, a reference for writing and editing Skills well. Then he spotted a wider use:
 
 > I noticed that I was using it for stuff other than skills.
 
@@ -294,7 +294,7 @@ The description could never trigger it, and only a literal `$writing-for-agents`
 
 ### Try it
 
-You'll need your practice project ([keeping-track](/learn/issues-and-keeping-track)'s Try it creates it), with its root `CLAUDE.md`, a booking model in `api/`, and `web/`. If anything is missing, ask your agent to set it up. Commit everything first.
+You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its root `CLAUDE.md`, a booking model in `api/`, and `web/`. If anything is missing, ask your agent to set it up. Commit everything first.
 
 1. Add the three example lines above to your root `CLAUDE.md`.
 2. Open a fresh session at the repo root.
@@ -319,7 +319,7 @@ You should see `CLAUDE.md` get shorter while the agent behaves the same.
 - [New Skills! v1.2 brings /wait-what, /writing-for-agents, and fixes /grill-me](https://www.youtube.com/watch?v=gaDdrDdczO4), Matt Pocock, video, 2026-08-05
 - [A Complete Guide To AGENTS.md](https://www.aihero.dev/a-complete-guide-to-agents-md), Matt Pocock, updated 2026-01-18
 - [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), Anthropic Applied AI team, 2025-09-29
-- [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic, Claude Code docs, read 2026-10-30
+- [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic, Claude Code docs
 - [writing-for-agents: OpenAI metadata still disables model invocation after rename](https://github.com/mattpocock/skills/issues/748), myxvisual, GitHub issue, 2026-08-05
 - [fix: make writing-for-agents model-invokable in Codex](https://github.com/mattpocock/skills/pull/766), Matt Pocock, pull request, 2026-08-05
 
@@ -328,7 +328,7 @@ You should see `CLAUDE.md` get shorter while the agent behaves the same.
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint writing-for-agents-deeper-one-run
-You booked a class end to end in your yoga-studio API, then had the agent write the session up as a Skill. The next week the Skill fails on a different endpoint, because its steps name the exact files and the one booking from that run. You're told to strip those out and write it for the whole class of task. Why? What's the reason behind this step?
+You booked a class end to end in your yoga-studio API, then had the agent write the session up as a Skill. The next week the Skill fails on a different endpoint, because its steps name the exact files and the one booking from that run. You're told to strip those out and write it for the whole class of task. Why?
 - [x] A Skill written up from one run fits that run too closely, with examples too specific.
 - [ ] Skills can't name files at all, so any path in one stops the agent from loading it.
   > Naming a file isn't banned. The trouble is that the steps belong to one run, not the class of task.
@@ -425,7 +425,7 @@ Why: A line in CLAUDE.md that names a doc is a context pointer. Its wording, not
 ```
 
 ```final-test writing-for-agents-after-retro
-A build of your Docker setup went sideways. Before clearing the session, you had the agent look back over it, and it suggested adding a line to AGENTS.md about where the compose file lives. What comes next? What comes next?
+A build of your Docker setup went sideways. Before clearing the session, you had the agent look back over it, and it suggested adding a line to AGENTS.md about where the compose file lives. What comes next?
 - [x] Write that AGENTS.md line with the reference for documents agents read.
   > Right: that's `/writing-for-agents`.
 - [ ] Start the next Ticket straight away and leave AGENTS.md as it is.
@@ -438,7 +438,7 @@ Why: The look-back only suggests the change to the agent's environment. You stil
 ```
 
 ```final-test writing-for-agents-npm-scripts
-Your website's CLAUDE.md lists every npm script and what it does. The same scripts are in package.json. You're told to cut the list from CLAUDE.md. Why? What's the reason behind this step?
+Your website's CLAUDE.md lists every npm script and what it does. The same scripts are in package.json. You're told to cut the list from CLAUDE.md. Why?
 - [x] It copies package.json and goes stale. Leave one-file lookups to the agent.
 - [ ] Agents read package.json more reliably than Markdown, so the list confuses them.
   > The format isn't the problem. The list is a copy of package.json, and a copy goes stale.
@@ -450,7 +450,7 @@ Why: The scripts already live in package.json, where the agent can look them up.
 ```
 
 ```final-test writing-for-agents-flag-table
-You're writing a Skill that walks an agent through deploying your Python backend. One step needs a long table of Docker flags that only some deployments use. You move the table into its own file, with a line in the Skill saying when to read it. Why? What's the reason behind this step?
+You're writing a Skill that walks an agent through deploying your Python backend. One step needs a long table of Docker flags that only some deployments use. You move the table into its own file, with a line in the Skill saying when to read it. Why?
 - [x] What only some runs need, left inline, buries the steps the agent must follow.
 - [ ] A SKILL.md can't hold tables, so any table has to live in its own file.
   > It can. The table moves out because only some runs need it.
@@ -462,7 +462,7 @@ Why: Keep in the file what every run needs, and move out what only some runs nee
 ```
 
 ```final-test writing-for-agents-deeper-streamline
-You asked an agent to streamline your yoga-studio repo's CLAUDE.md. It came back half as long, and now agents forget to write an Alembic migration when they change a model. You're told to redo it by deleting one line at a time and checking the agent's behaviour after each. Why? What's the reason behind this step?
+You asked an agent to streamline your yoga-studio repo's CLAUDE.md. It came back half as long, and now agents forget to write an Alembic migration when they change a model. You're told to redo it by deleting one line at a time and checking the agent's behaviour after each. Why?
 - [x] Told to streamline, an agent cuts for length, which it can see. Only behaviour shows a no-op.
 - [ ] Short files load faster, so the redo is only about how fast the agent starts each session.
   > Speed isn't the point. The trim cut a line that changed behaviour, and only checking behaviour finds the real no-ops.

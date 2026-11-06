@@ -1,7 +1,7 @@
 ---
-title: setup-ts-deep-modules
+title: setup-ts-deep-modules: enforce package boundaries in TypeScript
 slug: setup-ts-deep-modules
-summary: setup-ts-deep-modules adds a check that fails when another package imports past a package's public files.
+summary: setup-ts-deep-modules adds a check to a TypeScript repo that fails when one package imports past another package's public files.
 ---
 
 ## What it's for
@@ -12,20 +12,20 @@ Say the yoga site is written in TypeScript (JavaScript with types). It has a `bo
 
 Those public files are its **entry points**: the files at the package's root. Its subfolders are private:
 
-```checkpoint quick-1
-Your package has `index.ts` at its root and `pricing.ts` in `lib/`. Which can outside code import?
-- [x] Only `index.ts`, because it sits at the package's root.
-- [ ] Only `lib/pricing.ts`, because it holds the real behaviour.
-- [ ] Both files, because they sit in the same package folder.
-Why: Entry points are the files at a package's root, and its subfolders are private. So `index.ts` is public, and `lib/pricing.ts` isn't.
-```
-
 ```text
 src/packages/booking/
   index.ts    entry point
   client.ts   entry point
   lib/        private
   tests/      private
+```
+
+```checkpoint quick-1
+Your package has `index.ts` at its root and `pricing.ts` in `lib/`. Which can outside code import?
+- [x] Only `index.ts`, because it sits at the package's root.
+- [ ] Only `lib/pricing.ts`, because it holds the real behaviour.
+- [ ] Both files, because they sit in the same package folder.
+Why: Entry points are the files at a package's root, and its subfolders are private. So `index.ts` is public, and `lib/pricing.ts` isn't.
 ```
 
 You type `/setup-ts-deep-modules`. The agent installs **dependency-cruiser**, a tool that checks which files import which, and adds rules for this shape. Now say `billing` has these imports:
@@ -62,7 +62,7 @@ Why: This Skill is for when agreeing on the shape isn't enough. It makes a check
 
 - If you're still designing an interface or a seam, use [codebase-design](/learn/codebase-design) instead, because this Skill only enforces a folder shape.
 - **Layering**, rules on which packages may depend on which, is left as a commented stub in the config for you to fill in.
-- In a **monorepo**, one repo holding several separate projects, Matt says to use its own package support.
+- In a **monorepo**, one repo holding several separate projects, use its own package support. That's the advice of Matt Pocock, who wrote the Skill.
 
 ```checkpoint quick-4
 You want a rule that `ui` must never depend on `billing`. Does this Skill write it?
@@ -74,11 +74,11 @@ Why: Which packages may depend on which is layering. The Skill leaves it as a co
 
 ## What it needs to start
 
-A TypeScript repo, not your FastAPI backend. The Skill is user-invoked: only you can start it, by typing its name.
+A TypeScript repo, not your FastAPI backend, which is Python. The Skill is user-invoked: only you can start it, by typing its name.
 
 The agent first works out:
 
-- the package manager, from the lockfile, the file recording installed versions (npm by default);
+- the package manager, the tool that installs libraries, from the lockfile, the file recording installed versions (npm by default);
 - the packages root, the folder holding all packages: `src/packages` if `src/` exists, otherwise `packages`;
 - whether a dependency-cruiser config exists, which it merges into and never overwrites.
 
@@ -93,7 +93,7 @@ Why: The agent checks for an existing config first. If there is one, it merges i
 ## What it creates
 
 - `dependency-cruiser` as a dev dependency (used only while developing), and its config, `.dependency-cruiser.cjs`.
-- **`lint:boundaries`**, the script that runs the dependency-cruiser rules, in the same command as your type check.
+- **`lint:boundaries`**, the script that runs the dependency-cruiser rules, in the same command as your [type check](/learn/fix-the-environment).
 - An `example` package to copy or delete, whose test imports only its `index.ts` entry point.
 - A `README.md` in the packages folder, plus a one-line pointer to it from `CLAUDE.md` or `AGENTS.md`, so agents find the rule.
 
@@ -254,7 +254,7 @@ Why: The Skill spots Bun only by `bun.lockb`, so a repo with only `bun.lock` fal
 
 ### Try it
 
-You'll need your practice project ([keeping-track](/learn/issues-and-keeping-track)'s Try it creates it), with its TypeScript site in `web/`. If it's missing, ask your agent to set it up. `web/` beside `api/` isn't a monorepo signal. Run this Skill in `web/`, the TypeScript website, never in `api/`, the FastAPI backend.
+You'll need your practice project, the yoga-studio booking site (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`. If `web/` is missing, ask your agent to set it up. `web/` beside `api/` isn't a monorepo signal. Run this Skill in `web/`, the TypeScript website, never in `api/`, the FastAPI backend.
 
 1. Open a terminal in `web/`.
 2. If there's no `src/` folder, create one: `mkdir src`. The Skill then picks `src/packages` as its packages root.
@@ -283,7 +283,7 @@ You'll need your practice project ([keeping-track](/learn/issues-and-keeping-tra
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint setup-ts-deep-modules-proof-blocks
-A user's agent runs setup-ts-deep-modules on a repo using TypeScript 7. The deliberate deep import never makes the check fail, so the agent won't call the setup done. It turns out dependency-cruiser 18.2.0 doesn't support TypeScript 7. Why was stopping right? What's the reason behind this step?
+A user's agent runs setup-ts-deep-modules on a repo using TypeScript 7. The deliberate deep import never makes the check fail, so the agent won't call the setup done. It turns out dependency-cruiser 18.2.0 doesn't support TypeScript 7. Why was stopping right?
 - [x] A check that can't fail on a violation guards nothing, so the setup isn't done.
 - [ ] The rules were too strict, and should be loosened until the step finally passes.
   > Loosening rules can't make a check that never fails work. The cause was an unsupported compiler.
@@ -379,7 +379,7 @@ Why: You're still deciding what the interface exposes and where the seam goes, a
 ```
 
 ```final-test setup-ts-deep-modules-deliberate-deep
-setup-ts-deep-modules has installed its rules and the check passes. Next it adds a deep import to the example package's test on purpose, runs the check again, then reverts the import. Why does it do this? What's the reason behind this step?
+setup-ts-deep-modules has installed its rules and the check passes. Next it adds a deep import to the example package's test on purpose, runs the check again, then reverts the import. Why does it do this?
 - [x] To see the check fail on a real violation, as a check that never fails proves nothing.
 - [ ] To show that a package's own tests are allowed to reach into its internal files directly.
   > The rules forbid that. The import is there to make the check fail with tests-through-entrypoints.
@@ -389,7 +389,7 @@ Why: A wrong import is mechanical, so it gets a check that gives the same answer
 ```
 
 ```final-test setup-ts-deep-modules-context-pointer
-Besides the README in the packages folder, setup-ts-deep-modules adds one line to the repo's CLAUDE.md (or AGENTS.md) pointing to that README. Why only one line there? What's the reason behind this step?
+Besides the README in the packages folder, setup-ts-deep-modules adds one line to the repo's CLAUDE.md (or AGENTS.md) pointing to that README. Why only one line there?
 - [x] So agents find the boundary rule from a short pointer, not a full copy.
 - [ ] So the dependency-cruiser config can read its rules out of the instruction file.
   > The rules live in .dependency-cruiser.cjs. The pointer is for agents, not for the tool.
@@ -399,7 +399,7 @@ Why: Every agent working in the repo gets the instruction file, so it should hol
 ```
 
 ```final-test setup-ts-deep-modules-app-probe
-A repo passed the boundary check while its app code imported a package's internals. Matt's draft fix keeps the test-import step, and adds a second one: a temporary app file with a deep import into the example package must fail. Why add that step? What's the reason behind this step?
+A repo passed the boundary check while its app code imported a package's internals. Matt's draft fix keeps the test-import step, and adds a second one: a temporary app file with a deep import into the example package must fail. Why add that step?
 - [x] A rule is only trusted once you've seen it fail on its own kind of violation.
 - [ ] App files are slower to scan, so the probe is there to time the check.
   > Nothing in the issue or the fix is about speed. The old proof never reached the app-import rule at all.

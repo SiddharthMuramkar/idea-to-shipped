@@ -1,14 +1,14 @@
 ---
-title: improve-codebase-architecture
+title: improve-codebase-architecture: find code worth reshaping
 slug: improve-codebase-architecture
-summary: improve-codebase-architecture surveys a codebase for hard-to-change code and reports the refactors that would help, but it changes no code itself.
+summary: improve-codebase-architecture surveys your code for the parts that are hard to change and reports how to reshape them, but changes no code itself.
 ---
 
 ## What it's for
 
 Say your yoga-studio booking API works, but understanding one booking means opening five small files, and the tests are hard to write. You can't tell which part to reshape first.
 
-**improve-codebase-architecture surveys a codebase for hard-to-change code and reports the refactors that would help, but it changes no code itself.**
+**improve-codebase-architecture surveys a codebase for hard-to-change code and reports the refactors that would help, but it changes no code itself.** A [refactor](/learn/test-first) reshapes code without changing what it does.
 
 ```checkpoint quick-1
 You run improve-codebase-architecture on your booking API. What happens to the code?
@@ -32,7 +32,7 @@ The Skill looks for **deepening opportunities**: refactors that turn a shallow m
 
 You type `/improve-codebase-architecture`. The agent explores the code and opens an HTML report (a web page), with one panel per **candidate**: a refactor it suggests. For example:
 
-```
+```text
 the Booking module                         Strong
 Files:     five small modules in api/
 Problem:   one booking means opening all five
@@ -90,8 +90,8 @@ You can name a direction: say, `/improve-codebase-architecture the booking modul
 
 - An HTML report in your computer's temp folder (a scratch space), so nothing lands in the repo. Each panel also has the benefits, a before-and-after diagram and a strength badge.
 - A grilling session on the candidate you pick. It settles the new module's shape, so the report proposes no interfaces yet: the grilling decides them.
-- New terms in `GLOSSARY.md`, added as decisions land.
-- An [ADR](/learn/issues-and-keeping-track), offered if you reject a candidate for a lasting reason, so future surveys don't suggest it again.
+- New terms in `GLOSSARY.md`, your project's list of agreed words, added as decisions land.
+- An [ADR](/learn/issues-and-keeping-track), a short record of one decision and why, offered if you reject a candidate for a lasting reason, so future surveys don't suggest it again.
 
 ```checkpoint quick-6
 The report is open, and you haven't picked a candidate yet. You run `git status`. What do you see?
@@ -101,7 +101,7 @@ The report is open, and you haven't picked a candidate yet. You run `git status`
 Why: The report goes in your computer's temp folder, so nothing lands in the repo.
 ```
 
-The candidate you pick becomes an idea you can take into the [main flow](/learn/issues-and-keeping-track) at [grill-with-docs](/learn/grill-with-docs).
+The candidate you pick becomes an idea you can take into the [main flow](/learn/main-flow) at [grill-with-docs](/learn/grill-with-docs).
 
 ```checkpoint quick-7
 You've picked a candidate from the report. Where can it enter the main flow as an idea?
@@ -126,7 +126,7 @@ steps:
 
 ### Why it exists
 
-Matt's starting point is that an agent forgets everything between sessions, so each one must work out your codebase from scratch. You know which modules belong together. The agent sees many modules that can all import from each other, with no groupings. Matt puts the problem this way: "AI is not a super-powered developer. It's a new starter with no memory."
+Matt Pocock, who wrote the Skill, starts from this: an agent forgets everything between sessions, so each one must work out your codebase from scratch. You know which modules belong together. The agent sees many modules that can all import from each other, with no groupings. Matt puts the problem this way: "AI is not a super-powered developer. It's a new starter with no memory."
 
 ```checkpoint quick-8
 You and a fresh agent both open the same repo. What do you have that the agent doesn't?
@@ -263,7 +263,7 @@ A part that looks shallow, such as code that shows something only under one cond
 
 ### Try it
 
-You'll need your practice project (keeping-track's Try it sets it up), with some commits in `api/`. If `api/` is missing, have your agent add it. Pick what you'll build next there: say, cancelling a booking.
+You'll need your practice project, the yoga-studio booking site, with some commits in `api/`. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. If `api/` is missing, have your agent add it. Pick what you'll build next there: say, cancelling a booking.
 
 1. Run `git status`, and commit anything it lists, so the working tree is clean.
 2. Type `/improve-codebase-architecture how can we make cancelling a booking easy?`
@@ -303,7 +303,7 @@ You'll need your practice project (keeping-track's Try it sets it up), with some
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint improve-codebase-architecture-deeper-4
-You deepened the class-list part of your practice project's TypeScript website after an architecture report. Types pass, tests pass and the review is clean. Then you notice the "No classes today" notice no longer shows on an empty day. Why did nothing catch it? What's the reason behind this step?
+You deepened the class-list part of your practice project's TypeScript website after an architecture report. Types pass, tests pass and the review is clean. Then you notice the "No classes today" notice no longer shows on an empty day. Why did nothing catch it?
 - [x] Every check looked at the code, and none at what the page shows.
 - [ ] The deletion test only runs on the backend, never on website code.
   > The deletion test isn't limited to the backend. The gap is that no check looked at the rendered page.
@@ -392,7 +392,7 @@ Why: Nothing is broken and no module is chosen yet, so the job is to find where 
 ```
 
 ```final-test improve-codebase-architecture-after-the
-A job in your Dockerised Python worker kept retrying forever. You fixed it with a regression test, then ran a retro in the same session. The retro's finding: the retry code has no good seam to test it through, so the same kind of bug could come back. What comes next? What comes next?
+A job in your Dockerised Python worker kept retrying forever. You fixed it with a regression test, then ran a retro in the same session. The retro's finding: the retry code has no good seam to test it through, so the same kind of bug could come back. What comes next?
 - [x] Survey for deepening opportunities, starting at the retry code.
   > Right: that's `/improve-codebase-architecture`.
 - [ ] Start another bug hunt on the retry code with a tight feedback loop.
@@ -403,7 +403,7 @@ Why: The bug is fixed, but tests live at seams and the retry code has no good on
 ```
 
 ```final-test improve-codebase-architecture-picked-a
-An architecture report on your website's backend is open in the browser. You pick its Strong candidate: merge four small pricing modules into one deep module. What should happen next? What comes next?
+An architecture report on your website's backend is open in the browser. You pick its Strong candidate: merge four small pricing modules into one deep module. What should happen next?
 - [x] Get grilled on the merge's constraints and shape.
   > Right: that's `/grilling`.
 - [ ] Start writing the merged pricing module straight away.
@@ -414,7 +414,7 @@ Why: Picking a candidate only says which problem to work on, not how to solve it
 ```
 
 ```final-test improve-codebase-architecture-no
-An architecture survey of your FastAPI app lists five candidates, each with a before-and-after diagram. None of them says what the new module's functions should look like. Why does the survey stop there? What's the reason behind this step?
+An architecture survey of your FastAPI app lists five candidates, each with a before-and-after diagram. None of them says what the new module's functions should look like. Why does the survey stop there?
 - [x] Interfaces come after your pick, shaped in its grilling.
 - [ ] Five interfaces would make the report too long to read.
   > Length isn't the reason. The Skill holds interfaces back on purpose until you've picked a candidate.
@@ -424,7 +424,7 @@ Why: The survey's job is only to surface candidates. A new module's shape depend
 ```
 
 ```final-test improve-codebase-architecture-deeper-3
-An architecture report on your FastAPI booking backend lists eight candidates. You picked one, finished its grilling and reached a decision. In the same session you now want to grill the next three candidates, and then start changing the code. Why is that a poor idea? What's the reason behind this step?
+An architecture report on your FastAPI booking backend lists eight candidates. You picked one, finished its grilling and reached a decision. In the same session you now want to grill the next three candidates, and then start changing the code. Why is that a poor idea?
 - [x] The window fills with the report, grilling, edits and code at once.
 - [ ] The report file is deleted once you have picked the first candidate.
   > Nothing deletes the report when you pick. The real cost is what piles up in the context window.

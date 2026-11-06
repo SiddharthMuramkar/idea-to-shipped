@@ -1,16 +1,16 @@
 ---
-title: writing-shape
+title: writing-shape: turn a pile into an article
 slug: writing-shape
-summary: writing-shape turns a pile like that into a separate article, one agreed block at a time.
+summary: How writing-shape turns a messy notes file into a separate, organised article, one block at a time, with you agreeing each block's form.
 ---
 
 ## What it's for
 
-Say you've pasted your yoga-studio booking notes into one Markdown file. That's your pile: all you want to say, in no order. A new contributor couldn't follow it.
+Say you've pasted your yoga-studio booking notes into one Markdown file (plain text with light formatting). That's your pile: all you want to say, in no order. A new contributor couldn't follow it.
 
-**writing-shape turns a pile like that into a separate article, one agreed block at a time.** A **block** is one piece of the article: a paragraph, a list, a table, a callout, a quote or a code block.
+**writing-shape turns a pile like that into a separate article, one agreed block at a time.** A **block** is one piece of the article: a paragraph, a list, a table, a callout (a highlighted box), a quote or a code block.
 
-Matt's word for this is **exploit**: the pile is fixed, so you commit to a structure and fill it. You stop gathering.
+Matt Pocock, who wrote the Skill, calls this **exploit**: the pile is fixed, so you commit to a structure and fill it. You stop gathering.
 
 ```checkpoint quick-1
 You start writing-shape on your booking notes. What is the session's job?
@@ -106,7 +106,7 @@ Why: Only you can start writing-shape, by typing its name. The agent never loads
 
 ## What it creates
 
-One new file: the article, such as `docs/booking.md`, written block by block. Your raw material file is never edited: it's read-only to this Skill. writing-shape publishes nothing, and adds no front matter you didn't ask for.
+One new file: the article, such as `docs/booking.md`, written block by block. Your raw material file is never edited: it's read-only to this [Skill](/learn/skills). writing-shape publishes nothing, and adds no front matter (a settings block at the top of the file) you didn't ask for.
 
 ```checkpoint quick-7
 You've finished a session on `booking-pile.md`. What has happened to that file?
@@ -238,7 +238,7 @@ Why: Matt lists writing-shape last, but it has never needed a first draft. Since
 
 In August 2026, a user ran `npx skills add mattpocock/skills`. It found 29 Skills, though the repo held 35 `SKILL.md` files. Six had gone missing, and writing-shape was one of them.
 
-The cause was one colon. The Skill's description began `Writing, exploit: shape raw…`, with no quotes around it. In YAML, the parser reads a colon and a space there as a nested mapping: a `key: value` pair inside another. So the front matter failed to load, and the Skill was skipped. writing-beats loaded fine, because its description has a semicolon in that spot.
+The cause was one colon. The Skill's description began `Writing, exploit: shape raw…`, with no quotes around it. In YAML, the format front matter is written in, the parser reads a colon and a space there as a nested mapping: a `key: value` pair inside another. So the front matter failed to load, and the Skill was skipped. writing-beats loaded fine, because its description has a semicolon in that spot.
 
 ```checkpoint quick-16
 Why did `npx skills` skip writing-shape?
@@ -250,7 +250,7 @@ Why: The parser read the colon and space as a nested mapping, so the front matte
 
 The same-day fix quoted the description, as it is today.
 
-So one stray colon can remove a Skill, and it's easy to miss: another report saw only a `Skipped` line during install. That's why this report also asked for a CI guard: a check that fails the build when a Skill's front matter doesn't load.
+So one stray colon can remove a Skill, and it's easy to miss: another report saw only a `Skipped` line during install. That's why this report also asked for a [CI](/learn/what-ci-cd-is) guard: a check that fails the build when a Skill's front matter doesn't load.
 
 ### Where it goes wrong
 
@@ -278,7 +278,7 @@ Why: Your install is fine, because that version leaves the Skill out of the agen
 
 ### Try it
 
-Shape your booking notes into a page. You'll need your practice project, with its booking Spec and Tickets. If you haven't set it up, do [keeping-track](/learn/issues-and-keeping-track)'s Try it step first.
+Shape your booking notes into a page. You'll need your practice project, with its booking Spec and Tickets. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the project, install the Skill: `npx skills@latest add mattpocock/skills --skill writing-shape`. If it asks which agent, choose Claude Code. You should see it finish with no errors.
 2. Create `docs/notes/booking-pile.md`, or reuse the pile from [writing-beats](/learn/writing-beats)'s Try it.
@@ -411,7 +411,7 @@ Why: You want to choose as you go, without fixing an angle yet. writing-beats fi
 ```
 
 ```final-test writing-shape-why-prerequisites
-You start a session on your booking notes. Before drafting any opening, the agent asks what your readers already know when they walk in: yoga classes? FastAPI? Postgres? You'd rather skip straight to writing. What's the reason behind this step?
+You start a session on your booking notes. Before drafting any opening, the agent asks what your readers already know when they walk in: yoga classes? FastAPI? Postgres? You'd rather skip straight to writing. Why does it ask first?
 - [x] It sets which concepts start grounded, since a block may only lean on grounded ones.
 - [ ] It needs the answer to choose which file the finished article gets saved to at the end.
   > The save path is a separate question, asked once if you didn't give one.
@@ -423,7 +423,7 @@ Why: A block that reaches for a concept the reader hasn't got loses them. So the
 ```
 
 ```final-test writing-shape-deeper-not-found
-In August 2026 a user ran `npx skills add mattpocock/skills` and got 29 Skills, though the repo held 35 SKILL.md files. writing-shape was missing, while writing-beats, with a description of the same shape, loaded fine. What's the reason behind this step?
+In August 2026 a user ran `npx skills add mattpocock/skills` and got 29 Skills, though the repo held 35 SKILL.md files. writing-shape was missing, while writing-beats, with a description of the same shape, loaded fine. Why was writing-shape skipped?
 - [x] Its description held an unquoted colon, so the YAML front matter failed to load.
 - [ ] In-progress Skills are left out of the plugin, so the installer skipped all of them.
   > writing-beats is in-progress too and loaded fine. Only the six with an unquoted colon were dropped.

@@ -1,12 +1,12 @@
 ---
-title: retro
+title: retro: look back and fix the environment
 slug: retro
-summary: retro looks back over a coding session and suggests changes to the agent's environment, not the code.
+summary: How retro looks back over a coding session and suggests fixes to the agent's environment, not the code, so the next session goes better.
 ---
 
 ## What it's for
 
-Imagine your booking endpoint is finished. The agent hunted a long time for one file, and you corrected, by hand, an import the project doesn't allow. The endpoint works, so nobody looks back. The next agent hits the same problems.
+Imagine your booking endpoint (the web address your app calls) is finished. The agent hunted a long time for one file, and you corrected, by hand, an import the project doesn't allow. The endpoint works, so nobody looks back. The next agent hits the same problems.
 
 **retro looks back over a coding session and suggests changes to the agent's environment, not the code.** That's the [environment](/learn/fix-the-environment) you've met already: navigation pointers, automated checks, coding standards, instruction files and tools.
 
@@ -20,7 +20,7 @@ Why: retro suggests changes to the agent's environment, not the code: navigation
 
 You type `/retro`. The agent reads the session's record (a saved log of it), finds where it struggled, and lists fixes. For example:
 
-```
+```text
 1. Automated checks: a lint rule (an automatic code check) in CI would catch that disallowed import.
 2. Navigation: a pointer in CLAUDE.md would save the long hunt for that file.
 ```
@@ -29,7 +29,7 @@ You pick the fixes you want, and the next build starts from a better environment
 
 ## When to use it
 
-retro is the last step of the [main flow](/learn/issues-and-keeping-track), and it closes the loop after a build. Use it when:
+retro is the last step of the [main flow](/learn/main-flow), and it closes the loop after a build. Use it when:
 
 - You've finished a build that went sideways: the agent hunted for files or repeated a mistake.
 - You've fixed a hard bug, and you want to ask what would have prevented it.
@@ -117,7 +117,7 @@ rows:
 
 ### Why it exists
 
-An agent rarely tells you where it struggled. It hunts for a file or repeats a mistake, then carries on. Matt puts the problem this way: "It pushes on, and the feature gets built anyway." So the finished code hides the cost.
+An agent rarely tells you where it struggled. It hunts for a file or repeats a mistake, then carries on. Matt Pocock, who wrote the Skill, puts the problem this way: "It pushes on, and the feature gets built anyway." So the finished code hides the cost.
 
 ```checkpoint quick-8
 Your agent's feature works, and it reported no trouble. Why might a look back still be worth it?
@@ -163,7 +163,7 @@ Your repo has a lint script, but CI never runs it. What will retro report?
 Why: Before it proposes a check, retro reads the repo's own check commands. A check that exists but isn't wired up is the finding, so there's no need to build another.
 ```
 
-**Rules go where there's room for them.** Think of **context pressure** as how hard a job crowds an agent's [context window](/learn/instruction-files). retro's Skill file names two agents: an implementation agent that builds, and a review agent that checks. The implementation agent has the most: it explores, writes code and debugs. The review agent has the least, because it receives a diff and needs no exploring. So coding standards go to the reviewer, which has room to apply them.
+**Rules go where there's room for them.** Think of **context pressure** as how hard a job crowds an agent's [context window](/learn/context-window). retro's Skill file names two agents: an implementation agent that builds, and a review agent that checks. The implementation agent has the most: it explores, writes code and debugs. The review agent has the least, because it receives a diff and needs no exploring. So coding standards go to the reviewer, which has room to apply them.
 
 A `CLAUDE.md` line "loads into every session, gives less weight to everything else in the file, and goes out of date as the code changes." So that file is for navigation pointers and little else.
 
@@ -249,7 +249,7 @@ Why: retro sees one session, so it can't tell that a rule now fires too often. A
 
 ### Try it
 
-You'll need your practice project (keeping-track's Try it sets it up), with a CI check on its pull requests (ci-cd's Try it). You'll need a session where an agent changed the booking endpoint in `api/`.
+You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets it up), with a CI check on its pull requests (the Try it in [What CI/CD is](/learn/what-ci-cd-is) adds one). You'll need a session where an agent changed the booking endpoint in `api/`.
 
 1. In that session, type `/retro`. If you've cleared it, type `/retro the session that changed the booking endpoint` in a fresh one.
 
@@ -282,7 +282,7 @@ A proposed check is code, so try it against the repo before you let it block mer
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint retro-deeper-dont-automate
-You like what the session look-back finds on your FastAPI backend, so you plan a hook that runs it after every agent session and applies its top finding without asking. Matt advises against this. Why? What's the reason behind this step?
+You like what the session look-back finds on your FastAPI backend, so you plan a hook that runs it after every agent session and applies its top finding without asking. Matt advises against this. Why?
 - [x] An automated run finds false positives and keeps fixing them, so the repo drifts.
 - [ ] It can only read the current session, so a hook would always see an empty log.
   > It can read older sessions too. You can run it on the current session or older ones.
@@ -374,7 +374,7 @@ Why: The implementation agent's context window fills up as it explores, writes c
 ```
 
 ```final-test retro-after-the-merge
-A Ticket for your FastAPI backend went up as a pull request, CI went green and you merged it into main. Along the way the agent spent ages hunting for the file that sets up the database session. The session is still open and the next Ticket is waiting. What comes next? What comes next?
+A Ticket for your FastAPI backend went up as a pull request, CI went green and you merged it into main. Along the way the agent spent ages hunting for the file that sets up the database session. The session is still open and the next Ticket is waiting. What comes next?
 - [x] Look back over this session for changes to the agent's environment.
   > Right: that's `/retro`.
 - [ ] Clear the context and start the next Ticket with a fresh agent.
@@ -387,7 +387,7 @@ Why: The waste was in finding that file, not in the code, and nothing stops the 
 ```
 
 ```final-test retro-ci-kept-failing
-On your Next.js website, the agent's pull request passed CI, yet three times you spotted that it imported a server-only database module into a client component. No check caught it; you pointed it out by hand each time. The fix is now merged. Before you clear the session, what comes next? What comes next?
+On your Next.js website, the agent's pull request passed CI, yet three times you spotted that it imported a server-only database module into a client component. No check caught it; you pointed it out by hand each time. The fix is now merged. Before you clear the session, what comes next?
 - [x] Look back over the session and suggest a check for this mistake.
   > Right: that's `/retro`.
 - [ ] Rewrite the pull request body to warn reviewers about the import.
@@ -413,7 +413,7 @@ Why: The code is merged, and you want the next session to go better, so the fix 
 ```
 
 ```final-test retro-check-not-a-note
-Looking back at a session on your FastAPI backend, you find the agent kept building SQL by gluing strings together instead of using the query builder, a fixed pattern a linter can spot. Why make it a lint rule run in CI rather than a line in CLAUDE.md? What's the reason behind this step?
+Looking back at a session on your FastAPI backend, you find the agent kept building SQL by gluing strings together instead of using the query builder, a fixed pattern a linter can spot. Why make it a lint rule run in CI rather than a line in CLAUDE.md?
 - [x] It's mechanical, so a check always catches it; CLAUDE.md stays sparse.
 - [ ] Agents only open CLAUDE.md when a Ticket tells them to read it.
   > They don't need to open it. CLAUDE.md is pushed into every agent's context, which is exactly why it should be used sparingly, mostly for navigation pointers.
@@ -425,7 +425,7 @@ Why: A linter can spot a fixed pattern, so a check catches it every time, while 
 ```
 
 ```final-test retro-no-guardrail
-Looking back at a session on your website, you notice the repo has a lint and test command, but no pre-commit hook and no CI job runs them. Nothing broke this time. Why is that still worth raising? What's the reason behind this step?
+Looking back at a session on your website, you notice the repo has a lint and test command, but no pre-commit hook and no CI job runs them. Nothing broke this time. Why is that still worth raising?
 - [x] Nothing stops the next mistake a check could catch, so it's a finding.
 - [ ] It isn't worth it. Nothing broke, so the repo's setup is fine as it is.
   > An unchecked repo is a standing missed opportunity, not a neutral default.

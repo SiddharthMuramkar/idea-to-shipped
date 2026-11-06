@@ -1,12 +1,12 @@
 ---
-title: pr
+title: pr: write a fast-to-review pull request body
 slug: pr
-summary: pr gives the agent a template for the pull request's description, its body, so a reviewer can answer all three fast.
+summary: How pr gives your agent a template for a pull request's description: what changed, proof that it works, and how risky merging is.
 ---
 
 ## What it's for
 
-Say you ask the agent to open a [pull request](/learn/merging-and-cleaning-up) for Ticket #13, the booking endpoint. Its description comes back as a long paragraph. You can't tell what changed, whether it works, or how risky merging is.
+Say you ask the agent to open a [pull request](/learn/pull-requests) for Ticket #13, the booking endpoint (the web address your app calls). Its description comes back as a long paragraph. You can't tell what changed, whether it works, or how risky merging is.
 
 **pr gives the agent a template for the pull request's description, its body, so a reviewer can answer all three fast.**
 
@@ -24,7 +24,7 @@ You have a test that failed before your change and passes now. Which part of the
 Why: Evidence is the before and after. The Summary shows the change, and Merge Danger says how risky merging is.
 ```
 
-Merge Danger makes a door call: which of two doors is this change? A **two-way door** is a change you can walk back cheaply. A **one-way door** can't be walked back, like a SQL migration that drops a column and its data.
+Merge Danger makes a door call: which of two doors is this change? A **two-way door** is a change you can walk back cheaply. A **one-way door** can't be walked back, like a database change (a SQL migration) that drops a column and its data.
 
 ```checkpoint quick-2
 You're about to merge a migration that drops a column and its data. Which door is it?
@@ -70,7 +70,7 @@ Here `+` marks a file the change adds, and bookings is what it could affect.
 
 ## When to use it
 
-- You've built a Ticket test-first with [tdd](/learn/tdd) and reviewed it with [code-review](/learn/code-review), and the work is going up as a pull request. In the [main flow](/learn/issues-and-keeping-track), this is where pr comes in.
+- You've built a Ticket test-first with [tdd](/learn/tdd) and reviewed it with [code-review](/learn/code-review), and the work is going up as a pull request. In the [main flow](/learn/main-flow), this is where pr comes in.
 - You ask for a pull request outside the main flow. pr loads then too.
 
 ```checkpoint quick-4
@@ -145,7 +145,7 @@ Why: The door call says where to spend your time. Skim a two-way door with a sma
 
 ### Why it exists
 
-Agents made code quick to write, but a person still has to read it before it reaches `main`. Matt puts the problem this way: "Writing code got cheap. Reading it did not."
+Agents made code quick to write, but a person still has to read it before it reaches `main`. Matt Pocock, who wrote the Skill, puts the problem this way: "Writing code got cheap. Reading it did not."
 
 ```checkpoint quick-9
 Agents can write code quickly now. Which part of shipping it stays slow?
@@ -296,7 +296,7 @@ Why: Evidence covers whether the change works. Nothing checks that the body matc
 
 ### Try it
 
-Check an agent's door call against your own. You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do [keeping-track](/learn/issues-and-keeping-track)'s Try it step first. It also needs the booking code in `api/`, which [implement](/learn/implement)'s Try it step builds.
+Check an agent's door call against your own. You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it step in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. It also needs the booking code in `api/`, which [implement](/learn/implement)'s Try it step builds.
 
 1. Run `git switch main`, then `git pull`. Then create a branch: `git switch -c waitlist-position`.
 2. Ask the agent to add a migration in `api/`: a nullable `waitlist_position` column on bookings, with a test.
@@ -330,7 +330,7 @@ Decide whether this migration belongs on your repo's list of one-way changes. Ma
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint pr-deeper-docs-branch-shipped-feature
-An agent opened a pull request for a docs fix on your yoga-studio site. Its body lists two Markdown files, the Evidence looks right, and you merge after reading the body. Then main has the half-built booking feature from another branch too. The body was accurate about the files it named. Why did it miss the rest? What's the reason behind this step?
+An agent opened a pull request for a docs fix on your yoga-studio site. Its body lists two Markdown files, the Evidence looks right, and you merge after reading the body. Then main has the half-built booking feature from another branch too. The body was accurate about the files it named. Why did it miss the rest?
 - [x] The body described the work done, and nobody compared it with the real diff against main.
 - [ ] The Merge Danger part called it a two-way door, which let the merge skip review.
   > The door call tells you where to spend review time. It doesn't decide what the branch carries; in one real case the body was accurate and the diff still held 70 files.
@@ -342,7 +342,7 @@ Why: A body can be true about the files it names and still miss what the branch 
 ```
 
 ```checkpoint pr-deeper-reminder-emails-door
-A pull request for your yoga-studio site adds a job that emails a reminder to every member booked into tomorrow's classes. The agent's body says "Door: two-way. Revert the commit to undo it. Blast Radius: small." The code is a clean, small diff. Why should you not take that door call as it stands? What's the reason behind this step?
+A pull request for your yoga-studio site adds a job that emails a reminder to every member booked into tomorrow's classes. The agent's body says "Door: two-way. Revert the commit to undo it. Blast Radius: small." The code is a clean, small diff. Why should you not take that door call as it stands?
 - [x] Reverting the commit can't unsend emails already sent, so this isn't a two-way door.
 - [ ] Every change that adds a background job is a one-way door, whatever the job does.
   > pr's definition is about destructive or hard-to-reverse effects, not about the kind of code. A job that only logs could be reverted cleanly.
@@ -443,7 +443,7 @@ Why: You want a reviewer to see what changed, proof it works and how risky mergi
 ```
 
 ```final-test pr-review-comes-first
-A Ticket for your website is built test-first on its own branch, and every test passes. Nobody has reviewed the diff yet. The work will go up as a pull request to be merged into main. What comes next? What comes next?
+A Ticket for your website is built test-first on its own branch, and every test passes. Nobody has reviewed the diff yet. The work will go up as a pull request to be merged into main. What comes next?
 - [x] Review the diff along two axes, the coding standards and the Spec.
   > Right: that's `/code-review`.
 - [ ] Write the pull request body now, with a before and after and a door call.
@@ -456,7 +456,7 @@ Why: A pull request body should describe a diff that has already been reviewed. 
 ```
 
 ```final-test pr-reviewed-goes-up
-A Ticket for your AI agent project is built test-first and the two-axis review came back clean. You push the branch so that CI can run and the change can be merged into main. What does the agent do next? What comes next?
+A Ticket for your AI agent project is built test-first and the two-axis review came back clean. You push the branch so that CI can run and the change can be merged into main. What does the agent do next?
 - [x] Write the pull request body, with a before and after and a door call.
   > Right: that's `/pr`.
 - [ ] Run the two-axis review again, this time against the pushed branch.
@@ -469,7 +469,7 @@ Why: The review is done and the work is going up, so what's missing is the body.
 ```
 
 ```final-test pr-ci-goes-red
-You opened a pull request for a Ticket on your FastAPI backend. CI runs the tests, and one test on the booking endpoint the change touched now fails. The pull request can't be merged while CI is red. What comes next? What comes next?
+You opened a pull request for a Ticket on your FastAPI backend. CI runs the tests, and one test on the booking endpoint the change touched now fails. The pull request can't be merged while CI is red. What comes next?
 - [x] Fix it on the branch, one red-green slice at a time, and push.
   > Right: that's `/tdd`.
 - [ ] Rewrite the pull request body so its Evidence explains the failure.
@@ -482,7 +482,7 @@ Why: A red CI run means more work on the branch, and new words in the body can't
 ```
 
 ```final-test pr-expand-step-door
-You're renaming a column in your FastAPI backend in three Tickets: add the new column, move the queries over, then drop the old one. This pull request is the first: it adds the new column beside the old one and copies the values across. Nothing is dropped. Which door call fits, and why? What's the reason behind this step?
+You're renaming a column in your FastAPI backend in three Tickets: add the new column, move the queries over, then drop the old one. This pull request is the first: it adds the new column beside the old one and copies the values across. Nothing is dropped. Which door call fits, and why?
 - [x] Two-way, because it adds beside the old column and destroys nothing.
 - [ ] One-way, because every SQL migration changes the schema for good.
   > Adding a column destroys nothing, so it can be walked back. Dropping the old column in the last Ticket is the destructive, one-way step.

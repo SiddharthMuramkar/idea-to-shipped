@@ -1,24 +1,16 @@
 ---
-title: teach
+title: teach: learn a topic over many sessions
 slug: teach
-summary: teach turns a folder into a teaching workspace: a folder where an agent teaches you one topic over many sessions.
+summary: How teach turns an empty folder into a workspace where an agent teaches you one topic over many sessions, and keeps your progress in files.
 ---
 
 ## What it's for
 
-Say you keep copying migration commands into your FastAPI backend. You ask the agent to explain, the answer feels clear, and a week later it's gone. The next session starts from nothing.
+Say you keep copying migration commands into your FastAPI backend, the Python code behind your booking site. A migration is a script that changes a database's tables. You ask the agent to explain, the answer feels clear, and a week later it's gone. The next session starts from nothing.
 
 **teach turns a folder into a teaching workspace: a folder where an agent teaches you one topic over many sessions.**
 
-It's **stateful**: it keeps its state in files, so later sessions carry on. For example, here's a first session before building Ticket #12's bookings table:
-
-```checkpoint quick-1
-You close a teach session and open a fresh one tomorrow. How does the new session carry on?
-- [x] It reads the state that teach keeps in its files.
-- [ ] It reloads yesterday's conversation from memory.
-- [ ] It asks you to paste in what you covered yesterday.
-Why: teach is stateful. It keeps its state in files, so a later session can read them and carry on.
-```
+It's **stateful**: it keeps its state in files, so later sessions carry on. For example, here's a first session before building [Ticket](/learn/issues-and-keeping-track) #12's bookings table:
 
 ```
 You:   /teach how to write and roll back SQL migrations
@@ -30,6 +22,14 @@ You:   To build the bookings table without copying commands.
 Agent: Saved that to MISSION.md.
        Saved trusted sources to RESOURCES.md.
        Wrote lessons/0001-what-a-migration-is.html.
+```
+
+```checkpoint quick-1
+You close a teach session and open a fresh one tomorrow. How does the new session carry on?
+- [x] It reads the state that teach keeps in its files.
+- [ ] It reloads yesterday's conversation from memory.
+- [ ] It asks you to paste in what you covered yesterday.
+Why: teach is stateful. It keeps its state in files, so a later session can read them and carry on.
 ```
 
 Your answer is your **mission**: the real reason you want to learn a topic.
@@ -56,6 +56,9 @@ Why: Recall in the moment is fluency strength, and it can give a false sense of 
 
 Use it when the learning itself is the project, not for one explanation in passing:
 
+- You want to learn a new framework or language over weeks.
+- You've joined an unfamiliar codebase, and you want to get oriented.
+
 ```checkpoint quick-3
 You're midway through Ticket #13, and one idea confuses you. Is that a job for teach?
 - [x] No. It's for when learning is the project, not one explanation.
@@ -63,9 +66,6 @@ You're midway through Ticket #13, and one idea confuses you. Is that a job for t
 - [ ] Yes. Start it on the Ticket's branch, and carry on from there.
 Why: teach is for when the learning itself is the project. One explanation in passing doesn't need a workspace.
 ```
-
-- You want to learn a new framework or language over weeks.
-- You've joined an unfamiliar codebase, and you want to get oriented.
 
 ## When not to use it
 
@@ -94,7 +94,7 @@ Why: teach expects an empty folder and one mission per workspace. So it stays ou
 
 If `MISSION.md` is empty, the agent's first job is to ask why you want to learn this.
 
-It's **user-invoked**: only you can start the Skill, by typing its name. A setting in its `SKILL.md`, the file holding a Skill's instructions, stops the agent starting it.
+It's **user-invoked**: only you can start the [Skill](/learn/skills), by typing its name. A setting in its `SKILL.md`, the file holding a Skill's instructions, stops the agent starting it.
 
 ```checkpoint quick-6
 Partway through a Ticket, you're lost on a topic. Will the agent start teach for you?
@@ -130,7 +130,7 @@ Why: reference/ holds the cheat sheets and glossaries you look up later. Learnin
 
 One explanation can't build on anything. The agent doesn't know where you've got to, or what you're ready for. A good teacher does.
 
-Matt has taught for ten years, and he wanted to put what he knows inside a Skill, so that anyone could learn anything.
+Matt Pocock, who wrote the Skill, has taught for ten years, and he wanted to put what he knows inside a Skill, so that anyone could learn anything.
 
 His first idea was a stateless Skill: you name a topic, it finds good sources, and it hands back one lesson. He dropped that, because "all the good teaching that I do is stateful". A teacher remembers where you've got to, what you've learned and what comes next. So teach saves its state to files.
 
@@ -142,7 +142,7 @@ Why did Matt drop the idea of one lesson per topic, with nothing saved?
 Why: In his words, "all the good teaching that I do is stateful". A teacher remembers where you've got to, so teach saves its state to files.
 ```
 
-Stateful isn't better in itself. [grill-me](/learn/grill-me) saves nothing and [grill-with-docs](/learn/grill-with-docs) saves ADRs and glossaries, and Matt says each suits different situations.
+Stateful isn't better in itself. [grill-me](/learn/grill-me) saves nothing and [grill-with-docs](/learn/grill-with-docs) saves ADRs (short records of hard decisions) and glossaries, and Matt says each suits different situations.
 
 The second problem is trust. teach treats what the model already knows, its **parametric knowledge**, as untrusted. So it finds high-trust sources first, records them in `RESOURCES.md`, and cites them inside every lesson.
 
@@ -196,19 +196,19 @@ rows:
 
 **Hard enough, but not too hard.** To Matt, the **zone of proximal development** is where a lesson challenges you without scaring you off. The agent works out yours from your learning records, so they tell the next lesson where your edge is. For example, a record might say:
 
+```
+# Can roll back a migration
+
+Rolled back the bookings table migration and explained what it undid.
+The next lesson can skip rollback.
+```
+
 ```checkpoint quick-12
 Why do learning records matter to the next lesson?
 - [x] They show where your edge is, so the lesson can aim there.
 - [ ] They set each lesson's length, so it fits in one sitting.
 - [ ] They list the topic's sources, so the lesson can cite them.
 Why: The agent works out your zone of proximal development from your learning records. So they tell the next lesson where your edge is.
-```
-
-```
-# Can roll back a migration
-
-Rolled back the bookings table migration and explained what it undid.
-The next lesson can skip rollback.
 ```
 
 ### A real example
@@ -265,11 +265,11 @@ teach's lessons are designed around spacing, and you want to review. What do you
 Why: The lessons are designed around spacing, but "nothing schedules a review". teach won't switch from new material on its own, so you ask.
 ```
 
-**The lessons come out thin.** Results vary by model, harness and [effort level](/learn/implement). One user got "a single 30-line HTML card" through the Copilot CLI harness with Codex. Change one of those before you rewrite your prompt.
+**The lessons come out thin.** Results vary by model, [harness](/learn/context-hygiene) and [effort level](/learn/models-effort-ultracode). One user got "a single 30-line HTML card" through the Copilot CLI harness with Codex. Change one of those before you rewrite your prompt.
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do keeping-track's Try it step first. teach stays out of that repo, so you'll make a second one beside it.
+You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. teach stays out of that repo, so you'll make a second one beside it.
 
 Your first message will say this, with its last two sentences changed to fit you:
 
@@ -300,7 +300,7 @@ Your first message will say this, with its last two sentences changed to fit you
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint teach-deeper-quiz-shuffle
-Your learning workspace on SQL migrations keeps putting the right quiz answer first, even though its Skill file now says to vary the position. You want this gone for every future lesson, not just the next one. Why ask for a quiz component in assets/ that shuffles the answers, rather than a stronger instruction? What's the reason behind this step?
+Your learning workspace on SQL migrations keeps putting the right quiz answer first, even though its Skill file now says to vary the position. You want this gone for every future lesson, not just the next one. Why ask for a quiz component in assets/ that shuffles the answers, rather than a stronger instruction?
 - [x] Answer order is a mechanical problem, so code that shuffles can fix it; wording hasn't.
 - [ ] Lessons are rarely revisited, so only files in assets/ get read again by later sessions.
   > Reference documents get revisited too, and assets/ is read before every lesson. The reason is that a fixed pattern gets a mechanical fix, and an instruction-level fix already failed.
@@ -312,7 +312,7 @@ Why: Answer order is a mechanical mistake: a fixed pattern a program could spot.
 ```
 
 ```checkpoint teach-deeper-state-your-level
-You start a learning workspace on Docker networking for your FastAPI app. You know Python backends well but have never set up a Docker network. In your very first message you list what you already know and what you don't. Why does that matter most in session one? What's the reason behind this step?
+You start a learning workspace on Docker networking for your FastAPI app. You know Python backends well but have never set up a Docker network. In your very first message you list what you already know and what you don't. Why does that matter most in session one?
 - [x] It has no level check and no learning records yet, so without you it would guess your level.
 - [ ] MISSION.md is only written after the first lesson, so your level must come from the chat.
   > The mission comes first, before any lesson. The gap is that nothing records your level yet, and there's no assessment step.
@@ -419,7 +419,7 @@ Why: You asked for facts, not lessons, and you want to keep working meanwhile. A
 ```
 
 ```final-test teach-learned-now-build
-For three weeks you've had short lessons on SQL migrations in a learning workspace folder, and they've stuck. Now you want to add a waitlist table to your FastAPI backend's repo, but the feature itself is still a vague idea. What comes next? What comes next?
+For three weeks you've had short lessons on SQL migrations in a learning workspace folder, and they've stuck. Now you want to add a waitlist table to your FastAPI backend's repo, but the feature itself is still a vague idea. What comes next?
 - [x] Get interviewed about the waitlist in the repo, saving terms and decisions.
   > Right: that's `/grill-with-docs`.
 - [ ] Ask the learning workspace for a new lesson on building the waitlist.
@@ -432,7 +432,7 @@ Why: You've done the learning, and now you want to build something in a repo. Th
 ```
 
 ```final-test teach-glossary-word
-Your learning workspace on testing FastAPI apps already has a glossary in reference/. It says "test double", and lists "mock" as a word to avoid. A new lesson draft says "mock" throughout. Why should the lesson use "test double"? What's the reason behind this step?
+Your learning workspace on testing FastAPI apps already has a glossary in reference/. It says "test double", and lists "mock" as a word to avoid. A new lesson draft says "mock" throughout. Why should the lesson use "test double"?
 - [x] Once a glossary exists, every lesson keeps to it, so each idea has one word.
 - [ ] The glossary uses the field's official terms, and lessons must match the textbooks.
   > Matching the field isn't the point. The glossary picks the best of several words, and the lessons keep to that pick.
@@ -445,7 +445,7 @@ Why: A glossary picks one word for each idea and lists the rest as words to avoi
 
 ```final-test teach-lost-the-thread
 You're planning the Docker setup for your website with an agent. Its last message was full of terms you don't know, and you lost the thread. You just want that message said again, in plain words, with the context you were missing. Which fits best?
-- [x] Have the agent re-pitch its last message using the Glossary's words.
+- [x] Have the agent re-pitch its last message using your glossary's words.
   > Right: that's `/wait-what`.
 - [ ] Start a workspace folder and work through short lessons on Docker terms.
   > That's `/teach`. That's a multi-session study of a whole topic. You only need one message explained, right now.
@@ -453,7 +453,7 @@ You're planning the Docker setup for your website with an agent. Its last messag
   > That's `/research`. That produces a cited file later. It doesn't explain the message you just missed.
 - [ ] Get interviewed until you and the agent agree on shared Docker words.
   > That's `/grill-with-docs`. That's the upfront cure that stops jargon arriving. The message has already missed, so it needs a re-pitch after the fact.
-Why: One message lost you, so you need it said again now, in plain English, with the context you were missing and the Glossary's words. Lessons or a cited file would come too late. A shared language agreed early is what stops the jargon arriving at all.
+Why: One message lost you, so you need it said again now, in plain English, with the context you were missing and your glossary's words. Lessons or a cited file would come too late. A shared language agreed early is what stops the jargon arriving at all.
 ```
 
 ```sources

@@ -1,7 +1,7 @@
 ---
-title: tdd
+title: tdd: build it test-first, one slice at a time
 slug: tdd
-summary: tdd gives the agent the rules of the red → green loop: a failing test first, then only enough code to pass it.
+summary: How tdd gives your agent the rules of the red-green loop: one failing test first, then only enough code to pass it, at seams you agree.
 ---
 
 ## What it's for
@@ -10,7 +10,7 @@ Imagine an agent that writes the code first, then tests that only repeat it. The
 
 **tdd gives the agent the rules of the red → green loop: a failing test first, then only enough code to pass it.** It's [test-first](/learn/test-first) as a Skill.
 
-Say tdd runs on Ticket #13, the booking endpoint:
+Say tdd runs on [Ticket](/learn/issues-and-keeping-track) #13, the booking endpoint (the web address your app calls):
 
 1. The agent writes down a **seam**: the public boundary you test at, without reaching inside, here `POST /bookings`. You confirm it.
 2. Red: it writes one test that fails, because the behaviour doesn't exist yet.
@@ -74,7 +74,7 @@ Your code reads the clock and calls your own pricing module. Which do you mock i
 Why: A mock goes only at system boundaries, such as an outside API or the clock. Your own pricing module stays real.
 ```
 
-Refactoring isn't in the loop. It belongs to review, in [code-review](/learn/code-review).
+Refactoring, tidying code without changing what it does, isn't in the loop. It belongs to review, in [code-review](/learn/code-review).
 
 ## When to use it
 
@@ -134,7 +134,7 @@ Why: tdd leaves tests at the agreed seams, each one failing before its code was 
 
 ### Why it exists
 
-TDD, short for test-driven development, was built for people. A failing test reminds you where you were when you come back from a coffee break. Matt puts it this way: "TDD optimizes for having a very small working memory." Agents hold far more than people do, so they don't need that reminder.
+TDD, short for test-driven development, was built for people. A failing test reminds you where you were when you come back from a coffee break. Matt Pocock, who wrote the Skill, puts it this way: "TDD optimizes for having a very small working memory." Agents hold far more than people do, so they don't need that reminder.
 
 What agents do need is feedback: a way to see what their code does when it runs. A test that fails first gives them that. Matt adds that a failure built first is very hard for an agent to cheat.
 
@@ -228,7 +228,7 @@ After:  A: component boundary: catches rendering bugs, misses network failures.
         B: integration boundary: catches the full round-trip, slower to isolate.
 ```
 
-Today each proposed seam gets a note on what it catches and what it misses. Matt's page on the Skill still says no fix has shipped.
+Now each proposed seam gets a note on what it catches and what it misses. Matt's page on the Skill, dated August 2026, says no fix has shipped: it predates this one.
 
 ```checkpoint quick-13
 The agent proposes two seams and asks you to pick. What should it tell you about each one?

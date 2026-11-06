@@ -1,12 +1,12 @@
 ---
-title: code-review
+title: code-review: check changes against Spec and standards
 slug: code-review
-summary: code-review judges your branch's changes on two separate axes, each with its own report.
+summary: How code-review checks your branch against the repo's coding standards and against the Spec, with a separate report for each.
 ---
 
 ## What it's for
 
-Imagine the tests pass on Ticket #13, the booking endpoint. Did the agent build what the Ticket asked, and follow your repo's rules? The agent that wrote the code is a poor judge of that.
+Imagine the tests pass on [Ticket](/learn/issues-and-keeping-track) #13, the booking endpoint (the web address your app calls). Did the agent build what the Ticket asked, and follow your repo's rules? The agent that wrote the code is a poor judge of that.
 
 **code-review judges your branch's changes on two separate [axes](/learn/review-spec-and-standards), each with its own report.**
 
@@ -25,7 +25,7 @@ Why: A change can pass one axis and fail the other. With separate reports, the p
 
 On Ticket #13's branch, you type:
 
-```
+```text
 /code-review main
 ```
 
@@ -41,9 +41,9 @@ You branched from `main`, and `main` has moved on since. What does `git diff mai
 Why: The three dots compare against the merge-base, the commit where your branch left main. So later work on main stays out, and every commit on your branch stays in.
 ```
 
-Each axis then runs in its own subagent, at the same time.
+Each axis then runs in its own [subagent](/learn/context-window), a helper agent with a fresh context, at the same time.
 
-The standards come from the repo's own files, such as `CONTRIBUTING.md`, its contribution rules. On top sits a **smell baseline**: twelve code smells from Martin Fowler's book _Refactoring_. One is Duplicated Code: the same logic copied in two places.
+The standards come from the repo's own files, such as `CONTRIBUTING.md`, its contribution rules. On top sits a **smell baseline**: twelve code smells, signs the design may have a problem, from Martin Fowler's book _Refactoring_. One is Duplicated Code: the same logic copied in two places.
 
 Your repo's standards always win: if they allow something the baseline would flag, the smell is dropped. And each smell is a judgement call, never a hard violation.
 
@@ -127,7 +127,7 @@ Why: The report ends with one line, how many findings each axis has and the wors
 
 ### Why it exists
 
-A reviewer that doesn't know your repo gets two things wrong. It complains about choices you made on purpose, and it misses the rules your code relies on. Matt's design "exists to avoid a generic review skill that does not know your standards."
+A reviewer that doesn't know your repo gets two things wrong. It complains about choices you made on purpose, and it misses the rules your code relies on. Matt Pocock, who wrote the Skill, says his design "exists to avoid a generic review skill that does not know your standards."
 
 ```checkpoint quick-8
 Say a reviewer reads your repo without knowing its standards. What does it get wrong?
@@ -171,7 +171,7 @@ Each smell also names its fix: Duplicated Code says to extract the shared shape.
 
 For example, a report on Ticket #13 might read:
 
-```
+```text
 ## Standards
 CONTRIBUTING.md, "Every endpoint returns a response model":
   POST /bookings returns a plain dict.
@@ -420,7 +420,7 @@ Why: The review's findings get fixed together, by one fresh implementer subagent
 ```
 
 ```final-test code-review-pick-migration
-Your branch with a SQL migration that adds a cancellations table is done. You want to know two things. Does it follow the repo's CONTRIBUTING.md, and does it do what Ticket #31 asked? Which fits best?
+Your branch with a SQL migration that adds a cancellations table is done. You want to know two things: whether it follows the repo's CONTRIBUTING.md, and whether it does what Ticket #31 asked. Which fits best?
 - [x] Check the diff against the repo's standards and against the Ticket.
   > Right: that's `/code-review`.
 - [ ] Write the pull request's description, linking it to the Ticket.

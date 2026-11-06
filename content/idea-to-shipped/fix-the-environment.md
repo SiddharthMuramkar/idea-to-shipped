@@ -1,12 +1,12 @@
 ---
 title: Fix the environment, not just the code
 slug: fix-the-environment
-summary: Fixing the code fixes this run; fixing the environment around the agent fixes the next one too.
+summary: When your coding agent repeats a mistake, fix what lets it happen, with an automated check or a written standard, not just the one line.
 ---
 
 ## Fixing the next run too
 
-Imagine your agent imports `legacy_db`, an old package your project has banned, while it builds [Ticket](/learn/issues-and-keeping-track) #13. You point it out, and it fixes the line. Tomorrow's session starts fresh and makes the same mistake, because nothing around the agent stops it.
+Imagine your agent imports `legacy_db`, an old package your project has banned, while it builds Ticket #13, one task on your yoga-studio booking site. You point it out, and it fixes the line. Tomorrow's session starts fresh and makes the same mistake, because nothing around the agent stops it.
 
 ```checkpoint quick-1
 You corrected the banned import yesterday. Why does today's session make the same mistake?
@@ -119,7 +119,7 @@ Why: A repo has no guardrail when it has no pre-commit hook and no CI job runnin
 
 ## Keep instruction files small
 
-Every agent in the repo loads `CLAUDE.md` (or `AGENTS.md`) into its context window. So use it sparingly, mostly for **navigation pointers**: short notes saying where to find something, like `See docs/agents/issue-tracker.md`. A repeat mistake usually doesn't earn a new line there.
+Every agent in the repo loads `CLAUDE.md` (or `AGENTS.md`) into its [context window](/learn/context-window). So use it sparingly, mostly for **navigation pointers**: short notes saying where to find something, like `See docs/agents/issue-tracker.md`. A repeat mistake usually doesn't earn a new line there.
 
 ```checkpoint quick-9
 You're about to add a line to `CLAUDE.md`. Which line fits best?
@@ -131,7 +131,7 @@ Why: Every agent loads the file into its context window, so it's mostly for navi
 
 ## Where it shows up
 
-[retro](/learn/retro) is a [Skill](/learn/issues-and-keeping-track) that looks back on a finished session and suggests environment changes, not code changes. Run it after a session that went sideways, and after [diagnosing-bugs](/learn/diagnosing-bugs), the Skill for finding hard bugs' causes.
+[retro](/learn/retro) is a [Skill](/learn/skills) that looks back on a finished session and suggests environment changes, not code changes. Run it after a session that went sideways, and after [diagnosing-bugs](/learn/diagnosing-bugs), the Skill for finding hard bugs' causes.
 
 ```checkpoint quick-10
 A build went sideways, and the code is fixed now. Which Skill do you run, and what does it suggest?
@@ -214,17 +214,17 @@ rows:
     cells: ["each line came from a bad agent behaviour", "gets shorter over time, not longer"]
 ```
 
-When the two disagree, retro's `SKILL.md`, the file holding its instructions, decides. It says to use these files "incredibly sparingly", so it sides with Matt, and this Course does too.
+When the two disagree, retro's `SKILL.md`, the file holding its instructions, decides. It says to use these files "incredibly sparingly", so it sides with Matt, and so should you.
 
 ```checkpoint quick-15
-Mitchell and Matt disagree about a repeat mistake. Which way does this Course go?
-- [x] With Matt, because retro's instructions side with him.
-- [ ] With Mitchell, because retro's instructions side with him.
-- [ ] With Mitchell, because his post came before Matt's advice.
+Mitchell and Matt disagree about a repeat mistake. Whose advice do you follow?
+- [x] Matt's, because retro's instructions side with him.
+- [ ] Mitchell's, because retro's instructions side with him.
+- [ ] Mitchell's, because his post came before Matt's advice.
 Why: When the two disagree, retro's `SKILL.md` decides. It says to use these files "incredibly sparingly", so it sides with Matt.
 ```
 
-**Where the fixes start.** [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills) is the first environment fix, made once before your first [Flow](/learn/issues-and-keeping-track). It records where Issues live, any triage labels and the doc layout, and adds a short block to `CLAUDE.md` or `AGENTS.md` that points to them.
+**Where the fixes start.** [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills) is the first environment fix, made once before your first [Flow](/learn/main-flow), a set path through the Skills. It records where Issues live, any triage labels and the doc layout, and adds a short block to `CLAUDE.md` or `AGENTS.md` that points to them.
 
 ### A real example
 
@@ -260,7 +260,9 @@ Why: retro sees only one session, so it won't flag an old check. You prune check
 
 ### Try it
 
-Turn one mistake into a check, and watch the check catch it. You'll need your practice project, on an up-to-date `main` with nothing uncommitted, and the CI check from [CI/CD](/learn/what-ci-cd-is)'s Try it step. If you haven't set the project up, do keeping-track's Try it step first.
+Turn one mistake into a check, and watch the check catch it. You'll need your practice project, the yoga-studio booking site, on an up-to-date `main` with nothing uncommitted. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+
+It also needs a [CI](/learn/what-ci-cd-is) check: a GitHub Actions workflow, `.github/workflows/ci.yml`, that runs on every pull request. If it has none yet, ask your agent to add one with a checkout step and one passing test, and merge it before step 1.
 
 1. Create a branch: `git switch -c ban-legacy-db`.
 2. In `.github/workflows/ci.yml`, add this step after the checkout step, indented 6 spaces to match the `- uses:` line:

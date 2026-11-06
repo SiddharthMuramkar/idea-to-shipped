@@ -1,12 +1,12 @@
 ---
-title: setup-matt-pocock-skills
+title: setup-matt-pocock-skills: tell the Skills about your repo
 slug: setup-matt-pocock-skills
-summary: setup-matt-pocock-skills (setup, for short) settles three facts about your repo once, and writes them down where the other Skills read them.
+summary: How to run Matt Pocock's setup Skill once per repo, so every other Skill knows where your Issues, labels and project docs live.
 ---
 
 ## What it's for
 
-Say you ask to-spec (which writes Specs) for the "Booking API" Spec in a new repo. The agent tells you to run this Skill first: nobody has told it where the repo's [Issues](/learn/issues-and-keeping-track) live. You'd rather not explain that every session.
+Say you ask [to-spec](/learn/to-spec), the Skill that writes Specs (a feature's written plan), for the "Booking API" Spec in a new repo. The agent tells you to run this [Skill](/learn/skills) first: nobody has told it where the repo's [Issues](/learn/issues-and-keeping-track) live. You'd rather not explain that every session.
 
 **setup-matt-pocock-skills (setup, for short) settles three facts about your repo once, and writes them down where the other Skills read them.**
 
@@ -20,7 +20,7 @@ Why: Setup settles the three facts once and writes them down where the other Ski
 
 - **Issue tracker:** where Issues live. GitHub Issues is the default, and others work too.
 - **Triage labels:** what the labels that sort Issues are called.
-- **Domain docs:** where the project's glossary and ADRs go.
+- **Domain docs:** where the project's [glossary](/learn/one-shared-language) and ADRs (short files that each record one hard decision) go.
 
 A run could go like this:
 
@@ -37,7 +37,7 @@ You end up with a few Markdown files: your first [environment fix](/learn/fix-th
 
 ## When to use it
 
-- You're about to start your first engineering [Flow](/learn/issues-and-keeping-track) in a repo. Run setup once per repo, before it.
+- You're about to start your first engineering [Flow](/learn/main-flow), a set path through the Skills, in a repo. Run setup once per repo, before it.
 - You've seen a Skill tell you to run it. to-spec, to-tickets (which splits a Spec into Tickets) and code-review (which reviews a branch) all do.
 - You want to switch Issue trackers or start from scratch. For anything smaller, such as a renamed label, edit the files in `docs/agents/` yourself.
 
@@ -64,7 +64,7 @@ Why: Sorting Issues is triage's job. Setup only sets up the labels, and triage a
 
 ## What it needs to start
 
-It needs this Skill [installed](/learn/issues-and-keeping-track), a repo and, for GitHub Issues, `gh`. Only you can start it, by typing `/setup-matt-pocock-skills`. The agent never starts it on its own.
+It needs this Skill [installed](/learn/skills), a repo and, for GitHub Issues, `gh`, GitHub's command-line tool. Only you can start it, by typing `/setup-matt-pocock-skills`. The agent never starts it on its own.
 
 ```checkpoint quick-4
 You've never run setup in this repo. Can the agent start it on its own?
@@ -280,7 +280,7 @@ Why: In a fork, gh can default to the parent repo. So the GitHub template tells 
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site. [keeping-track](/learn/issues-and-keeping-track)'s Try it creates it and runs setup once, so do that first if you haven't. This is a deliberate re-run, which refreshes your `docs/agents/` files.
+You'll need your practice project, the yoga-studio booking site. The Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it and runs setup once, so do that first if you haven't. This is a deliberate re-run, which refreshes your `docs/agents/` files.
 
 1. Open the `yoga-studio` repo's root in Claude Code.
 2. Type `/setup-matt-pocock-skills`. Typing it is the only way to start it.
@@ -299,7 +299,7 @@ Why no domain docs question? Your `web/` folder can have its own `package.json`,
 
 - [The /setup-matt-pocock-skills Skill](https://www.aihero.dev/skills-setup-matt-pocock-skills), Matt Pocock, updated 24 August 2026
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, video, 16 July 2026
-- [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock, as of 29 October 2026 (the Course's pin commit)
+- [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock, 29 October 2026
 - [Triage labels missing, Issue #616](https://github.com/mattpocock/skills/issues/616), mentelm, 18 July 2026
 - [Make setup-matt-pocock-skills harness-aware when choosing AGENTS.md or CLAUDE.md, Issue #558](https://github.com/mattpocock/skills/issues/558), wushijie-ai, 14 July 2026
 
@@ -308,7 +308,7 @@ Why no domain docs question? Your `web/` folder can have its own `package.json`,
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint setup-matt-pocock-skills-deeper-codex
-Your repo has a CLAUDE.md left from Claude Code, but you now work in Codex. Setup ran and finished cleanly, yet Codex sessions still ask where Issues live. Why? What's the reason behind this step?
+Your repo has a CLAUDE.md left from Claude Code, but you now work in Codex. Setup ran and finished cleanly, yet Codex sessions still ask where Issues live. Why?
 - [x] Setup edited the CLAUDE.md that existed, and Codex reads AGENTS.md, so it never sees the pointer block.
 - [ ] Setup only writes its pointer block when it runs inside Claude Code, so under Codex it wrote nothing.
   > Setup did write its block. The rule picks the file that exists, not the harness that's running.
@@ -380,16 +380,16 @@ Why: Setup's SKILL.md sets disable-model-invocation, which stops the agent start
 ```
 
 ```final-test setup-matt-pocock-skills-deeper-labels
-Matt's page says setup doesn't create triage labels, but the current SKILL.md says it does. Which does the Course follow, and why?
+Matt's page says setup doesn't create triage labels, but the current SKILL.md says it does. Which do you follow, and why?
 - [x] The SKILL.md, since PR #1197 closed #616 in October 2026, and when the two disagree, the current SKILL.md decides.
 - [ ] Matt's page, because his own prose explains the design intent, while the SKILL.md is only the agent's instructions.
-- [ ] Neither, because the two disagree, so the Course tells you to create all five triage labels by hand every time.
+- [ ] Neither, because the two disagree, so you create all five triage labels by hand on every repo, every time.
 - [ ] Matt's page, because it was updated in August, after the SKILL.md change that first added label creation to setup.
 Why: Issue #616 reported the missing labels, and pull request #1197 closed it in October 2026. So the current SKILL.md creates missing triage labels on GitHub or GitLab, while Matt's page still says it doesn't. When the two disagree, the current SKILL.md decides.
 ```
 
 ```final-test setup-matt-pocock-skills-fresh-docker
-You've just created a GitHub repo for an AI agent that runs in Docker, and you have a rough idea for its first feature. No agent has been told where this repo's Issues live, what its triage labels are called, or where its domain docs go. What comes first? What comes next?
+You've just created a GitHub repo for an AI agent that runs in Docker, and you have a rough idea for its first feature. No agent has been told where this repo's Issues live, what its triage labels are called, or where its domain docs go. What comes first?
 - [x] Set up the repo once, so every later Skill knows its conventions.
   > Right: that's `/setup-matt-pocock-skills`.
 - [ ] Start the interview about the first feature, writing terms down as they settle.
@@ -422,7 +422,7 @@ Why: These three facts are exactly what setup records, and the other Skills assu
 ```
 
 ```final-test setup-matt-pocock-skills-glossary-words
-Setup wrote `docs/agents/domain.md` for your booking website's repo. From now on, every engineering Skill reads `GLOSSARY.md` before exploring, and names things in Issue titles and test names with the Glossary's terms. Why does that matter? What's the reason behind this step?
+Setup wrote `docs/agents/domain.md` for your booking website's repo. From now on, every engineering Skill reads `GLOSSARY.md` before exploring, and names things in Issue titles and test names with the Glossary's terms. Why does that matter?
 - [x] You and every agent use one word per thing, so synonyms don't creep in.
 - [ ] The agent can read the Glossary instead of exploring the code each time.
   > The Glossary is read before exploring the code, not instead of it.

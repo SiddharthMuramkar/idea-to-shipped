@@ -1,12 +1,12 @@
 ---
-title: to-spec
+title: to-spec: turn your conversation into a Spec
 slug: to-spec
-summary: to-spec turns that conversation into a Spec, one Issue describing the whole feature, on your Issue tracker.
+summary: How to-spec writes the decisions from a grilling into a Spec, one Issue describing the whole feature, so later sessions can build from it.
 ---
 
 ## What it's for
 
-Say [grill-with-docs](/learn/grill-with-docs) has grilled you on the Booking API for your yoga-studio site. Most of your decisions sit only in that conversation. The build needs several sessions, and clearing this one would lose them.
+Say [grill-with-docs](/learn/grill-with-docs) has grilled you, question by question, on the Booking API for your yoga-studio site. Most of your decisions sit only in that conversation. The build needs several sessions, and clearing this one would lose them.
 
 **to-spec turns that conversation into a Spec, one Issue describing the whole feature, on your [Issue tracker](/learn/issues-and-keeping-track).**
 
@@ -22,7 +22,7 @@ Why: It doesn't interview you, and it only writes up what you've decided plus wh
 
 It checks one thing with you: the [seams](/learn/test-first), the public boundaries where tests will watch the feature. A run might go like this:
 
-```
+```text
 you:   /to-spec
 agent: I'd test this at one seam, the HTTP API. Does that match what you expect?
 you:   Yes.
@@ -117,7 +117,7 @@ The Spec leaves out file paths and code snippets, because they go stale fast. Th
 
 ### Why it exists
 
-A grilling settles a lot: the shape of the solution, the choices you argued through, and what you refused. All of that sits in one conversation that you're about to clear. Matt gives the reason for a Spec in one line: "The spec exists because context windows end."
+A grilling settles a lot: the shape of the solution, the choices you argued through, and what you refused. All of that sits in one conversation that you're about to clear. Matt Pocock, who wrote the Skill, gives the reason for a Spec in one line: "The spec exists because context windows end."
 
 ```checkpoint quick-7
 You're about to clear a session after a long grilling. What goes with it if there's no Spec?
@@ -129,7 +129,7 @@ Why: The shape of the solution, the choices you argued through and what you refu
 
 Sessions are disposable, and big work isn't. So the Spec gives the work a home outside any one session. A fresh session reads it and can pick up the work without you explaining it again, and without the old session's noise.
 
-The Skill used to be called `/to-prd`. Matt renamed it in July 2026 (version 1.1), because a PRD describes the product itself, and non-product material was leaking in.
+The Skill used to be called to-prd. Matt renamed it in July 2026 (version 1.1), because a PRD (product requirements document) describes the product itself, and non-product material was leaking in.
 
 ### How it works underneath
 
@@ -237,9 +237,9 @@ Why: In the seams and the Out of Scope section, a wrong decision is cheapest to 
 
 ### Try it
 
-You'll need your practice project, with the Skills set up. If you haven't set the project up, do keeping-track's Try it step first.
+You'll need your practice project, with the Skills set up. If you haven't set the project up, do the Try it step in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
-1. Run `/grill-with-docs` on the next feature: a full class says no to a booking. #3 already covers creating one.
+1. Run `/grill-with-docs` on the next feature: a full class says no to a booking. Ticket #3 from that Try it already covers creating one.
 2. Answer until every question is settled. Don't clear the session.
 3. Type `/to-spec`. You should see it propose seams before it writes anything.
 4. Check the seams are as few as possible. For a FastAPI backend, the HTTP API is a natural single seam.
@@ -264,7 +264,7 @@ You'll need your practice project, with the Skills set up. If you haven't set th
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint to-spec-deeper-truncated
-Your Spec for a big FastAPI change came out very long. You cleared the session straight after writing it, and in the new session the Ticket-splitting step keeps reading the Spec cut short. Why would keeping both steps in one session have avoided this? What's the reason behind this step?
+Your Spec for a big FastAPI change came out very long. You cleared the session straight after writing it, and in the new session the Ticket-splitting step keeps reading the Spec cut short. Why would keeping both steps in one session have avoided this?
 - [x] The second step could use the Spec still in context, instead of fetching it again.
 - [ ] A long Spec is a sign it needs more grilling, which only works in the first session.
   > A surprising Spec points to shallow grilling, but a long one doesn't. Here the trouble is that the tracker may not return a very large Spec in full.
@@ -287,7 +287,7 @@ A: [to-tickets](/learn/to-tickets), which splits the Spec into Tickets.
 Q: What does a Spec from to-spec leave out, and why?
 A: File paths and code snippets, because they go stale fast. The exception is a short prototype snippet that pins down a decision better than words.
 
-Q: Why did Matt rename `/to-prd` to `/to-spec` in v1.1?
+Q: Why did Matt rename the Skill from to-prd to to-spec in v1.1?
 A: The document wasn't really a PRD. "A PRD describes things about the actual product itself, whereas we were allowing non-product stuff to leak in."
 
 Q: What does Matt call the most-reported problem with to-spec?
@@ -368,7 +368,7 @@ Why: A Spec can only hold decisions you've made, and here the big ones are still
 ```
 
 ```final-test to-spec-same-window
-In this session you've just finished being interviewed about moving your FastAPI backend into Docker. It's a multi-session build, and the context window still has plenty of room. What do you do next? What comes next?
+In this session you've just finished being interviewed about moving your FastAPI backend into Docker. It's a multi-session build, and the context window still has plenty of room. What do you do next?
 - [x] Write the Spec now, in this same session.
   > Right: that's `/to-spec`.
 - [ ] Write a handoff file, then write the Spec in a fresh session.
@@ -381,7 +381,7 @@ Why: The grilling, the Spec and the Tickets should all build on the same thinkin
 ```
 
 ```final-test to-spec-why-seams
-The agent is writing up the Spec for a new SQL migration runner. Before writing, it stops and asks you to confirm one thing: the tests will sit at the runner's public interface, and nowhere else. Why does it check this with you? What's the reason behind this step?
+The agent is writing up the Spec for a new SQL migration runner. Before writing, it stops and asks you to confirm one thing: the tests will sit at the runner's public interface, and nowhere else. Why does it check this with you?
 - [x] So the tests land on as few agreed public boundaries as possible.
 - [ ] Because the design still has open questions it must ask you about.
   > It doesn't interview you about the design; it only checks the seams it proposes.
@@ -391,7 +391,7 @@ Why: Seams decide where the tests go, and you can't test everything. Agreeing th
 ```
 
 ```final-test to-spec-deeper-afk-label
-You run agents unattended, and each one picks up any Issue labelled ready-for-agent. After you wrote the Spec for the yoga-studio booking feature and split it into Tickets, one agent took the Spec Issue itself and tried to build the whole feature in one run. Why is that a problem, and what fixes it? What's the reason behind this step?
+You run agents unattended, and each one picks up any Issue labelled ready-for-agent. After you wrote the Spec for the yoga-studio booking feature and split it into Tickets, one agent took the Spec Issue itself and tried to build the whole feature in one run. Why is that a problem, and what fixes it?
 - [x] Each Ticket fits one fresh context window; drop the Spec's label or tell the agent to skip it.
 - [ ] The Spec was missing seams; add them, then relabel it so agents test at the right places.
   > The seams weren't the issue. The agent saw the label and treated the Spec as a work order instead of picking up the Ticket slices.

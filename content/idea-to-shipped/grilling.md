@@ -1,14 +1,14 @@
 ---
-title: grilling
+title: grilling: the interview, in rounds of questions
 slug: grilling
-summary: grilling is the interview itself: the agent questions you in rounds until you both reach a shared understanding.
+summary: How Matt Pocock's grilling Skill interviews you in rounds of questions until you and your coding agent share one understanding of a plan.
 ---
 
 ## What it's for
 
 Say you're deciding how cancelling a yoga-studio booking should work. Asked everything at once, you'd hit questions resting on answers you haven't given. Asked one per turn, you'd crawl through the easy ones.
 
-**grilling is the interview itself: the agent questions you in rounds until you both reach a shared understanding.** You met it in [grill before you build](/learn/grill-before-you-build).
+**grilling is the interview itself: the agent questions you in rounds until you both reach a shared understanding.** [Grill before you build](/learn/grill-before-you-build) explains why it comes before any code.
 
 The agent maps your plan as a **design tree**: a map of decisions, each branching into the ones depending on it. Each round asks the whole **frontier**: every decision whose prerequisites are already settled, so it can ask without guessing. A question that depends on one still open waits for a later round.
 
@@ -32,7 +32,7 @@ For example, type `/grilling How should cancelling work?`, and round one might b
 
 Each question is worded so `yes` accepts its recommended answer. You answer by number: `Q1 yes, Q2 yes`. Your answers settle decisions. So the agent works out the new frontier, and the next round asks how many hours before class.
 
-Facts are the agent's job; decisions are yours. For a fact, such as which table holds bookings, it sends a subagent: a helper agent with its own fresh [context window](/learn/instruction-files). Only the questions that depend on that fact wait; it asks you the rest meanwhile.
+Facts are the agent's job; decisions are yours. For a fact, such as which table holds bookings, it sends a subagent: a helper agent with its own fresh [context window](/learn/context-window). Only the questions that depend on that fact wait; it asks you the rest meanwhile.
 
 ```checkpoint quick-2
 A subagent is off finding out which table holds bookings. What happens to the rest of the round?
@@ -67,7 +67,7 @@ Why: You don't need to type grilling here. triage, wayfinder and improve-codebas
 
 ## When not to use it
 
-- If you're in a repo, use [grill-with-docs](/learn/grill-with-docs) instead, because it also writes `GLOSSARY.md` and ADRs (decision records) as you go.
+- If you're in a repo, use [grill-with-docs](/learn/grill-with-docs) instead, because it also writes [`GLOSSARY.md`](/learn/one-shared-language) and ADRs (decision records) as you go.
 - If you have no repo, use [grill-me](/learn/grill-me) instead, because it's the same interview under a name the agent never starts by itself.
 - If the answers are in someone else's head, use [to-questionnaire](/learn/to-questionnaire) instead, because it writes that person the questions.
 
@@ -244,7 +244,7 @@ Matt calls that "a supported setting, not a workaround."
 
 ### Try it
 
-You'll need your practice project, with Matt's Skills installed. If you haven't set it up, do keeping-track's Try it step first.
+You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Open the `yoga-studio` repo in Claude Code.
 2. Type `/grilling How should cancelling a class booking work?`
@@ -274,7 +274,7 @@ If a check fails, tell the agent which one, and note what changes in the next ro
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint grilling-deeper-linked-pair
-In round two, the agent asks Q1, whether yoga classes can be booked as a block of ten, and Q2, how refunds work for a single cancelled class. You see that your answer to Q1 changes Q2. What should you do, and why? What's the reason behind this step?
+In round two, the agent asks Q1, whether yoga classes can be booked as a block of ten, and Q2, how refunds work for a single cancelled class. You see that your answer to Q1 changes Q2. What should you do, and why?
 - [x] Tell the agent, because it picks the frontier by judgement and can miss a link.
 - [ ] Answer both now, because the agent computes the frontier, so Q2 can't depend on Q1.
   > The agent chooses the frontier by judgement; it does not compute it from a graph, so a linked pair can slip into one round.
@@ -367,7 +367,7 @@ Why: All three run the same interview, so the choice comes down to what gets lef
 ```
 
 ```final-test grilling-next-round
-An agent is interviewing you about the Docker setup for your AI agent project. You have just answered its second round of numbered questions. Some decisions are now settled, but parts of the design tree are still unvisited. What comes next? What comes next?
+An agent is interviewing you about the Docker setup for your AI agent project. You have just answered its second round of numbered questions. Some decisions are now settled, but parts of the design tree are still unvisited. What comes next?
 - [x] The agent works out the new frontier and asks the next round.
   > Right: that's `/grilling`.
 - [ ] The agent writes a Spec from the decisions settled so far.
@@ -378,7 +378,7 @@ Why: Your answers settled some decisions, and that opens up the ones depending o
 ```
 
 ```final-test grilling-why-look-it-up
-An agent is interviewing you about a new SQL migration for your FastAPI app. It needs to know which migration tool the repo already uses. Instead of asking you, it sends a subagent to find out, and asks you its other questions meanwhile. Why? What's the reason behind this step?
+An agent is interviewing you about a new SQL migration for your FastAPI app. It needs to know which migration tool the repo already uses. Instead of asking you, it sends a subagent to find out, and asks you its other questions meanwhile. Why?
 - [x] Finding facts is never your job; your answers are kept for decisions.
 - [ ] The agent doesn't trust what you remember about the repo's tools.
   > The rule is about whose job it is, not about trust.
@@ -388,7 +388,7 @@ Why: If the agent can look something up, it doesn't ask you, because finding fac
 ```
 
 ```final-test grilling-why-later-round
-An agent is interviewing you about login for your website. In this round it asks whether users sign in with a password or with an email link. It holds back its question about password reset emails. Why? What's the reason behind this step?
+An agent is interviewing you about login for your website. In this round it asks whether users sign in with a password or with an email link. It holds back its question about password reset emails. Why?
 - [x] Its answer depends on a question still open in this round.
 - [ ] The agent asks only one numbered question in each round.
   > Each round asks the whole frontier, so a round can hold many questions.
@@ -398,7 +398,7 @@ Why: If you choose email links, there are no passwords to reset. So the reset qu
 ```
 
 ```final-test grilling-deeper-skipped-gate
-You use a faster, lower-effort model to interview you about the cancellation rules for your yoga-studio API. The frontier empties, and before you say anything the agent starts writing the cancellation endpoint. Which fix does Matt give, and why? What's the reason behind this step?
+You use a faster, lower-effort model to interview you about the cancellation rules for your yoga-studio API. The frontier empties, and before you say anything the agent starts writing the cancellation endpoint. Which fix does Matt give, and why?
 - [x] Add a line to your AGENTS.md or CLAUDE.md saying not to implement without permission.
 - [ ] Ask for a cap on the number of questions, so the session ends before it can build.
   > A cap is out of scope on purpose, and the trouble is the skipped confirmation, not the number of questions.

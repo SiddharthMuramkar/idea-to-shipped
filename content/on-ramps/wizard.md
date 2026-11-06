@@ -1,12 +1,12 @@
 ---
-title: wizard
+title: wizard: guide you through manual steps
 slug: wizard
-summary: This Skill writes you a wizard: a script that walks you through steps only you can do, one stage at a time.
+summary: wizard writes a script that walks you through setup steps only you can do, such as copying a key from a website, one stage at a time.
 ---
 
 ## What it's for
 
-Say your yoga-studio project needs a Neon database, and [CI](/learn/what-ci-cd-is) needs its connection string, its address and password. An agent can't click through Neon's website for you, and steps in the chat scroll away while you do.
+Say your yoga-studio project needs a database on Neon, a hosted database service, and [CI](/learn/what-ci-cd-is) needs its connection string, its address and password. An agent can't click through Neon's website for you, and steps in the chat scroll away while you do.
 
 **This Skill writes you a wizard: a script that walks you through steps only you can do, one stage at a time.**
 
@@ -55,7 +55,7 @@ Why: The script writes the value to `.env`, a file you keep out of git. CI needs
 
 ## When to use it
 
-- You need API keys, a database or CI secrets from another service.
+- You need API keys (passwords your app uses to reach a service), a database or CI secrets from another service.
 - You face an unfamiliar **dashboard**, the website where you manage a service.
 - You're running a one-off migration or **cutover**, switching a live system to a new host or setup. The script confirms before anything irreversible.
 
@@ -128,7 +128,7 @@ An agent keeps meeting steps it can't take: a key it can't create, a dashboard i
 
 So in v1.2, in August 2026, wizard became **model-invoked**: the agent may start it by itself. Now an agent that hits a step only you can take writes a wizard instead. Typing `/wizard` works as before.
 
-Matt aims it at a second habit too: writing setup steps into a README. A wizard is an executable version, "which fails visibly when a step goes stale".
+Matt Pocock, who wrote the Skill, aims it at a second habit too: writing setup steps into a README. A wizard is an executable version, "which fails visibly when a step goes stale".
 
 ```checkpoint quick-8
 You're about to write setup steps into a README. What would a wizard give you?
@@ -236,11 +236,11 @@ A wizard from today's template waits at a prompt, and you edit its file. Why won
 Why: Bash reads a script bit by bit, which is what used to break. Every stage now runs inside one function, `run_wizard`, so bash reads the whole file first.
 ```
 
-**You see no time estimate, though Matt's page promises one.** The page offers "progress with time remaining", and the screenshot above shows minutes. Nothing's broken: the page is behind the code. Version 1.2.3 removed the estimate, so the current template counts stages only.
+**You see no time estimate, though Matt's page promises one.** The page offers "progress with time remaining", and the v1.2 launch post shows a wizard announcing "7 stages · about 37 minutes". Nothing's broken: the page is behind the code. Version 1.2.3 removed the estimate, so the current template counts stages only.
 
 ### Try it
 
-Get a real connection string into `.env` and CI. You'll need your practice project, with the CI check from [ci-cd](/learn/what-ci-cd-is)'s Try it, and a Neon account. If you haven't set the project up, do [keeping-track](/learn/issues-and-keeping-track)'s Try it step first.
+Get a real connection string into `.env` and CI. You'll need your practice project, the yoga-studio booking site, and a Neon account. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. The project also needs a CI workflow, `.github/workflows/ci.yml`, with a `- run: pytest api` step. If it has none, ask your agent to add one ([What CI/CD is](/learn/what-ci-cd-is) explains CI).
 
 1. Keep secrets out of git: `echo .env >> .gitignore`.
 2. In `.github/workflows/ci.yml`, add these lines straight under `- run: pytest api`:
@@ -279,7 +279,7 @@ Get a real connection string into `.env` and CI. You'll need your practice proje
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint wizard-deeper-fix-in-template
-A user reported that a generated setup script died with a syntax error when its author edited two lines while it waited at a prompt. Bash reads a script bit by bit as it runs. The fix went into `template.sh`, not into that one script. Why there? What's the reason behind this step?
+A user reported that a generated setup script died with a syntax error when its author edited two lines while it waited at a prompt. Bash reads a script bit by bit as it runs. The fix went into `template.sh`, not into that one script. Why there?
 - [x] Every later script is copied from the template, so a fix there reaches all of them.
 - [ ] The bug was in the stages the agent wrote, and those stages live only in the template.
   > Stages are written per script; the fix changed how the template wraps them, inside `run_wizard`.
@@ -291,7 +291,7 @@ Why: Every script starts as a copy of the template. Fixing one script helps only
 ```
 
 ```checkpoint wizard-deeper-stale-page
-The agent wrote you a setup script for your database host. On stage 2 it tells you to click a button that isn't on the dashboard any more, so you can't get the value it asks for. What should you do, and why? What's the reason behind this step?
+The agent wrote you a setup script for your database host. On stage 2 it tells you to click a button that isn't on the dashboard any more, so you can't get the value it asks for. What should you do, and why?
 - [x] Press Ctrl-C, tell the agent what the page really shows, and re-run once the stage is fixed.
 - [ ] Ask the agent to run the script itself, so it can find the new button on the page.
   > The agent never runs it end to end: the script opens browsers and waits for a human.
@@ -394,7 +394,7 @@ Why: An agent can't click through the dashboards, and one step can't be undone. 
 ```
 
 ```final-test wizard-confirm-stages
-The agent has read your repo and drafted the stages of a setup script: create a Neon database, copy its connection string into `.env`, and add it as a GitHub secret for CI. Before writing any of the script, it shows you the stages and the values each produces, and waits. Why? What's the reason behind this step?
+The agent has read your repo and drafted the stages of a setup script: create a Neon database, copy its connection string into `.env`, and add it as a GitHub secret for CI. Before writing any of the script, it shows you the stages and the values each produces, and waits. Why?
 - [x] So you can add, drop or reorder stages before any script exists.
 - [ ] So you can run each stage by hand before the agent writes it.
   > You run the finished script, not the stages one by one. Here you only confirm the list.
@@ -406,7 +406,7 @@ Why: As in a grilling, the agent looks up the facts itself, then settles the dec
 ```
 
 ```final-test wizard-why-commit
-A setup script the agent generated walked you through your payment keys and CI secrets. A friend will clone the repo next week and needs the same setup. You commit the script and link it from the README. Why? What's the reason behind this step?
+A setup script the agent generated walked you through your payment keys and CI secrets. A friend will clone the repo next week and needs the same setup. You commit the script and link it from the README. Why?
 - [x] So the next person runs the script instead of asking an AI again.
 - [ ] Because a wizard is meant to stay in the repo once it has worked.
   > They're for one run by default, and deleted when the job's done. You commit one only when you want it to repeat.
@@ -416,7 +416,7 @@ Why: A wizard is for one run by default, but your friend needs the same setup. A
 ```
 
 ```final-test wizard-unknown-dashboard
-While mapping the stages, the agent isn't sure where a hosting dashboard now shows the API key. The rest of the stages are clear. What should it do, and why? What's the reason behind this step?
+While mapping the stages, the agent isn't sure where a hosting dashboard now shows the API key. The rest of the stages are clear. What should it do, and why?
 - [x] Say so, and ask you or check the docs, because an invented step may not exist.
 - [ ] Guess the most likely menu path, since you can work it out when you get there.
   > A guessed step may not exist. Every stage must trace to instructions a stranger could follow.

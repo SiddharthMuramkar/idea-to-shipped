@@ -1,12 +1,12 @@
 ---
-title: handoff
+title: handoff: a summary file that travels
 slug: handoff
-summary: handoff writes a handoff document: one Markdown file that sums up your conversation, so a fresh agent can carry on from it.
+summary: How Matt Pocock's handoff Skill sums up your conversation in one Markdown file, so a fresh agent, tool or colleague can carry on from it.
 ---
 
 ## What it's for
 
-Say you're building Ticket #13, the booking endpoint, and you notice the `web/` site (your website's folder) is slow to build. Fixing it here leaves the session half on each job. A fresh agent would need everything explained again.
+Say you're building Ticket #13, one task on your yoga-studio booking site: the booking endpoint. You notice the `web/` site (your website's folder) is slow to build. Fixing it here leaves the session half on each job. A fresh agent would need everything explained again.
 
 **handoff writes a handoff document: one Markdown file that sums up your conversation, so a fresh agent can carry on from it.** What it buys is portability: a file that travels.
 
@@ -30,7 +30,7 @@ Why: Handing off writes a file, and the fresh session reads it. Your first sessi
 
 Use it only when the work has to travel, as [context hygiene](/learn/context-hygiene) said:
 
-- You're swapping to a new harness: say, from Claude Code to **Codex**, another coding agent.
+- You're swapping to a new harness, the agent tool you run: say, from Claude Code to **Codex**, another coding agent.
 - You're moving to a new directory or repo.
 - You're sending the work to a colleague.
 - You've found a side task mid-phase, and you split it off to a second agent and keep working.
@@ -43,7 +43,7 @@ Which of these is a case for handoff?
 Why: The four cases are a new harness, a new directory or repo, a colleague, and a side task forked off mid-phase. In each one, the work has to leave this session.
 ```
 
-The main flow's [prototype](/learn/prototype) detour needs it both ways, because a prototype's context doesn't belong in this session. You hand off out, build the prototype in a fresh session, then hand off back what you learned.
+The [main flow](/learn/main-flow)'s [prototype](/learn/prototype) detour needs it both ways, because a prototype's context doesn't belong in this session. You hand off out, build the prototype in a fresh session, then hand off back what you learned.
 
 ```checkpoint quick-3
 You're grilling, and one question needs a prototype to settle it. How does handoff fit in?
@@ -101,7 +101,7 @@ Why: The agent never starts handoff on its own. You type /handoff, and you can a
 
 ## What it creates
 
-One Markdown file, saved in your computer's temporary folder, not in the repo. It's a scratch space, named by `$TMPDIR` (or `/tmp` if that isn't set). The file:
+One Markdown file, saved in your computer's temporary folder, not in the repo. It's a scratch space, named by `$TMPDIR` (or `/tmp` if that isn't set).
 
 ```checkpoint quick-7
 You've run handoff on Linux, and `$TMPDIR` isn't set. Where does the file go?
@@ -110,6 +110,8 @@ You've run handoff on Linux, and `$TMPDIR` isn't set. Where does the file go?
 - [ ] The repo's `docs/` folder, to commit.
 Why: The file never goes in the repo. `$TMPDIR` names your temporary folder, and without it the file goes to `/tmp`.
 ```
+
+The file:
 
 - sums up the conversation;
 - has a "suggested skills" section, naming the Skills the next agent should load;
@@ -128,7 +130,7 @@ Why: Secrets stay out of the document. That means passwords, personal details an
 
 ### Why it exists
 
-Say you spot a job that's out of scope, partway through a session. Carry on, and you end up half on each job. Matt calls that "diluted context". Compact, and Matt says you wipe out the progress you've made.
+Say you spot a job that's out of scope, partway through a session. Carry on, and you end up half on each job. Matt Pocock, who wrote this Skill, calls that "diluted context". Compact, and Matt says you wipe out the progress you've made.
 
 ```checkpoint quick-9
 You spot an out-of-scope job mid-session. Why not carry on here, or compact?
@@ -156,7 +158,7 @@ Why: Release 1.2.0 says handoff was oversold. What it gives you is portability, 
 
 A new harness can't see the old context window, but any agent tool can read a Markdown file. So you can start in Claude Code and pass it to Codex or Copilot CLI.
 
-Say you handed off the slow build from the short part. The file might read:
+Say you handed off the slow `web/` build from the example above. The file might read:
 
 ```markdown
 # Fix the slow web/ build
@@ -250,7 +252,7 @@ Why: The next agent trusts the document and doesn't re-check it, so a guess writ
 
 ### Try it
 
-Fork a side task off a working session. You need your practice project, with Matt's Skills installed. If you haven't set it up, do keeping-track's Try it step first.
+Fork a side task off a working session. You need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the practice project, start a session with `claude`.
 2. Say: "Read the Ticket for the booking endpoint, then plan it."
@@ -269,14 +271,14 @@ Fork a side task off a working session. You need your practice project, with Mat
 - [/handoff is my new favourite skill](https://www.youtube.com/watch?v=dtAJ2dOd3ko), Matt Pocock, 2026-05-21
 - [Skills Changelog: /handoff, /prototype, /review and /writing](https://www.aihero.dev/skills/skills-changelog-handoff-prototype-review-and-writing), Matt Pocock, 2026-05-11
 - [/handoff and temp location issues on windows (#272)](https://github.com/mattpocock/skills/issues/272), hades200082, 2026-05-29
-- [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock, fetched 2026-10-30
+- [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock, 2026-10-29
 
 ## Practice scenarios
 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint handoff-deeper-guess-as-fact
-Your handoff document says "the bookings table isn't built yet". The session never checked; it was a guess. The next agent builds a second bookings table and a migration that clashes with the real one. Why did it go wrong? What's the reason behind this step?
+Your handoff document says "the bookings table isn't built yet". The session never checked; it was a guess. The next agent builds a second bookings table and a migration that clashes with the real one. Why did it go wrong?
 - [x] The next agent trusts the document and doesn't re-check it, so the unchecked guess became its starting fact.
 - [ ] The document copied an old migration file in full, and the next agent built from that out-of-date copy.
   > A handoff document references specs, issues, commits and diffs by path or URL instead of copying them. The trouble was a guess written as a fact.
@@ -355,7 +357,7 @@ Why: Forking doesn't end your session. You stay in it, and a second agent works 
 ```
 
 ```final-test handoff-out-to-the-prototype
-Interviewing about a refund feature for your FastAPI booking backend, you reach a question talk can't settle: whether the refund state model holds up. You'll answer it with throwaway code in its own directory, in a fresh session. What do you do first? What comes next?
+Interviewing about a refund feature for your FastAPI booking backend, you reach a question talk can't settle: whether the refund state model holds up. You'll answer it with throwaway code in its own directory, in a fresh session. What do you do first?
 - [x] Write a portable summary, so the new session knows the thread.
   > Right: that's `/handoff`.
 - [ ] Start the throwaway code right here, in the interview session.
@@ -388,7 +390,7 @@ Why: Your colleague can't see your session, so they need something they can read
 ```
 
 ```final-test handoff-nothing-travelling
-You've just finished an interview about a SQL migration plan. Next is writing the Spec, in the same directory, with the same agent tool and plenty of room left in the session. The agent offers to write a portable summary file and start the Spec in a fresh session. Why is staying in this session the better move? What's the reason behind this step?
+You've just finished an interview about a SQL migration plan. Next is writing the Spec, in the same directory, with the same agent tool and plenty of room left in the session. The agent offers to write a portable summary file and start the Spec in a fresh session. Why is staying in this session the better move?
 - [x] Nothing is travelling, and a summary would lose the interview's detail.
 - [ ] A fresh session would have less room for the Spec than this one.
   > A fresh session has more room, not less. The cost of a summary is lost detail.
@@ -398,13 +400,13 @@ Why: Same directory, same tool, plenty of room: nothing has to travel. The Spec 
 ```
 
 ```final-test handoff-deeper-pasted-summary
-A handoff document holds your plan for the yoga-studio booking API, with code in backticks. To start the next agent, you paste the whole summary into your shell as claude "<summary>". No error shows, but the new agent seems to have missed the end of the plan. Why? What's the reason behind this step?
-- [x] The shell mangled the summary's backticks and $(...), and cut it short without any error.
+A handoff document holds your plan for the yoga-studio booking API, with code in backticks. To start the next agent, you paste the whole summary into your shell as `claude "<summary>"`. No error shows, but the new agent seems to have missed the end of the plan. Why?
+- [x] The shell mangled the summary's backticks and `$(...)`, and cut it short without any error.
 - [ ] The summary was longer than the new agent's context window, so the model dropped its end.
   > A handoff document is a small fraction of the conversation it sums up. The shell, not the model, cut it short.
 - [ ] handoff had redacted the end of the plan, because it named the database's connection string.
   > Redaction strips secrets such as keys and passwords. It doesn't cut off the plan, and it happens before you paste.
-Why: Inside claude "<summary>", the shell mangles backticks and $(...). The usual result is a summary cut short with no error, so nothing tells you. Open the fresh session and point it at the file's path instead, so the summary never goes through the shell.
+Why: Inside `claude "<summary>"`, the shell mangles backticks and `$(...)`. The usual result is a summary cut short with no error, so nothing tells you. Open the fresh session and point it at the file's path instead, so the summary never goes through the shell.
 ```
 
 ```sources

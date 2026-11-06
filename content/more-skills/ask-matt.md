@@ -1,24 +1,24 @@
 ---
-title: ask-matt
+title: ask-matt: find which Skill fits next
 slug: ask-matt
-summary: ask-matt is a router: one Skill that names the others and when to reach for each.
+summary: ask-matt is a router: one Skill that names Matt Pocock's other Skills and when to reach for each, so you only need to remember one.
 ---
 
 ## What it's for
 
-Say you have an idea for the Booking API, but you can't remember which Skill comes first or what follows. You don't remember every Skill, so you ask.
+Say you have an idea for the Booking API, but you can't remember which of Matt Pocock's [Skills](/learn/skills) comes first or what follows. You don't remember every Skill, so you ask.
 
 **ask-matt is a router: one Skill that names the others and when to reach for each.**
 
 For example, you type:
 
-```
+```text
 /ask-matt I want to build the Booking API. Where do I start?
 ```
 
 It might answer:
 
-```
+```text
 You're in a repo, so start at the top of the main flow.
 Type /grill-with-docs. If the build spans sessions,
 /to-spec and /to-tickets come next. Don't clear or
@@ -35,7 +35,7 @@ ask-matt has told you to type /grill-with-docs. What happens next?
 Why: It names what to type, then stops. A router can only hint, so you start the Skill yourself.
 ```
 
-Before it says what a Skill does, or that you can skip a step, it reads that Skill's own `SKILL.md`. Its summaries are only for orientation.
+Before it says what a Skill does, or that you can skip a step, it reads that Skill's own `SKILL.md`, the file that holds its instructions. Its summaries are only for orientation.
 
 ```checkpoint quick-2
 You ask the router whether you can skip to-spec. What does it do before it answers?
@@ -45,7 +45,7 @@ You ask the router whether you can skip to-spec. What does it do before it answe
 Why: Its own summaries are only for orientation. So before it says a step can be skipped, it reads that Skill's own SKILL.md.
 ```
 
-It covers the main flow, the on-ramps that merge onto it, codebase upkeep, vocabulary Skills such as [domain-modeling](/learn/domain-modeling), and the standalone Skills. On-ramps are starting points such as a bug. Upkeep Skills tend an existing codebase; vocabulary Skills fix shared terms. Standalone Skills sit outside the flow.
+It covers the [main flow](/learn/main-flow), the on-ramps that merge onto it, codebase upkeep, vocabulary Skills such as [domain-modeling](/learn/domain-modeling), and the standalone Skills. On-ramps are starting points such as a bug. Upkeep Skills tend an existing codebase; vocabulary Skills fix shared terms. Standalone Skills sit outside the flow.
 
 ```checkpoint quick-3
 You want a standalone Skill, not the main flow. Can ask-matt still help?
@@ -57,11 +57,11 @@ Why: It covers the main flow, the on-ramps, codebase upkeep, vocabulary Skills s
 
 It also helps at a [phase boundary](/learn/context-hygiene), the gap between two phases. Check your five options top to bottom; the first yes wins:
 
-1. **Continue**, if the next phase needs this one as it happened, or fits in the smart zone left.
-2. **`/clear`**, if nothing here matters to what's next.
-3. **`/handoff`**, only for a new harness (another agent tool), a new folder or repo, a colleague, or a side job.
-4. **A subagent**, if a tightly scoped job can run without you. This session stays untouched.
-5. **`/compact`**, otherwise. It's the default, but the last to reach for, as the four above are cheaper or more precise.
+1. **Continue**, if the next phase needs this one as it happened, or fits in the [smart zone](/learn/context-hygiene) left, the room where the agent still reasons well.
+2. **`/clear`**, which empties the conversation, if nothing here matters to what's next.
+3. **`/handoff`**, which sums up the session in a file, only for a new harness (another agent tool), a new folder or repo, a colleague, or a side job.
+4. **A subagent**, a helper agent with its own fresh context, if a tightly scoped job can run without you. This session stays untouched.
+5. **`/compact`**, which swaps the conversation for a summary, otherwise. It's the default, but the last to reach for, as the four above are cheaper or more precise.
 
 ```checkpoint quick-4
 At a boundary, the next phase can use a summary but won't fit the room left. Some of this matters, nothing is moving, and you need to steer. Which option fits?
@@ -293,7 +293,7 @@ Why: `npx skills update` overwrites a Skill's file, and a plugin install is read
 
 ### Try it
 
-Ask the router about a real next step, then check its answer. You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do keeping-track's Try it step first.
+Ask the router about a real next step, then check its answer. You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In a terminal, go to the project's root: `cd yoga-studio`.
 2. Start Claude Code: `claude`.
@@ -312,15 +312,15 @@ If it says a Skill isn't installed, that's the known bug from Where it goes wron
 - [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16
 - [ask-matt should verify the relevant SKILL.md before asserting or skipping workflow steps (#614)](https://github.com/mattpocock/skills/issues/614), maximumaliens, 2026-07-18
 - [ask-matt names five skills the agent cannot see, so it reports them as not installed (#740)](https://github.com/mattpocock/skills/issues/740), drormeir, 2026-08-04
-- [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic, fetched 2026-10-30
-- [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock, fetched 2026-10-30
+- [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic
+- [mattpocock/skills CHANGELOG.md at a496f55](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/CHANGELOG.md), Matt Pocock
 
 ## Practice scenarios
 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint ask-matt-deeper-skip-to-spec
-In your yoga-studio repo you describe a booking feature to /ask-matt. It says to skip to-spec, since that only turns the thread into a spec, and go straight to to-tickets. You're about to act on it. Why ask it to open to-spec's SKILL.md first? What's the reason behind this step?
+In your yoga-studio repo you describe a booking feature to /ask-matt. It says to skip to-spec, since that only turns the thread into a spec, and go straight to to-tickets. You're about to act on it. Why ask it to open to-spec's SKILL.md first?
 - [x] Its one-line summaries are for orientation only, so a skip needs the Skill's own file behind it.
 - [ ] Opening the file is what installs to-spec, since the router can't name a Skill it hasn't loaded.
   > Opening a file installs nothing. The rule is that the router's summaries are for orientation only, so a skip needs that Skill's own SKILL.md behind it.
@@ -332,7 +332,7 @@ Why: A one-line summary can't show what a step really does, so a skip needs the 
 ```
 
 ```checkpoint ask-matt-deeper-edit-skill-file
-/ask-matt tells you to make implement close Tickets by adding a line to implement's SKILL.md. You want the change to stick in your yoga-studio repo for every future run. Why put it in the repo's own CLAUDE.md instead? What's the reason behind this step?
+/ask-matt tells you to make implement close Tickets by adding a line to implement's SKILL.md. You want the change to stick in your yoga-studio repo for every future run. Why put it in the repo's own CLAUDE.md instead?
 - [x] npx skills update overwrites the Skill's file, so standing behaviour belongs in your own CLAUDE.md.
 - [ ] Claude Code refuses to load a SKILL.md that's been edited by hand, so the Skill would stop working.
   > No source says that. The real problem is that npx skills update overwrites the file, and the plugin install is read-only.
@@ -428,7 +428,7 @@ Why: You can't remember which Skill comes first, so you ask the router. For an i
 ```
 
 ```final-test ask-matt-continue-after-grilling
-In one session you've just finished grilling the plan for a booking API in FastAPI, and there's plenty of room left in the context window. The next phase is building it. Why carry on in this same session instead of compacting first? What's the reason behind this step?
+In one session you've just finished grilling the plan for a booking API in FastAPI, and there's plenty of room left in the context window. The next phase is building it. Why carry on in this same session instead of compacting first?
 - [x] The build wants the grilling's reasoning as it happened, not a summary of it.
 - [ ] Compacting deletes this session, so you couldn't come back to it later.
   > That's not the reason. The cost of compacting is that the summary is lossy.
@@ -453,7 +453,7 @@ Why: A new harness, the agent tool you run, is one of the few cases that need a 
 ```
 
 ```final-test ask-matt-afk-review
-At a phase boundary, the next job is an automated review of the diff for your SQL migration. It needs no steering from you. Why send it to a subagent instead of running it here? What's the reason behind this step?
+At a phase boundary, the next job is an automated review of the diff for your SQL migration. It needs no steering from you. Why send it to a subagent instead of running it here?
 - [x] It runs without you in its own window, and this session stays untouched.
 - [ ] A subagent gets a larger context window, so it can hold the whole diff at once.
   > Window size isn't the point. What matters is that it runs without you, and this session stays untouched.
@@ -465,7 +465,7 @@ Why: The review needs no steering, so it can run AFK, with you away from the key
 ```
 
 ```final-test ask-matt-after-tickets
-On a multi-session build of the booking feature for your website, you've just split the Spec into Tickets, each with its blocking edges. You want to drive each Ticket yourself rather than orchestrate the whole build. What comes next? What comes next?
+On a multi-session build of the booking feature for your website, you've just split the Spec into Tickets, each with its blocking edges. You want to drive each Ticket yourself rather than orchestrate the whole build. What comes next?
 - [x] Build one Ticket whose blockers are done, then clear context before the next.
   > Right: that's `/implement`.
 - [ ] Run the whole Spec in one go, with subagents on the ready Tickets in parallel.

@@ -1,7 +1,7 @@
 ---
-title: prototype
+title: prototype: throwaway code for one question
 slug: prototype
-summary: prototype builds throwaway code that answers one design question, so you can try the answer instead of guessing.
+summary: How Matt Pocock's prototype Skill builds throwaway code to answer one design question, so you can try the answer instead of guessing.
 ---
 
 ## What it's for
@@ -50,7 +50,7 @@ rows:
 
 ## When to use it
 
-- You hit a question in a [grill-with-docs](/learn/grill-with-docs) interview that needs a runnable answer. That's the main flow's detour: a handoff out, the prototype, a handoff back. A handoff is a summary file for another agent; you'll meet it in [handoff](/learn/handoff).
+- You hit a question in a [grill-with-docs](/learn/grill-with-docs) interview that needs a runnable answer. That's the [main flow](/learn/main-flow)'s detour: a handoff out, the prototype, a handoff back. A handoff is a summary file for another agent; you'll meet it in [handoff](/learn/handoff).
 - You can't tell whether a state model holds up.
 - You can't picture a **UI** (user interface: the screens people see and click) until you see three versions.
 
@@ -118,7 +118,7 @@ So "throwaway" describes how the code is written. It doesn't mean deleted.
 
 ### Why it exists
 
-[Grilling before you build](/learn/grill-before-you-build) can't settle every question. A state model can have more awkward cases than you can hold in your head. A screen can stay vague until you see three versions. Matt's way out: "Stop grilling, build the throwaway version, look at it, then answer in one line."
+[Grilling before you build](/learn/grill-before-you-build) can't settle every question. A state model can have more awkward cases than you can hold in your head. A screen can stay vague until you see three versions. Matt Pocock, who wrote this Skill, gives the way out: "Stop grilling, build the throwaway version, look at it, then answer in one line."
 
 ```checkpoint quick-8
 Your grilling session keeps circling a state model you can't hold in your head. What's the way out?
@@ -220,7 +220,7 @@ So both changes let the people who need the prototype run it.
 
 ### Where it goes wrong
 
-**The agent suggests a prototype when you should be building.** An agent that doesn't know the Flow reads `prototype` as the obvious next step once Tickets exist. If you already know what to build, the next step is [implement](/learn/implement), per Ticket.
+**The agent suggests a prototype when you should be building.** An agent that doesn't know the [main flow](/learn/main-flow) reads `prototype` as the obvious next step once Tickets exist. If you already know what to build, the next step is [implement](/learn/implement), per Ticket.
 
 ```checkpoint quick-15
 Tickets exist and you know what to build, but the agent suggests a prototype. What do you do?
@@ -258,7 +258,7 @@ Why: On an empty page every version looks fine, and versions that differ only in
 
 ### Try it
 
-Settle one logic question before you write the booking endpoint. You'll need your practice project. If you haven't set it up, do [keeping-track](/learn/issues-and-keeping-track)'s Try it step first.
+Settle one logic question before you write the booking endpoint. You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Find the Issue for the real work, the waitlist Spec from [grill-with-docs](/learn/grill-with-docs)'s Try it. Without one, run `gh issue create --title "Add a waitlist to bookings" --body "First: does the waitlist survive a late cancel?"`. Note its number.
 2. In a fresh session, type `/prototype Does the waitlist survive a late cancel?`
@@ -290,7 +290,7 @@ The checked logic is JavaScript, the language web browsers run, and your API is 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint prototype-deeper-keep-the-branch
-Your waitlist prototype for the yoga studio answered its question, and the checked rules are now in the real code. The agent records the verdict on the Issue, then commits the prototype to a prototype/waitlist branch that will never be merged, and links that branch from the Issue. Why not delete it? What's the reason behind this step?
+Your waitlist prototype for the yoga studio answered its question, and the checked rules are now in the real code. The agent records the verdict on the Issue, then commits the prototype to a prototype/waitlist branch that will never be merged, and links that branch from the Issue. Why not delete it?
 - [x] Whoever picks the work up next can re-run it. A prose summary loses what made it convincing.
 - [ ] So it can be merged into main later, once tests and error handling have been added to it.
   > It never merges into main. Hardening a prototype with tests means you've stopped prototyping.
@@ -379,19 +379,19 @@ In your FastAPI gym booking API, a class booking can be booked, waitlisted, canc
 Why: On paper the rules look fine, and only real cases can show whether they hold. That's a logic question, so a prototype fits. It gives the manager, who doesn't code, one file to open and click through.
 ```
 
-```final-test prototype-progress-page-layouts
-Your learning website needs a better progress page. You've talked it through, but you can't picture the layout, and describing it in words keeps going in circles. You want to see it on the real site, not in words. Which fits best?
+```final-test prototype-timetable-page-layouts
+Your yoga-studio site needs a better class timetable page. You've talked it through, but you can't picture the layout, and describing it in words keeps going in circles. You want to see it on the real site, not in words. Which fits best?
 - [x] Build several radically different versions of the page on one route.
   > Right: that's `/prototype`.
 - [ ] Keep being interviewed about what the page should show and why.
   > That's `/grill-with-docs`. More questions won't settle it. This is a UI you have to see.
-- [ ] Write the Spec for the new progress page now, from the talk so far.
+- [ ] Write the Spec for the new timetable page now, from the talk so far.
   > That's `/to-spec`. An open question that talk can't settle comes first, through the detour. The Spec comes after.
 Why: Words keep going in circles because this is a UI you have to see. A prototype gives you several different versions of the page on one route, and a floating bar flips between them, so you can judge them by looking.
 ```
 
 ```final-test prototype-after-the-note-out
-Interviewing about refunds for your booking backend, you hit a question talk can't settle: does the refund state model hold up when a class is cancelled after a partial refund? You've written a portable note of the thread and opened a fresh session with it. What now? What comes next?
+Interviewing about refunds for your booking backend, you hit a question talk can't settle: does the refund state model hold up when a class is cancelled after a partial refund? You've written a portable note of the thread and opened a fresh session with it. What comes next?
 - [x] Answer the question with throwaway code.
   > Right: that's `/prototype`.
 - [ ] Write another portable note of the session.
@@ -404,7 +404,7 @@ Why: The detour has three steps: a note out, the prototype, a note back. You've 
 ```
 
 ```final-test prototype-question-first
-Before writing any code for a clickable demo of the retry rules in your Docker job queue, the agent writes one paragraph at the top of the demo: the state model, and the exact question it's checking. Why? What's the reason behind this step?
+Before writing any code for a clickable demo of the retry rules in your Docker job queue, the agent writes one paragraph at the top of the demo: the state model, and the exact question it's checking. Why?
 - [x] So it answers the right question, which anyone can check later.
 - [ ] So the paragraph can later be pasted into the Spec's Solution.
   > The paragraph states the prototype's question. It isn't written for the Spec.

@@ -1,12 +1,12 @@
 ---
-title: research
+title: research: get cited facts from primary sources
 slug: research
-summary: research sends a background agent to read the sources that own the answer, then leaves one cited Markdown file in your repo.
+summary: research sends a second agent to read the sources that own the answer while you keep working, then leaves one cited Markdown file in your repo.
 ---
 
 ## What it's for
 
-Say you're planning Ticket #13, the yoga-studio endpoint that creates a booking. Two members could book the last seat at once, so you need a fact: what does Postgres do then? Reading its docs yourself stalls your own work. Asking in this session floods your agent's [context window](/learn/instruction-files) with pages you won't need again, and the answer ends with the session.
+Say you're planning Ticket #13, the yoga-studio endpoint that creates a booking. Two members could book the last seat at once, so you need a fact: what does Postgres, your database, do then? Reading its docs yourself stalls your own work. Asking in this session floods your agent's [context window](/learn/context-window), the text it can hold at once, with pages you won't need again, and the answer ends with the session.
 
 **research sends a background agent to read the sources that own the answer, then leaves one cited Markdown file in your repo.**
 
@@ -22,7 +22,7 @@ Why: A background agent is a second agent. It does the reading while you carry o
 
 For example, you type:
 
-```
+```text
 You:   /research What does Postgres do when two requests
        update the same row at once? Use its official docs.
 
@@ -60,7 +60,7 @@ Why: That's a fact from outside your repo, and you need it before you decide. re
 ## When not to use it
 
 - If you need a decision, not a fact, use [grill-with-docs](/learn/grill-with-docs) instead, because its interview settles decisions.
-- If an interview needs one fact from your own repo, stay in [grilling](/learn/grilling), because it sends a subagent to look it up.
+- If an interview needs one fact from your own repo, stay in [grilling](/learn/grilling), because it sends a subagent, a helper agent, to look it up.
 - If the answer is only in someone's head, use [to-questionnaire](/learn/to-questionnaire) instead, because it writes them questions to fill in.
 
 ```checkpoint quick-4
@@ -97,7 +97,7 @@ Your repo has no place for notes yet, and you're about to run research. What hap
 Why: It saves the file where the repo already keeps such notes. If there's no such place, it picks a sensible one and tells you where.
 ```
 
-Take the file into the main flow at [grill-with-docs](/learn/grill-with-docs), "since research feeds the thinking rather than replacing it." The file can say what Postgres does with the second request. How Ticket #13 protects the last seat is still your decision.
+Take the file into the [main flow](/learn/main-flow) at [grill-with-docs](/learn/grill-with-docs), "since research feeds the thinking rather than replacing it." The file can say what Postgres does with the second request. How Ticket #13 protects the last seat is still your decision.
 
 ```checkpoint quick-7
 The file says what Postgres does with the second request. What's left for you to do?
@@ -137,13 +137,13 @@ You could type a two-line prompt instead. What does research add?
 Why: Running in the background keeps your session's context clean. The primary-source rule and the cited file stay the same on every run, whatever words you used to ask.
 ```
 
-On a small question, Matt's advice is to use the two-line prompt.
+For a small question, Matt Pocock, who wrote the Skill, advises the two-line prompt.
 
 ### How it works underneath
 
 Matt kept the Skill "Deliberately tiny". This is its whole body:
 
-```
+```markdown
 Spin up a **background agent** to do the research, so you
 keep working while it reads. Start it with a fresh context
 window.
@@ -269,11 +269,11 @@ Why: The Skill doesn't say when to start writing, so you tell the agent. After t
 
 **Nothing happens, and nobody tells you.** Your own global instructions may forbid an agent from handing work on. Then the background agent declines the task, "and the skill does nothing without telling you." So if no file appears, look for that rule in `~/.claude/CLAUDE.md`.
 
-**A later session doesn't know about the file, or trusts a stale one.** Nothing loads a past research file automatically, so feed it into the next step yourself. It also records only what was true on the day it was written. The community view is to keep ADRs, not research files.
+**A later session doesn't know about the file, or trusts a stale one.** Nothing loads a past research file automatically, so feed it into the next step yourself. It also records only what was true on the day it was written. The community view is to keep ADRs, short records of decisions and why, not research files.
 
 ### Try it
 
-You'll need your practice project. If you haven't set it up, do keeping-track's Try it step first.
+You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Start Claude Code in your `yoga-studio` folder: `claude`.
 2. Type this as one message: `/research What does Postgres do when two requests update the same row at once? Use its official docs. Create the file in your first few tool calls, and update it after each source.`
@@ -291,14 +291,14 @@ You'll need your practice project. If you haven't set it up, do keeping-track's 
 - [research skill: spawned background agent can recursively re-spawn another agent (#530)](https://github.com/mattpocock/skills/issues/530), marcoscale and others, 2026-07-13 to 2026-10-06
 - [Guards against sub-agents recursing into skills](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/subagent-recursion.md), mattpocock/skills, 2026-10-06
 - [research: nothing says when to start writing the findings file (#1272)](https://github.com/mattpocock/skills/issues/1272), QuantaOverflow, 2026-10-14
-- [Create custom subagents](https://code.claude.com/docs/en/sub-agents), Anthropic's Claude Code docs, fetched 2026-10-30
+- [Create custom subagents](https://code.claude.com/docs/en/sub-agents), Anthropic's Claude Code docs
 
 ## Practice scenarios
 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint research-deeper-second-agent
-You start research in your yoga-studio repo, and two background tasks with near-identical names appear. A friend says to add a line to the Skill file telling the agent never to start another agent. Matt's repo turns that kind of line down. Why? What's the reason behind this step?
+You start research in your yoga-studio repo, and two background tasks with near-identical names appear. A friend says to add a line to the Skill file telling the agent never to start another agent. Matt's repo turns that kind of line down. Why?
 - [x] The harness sets which tools a subagent can reach, so a limit there covers every Skill.
 - [ ] The Skill file already has that line, so adding it a second time would change nothing.
   > The Skill has no such line. Matt's repo lists lines like it as out of scope.
@@ -310,7 +310,7 @@ Why: A line in one Skill's text covers only that Skill, costs tokens on every ru
 ```
 
 ```checkpoint research-deeper-interrupted-run
-You ask research what Postgres does when two requests update the same row at once. The connection drops after 25 minutes of reading, and no findings file exists. Before the next run, you tell the agent to create the file in its first few tool calls. Why? What's the reason behind this step?
+You ask research what Postgres does when two requests update the same row at once. The connection drops after 25 minutes of reading, and no findings file exists. Before the next run, you tell the agent to create the file in its first few tool calls. Why?
 - [x] Findings held only in the agent's context can be lost when it stops; a file on disk keeps them.
 - [ ] The Skill says to write the file first, and this agent skipped that step by mistake.
   > The Skill never says when to start writing. That gap is exactly what issue #1272 reports.
@@ -399,7 +399,7 @@ Why: These are facts in public docs, and you want them kept with their sources w
 ```
 
 ```final-test research-file-landed
-A background agent has finished reading. A cited Markdown file on how three Python task queues handle retries is now in your FastAPI repo. You want to add background jobs to the app, and nothing about them is decided yet. What comes next? What comes next?
+A background agent has finished reading. A cited Markdown file on how three Python task queues handle retries is now in your FastAPI repo. You want to add background jobs to the app, and nothing about them is decided yet. What comes next?
 - [x] Take the file into an interview about the background jobs.
   > Right: that's `/grill-with-docs`.
 - [ ] Turn the file straight into a Spec for the new jobs.
@@ -432,7 +432,7 @@ Why: One fact from your own repo doesn't need a cited file. In an interview, fin
 ```
 
 ```final-test research-why-still-interview
-A background agent has written a cited Markdown file comparing ways to do full-text search in Postgres, for your website's search box. A friend says you can skip the interview now, because the file has the answers. Why do you still take the file into an interview? What's the reason behind this step?
+A background agent has written a cited Markdown file comparing ways to do full-text search in Postgres, for your website's search box. A friend says you can skip the interview now, because the file has the answers. Why do you still take the file into an interview?
 - [x] The file gathers facts; the decisions are still yours to make.
 - [ ] The interview checks each claim in the file against its source.
   > Following each claim back to its source is the research agent's job. The interview settles decisions.
@@ -452,6 +452,6 @@ Why: The file says what's true about each way to search. Which way to use is a d
 - [research skill: spawned background agent can recursively re-spawn another agent (uncontrolled nesting) #530](https://github.com/mattpocock/skills/issues/530), marcoscale, 2026-07-13
 - [Start subagents with a fresh context window, not a fork #1341](https://github.com/mattpocock/skills/pull/1341), mattpocock, 2026-10-29
 - [wayfinder: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/wayfinder/SKILL.md), Matt Pocock's Skills
-- [Guards against sub-agents recursing into skills (.out-of-scope/subagent-recursion.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/subagent-recursion.md), Matt Pocock (mattpocock/skills, added in PR, 2026-10-06
+- [Guards against sub-agents recursing into skills (.out-of-scope/subagent-recursion.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/subagent-recursion.md), Matt Pocock (mattpocock/skills), 2026-10-06
 - [research: nothing says when to start writing the findings file, so an interrupted agent leaves nothing on disk #1272](https://github.com/mattpocock/skills/issues/1272), QuantaOverflow, 2026-10-14
 ```

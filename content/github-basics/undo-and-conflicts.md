@@ -1,416 +1,536 @@
 ---
 title: Undo and merge conflicts
 slug: undo-and-conflicts
-summary: Pick the right undo from where a mistake lives, explain why a commit on GitHub is undone with a new commit and never rewritten, read a merge conflict, and steer an agent through one.
+summary: Pick the right undo from where a mistake lives, revert what's already on GitHub instead of rewriting it, and resolve a merge conflict yourself or through an agent.
 ---
 
-On the morning of 26 October, two seconds before Care4Mind’s first push, its very first commit was rewritten: same files, new author email. That was safe, because nothing else had seen the commit yet. The same rewrite today would do real damage, because GitHub, four merged PRs and two Orca worktrees are all built on that commit. Which undo is safe comes down to one question: where does the mistake live?
+Say a coding agent rewrote the wrong recipe in your `recipes` site. Or a pull request you merged this morning broke the home page. Or GitHub says your pull request has conflicts, and its merge button won't work. Git can undo almost anything, but each undo fits one situation, and the wrong one can throw work away for good.
 
 ```goals
-- You’ll be able to pick the right undo from where a mistake lives, explain why a commit on GitHub is undone with a new commit and never rewritten, read a merge conflict, and steer an agent through one. You’ll also know when Matt’s `git-guardrails-claude-code` hook is worth installing.
+- You'll be able to say where a mistake lives (in a file, staged, in a commit on your computer, or on GitHub) and pick the undo that fits.
+- You'll be able to undo a merged pull request with a revert, and say why a commit on GitHub is never rewritten.
+- You'll be able to get a lost commit back with the reflog.
+- You'll be able to read a merge conflict, resolve it in the terminal, on github.com or through an agent, and check the result.
 ```
 
 ## Where does the mistake live?
 
-A mistake can live in Lesson 7’s three places, plus one more: the **working tree** (the files on disk), the **staging area** (what goes into the next commit), a **commit** on your computer, and **GitHub**, pushed and perhaps merged into `main`. Git has three undo commands with confusingly similar names, and each works on a different place. `git restore` puts files back and never moves a branch. `git reset` moves a branch’s label, which changes history. `git revert` adds a new commit that cancels an old one.
+Git has several undo commands with similar names, and each one works on a different place. So the first question is never "which command?". It's "where is the mistake now?".
 
-| Where the mistake lives | The undo (your agent runs it) | What happens |
-|---|---|---|
-| Edited, not staged (`git status` lists it under “Changes not staged for commit”) | `git restore <file>` | The file goes back to its last staged or committed version. The edit is gone for good. |
-| Staged, not committed (“Changes to be committed”) | `git restore --staged <file>` | The file comes off the list for the next commit. The edit stays in the file. |
-| Committed, not pushed, nothing built on it | `git commit --amend`, or `git reset --soft HEAD~1` | Amend replaces the last commit with a corrected one. `reset --soft` moves the branch back one commit and leaves that commit’s changes staged, ready to commit again. |
-| Pushed, or merged into `main` | `git revert <commit>` | A new commit that undoes the old one. History is untouched. |
-| A PR merged on GitHub | The **Revert** button on the PR | GitHub opens a new PR that undoes the merge. You merge it like any other PR. |
+**Before you undo anything, ask where the mistake lives: the further a change has travelled, the gentler its undo must be.**
 
-Read the table top to bottom as a ladder: the further a change has travelled, the gentler the undo has to be. The first rung is the only one that destroys work. An edit that was never staged or committed exists only in the file, so when `git restore` replaces the file, no copy remains anywhere. Anything committed can almost always be got back (next section).
+A change can be in four places. You met three of them in [Commits and diffs](/learn/commits-and-diffs): the files in your folder (the working tree), the list of changes for your next commit (the staging area), and a commit on your computer. The fourth is GitHub, once the commit is [pushed](/learn/push-pull-and-remotes) and perhaps merged into `main`.
 
-The third rung is the first that rewrites. `--amend` doesn’t edit the last commit; it makes a new one and moves the branch label onto it. `HEAD~1` means “one commit before the one you have open”, and `git reset --soft HEAD~1` moves the label back there without touching your files or the staging area, so the undone commit’s changes sit staged. Care4Mind first used this rung on 26 October at 10:18: its first commit was amended to swap the author email for GitHub’s no-reply address, then pushed two seconds later. Same files, new ID: `691764b` became `c08fe71`. That was fine, because the old commit had never left your computer.
+| Where the mistake lives | How you can tell | The undo | What happens |
+|---|---|---|---|
+| Edited, not staged | `git status` lists it under "Changes not staged for commit" | `git restore <file>` | The file goes back to its last staged or committed version. The edit is gone for good. |
+| Staged, not committed | `git status` lists it under "Changes to be committed" | `git restore --staged <file>` | The file comes off the list for the next commit. The edit stays in the file. |
+| Committed, not pushed | `git log` shows the commit, and GitHub doesn't have it | `git commit --amend`, or `git reset --soft HEAD~1` | The commit is replaced, or undone with its changes kept staged. |
+| Pushed to GitHub | GitHub's list of commits shows it | `git revert <commit>` | A new commit cancels the old one. History stays as it was. |
+| In a merged pull request | The pull request says Merged | The Revert button, or `gh pr revert <number>` | GitHub opens a new pull request that cancels it. You merge that one. |
 
-The last two rungs never rewrite. `git revert` adds a commit that does the opposite of the bad one, and both stay in the history. GitHub’s **Revert** button does the same through a PR, so the undo passes the same gates as any other change. Brad Traversy uses it in his CI/CD video (chapter “Render Gate Test”) to put `main` back after merging a PR whose checks failed. Thanks to squash merges, no commit on Care4Mind’s `main` is a merge commit (checked 27 October), and this course’s repo allows nothing else. So a plain `git revert` works on any of them, with none of the extra choices a merge commit needs.
+Read the table from top to bottom, like a ladder. The first rung is the only one that destroys work. An edit you never staged or committed exists only in the file. So when `git restore` replaces the file, no copy is left anywhere.
 
-```callout remember
-Ask where the mistake lives before you choose the undo. A commit nothing else has seen you may replace; once it’s on GitHub, you only add a new commit that cancels it.
+The third rung is the first that rewrites history. The last two never do. They add a new commit that does the opposite of the bad one, so the mistake and its undo both stay in the record.
+
+```checkpoint quick-1
+An agent ran `git add .` and staged `.env`, the file that holds your site's secret key, because `.gitignore` forgot it. Nothing is committed yet. Which undo fits?
+- [x] `git restore --staged .env`, which takes it off the list and leaves the file on disk.
+- [ ] `git revert HEAD`, which adds a new commit that cancels the latest one.
+- [ ] `git reset --soft HEAD~1`, which moves the branch back by one commit.
+- [ ] `git commit --amend`, which replaces the latest commit with a new one.
+Why: The mistake is in the staging area, so `git restore --staged` takes the file off the list for the next commit and keeps it on disk. The other three act on commits, and nothing is committed yet.
 ```
 
-```checkpoint check-1
-An agent ran `git add .` in `~/Desktop/project1` and staged `.env.local`, which holds a database password. Nothing is committed yet. What should it run?
-- [ ] `git revert --no-edit HEAD`
+## Undo on your computer
+
+While a mistake hasn't left your computer, you can fix it any way you like. Nobody else has seen it yet.
+
+### Throw an edit away, or unstage it
+
+Say you asked an agent to fix a typo in `recipes/pancakes.md`, and it rewrote the whole recipe. Nothing is staged. `git status` shows:
+
+```text
+On branch 7-cooking-time
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   recipes/pancakes.md
+```
+
+Git's own hint names the undo. Run `git restore recipes/pancakes.md`, and the file goes back to how it was. Run `git status` again: the file has gone from the list.
+
+If the file was staged, `git status` lists it under "Changes to be committed" instead, with the hint `git restore --staged <file>`. That command only takes the file off the list. Your edit stays in the file, ready for a later commit.
+
+```checkpoint quick-2
+You staged `recipes/pancakes.md` and `recipes/waffles.md`, but this commit should hold only the pancakes. You want to commit the waffles later. What do you run?
+- [x] `git restore --staged recipes/waffles.md`
+- [ ] `git restore recipes/waffles.md`
 - [ ] `git reset --soft HEAD~1`
-- [x] `git restore --staged .env.local`
-- [ ] `git commit --amend --no-edit`
-Why: The mistake is in the staging area, so `restore --staged` takes the file off the list and leaves it on disk. The other three all act on commits: they would undo or rewrite PR #4’s commit, not unstage a file.
+- [ ] `git commit --amend`
+Why: `--staged` only takes the file off the list for the next commit, and the waffle edit stays on disk. Without `--staged`, `git restore` throws the edit away. The last two act on commits, not on what's staged.
 ```
 
-```checkpoint check-2
-PR #5 on Care4Mind was squash-merged this morning, and its change to the home page is wrong. Which undo fits?
-- [x] Click Revert on the PR
-- [ ] Reset `main` back one commit
-- [ ] Amend the commit on `main`
-- [ ] Force-push the previous `main` commit
-Why: It’s merged on GitHub, so you add an undo rather than rewrite. Revert opens a PR that cancels the squash commit, and that PR passes the same gates. Resetting, amending or force-pushing `main` would rewrite a commit everything after it is built on.
+Agents sometimes use older spellings of the same two undos. `git checkout -- <file>` does what `git restore <file>` does. `git reset HEAD <file>` does what `git restore --staged <file>` does.
+
+### Fix the last commit
+
+Say the agent's last commit left out `tests/recipe-card.test.js`, and it hasn't pushed. Stage the missing file, then fold it into the same commit:
+
+```sh
+git add tests/recipe-card.test.js
+git commit --amend --no-edit
 ```
 
-```checkpoint check-3
-An agent’s last commit on its branch has a typo in the message. It hasn’t pushed, and nothing else is built on the branch. What do you ask for?
-- [ ] `git revert HEAD`, then push
-- [ ] `git reset --hard`, then push
-- [ ] `git restore --staged`, then push
-- [x] `git commit --amend`, then push
-Why: The commit exists only on your computer and nothing depends on it, so it can be replaced: amend fixes the message. Revert would add a whole second commit for a typo, and `reset --hard` doesn’t touch the message at all; it throws away uncommitted edits.
+`--amend` doesn't edit the old commit. It makes a new commit in its place and moves the branch onto it. `--no-edit` keeps the old message. To fix only a typo in the message, run `git commit --amend -m "Show cooking time on recipe cards"`.
+
+To undo the last commit but keep its changes, run `git reset --soft HEAD~1`. `HEAD` is the commit your folder has open, and `HEAD~1` is the one before it. The branch moves back one commit, and the undone changes wait in the staging area. You can then commit them again, perhaps as two smaller commits.
+
+```callout watch-out
+`git reset --hard` is a different tool. It moves the branch and throws away every uncommitted edit in your folder, with no copy anywhere. If an agent proposes it, ask what it's trying to do: there's almost always a gentler command.
 ```
 
-## Never rewrite shared history
-
-Amend, reset and rebase (replaying a branch’s commits on top of another branch; more below) all work the same way underneath. They never change a commit. They make similar new ones and move the branch label onto them, while anything built on the old commits still points at the old ones. Now two versions live side by side, and someone has to merge them back together. That’s where duplicate commits and needless conflicts come from. Pro Git’s rule fits on one line: don’t rewrite commits that exist outside your repository and that someone may have built on.
-
-“Shared” means more than “pushed”, and your two Orca worktrees show why. On 27 October the `SiddharthMuramkar/content-v1` branch was created at `9ebb5ed`, a commit in the middle of `SiddharthMuramkar/frontend`, and both branches have added commits since. Neither has pushed `9ebb5ed`: content-v1 has no GitHub copy, and frontend’s GitHub copy stops below it. Yet if an agent in the frontend worktree rewrote `9ebb5ed`, say with a reset and fresh commits, content-v1 would still carry the old copy, and the next merge would have to reconcile two versions of the same work. So the test isn’t “is it on GitHub?” but “has anything else built on it?”
-
-Getting rewritten commits onto GitHub takes a **force push**. A normal push only moves GitHub’s branch forward, to a commit that already contains everything the branch had; git calls that a **fast-forward**. A rewrite moves the branch sideways, and `git push` refuses unless forced. On this course’s repo, the ruleset “Protect main” includes **Block force pushes** (API name `non_fast_forward`) with no bypass list, so nobody can force-push `main`, you included. Care4Mind has no ruleset yet (checked 27 October), so nothing on GitHub would stop it there; [Lesson 12](/learn/gates) shows how to add one. And the rule covers only `main`: on PR branches the habit has to be yours, and your agent’s.
-
-For mistakes on your own computer, git keeps a safety net: the **reflog** (reference log). Every time a branch label or `HEAD` (what the folder has open) moves, whether by a commit, a switch, a reset, an amend or a merge, git writes down where it was. If an agent’s reset or amend loses a commit, the commit isn’t deleted straight away: its ID is in the reflog, and a new branch on that ID brings it back. Your own reflog still lists `691764b`, the pre-amend first commit, although no branch contains it any more. Two limits. The reflog lives only on your computer. And it records commits, not edits: uncommitted work thrown away by `git restore` or `git reset --hard` was never in it.
-
-```callout remember
-Rewrite only what nothing else has seen. Once a commit is on GitHub, or another branch or worktree is built on it, undo it with a new commit. The reflog can rescue lost commits on your computer, never uncommitted edits.
+```checkpoint quick-3
+An agent's last commit has a typo in its message. It hasn't pushed, and nothing is built on the branch. What do you ask for?
+- [x] `git commit --amend`, to replace the commit with a corrected one.
+- [ ] `git revert HEAD`, to add a second commit that cancels the first.
+- [ ] `git reset --hard`, to throw the commit away and start again.
+- [ ] `git restore --staged`, to take the commit off the staging list.
+Why: The commit exists only on your computer, so it's safe to replace, and `--amend` fixes the message. A revert adds a whole extra commit for a typo, `reset --hard` also destroys uncommitted edits, and `restore --staged` works on staged files, not commits.
 ```
 
-```checkpoint check-4
-An agent in the frontend worktree wants to rewrite `9ebb5ed` with a reset and fresh commits. That commit was never pushed, but `content-v1` is built on it. Is the rewrite safe?
-- [ ] Yes, because it was never pushed anywhere
-- [x] No, another branch is built on it
-- [ ] Yes, the reflog makes it fully undoable
-- [ ] Yes, as long as nobody force-pushes it
-Why: Shared means anything else has built on it, not just GitHub. content-v1 would keep the old commit, and the next merge would have to reconcile both versions. The reflog keeps the old commit, but it can’t stop the two branches from drifting apart.
+## Undo what's on GitHub
+
+Once a commit is on GitHub, the rules change. Other people, other branches and the pull request's history can all point at it.
+
+### Never rewrite shared history
+
+Git can't change a commit. Amend makes a new commit and moves the branch label onto it, and reset moves the label back to an older one. While only your computer has the old commit, nobody notices. Once GitHub has it, anything built on it still points at it. Now two versions of the history live side by side, and someone has to untangle them.
+
+The Pro Git book gives the rule for rebasing in one line: don't rebase commits that exist outside your repository and that people may have based work on. The same goes for amend and reset. And "shared" means more than "pushed". A commit that another branch, another worktree or a teammate has built on is shared, even if it never reached GitHub.
+
+Putting rewritten commits on GitHub takes a **force push** (`git push --force`). A normal push only moves GitHub's branch forward, to a commit that already contains everything the branch had. Git calls that a **fast-forward**. A rewrite moves the branch sideways, so `git push` refuses unless you force it. A force push to a shared branch can wipe other people's commits from it, which is why teams [block force pushes on `main`](/learn/how-teams-do-it).
+
+```checkpoint quick-4
+Which commit is safe to rewrite with amend or reset?
+- [x] One on your own branch that you haven't pushed, with nothing built on it.
+- [ ] One you pushed an hour ago to a branch that nobody else has opened.
+- [ ] One you never pushed, but that a branch in another worktree is built on.
+- [ ] One on `main` on GitHub, as long as you force-push the result at once.
+Why: Rewrite only what nothing else has seen. A pushed commit is on GitHub, a commit another branch is built on is shared, and rewriting `main` on GitHub needs the very force push that wipes other people's work.
 ```
 
-```checkpoint check-5
-An agent ran `git reset --hard HEAD~3` on a branch that was never pushed, and three commits seem to be gone. What gets them back?
-- [ ] Nothing; reset deletes commits for good
-- [ ] GitHub’s Revert button on the branch
-- [ ] `git restore` on every changed file
-- [x] The reflog, then a new branch
-Why: The commits still exist. The reflog shows where the branch was before the reset, and a new branch on that ID brings them back. Revert works on commits GitHub has, and restore works on files, not lost commits.
+### Revert a commit or a merged pull request
+
+A **revert** is a new commit that does the opposite of an old one. Both stay in the history, so anyone can see the mistake and its undo. A revert reaches `main` the way any change does: on a branch, through a pull request, past the same checks.
+
+```checkpoint quick-5
+You merge a revert of pull request #8. What does `main`'s history hold afterwards?
+- [x] Both #8's commit and the revert that cancels it.
+- [ ] Only the revert, because #8's commit gets erased.
+- [ ] Neither, because a revert rewinds `main` past #8.
+Why: A revert is a new commit that does the opposite of an old one, so the mistake and its undo both stay in the history.
 ```
 
-```checkpoint check-6
-Why can’t anyone, you included, force-push `main` on this course’s repo?
-- [x] The ruleset blocks force pushes
-- [ ] Git refuses every force push
-- [ ] Squash merges forbid force pushes
-- [ ] Vercel rejects rewritten main commits
-Why: “Protect main” includes Block force pushes (`non_fast_forward`) and has no bypass list. Git itself will force-push if asked; the block is GitHub’s.
+Say pull request #8 added cooking times to your recipe cards. It was squash-merged this morning, and it broke the home page. You can undo it three ways:
+
+- On github.com, open pull request #8 and click **Revert** near the bottom. GitHub makes a new branch and opens a new pull request that cancels #8. Check it and merge it like any other. No button? You need write access to the repo.
+- In the terminal, `gh pr revert 8` does the same.
+- With an agent, say: "Revert pull request #8 in a new pull request. Don't merge it yet."
+
+To check the revert, run `gh pr view <its number>`. Its numbers should be #8's flipped: if #8 was `+40 -12`, the revert is `+12 -40`.
+
+To revert one commit by hand, run `git revert <commit>` on a new branch, then push it and open a pull request. If the commit is a merge commit, add `-m 1`, which tells git to keep `main`'s side. A squash merge leaves an ordinary commit, so a plain `git revert` works on it.
+
+### What a revert can't undo
+
+A revert changes the repo's files, and nothing outside them.
+
+- A database change. Say #8 came with a migration, a script that changes the database's tables, and it has run. Reverting #8 puts the files back, but the database stays as the migration left it. So read any migration before you merge, as [Checking a pull request](/learn/checking-a-pr) shows.
+- A leaked secret. Say an agent committed `.env`, with your site's secret key, and pushed it. A revert removes the file from the latest version, but the old commit on GitHub still holds the key. So treat the key as public. Replace it at the service that issued it, so the old key stops working. Then add `.env` to `.gitignore`, so it can't happen again.
+
+```checkpoint quick-6
+A merged pull request's migration has already removed a column from your database. You revert that pull request. What happens to the column?
+- [x] It stays removed, because a revert changes only the repo's files.
+- [ ] It comes back, because a revert also runs the migration in reverse.
+- [ ] It comes back with its data, because GitHub keeps a copy of the table.
+Why: A revert records a new commit that reverses old changes in the repo. A database isn't in the repo, so what the migration did stays done.
 ```
 
-## Merge conflicts: what they are and how to read one
+## The reflog: getting a lost commit back
 
-A **merge** combines two branches. Git usually manages it alone, because the two sides changed different files or different lines. A **merge conflict** is the case it can’t settle: both branches changed the same lines in different ways, or one branch deleted a file that the other edited. Git won’t guess. It stops halfway, marks the spots, and waits for someone to decide. On GitHub, a PR with a conflict has its **Merge pull request** button switched off until that’s done.
+Say an agent ran `git reset --hard HEAD~3` on a branch you never pushed, and three commits seem to be gone. They aren't, yet. The **reflog**, short for reference log, is your computer's record of every place `HEAD` has pointed. Each commit, switch, reset, amend and merge adds a line.
 
-With agents, you’ll meet conflicts in two places. The first is parallel worktrees. Each Orca agent works in its own folder, so they can’t trip over each other while they work, but their branches still have to come together on `main`. If two of them change the same lines, the second PR to merge gets the conflict. Care4Mind’s likeliest hot spot is the map, `.scratch/rebuild/map.md`. The frontend branch changes it, and every wayfinder session edits it too, often several at once.
-
-The second is `/implement-spec`. It gives each ticket to an implementer subagent in its own worktree and branch, and a merger subagent folds each finished branch into one **integration branch**, where the whole spec comes together. The skill puts the conflict where it’s cheapest. Before reporting done, each implementer merges the integration branch’s latest commit into its own branch, so any conflict surfaces there, in its own worktree, while its ticket is fresh. The merger’s step should then be a fast-forward. That is Matt’s test of a healthy run: merges into the integration branch are fast-forwards, not conflict resolutions. As he puts it, worktrees don’t remove collisions; they postpone them to merge time.
-
-A conflicted file looks like this. It’s an invented example, in the shape of your map:
+```sh
+git reflog
+```
 
 ```text
-## Ticket 21: Design direction
+4e5f6a7 HEAD@{0}: reset: moving to HEAD~3
+9c8d7e6 HEAD@{1}: commit: Show cooking time on the waffle card
+5b4a3c2 HEAD@{2}: commit: Show cooking time on the pancake card
+```
+
+Find the last line before the mistake. Here it's `HEAD@{1}`. Put a new branch on its commit, and the three commits are back:
+
+```sh
+git branch rescued 9c8d7e6
+```
+
+The reflog has two limits. It lives only on your computer, so GitHub can't show it. And it records commits, never edits: work that was never committed, and was then thrown away by `git restore` or `git reset --hard`, was never in it. Lines for commits that no branch holds expire after 30 days by default.
+
+```checkpoint quick-7
+An agent's `git reset --hard HEAD~3` has made three unpushed commits disappear from `git log`. What gets them back?
+- [x] `git reflog` to find where the branch was, then a new branch on that commit.
+- [ ] The Revert button on GitHub, which brings back commits that a branch lost.
+- [ ] `git restore` on each changed file, which brings back the lost commits.
+- [ ] Nothing, because a hard reset deletes the three commits for good.
+Why: The commits still exist, and the reflog lists where `HEAD` was before the reset. A new branch on that commit brings them back. GitHub never had these commits, and `git restore` works on files, not commits.
+```
+
+## When a pull request goes wrong
+
+Some mistakes happen around a pull request rather than inside a file. Each has its own fix.
+
+| What went wrong | What to do |
+|---|---|
+| A check is red on an open pull request | Fix it on the same branch and push. The pull request updates, and the checks run again. |
+| You found one more fix after the pull request merged | Put it on a new branch from the latest `main`, in a new pull request. A merged pull request is finished. |
+| The agent committed on `main` and hasn't pushed | Move the commit to a branch, and put `main` back to match GitHub (below). |
+| The wrong commit is already on GitHub's `main` | Revert it in a new pull request. Never reset and force-push `main`. |
+| The commit landed on the wrong branch | Cherry-pick it onto the right one, which copies one commit's change across. Then revert it on the wrong one. |
+
+The second row catches people out. After a merge, a push to the old branch still works: if GitHub deleted the branch, the push makes it again. But that pull request has already merged, so the new commit never reaches `main`. Check `gh pr view` first. If it says `Merged`, start a new branch.
+
+For the third row, ask the agent for these two commands, run while `main` is open:
+
+```sh
+git switch -c 7-cooking-time
+git branch -f main origin/main
+```
+
+The first makes a new branch where you are, commit included. The second moves your `main` back to `origin/main`, your copy of GitHub's `main`, and leaves your files alone. Check it with `git log --oneline main..HEAD`: you should see your one commit.
+
+```checkpoint quick-8
+The agent committed on your `main` by mistake and hasn't pushed. You also have uncommitted edits. It proposes `git reset --hard` to move the commit. What do you ask for instead?
+- [x] `git switch -c` to a new branch, then `git branch -f main origin/main`.
+- [ ] `git revert HEAD` on `main`, then a push of both commits to GitHub.
+- [ ] `git push --force`, then a new branch made from GitHub's `main`.
+Why: `reset --hard` would throw away your uncommitted edits. The new branch keeps the commit, and `git branch -f` moves `main` back to match GitHub without touching your files.
+```
+
+## Merge conflicts: what they are
+
+A merge combines two branches. Git usually manages it alone, because the two sides changed different files, or different lines. A **merge conflict** is the case git can't settle: both branches changed the same lines in different ways, or one deleted a file that the other edited. Git won't guess which version is right. It stops, marks the spots, and waits for someone to decide.
+
+Say pull requests #11 (quicker pancakes) and #12 (vegan pancakes) both changed the same line of `recipes/pancakes.md`. #11 merges first. Now #12 conflicts: its line and `main`'s line differ, and git can't pick. On GitHub, #12 says "This branch has conflicts that must be resolved", and its merge button stays off until someone resolves them. In the terminal, `gh pr view 12 --json mergeable` prints `"mergeable": "CONFLICTING"`. GitHub Actions also won't start #12's pull request checks until the conflict is fixed.
+
+### Reading a conflicted file
+
+Git writes both versions into the file, between three marker lines:
+
+```text
+# Pancakes
 <<<<<<< HEAD
-Status: done. Press × Kolam chosen.
+Serves 4. Ready in 20 minutes. Vegan option below.
 =======
-Status: in progress. Three style tiles to compare.
->>>>>>> SiddharthMuramkar/frontend
+Serves 4. Ready in 15 minutes.
+>>>>>>> origin/main
 ```
 
-Between `<<<<<<< HEAD` and `=======` is the version on the branch being merged _into_, the one the folder has open. Between `=======` and `>>>>>>>` is the version coming in, from the branch named after the arrows. Resolving takes four steps: choose one side, the other, or a version that combines both; delete all three marker lines; stage the file with `git add`, which tells git it’s resolved; then commit, which finishes the merge. If it turns into a mess, `git merge --abort` backs out to where things stood before the merge. A deleted-versus-edited conflict has no markers: `git status` says, for example, “deleted by us”, and the choice is to keep the file (`git add`) or delete it (`git rm`).
+Between `<<<<<<< HEAD` and `=======` is your branch's version. `HEAD` is the branch your folder has open, here #12's. Between `=======` and `>>>>>>>` is the version coming in, named after the arrows. The right answer is often a mix of both: `Serves 4. Ready in 15 minutes. Vegan option below.`
 
-The agent can do all of that typing. What it can’t know is which version is right. That’s a product decision: in the example, only you know whether ticket 21 is done. So have the agent show you each conflict and the resolution it proposes before it commits. Then two safeguards. `git diff --check`, run before staging, warns about any marker left behind. And the tests must run after the merge, because two changes that merge cleanly as text can still break each other as code.
-
-```callout remember
-A conflict is git asking a question it can’t answer: which version is right? Let the agent do the editing, but make it show you each answer, leave no markers behind, and run the tests before it commits.
+```checkpoint quick-9
+In a conflicted file, which version sits between `=======` and `>>>>>>> origin/main`?
+- [x] The version coming in from `origin/main`.
+- [ ] The version on the branch your folder has open.
+- [ ] The version git picked as the right one.
+Why: The top half, after `<<<<<<< HEAD`, is the branch your folder has open. The bottom half, before the closing arrows, is the version coming in, named after the arrows. Git picks neither.
 ```
 
-```checkpoint check-7
-Two Orca agents worked in separate worktrees. Both of their PRs change the same lines of the “Decisions so far” list in `map.md`. PR A merges first. What happens to PR B?
-- [ ] Git keeps whichever change is newer
-- [ ] GitHub merges both lines in automatically
-- [x] It shows a conflict to resolve
-- [ ] Worktrees stop this from ever happening
-Why: Same lines, changed differently on two branches: git won’t guess, so PR B’s merge button stays off until someone resolves it. Worktrees keep agents apart only while they work; the collision waits for merge time.
+A conflict between a deleted file and an edited one has no markers. `git status` says, for example, `deleted by us`, and you choose. Keep the file with `git add <file>`, or delete it with `git rm <file>`.
+
+## Resolving a conflict, step by step
+
+You can resolve a conflict in the terminal, in the browser, or through an agent. Whichever you use, someone has to decide which version is right, and that someone is you.
+
+### In the terminal
+
+Say you're resolving #12. From your project's folder:
+
+1. Switch to the pull request's branch and get its latest commits: `git switch 12-vegan-pancakes`, then `git pull`.
+2. Fetch GitHub's latest `main` and merge it in: `git fetch origin`, then `git merge origin/main`. Git prints `CONFLICT (content): Merge conflict in recipes/pancakes.md`.
+3. Run `git status`. It lists the file under "Unmerged paths".
+4. Open the file. Keep one side, the other, or a mix, and delete all three marker lines.
+5. Run `git diff --check`. It warns about any marker you missed, so it should print nothing.
+6. Run `git add recipes/pancakes.md`, which tells git the file is resolved.
+7. Run `git commit --no-edit`, which finishes the merge with the message git prepared.
+8. Run your tests, then `git push`. The pull request updates, and its checks run again.
+
+If it turns into a mess, `git merge --abort` puts everything back as it was before step 2.
+
+You may read that you can rebase instead: replay your branch's commits on top of the new `main`. That rewrites every one of them, so the rule above applies, and the branch then needs a force push. Merging `main` in rewrites nothing. And if your repo squash-merges, the extra merge commit disappears into the squash anyway.
+
+```checkpoint quick-10
+You've edited a conflicted file and deleted what you think are all the markers. What do you run before `git add`?
+- [x] `git diff --check`, which warns about any conflict marker you missed.
+- [ ] `git merge --abort`, which checks the merge and then finishes it.
+- [ ] `git push --force`, which sends the resolved file to the pull request.
+Why: `git diff --check` flags leftover markers. `git merge --abort` throws the merge away, and a force push rewrites the branch on GitHub, which a merge never needs.
 ```
 
-```checkpoint check-8
-In a healthy `/implement-spec` run, where does a conflict between two tickets get resolved?
-- [ ] By the merger, on the integration branch
-- [x] By the implementer, in its own worktree
-- [ ] By you, in GitHub’s web conflict editor
-- [ ] By code-review, once every ticket has landed
-Why: Each implementer merges the integration branch’s tip into its own branch before reporting done, so the conflict surfaces there, and the merger’s step is a fast-forward. Matt’s test: merges into the integration branch are fast-forwards, not conflict resolutions.
+### On github.com
+
+For a simple conflict on the same lines, GitHub's editor works in the browser.
+
+1. Open the pull request. Near the bottom, click **Resolve conflicts**.
+2. In each marked block, keep what's right and delete the marker lines.
+3. Click **Mark as resolved**. If other files conflict, pick the next one from the list on the left.
+4. When every file is done, click **Commit merge**. This merges all of `main` into your branch.
+
+If **Resolve conflicts** is greyed out, the conflict is too complex for the browser. Use the terminal or an agent.
+
+```checkpoint quick-11
+The **Resolve conflicts** button on your pull request is greyed out. What does that tell you?
+- [x] This conflict is too complex for the browser, so use the terminal or an agent.
+- [ ] Someone else is already resolving the conflict, so wait for them to finish.
+- [ ] The conflict has fixed itself, so the merge button will work after a refresh.
+Why: GitHub's editor handles simple same-line conflicts. When its button is off, resolve the conflict with git on your computer, yourself or through an agent.
 ```
 
-## Bringing a PR up to date
+### Through an agent
 
-Lesson 8 showed how a PR’s branch falls **behind** when other PRs land on `main`, and why that matters under a loose ruleset like this course’s. The checks ran against an old `main`, so they can pass on the PR, then fail on `main` when the two sets of changes first meet. So when `main` has moved, update the branch before you merge, and let `check` run again. The question here is how.
+An agent can do all the typing. What it can't know is which version is right. That's a decision about your site, so it's yours. In the example, only you know whether the vegan note should stay.
 
-There are two ways to update. **Merge** `main` into the branch: the branch gains one merge commit, and nothing is rewritten. Or **rebase** the branch onto `main`: git replays the branch’s commits one at a time on top of the new `main`. That gives a straight line, but every one of those commits is replaced by a new copy, so it’s a rewrite and the last section’s rule applies: rebase only a branch no other person, worktree or agent is using. The rewritten branch then has to be force-pushed to reach its PR.
+You say:
 
-On a squash-merge repo, choose merge. When the PR lands, everything on its branch, extra merge commits included, is squashed into one new commit on `main`. So `main` gets the same single commit whichever way you updated. A rebase would buy a tidier branch that is about to be deleted, at the price of a rewrite.
+> This pull request has merge conflicts. Merge `main` into the branch; don't rebase. Before you commit, show me each conflict: both sides, what you propose, and why. Wait for my OK. Then run `git diff --check` and the tests, commit and push.
 
-GitHub’s **Update branch** button merges, and its dropdown offers **Update with rebase**. But as Lesson 8 noted, it appears only when the ruleset is strict or “Always suggest updating pull request branches” is on, and neither was true on either of your repos on 27 October. Turn the setting on (Settings, under Pull Requests), or ask the agent to merge `main` into the branch and push. If the update hits a conflict, GitHub’s **Resolve conflicts** editor handles simple same-line conflicts in the browser; anything harder goes back to the agent.
+Once it has pushed, you look:
 
-```callout remember
-Update a PR by merging `main` into its branch: nothing is rewritten, and the squash merge hides the extra commit. Rebase only a branch that no person, worktree or agent is using.
+```sh
+git show --remerge-diff
 ```
 
-```checkpoint check-9
-Your PR’s checks passed on Monday. Two other PRs merged into `main` on Tuesday, and the ruleset doesn’t require up-to-date branches. What’s the risk if you merge now?
-- [ ] GitHub blocks the merge outright
-- [ ] The squash commit loses changes
-- [ ] The PR branch gets force-pushed
-- [x] `check` may fail on `main`
-Why: The checks ran against Monday’s `main`. With the loose setting nothing forces an update, so an incompatibility can surface only after the merge. Update the branch first and let `check` run again.
+It compares the conflict git left with what the agent committed. Lines starting `-` left the file, markers included. Plain lines stayed. Lines starting `+` are new. Want a `-` line back? Say so. The option needs git 2.36 or newer.
+
+Run the tests after every merge, even a clean one. Two changes can merge cleanly as text and still break each other as code.
+
+```checkpoint quick-12
+An agent says it has resolved a conflict and wants to commit. What should happen first?
+- [x] It shows you each side and its choice, checks for markers, and runs the tests.
+- [ ] It rebases onto `main` and force-pushes, so the conflict can't come back.
+- [ ] It pushes first, so you can read the result in the pull request on GitHub.
+Why: Git can't tell which version is right, and neither can the agent: you decide. Then `git diff --check` catches leftover markers, and the tests catch changes that merge as text but break as code.
 ```
 
-```checkpoint check-10
-An agent wants to rebase `SiddharthMuramkar/frontend` onto `main` to update its PR. Another worktree has a branch built on top of frontend. What do you ask for instead?
-- [ ] Rebase it, then force-push it
-- [x] Merge `main` into the branch
-- [ ] Squash the branch before rebasing
-- [ ] Delete the other worktree first
-Why: A rebase replaces frontend’s commits and strands the branch built on top of them. Merging `main` in rewrites nothing, and the squash merge keeps the extra commit off `main`.
-```
+## Preventing conflicts and the worst commands
 
-## Prevention, and a hook for the worst commands
+Most conflicts are prevented by how you cut the work.
 
-Most conflicts are prevented upstream, in how the work is cut. Keep PRs small, so each one touches few files. Keep branches short-lived: merge soon, then start fresh. Cut tickets so that two running at the same time don’t touch the same file. When they must, Matt’s advice for `/implement-spec` is to add a blocking edge so they run one after the other, or to fix in the exploration notes the exact names each ticket will add. And when a branch has to live long, like the front-end branch, with more than 100 changed files, merge `main` into it after every PR that lands, so each conflict stays small.
+- Keep pull requests small and branches short-lived. Merge soon, then start a fresh branch.
+- When a branch must live long, merge the latest `main` into it often, so each conflict stays small.
+- Don't give two people or two agents the same file at the same time. [Working with a coding agent on GitHub](/learn/working-with-an-agent-on-github) shows how to split the work.
 
-Prevention covers conflicts. For destructive commands there’s Matt’s `git-guardrails-claude-code` skill. It installs a Claude Code **hook**: a script that Claude Code runs automatically at a set moment. This one runs before every shell command the agent tries (the `PreToolUse` event, on the `Bash` tool). It reads the command, and if the command matches its list, it exits with code 2. Claude Code then refuses to run the command and shows the agent the script’s message, which ends “The user has prevented you from doing this.” The list:
+For destructive commands, Matt Pocock's [git-guardrails-claude-code](/learn/git-guardrails-claude-code) Skill installs a Claude Code **hook**: a script that runs automatically before every shell command the agent tries. It blocks every `git push`, plus `git reset --hard`, `git clean -f`, `git branch -D`, `git checkout .` and `git restore .`. So the agent has to hand those commands to you.
 
-- `git push`, every kind, forced or not
-- `git reset --hard`
-- `git clean -f` and `git clean -fd`, which delete files git doesn’t track
-- `git branch -D`
-- `git checkout .` and `git restore .`, which throw away every unstaged edit
-
-Two things make this stronger than writing “never force-push” in a prompt or in `CLAUDE.md`. Claude Code enforces it, not the model, so it holds even when the agent is sure it knows better. And a blocking hook runs before Claude Code’s permission rules, so it still blocks after you’ve allowed every shell command to run without asking, which is how AFK runs (the agent working unattended) are usually set up. It also fires inside subagents, so it covers every `/implement-spec` implementer.
-
-It’s a blunt tool, because it matches text. It blocks the ordinary `git push` an agent needs to open a PR, `git branch -D` from your Lesson 6 clean-up routine, and even `git restore .env.local`, which starts with `git restore .`. You run those yourself, or drop the pattern when the skill asks. If you drop `git push`, add one for `git push -f`: the separate `push --force` pattern catches only that spelling. The targeted undos still work: amend, `reset --soft`, `restore --staged`. So does `git rebase`, so a local rewrite like the `9ebb5ed` one is still yours to forbid in the prompt.
-
-Is it worth installing? In a HITL session (human-in-the-loop: you watch and steer) where you approve each command as it comes, you already do the hook’s job. It earns its place when nobody reads commands before they run: AFK runs, and long `/implement-spec` runs with many subagents at once. Install it for Care4Mind only, before the first of those. The two protections cover different ground: a ruleset guards `main` on GitHub, and this hook guards the files on your disk, which no ruleset can see.
-
-```callout remember
-Small, short-lived branches that don’t share files prevent most conflicts. The ruleset guards `main` on GitHub; Matt’s hook guards your disk by stopping the agent before a destructive command runs.
-```
-
-```checkpoint check-11
-Two frontier tickets in an `/implement-spec` run will both add entries to `src/config/site.ts`. What does Matt suggest?
-- [ ] Let the merger subagent sort it
-- [ ] Run both, then rebase the loser
-- [x] Add a blocking edge between them
-- [ ] Give both tickets the same worktree
-Why: A blocking edge makes them run one after the other, so the second starts from the first one’s work. (His other option: fix the exact names in the exploration notes.) Leaving it to the merge is the collision he warns about, and one worktree can show only one branch.
-```
-
-```checkpoint check-12
-With `git-guardrails-claude-code` installed, an implementer subagent runs `git push -u origin ticket-3`. What happens?
-- [x] The hook blocks it before it runs
-- [ ] It runs, because subagents skip all hooks
-- [ ] It runs, because the push isn’t forced
-- [ ] GitHub’s ruleset rejects it after it arrives
-Why: The list blocks every `git push`, forced or not, and hooks from settings files also run inside subagents. If you want agents to push their own branches, drop that pattern and add one for `git push -f`, which the separate `push --force` pattern misses.
-```
-
-## Practice
-
-### Sort the mistake
-
-For each mistake on Care4Mind, pick the undo your agent should run.
-
-```checkpoint check-13
-An agent rewrote `src/app/page.tsx` in the wrong worktree. Nothing is staged, and you want the old file back.
-- [x] `restore`
-- [ ] `restore --staged`
-- [ ] `amend` or `reset --soft`
-- [ ] `revert`
-Why: Unstaged edits live only in the file. `git restore` puts it back, and the agent’s edit is gone for good, which is what you want here.
-```
-
-```checkpoint check-14
-`git add .` picked up `.env.local`. Nothing is committed.
-- [ ] `restore`
-- [x] `restore --staged`
-- [ ] `amend` or `reset --soft`
-- [ ] `revert`
-Why: Staged, not committed: `restore --staged` takes it off the list and leaves the file alone.
-```
-
-```checkpoint check-15
-PR #5 was squash-merged this morning and broke the questionnaire page.
-- [ ] `restore`
-- [ ] `restore --staged`
-- [ ] `amend` or `reset --soft`
-- [x] `revert`
-Why: Merged on GitHub: the Revert button (or `git revert` on its commit) adds a commit that undoes it, through a PR that passes the same gates.
-```
-
-```checkpoint check-16
-The agent’s last commit, on a branch it hasn’t pushed and nothing is built on, left out `tests/unit/kolam.test.ts`.
-- [ ] `restore`
-- [ ] `restore --staged`
-- [x] `amend` or `reset --soft`
-- [ ] `revert`
-Why: Local and unshared: stage the missing file and `git commit --amend` folds it into the same commit.
-```
-
-```checkpoint check-17
-A commit on `SiddharthMuramkar/frontend` is already on GitHub, and it has a bug.
-- [ ] `restore`
-- [ ] `restore --staged`
-- [ ] `amend` or `reset --soft`
-- [x] `revert`
-Why: On GitHub means shared. Add a commit that undoes it; never rewrite and force-push.
-```
-
-```checkpoint check-18
-You staged `map.md` and `project-brief.md`, but this commit should hold only the map.
-- [ ] `restore`
-- [x] `restore --staged`
-- [ ] `amend` or `reset --soft`
-- [ ] `revert`
-Why: `restore --staged project-brief.md` takes the brief off the list and keeps your edit for the next commit.
-```
-
-```checkpoint check-19
-The agent made one unpushed commit that should have been two, and you want its changes back in the staging area to split them.
-- [ ] `restore`
-- [ ] `restore --staged`
-- [x] `amend` or `reset --soft`
-- [ ] `revert`
-Why: `git reset --soft HEAD~1` undoes the commit and leaves its changes staged, ready to commit in two parts.
-```
-
-```checkpoint check-20
-`9ebb5ed` on `frontend` was never pushed, but `content-v1` is built on it, and the whole commit was a mistake.
-- [ ] `restore`
-- [ ] `restore --staged`
-- [ ] `amend` or `reset --soft`
-- [x] `revert`
-Why: Never pushed, but shared: content-v1 is built on it. Rewriting would leave content-v1 holding the old copy, so add a commit that undoes it.
-```
-
-## Tell your agent
-
-Paste the first when something has gone wrong, the second when a PR shows conflicts, and the third before your first AFK or `/implement-spec` run on Care4Mind.
-
-```text
-Something went wrong. Before undoing anything, show me git status and git log --oneline -3, and tell me where the mistake lives: unstaged, staged, committed but not pushed, or already on GitHub. If the commit is on GitHub, or another branch or worktree is built on it, use git revert (or the Revert button on a merged PR). Never reset, amend, rebase or force-push it.
-```
-
-```text
-This PR has merge conflicts. Merge main into the branch; don't rebase. Before you commit, show me each conflict: both sides, the resolution you propose, and why. Wait for my OK. Then remove every marker, run git diff --check before staging (it must print nothing), run the tests, commit the merge and push.
-```
-
-```text
-Use the git-guardrails-claude-code skill to install the git hook for this project only. Run its verify step and show me that git push is blocked with exit code 2.
+```checkpoint quick-13
+Two agents will work at the same time, and both tasks need changes to the same lines of `src/recipe-card.js`. What prevents a conflict best?
+- [x] Run the two tasks one after the other, so the second starts from the first's work.
+- [ ] Run both at once, then let the second pull request keep whichever change is newer.
+- [ ] Run both at once in one folder, so each agent can see what the other is writing.
+Why: Two branches changing the same lines meet as a conflict at merge time. Run one after the other, and the second builds on the first. Git never keeps "the newer change", and one folder for two agents causes worse trouble.
 ```
 
 ## Try it
 
-These commands only look; they change nothing. Run them in `~/Desktop/project1`:
+````try
+You need git 2.36 or newer: `git --version` prints yours. Work in a new folder outside any project. Nothing here touches GitHub.
+
+1. Make a practice repo with a one-line recipe:
 
 ```sh
-git status
-git log --oneline -5
-git reflog
-git branch -a --contains 691764b
-git log --oneline -1 691764b
+mkdir undo-practice
+cd undo-practice
+git init -b main
+echo "Serves 4. Ready in 20 minutes." > pancakes.md
+git add pancakes.md
+git commit -m "Add pancakes"
 ```
 
-On 27 October, `git status` said `main` was up to date with `origin/main` and the working tree was clean: nothing to restore or unstage. `git log` shows five commits, from `76f992c` (PR #4) down to `c08fe71`. Read `git reflog` from the bottom: `commit (initial)` made `691764b`, then `commit (amend)` replaced it with `c08fe71`. The lines ending `Fast-forward` are `main` catching up with GitHub after a PR merged. The last two commands show the safety net: no branch contains `691764b`, so the first prints nothing, yet the second still finds it. Your reflog may have grown since, but its bottom lines stay the same until they expire; the `691764b` lines go first, after 30 days by default.
+2. On a new branch, change the line one way:
 
-## Check yourself
+```sh
+git switch -c vegan
+echo "Serves 4. Ready in 20 minutes. Vegan option below." > pancakes.md
+git commit -am "Add a vegan note"
+```
 
-From memory, without scrolling up.
+3. Back on `main`, change the same line another way:
 
-```final-test final-21
+```sh
+git switch main
+echo "Serves 4. Ready in 15 minutes." > pancakes.md
+git commit -am "Make the pancakes quicker"
+```
+
+4. Merge the branch with `git merge vegan`. You should see `CONFLICT (content): Merge conflict in pancakes.md`.
+5. Run `cat pancakes.md`. You should see `<<<<<<< HEAD`, `main`'s line, `=======`, the branch's line, then `>>>>>>> vegan`.
+6. Write one line that keeps both changes, then finish the merge:
+
+```sh
+echo "Serves 4. Ready in 15 minutes. Vegan option below." > pancakes.md
+git diff --check
+git add pancakes.md
+git commit --no-edit
+```
+
+7. Undo the merge with a revert: `git revert -m 1 --no-edit HEAD`. Then `cat pancakes.md` shows `Serves 4. Ready in 15 minutes.` again.
+8. Run `git log --oneline`. The revert is on top, and every earlier commit is still there.
+9. Throw the revert away with `git reset --hard HEAD~1`. That's safe here, because nothing is uncommitted. `git log --oneline` no longer shows it.
+10. Run `git reflog`. Its second line, `HEAD@{1}`, is the revert. Bring it back with `git branch rescued HEAD@{1}`, and `git log --oneline rescued` shows it again.
+
+Delete the `undo-practice` folder when you're done. To practise with an agent, ask it to do steps 1 to 4 and stop. Then ask it to keep both changes, and check its work with `git show --remerge-diff`.
+````
+
+## Remember
+
+```flashcards
+Q: What do you ask before any undo?
+A: Where does the mistake live: unstaged, staged, committed on your computer, or on GitHub? The further it has travelled, the gentler the undo.
+
+Q: Which undos can lose work for good?
+A: `git restore <file>` on an edit that was never staged or committed, and `git reset --hard`, which throws away every uncommitted edit.
+
+Q: What's the difference between `git restore <file>` and `git restore --staged <file>`?
+A: The first throws the edit away. The second only takes the file off the next commit's list, and the edit stays.
+
+Q: How do you undo a merged pull request?
+A: Revert it. The Revert button or `gh pr revert <number>` opens a new pull request that cancels it, and you merge that.
+
+Q: When is it safe to amend, reset or rebase a commit?
+A: Only while nothing else has seen it: not pushed, and no other branch, worktree or person has built on it.
+
+Q: What can the reflog bring back, and what can't it?
+A: Commits lost to a reset or an amend on your computer. Never uncommitted edits, and nothing that only GitHub had.
+
+Q: What is a merge conflict?
+A: Two branches changed the same lines differently, or one deleted a file the other edited. Git stops and waits for someone to choose.
+
+Q: An agent resolved a conflict. What do you check?
+A: `git show --remerge-diff` for what it kept and dropped, `git diff --check` for leftover markers, and the tests.
+```
+
+## Final test
+
+```final-test final-lose-work
 Which of these undos can lose work for good?
-- [ ] `git revert` on a pushed commit
-- [x] `git restore` on an unstaged edit
-- [ ] `git reset --soft` on a commit
-- [ ] The Revert button on a PR
-Why: An edit that was never staged or committed exists only in the file, so restoring the file erases it with no copy anywhere. Revert adds a commit, and a soft reset keeps the changes staged while the old commit stays in the reflog.
+- [x] `git restore` on an edit that was never staged or committed.
+- [ ] `git revert` on a commit that's already on GitHub.
+- [ ] `git reset --soft HEAD~1` on your latest commit.
+- [ ] The Revert button on a merged pull request.
+Why: An edit that was never staged or committed exists only in the file, so restoring the file leaves no copy anywhere. A revert adds a commit, and a soft reset keeps the changes staged.
 ```
 
-```final-test final-22
-Which commit is safe to rewrite? Assume nothing is built on a commit unless the option says so.
-- [ ] `9ebb5ed`, which `content-v1` is built on
-- [ ] A `frontend` commit that’s on GitHub
-- [ ] The squash commit for PR #4
-- [x] A `ticket-3` commit that’s only local
-Why: Rewrite only what nothing else has seen. The other three are shared: `content-v1` is built on the first, the second is on GitHub, and the third is on `main` itself.
+```final-test final-merged-yesterday
+Pull request #14 merged into `main` yesterday, and its change to the shopping list is wrong. Which undo fits?
+- [x] Revert #14 in a new pull request, and merge that once its checks pass.
+- [ ] Reset `main` back past #14 on your computer, then force-push it to GitHub.
+- [ ] Amend the commit #14 left on `main`, then push the corrected version.
+- [ ] Delete #14's branch on GitHub, which takes its commit back out of `main`.
+Why: The change is on GitHub's `main`, so you add an undo instead of rewriting history. Resetting or amending `main` needs a force push, and deleting a merged branch changes nothing on `main`.
 ```
 
-```final-test final-23
-An agent says it has resolved a conflict in `map.md` and wants to commit. What should it do first?
-- [x] Check for markers, then run tests
-- [ ] Rebase onto `main`, then force-push it
-- [ ] Abort the merge, then retry later
-- [ ] Push first, then check GitHub’s diff
-Why: `git diff --check` catches leftover markers, and the tests catch changes that merged cleanly as text but break each other as code. Rebasing and force-pushing rewrite history, and aborting throws the resolution away.
+```final-test final-leaked-key
+An agent pushed a commit holding `.env` and your site's secret key. Its pull request is still open, and the agent offers to amend the commit and force-push. What comes first?
+- [x] Replace the key at the service that issued it, then add `.env` to `.gitignore`.
+- [ ] Amend the commit and force-push it, so the key leaves GitHub's history.
+- [ ] Revert the commit, so the key disappears from every copy on GitHub.
+- [ ] Close the pull request, so nobody can open the commit that holds the key.
+Why: The key already sits in a commit on GitHub, so treat it as public and replace it first. A revert or a later commit leaves the old commit in place, and a rewrite can't call back copies already made.
 ```
 
-```final-test final-24
-This course’s repo allows only squash merges, and a PR is behind `main`. Why merge `main` into it rather than rebase?
-- [ ] Merging gives `main` a cleaner history
-- [ ] Rebasing is blocked on PR branches
-- [x] Merging rewrites nothing; squash hides it
-- [ ] Rebasing always causes more merge conflicts
-Why: A merge adds one commit and replaces nothing, and the squash merge folds it into the PR’s single commit on `main`. `main` ends up the same either way, so a rebase’s rewrite buys nothing. No rule blocks rebasing PR branches.
+```final-test final-red-check
+A check on your open pull request has gone red. The agent has found the cause and asks where the fix should go. What do you say?
+- [x] On this same branch, because a push updates the pull request and the checks run again.
+- [ ] On a new branch from `main`, because a pull request can't take commits once a check fails.
+- [ ] Straight on `main`, because a red check means this pull request can never merge.
+- [ ] Nowhere yet, because the failing check has to be switched off before the branch can change.
+Why: While a pull request is open, a push to its branch updates it, and the checks run on the update. So the fix goes on the same branch.
 ```
 
-```final-test final-25
-You’re about to start an AFK `/implement-spec` run on Care4Mind with every shell command pre-approved. What protects your uncommitted files from `git reset --hard`?
-- [ ] A `main` ruleset
-- [x] Matt’s guardrails hook
-- [ ] The local reflog
-- [ ] A `CLAUDE.md` rule
-Why: The hook stops the command before it runs, even when every shell command is pre-approved, and it fires inside subagents. A ruleset guards only GitHub, the reflog never held uncommitted edits, and a line in `CLAUDE.md` shapes what the agent tries without enforcing anything.
+```final-test final-fix-after-merge
+Your pull request merged an hour ago. You've found one more small fix, and the agent is still on the old branch. What do you ask for?
+- [x] The fix on a new branch from the latest `main`, in a new pull request.
+- [ ] The fix pushed to the old branch, so the merged pull request carries it in.
+- [ ] The fix committed on the old branch, so GitHub merges it after the next check.
+- [ ] A revert of the merged pull request first, so the old branch can take the fix.
+Why: A merged pull request is finished. A commit pushed to its branch afterwards never reaches `main`, so the fix needs a pull request of its own.
 ```
 
-## Read next
+```final-test final-remerge-diff
+The agent merged `main` into your branch, fixed a conflict and pushed. You want to see what its fix kept and what it dropped. What do you run?
+- [x] `git show --remerge-diff`, which compares the conflict git left with what was committed.
+- [ ] `git status`, which lists what each side wanted and what the agent kept of it.
+- [ ] `git reflog`, which records each line the agent removed while it edited the file.
+- [ ] Nothing, because git refuses to finish a merge that drops anybody's changes.
+Why: Git couldn't choose between the two sides, so the choice was the agent's, and git won't catch a bad one. `--remerge-diff` shows the lines that left the file and the ones that came in.
+```
 
-**Read:** [Pro Git §2.4, Undoing Things](https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things), about ten minutes. It walks the first three rungs with `git status` output at each step, so you learn to tell your rung from what git prints. It also shows the older `git reset HEAD <file>` and `git checkout -- <file>` forms, which agents sometimes still use. Then, for conflicts, read [§3.2’s Basic Merge Conflicts](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging#_basic_merge_conflicts).
+```final-test final-reflog-limit
+An agent ran `git restore .` and threw away an afternoon of edits it had never committed. Can the reflog bring them back?
+- [x] No. The reflog records commits, and those edits were never committed.
+- [ ] Yes. The reflog records every edit, so the latest line holds the afternoon's work.
+- [ ] Yes, but only from GitHub, which keeps a copy of the reflog for each branch.
+- [ ] No, because `git restore .` also deletes the reflog along with the edits.
+Why: The reflog lists where `HEAD` has pointed: commits, never edits. Work that was never committed and then thrown away isn't anywhere, which is why `git restore` sits on the dangerous rung.
+```
 
-Keep the Commits & PRs cheat sheet open the next time an agent says something went wrong. This is the last lesson of Part 2; the Part 2 test covers Lessons 6–9.
+```final-test final-merge-not-rebase
+Your pull request's branch has a conflict with `main`, and a branch in another worktree is built on yours. The agent wants to rebase onto `main` and force-push. What do you ask for instead?
+- [x] Merge `main` into the branch, which resolves the conflict without rewriting anything.
+- [ ] Rebase as planned, then rebase the other branch too, so both match again.
+- [ ] Delete the other worktree first, so the rebase can't strand its branch.
+- [ ] Squash the branch into one commit first, then rebase and force-push that.
+Why: A rebase replaces every commit on your branch and strands the branch built on top of it. Merging `main` in rewrites nothing, and a squash merge keeps the extra merge commit off `main`.
+```
+
+```final-test final-different-lines
+Two pull requests change different lines of `recipes/pancakes.md`. The first one merges. What happens to the second?
+- [x] It can merge without a conflict, because git combines changes on different lines.
+- [ ] It conflicts, because both pull requests changed the same file.
+- [ ] It's closed, because GitHub allows one merged change per file each day.
+- [ ] It overwrites the first one's change, because the newer pull request wins.
+Why: Git stops only where it can't safely pick a side: the same lines changed differently, or a deleted file that the other side edited. Different lines merge on their own, though you still run the tests.
+```
 
 ```sources
-- [git docs, Reset, restore and revert](https://git-scm.com/docs/git#_reset_restore_and_revert)
-- [Pro Git §2.4, Undoing Things](https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things)
-- [git-reset docs](https://git-scm.com/docs/git-reset)
-- [gitrevisions](https://git-scm.com/docs/gitrevisions)
-- [GitHub Docs, Reverting a pull request](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/reverting-a-pull-request)
-- [Traversy, CI/CD crash course](https://www.youtube.com/watch?v=B7GM6F3BP6A)
-- [git-revert docs](https://git-scm.com/docs/git-revert)
-- [Pro Git §3.6, The Perils of Rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing#_rebase_peril)
-- [git-push docs](https://git-scm.com/docs/git-push)
-- [GitHub Docs, Block force pushes](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets#block-force-pushes)
-- [git-reflog docs](https://git-scm.com/docs/git-reflog)
-- [Pro Git §10.7, Data Recovery](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery#_data_recovery)
-- [GitHub Docs, Merge conflicts](https://docs.github.com/en/pull-requests/reference/merge-conflicts)
-- [Pro Git §3.2, Basic Merge Conflicts](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging#_basic_merge_conflicts)
-- [wayfinder SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/wayfinder/SKILL.md)
-- [implement-spec SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement-spec/SKILL.md)
-- [AI Hero, implement-spec](https://www.aihero.dev/skills-implement-spec)
-- [git-merge docs](https://git-scm.com/docs/git-merge)
-- [GitHub Docs, Resolving a merge conflict using the command line](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-using-the-command-line)
-- [git-diff docs](https://git-scm.com/docs/git-diff)
-- [GitHub Docs, Available rules for rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets)
-- [GitHub Docs, Keeping your pull request in sync with the base branch](https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch)
-- [GitHub Docs, Pull request merges](https://docs.github.com/en/pull-requests/reference/pull-request-merges)
-- [GitHub Docs, Managing suggestions to update pull request branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-suggestions-to-update-pull-request-branches)
-- [GitHub Docs, Resolving a merge conflict on GitHub](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-on-github)
-- [git-guardrails-claude-code SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/misc/git-guardrails-claude-code/SKILL.md)
-- [block-dangerous-git.sh](https://github.com/mattpocock/skills/blob/main/skills/misc/git-guardrails-claude-code/scripts/block-dangerous-git.sh)
-- [Claude Code docs, Hooks](https://code.claude.com/docs/en/hooks)
-- [git-clean docs](https://git-scm.com/docs/git-clean)
-- [Claude Code docs, Permissions](https://code.claude.com/docs/en/permissions)
-- [AI Hero dictionary, AFK](https://www.aihero.dev/ai-coding-dictionary/afk)
-- [AI Hero dictionary, Human-in-the-loop](https://www.aihero.dev/ai-coding-dictionary/human-in-the-loop)
+- [Git Basics: Undoing Things](https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things), Scott Chacon and Ben Straub (Pro Git)
+- [Basic Branching and Merging](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging), Scott Chacon and Ben Straub (Pro Git)
+- [Rebasing: The Perils of Rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing), Scott Chacon and Ben Straub (Pro Git)
+- [Maintenance and Data Recovery](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery), Scott Chacon and Ben Straub (Pro Git)
+- [git restore](https://git-scm.com/docs/git-restore), The Git project
+- [git reset](https://git-scm.com/docs/git-reset), The Git project
+- [git revert](https://git-scm.com/docs/git-revert), The Git project
+- [git reflog](https://git-scm.com/docs/git-reflog), The Git project
+- [git merge](https://git-scm.com/docs/git-merge), The Git project
+- [git diff](https://git-scm.com/docs/git-diff), The Git project
+- [git show](https://git-scm.com/docs/git-show), The Git project
+- [git push](https://git-scm.com/docs/git-push), The Git project
+- [git branch](https://git-scm.com/docs/git-branch), The Git project
+- [git cherry-pick](https://git-scm.com/docs/git-cherry-pick), The Git project
+- [Git 2.36 release notes](https://raw.githubusercontent.com/git/git/v2.36.0/Documentation/RelNotes/2.36.0.txt), The Git project
+- [Reverting a pull request](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/reverting-a-pull-request), GitHub Docs
+- [Merge conflicts](https://docs.github.com/en/pull-requests/reference/merge-conflicts), GitHub Docs
+- [Resolving a merge conflict using the command line](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-using-the-command-line), GitHub Docs
+- [Resolving a merge conflict on GitHub](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-on-github), GitHub Docs
+- [Keeping your pull request in sync with the base branch](https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch), GitHub Docs
+- [Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows), GitHub Docs
+- [Available rules for rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets), GitHub Docs
+- [Removing sensitive data from a repository](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository), GitHub Docs
+- [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow), GitHub Docs
+- [gh pr revert](https://cli.github.com/manual/gh_pr_revert), GitHub CLI manual
+- [gh pr view](https://cli.github.com/manual/gh_pr_view), GitHub CLI manual
+- [gh pr checks](https://cli.github.com/manual/gh_pr_checks), GitHub CLI manual
+- [git-guardrails-claude-code: SKILL.md](https://github.com/mattpocock/skills/blob/main/skills/misc/git-guardrails-claude-code/SKILL.md), Matt Pocock's Skills
 ```

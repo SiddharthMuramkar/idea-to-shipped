@@ -1,20 +1,20 @@
 ---
-title: grill-with-docs
+title: grill-with-docs: the interview that writes things down
 slug: grill-with-docs
-summary: grill-with-docs interviews you about an idea, and writes down the words and the hard decisions you settle as you go.
+summary: How Matt Pocock's grill-with-docs Skill interviews you about an idea in a repo, and writes down the words and hard decisions you settle.
 ---
 
 ## What it's for
 
-Say you and your agent work out what a "hold" on a seat means for the yoga-studio site. The next session knows none of it, so you explain it all again.
+Say you and your agent work out what a "hold" on a seat means for your yoga-studio booking site. The next session knows none of it, so you explain it all again.
 
 **grill-with-docs interviews you about an idea, and writes down the words and the hard decisions you settle as you go.**
 
-It calls two other Skills. [grilling](/learn/grilling) runs the interview you met in [grill before you build](/learn/grill-before-you-build). [domain-modeling](/learn/domain-modeling) settles the project's words and records its hard decisions.
+It calls two other [Skills](/learn/skills). [grilling](/learn/grilling) runs the interview that [grill before you build](/learn/grill-before-you-build) describes. [domain-modeling](/learn/domain-modeling) settles the project's words and records its hard decisions.
 
 ```checkpoint quick-1
 You run grill-with-docs and the questions start. Which Skill is running the interview?
-- [x] grilling, which asks in the rounds you've already met.
+- [x] grilling, which grill-with-docs calls to ask the questions.
 - [ ] domain-modeling, which also records your hard decisions.
 - [ ] grill-with-docs alone, with no other Skill involved.
 Why: grill-with-docs calls two other Skills. grilling runs the interview, and domain-modeling settles the project's words and records its hard decisions.
@@ -72,7 +72,7 @@ Why: The interview ends when nothing is left to ask. Even then, the agent waits 
 
 ## When to use it
 
-- You have an idea and a repo. grill-with-docs is the first step of the main flow.
+- You have an idea and a repo. grill-with-docs is the first step of the [main flow](/learn/main-flow).
 - You're starting a change, like that waitlist, and its words aren't settled yet.
 
 ```checkpoint quick-3
@@ -117,18 +117,18 @@ It creates two kinds of file, each only when there's something to write.
 
 `GLOSSARY.md` holds [the project's agreed words](/learn/one-shared-language). The agent writes each one the moment it's settled, with no implementation details (how the code works, like which endpoint returns what). For example:
 
+```
+**Hold**:
+A seat kept for the first member waiting.
+_Avoid_: reservation
+```
+
 ```checkpoint quick-6
 During the interview you settle which endpoint returns a 409. Does that go in GLOSSARY.md?
 - [x] No. It holds the project's words, with no implementation details.
 - [ ] Yes. It holds every answer you give at any point in the interview.
 - [ ] Yes, as long as the entry stays short enough to read in one go.
 Why: GLOSSARY.md is for the project's agreed words. Which endpoint returns what is an implementation detail, so it doesn't belong there.
-```
-
-```
-**Hold**:
-A seat kept for the first member waiting.
-_Avoid_: reservation
 ```
 
 ADRs go in `docs/adr/`: short files, each recording one decision. The agent offers one only when a decision is hard to reverse, surprising without context and the result of a real trade-off.
@@ -141,7 +141,7 @@ You pick between two libraries, and swapping later would be easy. Will the agent
 Why: All three must be true. The decision must be hard to reverse, surprising without context and the result of a real trade-off.
 ```
 
-Everything else you decide stays in the conversation, along with your shared understanding of the idea. So keep working in that same session through the Spec and Tickets.
+Everything else you decide stays in the conversation, along with your shared understanding of the idea. So keep working in that same session through the Spec and Tickets, the written plan and its small tasks.
 
 ## Going deeper
 
@@ -182,7 +182,7 @@ steps:
 
 The idea is older than AI agents. **Ubiquitous Language** is Eric Evans's term, from his book _Domain-Driven Design_. It means developers and the people they build for share one precise set of words. It has to be precise, as Martin Fowler explains, "since software doesn't cope well with ambiguity".
 
-Matt applies the idea to agents. The code, the developers and the **domain experts** (people who know what you're building, but not how) should all use the same words. Say the studio owner tells you a hold looks wrong. You know what the owner means, and the code uses the same word.
+Matt applies the idea to agents. The code, the developers and the **domain experts** (people who know what you're building, but not how) should all use the same words. Say the studio owner tells you a hold looks wrong. You know what they mean, and the code uses the same word.
 
 Matt names three payoffs:
 
@@ -294,7 +294,7 @@ Why: The file should hold words only. Matt's fix is to ask the Skill to make it 
 
 ### Try it
 
-You'll need your practice project, with setup already run. If you haven't set it up, do keeping-track's Try it step first.
+You'll need your practice project, the yoga-studio booking site, with setup already run. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Open the `yoga-studio` repo in Claude Code.
 2. Type `/grill-with-docs Add a waitlist for full yoga classes.` You should see numbered questions, each with a recommended answer.
@@ -322,7 +322,7 @@ If the questions come with no recommended answers and no `GLOSSARY.md` appears, 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint grill-with-docs-deeper-no-skill-tool
-In Codex CLI you start the interview that keeps a glossary, to plan a waitlist for your booking API. The agent lists fifteen questions, gives no recommended answer for any of them and never mentions GLOSSARY.md. Why? What's the reason behind this step?
+In Codex CLI you start the interview that keeps a glossary, to plan a waitlist for your booking API. The agent lists fifteen questions, gives no recommended answer for any of them and never mentions GLOSSARY.md. Why?
 - [x] Its one-line SKILL.md loads grilling and domain-modeling through a Skill tool, and Codex has none.
 - [ ] Codex can't show numbered rounds, so the agent falls back to listing every question in one message.
   > Nothing reports that. Missing recommended answers mean grilling never loaded; a healthy round asks many questions at once, each with a recommendation.
@@ -425,7 +425,7 @@ Why: Nothing is settled yet, and each open question is a decision you can make b
 ```
 
 ```final-test grill-with-docs-account-term
-Midway through an interview about a SQL migration for your Python backend, the agent points out that you've used "account" for both the paying customer and the login. It asks which one you mean, then writes the settled term into GLOSSARY.md straight away. Why does that matter? What's the reason behind this step?
+Midway through an interview about a SQL migration for your Python backend, the agent points out that you've used "account" for both the paying customer and the login. It asks which one you mean, then writes the settled term into GLOSSARY.md straight away. Why does that matter?
 - [x] From now on, you, the agent and later sessions use one word for one thing.
 - [ ] The Glossary then holds the migration's decisions, so it can serve as its Spec.
   > The Glossary is a glossary and nothing else, never a Spec or a place for implementation decisions.
@@ -435,7 +435,7 @@ Why: With one word for two things, you and the agent can't tell which is meant. 
 ```
 
 ```final-test grill-with-docs-after-setup
-The repo for your Docker-packaged AI agent is configured: docs/agents/ says where Issues live and where the Glossary goes. You have a rough idea for the agent's next feature. What comes next? What comes next?
+The repo for your Docker-packaged AI agent is configured: docs/agents/ says where Issues live and where the Glossary goes. You have a rough idea for the agent's next feature. What comes next?
 - [x] Get interviewed about the idea, writing terms down as they settle.
   > Right: that's `/grill-with-docs`.
 - [ ] Split the feature idea into small Tickets on the issue tracker.
@@ -448,7 +448,7 @@ Why: Setup only configures the repo, so the idea is still rough. The main flow s
 ```
 
 ```final-test grill-with-docs-deeper-bloated-glossary
-After a few interview sessions on your yoga-studio booking API, GLOSSARY.md is over 500 lines. It now records which endpoint returns a 409 and how the waitlist table is indexed. You ask the Skill that wrote it to make GLOSSARY.md more concise and remove every implementation detail. Why? What's the reason behind this step?
+After a few interview sessions on your yoga-studio booking API, GLOSSARY.md is over 500 lines. It now records which endpoint returns a 409 and how the waitlist table is indexed. You ask the Skill that wrote it to make GLOSSARY.md more concise and remove every implementation detail. Why?
 - [x] The glossary should hold the project's words only. Other decisions go to the Spec through to-spec.
 - [ ] A shorter file is cheaper, and the agent rereads GLOSSARY.md before every command it runs.
   > Matt's fix does trim it, but the rule is that GLOSSARY.md holds no implementation details at all, whatever its size.

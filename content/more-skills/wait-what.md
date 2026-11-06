@@ -1,12 +1,12 @@
 ---
-title: wait-what
+title: wait-what: re-pitch a message that lost you
 slug: wait-what
-summary: wait-what tells the agent its message didn't land, so the agent re-pitches it: it says the same thing again, in a way you can follow.
+summary: How to make the agent say its last message again, with the context you missed, in plain words and your project's own terms.
 ---
 
 ## What it's for
 
-Say you're building Ticket #13, the endpoint that creates a booking. The agent reports that it "lifted the session factory behind a seam and inverted the dependency". That message didn't land: you read it, and you can't tell where the work has got to.
+Say you're building [Ticket](/learn/issues-and-keeping-track) #13 of a yoga-studio booking site: the endpoint that creates a booking. The agent reports that it "lifted the session factory behind a seam and inverted the dependency". That message didn't land: you read it, and you can't tell where the work has got to.
 
 **wait-what tells the agent its message didn't land, so the agent re-pitches it: it says the same thing again, in a way you can follow.**
 
@@ -30,7 +30,7 @@ Agent: You asked for the endpoint that creates a Booking.
        its own. That test is my next step.
 ```
 
-The Skill's body, the instructions the agent loads, is one short message, as if you'd typed it. It opens: "Wait, I don't understand where you've got to here." Then it asks for three things:
+The [Skill](/learn/skills)'s body, the instructions the agent loads, is one short message, as if you'd typed it. It opens: "Wait, I don't understand where you've got to here." Then it asks for three things:
 
 - a little of the context you were missing;
 - plain English, in a form called **ASD-STE100**: a controlled plain English with fixed rules and an approved dictionary;
@@ -48,6 +48,10 @@ Why: The re-pitch uses your project's own words. If the repo has more than one g
 
 Use it mid-conversation, inside any other Skill, the moment a message loses you. For example:
 
+- You notice you're skimming the agent's report on Ticket #12.
+- You see jargon the agent invented, or five acronyms in one sentence.
+- You're partway through [wizard](/learn/wizard), and the agent explains a stage whose premise (the reason behind it) you never saw.
+
 ```checkpoint quick-3
 You're running another Skill when one of its messages loses you. When do you type `/wait-what`?
 - [x] Now, in the middle of that other Skill.
@@ -55,10 +59,6 @@ You're running another Skill when one of its messages loses you. When do you typ
 - [ ] In a fresh session, after closing this one.
 Why: Use it mid-conversation, inside any other Skill, the moment a message loses you.
 ```
-
-- You notice you're skimming the agent's report on Ticket #12.
-- You see jargon the agent invented, or five acronyms in one sentence.
-- You're partway through [wizard](/learn/wizard), and the agent explains a stage whose premise (the reason behind it) you never saw.
 
 ## When not to use it
 
@@ -122,9 +122,9 @@ Why: It leaves nothing on disk. You get a clearer re-pitch of the agent's last m
 
 ### Why it exists
 
-Some agent messages use too many words and still tell you little. That's **verbosity**. Matt hit it with Opus, the model he was using. He called its messages "incredibly verbose", and they went right over his head.
+Some agent messages use too many words and still tell you little. That's **verbosity**. Matt Pocock, the Skill's author, hit it with Opus, the model he was using. He called its messages "incredibly verbose", and they went right over his head.
 
-He tried all sorts of fixes, such as adding rules to his instruction file. What he needed in the end was a Skill to say: wait, what did you say?
+He tried all sorts of fixes, such as adding rules to his [instruction file](/learn/instruction-files). What he needed in the end was a Skill to say: wait, what did you say?
 
 So wait-what doesn't try to make every message shorter. You reach for it once one message has lost you. The image for it is a fire extinguisher, not a sprinkler: you grab it once there's a fire. Stopping the fire before it starts is the job of [grill-with-docs](/learn/grill-with-docs).
 
@@ -270,11 +270,11 @@ Before the fix, what did the Skill do in a repo with only a map file and no root
 Why: The body named one root file and knew nothing of the map, so it fell silent on vocabulary. One added clause fixed it.
 ```
 
-**`npx skills` skipped it.** For about three hours in August 2026, `npx skills`, the installer for Matt's Skills, couldn't list or install wait-what. A repo-wide punctuation sweep had left an unquoted colon in the `description` setting of six Skills. The colon made those settings invalid YAML. The fix put the lines in quotes, as in today's `description: "Stop. That last message did not land: re-pitch it."`. So if a Skill of your own goes missing from the installer's list, check its `description` for a bare colon followed by a space.
+**`npx skills` skipped it.** For about three hours in August 2026, `npx skills`, the installer for Matt's Skills, couldn't list or install wait-what. A repo-wide punctuation sweep had left an unquoted colon in the `description` setting of six Skills. The colon made those settings invalid YAML, the format a Skill's settings block is written in. The fix put the lines in quotes, as in today's `description: "Stop. That last message did not land: re-pitch it."`. So if a Skill of your own goes missing from the installer's list, check its `description` for a bare colon followed by a space.
 
 ### Try it
 
-Get one long answer re-pitched, twice. You'll need your practice project, with Matt's Skills installed. If you haven't set it up, do keeping-track's Try it step first.
+Get one long answer re-pitched, twice. You'll need your practice project, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the project folder, run `cat GLOSSARY.md`. You should see at least one entry.
 2. If the file is missing, do the Try it step in [one shared language](/learn/one-shared-language) first.
@@ -293,14 +293,14 @@ Get one long answer re-pitched, twice. You'll need your practice project, with M
 - [wait-what: follow CONTEXT-MAP.md to the right CONTEXT.md](https://github.com/mattpocock/skills/pull/904), mattpocock, 2026-08-19
 - [skills.sh skips to-spec and five other skills because description front matter is invalid YAML](https://github.com/mattpocock/skills/issues/907), fermumen, 2026-08-19
 - [About ASD-STE100](https://www.asd-ste100.org/about_STE.html), ASD Simplified Technical English Maintenance Group (STEMG), describes Issue 9 (January 2025)
-- [Frequently Asked Questions](https://www.asd-ste100.org/STE_faq.html), ASD Simplified Technical English Maintenance Group (STEMG), undated (read 2026-10-30)
+- [Frequently Asked Questions](https://www.asd-ste100.org/STE_faq.html), ASD Simplified Technical English Maintenance Group (STEMG)
 
 ## Practice scenarios
 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint wait-what-deeper-map-silent
-In August 2026, a repo had a `CONTEXT-MAP.md` pointing to several `CONTEXT.md` files and no root `CONTEXT.md`. You typed the re-pitch command there, and the answer came back with none of the project's nouns. Why did the Skill drop them? What's the reason behind this step?
+In August 2026, a repo had a `CONTEXT-MAP.md` pointing to several `CONTEXT.md` files and no root `CONTEXT.md`. You typed the re-pitch command there, and the answer came back with none of the project's nouns. Why did the Skill drop them?
 - [x] Its body named only a single root `CONTEXT.md`, and had no clause telling it to follow the map file.
 - [ ] The map file made its YAML front matter invalid, so the Skill never loaded in that repo at all.
   > That YAML bug was real, but it came from an unquoted colon in the `description` line, and it stopped `npx skills` installing the Skill at all.
@@ -397,7 +397,7 @@ Why: A re-pitch repairs one message after the fact, and you want the jargon to s
 ```
 
 ```final-test wait-what-why-glossary-words
-You ask the agent to re-explain a message you didn't follow. Its new version uses the words from your project's `GLOSSARY.md`, like "Booking" and "Waitlist", instead of its own. Why does that matter? What's the reason behind this step?
+You ask the agent to re-explain a message you didn't follow. Its new version uses the words from your project's `GLOSSARY.md`, like "Booking" and "Waitlist", instead of its own. Why does that matter?
 - [x] You and the agent mean the same thing by each word, so no new jargon comes in.
 - [ ] So the agent can add its own terms to `GLOSSARY.md` while it explains.
   > The re-pitch writes nothing. It only says the last message again, in words you've already agreed.
@@ -407,7 +407,7 @@ Why: `GLOSSARY.md` holds the words you and the agent have agreed. When the re-pi
 ```
 
 ```final-test wait-what-mid-setup-script
-The agent is planning a step-by-step setup script for your project's CI secrets. It shows you the stages and says: "Stage 3 upserts the DSN idempotently, then mirrors it as a repo secret." You're lost, and it's waiting for you to confirm the stages. What do you do next? What comes next?
+The agent is planning a step-by-step setup script for your project's CI secrets. It shows you the stages and says: "Stage 3 upserts the DSN idempotently, then mirrors it as a repo secret." You're lost, and it's waiting for you to confirm the stages. What do you do next?
 - [x] Ask it to re-pitch that line, then confirm the stages once you follow them.
   > Right: that's `/wait-what`.
 - [ ] Confirm the stages as they are, and work out stage 3 later, when the script runs.
@@ -429,7 +429,7 @@ Why: Matt tried rules in his instruction file too, and long Skills that ask for 
 ```
 
 ```final-test wait-what-deeper-why-your-words
-You learn that ASD-STE100 has a controlled dictionary of about 900 approved words. Your yoga-studio repo's `GLOSSARY.md` defines Booking, Class and Waitlist. A teammate fears the Skill's STE instruction will stop the re-pitch saying "Waitlist". Why doesn't it? What's the reason behind this step?
+You learn that ASD-STE100 has a controlled dictionary of about 900 approved words. Your yoga-studio repo's `GLOSSARY.md` defines Booking, Class and Waitlist. A teammate fears the Skill's STE instruction will stop the re-pitch saying "Waitlist". Why doesn't it?
 - [x] STE sets the plain register, and lets a field add its own technical nouns, such as words from company glossaries.
 - [ ] The Skill tells the agent to drop STE's dictionary whenever a `GLOSSARY.md` exists, so only your words count.
   > The body asks for both at once. STE sets the register, and the glossary supplies the nouns.

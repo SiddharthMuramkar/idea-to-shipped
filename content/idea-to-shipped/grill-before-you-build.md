@@ -1,14 +1,14 @@
 ---
 title: Grill before you build
 slug: grill-before-you-build
-summary: So before any code is written, have the agent interview you about your idea until you both understand it the same way.
+summary: Why your coding agent should interview you about an idea before it writes any code, and how that interview, called grilling, works.
 ---
 
 ## What grilling is
 
-Say you ask an agent, in two lines, to add class bookings to the yoga-studio site. It picks defaults for the decisions you haven't made, and the result looks complete. At review, you find it handles cancellations in a way you never chose.
+Say you ask an agent, in two lines, to add class bookings to a yoga studio's booking site. It picks defaults for the decisions you haven't made, and the result looks complete. At review, you find it handles cancellations in a way you never chose.
 
-**So before any code is written, have the agent interview you about your idea until you both understand it the same way.** Matt calls that interview **grilling**.
+**So before any code is written, have the agent interview you about your idea until you both understand it the same way.** Matt Pocock, who wrote the [Skills](/learn/skills) this flow uses, calls that interview **grilling**.
 
 ```checkpoint quick-1
 You're about to start a new feature with an agent. What do you do before any code is written?
@@ -22,7 +22,7 @@ Why: The interview comes first, so that you and the agent reach the same underst
 
 The agent maps your idea as a **design tree**: a map of decisions, each branching into the ones depending on it.
 
-It works through the tree in **rounds**, each one a batch of questions it asks before waiting for answers. Each round holds the [frontier](/learn/issues-and-keeping-track), here every decision whose prerequisites are settled, so it can be asked now without guessing. Each question is worded so "yes" accepts its recommended answer.
+It works through the tree in **rounds**, each one a batch of questions it asks before waiting for answers. Each round holds the **frontier**: every decision whose prerequisites are settled, so it can be asked now without guessing. Each question is worded so "yes" accepts its recommended answer.
 
 ```checkpoint quick-2
 You're about to get a round of questions. Which decisions will it hold?
@@ -71,7 +71,7 @@ nodes:
 
 ## Facts and decisions
 
-- **Facts** are the agent's job. For example, which database does the repo use? The agent sends a **subagent**, a helper agent with its own fresh [context window](/learn/instruction-files), to find out instead of asking you.
+- **Facts** are the agent's job. For example, which database does the repo use? The agent sends a **subagent**, a helper agent with its own fresh [context window](/learn/context-window), to find out instead of asking you.
 - **Decisions** are yours, like Q1 and Q2. The agent puts each one to you and waits.
 
 ```checkpoint quick-4
@@ -96,7 +96,7 @@ Why: An empty frontier means no questions are left, but the agent still doesn't 
 
 ## When talk isn't enough
 
-Some questions can't be settled in conversation: what a page should look like, or how a **state model** behaves. A state model is the states a thing can be in, and the moves between them. For example, a booking is either booked or cancelled. Then the [main flow](/learn/issues-and-keeping-track) detours through a [prototype](/learn/prototype): throwaway code that answers one design question. The answer comes back to the grilling.
+Some questions can't be settled in conversation: what a page should look like, or how a **state model** behaves. A state model is the states a thing can be in, and the moves between them. For example, a booking is either booked or cancelled. Then the [main flow](/learn/main-flow) detours through a [prototype](/learn/prototype): throwaway code that answers one design question. The answer comes back to the grilling.
 
 ```checkpoint quick-6
 During a grilling, you can't tell what a page should look like until you see it. What does the main flow do?
@@ -108,7 +108,7 @@ Why: Talk can't settle that kind of question. So the main flow detours through a
 
 ## Where it fits
 
-Grilling is where the [main flow](/learn/issues-and-keeping-track), the route from idea to finished code, starts. It comes before any [Spec or Ticket](/learn/issues-and-keeping-track): the written plan for a feature, and one slice of it to build. You'll meet it again in [grill-with-docs](/learn/grill-with-docs), the Skill from [one shared language](/learn/one-shared-language) that interviews you and writes the glossary.
+Grilling is where the [main flow](/learn/main-flow), the route from idea to finished code, starts. It comes before any [Spec or Ticket](/learn/issues-and-keeping-track): the written plan for a feature, and one slice of it to build. You'll meet it again in [grill-with-docs](/learn/grill-with-docs), the Skill from [one shared language](/learn/one-shared-language) that interviews you and writes the glossary.
 
 ```checkpoint quick-7
 You have a new idea for the yoga-studio site. Where does the main flow start?
@@ -216,7 +216,7 @@ Your idea is too big and foggy to hold in one session. Which answer fits?
 Why: Small enough to align afterwards? Don't grill. Can you hold the idea in one session? Grill it. Too big and foggy for that? Align over the whole thing with wayfinder.
 ```
 
-Matt has also written that you should use the grill Skills "_every_ time you want to make a change". That line is older than his three questions, which go into more detail, though it's still in his README. So this Course reads it as every change worth aligning on first.
+Matt has also written that you should use the grill Skills "_every_ time you want to make a change". That line is older than his three questions, which go into more detail, though it's still in his README. So read it as every change worth aligning on first.
 
 **A long grilling feels like an exam.** One user, bogged down at question 26, wrote that it "feels like I'm being tested". A common cause is being too passive. The agent then piles on questions and widens the scope.
 
@@ -244,7 +244,7 @@ Why: A finished grilling leaves a context window full of design decisions. Clear
 
 ### Try it
 
-You'll need your practice project, with Matt's Skills installed. If you haven't set it up, do keeping-track's Try it step first.
+You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Open the `yoga-studio` repo in Claude Code.
 2. Ask the agent to reword one line of `README.md`.
@@ -263,8 +263,8 @@ Each question on your list is a default the agent would have filled in silently.
 - [Design concept](https://www.aihero.dev/ai-coding-dictionary/design-concept), AI Coding Dictionary, Matt Pocock, last changed 2026-06-05
 - [The /grill-me Skill](https://www.aihero.dev/skills-grill-me), Matt Pocock, updated 2026-08-24
 - [9 Things People Get Wrong With /grill-me and /grill-with-docs](https://www.aihero.dev/things-people-get-wrong-with-grill-me-and-grill-with-docs), Matt Pocock, updated 2026-05-25
-- [AI Skills with Matt Pocock](https://www.youtube.com/watch?v=4DhcSPkEbwI), The Pragmatic Engineer, Gergely Orosz with Matt Pocock, 2026-09-17 (transcript pinned)
-- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic, fetched 2026-10-30 (no date shown)
+- [AI Skills with Matt Pocock](https://www.youtube.com/watch?v=4DhcSPkEbwI), The Pragmatic Engineer, Gergely Orosz with Matt Pocock, 2026-09-17
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
 - [mattpocock/skills README](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/README.md), Matt Pocock, 2026-10-29 (the grilling lines written 2026-04-28)
 - [Codex just asked me 200 questions (issue #44)](https://github.com/mattpocock/skills/issues/44), opened by DoozyDoz, 2026-04-19
 

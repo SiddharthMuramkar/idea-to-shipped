@@ -1,7 +1,7 @@
 ---
-title: implement-spec
+title: implement-spec: build a whole Spec in one run
 slug: implement-spec
-summary: implement-spec builds the whole Spec in one run, with one session handing out the Tickets to helper agents.
+summary: How implement-spec builds a whole Spec in one run, handing each ready Ticket to a fresh helper agent and landing the work on one branch.
 ---
 
 ## What it's for
@@ -149,7 +149,7 @@ At the end, the pull request is marked ready and the worktrees are cleaned up. W
 
 Building a Spec one Ticket at a time keeps you busy. People kept building their own versions of this Skill. One user wanted subagents to build the Tickets "when a spec may contain over 5 tickets".
 
-Matt names three ways to work through a set of Tickets:
+Matt Pocock, who wrote the Skill, names three ways to work through a set of Tickets:
 
 - **The manual loop.** You run one Ticket, clear the context, then run the next. You are the for loop.
 - **The deterministic loop.** A script reads each Ticket and runs implement on it. Matt recommends it for most people, though it takes patience to set up.
@@ -260,7 +260,7 @@ Why: Each implementer sees only its own Ticket and the shared notes, and worktre
 
 **The review and fix loop runs for hours.** code-review compares the code against the whole Spec, so it only makes sense once every Ticket has landed. Run mid-way, every unbuilt Ticket reads as a failure. The agent builds that Ticket, and that sets off another review. Even at the end, the Skill doesn't yet say when to stop. One user's five-Ticket loop took "roughly four hours".
 
-**Blocked Tickets never start, even after their blocker merged.** On GitHub, a Ticket's blocked-by count only drops when its blocker closes. Merges into the integration branch close nothing ([pull requests and merging](/learn/merging-and-cleaning-up)). Tickets usually close at the end of the run, or later when the pull request merges. Tell the orchestrator to track those merges itself, and work out the frontier from them.
+**Blocked Tickets never start, even after their blocker merged.** On GitHub, a Ticket's blocked-by count only drops when its blocker closes. Merges into the integration branch close nothing (see [Merging and cleaning up](/learn/merging-and-cleaning-up)). Tickets usually close at the end of the run, or later when the pull request merges. Tell the orchestrator to track those merges itself, and work out the frontier from them.
 
 ```checkpoint quick-18
 #12 has merged into the integration branch, but GitHub still shows #13 as blocked. Why?
@@ -319,7 +319,7 @@ You should end on one integration branch with all three Tickets merged. If a tes
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint implement-spec-deeper-reused-implementer
-You're running a whole Spec for your yoga-studio API with subagents in a harness that lets the orchestrator reuse agents. It hands the second Ticket to the implementer that just built the first one, in a new worktree. The Skill asks for a fresh implementer for each Ticket instead. Why? What's the reason behind this step?
+You're running a whole Spec for your yoga-studio API with subagents in a harness that lets the orchestrator reuse agents. It hands the second Ticket to the implementer that just built the first one, in a new worktree. The Skill asks for a fresh implementer for each Ticket instead. Why?
 - [x] The reused implementer still carries the first Ticket's context into the second one.
 - [ ] A reused implementer can't check out a new worktree, so its branch would land on main.
   > Worktrees did keep the branches apart in the real report. What carried over was the agent's context, not its files.

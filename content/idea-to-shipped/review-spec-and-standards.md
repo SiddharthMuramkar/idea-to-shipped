@@ -1,12 +1,12 @@
 ---
 title: Review against the Spec and the standards
 slug: review-spec-and-standards
-summary: When the code is written, review it on two axes, and keep their reports apart.
+summary: Review finished code on two axes, the repo's standards and the Spec, and keep their reports apart so a pass on one can't hide a fail on the other.
 ---
 
 ## Two questions, not one
 
-Say an agent has finished Ticket #13, the endpoint that creates a booking. You ask for a review and get one answer: looks good. But tidy code can still build the wrong thing, and the right code can still break your repo's conventions. One answer can't tell you which.
+Say an agent has finished Ticket #13, the endpoint (the web address your app calls) that creates a booking. You ask for a review and get one answer: looks good. But tidy code can still build the wrong thing, and the right code can still break your repo's conventions. One answer can't tell you which.
 
 So ask two questions. Each one is an **axis**: one separate question a review judges. **When the code is written, review it on two axes, and keep their reports apart.**
 
@@ -71,7 +71,7 @@ Why: Kept separate, each report shows its own result. Merged or ranked together,
 
 ## How the review runs
 
-[code-review](/learn/code-review) runs each axis in its own subagent, at the same time, so the two don't pollute each other's context.
+[code-review](/learn/code-review) runs each axis in its own [subagent](/learn/context-window), a helper agent with a fresh context, at the same time, so the two don't pollute each other's context.
 
 ```checkpoint quick-4
 Why does code-review give each axis its own subagent?
@@ -133,7 +133,7 @@ Your repo has an odd pattern you chose on purpose, and you run a generic reviewe
 Why: A generic reviewer doesn't know your repo. So it flags choices you made on purpose, and it also misses the things that must always stay true in your code.
 ```
 
-Matt on code-review's aim: "This design exists to avoid a generic review skill that does not know your standards."
+Matt Pocock, who wrote the code-review Skill, states its aim: "This design exists to avoid a generic review skill that does not know your standards."
 
 So your repo's own written rules come first, and on the Standards axis the repo always overrides. The report closes with a worst issue per axis, never one overall winner.
 
@@ -222,7 +222,7 @@ footer: "So Anthropic's reviewer is a Spec axis on its own."
 
 **The review finds new problems on every run.** Each fix adds new code to review, and the judgement calls change from run to run. Matt is blunt: "Do not run it in a loop until it comes back clean, because it never will." Treat a pass as a list of leads. Act on the findings with a cited rule behind them, then stop. implement-spec differs: it reviews once, and hands every issue to a single fresh subagent to fix.
 
-**The review misses your latest work, or won't start.** code-review compares `HEAD`, the commit you currently have checked out, with the point you name, such as `main`. That diff excludes staged and working-tree changes: edits marked with `git add`, and edits not yet marked. If your branch has no commits yet, the diff is empty and the review stops there. implement can hit this, because it asks for the review before it commits (issue #511, still open in October 2026). So commit first, then review.
+**The review misses your latest work, or won't start.** code-review compares `HEAD`, the commit you currently have checked out, with the point you name, such as `main`. That diff excludes staged and working-tree changes: edits marked with `git add`, and edits not yet marked. If your branch has no commits yet, the diff is empty and the review stops there. implement can hit this, because it asks for the review before it commits (issue #511 on Matt's repo). So commit first, then review.
 
 ```checkpoint quick-13
 You've edited three files on a new branch, committed nothing, and run code-review. What happens?
@@ -248,7 +248,7 @@ Why: Its subagents can start the review again, and each one then spawns two more
 
 ### Try it
 
-Give the Standards axis a rule, then watch it catch a broken one. You'll need your practice project, with the Ticket for the endpoint that creates a booking (set up in keeping-track's Try it). Start on `main` with nothing uncommitted: step 11 deletes branch `try-review`.
+Give the Standards axis a rule, then watch it catch a broken one. You'll need your practice project, with the Ticket for the endpoint that creates a booking (both set up in the Try it of [Issues: keeping track of work](/learn/issues-and-keeping-track)). Start on `main` with nothing uncommitted: step 11 deletes branch `try-review`.
 
 1. Create a branch for that Ticket: `git switch -c try-review`.
 2. Add a `CODING_STANDARDS.md` with one rule: `Route handlers stay thin; booking logic lives in a service module.` (A service module is a separate file for that logic.)
@@ -260,7 +260,7 @@ Give the Standards axis a rule, then watch it catch a broken one. You'll need yo
 8. Move the booking logic into the route handler, then commit that change.
 9. Run `/clear` again.
 10. Run `/code-review main` again. You should see a finding under `## Standards` that names your rule.
-11. Throw the branch away: `git switch main`, then `git branch -D try-review`. implement's Try it builds this Ticket for real.
+11. Throw the branch away: `git switch main`, then `git branch -D try-review`. [implement](/learn/implement)'s Try it builds this Ticket for real.
 
 ### Read more
 

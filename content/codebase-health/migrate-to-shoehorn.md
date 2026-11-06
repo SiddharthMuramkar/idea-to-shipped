@@ -1,7 +1,7 @@
 ---
-title: migrate-to-shoehorn
+title: migrate-to-shoehorn: swap test casts for partial data
 slug: migrate-to-shoehorn
-summary: migrate-to-shoehorn replaces those casts with shoehorn, Matt's library that lets a test pass partial data: only the fields it needs.
+summary: migrate-to-shoehorn replaces type casts in TypeScript tests with shoehorn, a library that lets a test pass only the fields it needs.
 ---
 
 ## What it's for
@@ -14,7 +14,7 @@ Casts cause three problems in tests:
 - You must name the target type by hand.
 - Wrong data on purpose, to test bad input, needs a **double cast**: `as unknown as Type`.
 
-**migrate-to-shoehorn replaces those casts with shoehorn, Matt's library that lets a test pass partial data: only the fields it needs.**
+**migrate-to-shoehorn replaces those casts with shoehorn, Matt Pocock's library that lets a test pass partial data: only the fields it needs.**
 
 It swaps each cast for a helper:
 
@@ -92,7 +92,7 @@ Why: tdd is for building a feature test-first. migrate-to-shoehorn only rewrites
 
 ## What it needs to start
 
-It needs a TypeScript project that installs with npm, and a type check to run.
+It needs a TypeScript project that installs with npm, JavaScript's standard package installer, and a type check to run.
 
 You can type `/migrate-to-shoehorn`, or the agent may start it on its own when you mention shoehorn or ask for partial test data.
 
@@ -174,6 +174,9 @@ The Skill's table lists all three helpers, but its checklist only ever writes `f
 
 Bending types has a cost, and Matt admits it: huge test objects are "a sign that your types are too loose". Ideally, every function asks only for the data it needs. So when the function is yours, fix the function. shoehorn is still the best choice in cases like these:
 
+- **Legacy codebases:** you may not have time to refactor everything.
+- **Third-party libraries:** you may not be able to change the types without needless wrapper functions.
+
 ```checkpoint quick-9
 Every test of your own function fakes a huge object. What does that point to?
 - [x] Types too loose: the function asks for more than it needs.
@@ -181,9 +184,6 @@ Every test of your own function fakes a huge object. What does that point to?
 - [ ] A test runner too old to handle partial data on its own.
 Why: Ideally, every function asks only for the data it needs. So a huge test object is a sign that your types are too loose, and when the function is yours, you fix the function.
 ```
-
-- **Legacy codebases:** you may not have time to refactor everything.
-- **Third-party libraries:** you may not be able to change the types without needless wrapper functions.
 
 ### A real example
 
@@ -233,7 +233,7 @@ One real case is the ComfyUI frontend's test files. There, tsgo, the native prev
 
 ### Try it
 
-Clean up one test in your practice project's TypeScript website, then watch `fromPartial` catch a mistake. You'll need the practice project (set it up first with [keeping-track](/learn/issues-and-keeping-track)'s Try it step if you haven't), and Node.js. You'll also need a test in `web/` that fakes a class or booking with `as`, and needs only one or two fields. If `web/`, its type check or that test is missing, ask your agent to set it up first. If Claude Code doesn't offer `/migrate-to-shoehorn`, install it first: `npx skills@latest add mattpocock/skills --skill migrate-to-shoehorn`.
+Clean up one test in your practice project's TypeScript website, then watch `fromPartial` catch a mistake. You'll need the practice project, the yoga-studio booking site (if you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first), and Node.js. You'll also need a test in `web/` that fakes a class or booking with `as`, and needs only one or two fields. If `web/`, its type check or that test is missing, ask your agent to set it up first. If Claude Code doesn't offer `/migrate-to-shoehorn`, install it first: `npx skills@latest add mattpocock/skills --skill migrate-to-shoehorn`.
 
 1. Go into the website, the subfolder with its own `package.json`: `cd web`.
 2. Start Claude Code: `claude`.
@@ -250,22 +250,22 @@ If step 9 shows no error, that field may accept any type, or your type check may
 
 ### Read more
 
-- [Testing with TypeScript is Painful: Here's a Solution](https://www.totaltypescript.com/testing-with-typescript-is-painful-heres-a-solution), Matt Pocock, no date shown on the page
-- [shoehorn on GitHub: Work seamlessly with partial mocks in TypeScript](https://github.com/total-typescript/shoehorn), Matt Pocock, fetched 30 October 2026
+- [Testing with TypeScript is Painful: Here's a Solution](https://www.totaltypescript.com/testing-with-typescript-is-painful-heres-a-solution), Matt Pocock
+- [shoehorn on GitHub: Work seamlessly with partial mocks in TypeScript](https://github.com/total-typescript/shoehorn), Matt Pocock
 - [Release v0.1.0](https://github.com/total-typescript/shoehorn/releases/tag/v0.1.0), total-typescript/shoehorn (published by GitHub Actions), 11 April 2023
 - [Changes to misc/ skills](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/frozen-misc-skills.md), Matt Pocock, 6 October 2026
 - [misc: demote to a non-promoted bucket](https://github.com/mattpocock/skills/commit/7efc3d2a3899c141f4d64e11be2227e0049db626), Matt Pocock, 1 July 2026
 - [Getting type errors with Axios (shoehorn issue #6)](https://github.com/total-typescript/shoehorn/issues/6), charliematters, 13 June 2023
 - [fromPartial hits "Excessive stack depth" (shoehorn issue #22)](https://github.com/total-typescript/shoehorn/issues/22), DrJKL, 5 October 2026
 - [4 skills under skills/misc/ missing from plugin.json (skills issue #164)](https://github.com/mattpocock/skills/issues/164), xiaolai, 11 May 2026
-- [npm-install](https://docs.npmjs.com/cli/v11/commands/npm-install/), npm Docs, fetched 30 October 2026
+- [npm-install](https://docs.npmjs.com/cli/v11/commands/npm-install/), npm Docs
 
 ## Practice scenarios
 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint migrate-to-shoehorn-deeper-axios
-In 2023, a user's `fromPartial<AxiosInstance>({})` failed, though `fromPartial` worked for every other cast in their test suite. Matt could have told them to use `fromAny` in those tests. Instead he fixed shoehorn and shipped 0.1.1. Why is that the better move? What's the reason behind this step?
+In 2023, a user's `fromPartial<AxiosInstance>({})` failed, though `fromPartial` worked for every other cast in their test suite. Matt could have told them to use `fromAny` in those tests. Instead he fixed shoehorn and shipped 0.1.1. Why is that the better move?
 - [x] The bug lived in shoehorn itself, so one fix there repaired that call for everyone who updated the library.
 - [ ] `fromAny` can't take an empty object like `{}`, so the user had no other way to write those Axios tests at all.
   > shoehorn's README says `fromAny` lets you pass anything to a slot. It would have taken `{}`, just with no checks.
@@ -377,7 +377,7 @@ Why: A function should ask only for the data it needs, and huge test objects are
 ```
 
 ```final-test migrate-to-shoehorn-after-rewrite
-Your agent has replaced the casts in your website's tests with shoehorn helpers and added their imports. What comes next in the checklist it follows? What comes next?
+Your agent has replaced the casts in your website's tests with shoehorn helpers and added their imports. What comes next in the checklist it follows?
 - [x] Run the type check, to confirm the rewritten tests still compile.
   > Right: that's `/migrate-to-shoehorn`.
 - [ ] Open a pull request for the change and write its description.
@@ -388,7 +388,7 @@ Why: Its checklist ends with a type check, which verifies the rewritten tests. T
 ```
 
 ```final-test migrate-to-shoehorn-deeper-stack-depth
-A team's tests pass real, deeply linked objects into `fromPartial`. Under tsgo, 38 of their test files fail with TS2321, "Excessive stack depth". They patch shoehorn's partial type once with `pnpm patch`, instead of editing 38 tests. Why is that the better fix? What's the reason behind this step?
+A team's tests pass real, deeply linked objects into `fromPartial`. Under tsgo, 38 of their test files fail with TS2321, "Excessive stack depth". They patch shoehorn's partial type once with `pnpm patch`, instead of editing 38 tests. Why is that the better fix?
 - [x] Every failure came from one shared type, so fixing that type once clears all 38 files and any test added later.
 - [ ] tsgo is only a preview, so its errors don't count, and the patch just silences a false alarm until it ships.
   > The patch changes the type so the compiler stops early. Wrong member types, unknown keys and wrong nested types still error.

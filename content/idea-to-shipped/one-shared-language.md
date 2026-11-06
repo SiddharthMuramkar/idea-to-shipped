@@ -1,12 +1,12 @@
 ---
 title: One shared language
 slug: one-shared-language
-summary: One shared language means you and your agents use the same words for the same things, and each word has one meaning.
+summary: Why you and your coding agents should give each thing in a project one name, and how a GLOSSARY.md file keeps those words agreed.
 ---
 
 ## What a shared language is
 
-Say an agent picks up Ticket #13 on your yoga-studio site: the endpoint that creates a booking. In its code it writes _reservation_, in its test _appointment_, and in its next Issue _slot_. You can't tell whether it means one thing or three.
+Say you're building a booking site for a yoga studio. An agent picks up Ticket #13, one small task from your plan: the endpoint (the web address your app calls) that creates a booking. In its code it writes _reservation_, in its test _appointment_, and in its next [Issue](/learn/issues-and-keeping-track) _slot_. You can't tell whether it means one thing or three.
 
 **One shared language means you and your agents use the same words for the same things, and each word has one meaning.**
 
@@ -18,7 +18,7 @@ On your site, _class_ means one lesson to some people and a weekly course to oth
 Why: A shared language gives each word one meaning. If _class_ means two things, nobody can be sure which one a sentence is about.
 ```
 
-In most repos, those words live in the glossary from [keeping track](/learn/issues-and-keeping-track): one file, `GLOSSARY.md`, at the top level of the repo.
+In most repos, those words live in the project's **glossary**: one file, `GLOSSARY.md`, at the top level of the repo.
 
 ## What an entry looks like
 
@@ -40,7 +40,7 @@ _Booking_ and _reservation_ could both name the same thing. What does the entry 
 Why: An entry takes a side. The best word stays, and the others go under `_Avoid_`, so nobody has to wonder which one to use.
 ```
 
-**The glossary holds words and what they mean, and nothing else.** It isn't a Spec, a place for rough notes, or a place to record how the code is built.
+**The glossary holds words and what they mean, and nothing else.** It isn't a Spec (the written plan for a feature), a place for rough notes, or a place to record how the code is built.
 
 ```checkpoint quick-3
 You want to note that bookings live in a Postgres table. Does that go in the glossary?
@@ -52,7 +52,7 @@ Why: Where bookings are stored is about how the code is built. The glossary only
 
 ## How agents use it
 
-Matt's Skills that work on your code get the same instruction. When an agent names a concept, in an Issue title or a test name, it uses the glossary's word. It doesn't drift to a synonym the glossary avoids.
+Matt Pocock's [Skills](/learn/skills) that work on your code all get the same instruction. When an agent names a concept, in an Issue title or a test name, it uses the glossary's word. It doesn't drift to a synonym the glossary avoids.
 
 On Ticket #13, the agent now names the endpoint `create_booking` and its test `test_create_booking`. Its next Issue says _booking_. Compare the work without a glossary and with a glossary:
 
@@ -81,7 +81,7 @@ Why: A missing word is a signal. Either the agent is inventing language the proj
 
 ## Where it shows up
 
-A shared language is your first **Principle**: one of the ideas behind how the [Flows](/learn/issues-and-keeping-track) are designed. It comes first because [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills), which writes that instruction into `docs/agents/`, runs before your first Flow.
+A shared language is your first **Principle**: one of the ideas behind how Matt's [Flows](/learn/main-flow), his set paths through the Skills, are designed. It comes first because [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills), which writes that instruction into `docs/agents/`, runs before your first Flow.
 
 Two Skills show it at work:
 
@@ -106,7 +106,7 @@ You want to stop jargon arriving in the first place. Which fits?
 Why: wait-what works after the fact. grill-with-docs is the upfront cure, because a shared language agreed early stops the jargon arriving at all.
 ```
 
-This site's own glossary is why the **Course**, everything it teaches in a fixed order, says Ticket where others say _task_. It says Spec where others say _PRD_ (product requirements document).
+Matt's Skills make the same kind of choice in their own text. They use one word, _spec_, for a feature's written plan, where others say _PRD_ (product requirements document).
 
 ## Going deeper
 
@@ -232,7 +232,7 @@ Why: An agent may respond the same to plain English, and a glossary may mostly k
 
 ### Try it
 
-Write a small glossary by hand, then watch an agent use it. You'll need your practice project. If you haven't set it up, do keeping-track's Try it step first.
+Write a small glossary by hand, then watch an agent use it. You'll need your practice project, the yoga-studio booking site in your own repo. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Open `docs/agents/domain.md` in your practice project. You should see the heading "Use the glossary's vocabulary".
 2. At the repo root, create a file called `GLOSSARY.md`.

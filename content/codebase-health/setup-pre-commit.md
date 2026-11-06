@@ -1,16 +1,22 @@
 ---
-title: setup-pre-commit
+title: setup-pre-commit: check code at every commit
 slug: setup-pre-commit
-summary: setup-pre-commit makes Git format, type-check and test your code at every commit, and a failed step blocks it.
+summary: setup-pre-commit makes Git format, type-check and test your JavaScript or TypeScript code at every commit, and a failed step blocks the commit.
 ---
 
 ## What it's for
 
-Say your agent keeps committing type errors to the yoga-studio website. A line in `CLAUDE.md` telling it to run the checks doesn't help, because a sentence can't fail.
+Say your agent keeps committing type errors to the yoga-studio website: code that TypeScript's checker rejects. A line in `CLAUDE.md`, the agent's instruction file, telling it to run the checks doesn't help, because a sentence can't fail.
 
 **setup-pre-commit makes Git format, type-check and test your code at every commit, and a failed step blocks it.**
 
 It writes a [pre-commit hook](/learn/fix-the-environment), a script that runs inside `git commit`, before the commit is made. The file is `.husky/pre-commit`:
+
+```sh
+npx lint-staged
+npm run typecheck
+npm run test
+```
 
 ```checkpoint quick-1
 You run `git commit`. When does the pre-commit hook run?
@@ -18,12 +24,6 @@ You run `git commit`. When does the pre-commit hook run?
 - [ ] Straight after the commit is made, before any push.
 - [ ] Only once a pull request is opened on the remote.
 Why: A pre-commit hook is a script that runs inside `git commit`, before the commit is made. So it can stop the commit from existing.
-```
-
-```
-npx lint-staged
-npm run typecheck
-npm run test
 ```
 
 The new names:
@@ -80,7 +80,7 @@ Why: It's for a JavaScript or TypeScript repo that has no checks at commit time.
 
 - If you want dangerous git commands blocked before they run, use [git-guardrails-claude-code](/learn/git-guardrails-claude-code) instead, because it hooks into Claude Code, not Git.
 - If you want checks on every pull request, use [CI](/learn/what-ci-cd-is), because a hook runs only on the machine making the commit.
-- If your repo is Python, use the **pre-commit framework**, a tool, installed with pip, that sets up pre-commit hooks.
+- If your repo is Python, use the **pre-commit framework**, a tool, installed with pip (Python's package installer), that sets up pre-commit hooks.
 
 ```checkpoint quick-5
 Your agent ran `git reset --hard` and lost your work. You want that command blocked before it runs. Which fits?
@@ -127,7 +127,7 @@ Why: npm runs the `prepare` script after each install. It's set to `husky`, so e
 
 ### Why it exists
 
-An agent working on its own can commit broken code and carry on, with nobody watching. Matt's answer: "you need feedback loops so the AI can verify its own work." A [feedback loop](/learn/tdd) is a check that fails on a bug and passes once it's fixed.
+An agent working on its own can commit broken code and carry on, with nobody watching. Matt Pocock, who wrote the Skill, puts the answer this way: "you need feedback loops so the AI can verify its own work." A [feedback loop](/learn/tdd) is a check that fails on a bug and passes once it's fixed.
 
 A pre-commit hook puts that loop in the agent's path, and that suits an agent well: "AI agents don't get frustrated by repetition." It reads the error and tries again. So setup-pre-commit installs that loop for you.
 
@@ -257,13 +257,13 @@ Why: The Skill's first step looks only for `bun.lockb`. With no match, it falls 
 
 Watch a clean commit pass, then a broken one get blocked. Use only your practice project.
 
-You'll need that project ([keeping track](/learn/issues-and-keeping-track)'s Try it creates it), with its TypeScript site in `web/`, and the CI workflow from [CI/CD](/learn/what-ci-cd-is)'s Try it. `web/package.json` needs `typecheck` and `test` scripts that pass. If anything's missing, ask your agent to set it up.
+You'll need that project, the yoga-studio booking site (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`, and a CI workflow in `.github/workflows/ci.yml` ([What CI/CD is](/learn/what-ci-cd-is) explains CI). `web/package.json` needs `typecheck` and `test` scripts that pass. If anything's missing, ask your agent to set it up.
 
 1. If you don't have this Skill yet, install it: `npx skills@latest add mattpocock/skills --skill setup-pre-commit`.
 2. In your repo's top folder, start your agent: `claude`.
 3. Paste this request, which asks for Husky's subfolder setup:
 
-```
+```text
 Set up pre-commit hooks with setup-pre-commit, for the site in web/.
 .git is one folder above it, so set the prepare script to
 cd .. && husky web/.husky, run npm run prepare in web/, and start
@@ -285,9 +285,9 @@ web/.husky/pre-commit with cd web.
 - [Changes to misc/ skills (frozen-misc-skills.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/frozen-misc-skills.md), Matt Pocock, 2026-10-06
 - [Configure pre-commit hooks with Husky and Prettier (Issue #72)](https://github.com/mattpocock/course-video-manager/commit/9ae0c9e8c95f8e20fed5c6e34f6d0bae5a25b803), Matt Pocock, 2026-01-15
 - [chore: remove stray .claude/worktrees gitlinks; guard against gitlinks](https://github.com/mattpocock/course-video-manager/commit/da04bf45220545f329f686ca4d8825074556cbe3), Matt Pocock, 2026-10-23
-- [How To](https://typicode.github.io/husky/how-to.html), Husky docs (typicode), fetched 2026-10-30
-- [githooks: Hooks used by Git](https://git-scm.com/docs/githooks), the Git project, fetched 2026-10-30
-- [pre-commit](https://pre-commit.com/index.html), the pre-commit project, fetched 2026-10-30
+- [How To](https://typicode.github.io/husky/how-to.html), Husky docs (typicode)
+- [githooks: Hooks used by Git](https://git-scm.com/docs/githooks), the Git project
+- [pre-commit](https://pre-commit.com/index.html), the pre-commit project
 - [Claude Code: Allow Bash(git commit:*) considered harmful](https://microservices.io/post/genaidevelopment/2025/09/10/allow-git-commit-considered-harmful.html), Chris Richardson, 2025-09-10
 - [Agent bypasses git pre-commit hooks using --no-verify, stash, and quiet flags despite explicit deny rules (#40117)](https://github.com/anthropics/claude-code/issues/40117), slguardo, 2026-03-28
 
@@ -296,7 +296,7 @@ web/.husky/pre-commit with cd web.
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint setup-pre-commit-deeper-subfolder
-In the practice project, the website's `package.json` is in `web/`, and `.git` is one folder up. Run from `web/`, `npx husky init` printed ".git can't be found", and commits still go through with no checks. Why? What's the reason behind this step?
+In the practice project, the website's `package.json` is in `web/`, and `.git` is one folder up. Run from `web/`, `npx husky init` printed ".git can't be found", and commits still go through with no checks. Why?
 - [x] Husky won't install into a parent folder; the `prepare` script must `cd ..` and point at `web/.husky`.
 - [ ] Husky needs a `.prettierrc` in the repo before it can install, and the Skill hadn't made one yet.
   > The Prettier config has nothing to do with installing the hook. The problem is where `.git` is.
@@ -395,7 +395,7 @@ Why: You want a command stopped before the agent runs it. A Claude Code hook can
 ```
 
 ```final-test setup-pre-commit-check-not-sentence
-Your `CLAUDE.md` says "always run the type check before committing", and the agent still commits type errors. You set up a pre-commit hook that runs the type check instead. Why does the hook work where the sentence didn't? What's the reason behind this step?
+Your `CLAUDE.md` says "always run the type check before committing", and the agent still commits type errors. You set up a pre-commit hook that runs the type check instead. Why does the hook work where the sentence didn't?
 - [x] Git runs the hook, and a failing check stops the commit.
 - [ ] The agent reads hook files more carefully than it reads `CLAUDE.md`.
   > The agent doesn't need to read the hook at all. Git runs it, and a failing step stops the commit.
@@ -405,7 +405,7 @@ Why: A program can spot a type error, so this rule belongs in a deterministic ch
 ```
 
 ```final-test setup-pre-commit-staged-first
-You read the pre-commit hook the Skill wrote: `npx lint-staged` comes first, then the type check, then the tests. Why does lint-staged go first? What's the reason behind this step?
+You read the pre-commit hook the Skill wrote: `npx lint-staged` comes first, then the type check, then the tests. Why does lint-staged go first?
 - [x] It only formats the staged files, so it's fast; the type check and tests need the whole project.
 - [ ] Prettier has to finish before Git can stage any of the changed files for the commit.
   > The files are already staged when the hook runs. lint-staged works on exactly those staged files.
@@ -415,7 +415,7 @@ Why: lint-staged only touches staged files, so it's fast. The type check and the
 ```
 
 ```final-test setup-pre-commit-deeper-skipped-hook
-The website's pre-commit hook runs the type check and the tests. Your `CLAUDE.md` already says "never use `--no-verify`". Still, the agent committed failing tests with `git commit --no-verify`. Why didn't the rule in `CLAUDE.md` stop it? What's the reason behind this step?
+The website's pre-commit hook runs the type check and the tests. Your `CLAUDE.md` already says "never use `--no-verify`". Still, the agent committed failing tests with `git commit --no-verify`. Why didn't the rule in `CLAUDE.md` stop it?
 - [x] A sentence can't fail, and `--no-verify` skips the whole hook; only denying the command stops it.
 - [ ] The agent hadn't loaded `CLAUDE.md` in that session, so it never saw the rule against `--no-verify`.
   > In one bug report the rule sat in both `CLAUDE.md` and the agent's memory, and 6 commits with failing tests landed anyway.

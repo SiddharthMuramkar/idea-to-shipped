@@ -1,7 +1,7 @@
 ---
-title: grill-me
+title: grill-me: sharpen a plan, saving nothing
 slug: grill-me
-summary: grill-me has an agent interview you about an idea until you both understand it the same way, and it saves nothing.
+summary: How Matt Pocock's grill-me Skill has an agent interview you about an idea until you both see it the same way, with nothing saved.
 ---
 
 ## What it's for
@@ -10,7 +10,7 @@ Say you're wondering whether the yoga studio should charge for late cancellation
 
 **grill-me has an agent interview you about an idea until you both understand it the same way, and it saves nothing.**
 
-It's the interview from [grill before you build](/learn/grill-before-you-build). The Skill's file is one line, which hands over to the [grilling](/learn/grilling) Skill. That Skill runs the interview.
+It runs the interview that [grill before you build](/learn/grill-before-you-build) describes. Its [Skill](/learn/skills) file is one line, which hands over to the [grilling](/learn/grilling) Skill. That Skill runs the interview.
 
 ```checkpoint quick-1
 You type /grill-me. Which Skill runs the interview?
@@ -49,6 +49,10 @@ Why: The decision is yours. Reply "yes" to accept a recommended answer, or push 
 
 Use grill-me when there's no repo under the thing you want to sharpen. For example:
 
+- You have a plan, a design or a piece of writing to sharpen.
+- You face a business decision, like that cancellation fee.
+- You're working out what to do next, as Matt Pocock, the Skill's author, did when choosing what course to build.
+
 ```checkpoint quick-3
 You're sharpening a talk about Docker, with no repo or code behind it. Does grill-me fit?
 - [x] Yes, because there's no repo under the thing you're sharpening.
@@ -57,13 +61,9 @@ You're sharpening a talk about Docker, with no repo or code behind it. Does gril
 Why: grill-me is for when there's no repo under the thing you want to sharpen, and a talk is one of those things.
 ```
 
-- You have a plan, a design or a piece of writing to sharpen.
-- You face a business decision, like that cancellation fee.
-- You're working out what to do next, as Matt did when choosing what course to build.
-
 ## When not to use it
 
-- If you're working in a repo, use [grill-with-docs](/learn/grill-with-docs) instead, because it runs the same interview and also writes `GLOSSARY.md` and ADRs. Matt calls it "strictly the better one" there.
+- If you're working in a repo, use [grill-with-docs](/learn/grill-with-docs) instead, because it runs the same interview and also writes [`GLOSSARY.md`](/learn/one-shared-language) and ADRs (records of hard decisions). Matt calls it "strictly the better one" there.
 - If the answers are in someone else's head, use [to-questionnaire](/learn/to-questionnaire) instead, because it writes questions for another person to answer.
 
 ```checkpoint quick-4
@@ -267,7 +267,7 @@ Why: The value of the session is the context you just built, so clearing it thro
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site you build for real in your own repo, with Matt's Skills installed. If you haven't set it up, do keeping-track's Try it step first.
+You'll need your practice project, the yoga-studio booking site you build for real in your own repo, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 You'll sharpen a business decision that no code depends on yet. You're in the repo only because every Try it step happens there.
 
@@ -286,14 +286,14 @@ Once the decision touches the site's code, that's a job for [grill-with-docs](/l
 - [My 'Grill Me' Skill Went Viral](https://www.aihero.dev/my-grill-me-skill-has-gone-viral), Matt Pocock, 2026-03-23
 - [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day), Matt Pocock, 2026-03-16
 - [Codex just asked me 200 questions (issue #44)](https://github.com/mattpocock/skills/issues/44), opened by DoozyDoz on mattpocock/skills, 2026-04-19
-- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic, undated, fetched 2026-10-30
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
 
 ## Practice scenarios
 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint grill-me-deeper-said-agreed
-A friend ran a grill-me session about a class waitlist. They answered "agreed" to all forty questions and say the plan must be solid because the session was so long. Why is that the wrong conclusion? What's the reason behind this step?
+A friend ran a grill-me session about a class waitlist. They answered "agreed" to all forty questions and say the plan must be solid because the session was so long. Why is that the wrong conclusion?
 - [x] They decided nothing, so it's the agent's plan and only looks certain.
 - [ ] Forty questions is too few, since a real session needs at least two hundred.
   > Two hundred questions is a sign the scope was too large, not a target.
@@ -406,7 +406,7 @@ Why: An interview only draws out what you know, and the operations lead holds th
 ```
 
 ```final-test grill-me-why-talk-first
-You have an idea for an AI agent that answers questions about a client's SQL database. There is no repo yet. Before anyone writes code, you spend half an hour answering an agent's questions about the idea. A friend says this wastes time. Why do the questions come first? What's the reason behind this step?
+You have an idea for an AI agent that answers questions about a client's SQL database. There is no repo yet. Before anyone writes code, you spend half an hour answering an agent's questions about the idea. A friend says this wastes time. Why do the questions come first?
 - [x] So you and the agent share one understanding before any code.
 - [ ] So the agent can save the plan as a GLOSSARY.md and ADRs.
   > With no repo, this interview is stateless and saves nothing locally. The point is the shared understanding.
@@ -416,7 +416,7 @@ Why: The questions bring out what would otherwise stay silently assumed. So the 
 ```
 
 ```final-test grill-me-deeper-one-form-or-three
-In a fresh grill-me conversation, you're being interviewed about a sign-up flow for a yoga studio. Round three asks "One long form or three pages?" You keep guessing, the agent keeps rephrasing, and the scope grows with every answer. What do you do next? Which fits best?
+In a fresh grill-me conversation, you're being interviewed about a sign-up flow for a yoga studio. Round three asks "One long form or three pages?" You keep guessing, the agent keeps rephrasing, and the scope grows with every answer. What do you do next?
 - [x] Pause the interview and build a throwaway version to look at.
   > Right: that's `/prototype`.
 - [ ] Keep answering in the same stateless interview until the frontier is empty.

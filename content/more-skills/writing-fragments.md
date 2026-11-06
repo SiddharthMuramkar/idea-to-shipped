@@ -1,12 +1,12 @@
 ---
-title: writing-fragments
+title: writing-fragments: mine raw material before any outline
 slug: writing-fragments
-summary: writing-fragments interviews you about what you want to write, and collects the raw text in one file.
+summary: How writing-fragments interviews you about a piece you want to write, and saves the raw lines in one file before you commit to any structure.
 ---
 
 ## What it's for
 
-Say you want to write a post on why your yoga-studio booking endpoint was built test-first. You have opinions and two stories, but nowhere to start.
+Say you want to write a post on why your yoga-studio booking endpoint was built [test-first](/learn/test-first). You have opinions and two stories, but nowhere to start.
 
 **writing-fragments interviews you about what you want to write, and collects the raw text in one file.**
 
@@ -60,7 +60,7 @@ Why: It fits the very start of a piece, before you know its shape. Once you're r
 
 ## When not to use it
 
-This Skill does only **explore**: widening what could be written, without committing to structure. An outline is out of scope here.
+This [Skill](/learn/skills) does only **explore**: widening what could be written, without committing to structure. An outline is out of scope here.
 
 ```checkpoint quick-4
 Ten minutes in, you ask the agent for an outline. What happens?
@@ -111,7 +111,7 @@ Why: The agent never starts this Skill on its own. You start it by typing `/writ
 
 ## What it creates
 
-One Markdown file, which might look like this:
+One Markdown file (plain text with light formatting), which might look like this:
 
 ```markdown
 # Why test-first
@@ -147,7 +147,7 @@ Why: Before every write, the agent re-reads the file from disk, so it sees your 
 
 ### Why it exists
 
-Say you start a post from an outline. You've committed to a structure before your ideas are developed. Matt's first description of this Skill said when to use it: when you want to "develop ideas before imposing structure".
+Say you start a post from an outline. You've committed to a structure before your ideas are developed. Matt Pocock wrote this Skill, and his first description of it said when to use it: when you want to "develop ideas before imposing structure".
 
 So he splits one writing job into three steps, each with its own Skill:
 
@@ -245,11 +245,11 @@ Why: Declining an outline is the Skill working as designed, because this step on
 
 **A friend can't follow your fragments.** That's fine too. A fragment doesn't need to define its terms. The next Skill deals with that: writing-beats works by "grounding each term before a beat leans on it".
 
-**The agent says the Skill isn't installed.** First run `npx skills list`: the plugin won't give you this Skill, so it may really be missing. If it's listed, the likely cause is that the agent can't see it. Only you can start this Skill, and Claude Code's docs say a Skill like that stays out of the agent's context. The agent then answers "that skill isn't installed". The fix: use the `claude` command in a terminal, and type `/writing-fragments` yourself. A user who hit this there found that typing a hidden Skill's name still runs it.
+**The agent says the Skill isn't installed.** First run `npx skills list` to see the Skills you've installed: the plugin won't give you this Skill, so it may really be missing. If it's listed, the likely cause is that the agent can't see it. Only you can start this Skill, and Claude Code's docs say a Skill like that stays out of the agent's context. The agent then answers "that skill isn't installed". The fix: use the `claude` command in a terminal, and type `/writing-fragments` yourself. A user who hit this there found that typing a hidden Skill's name still runs it.
 
 **`npx skills` skipped the Skill.** For about three hours in August 2026, `npx skills` couldn't install writing-fragments. It reported "YAML parse error: Nested mappings are not allowed in compact mappings".
 
-The cause was a tidy-up. Matt removed every em-dash (a long dash) from the repo's prose, so this Skill's description got a colon instead, with no quotes around it. In YAML, an unquoted colon followed by a space breaks the value. That made the front matter invalid. So `npx skills`, the installer from skills.sh, skipped this Skill and five others.
+The cause was a tidy-up. Matt removed every em-dash (a long dash) from the repo's prose, so this Skill's description got a colon instead, with no quotes around it. The description sits in the **front matter**, the settings block at the top of the Skill's file, written in YAML. In YAML, an unquoted colon followed by a space breaks the value. That made the front matter invalid. So `npx skills`, the installer from skills.sh, skipped this Skill and five others.
 
 ```checkpoint quick-15
 A Skill's description holds a colon and a space, with no quotes around it. What does `npx skills` do?
@@ -263,7 +263,7 @@ The fix, pull request #911, put all six descriptions in quotes, and this one is 
 
 ### Try it
 
-Mine fragments for a short post on why the booking endpoint was built test-first. You'll need your practice project, the `yoga-studio` repo. If you haven't set it up, do [keeping-track](/learn/issues-and-keeping-track)'s Try it step first.
+Mine fragments for a short post on why the booking endpoint was built test-first. You'll need your practice project, the `yoga-studio` repo. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the `yoga-studio` repo, run `npx skills@latest add mattpocock/skills --skill writing-fragments`. The plugin won't give you this Skill.
 2. Run `npx skills list`. You should see `writing-fragments` in the list.
@@ -386,7 +386,7 @@ Why: You've stopped finding new fragments, so the exploring is done and the pile
 ```
 
 ```final-test writing-fragments-why-no-structure
-Ten minutes into a fragments session about your booking API post, you ask for a rough outline. The agent declines and keeps asking about the stories behind your opinions. Why does the Skill hold off on structure? What's the reason behind this step?
+Ten minutes into a fragments session about your booking API post, you ask for a rough outline. The agent declines and keeps asking about the stories behind your opinions. Why does the Skill hold off on structure?
 - [x] It widens what could be written first. Committing to a structure is a later step.
 - [ ] Outlines don't fit in the file, so the agent keeps them in its own memory.
   > Length isn't the point. Structure is out of scope because this step only explores.
@@ -396,7 +396,7 @@ Why: An outline is a commitment, and this step exists to widen what could be wri
 ```
 
 ```final-test writing-fragments-why-leading-word
-In a fragments session, you keep circling one idea: tests written first act like a contract for the endpoint. The agent pushes you to coin a single word for it. Why does it push for that? What's the reason behind this step?
+In a fragments session, you keep circling one idea: tests written first act like a contract for the endpoint. The agent pushes you to coin a single word for it. Why does it push for that?
 - [x] One term the piece can hang on shapes its structure, transitions and title later.
 - [ ] A single word is shorter, so the fragments file stays small and quick to read back later.
   > Size isn't the reason. The Skill calls a leading word load-bearing because it shapes the piece later.
@@ -406,7 +406,7 @@ Why: The right word does more than name an idea. Named during explore, it shapes
 ```
 
 ```final-test writing-fragments-deeper-yaml-check
-In August 2026, an em-dash sweep left an unquoted colon in six Skills' descriptions, and `npx skills` skipped all six. Issue #907 suggested quoting them, and also adding a check that parses every SKILL.md front matter block. Why add the check too? What's the reason behind this step?
+In August 2026, an em-dash sweep left an unquoted colon in six Skills' descriptions, and `npx skills` skipped all six. Issue #907 suggested quoting them, and also adding a check that parses every SKILL.md front matter block. Why add the check too?
 - [x] Quoting fixes these six. A check catches the next unquoted colon before it ships.
 - [ ] Quoting alone can't make the six descriptions valid YAML, so only a parser check will fix them.
   > Quoting did fix them. The changelog records the six descriptions quoted, and all six parse today.

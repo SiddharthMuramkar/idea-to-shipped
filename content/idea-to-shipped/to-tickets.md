@@ -1,7 +1,7 @@
 ---
-title: to-tickets
+title: to-tickets: cut a Spec into small Tickets
 slug: to-tickets
-summary: to-tickets splits a Spec into small Tickets that each work end to end, and each names what must finish first.
+summary: How to-tickets splits a Spec into small Tickets that each work end to end, with links that say which Tickets must finish first.
 ---
 
 ## What it's for
@@ -10,7 +10,7 @@ Say your "Booking API" [Spec](/learn/issues-and-keeping-track) is published, and
 
 **to-tickets splits a Spec into small [Tickets](/learn/issues-and-keeping-track) that each work end to end, and each names what must finish first.**
 
-Each Ticket is the [tracer bullet](/learn/small-end-to-end-tickets) you've already met: a narrow but complete path through every layer of the change (tables, API, UI, tests). You can show it working, or check it, on its own, and it fits in one fresh context window.
+Each Ticket is the [tracer bullet](/learn/small-end-to-end-tickets) you've already met: a narrow but complete path through every layer of the change (tables, API, UI, tests). You can show it working, or check it, on its own, and it fits in one fresh [context window](/learn/context-window).
 
 ```checkpoint quick-1
 You're splitting the Booking API Spec. Which of these would make a good Ticket?
@@ -32,7 +32,7 @@ Why: A Ticket's blocking edges are the other Tickets that must be done before it
 
 For example, you type `/to-tickets`, and the agent shows a numbered list:
 
-```
+```text
 1. List bookings
    Blocked by: none
    Delivers: GET /bookings reads a new bookings table, with a test
@@ -136,7 +136,7 @@ links:
     label: "blocked by"
 ```
 
-One exception to slicing: a [wide refactor](/learn/small-end-to-end-tickets), like renaming a column used everywhere. It follows **expand–contract**: add the new form beside the old, move the callers over in batches, then delete the old form. If even the batches can't pass their checks alone, they share one branch, and a final Ticket checks it all.
+One exception to slicing: a [wide refactor](/learn/small-end-to-end-tickets), like renaming a column used everywhere. It follows **expand–contract**: add the new form beside the old, move the callers (the code that uses it) over in batches, then delete the old form. If even the batches can't pass their checks alone, they share one branch, and a final Ticket checks it all.
 
 ```checkpoint quick-9
 You're renaming a column used everywhere. How do you split that work into Tickets?
@@ -150,7 +150,7 @@ Why: That's a wide refactor, and it follows expand–contract. The new form sits
 
 ### Why it exists
 
-Left alone, an agent tends to build everything at once. Matt describes one "building entire layers in isolation, without ever testing whether the critical path actually works." Then you get a huge mess to clean up.
+Left alone, an agent tends to build everything at once. Matt Pocock, who wrote the Skill, describes one "building entire layers in isolation, without ever testing whether the critical path actually works." Then you get a huge mess to clean up.
 
 The second problem is size. When a build spans several sessions, each Ticket is picked up by a session that has never seen your Spec. That's why a Ticket has to fit in one fresh context window.
 
@@ -201,7 +201,7 @@ rows:
 
 **What a published Ticket looks like.** Say Ticket #13's Issue reads like this:
 
-```
+```markdown
 ## Parent
 
 #11
@@ -301,9 +301,9 @@ Why: `gh issue create` takes `--blocked-by`, and the Skill publishes blockers fi
 
 ### Try it
 
-Split the Spec from to-spec's Try it into Tickets. You'll need:
+Split the Spec from [to-spec](/learn/to-spec)'s Try it into Tickets. You'll need:
 
-- your practice project (if you haven't set it up, do keeping-track's Try it step first);
+- your practice project (if you haven't set it up, do the Try it step in [Issues: keeping track of work](/learn/issues-and-keeping-track) first);
 - the session where you ran `/to-spec`, not yet cleared, or the Spec's number for `/to-tickets #N`.
 
 Then:
@@ -330,7 +330,7 @@ Then:
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint to-tickets-deeper-twelve-tickets
-You ran to-tickets on a tiny Spec: return a clearer error when a class is full. It proposes twelve Tickets for what is about three lines of change in your FastAPI backend, and the whole change would fit easily in one context window. What do you do? Which fits best?
+You ran to-tickets on a tiny Spec: return a clearer error when a class is full. It proposes twelve Tickets for what is about three lines of change in your FastAPI backend, and the whole change would fit easily in one context window. What do you do?
 - [x] Skip the Tickets and build the change in one session, test-first.
   > Right: that's `/implement`.
 - [ ] Run each of the twelve Tickets through triage to check they're agent-ready.
@@ -423,7 +423,7 @@ Why: A Spec too big for one session has to be split before anyone builds it. Thi
 ```
 
 ```final-test to-tickets-dont-triage-them
-You've just published six Tickets for moving your website into Docker. Each has its blocking links and the ready-for-agent label, and two have no blockers. What comes next? What comes next?
+You've just published six Tickets for moving your website into Docker. Each has its blocking links and the ready-for-agent label, and two have no blockers. What comes next?
 - [x] Build one of the unblocked Tickets in a fresh context window.
   > Right: that's `/implement`.
 - [ ] Run each new Ticket through triage to confirm it's agent-ready.
@@ -434,7 +434,7 @@ Why: These Tickets are already agent-ready, so nothing is left to sort. Start fr
 ```
 
 ```final-test to-tickets-why-vertical
-An agent proposes Tickets for a new SQL-backed reports feature. Ticket 1: every table change. Ticket 2: every API endpoint. Ticket 3: all the UI. Ticket 4: all the tests. Why should you push back? What's the reason behind this step?
+An agent proposes Tickets for a new SQL-backed reports feature. Ticket 1: every table change. Ticket 2: every API endpoint. Ticket 3: all the UI. Ticket 4: all the tests. Why should you push back?
 - [x] Each Ticket should cross every layer, so each can be checked on its own.
 - [ ] Four Tickets is too few; a feature of this size needs at least eight of them.
   > Nothing sets a number of Tickets. The problem is the shape of each one.
@@ -444,7 +444,7 @@ Why: These Tickets are horizontal slices, one layer each, so there's nothing to 
 ```
 
 ```final-test to-tickets-wide-refactor
-You're splitting a Spec for your FastAPI backend that changes a shared `booking_id` from an integer to a UUID everywhere. You've laid out expand, then migrate in batches, then contract. But the agent finds no batch can pass the tests on its own: each goes green only once the others have landed too. How should the Tickets go now, and why? What's the reason behind this step?
+You're splitting a Spec for your FastAPI backend that changes a shared `booking_id` from an integer to a UUID everywhere. You've laid out expand, then migrate in batches, then contract. But the agent finds no batch can pass the tests on its own: each goes green only once the others have landed too. How should the Tickets go now, and why?
 - [x] Keep the order, but land the batches on one shared branch, checked at the end.
 - [ ] Drop expand–contract and do the whole change as one large Ticket instead.
   > The sequence still holds. Only the promise of green moves, to one final Ticket that integrates and checks everything.
@@ -456,7 +456,7 @@ Why: The expand–contract order still holds, but no batch can pass alone, so ma
 ```
 
 ```final-test to-tickets-deeper-sibling-criteria
-An agent cut your class-booking Spec into Tickets by layer: tables, endpoints, page. Ticket 2's acceptance criteria can only pass once Ticket 3's page exists, and Tickets 2 and 3 each list the other as a blocker. Why did this happen? What's the reason behind this step?
+An agent cut your class-booking Spec into Tickets by layer: tables, endpoints, page. Ticket 2's acceptance criteria can only pass once Ticket 3's page exists, and Tickets 2 and 3 each list the other as a blocker. Why did this happen?
 - [x] A layer alone does nothing you can see, so its criteria reach into sibling Tickets.
 - [ ] The Tickets had too few criteria; more checks per Ticket would have caught it.
   > More criteria don't fix it. Criteria reach into sibling Tickets because the slices are layers.

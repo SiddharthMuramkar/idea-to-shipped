@@ -1,18 +1,27 @@
 ---
-title: wayfinder
+title: wayfinder: map out big, foggy work
 slug: wayfinder
-summary: wayfinder plans an effort too big for one session as a shared map of decisions, resolved one at a time.
+summary: wayfinder plans an effort too big for one session as a shared map of decisions on your Issue tracker, resolved one session at a time.
 ---
 
 ## What it's for
 
-Say you want the yoga-studio site to become a service any studio can join. Planning it would overflow a session's [context window](/learn/context-hygiene).
+Say you want the yoga-studio site to become a service any studio can join. Planning it would overflow a session's [context window](/learn/context-window), the text an agent can hold at once.
 
 **wayfinder plans an effort too big for one session as a shared map of decisions, resolved one at a time.**
 
 You type `/wayfinder` and your idea. The agent [grills](/learn/grill-before-you-build) you to name the **destination**: where the effort ends, such as a [Spec](/learn/issues-and-keeping-track), decision or change. Then it creates the **map**: one [Issue](/learn/issues-and-keeping-track) holding the destination, the decisions so far and the still-foggy questions.
 
-Under it hang **decision tickets**: child Issues (sub-issues) that each ask one question. The answer is a decision, not a slice to build like a [Ticket](/learn/issues-and-keeping-track). Not yet specified is explained below:
+Under it hang **decision tickets**: child Issues (sub-issues) that each ask one question. The answer is a decision, not a slice to build like a [Ticket](/learn/issues-and-keeping-track). For example, a map and two of its tickets might look like this (Not yet specified is explained below):
+
+```text
+wayfinder:map
+  Destination:       a Spec for studio sign-up
+  Not yet specified: moving today's bookings across?
+
+wayfinder:grilling  How do we keep studios' data apart?
+wayfinder:research  What do payment services charge?
+```
 
 ```checkpoint quick-1
 A decision ticket asks how to keep studios' data apart. What do you have once it's resolved?
@@ -20,15 +29,6 @@ A decision ticket asks how to keep studios' data apart. What do you have once it
 - [ ] A slice of code that keeps the data apart.
 - [ ] A merged branch that keeps the data apart.
 Why: A decision ticket asks one question, and the answer is a decision. A slice to build is what a Ticket is for.
-```
-
-```
-wayfinder:map
-  Destination:       a Spec for studio sign-up
-  Not yet specified: moving today's bookings across?
-
-wayfinder:grilling  How do we keep studios' data apart?
-wayfinder:research  What do payment services charge?
 ```
 
 Not yet specified holds the **fog**: questions you know are coming but can't phrase sharply. A question you can phrase sharply becomes a ticket, even if it's blocked.
@@ -41,7 +41,7 @@ You can tell a question about refunds is coming, but you can't phrase it sharply
 Why: Not yet specified holds the fog. Once you can phrase the question sharply, it becomes a ticket, even if it's blocked.
 ```
 
-A label gives each ticket's type: `grilling` (the default, a chat with you), `prototype`, `research` (a fact a decision waits on) or `task` (manual work). **HITL** tickets (human in the loop) need you, live. In **AFK** ones, the agent works alone.
+A label gives each ticket's type: `grilling` (the default, a chat with you), `prototype`, `research` (a fact a decision waits on) or `task` (manual work). **HITL** tickets (human in the loop) need you, live. In **AFK** ones (away from keyboard), the agent works alone.
 
 ```checkpoint quick-3
 A ticket is AFK. What does that mean for you?
@@ -53,7 +53,7 @@ Why: HITL tickets (human in the loop) need you, live. In AFK ones, the agent wor
 
 ## When to use it
 
-- You have a loose idea and no map. wayfinder grills you broadly, then creates the map, its first tickets and their blocking links. That's one session; subagents take the research tickets.
+- You have a loose idea and no map. wayfinder grills you broadly, then creates the map, its first tickets and their blocking links. That's one session; subagents, helper agents it starts, take the research tickets.
 - You have a map. In a fresh session, wayfinder takes the first ticket on the [frontier](/learn/issues-and-keeping-track) (open, unblocked, unclaimed: the edge of the known). It claims it by assigning it, resolves it and stops. One ticket per session, except research tickets.
 
 ```checkpoint quick-4
@@ -96,7 +96,7 @@ It expects an [Issue tracker](/learn/issues-and-keeping-track) set up by [setup-
 - For each resolved ticket: an answer comment, the closed Issue and a line under Decisions so far, the map's settled questions.
 - For research tickets: findings on a `research/<name>` branch, pushed but never merged, so your main code stays untouched.
 
-When the map clears, it hands off; it doesn't build. It merges onto the [main flow](/learn/issues-and-keeping-track) at [to-spec](/learn/to-spec), which turns the linked decisions into a buildable Spec, then [to-tickets](/learn/to-tickets) and [implement](/learn/implement) as usual.
+When the map clears, it hands off; it doesn't build. It merges onto the [main flow](/learn/main-flow) at [to-spec](/learn/to-spec), which turns the linked decisions into a buildable Spec, then [to-tickets](/learn/to-tickets) and [implement](/learn/implement) as usual.
 
 ```checkpoint quick-7
 Your map has cleared, and nothing is left to decide. What comes next?
@@ -131,7 +131,7 @@ groups:
 
 ### Why it exists
 
-A session has a limit, and a big enough plan outruns it. Planning can push the agent out of its [smart zone](/learn/context-hygiene), or even fill its context window. Matt's example is a grilling session about a clone of Stripe, a payments service: "There's no way you can plan that in 150k tokens."
+A session has a limit, and a big enough plan outruns it. Planning can push the agent out of its [smart zone](/learn/context-hygiene), or even fill its context window. Matt Pocock, who wrote the Skill, gives the example of a grilling session about a clone of Stripe, a payments service: "There's no way you can plan that in 150k tokens."
 
 So wayfinder splits one long grilling across many sessions. Each session takes one question, and the map carries what's been decided. The plan can then grow as long as it needs to.
 
@@ -157,7 +157,7 @@ Why: The child session needs a vague overview and its specific task. So there ar
 
 **The map is an index, not a store.** Think of a book's index: a line and a page number, not the whole chapter. A decision lives in exactly one place, its ticket, and the map gives one line and a link. For example:
 
-```
+```markdown
 ## Decisions so far
 
 - [How do we keep studios' data apart?](link): one schema per studio
@@ -189,19 +189,19 @@ Why: Resolving a ticket clears the fog ahead of it. Any question you can now sta
 
 ### A real example
 
-Richard MacManus of Latent Space tried wayfinder on "a project to rearchitect my personal website", with 20+ years of content to reorganise. In his screenshot, the agent names the frontier and claims the first ticket in map order. It sees a HITL grilling ticket, loads the grilling Skill and starts asking.
+Richard MacManus of Latent Space tried wayfinder on "a project to rearchitect my personal website", with 20+ years of content to reorganise. In a screenshot in his write-up, the agent names the frontier and claims the first ticket in map order. It sees a HITL grilling ticket, loads the grilling Skill and starts asking.
 
 ```checkpoint quick-12
 You run wayfinder on an existing map. What does the agent do before it starts asking you anything?
 - [x] It takes the first frontier ticket and claims it.
 - [ ] It writes a Spec for the whole of the effort.
 - [ ] It resolves every ticket that's on the frontier.
-Why: It takes the first ticket on the frontier, in map order, and claims it. In the screenshot, that's a HITL grilling ticket, so it then starts asking.
+Why: It takes the first ticket on the frontier, in map order, and claims it. In MacManus's run, that's a HITL grilling ticket, so it then starts asking.
 ```
 
 So a real run follows the same steps: frontier, claim, then a live exchange.
 
-Matt's Sandcastle repo has a map for deciding whether to add one outside package as a dependency. Its GitHub Issue holds eight tickets as sub-issues. Only the top one has no blocked mark, so it's the one you could take now.
+Matt's v1.1 post shows a map from his Sandcastle repo, for deciding whether to add one outside package as a dependency. Its GitHub Issue holds eight tickets as sub-issues. Only the top one has no blocked mark, so it's the one you could take now.
 
 ```checkpoint quick-13
 You look down a map's open, unassigned sub-issues. Only the top one has no blocked mark. What does that tell you?
@@ -266,7 +266,7 @@ You may meet older advice: in July 2026, Matt wrote that wayfinder was "designed
 
 ### Try it
 
-You'll need your practice project. If you haven't set it up, do keeping-track's Try it step first.
+You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the `yoga-studio` folder, create wayfinder's labels: `for t in map grilling research prototype task; do gh label create "wayfinder:$t"; done`. You should see five labels.
 2. Start Claude Code: `claude`.
@@ -311,7 +311,7 @@ Why: If you start with a map and the work turns out simple, you've made a map yo
 ```
 
 ```checkpoint wayfinder-deeper-notes-say-execution
-You open a wayfinder map a teammate's agent charted for your booking site. Its Notes say "this map carries execution", and the latest session deployed code to the live server. You never agreed to that. Why read the Notes on any map you didn't chart yourself? What's the reason behind this step?
+You open a wayfinder map a teammate's agent charted for your booking site. Its Notes say "this map carries execution", and the latest session deployed code to the live server. You never agreed to that. Why read the Notes on any map you didn't chart yourself?
 - [x] The agent writes the Notes, so an exemption there may be one it gave itself.
 - [ ] The Notes hold the list of open tickets, and stale ones block the frontier.
   > Open tickets aren't listed in the map body; they're open child issues found by query. The Notes hold domain, skills and standing preferences.
@@ -339,7 +339,7 @@ Q: What problem made Matt build wayfinder, in his own words?
 A: Planning itself outgrew one session. Of grilling something like a Stripe clone, he said "There's no way you can plan that in 150k tokens". So he split grilling across many sessions.
 
 Q: How do you stop a wayfinder map turning into waterfall?
-A: Scope the map to a bounded destination, not the whole product, and prototype aggressively. "Wayfinder is "prototypemaxxing", not "planmaxxing"."
+A: Scope the map to a bounded destination, not the whole product, and prototype aggressively. In Matt's words, wayfinder is "prototypemaxxing", not "planmaxxing".
 
 Q: Which reported bug did v1.1 fix by classing every wayfinder ticket type as HITL or AFK?
 A: Wayfinder grilling itself instead of the human. A HITL ticket now resolves only through a live exchange with you.
@@ -413,7 +413,7 @@ Why: You can settle every open question in one conversation, so a map would only
 ```
 
 ```final-test wayfinder-map-cleared
-For weeks you've worked through a map of decisions for moving your website from one server to Docker containers on a cloud host. The last decision ticket is closed, and nothing is left under Not yet specified. The effort is still big. What comes next? What comes next?
+For weeks you've worked through a map of decisions for moving your website from one server to Docker containers on a cloud host. The last decision ticket is closed, and nothing is left under Not yet specified. The effort is still big. What comes next?
 - [x] Turn the map's linked decisions into a buildable Spec.
   > Right: that's `/to-spec`.
 - [ ] Have an agent start building straight from the map.
@@ -426,7 +426,7 @@ Why: A cleared map holds linked decisions, not a buildable plan. So it hands off
 ```
 
 ```final-test wayfinder-why-stop-after-one
-A session working through the map for your booking site has just resolved one grilling ticket about which database to use. There's time left, and the next ticket on the frontier looks easy. Why does the session stop instead of taking it? What's the reason behind this step?
+A session working through the map for your booking site has just resolved one grilling ticket about which database to use. There's time left, and the next ticket on the frontier looks easy. Why does the session stop instead of taking it?
 - [x] Each ticket is sized to one session, so the next one gets a fresh session.
 - [ ] A pull request for the database decision has to be reviewed first.
   > Decision tickets end in a resolution comment and a closed Issue, not a pull request.
@@ -436,7 +436,7 @@ Why: Each ticket is sized to one session, so resolving one is the session's whol
 ```
 
 ```final-test wayfinder-why-wait-for-you
-In a grilling ticket about pricing for your booking site, the agent is waiting for your answer. From earlier tickets it could guess what you'd say, write the answer itself and close the ticket. Why must it wait? What's the reason behind this step?
+In a grilling ticket about pricing for your booking site, the agent is waiting for your answer. From earlier tickets it could guess what you'd say, write the answer itself and close the ticket. Why must it wait?
 - [x] It only resolves through a live exchange with you, not the agent's guesses.
 - [ ] Agents aren't allowed to close Issues, so you have to close it yourself.
   > Closing the Issue is part of recording a resolution. The problem is who gives the answer.

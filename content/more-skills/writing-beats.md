@@ -1,7 +1,7 @@
 ---
-title: writing-beats
+title: writing-beats: draft one move at a time
 slug: writing-beats
-summary: writing-beats turns your pile into a first draft one beat at a time, and you pick each next move.
+summary: How writing-beats turns your notes into a first draft one beat, or move, at a time, with you picking each next move from a few options.
 ---
 
 ## What it's for
@@ -18,7 +18,7 @@ The agent offers you something to write next. Which of these counts as one beat?
 Why: A beat is one move: it sets a scene, lands a point, asks a question, drops an aside or twists the angle. Then it stops.
 ```
 
-Matt calls this exploit: the exploring is done and the pile is fixed, so the agent commits to one path.
+Matt Pocock, who wrote the Skill, calls this exploit: the exploring is done and the pile is fixed, so the agent commits to one path.
 
 ```checkpoint quick-2
 You're about to run writing-beats. What should already be true of your pile?
@@ -88,9 +88,9 @@ Why: Arguing the form of each block as the article grows is writing-shape's job.
 
 ## What it needs to start
 
-- A Markdown file of raw material: your pile.
+- A Markdown file (plain text with light formatting) of raw material: your pile.
 - A path for the article. If you give none, the agent asks once.
-- The Skill. It isn't in Matt's **plugin**, a bundle of Skills you can install together. Install it with `npx skills@latest add mattpocock/skills --skill writing-beats`.
+- The Skill. It isn't in Matt's **plugin**, a bundle of [Skills](/learn/skills) you can install together. Install it with `npx skills@latest add mattpocock/skills --skill writing-beats`.
 
 ```checkpoint quick-6
 You've installed Matt's plugin, but /writing-beats isn't there. Why not?
@@ -165,6 +165,9 @@ Say a beat in your post for studio owners reads: "So the member who tapped first
 
 A concept is **grounded** when the reader either walked in knowing it or met it in an earlier beat. That gives two ways in:
 
+- **Prerequisite**: the reader brings it, and it's fixed before the first beat.
+- **Introduced**: a beat lands it, and every later beat can lean on it.
+
 ```checkpoint quick-10
 No beat has landed an idea, and your reader didn't walk in knowing it. Is it grounded?
 - [x] No. Those are the only two ways an idea gets grounded.
@@ -172,9 +175,6 @@ No beat has landed an idea, and your reader didn't walk in knowing it. Is it gro
 - [ ] Yes, as long as the pile holds at least one fragment about it.
 Why: A concept is grounded when the reader either walked in knowing it or met it in an earlier beat. Neither has happened here.
 ```
-
-- **Prerequisite**: the reader brings it, and it's fixed before the first beat.
-- **Introduced**: a beat lands it, and every later beat can lean on it.
 
 So each beat does two jobs. It **requires** concepts that are already grounded, and it **grounds** new ones. The agent keeps a running list of what's grounded. It offers a beat only when everything the beat requires is on that list.
 
@@ -211,13 +211,18 @@ Your next beat uses no jargon at all. Can it still lose the reader?
 Why: The unit is the concept, not the word. A beat can lose the reader with no jargon in sight.
 ```
 
-**How it changed.** Matt added grounding in a June 2026 rewrite: the first step, settling what the reader already knows, and the limit on which beats get offered. It also made the Skill user-invoked, with one line in its front matter: `disable-model-invocation: true`. An older copy has none of this.
+**How it changed.** Matt added grounding in a June 2026 rewrite: the first step, settling what the reader already knows, and the limit on which beats get offered. It also made the Skill user-invoked (only you can start it), with one line in its **front matter**, the settings block at the top of its file: `disable-model-invocation: true`. An older copy has none of this.
 
 ### A real example
 
 In August 2026, a user ran `npx skills add mattpocock/skills`. It found 29 Skills, though the repo held 35. Six had gone missing, writing-shape and writing-fragments among them.
 
-Each of the six had an unquoted colon and a space in its `description:` line. YAML doesn't read that as plain text, so the front matter failed to load and the Skill was skipped. writing-beats opens the same way as writing-shape, with a semicolon for the colon, and it loaded fine:
+Each of the six had an unquoted colon and a space in its `description:` line. YAML, the format front matter is written in, doesn't read that as plain text, so the front matter failed to load and the Skill was skipped. writing-beats opens the same way as writing-shape, with a semicolon for the colon, and it loaded fine:
+
+```
+description: Writing, exploit; assemble raw material…   # loaded fine
+description: Writing, exploit: shape raw…               # skipped
+```
 
 ```checkpoint quick-13
 Why did writing-beats load fine when writing-shape, with similar wording, was skipped?
@@ -225,11 +230,6 @@ Why did writing-beats load fine when writing-shape, with similar wording, was sk
 - [ ] Its description had quotes around it, and writing-shape's had none at all.
 - [ ] Its description was shorter, so it fitted within YAML's line limit.
 Why: An unquoted colon and a space stops YAML reading a description as plain text. writing-beats had a semicolon there, so its front matter loaded.
-```
-
-```
-description: Writing, exploit; assemble raw material…   # loaded fine
-description: Writing, exploit: shape raw…               # skipped
 ```
 
 Matt quoted the six descriptions that same day. So one punctuation mark decided whether a Skill could be installed, and the only warning another user saw was a `Skipped` line.
@@ -278,7 +278,7 @@ Why: Asking for too much up front shuts out readers who don't have it. The early
 
 ### Try it
 
-Draft the first beats of a post on bookings for studio owners. You'll need your practice project, the `yoga-studio` repo. If you haven't set it up, do [keeping-track](/learn/issues-and-keeping-track)'s Try it step first.
+Draft the first beats of a post on bookings for studio owners. You'll need your practice project, the `yoga-studio` repo. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the `yoga-studio` repo, install the Skill: `npx skills@latest add mattpocock/skills --skill writing-beats`.
 2. Make a pile: paste your booking Spec, notes and any fragments into `docs/notes/booking-pile.md`.
@@ -297,7 +297,7 @@ Draft the first beats of a post on bookings for studio owners. You'll need your 
 - [Skills Changelog: /handoff, /prototype, /review and /writing](https://www.aihero.dev/skills/skills-changelog-handoff-prototype-review-and-writing), Matt Pocock, 2026-05-11
 - [Matt Pocock on X: improved my writing-* skills](https://x.com/mattpocockuk/status/2070099493073158190), Matt Pocock, 2026-06-25
 - [Updated writing-* skills (commit 78636f8)](https://github.com/mattpocock/skills/commit/78636f8e5c045d0d9e5731add3fdba3583e9b2af), Matt Pocock, 2026-06-25
-- [skills/in-progress/README.md at the pin commit](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/README.md), Matt Pocock, 2026-10-29
+- [The in-progress bucket README](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/README.md), Matt Pocock, 2026-10-29
 - [Root cause for #366: Claude Code coordinator mode drops user-invoked skills (#693)](https://github.com/mattpocock/skills/issues/693), vali-mohammadi, 2026-07-29
 - [Six skills are silently unreachable through the CLI (#908)](https://github.com/mattpocock/skills/issues/908), mnaimfaizy, 2026-08-19
 
@@ -306,7 +306,7 @@ Draft the first beats of a post on bookings for studio owners. You'll need your 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint writing-beats-deeper-not-installed
-In Claude Code you ask the agent to start Matt's beat-by-beat writing Skill on your booking notes. It replies that the Skill isn't installed and suggests a similar writing Skill instead. You installed it yesterday. What's most likely going on? What's the reason behind this step?
+In Claude Code you ask the agent to start Matt's beat-by-beat writing Skill on your booking notes. It replies that the Skill isn't installed and suggests a similar writing Skill instead. You installed it yesterday. What's most likely going on?
 - [x] Skills marked user-invoked can be dropped from the agent's list, so it can't see this one at all.
 - [ ] Its description has an unquoted colon that breaks the YAML, so the installer skipped it entirely.
   > That bug hit writing-shape and writing-fragments. writing-beats uses a semicolon, and a report noted it loads fine.
@@ -403,7 +403,7 @@ Why: The pile is ready, so the exploring is done and it's time to commit to a pa
 ```
 
 ```final-test writing-beats-after-fragments
-You finished a long session where the agent interviewed you about the booking site and appended raw fragments to notes/booking.md. No structure yet. Next you want a draft that grows as a journey, where after each move the agent offers a few directions and you choose one. What comes next? What comes next?
+You finished a long session where the agent interviewed you about the booking site and appended raw fragments to notes/booking.md. No structure yet. Next you want a draft that grows as a journey, where after each move the agent offers a few directions and you choose one. What comes next?
 - [x] Pick a starting beat from the fragments, then grow the draft beat by beat.
   > Right: that's `/writing-beats`.
 - [ ] Pick one opening angle, then argue headings, lists and tables block by block.
@@ -414,7 +414,7 @@ Why: The fragments are in, so the next step commits to a path through them. Both
 ```
 
 ```final-test writing-beats-why-one-beat
-The agent writes the opening beat of your post about class bookings and then stops. It re-reads the article file and offers three next beats, instead of drafting the rest. Why work this way? What's the reason behind this step?
+The agent writes the opening beat of your post about class bookings and then stops. It re-reads the article file and offers three next beats, instead of drafting the rest. Why work this way?
 - [x] Each next beat should respond to where the article now stands, your edits included.
 - [ ] The agent's context window can only hold one beat of the article at a time.
   > Nothing in the Skill is about window size. It re-reads the whole file so that the next offers fit the article as it now stands.
@@ -426,7 +426,7 @@ Why: It adds one beat at a time and never writes ahead, because each pick change
 ```
 
 ```final-test writing-beats-why-prerequisites
-Before writing a single beat of your post about class bookings, the agent asks you what studio owners already know walking in. You want it to start writing now. Why does it ask first? What's the reason behind this step?
+Before writing a single beat of your post about class bookings, the agent asks you what studio owners already know walking in. You want it to start writing now. Why does it ask first?
 - [x] Every later beat may only lean on concepts the reader already has, so that list comes first.
 - [ ] It needs that list to pick a word count and a reading level before it drafts the whole post.
   > The list isn't about length or level. It fixes what the reader already has before the first beat.
@@ -438,7 +438,7 @@ Why: A beat can only lean on what the reader already has. So the agent starts by
 ```
 
 ```final-test writing-beats-deeper-ungrounded-beat
-Your post for studio owners has grounded what a class is and how booking works. A tempting next beat explains waitlist promotion, which leans on class capacity, a concept no beat has landed yet. The agent says it can't offer that beat yet. Why not? What's the reason behind this step?
+Your post for studio owners has grounded what a class is and how booking works. A tempting next beat explains waitlist promotion, which leans on class capacity, a concept no beat has landed yet. The agent says it can't offer that beat yet. Why not?
 - [x] A beat that leans on an ungrounded concept loses the reader, so capacity must be grounded first.
 - [ ] The beat runs too long, and every beat must fit in one short paragraph, so it has to be split.
   > A beat can be several paragraphs if it's one self-contained scene. Length isn't what blocks this one.

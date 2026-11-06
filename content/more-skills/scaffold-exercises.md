@@ -1,7 +1,7 @@
 ---
-title: scaffold-exercises
+title: scaffold-exercises: lay out a course's exercise folders
 slug: scaffold-exercises
-summary: scaffold-exercises is the Skill that lays out the folders for a course's exercises, with only a placeholder in each, from a plan you give it.
+summary: How scaffold-exercises turns a plan for a course section into numbered exercise folders with placeholder readmes, and why its lint step no longer runs.
 ---
 
 ## What it's for
@@ -26,15 +26,7 @@ Section 01: Booking API Basics
 - 01.02 Create a booking (explainer + problem + solution)
 ```
 
-The agent parses the plan, creates the folders and writes a **stub** `readme.md`, a small placeholder file, in each subfolder. It runs the [linter](/learn/fix-the-environment), a tool that checks for mistakes, and fixes errors until the linter passes. Then it commits, and you have this:
-
-```checkpoint quick-2
-The linter finds an error partway through a run. What does the agent do next?
-- [x] It fixes the error and runs the linter again, until it passes.
-- [ ] It commits anyway, and lists the error in the commit message.
-- [ ] It stops there, and asks you to fix the folder by hand.
-Why: The agent fixes errors until the linter passes, and only then commits. So the loop ends with a layout that passed.
-```
+The agent parses the plan, creates the folders and writes a **stub** `readme.md`, a small placeholder file, in each subfolder. It runs the [linter](/learn/fix-the-environment), a tool that checks for mistakes, and fixes errors until the linter passes. Then it [commits](/learn/commits-and-diffs), and you have this:
 
 ```
 exercises/
@@ -45,6 +37,14 @@ exercises/
       explainer/readme.md
       problem/readme.md
       solution/readme.md
+```
+
+```checkpoint quick-2
+The linter finds an error partway through a run. What does the agent do next?
+- [x] It fixes the error and runs the linter again, until it passes.
+- [ ] It commits anyway, and lists the error in the commit message.
+- [ ] It stops there, and asks you to fix the folder by hand.
+Why: The agent fixes errors until the linter passes, and only then commits. So the loop ends with a layout that passed.
 ```
 
 ## When to use it
@@ -75,8 +75,8 @@ Why: teach writes lessons for you to study. scaffold-exercises only makes placeh
 ## What it needs to start
 
 - A plan: section names, exercise names and any subfolders you want.
-- A repo for the course. The lint step calls **`ai-hero-cli`**, the CLI whose lint command checks a course's exercise folders. That command is `pnpm ai-hero-cli internal lint`, where `pnpm` runs a project's commands.
-- The Skill itself, which you install separately, because Matt's plugin, a bundle of his Skills you install in one step, doesn't include it.
+- A repo for the course. The lint step calls **`ai-hero-cli`**, the CLI (command-line tool) whose lint command checks a course's exercise folders. That command is `pnpm ai-hero-cli internal lint`, where `pnpm` runs a project's commands.
+- The Skill itself, which you install separately. Its author, Matt Pocock, leaves it out of his plugin, a bundle of his Skills you install in one step.
 
 You can start it yourself, or the agent may start it for you.
 
@@ -104,7 +104,7 @@ A git commit holding folders that nest inside each other:
 
 - One folder per section, named `XX-section-name/` inside `exercises/`.
 - One folder per exercise, named `XX.YY-exercise-name/` inside its section. Names are **dash-case**: lowercase words joined with hyphens.
-- In each exercise, at least one of three subfolders: `problem/` (the student's workspace, with TODOs), `solution/` (the reference answer) or `explainer/` (ideas only, no TODOs). If the plan doesn't say which, it makes only `explainer/`.
+- In each exercise, at least one of three subfolders: `problem/` (the student's workspace, with TODOs: marked gaps to fill in), `solution/` (the reference answer) or `explainer/` (ideas only, no TODOs). If the plan doesn't say which, it makes only `explainer/`.
 - In each subfolder, a `readme.md` that isn't empty. A stub holds a title, and the Skill also asks for a description.
 
 ```checkpoint quick-7
@@ -257,7 +257,7 @@ Why: Misc Skills aren't promoted, so the plugin leaves them out on purpose. Matt
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do keeping-track's Try it step first.
+You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. First commit anything you're working on, so `git status` shows nothing to commit. Then make a branch for this run: `git switch -c try-scaffold-exercises`.
 2. Install the Skill: `npx skills@latest add mattpocock/skills --skill scaffold-exercises`. If it asks which agent, choose Claude Code.
@@ -391,7 +391,7 @@ Why: You're the student here, and you'll learn over several sessions, so this is
 ```
 
 ```final-test scaffold-exercises-after-stubs
-In your course repo, the agent has parsed your plan, made every section and exercise folder with `mkdir -p`, and written a stub `readme.md` in each subfolder. What should happen next? What comes next?
+In your course repo, the agent has parsed your plan, made every section and exercise folder with `mkdir -p`, and written a stub `readme.md` in each subfolder. What should happen next?
 - [x] Run the linter, fix any errors and repeat until it passes.
   > Right: that's `/scaffold-exercises`.
 - [ ] Open a pull request now, so a reviewer can look at the new folders.
@@ -413,7 +413,7 @@ Why: You want a rename that keeps history, then a check, and that's this Skill's
 ```
 
 ```final-test scaffold-exercises-deeper-missing-linter
-You ask your agent to scaffold a new section in your course repo, which has the latest `ai-hero-cli`. The folders and stub readmes are made, but at the lint step the shell says the `internal lint` command doesn't exist. What's the best response? What's the reason behind this step?
+You ask your agent to scaffold a new section in your course repo, which has the latest `ai-hero-cli`. The folders and stub readmes are made, but at the lint step the shell says the `internal lint` command doesn't exist. What's the best response?
 - [x] Report the linter as gone, and go through the rules in the Skill's own summary by hand.
 - [ ] Report that the layout passes, since every folder was made exactly as the plan said.
   > Nothing checked the layout. Making the folders as planned isn't the same as passing the rules, like a non-empty readme.

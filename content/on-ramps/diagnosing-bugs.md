@@ -1,14 +1,14 @@
 ---
-title: diagnosing-bugs
+title: diagnosing-bugs: find a hard bug's cause
 slug: diagnosing-bugs
-summary: diagnosing-bugs allows no theory until there's one command that goes red on this bug and green once it's fixed.
+summary: diagnosing-bugs makes the agent build one command that fails on your bug before any theory, then find the cause, fix it and lock it in with a test.
 ---
 
 ## What it's for
 
 Say a member can book a full class. Ask an agent to fix it, and by default it reads the code and guesses.
 
-**diagnosing-bugs allows no theory until there's one command that goes red on this bug and green once it's fixed.** That's the **feedback loop** you met in [tdd](/learn/tdd). With it, you will find the cause. Without it, staring at code won't.
+**diagnosing-bugs allows no theory until there's one command that goes red on this bug and green once it's fixed.** That's the **feedback loop** you met in [tdd](/learn/tdd): red means the check fails, green means it passes. With it, you will find the cause. Without it, staring at code won't.
 
 ```checkpoint quick-1
 You report a bug to an agent running this Skill. What must exist before it may form a theory?
@@ -54,7 +54,7 @@ groups:
     label: "six phases"
 ```
 
-For example, the loop might be one failing test (409 means refused, 201 means booked):
+For example, the loop might be one failing test, run by pytest, a Python test tool (409 means refused, 201 means booked):
 
 ```text
 $ pytest test_bookings.py -k full_class
@@ -102,6 +102,9 @@ Why: triage is for a raw bug report from someone else, and diagnosing-bugs is fo
 
 You can start it, or the agent may do so when you report a bug. It needs:
 
+- Your exact symptom: the error, wrong output or slow timing.
+- Code the agent can run, such as your tests or a command-line program.
+
 ```checkpoint quick-6
 You tell the agent that an endpoint has a bug, and you don't type the Skill's name. What can happen?
 - [x] The agent may start the Skill on its own.
@@ -110,9 +113,6 @@ You tell the agent that an endpoint has a bug, and you don't type the Skill's na
 Why: You don't have to be the one who starts this Skill. When you report a bug, the agent may start it on its own.
 ```
 
-- Your exact symptom: the error, wrong output or slow timing.
-- Code the agent can run, such as your tests or a command-line program.
-
 ## What it creates
 
 - A regression test, red then green.
@@ -120,7 +120,7 @@ Why: You don't have to be the one who starts this Skill. When you report a bug, 
 
 The test needs a **correct seam**: a place where a test can recreate the real bug. If none exists, the agent notes that as the finding, because a shallow test, one that passes while the bug survives, can't be trusted.
 
-This on-ramp merges onto the [main flow](/learn/issues-and-keeping-track): run [retro](/learn/retro) in the same session to ask what would have prevented the bug. A missing seam is a job for [improve-codebase-architecture](/learn/improve-codebase-architecture).
+This Skill is an on-ramp, a starting point that later joins the [main flow](/learn/main-flow). It joins at [retro](/learn/retro): run it in the same session to ask what would have prevented the bug. A missing seam is a job for [improve-codebase-architecture](/learn/improve-codebase-architecture).
 
 ```checkpoint quick-7
 The fix is in and the regression test is green. What do you run next, in the same session?
@@ -136,7 +136,7 @@ Why: retro asks what would have prevented the bug. That's where this on-ramp mer
 
 Given a bug report, a coding agent by default reads the code and guesses. Nothing has shown the bug happening, so nothing can show that a fix worked.
 
-So the Skill adds a **gate**, a condition the agent must meet before it may go on. There's no theory until one command, already run, goes red on this bug. Matt: "That single gate is what the skill is for."
+So the Skill adds a **gate**, a condition the agent must meet before it may go on. There's no theory until one command, already run, goes red on this bug. In the words of Matt Pocock, who wrote the Skill: "That single gate is what the skill is for."
 
 The other phases work the same way: gates, not a checklist. For example, the agent can't start guessing until the bug is reproduced and the repro is shrunk. A phase may be skipped only with an explicit justification.
 
@@ -303,7 +303,7 @@ Why: A triage check is a shallow version of this Skill's first two phases. It sh
 ```
 
 ```checkpoint diagnosing-bugs-deeper-falsifiable-guess
-Your loop goes red on the double-booking bug. The agent's first guess reads: "the capacity code is messy". The Skill makes it rewrite the guess as "If X is the cause, then changing Y will make the bug disappear". Why? What's the reason behind this step?
+Your loop goes red on the double-booking bug. The agent's first guess reads: "the capacity code is messy". The Skill makes it rewrite the guess as "If X is the cause, then changing Y will make the bug disappear". Why?
 - [x] A guess that predicts nothing gives no experiment that could prove it wrong.
 - [ ] The pull request message has to quote every guess in that exact sentence shape.
   > Only the guess that turned out right goes in the commit or pull request message. The shape is for testing, not for the record.
@@ -407,7 +407,7 @@ Why: Both Skills can start from a failing test, but for different reasons. A fee
 ```
 
 ```final-test diagnosing-bugs-after-the-fix
-Your FastAPI app's nightly SQL migration kept hanging. After a long session you built a loop, found the cause, and the regression test now passes. The original repro no longer hangs and the tagged debug logs are gone. What comes next, in this same session? What comes next?
+Your FastAPI app's nightly SQL migration kept hanging. After a long session you built a loop, found the cause, and the regression test now passes. The original repro no longer hangs and the tagged debug logs are gone. What comes next, in this same session?
 - [x] Ask what environment change would have prevented the bug.
   > Right: that's `/retro`.
 - [ ] Write another failing test for the migration and build until it passes.
@@ -420,7 +420,7 @@ Why: The bug is fixed, so the useful question now is how to stop the next one. T
 ```
 
 ```final-test diagnosing-bugs-missing-seam
-Two background workers in your AI agent service sometimes claim the same job. You found the cause, but the only place you could test it is a unit test with a single caller, which can't recreate two workers racing. You noted that no correct seam exists. Where does that finding go next? What comes next?
+Two background workers in your AI agent service sometimes claim the same job. You found the cause, but the only place you could test it is a unit test with a single caller, which can't recreate two workers racing. You noted that no correct seam exists. Where does that finding go next?
 - [x] Into a survey of the codebase's shape, to find how to give the bug a seam.
   > Right: that's `/improve-codebase-architecture`.
 - [ ] Into a unit test at the single-caller seam, kept anyway as the regression test.
@@ -431,7 +431,7 @@ Why: A test at that single-caller seam can't recreate two workers racing, so it 
 ```
 
 ```final-test diagnosing-bugs-why-loop-first
-A page on your website has become slow. The agent wants to start by reading the code and guessing. Instead it's told to first build one command that shows the slowness and goes red on it. Why that order? What's the reason behind this step?
+A page on your website has become slow. The agent wants to start by reading the code and guessing. Instead it's told to first build one command that shows the slowness and goes red on it. Why that order?
 - [x] With no pass/fail signal on this exact problem, reading code won't find it.
 - [ ] The Skill holds off reading code until the bug has been fixed.
   > The Skill reads code. What it rules out is building a theory before the loop exists.

@@ -1,12 +1,12 @@
 ---
 title: Test first
 slug: test-first
-summary: Test first means writing a failing test, then only enough code to make it pass.
+summary: Write a failing test first, then only enough code to pass it, one small slice at a time, so your agent can see whether its code works.
 ---
 
 ## What test first is
 
-Say you ask your agent to build [Ticket](/learn/issues-and-keeping-track) #13, the endpoint that creates a booking. It tells you it's done. But with nothing to run, looking done is all it has to go on. Every mistake waits until you notice it.
+Say you ask your agent to build [Ticket](/learn/issues-and-keeping-track) #13, the endpoint (the web address your app calls) that creates a booking. It tells you it's done. But with nothing to run, looking done is all it has to go on. Every mistake waits until you notice it.
 
 ```checkpoint quick-1
 Your agent says the endpoint is done, but it had nothing to run. What does it really know?
@@ -30,7 +30,7 @@ def test_member_can_book_a_class(client):  # client: a helper that calls your ap
     assert response.status_code == 201
 ```
 
-It runs `pytest`. The test is red, because the endpoint doesn't exist yet:
+It runs `pytest`, Python's test runner. The test is red, because the endpoint doesn't exist yet:
 
 ```text
 FAILED test_bookings.py::test_member_can_book_a_class - assert 404 == 201
@@ -50,7 +50,7 @@ Why: A later rule waits for its own test, so you write that test first. Adding t
 
 ## Tests live at seams
 
-That test calls the HTTP API, not a private helper function. The API is its **seam**: the public boundary where tests watch what the code does, without reaching inside.
+That test calls the HTTP API (the web requests the app answers), not a private helper function. The API is its **seam**: the public boundary where tests watch what the code does, without reaching inside.
 
 ```checkpoint quick-3
 You're testing Ticket #13's endpoint in FastAPI. Which of these is a seam?
@@ -105,12 +105,12 @@ outside: "Refactoring"
 
 ## Where it shows up
 
-You'll meet test first again in the [main flow](/learn/issues-and-keeping-track)'s Skills:
+You'll meet test first again in the [main flow](/learn/main-flow)'s Skills:
 
 - [to-spec](/learn/to-spec), which sketches the seams before any code is written and checks them with you;
 - [tdd](/learn/tdd), the Skill for test-driven development: red, then green, then the next test;
 - [implement](/learn/implement), the Skill that builds a Spec or its Tickets, test-first, then commits. It calls tdd wherever it can;
-- [implement-spec](/learn/implement-spec), which gives each Ticket an **implementer subagent**: a helper agent that builds one Ticket in its own worktree, and calls tdd.
+- [implement-spec](/learn/implement-spec), which gives each Ticket an **implementer subagent**: a helper agent that builds one Ticket in its own [worktree](/learn/branches-and-worktrees), and calls tdd.
 
 ```checkpoint quick-7
 You're building a Ticket with implement. Which Skill does it call to work test first?
@@ -124,7 +124,7 @@ Why: implement builds a Spec or its Tickets test-first, then commits. For the te
 
 ### Why it exists
 
-You and your agent can agree on exactly what to build, and the code can still come out wrong. The agent can't tell, because it never saw the code run. Matt puts the problem this way: "Without feedback on how the code it produces actually runs, the agent will be flying blind."
+You and your agent can agree on exactly what to build, and the code can still come out wrong. The agent can't tell, because it never saw the code run. Matt Pocock, who wrote the Skills in this flow, puts the problem this way: "Without feedback on how the code it produces actually runs, the agent will be flying blind."
 
 The cure is a **feedback loop**: something the agent can run that fails when something's wrong and passes once it's fixed, such as a test. With one, the agent makes the change, runs the check, reads the output and fixes what broke. For automated tests, Matt calls a red-green-refactor loop critical. The refactor step came out later.
 
@@ -229,7 +229,7 @@ Why: That's a tautological test, and it could never fail. Copying the code's com
 
 **A browser test won't go green, and the agent blames the test.** A browser test drives a real web page. One user's agent wrote one first, re-ran it for a long time, then decided the test was broken. The feature didn't exist yet. Browser tests are slow enough that the red-green loop stops paying for itself. So say in your repo's `CLAUDE.md` that browser tests come after the behaviour works.
 
-**You asked for red-green-refactor, and nothing got refactored.** The tdd Skill dropped its refactor step in June 2026. Its description and the README still say "red-green-refactor". Issue #589, still open, asks to fix the description. The phrase still loads the Skill, but what you get is red-green, so leave the tidying for review.
+**You asked for red-green-refactor, and nothing got refactored.** The tdd Skill dropped its refactor step in June 2026. Its description and the README still say "red-green-refactor". Issue #589 on Matt's repo asks to fix the description. The phrase still loads the Skill, but what you get is red-green, so leave the tidying for review.
 
 ```checkpoint quick-14
 You mention "red-green-refactor" and the tdd Skill loads. What do you get?
@@ -241,10 +241,10 @@ Why: The Skill dropped its refactor step, but the old name lives on. The phrase 
 
 ### Try it
 
-Add one small rule to the booking API, test first. You'll need your practice project (keeping-track's Try it creates it). It needs a FastAPI app in `api/`, with pytest, running in Docker Compose as a service called `api`. If your project doesn't have that yet, ask your agent to set it up first.
+Add one small rule to the booking API, test first. You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it). It needs a FastAPI app in `api/`, with pytest, running in Docker Compose as a service called `api`. If your project doesn't have that yet, ask your agent to set it up first.
 
 1. Run `docker compose exec api pytest`. You should see no failures.
-2. Pick one rule. Leave creating a booking to implement's Try it. For example: `GET /bookings` returns an empty list when nobody has booked.
+2. Pick one rule. Leave creating a booking to [implement](/learn/implement)'s Try it. For example: `GET /bookings` returns an empty list when nobody has booked.
 3. Ask your agent: "Which seams could test this rule? Say what each one catches and misses."
 4. Agree the seam: the HTTP API in `api/`, not a private helper.
 5. Ask for one test at that seam, and no code yet.
@@ -253,7 +253,7 @@ Add one small rule to the booking API, test first. You'll need your practice pro
 8. Ask your agent to write only enough code to pass that test.
 9. Run `docker compose exec api pytest` again. You should see it pass: green.
 10. Ask for TDD evidence: the command it ran and its output, red before and green after.
-11. Merge it all through a pull request. You should see CI's `test` pass. If not, add what's missing to `api/requirements.txt`.
+11. Merge it all through a pull request. You should see the `test` check from [CI](/learn/what-ci-cd-is) pass. If not, add what's missing to `api/requirements.txt`.
 
 ### Read more
 

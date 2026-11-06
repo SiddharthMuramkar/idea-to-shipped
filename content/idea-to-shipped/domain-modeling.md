@@ -1,12 +1,12 @@
 ---
-title: domain-modeling
+title: domain-modeling: settle the project's words
 slug: domain-modeling
-summary: domain-modeling stops you when a word is fuzzy, and writes down the word you settle, the moment you settle it.
+summary: How Matt Pocock's domain-modeling Skill catches fuzzy words while you plan, and writes the settled words and hard decisions into your repo.
 ---
 
 ## What it's for
 
-Say you keep saying "class" while planning the yoga-studio booking site. Sometimes you mean a kind of class, like Vinyasa. Sometimes you mean the Tuesday 6pm one. An agent might pick one and carry on.
+Say you keep saying "class" while planning your yoga-studio booking site. Sometimes you mean a kind of class, like Vinyasa. Sometimes you mean the Tuesday 6pm one. An agent might pick one and carry on.
 
 **domain-modeling stops you when a word is fuzzy, and writes down the word you settle, the moment you settle it.**
 
@@ -92,7 +92,7 @@ It creates two kinds of file, each only when there's something to write.
 
 `GLOSSARY.md` gets an entry the moment a term is settled, never batched up for later. An entry is a one or two sentence definition and an **_Avoid_ line**: the other words you shouldn't use.
 
-The file holds only terms specific to this project. General programming terms, like timeouts, stay out. So do implementation details (how the code works). The file is never a Spec.
+The file holds only terms specific to this project. General programming terms, like timeouts, stay out. So do implementation details (how the code works). The file is never a Spec, a feature's written plan.
 
 ```checkpoint quick-6
 You're about to add "timeout" to the glossary, because your project uses timeouts a lot. Does it belong?
@@ -128,7 +128,7 @@ rows:
 
 At the start of a project, developers and the people they build for usually speak different languages. Those people are the **domain experts**: they know what you're building, but not how.
 
-Agents hit the same gap. They're dropped into a project and left to work out the jargon as they go. Matt describes the result: they "use 20 words where 1 will do."
+Agents hit the same gap. They're dropped into a project and left to work out the jargon as they go. Matt Pocock, who wrote this Skill, describes the result: they "use 20 words where 1 will do."
 
 ```checkpoint quick-8
 Why does an agent use 20 words where 1 will do?
@@ -258,7 +258,7 @@ Why: It cross-references code, GLOSSARY.md and the ADRs, and nothing else, so a 
 
 ### Try it
 
-You'll need your practice project. If you haven't set it up, do keeping-track's Try it step first.
+You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Open the `yoga-studio` repo in Claude Code.
 2. Type `/domain-modeling A class can't be booked once it's full.` You should see the agent ask which "class" you mean, or quote your glossary or code.
@@ -286,7 +286,7 @@ You'll need your practice project. If you haven't set it up, do keeping-track's 
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint domain-modeling-deeper-settled-clash
-A domain-modeling session on your booking site flags "Teacher" versus "Instructor" as a new naming clash and asks you to settle it. But your team settled it months ago, in a closed GitHub Issue with a written decision. Why did it raise the clash again? What's the reason behind this step?
+A domain-modeling session on your booking site flags "Teacher" versus "Instructor" as a new naming clash and asks you to settle it. But your team settled it months ago, in a closed GitHub Issue with a written decision. Why did it raise the clash again?
 - [x] It checks the code, GLOSSARY.md and the ADRs, but never searches the issue tracker.
 - [ ] It reads closed Issues, but skips any decision older than one month as probably stale.
   > It doesn't read Issues at all. It cross-references code and the committed docs, and nothing else.
@@ -390,7 +390,7 @@ Why: Nothing is decided yet, so the idea needs an interview, and the repo gives 
 ```
 
 ```final-test domain-modeling-no-adr
-While sharpening the booking site's model, you and the agent settle that a waitlist spot is held for 24 hours. It's one setting you can change at any time. The agent updates nothing in docs/adr/ and doesn't offer an ADR. Why not? What's the reason behind this step?
+While sharpening the booking site's model, you and the agent settle that a waitlist spot is held for 24 hours. It's one setting you can change at any time. The agent updates nothing in docs/adr/ and doesn't offer an ADR. Why not?
 - [x] It can be changed any time, so it's easy to reverse.
 - [ ] ADRs are written once the whole project is finished.
   > Decisions are captured as they land, not saved up for the end.
@@ -400,7 +400,7 @@ Why: An ADR needs all three tests to pass, and if any one is missing, the agent 
 ```
 
 ```final-test domain-modeling-write-it-now
-Halfway through a design session on your Docker deploy tool, you and the agent settle that a "Release" is one tagged image, not a deploy. The agent adds it to GLOSSARY.md straight away instead of waiting until the session ends. Why? What's the reason behind this step?
+Halfway through a design session on your Docker deploy tool, you and the agent settle that a "Release" is one tagged image, not a deploy. The agent adds it to GLOSSARY.md straight away instead of waiting until the session ends. Why?
 - [x] Settled terms are captured as they happen, not batched up.
 - [ ] To add implementation notes while they're fresh.
   > The glossary holds no implementation details. It's a glossary and nothing else.
@@ -410,7 +410,7 @@ Why: Writing a term down the moment it's settled makes the glossary part of the 
 ```
 
 ```final-test domain-modeling-deeper-glossary
-In your yoga-studio repo you spend an hour with grill-with-docs and settle that a "Session" is one scheduled class people book, not the kind of class. When you finish, GLOSSARY.md hasn't changed at all. What most likely happened, and what should you do next time? What's the reason behind this step?
+In your yoga-studio repo you spend an hour with grill-with-docs and settle that a "Session" is one scheduled class people book, not the kind of class. When you finish, GLOSSARY.md hasn't changed at all. What most likely happened, and what should you do next time?
 - [x] The model loaded grilling but skipped domain-modeling. Invoke it by name alongside.
 - [ ] Terms are held back until to-spec publishes the Spec, so they'll appear after that.
   > Nothing waits for a Spec. Terms are written into GLOSSARY.md the moment they're settled.

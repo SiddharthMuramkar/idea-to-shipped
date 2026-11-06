@@ -1,7 +1,7 @@
 ---
-title: to-questionnaire
+title: to-questionnaire: questions only someone else can answer
 slug: to-questionnaire
-summary: to-questionnaire turns the questions you can't answer into a questionnaire: a Markdown document for the one person who can.
+summary: How to turn the questions only someone else can answer into a document they fill in, then bring their answers back to your agent.
 ---
 
 ## What it's for
@@ -12,13 +12,13 @@ Say an agent is [grilling](/learn/grilling) you about your yoga-studio site's bo
 
 ```checkpoint quick-1
 You have questions only the studio owner can answer. What does to-questionnaire give you?
-- [x] A Markdown document of those questions, for the owner to fill in.
-- [ ] A web form for the owner, with the answers saved to your database.
-- [ ] A live interview in which the agent asks the owner each question.
-Why: A questionnaire is a Markdown document for the one person who can answer what you can't. The agent makes no form, and it never questions the owner itself.
+- [x] A Markdown document of those questions, for the studio owner to fill in.
+- [ ] A web form for the studio owner, with the answers saved to your database.
+- [ ] A live interview in which the agent asks the studio owner each question.
+Why: A questionnaire is a Markdown document for the one person who can answer what you can't. The agent makes no form, and it never questions the studio owner itself.
 ```
 
-That person fills it in when they have time, or you go through it together in a meeting. A run:
+Markdown is plain text with light formatting. The person who can answer fills it in when they have time, or you go through it together in a meeting. A run:
 
 ```
 You:   /to-questionnaire
@@ -29,7 +29,7 @@ You:   How late a member can cancel.
 Agent: Wrote to-questionnaire-booking-rules.md
 ```
 
-The agent never asked what the rules should be. That's the Skill's rule: grill the **send**, not the subject. The send is who it goes to and what you need back.
+The agent never asked what the rules should be. That's the [Skill](/learn/skills)'s rule: grill the **send**, not the subject. The send is who it goes to and what you need back.
 
 ```checkpoint quick-2
 You run to-questionnaire about a client's old database, and you know little about it. What does it ask you?
@@ -86,7 +86,7 @@ The document's questions then aim at the gap between what that person knows and 
 
 ## What it creates
 
-One file in the current folder: `to-questionnaire-<slug>.md`, named from the topic. It sends nothing and creates no Issue or branch.
+One file in the current folder: `to-questionnaire-<slug>.md`, named from the topic. It sends nothing and creates no [Issue](/learn/issues-and-keeping-track) or [branch](/learn/branches-and-worktrees).
 
 The file has a fixed shape. A shortened example:
 
@@ -113,20 +113,20 @@ One short paragraph.
 The questions come most important first, because the person answers on their own time and you may only get one pass. Each one holds one idea, with space to answer right beneath it: a line starting with `>`.
 
 ```checkpoint quick-6
-The owner will answer on their own time. Which question goes first in the file?
+The studio owner will answer on their own time. Which question goes first in the file?
 - [x] The one that matters most, since you may only get one pass.
-- [ ] The easiest one, so the owner warms up before the hard ones.
+- [ ] The easiest one, so the studio owner warms up before the hard ones.
 - [ ] The one the grilling raised first, to keep the same order.
 Why: The person answers on their own time, and you may not get a second round with them. So the most important question goes first.
 ```
 
-What comes back is material for the [main flow](/learn/issues-and-keeping-track), the plan-then-build routine, for example a [grill-with-docs](/learn/grill-with-docs) session.
+What comes back is material for the [main flow](/learn/main-flow), the plan-then-build routine, for example a [grill-with-docs](/learn/grill-with-docs) session.
 
 ```checkpoint quick-7
-The owner's answers come back. What are they for?
+The studio owner's answers come back. What are they for?
 - [x] Feeding the main flow, for example a grill-with-docs session.
 - [ ] Building from straight away, since no more planning is needed.
-- [ ] Sending back to the owner as a second set of questions to fill in.
+- [ ] Sending back to the studio owner as a second set of questions.
 Why: What comes back is material for the main flow. In a grill-with-docs session, for example, the answers go into your plan.
 ```
 
@@ -151,7 +151,7 @@ groups:
 
 ### Why it exists
 
-A grilling session can stall because some of its questions aren't yours to answer. They belong to someone else: a client, an exec who owns the business rules, or a colleague on a team you don't sit with. Asking you more can't help, because you'd keep saying you don't know. Matt puts the problem this way: "not knowing the topic is why you're writing to someone else." So you use the Skill to pull those decisions out of the session and into a document.
+A grilling session can stall because some of its questions aren't yours to answer. They belong to someone else: a client, an exec who owns the business rules, or a colleague on a team you don't sit with. Asking you more can't help, because you'd keep saying you don't know. Matt Pocock, who wrote the Skill, puts the problem this way: "not knowing the topic is why you're writing to someone else." So you use the Skill to pull those decisions out of the session and into a document.
 
 ```checkpoint quick-8
 Why doesn't the Skill interview you about the subject?
@@ -210,10 +210,10 @@ Why: grill-me already asks the whole frontier at once in each round. The differe
 
 **The questions are a flat list,** grouped under headings by theme once there are more than a handful. It isn't a tree that skips a section because of an earlier answer. Grilling recomputes its next round from your answers. A branching document would have to plan every question before any answer comes back. That design was explored and did not ship. The fair objection to it: a model "that plans more than two or three questions ahead of a real answer plans badly".
 
-Say the owner's first answer makes a later question pointless. That question still stays, because the file is static: it doesn't change as answers come in.
+Say the studio owner's first answer makes a later question pointless. That question still stays, because the file is static: it doesn't change as answers come in.
 
 ```checkpoint quick-12
-The owner's first answer makes a later question pointless. What happens to that question?
+The studio owner's first answer makes a later question pointless. What happens to that question?
 - [x] It stays there, because the file doesn't change as answers come in.
 - [ ] It's skipped, because the file hides sections as answers come in.
 - [ ] It's removed, because the agent rewrites the file after each answer.
@@ -223,7 +223,7 @@ Why: The file is static, so it doesn't change as answers come in. Nothing skips 
 **The document tells people to say when they don't know,** and it accepts partial answers. A flagged doubt is worth more than a guess. In Matt's words, "a vague answer and a confidently wrong one look identical once they're back in your context."
 
 ```checkpoint quick-13
-The owner isn't sure how late a member should be able to cancel. What should they write?
+The studio owner isn't sure how late a member should be able to cancel. What should they write?
 - [x] That they don't know, since a guess would read like a firm answer later.
 - [ ] Their best guess, since a firm answer is worth more than a flagged doubt.
 - [ ] Nothing at all, since a blank makes the agent ask them once more.
@@ -248,7 +248,7 @@ So the questions left the session, a person answered them, and the answers came 
 
 ### Where it goes wrong
 
-**The document misses the questions your grilling raised.** You ran it in a fresh session. The Skill has no step that reads past sessions, so it knows nothing about the grilling. Run it in that same conversation, where the session is already in the context window. If you can't, give the topic again when it asks what you need back.
+**The document misses the questions your grilling raised.** You ran it in a fresh session. The Skill has no step that reads past sessions, so it knows nothing about the grilling. Run it in that same conversation, where the session is already in the [context window](/learn/context-window). If you can't, give the topic again when it asks what you need back.
 
 ```checkpoint quick-15
 You grilled yesterday, and you start to-questionnaire in a fresh session today. What happens?
@@ -276,13 +276,13 @@ Why: The whole document is pitched at one recipient, so three people means three
 
 ### Try it
 
-Take the owner's questions out of your booking plan, and bring the answers back. You'll need your practice project, and a friend to play the studio owner. If you haven't set the project up, do [keeping-track](/learn/issues-and-keeping-track)'s Try it step first.
+Take the studio owner's questions out of your booking plan, and bring the answers back. You'll need your practice project, and a friend to play the studio owner. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Open the `yoga-studio` repo in Claude Code.
 2. Type `/grill-with-docs Plan the class booking rules.` You should see numbered questions.
-3. Answer what you can, and note each question only the owner can answer, such as late cancellations.
+3. Answer what you can, and note each question only the studio owner can answer, such as late cancellations.
 4. In that same conversation, type `/to-questionnaire`. You should see it ask who the document is going to.
-5. Describe the owner: not technical, and sets the rules. You should see it ask what you need back.
+5. Describe the studio owner: not technical, and sets the rules. You should see it ask what you need back.
 6. Name the two or three rules you can't decide, and say when you need the answers. You should see it report the file's path.
 7. In a second terminal, in the `yoga-studio` folder, run `ls to-questionnaire-*.md`. You should see the new file.
 8. Open the file, and check that every rule you named has a question.
@@ -302,7 +302,7 @@ Take the owner's questions out of your booking plan, and bring the answers back.
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint to-questionnaire-deeper-fresh-session
-You grilled the booking rules for a yoga studio's site, closed that session, and the next day asked for a document of questions for the studio owner. The document misses the questions the grilling raised. Why? What's the reason behind this step?
+You grilled the booking rules for a yoga studio's site, closed that session, and the next day asked for a document of questions for the studio owner. The document misses the questions the grilling raised. Why?
 - [x] It has no step that reads past sessions. It sees the grilling only if run in that same conversation.
 - [ ] It only asks about the subject when you name each question, and you named none of them yesterday.
   > It never asks you about the subject. It asks who the document is for and what you need back.
@@ -312,7 +312,7 @@ Why: The Skill has no step that reads past sessions. It can draw on a grilling o
 ```
 
 ```checkpoint to-questionnaire-deeper-two-people
-Some of your open questions are for the studio owner, and others are for the payment provider's account manager. You ask for one document that sends each question to the right person, and the agent says it makes one document for one person. Why? What's the reason behind this step?
+Some of your open questions are for the studio owner, and others are for the payment provider's account manager. You ask for one document that sends each question to the right person, and the agent says it makes one document for one person. Why?
 - [x] Step one asks for the recipient, singular, and the tone and context of the whole document are pitched at them.
 - [ ] The agent can't tell which questions belong to which person until both have answered the first round.
   > It doesn't wait for rounds of answers. It asks you who the document is for before it writes anything.
@@ -420,7 +420,7 @@ Why: Nobody needs to be asked, because the facts are written down in official do
 ```
 
 ```final-test to-questionnaire-why-the-send
-You want questions for a client about their old SQL database. The agent asks you only two things: who the document is for, and what you need back. It asks nothing about the database itself. Why? What's the reason behind this step?
+You want questions for a client about their old SQL database. The agent asks you only two things: who the document is for, and what you need back. It asks nothing about the database itself. Why?
 - [x] You can always answer those two, and they aim the questions at the gap the client can fill.
 - [ ] The agent already knows enough about the database, so it doesn't need your help with it.
   > It doesn't. The client holds that knowledge, which is why the document exists.
@@ -430,7 +430,7 @@ Why: The Skill grills the send, not the subject. You may not know the database, 
 ```
 
 ```final-test to-questionnaire-answers-back
-Your client's ops lead has filled in and returned the document of questions you sent about their backups. You're working in the project's repo. What comes next? What comes next?
+Your client's ops lead has filled in and returned the document of questions you sent about their backups. You're working in the project's repo. What comes next?
 - [x] Bring the answers to an interview that sharpens the plan and records its terms.
   > Right: that's `/grill-with-docs`.
 - [ ] Have the agent build the backup feature straight from the answers, test-first, in one pass.

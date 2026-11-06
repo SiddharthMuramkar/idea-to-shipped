@@ -1,16 +1,16 @@
 ---
 title: Small Tickets that each work end to end
 slug: small-end-to-end-tickets
-summary: Split a Spec into small Tickets that each work end to end.
+summary: Cut a Spec into small Tickets that each run through every layer, so each one can be demoed on its own and fits one fresh context window.
 ---
 
 ## Tickets you can see working
 
-Say your "Booking API" Spec, from [to-spec](/learn/to-spec), has two [Tickets](/learn/issues-and-keeping-track): #12 adds the bookings table, and #13 adds the endpoint that creates a booking. When #12 is done, all you can show is a table nothing uses. If it's the wrong table, you only find out in #13.
+Say your "Booking API" Spec, from [to-spec](/learn/to-spec), has two [Tickets](/learn/issues-and-keeping-track): #12 adds the bookings table, and #13 adds the endpoint (the web address your app calls) that creates a booking. When #12 is done, all you can show is a table nothing uses. If it's the wrong table, you only find out in #13.
 
 **Split a Spec into small Tickets that each work end to end.**
 
-Matt calls such a Ticket a **tracer bullet**: a thin path through the whole system, end to end, that you can see working. The name comes from artillery, where a tracer round is a glowing bullet that shows where your shots land.
+Matt Pocock, who wrote the Skills of the [main flow](/learn/main-flow), calls such a Ticket a **tracer bullet**: a thin path through the whole system, end to end, that you can see working. The name comes from artillery, where a tracer round is a glowing bullet that shows where your shots land.
 
 ```checkpoint quick-1
 Why call a Ticket like this a tracer bullet?
@@ -22,12 +22,12 @@ Why: A tracer bullet is a thin path through the whole system that you can see wo
 
 ## Vertical, not horizontal
 
-A **layer** is one level of the system: the database schema (its tables), the API, the UI or the tests.
+A **layer** is one level of the system: the database schema (its tables), the API (the addresses other code calls), the UI or the tests.
 
 A **vertical slice**, as in [test first](/learn/test-first), cuts a narrow but complete path through every layer. A **horizontal slice** does one layer at a time. For example:
 
 - Vertical: "A member can book a class", with its table, its endpoint, its page and its test.
-- Horizontal: "Write every SQL migration". Nothing works end to end until several more Tickets land.
+- Horizontal: "Write every SQL migration", the scripts that change the tables. Nothing works end to end until several more Tickets land.
 
 ```checkpoint quick-2
 A Ticket says "Write every SQL migration". What can you do when it's done?
@@ -65,7 +65,7 @@ footer: "Only the vertical kind can be shown working on its own."
 
 ## Small enough for one window
 
-Size each slice to fit in a single fresh context window, everything an agent can see at once. Each Ticket gets its own, with nothing left over from the last one.
+Size each slice to fit in a single fresh [context window](/learn/context-window), everything an agent can see at once. Each Ticket gets its own, with nothing left over from the last one.
 
 ```checkpoint quick-4
 Why size a Ticket to fit in a single fresh context window?
@@ -81,7 +81,7 @@ Start with any **prefactoring**: reshaping the code first, such as tidying a tan
 
 Each Ticket also lists its **blocking edges**: links to the other Tickets that must finish before it can start. Re-cut the Booking API:
 
-```
+```text
 #12 List bookings
 #13 Create a booking (blocked by #12)
 ```
@@ -148,7 +148,7 @@ So you build one small slice end to end, test it, get feedback, and move to the 
 
 The idea is older than agents. Matt credits the tracer bullet to _The Pragmatic Programmer_, by Andy Hunt and Dave Thomas.
 
-In an interview, Thomas explains the picture. Old artillery worked out its aim up front with a firing table, a lookup of angles. Then you fired and hoped the shell "landed somewhere close to your target."
+In an interview, Thomas explains the name. Old artillery worked out its aim up front with a firing table, a lookup of angles. Then you fired and hoped the shell "landed somewhere close to your target."
 
 Tracer rounds work the other way. You can see them as you fire, and they land where the real rounds land. So you adjust your aim as you go. Thomas says you use them when your target is moving, or you don't know all the factors.
 
@@ -189,13 +189,13 @@ rows:
     cells: ["permanent code", "thrown away"]
 ```
 
-You may meet one other claim. Matt's Tracer Bullets article says "Tracer bullets are what /prototype automates". The Skill files decide what a Skill does. to-tickets breaks work into tracer bullet Tickets, each demoable or verifiable on its own. The [prototype](/learn/prototype) Skill makes throwaway code that answers a question. So on this site, a tracer bullet is not a prototype.
+You may meet one other claim. Matt's Tracer Bullets article says "Tracer bullets are what /prototype automates". The Skill files decide what a Skill does. to-tickets breaks work into tracer bullet Tickets, each demoable or verifiable on its own. The [prototype](/learn/prototype) Skill makes throwaway code that answers a question. So when the two disagree, follow the Skill files: a tracer bullet is not a prototype.
 
 ```checkpoint quick-11
-One source says tracer bullets are what prototype automates. Which view does this site follow?
+One source says tracer bullets are what prototype automates. Which view should you follow?
 - [x] The Skill files, where a prototype is throwaway code.
 - [ ] The article, because it overrides what the Skill files say.
-- [ ] Neither, because this site treats the two words as the same.
+- [ ] Neither, because the two words mean the same thing.
 Why: The Skill files decide what a Skill does. A tracer bullet Ticket is demoable or verifiable on its own; the prototype Skill makes throwaway code that answers a question.
 ```
 
@@ -239,15 +239,15 @@ Why: Each Ticket was one layer, so its criteria graded work that other Tickets o
 
 To catch this, read the numbered list to-tickets shows you before it publishes anything. Ask one question per Ticket: "what can I demo when this is done? A ticket with no answer is a horizontal slice."
 
-**Every Ticket looks fine, but part of the feature belongs to nobody.** One report, drafted by an AI agent and still open, shows a quieter version. A prep slice built half the code that turns stored data into a displayed value, and a UI slice assumed the rest would work. That path was "owned by neither", and the gap showed up one slice too late. The report's advice: title each user-facing Ticket by what the user does and sees, never by layer, and don't wave the list through.
+**Every Ticket looks fine, but part of the feature belongs to nobody.** One report, drafted by an AI agent, shows a quieter version. A prep slice built half the code that turns stored data into a displayed value, and a UI slice assumed the rest would work. That path was "owned by neither", and the gap showed up one slice too late. The report's advice: title each user-facing Ticket by what the user does and sees, never by layer, and don't wave the list through.
 
 ### Try it
 
-You'll need your practice project (keeping-track's Try it creates it), with `ci.yml`, `api/`, `web/` and Postgres running in Docker Compose. If any is missing, ask your agent to set it up first.
+You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with `ci.yml`, `api/`, `web/` and Postgres running in Docker Compose. If any is missing, ask your agent to set it up first.
 
 Build a walking skeleton before your Spec's first Ticket: `Hello World` in one cell of a new table, carried up through every layer to the screen.
 
-Keeping-track's #2 and #3 are cut by layer; implement's Try it builds both.
+Tickets #2 and #3 from that Try it are cut by layer; [implement](/learn/implement)'s Try it builds both.
 
 1. Run this SQL in Postgres: `CREATE TABLE hello (message text); INSERT INTO hello VALUES ('Hello World');`
 2. In `api/`, add a FastAPI endpoint, `GET /hello`, that reads that row and returns it.
@@ -256,7 +256,7 @@ Keeping-track's #2 and #3 are cut by layer; implement's Try it builds both.
 5. Run the test: `docker compose exec api pytest`. You should see it pass.
 6. Open the page. You should see `Hello World`, read from the database.
 7. Ask your agent to add Postgres, with the `hello` table, to `ci.yml`.
-8. Merge it all through a pull request. You should see `test` pass.
+8. Merge it all through a pull request. You should see the `test` check pass.
 9. Write a title for your first booking Ticket, such as `List bookings`.
 10. Under it, answer in one line: what can I demo when this is done? If you can't answer, cut the Ticket again.
 

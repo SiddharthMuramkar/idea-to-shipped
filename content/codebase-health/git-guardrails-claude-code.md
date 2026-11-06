@@ -1,12 +1,12 @@
 ---
-title: git-guardrails-claude-code
+title: git-guardrails-claude-code: block dangerous git commands
 slug: git-guardrails-claude-code
-summary: git-guardrails-claude-code sets up a hook that blocks dangerous git commands before Claude runs them.
+summary: git-guardrails-claude-code sets up a Claude Code hook that blocks dangerous git commands, such as git reset --hard, before Claude runs them.
 ---
 
 ## What it's for
 
-Say you leave Claude Code working alone on Ticket #13, without asking your permission for each command. It can run any git command, and one `git reset --hard` can wipe out weeks of work. A line in `CLAUDE.md` only shapes what Claude tries to do, so it won't stop that.
+Say you leave Claude Code working alone on Ticket #13 of the yoga-studio site, without asking your permission for each command. It can run any git command, and one `git reset --hard`, a command that throws changes away, can wipe out weeks of work. A line in `CLAUDE.md`, the agent's instruction file, only shapes what Claude tries to do, so it won't stop that.
 
 ```checkpoint quick-1
 You add "never run `git reset --hard`" to `CLAUDE.md`, then leave the agent alone. What has that line done?
@@ -18,7 +18,7 @@ Why: A line in `CLAUDE.md` only shapes what Claude tries to do. It won't stop a 
 
 **git-guardrails-claude-code sets up a hook that blocks dangerous git commands before Claude runs them.** That's [Fix the environment](/learn/fix-the-environment) at work.
 
-It's a **`PreToolUse` hook**: a Claude Code hook that runs before a tool is used. It watches the **Bash tool**, Claude Code's built-in tool for running terminal commands.
+It's a **`PreToolUse` hook**: a script Claude Code runs automatically before a tool is used. It watches the **Bash tool**, Claude Code's built-in tool for running terminal commands.
 
 Claude writes a command, and the hook compares it with a list of patterns. A match is blocked. Anything else runs as normal. A pattern describes the text to look for.
 
@@ -35,11 +35,11 @@ steps:
 
 By default it blocks:
 
-- `git push`, with or without `--force`;
-- `git reset --hard`;
-- `git clean -f` and `git clean -fd`;
-- `git branch -D`;
-- `git checkout .` and `git restore .`.
+- `git push`, with or without `--force`: sends your commits to the remote;
+- `git reset --hard`: throws away uncommitted changes;
+- `git clean -f` and `git clean -fd`: delete files git isn't tracking;
+- `git branch -D`: deletes a branch, even one that isn't merged;
+- `git checkout .` and `git restore .`: discard your unstaged edits.
 
 ```checkpoint quick-2
 The agent runs `git push origin my-branch`, with no `--force`. What does the hook do by default?
@@ -51,7 +51,7 @@ Why: The default list covers `git push` with or without `--force`, so a plain pu
 
 Say the agent tries to push. The command never runs, and Claude sees a message saying it has no authority to run it:
 
-```
+```text
 BLOCKED: 'git push origin main' matches dangerous pattern 'git push'.
 The user has prevented you from doing this.
 ```
@@ -95,7 +95,7 @@ Why: The hook compares text, not meaning. The same command written another way m
 
 You type `/git-guardrails-claude-code`, or you ask for git guardrails and the agent starts it on its own. It needs:
 
-- **`jq`** on your machine: a command-line tool for reading JSON. The hook's script uses it to pull `.tool_input.command` out of its JSON input.
+- **`jq`** on your machine: a command-line tool for reading JSON, a common data format. The hook's script uses it to pull `.tool_input.command` out of its JSON input.
 - One answer from you, before it installs anything: **this project only** (`.claude/settings.json`) or **all projects** (`~/.claude/settings.json`). Those are Claude Code's settings files.
 
 ```checkpoint quick-6
@@ -126,7 +126,7 @@ Last, it feeds a pretend `git push origin main` into the script as a test. The s
 
 ### Why it exists
 
-Matt wanted Claude Code working on its own, without asking permission for every command. He did that inside **Docker Sandbox**, which runs the agent in a small virtual machine, so it can't reach outside the project folder. But your git history lives inside that folder, so a bad `git reset --hard` still does its damage. Matt names the gap: the sandbox "doesn't restrict _what_ commands Claude can run". It only limits where they run.
+Matt Pocock, who wrote the Skill, wanted Claude Code working on its own, without asking permission for every command. He did that inside **Docker Sandbox**, which runs the agent in a small virtual machine, so it can't reach outside the project folder. But your git history lives inside that folder, so a bad `git reset --hard` still does its damage. Matt names the gap: the sandbox "doesn't restrict _what_ commands Claude can run". It only limits where they run.
 
 ```checkpoint quick-8
 Claude Code is running inside Docker Sandbox. Can it still run `git reset --hard` on your project?
@@ -246,7 +246,7 @@ Why: It catches the listed spellings, not every way to run git. An overstated gu
 
 ### Try it
 
-You'll need your practice project, with a terminal open in its root folder. If you haven't set the project up, do [keeping track](/learn/issues-and-keeping-track)'s Try it step first.
+You'll need your practice project, the yoga-studio booking site, with a terminal open in its root folder. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Check `jq` is installed: `jq --version`. You should see a version number.
 2. If you don't have this Skill yet, install it: `npx skills add mattpocock/skills/skills/misc/git-guardrails-claude-code`.
@@ -283,8 +283,8 @@ In step 9's pattern, `[^ ]+` means any text with no space. To let the agent push
 - [Issue #301: `block-dangerous-git.sh` is bypassed by any git global option (e.g. `git -C <dir> push`)](https://github.com/mattpocock/skills/issues/301), stoneLeaf, 3 June 2026
 - [Issue #1293: hook fails open when jq is missing](https://github.com/mattpocock/skills/issues/1293), nabeelkhawaja3-hash, 17 October 2026
 - [Issue #1077: Prevent Cunning Models working around git-hooks](https://github.com/mattpocock/skills/issues/1077), ACregan, 13 September 2026
-- [Hooks reference](https://code.claude.com/docs/en/hooks), Anthropic, fetched 30 October 2026
-- [Configure permissions](https://code.claude.com/docs/en/permissions), Anthropic, fetched 30 October 2026
+- [Hooks reference](https://code.claude.com/docs/en/hooks), Anthropic
+- [Configure permissions](https://code.claude.com/docs/en/permissions), Anthropic
 
 ## Remember
 
@@ -389,7 +389,7 @@ Why: The hook blocks `git branch -D` and `git clean -fd` by default. The Skill a
 ```
 
 ```final-test git-guardrails-claude-code-why-a-hook
-Last week the agent ran `git checkout .` and wiped your uncommitted changes. You could add "never discard changes" to the repo's instructions. Instead you install a hook that blocks `git checkout .` before Claude executes it. Why is that the better fix? What's the reason behind this step?
+Last week the agent ran `git checkout .` and wiped your uncommitted changes. You could add "never discard changes" to the repo's instructions. Instead you install a hook that blocks `git checkout .` before Claude executes it. Why is that the better fix?
 - [x] The hook changes what the agent's environment allows, so it holds on the next run too.
 - [ ] The hook makes the agent ask you a question before it runs any git command at all.
   > The hook doesn't ask anything. It blocks matching commands and lets the rest through.
@@ -399,7 +399,7 @@ Why: A sentence in the instructions loads on every run, but it only shapes what 
 ```
 
 ```final-test git-guardrails-claude-code-deeper-glab
-The guardrails hook is installed in your repo, and `git push` is blocked. Then you see the agent pushed anyway, through `glab`, a different program. Upstream won't change the frozen Skill. What should you take from this? What's the reason behind this step?
+The guardrails hook is installed in your repo, and `git push` is blocked. Then you see the agent pushed anyway, through `glab`, a different program. Upstream won't change the frozen Skill. What should you take from this?
 - [x] Treat the hook as one layer; fix your own copy and add a sandbox, since it only checks command text.
 - [ ] Remove the hook, since a guardrail that can be bypassed once gives you no protection at all.
   > It still blocks the listed spellings. The answer is more layers, like a fixed copy and a sandbox, not none.
