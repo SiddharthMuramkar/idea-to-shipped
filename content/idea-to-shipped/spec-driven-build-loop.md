@@ -430,6 +430,9 @@ A: A blocking edge between them, so they run one after the other. Worktrees only
 Q: What are the four human points in the loop?
 A: Approving the Spec's seams, approving the Ticket list, reviewing the pull request with its preview, and merging. Even Matt's AFK set-up stops at a pull request ready for review.
 
+Q: HITL or AFK: which suits a clear, low-risk Ticket with tests?
+A: AFK, left to run unattended. But AFK moves all your review to the end, so the run must end in a pull request, not a merge.
+
 Q: Which steps on the way to production are gates that hold whatever the agent does?
 A: The required check (GitHub, before merge) and Deployment Checks (Vercel, before going live). The preview holds only if you look; the pre-commit hook can be skipped.
 

@@ -78,7 +78,7 @@ Before you switch anything on, see every check between an agent's first commit a
 | Vercel, while the pull request is open | The preview deployment | Nothing by itself: you are the gate | Merging without looking |
 | Vercel, after the merge | Deployment Checks | Going live | Force Promote |
 
-And when all of them miss something, there's the undo: Instant Rollback points production back at an earlier deployment, then a revert pull request fixes `main`. [Gates: checks that block](/learn/gates) covers each one.
+When all of them miss something, there's the undo. Instant Rollback points production back at an earlier deployment, then a revert pull request fixes `main`. [Gates: checks that block](/learn/gates) covers each one.
 
 ```checkpoint agent-skips-alone
 Which of these can an agent skip on its own, without anyone switching a gate off?
@@ -113,7 +113,7 @@ The order is deliberate. The quick checks run first and the slow build last, and
 The point of one script is that the same command runs in three places:
 
 - On the agent's machine, before it opens a pull request. Matt's [implement](/learn/implement) skill has the agent typecheck and test as it goes, then run the full suite at the end. `npm run verify` is that last run, with lint and build added.
-- In CI, as one job named `Verify` in `.github/workflows/ci.yml`, on every pull request and every push to `main`. The lab's workflow works unchanged. Its name is the check both gates will require.
+- In CI, as one job named `Verify` in `.github/workflows/ci.yml`, on every pull request and every push to `main`. The lab's workflow fits, set to your project's Node version. Its name is the check both gates will require.
 - On Vercel, in part. Vercel's native Deployment Checks can run your `lint` and `typecheck` scripts on each deployment. They never run your tests.
 
 One script means a green run on the agent's machine predicts a green check in CI, and a red check can be rerun exactly. If CI listed its own steps, the two lists would drift apart. If you use Vercel's native checks, leave them running but not required. They repeat part of `verify`, and the check Vercel should wait for is GitHub's `Verify`, the only one that runs the tests.
@@ -151,7 +151,7 @@ Why: Native checks run only the `lint` and `typecheck` scripts, and Vercel doesn
 
 ## Checks against the live preview
 
-`verify` checks the code on a runner. Some problems only show on the running site: a button pushed off-screen at phone width, a tap target too small to hit, a slow first paint. Three tools test the running site, and many Next.js projects set them up early:
+`verify` checks the code on a runner. Some problems show only on the running site: a button off-screen at phone width, a tap target too small, a slow first paint. Three tools test the running site:
 
 | Tool | What it does | A typical setup |
 |---|---|---|
@@ -167,7 +167,7 @@ Lighthouse loads pages with no user, so it can't measure INP. Its stand-in is **
 
 How does a workflow find the preview? Vercel tells GitHub. A **repository_dispatch** event is one that something outside GitHub sends to start workflows. Vercel sends one each time a deployment's status changes. A workflow that listens for `vercel.deployment.success` starts once a preview has finished building, and reads its URL from `github.event.client_payload.url`.
 
-Previews ask for a Vercel login, so the runner needs a way past it: Vercel's Protection Bypass for Automation, a secret your Playwright config sends with each request. Here is the shape, after Vercel's examples. It's a sketch to hand your agent, not a tested file:
+Previews ask for a Vercel login, so the runner needs a way past it. Vercel's answer is Protection Bypass for Automation: a secret your Playwright config sends with each request. Here is the shape, after Vercel's examples. It's a sketch to hand your agent, not a tested file:
 
 ```yaml
 on:
@@ -235,7 +235,7 @@ Why: `ready` means built but not yet promoted, so the check can still hold it. F
 
 ## A database branch for every preview
 
-Say `recipes` keeps its recipes in Postgres on Neon, a hosted Postgres service. Previews then raise a question: which database does a preview talk to? If it's production's, a **migration** (a change to the database's structure, such as adding a column) tried on a preview runs against real data. Neon's answer is a branch. A **Neon branch** is a copy-on-write clone of a database: made at once, starting with all its parent's data, and changes to it never touch the parent.
+Say `recipes` keeps its recipes in Postgres on Neon, a hosted Postgres service. Previews then raise a question: which database does a preview talk to? If it's production's, a **migration** (a change to the database's structure, such as adding a column) tried on a preview runs against real data. Neon's answer is a branch. A **Neon branch** is a copy-on-write clone of a database. It's made at once and starts with all its parent's data, but changes to it never touch the parent.
 
 1. An agent pushes to a pull request's branch. Vercel starts a preview deployment, as it does for every push.
 2. Neon's integration hears about the deployment, and creates a branch named `preview/<git-branch>`, copied from the project's default branch.
@@ -290,7 +290,7 @@ Three of these have hard reasons behind their place. The ruleset comes after `Ve
 Lighthouse budgets on a design that still changes every week would fail on changes you meant to make. The same rule covers every new check. Run it **report-only** first: it runs and shows its result, but no gate requires it. Once it has stayed green for a while, add it to the ruleset or the Deployment Checks.
 
 ```callout remember
-Switch a gate on when there's something real for it to check. `Verify`, the ruleset and a Deployment Check go on with the first code pull request; e2e tests once there are pages; Lighthouse budgets when the design settles; Neon branches when a database arrives. Run each new check report-only first, then require it.
+Switch a gate on when there's something real for it to check. `Verify`, the ruleset and a Deployment Check go on with the first code pull request. Then e2e tests once there are pages, Lighthouse budgets when the design settles, and Neon branches when a database arrives. Run each new check report-only first, then require it.
 ```
 
 ```checkpoint ruleset-after-verify

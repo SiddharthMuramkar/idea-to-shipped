@@ -116,7 +116,7 @@ dist/
 
 `node_modules/` holds installed packages, `dist/` holds build output, and `.env` files hold secrets such as API keys. A line starting with `!` makes an exception, so `.env.example` can still be committed. [Commits and diffs](/learn/commits-and-diffs) covers what belongs in a commit in depth.
 
-That's what `.env.example` is for. It lists the names of the settings the app reads, with no real values. The real `.env` file, with the secrets in it, stays on your computer.
+`.env.example` is the safe half of the pair. It lists the names of the settings the app reads, with no real values. The real `.env` file, with the secrets in it, stays on your computer.
 
 ```checkpoint gitignore-exception
 A repo's `.gitignore` has the lines `.env*` and `!.env.example`. Which of these files can be committed?
@@ -128,7 +128,9 @@ Why: `.env*` leaves out every file whose name starts with `.env`. The `!` line m
 
 ### `package.json` or `pyproject.toml`, and the lockfile
 
-A JavaScript or TypeScript project has a `package.json`. It names the packages the project needs: `dependencies` for the app, and `devDependencies` for tools used only while building and testing. Its **scripts** are named shortcuts: `npm run dev` runs whatever command is saved under `dev`.
+A JavaScript or TypeScript project has a `package.json`. It names the packages the project needs: `dependencies` for the app, and `devDependencies` for tools used only while building and testing.
+
+Its **scripts** are named shortcuts for the project's commands: `npm run dev` runs whatever command is saved under `dev`.
 
 For example, these are the scripts in Brad Traversy's starter repo:
 
@@ -168,9 +170,9 @@ Why: Scripts are named shortcuts in `package.json`. `npm test` runs the command 
 
 ### `.github/workflows/`: what runs on each change
 
-**GitHub Actions** is GitHub's built-in automation. A **workflow** is one automated process, written as a YAML file in `.github/workflows/`. YAML is a plain-text settings format, where indentation shows what belongs inside what.
+**GitHub Actions** is GitHub's built-in automation. A **workflow** is one automated process that it runs, and each workflow is a file in `.github/workflows/`.
 
-A workflow says when to run, such as on every pull request, and what to do, such as install the packages and run the tests. So if a repo has one, it tells you which checks guard `main`. [Reading a GitHub Actions workflow](/learn/reading-a-workflow) walks through one line by line.
+Workflow files are written in YAML, a plain-text settings format where indentation shows what belongs inside what. A workflow says when to run, such as on every pull request, and what to do, such as install the packages and run the tests. So if a repo has one, it tells you which checks guard `main`. [Reading a GitHub Actions workflow](/learn/reading-a-workflow) walks through one line by line.
 
 ```checkpoint which-checks-guard-main
 You want to know which checks run every time someone opens a pull request in a repo. Where do you look?
@@ -241,7 +243,7 @@ For example, two entries from the recipe site's `GLOSSARY.md`:
 
 ```markdown
 **Recipe**:
-A dish with its ingredients, steps and number of servings.
+One way to cook something: its ingredients, steps and number of servings.
 _Avoid_: dish, meal
 
 **Collection**:
@@ -356,7 +358,7 @@ And review doesn't go away. On the Claude Code team, every pull request gets an 
 You want to stop reading the inside of one part of the recipe site. Which part fits a grey box?
 - [x] The search: tests cover its interface, and you can say what it's for.
 - [ ] The part that takes payments: tests cover its interface too.
-- [ ] A part with no tests yet, which you can say what it's for.
+- [ ] A part with no tests yet, though you can say what it's for.
 Why: A grey box needs tests at its interface and a true map of what it's for. Code that handles money is critical, so it needs more attention.
 ```
 

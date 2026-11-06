@@ -1,7 +1,7 @@
 ---
 title: Answers only other people have
 slug: answers-from-other-people
-summary: Tell an other-person question from the other kinds of "I don't know", turn it into a questionnaire, and leave the map honestly waiting instead of guessing.
+summary: Tell a question only someone else can answer from the rest, turn it into a questionnaire, and leave the map honestly waiting instead of guessing.
 ---
 
 Some tickets can't be settled by you or by the agent, because the answer is in somebody else's head. Say the rebuild needs the studio owner's refund rules, and they're busy all week. The tempting move is to let the agent fill in something sensible. Don't: write that person a questionnaire, make the wait visible on the map, and keep working.
@@ -358,7 +358,7 @@ Should the old booking tool stay on for the teachers' timetables, or go entirely
 - [ ] The agent finds it
 - [x] You decide it
 - [ ] Another person knows
-Why: Your decision as the developer, settled in a grilling ticket. It waits on who handles refunds after launch, but the call itself is yours.
+Why: Your decision as the developer, settled in a grilling ticket. It waits on which payment service the studio uses, but the call itself is yours.
 ```
 
 ```checkpoint holds-monthly-fee

@@ -1,7 +1,7 @@
 ---
 title: Working the map
 slug: working-the-map
-summary: Find the next ticket yourself, run one working session from start to finish, and check the tracker afterwards to see whether the session really ended where it should.
+summary: Find the next ticket yourself, run one working session from start to finish, and check the tracker to see whether it really ended where it should.
 ---
 
 Charting gave you a map full of open questions, and no obvious next move. Which ticket comes first, and how do you know a session did its job? Every session after charting is the same small loop: take one ticket, settle it properly, write the answer down, and stop.

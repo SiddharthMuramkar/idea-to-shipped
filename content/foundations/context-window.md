@@ -78,7 +78,7 @@ Matt Pocock, who publishes a popular set of Skills, borrows a picture from Dex H
 
 Where's the line? ask-matt, Matt's guide to which of his Skills fits, puts the smart zone at about 150k tokens on today's best models. He has given lower figures before, so treat it as a rule of thumb.
 
-The line has nothing to do with the window's size. Current Claude models have 1M-token windows, so a session can be deep in the dumb zone with most of its window still free. **Plan around the smart zone, not the window.**
+The line has nothing to do with the window's size. Most current Claude models have 1M-token windows, so a session can be deep in the dumb zone with most of its window still free. **Plan around the smart zone, not the window.**
 
 ```scene meter
 title: Two tasks in one session, on a 1M window (illustrative)

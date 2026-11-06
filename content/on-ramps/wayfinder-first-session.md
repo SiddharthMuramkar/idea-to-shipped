@@ -1,7 +1,7 @@
 ---
 title: Your first wayfinder session
 slug: wayfinder-first-session
-summary: What your first /wayfinder session does, what it leaves on your Issue tracker, and what every session after it looks like.
+summary: Your first /wayfinder session charts a map of open questions on your tracker, and every session after it settles one of them.
 ---
 
 Say the studio owner wants the whole booking and payments system rebuilt on your yoga-studio site: class passes, monthly memberships, card payments, refunds and a waitlist for full classes. You start [grilling](/learn/grilling) it, and the open questions keep spreading past what one conversation can hold. Grilling settles a plan in one conversation. This plan is too big for one, so [wayfinder](/learn/wayfinder) spreads the planning over many short sessions and keeps track of it on your Issue tracker.
@@ -360,7 +360,7 @@ Should the old booking tool stay on for the teachers' timetables, or go entirely
 - [x] Grilling
 - [ ] Prototype
 - [ ] Task
-Why: A decision with real trade-offs that only you can make: teachers know the old tool's screens, but keeping it means two systems. It also waits on who handles refunds after launch.
+Why: A decision with real trade-offs that only you can make: teachers know the old tool's screens, but keeping it means two systems. It also waits on which payment service takes the studio's payments.
 ```
 
 ```checkpoint sort-timetable-look

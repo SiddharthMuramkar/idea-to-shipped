@@ -4,7 +4,7 @@ slug: gates
 summary: The three gates (merge, look and release), what each one blocks, how each can be bypassed, and the undo for when all three miss.
 ---
 
-Say your `recipes` site is on Vercel, connected to its GitHub repo, and nothing else is set up: no ruleset, no workflow, no Deployment Check. By Vercel’s defaults, whatever an agent merges into `main` goes live, unchecked. This lesson is about the three gates that belong in between, and the undo behind them.
+Say your `recipes` site is on Vercel, connected to its GitHub repo, and nothing else is set up: no ruleset, no workflow, no Deployment Check (a Vercel setting that holds a release until a check passes). By Vercel’s defaults, whatever an agent merges into `main` goes live, unchecked. This lesson is about the three gates that belong in between, and the undo behind them.
 
 ```goals
 - You’ll be able to name the three gates (merge, look and release) and say exactly what each one blocks.
@@ -19,7 +19,7 @@ A **gate** is an automatic check that blocks the next step. [Reading a GitHub Ac
 
 **A ruleset blocks the merge, you look at the preview, and a Deployment Check blocks the release: three gates, with an undo for when all three miss.**
 
-1. **Merge gate: a ruleset**, on GitHub, before merging. A ruleset on `main` refuses to merge a PR until the required check passes, such as `Verify` in Brad’s lab. **Blocks:** merging. **Bypass:** an admin switches the ruleset to Disabled, or adds someone to its bypass list.
+1. **Merge gate: a ruleset**, on GitHub, before merging. A ruleset on `main` refuses to merge a PR until the required check passes, such as `Verify` in Brad’s lab. **Blocks:** merging. **Bypass:** an admin switches the ruleset to Disabled, or adds someone to its bypass list, the people allowed to ignore it.
 2. **Look gate: the preview deployment**, on Vercel, while the PR is open. Every push to the PR’s branch gets its own copy of the site at its own URL. You open it and look. **Blocks:** nothing by itself. You are the gate. **Bypass:** merging without opening the link.
 3. **Release gate: Deployment Checks**, on Vercel, after merging. The merge builds a production deployment, which waits until the check passes on the merged commit before it is promoted (made live). **Blocks:** going live. **Bypass:** the Force Promote button.
 4. **The undo: roll back, then revert**, on Vercel, then GitHub. Instant Rollback points production back at an earlier deployment, with no rebuild. A revert PR then takes the bad change out of `main`.
@@ -52,7 +52,12 @@ Why: The ruleset targets `main` and refuses the merge until the check passes. It
 
 ## The merge gate: a ruleset on main
 
-A **ruleset** is GitHub’s name for a named list of rules attached to branches. Whenever you or an agent make one, you set four parts. The **target** is which branches it covers: here, the default branch, `main`. The **enforcement** is Active (enforced) or Disabled (kept but ignored). GitHub Enterprise adds a third status, Evaluate, which only reports what would have been blocked. Then come the **rules** themselves, and the **bypass list**: the people or apps allowed to ignore the rules.
+A **ruleset** is GitHub’s name for a named list of rules attached to branches. Whenever you or an agent make one, you set four parts:
+
+- The **target**: which branches it covers. Here, the default branch, `main`.
+- The **enforcement**: Active (enforced) or Disabled (kept but ignored). GitHub Enterprise adds a third status, Evaluate, which only reports what would have been blocked.
+- The **rules** themselves.
+- The **bypass list**: the people or apps allowed to ignore the rules.
 
 Brad’s gist sets up a ruleset called “Protect main”. Here is each of its settings, and what it stops. A new ruleset also comes with two rules already selected, Block force pushes and Restrict deletions:
 
@@ -60,8 +65,8 @@ Brad’s gist sets up a ruleset called “Protect main”. Here is each of its s
 |---|---|---|
 | Require a pull request before merging | On, with 0 approvals | Pushing straight to `main`. Every change arrives as a PR, but nobody has to approve it, which is right when you work alone. |
 | Require status checks to pass | `Verify`, from GitHub Actions | Merging while `Verify` is red, still running or missing on the PR |
-| Block force pushes | On, by default | Rewriting `main`’s history |
-| Restrict deletions | On, by default | Deleting `main` |
+| Block force pushes | Not in his notes; on by default in a new ruleset | Rewriting `main`’s history |
+| Restrict deletions | Not in his notes; on by default in a new ruleset | Deleting `main` |
 | Bypass list | Empty | Nobody, you included, skips the rules while the ruleset is Active |
 
 The required check is chosen **by name**, and for a workflow that name is the job’s name: `Verify`, from `name: Verify` in `.github/workflows/ci.yml`. That makes the name a contract. If an agent renames the job to `Verify app`, nothing errors. The new job runs and goes green, while the ruleset waits for a `Verify` that never arrives and blocks every PR with “Waiting for status to be reported.” The release gate names the same job, so the rename breaks it too. Rename a job only together with every gate that names it.
@@ -158,7 +163,7 @@ Each preview has two kinds of URL. The branch URL always shows the latest push t
 
 Who can open the link depends on **Deployment Protection**, a project setting. With its Vercel Authentication method, anyone who opens a protected URL is sent to a Vercel login, and only people with access to the project get through. You choose what it covers. Standard Protection protects every deployment except the production domains, so the real site stays public and the previews stay private. All Deployments protects production too.
 
-What does the look gate block? By itself, nothing. The green check and the preview link sit side by side on the PR, and the merge button works whether or not you clicked the link. The gate is a habit: before you merge an agent’s PR, open the preview and do the thing the ticket was about, in a phone-width window too. Its bypass is not looking. GitHub can require a deployment to succeed before merging, but that proves the preview built, not that anyone looked at it.
+What does the look gate block? By itself, nothing. The green check and the preview link sit side by side on the PR, and the merge button works whether or not you clicked the link. The gate is a habit: before you merge an agent’s PR, open the preview and try the thing the PR changed, in a phone-width window too. Its bypass is not looking. GitHub can require a deployment to succeed before merging, but that proves the preview built, not that anyone looked at it.
 
 A preview is a real running copy that talks to real services. So give preview deployments their own **environment variables**: named settings, such as a database address, that the host hands to your app without them being written in the code. Once your site has a database, its previews should use a test one, never production data. Render warns about the same trap.
 
@@ -199,7 +204,7 @@ Why: Nothing automatic stops a merge when nobody opened the preview. Force Promo
 
 On Vercel a deployment is built first and goes live only when it is **promoted**, that is, given the production domain. By default Vercel promotes your newest successful production build straight away: merge to `main`, Vercel builds, the build goes live. That is continuous deployment, where changes go live with no human click. Out of the box, though, it’s continuous deployment with no check either.
 
-**Deployment Checks** add a step between built and promoted: Vercel holds each production deployment until all the required checks pass, and only then gives it the production domain. A check can come from three places. Vercel’s own native checks, Lint and Typecheck, run the matching script in `package.json`, and are skipped if there isn’t one. GitHub Checks read the commit’s statuses and check runs. Marketplace integrations can add their own. GitHub Checks need two things first: the project is linked to GitHub through Vercel for GitHub, and automatic production aliasing (Vercel promoting each new production deployment by itself) is on.
+**Deployment Checks** add a step between built and promoted: Vercel holds each production deployment until all the required checks pass, and only then gives it the production domain. A check can come from three places. Vercel’s own native checks, Lint and Typecheck, run the matching script in `package.json`, and are skipped if there isn’t one. GitHub Checks read the commit’s statuses and check runs. Integrations from the Vercel Marketplace, add-ons made by other companies, can add their own. GitHub Checks need two things first: the project is linked to GitHub through Vercel for GitHub, and automatic production aliasing (Vercel promoting each new production deployment by itself) is on.
 
 You add them in the project’s **Settings → Build and Deployment → Deployment Checks**. In the lab, the project gets one blocking check: GitHub as the source, `Verify` as the name, holding production. Brad’s app has a `typecheck` script, so Vercel’s native Typecheck could run too, but it has no `lint` script, so a native Lint check would be skipped. GitHub matches checks by job name, so the rename trap from the merge gate is here too: rename the job, and the Deployment Check must be updated to match.
 

@@ -1,7 +1,7 @@
 ---
 title: After the map is clear
 slug: after-the-map
-summary: The three commands that follow a clear map, what each leaves on your tracker, what a good build Ticket looks like, and exactly when to /clear.
+summary: When the map is clear, three commands turn its decisions into built Tickets, and you need to know when to /clear between them.
 ---
 
 When no tickets are left on the map, you have every answer, and still nothing you can build from. Wayfinder hands off at that point; it never builds. Three commands turn the settled decisions into code. Here's what each one does, what it leaves on your tracker, and the two places people clear at the wrong time.
@@ -388,6 +388,9 @@ A: One thin path through every layer, small enough for one fresh session, that w
 
 Q: Where do you point `/to-spec` when the map is clear?
 A: At the map itself, never the decision tickets one by one. For several features, a suggestion: one run per feature, each in its own session.
+
+Q: What are a build Ticket's checkboxes?
+A: Its acceptance criteria, the tests for "done". On GitHub its blockers are native links, so its body has no Blocked by part.
 
 Q: Which two clearing rules point in opposite directions?
 A: Keep one session from `/to-spec` through `/to-tickets`. Clear before every `/implement`, and between wayfinder tickets.

@@ -69,11 +69,11 @@ Why: Making a commit is local. The three commits sit in your repo's history unti
 
 ## What GitHub adds
 
-GitHub is a website that hosts Git repositories. A **remote** is a copy of your repo that lives somewhere else, usually on GitHub. To **push** is to send your new commits up to it, and to **pull** is to bring new commits down from it.
+GitHub is a website that hosts Git repositories. A **remote** is a copy of your repo that lives somewhere else, usually on GitHub. An online copy is a backup, and a place other people can reach.
 
-Neither happens by itself. You'll do both in [Push, pull and remotes](/learn/push-pull-and-remotes). To **clone** is the third move: downloading a full copy of a repo from GitHub, with every version of every file.
+To **push** is to send your new commits up to a remote, and to **pull** is to bring new commits down from it. Neither happens by itself. You'll do both in [Push, pull and remotes](/learn/push-pull-and-remotes).
 
-An online copy is a backup, and a place other people can reach. A repo's page on github.com lists its files, shows its README file below them, and has a green Code button for copying the repo's address.
+To **clone** is the third move: downloading a full copy of a repo from GitHub, with every version of every file. On github.com, a repo's page lists its files, shows its README file below them, and has a green Code button for copying the repo's address.
 
 On top of the copy, GitHub adds tools for working together. Each one has its own tab on a repo's page:
 
@@ -178,7 +178,7 @@ Why: A public repo can be seen by anyone on the internet. A private one only by 
 
 ## The GitHub CLI, `gh` (optional)
 
-The **GitHub CLI**, `gh`, is GitHub's own command-line tool. It does GitHub things from the terminal: create a repo, open a pull request, list Issues. Git can't do those. Git moves commits; `gh` works with GitHub's features.
+The **GitHub CLI**, `gh`, is GitHub's own command-line tool: CLI is short for command-line interface. It does GitHub things from the terminal: create a repo, open a pull request, list Issues. Git can't do those. Git moves commits; `gh` works with GitHub's features.
 
 You don't need `gh` to use GitHub, because the everyday actions all have a button on github.com. Coding agents use it a lot, though, and later lessons show its commands next to the click paths. To install it:
 
@@ -409,10 +409,10 @@ Why: Every commit records the name and email set in Git, and they stay baked int
 ```
 
 ```final-test agent-identity
-An agent commits in your terminal and opens a pull request with `gh`. Who does GitHub show as having done both?
-- [x] You: the commit uses your Git name and email, and `gh` acts as your account.
-- [ ] The agent, under its own GitHub account that it creates for the job.
-- [ ] Nobody, because agents' commits and pull requests are anonymous.
+An agent commits in your terminal, then opens a pull request with `gh`. Whose name is the commit's author, and whose account opens the pull request?
+- [x] Yours both times: the commit uses your Git name and email, and `gh` acts as your account.
+- [ ] The agent's both times: it signs up for a GitHub account of its own for the job.
+- [ ] Nobody's: commits and pull requests made by agents are anonymous on GitHub.
 Why: The agent runs with your tools and identity. Its commits carry your Git name and email, and `gh` works as your GitHub account.
 ```
 

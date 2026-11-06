@@ -542,7 +542,7 @@ gh run list -R actions/checkout --workflow licensed.yml --status success --limit
 gh run view -R actions/checkout <id> --log | head -80
 ```
 
-3. In the log, find four things. Inside “Set up job”: the **Operating System** lines (the Ubuntu version this run got), the **GITHUB_TOKEN Permissions** lines (what this run’s token may do, here from the repo’s defaults), and the line **Complete job name: Check licenses**. Then, under the checkout step, `token: ***`: a secret, masked.
+3. In the log, find four things. Inside “Set up job”: the **Operating System** lines (the Ubuntu version this run got), the **GITHUB_TOKEN Permissions** lines (what this run’s token may do), and the line **Complete job name: Check licenses**. Then, under the checkout step, `token: ***`: a secret, masked.
 4. Open the file in your browser and match each line to what you saw: `https://github.com/actions/checkout/blob/main/.github/workflows/licensed.yml`.
 
 **It’s working if:**

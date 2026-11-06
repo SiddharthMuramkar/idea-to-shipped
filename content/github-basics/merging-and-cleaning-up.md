@@ -53,9 +53,9 @@ PR #14 has five commits: the fix and four "fix the test" commits. With squash an
 Why: Squash and merge combines every commit in the PR into one new commit. A merge commit would add six, and rebase and merge five copies.
 ```
 
-Why squash by default? Small commits help while you work on a branch, but they aren't worth keeping in `main`'s history. With one commit per PR, the history reads as a list of changes, and one revert takes a whole change back out ([Undo and merge conflicts](/learn/undo-and-conflicts) shows how).
+Why squash by default? Small commits help while you work on a branch, but they often aren't worth keeping in `main`'s history. With one commit per PR, the history reads as a list of changes. One revert also takes a whole change back out, as [Undo and merge conflicts](/learn/undo-and-conflicts) shows.
 
-Squashing has two costs. The branch's separate commits aren't kept on `main`, though the PR page still shows them. And Git no longer sees your branch as merged, which matters when you clean up, below. So after a squash, the branch is finished: new work starts on a new branch.
+Squashing has two costs. The branch's separate commits aren't kept on `main`, though the PR page still shows them. And afterwards Git doesn't see your branch as merged, which matters when you clean up, below. So after a squash, the branch is finished: new work starts on a new branch.
 
 When you squash, GitHub suggests a commit message, and you can edit it before you confirm. For a PR with one commit, it suggests that commit's message. For two or more, it suggests the PR's title and a list of its commits. So the PR's title often becomes the line on `main`.
 
