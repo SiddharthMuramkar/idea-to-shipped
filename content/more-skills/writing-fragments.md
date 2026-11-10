@@ -10,6 +10,8 @@ Say you want to write a post on why your yoga-studio booking endpoint was built 
 
 **writing-fragments interviews you about what you want to write, and collects the raw text in one file.**
 
+Matt calls this kind of relentless interview a **grilling** session ([grilling](/learn/grilling) covers it).
+
 Each piece it saves is a **fragment**: a piece of text that might survive into the final piece. Even a half-thought counts: it only has to make sense to you, not to a cold reader (one with none of your context).
 
 ```checkpoint quick-1
@@ -179,7 +181,7 @@ groups:
     label: "exploit"
 ```
 
-Matt marks this Skill as in progress, which means beta. It's left out of his **plugin**, a bundle of Skills you can install together, and it gets no docs page. It can change or disappear without warning.
+Matt keeps this Skill in his in-progress **bucket**, a folder of beta Skills. The bucket is left out of his **plugin**, a bundle of Skills you can install together, and this Skill gets no docs page. It can change or disappear without warning.
 
 ```checkpoint quick-10
 You're about to build a habit around this Skill. What should you plan for?
@@ -245,7 +247,7 @@ Why: Declining an outline is the Skill working as designed, because this step on
 
 **A friend can't follow your fragments.** That's fine too. A fragment doesn't need to define its terms. The next Skill deals with that: writing-beats works by "grounding each term before a beat leans on it".
 
-**The agent says the Skill isn't installed.** First run `npx skills list` to see the Skills you've installed: the plugin won't give you this Skill, so it may really be missing. If it's listed, the likely cause is that the agent can't see it. Only you can start this Skill, and Claude Code's docs say a Skill like that stays out of the agent's context. The agent then answers "that skill isn't installed". The fix: use the `claude` command in a terminal, and type `/writing-fragments` yourself. A user who hit this there found that typing a hidden Skill's name still runs it.
+**The agent says the Skill isn't installed.** First run `npx skills list`, the skills.sh installer's list of the Skills installed in this project (add `-g` if you installed for your whole computer; [What a Skill is](/learn/skills) explains the installer): the plugin won't give you this Skill, so it may really be missing. If it's listed, the likely cause is that the agent can't see it. Only you can start this Skill, and Claude Code's docs say a Skill like that stays out of the agent's context. The agent then answers "that skill isn't installed". One report says Claude Code's desktop and web apps drop such Skills from the agent's list. The fix: use the `claude` command in a terminal, and type `/writing-fragments` yourself. A user who hit this there found that typing a hidden Skill's name still runs it.
 
 **`npx skills` skipped the Skill.** For about three hours in August 2026, `npx skills` couldn't install writing-fragments. It reported "YAML parse error: Nested mappings are not allowed in compact mappings".
 
@@ -267,12 +269,12 @@ Mine fragments for a short post on why the booking endpoint was built test-first
 
 1. In the `yoga-studio` repo, run `npx skills@latest add mattpocock/skills --skill writing-fragments`. The plugin won't give you this Skill.
 2. Run `npx skills list`. You should see `writing-fragments` in the list.
-3. Open Claude Code in that repo.
+3. In a terminal in that repo, start Claude Code: `claude`.
 4. Type `/writing-fragments Why the booking endpoint was built test-first.` You should see it ask where to save.
 5. Answer `docs/writing/test-first-fragments.md`. You should see its first question about your post.
 6. Answer its questions for about fifteen minutes. You should see it mention what it adds as it goes.
 7. Push for one leading word for the post.
-8. In a second terminal, run `cat docs/writing/test-first-fragments.md`. You should see one `#` working title, then fragments split by `---` rules.
+8. Open a second terminal in the `yoga-studio` folder, and run `cat docs/writing/test-first-fragments.md`. You should see one `#` working title, then fragments split by `---` rules.
 9. Edit one fragment yourself, and save the file.
 10. Ask the agent to "rewrite that one sharper" about another fragment. You should see your own edit still there.
 

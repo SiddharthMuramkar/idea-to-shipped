@@ -280,7 +280,7 @@ Why: Asking for too much up front shuts out readers who don't have it. The early
 
 Draft the first beats of a post on bookings for studio owners. You'll need your practice project, the `yoga-studio` repo. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
-1. In the `yoga-studio` repo, install the Skill: `npx skills@latest add mattpocock/skills --skill writing-beats`.
+1. In the `yoga-studio` repo, install the Skill: `npx skills@latest add mattpocock/skills --skill writing-beats`. If it asks which agent, choose Claude Code. You should see it finish with no errors.
 2. Make a pile: paste your booking Spec, notes and any fragments into `docs/notes/booking-pile.md`.
 3. In a terminal, start the plain CLI: `claude`.
 4. Type `/writing-beats docs/notes/booking-pile.md`. You should see it ask where to save the article.
@@ -422,7 +422,7 @@ The agent writes the opening beat of your post about class bookings and then sto
   > The Skill re-reads the article file, not the pile, and it does so to keep your edits.
 - [ ] It's waiting for CI to check each beat before the next one is written.
   > No CI is involved. It stops so you can pick, and edit, before the journey pivots.
-Why: It adds one beat at a time and never writes ahead, because each pick changes where the article can go. It re-reads the file before every write, so your edits stay and a big edit can change what comes next. Like a grilling round, it waits for your choice.
+Why: It adds one beat at a time and never writes ahead, because each pick changes where the article can go. It re-reads the file before every write, so your edits stay and a big edit can change what comes next. Like a [grilling](/learn/grill-before-you-build) round, it waits for your choice.
 ```
 
 ```final-test writing-beats-why-prerequisites
@@ -434,7 +434,7 @@ Before writing a single beat of your post about class bookings, the agent asks y
   > The question is about the audience, not about you. It settles what readers bring with them.
 - [ ] The list becomes the article's glossary, printed at the top of the post before the first beat.
   > Nothing is printed. The list is a running record the agent keeps of what the reader has so far.
-Why: A beat can only lean on what the reader already has. So the agent starts by settling that list, and anything else needs an earlier beat to land it. One agreed set of words works the same way: settled early, it stops jargon arriving later.
+Why: A beat can only lean on what the reader already has. So the agent starts by settling that list, and anything else needs an earlier beat to land it.
 ```
 
 ```final-test writing-beats-deeper-ungrounded-beat

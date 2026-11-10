@@ -6,7 +6,7 @@ summary: How Orca's orchestration Skill lets one agent start other agents, answe
 
 ## What it's for
 
-Say [Tickets](/learn/issues-and-keeping-track) #13 and #14 are ready to build. **Orca**, an app that runs several coding agents side by side, can put an agent on each. But then you're checking who has a question or has finished.
+Say [Tickets](/learn/issues-and-keeping-track) #13 and #14 are ready to build. **Orca**, an app that runs several coding agents side by side, can put an agent on each, even each in its own [worktree](/learn/branches-and-worktrees), a separate folder of the repo on its own branch. But then you're checking who has a question or has finished.
 
 **orchestration is Orca's Skill for one agent supervising other agents.**
 
@@ -28,7 +28,7 @@ Supervise two workers, one on #13 and one on #14.
 
 Then:
 
-1. The coordinator starts both workers, then waits.
+1. The coordinator starts both workers, then ends its turn. Orca wakes it when a worker reports.
 2. A stuck worker asks the coordinator a **blocking question**, then waits for the reply.
 3. Each worker sends **worker_done** once: a three-sentence summary and its outcome, succeeded or failed.
 4. The coordinator reports back to you.
@@ -41,14 +41,14 @@ A worker on Ticket #13 needs an answer before it can go on. What happens?
 Why: A blocking question is one the worker asks and then waits on, so it doesn't guess or carry on without the answer.
 ```
 
-The coordinator waits for messages up to a **timeout**, a time limit. If it runs out with no message, that's a checkpoint, not a failure: the coordinator doesn't stop or restart the worker.
+A long silence, or a wait that times out (a **timeout** is a time limit), is a checkpoint, not a failure: the coordinator doesn't stop or restart the worker.
 
 ```checkpoint quick-3
-The coordinator's wait comes back empty, with no message from either worker. What does it do?
-- [x] It leaves the worker alone, since an empty wait is only a checkpoint.
-- [ ] It stops the worker, since an empty wait means the worker has failed.
-- [ ] It restarts the worker, since an empty wait means the worker is stuck.
-Why: An empty wait is a checkpoint, not a failure. It tells the coordinator nothing about the worker, so stopping or restarting it would be a guess.
+A long time passes with no message from either worker. What does the coordinator do?
+- [x] It leaves the worker alone, since silence is only a checkpoint.
+- [ ] It stops the worker, since silence means the worker has failed.
+- [ ] It restarts the worker, since silence means the worker is stuck.
+Why: Silence is a checkpoint, not a failure. It tells the coordinator nothing about the worker, so stopping or restarting it would be a guess.
 ```
 
 ```diagram
@@ -80,7 +80,7 @@ Why: Starting another agent isn't enough. An agent becomes a coordinator only wh
 
 - If another agent should take over with nobody watching, use [orca-cli](/learn/orca-cli) instead, Orca's Skill for driving Orca and handing off work.
 - If the work has to travel, say to a colleague, use [handoff](/learn/handoff) instead, because it writes a document the next agent reads.
-- If you're building a whole Spec's Tickets, use [implement-spec](/learn/implement-spec) instead, because its subagents work from the Spec with little back-and-forth.
+- If you're building a whole [Spec](/learn/issues-and-keeping-track)'s Tickets (a Spec is the written plan for one feature), use [implement-spec](/learn/implement-spec) instead, because its subagents work from the Spec with little back-and-forth.
 
 ```checkpoint quick-5
 A colleague will finish your half-done work tomorrow, and nobody needs to supervise. Which fits?
@@ -104,7 +104,7 @@ You open orchestration's installed SKILL.md, looking for its commands. What do y
 Why: The installed file is only a stub, a small placeholder. The agent asks the Orca CLI to print the real guide.
 ```
 
-A **Task** is Orca's word for one piece of work given to a worker. The coordinator writes a Task spec for each. A worker starts from that spec, its written brief, not the coordinator's chat, so the spec must stand on its own. Ticket #13's might read:
+A **Task** is Orca's word for one piece of work given to a worker. The coordinator writes a Task spec for each. A worker starts from that spec, its written brief, not the coordinator's chat, so the spec must stand on its own. Ticket #13's might read like this (the labels are the Orca guide's, and newer versions of the guide word them more loosely):
 
 ```
 Target: api/bookings.py and its tests
@@ -157,7 +157,7 @@ Orca could already run several coding agents side by side. What was still missin
 Why: Running side by side isn't working together. The gap was the glue, a coordinator that makes the agents collaborate.
 ```
 
-So a maintainer of Orca, Jinwoo-H, built it, in a pull request that answered that discussion. It first shipped behind an experimental toggle in Settings. That's why it isn't one of Matt Pocock's Skills: it comes with Orca.
+So a maintainer of Orca, Jinwoo-H, built it, in a pull request that answered that discussion. So Orca's makers wrote it, not Matt Pocock, whose [Skills](/learn/skills) most of this library covers. It first shipped behind an experimental toggle in Settings.
 
 Today its job fits in one line: "Use it when you need ownership, completion tracking, or a DAG." Ownership is who owns each piece of work. Completion tracking is knowing when it has finished. A **DAG** here is a plan of Tasks with dependencies between them: some wait for others, and the rest can run at once.
 
@@ -171,14 +171,14 @@ Why: A DAG here is a plan of Tasks with dependencies between them. Some wait for
 
 ### How it works underneath
 
-Think of the Run as a mailbox. Workers post messages to it, such as a question or a `worker_done`, and Orca stores them in a database. The coordinator waits with `check --wait`, which "blocks until a message arrives, replacing sleep+poll loops". So it doesn't have to keep waking up to look.
+Think of the Run as a mailbox. Workers post messages to it, such as a question or a `worker_done`, and Orca stores them in a database. Since Orca 1.4.246 (November 2026), the coordinator starts every worker, then ends its turn. Orca wakes it when a worker reports, asks or stops, and it runs the `check` command the wake names. Before that, it stayed awake and waited with `check --wait`, which "blocks until a message arrives, replacing sleep+poll loops". Either way, it doesn't have to keep waking up to look.
 
 ```checkpoint quick-11
-A coordinator has nothing to do until a worker writes to it. How does it wait?
-- [x] With check --wait, which blocks until a message arrives.
+A coordinator has nothing to do until a worker writes to it. What does it do?
+- [x] It ends its turn, and Orca wakes it when a worker writes.
 - [ ] With a loop that sleeps a while, then looks for messages.
 - [ ] By rereading each worker's terminal again and again.
-Why: check --wait blocks until a message arrives, so the coordinator doesn't need a loop that sleeps and looks again.
+Why: Orca wakes the coordinator when a worker reports, asks or stops, so the coordinator doesn't need a loop that sleeps and looks again.
 ```
 
 Here's the normal loop for #13 and #14, trimmed a little, with comments added:
@@ -191,22 +191,21 @@ orca orchestration run-create --objective "Build #13 and #14"
 orca orchestration worker-start --spec "<#13's spec>" --worktree current --agent codex
 orca orchestration worker-start --spec "<#14's spec>" --worktree current --agent claude
 
-# Wait up to 15 minutes for mail.
-orca orchestration check --wait --types "worker_done,escalation,question" --timeout-ms 900000 --json
+# Then end the turn. Orca wakes the coordinator when a worker reports.
 ```
 
-Here both workers share one folder. For separate Tickets, use `--worktree new-child` so each gets its own.
+Here both workers share your folder, which works when they edit different files. If they might edit the same files, or you ask for it, each gets its own worktree, with `--worktree new-child`.
 
-The coordinator then replies to questions, checks each `worker_done` against the attempt it expects, and waits again until every attempt has finished. The guide behind these commands lives in the Orca program itself, so it always matches your version.
+The coordinator then replies to questions, checks each `worker_done` against the attempt it expects, and ends its turn again until every attempt has finished. The guide behind these commands lives in the Orca program itself, so it always matches your version.
 
-In the first version, from April 2026, `orchestration run` started a coordinator loop inside Orca's **runtime**, the running app that stores and delivers messages. That command has since been retired. Today the coordinator agent runs the loop itself, with `run-create`, `worker-start` and `check --wait`.
+In the first version, from April 2026, `orchestration run` started a coordinator loop inside Orca's **runtime**, the running app that stores and delivers messages. That command has since been retired. Today the coordinator agent starts the workers and ends its turn, and Orca wakes it when one reports.
 
 ```checkpoint quick-12
 An old post tells you to start the coordinator loop with `orchestration run`. What runs that loop today?
-- [x] The coordinator agent itself, with run-create, worker-start and check --wait.
+- [x] The coordinator agent: it starts the workers, ends its turn, and Orca wakes it when one reports.
 - [ ] Orca's runtime, which still starts the loop whenever that command is run.
 - [ ] Each worker, which takes a turn at running it between pieces of its work.
-Why: `orchestration run` is retired. It started a loop inside the runtime, but today the coordinator agent runs the loop itself.
+Why: `orchestration run` is retired. It started a loop inside the runtime, but today the coordinator agent starts the workers and Orca wakes it when one reports.
 ```
 
 One person who runs a coordinator daily, with their own scripts, says coordinating was never the hard part: "Knowing when a worker was done was." A coordinator, they argue, needs three states, not two: finished, needs input, and unknown. Unknown means alive, with no output and no question, and that's where they say the time goes.
@@ -241,14 +240,14 @@ Why: A dependency makes one Task wait for another. That's worth it only for real
 
 Most of these failures look like silence, and an empty inbox is not a result.
 
-**Three waits in a row come back empty.** That alone proves nothing: "Absence never authorizes stop, abandon, retry, or release; keep waiting or inspect." Don't start a second worker on the same Task without positive proof that the first has stopped. Instead, list the workers with `worker-list`, which shows what each one needs next.
+**A worker stays quiet for a long time.** That alone proves nothing: "Absence never authorizes stop, abandon, retry, or release; keep waiting or inspect." Don't start a second worker on the same Task without positive proof that the first has stopped. Instead, list the workers with `worker-list`, which gives each worker's liveness and what it needs next.
 
 ```checkpoint quick-15
-Three waits in a row come back empty, and you're tempted to start a second worker. What do you do instead?
+A worker has been quiet for a long time, and you're tempted to start a second worker. What do you do instead?
 - [x] List the workers with worker-list, and see what each one needs next.
-- [ ] Start the second worker, since three empty waits prove the first died.
-- [ ] Stop the first worker, since three empty waits count as positive proof.
-Why: Empty waits prove nothing about the worker. Listing the workers shows what each one needs, without risking a second worker on the same Task.
+- [ ] Start the second worker, since a long silence proves the first died.
+- [ ] Stop the first worker, since a long silence counts as positive proof.
+Why: Silence proves nothing about the worker. Listing the workers shows what each one needs, without risking a second worker on the same Task.
 ```
 
 **A worker pushed its commit, but `worker_done` never came.** In one 12-hour run with no person watching, a coordinator had up to 10 Codex workers at a time. At least six finished their work and never sent `worker_done`. The reporter guessed that, over Codex's long context, they forgot their reporting rules, but that cause "was not isolated experimentally".
@@ -263,7 +262,7 @@ A worker pushed its commit an hour ago, but sent no worker_done. Can the Task co
 Why: A valid worker_done is what settles a Task. Without one the outcome is unknown, so the coordinator inspects the worker.
 ```
 
-**The waits look empty, but Orca isn't answering.** In one run of three workers, the runtime stopped answering, but the workers kept going. A worker sends `worker_done` only once, and if that send fails, "the work is done but invisible".
+**The quiet looks normal, but Orca isn't answering.** In one run of three workers, the runtime stopped answering, but the workers kept going. A worker sends `worker_done` only once, and if that send fails, "the work is done but invisible".
 
 ```checkpoint quick-17
 Orca's runtime stops answering as a worker sends its worker_done. What can happen?
@@ -273,28 +272,28 @@ Orca's runtime stops answering as a worker sends its worker_done. What can happe
 Why: A worker sends worker_done only once, so a failed send leaves finished work that the coordinator never hears about.
 ```
 
-A second user confirmed it on Windows, and saw no retry after the runtime recovered. So don't read the quiet as nothing having finished: "a runtime outage is easy to mistake for a quiet window". Read the reply to `check --wait`. In the first report, with `--json`, a normal timeout said `"ok":true` and an outage said `"ok":false`. Then inspect each worker.
+A second user confirmed it on Windows, and saw no retry after the runtime recovered. So don't read the quiet as nothing having finished: "a runtime outage is easy to mistake for a quiet window". Read the reply to `check --wait`, which the report's author used. In the first report, with `--json`, a normal timeout said `"ok":true` and an outage said `"ok":false`. Then inspect each worker.
 
 **Your computer starts speaking.** On Linux outside Orca's terminals, `orca` normally runs the GNOME screen reader. Use `orca-ide` there.
 
 ### Try it
 
-Supervise two workers, then check their reports yourself. You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets it up), with `api/` and `web/` (your agent can add them), and Orca, with its orchestration Skill. If the Skill is missing, run `npx skills add https://github.com/stablyai/orca --skill orchestration --global`. If Orca doesn't offer it, check Settings → Experimental → Agent Orchestration.
+Supervise two workers, then check their reports yourself. You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets it up), with `api/` and `web/` (your agent can add them), and Orca ([download it](https://www.onorca.dev/docs/install) for macOS, Windows or Linux), with its orchestration Skill. If the Skill is missing, run `npx skills add https://github.com/stablyai/orca --skill orchestration --global`. If Orca doesn't offer it, check Settings → Experimental → Agent Orchestration.
 
 Here's what you'll ask for in step 2:
 
 ```
-Supervise two Orca workers. One adds a test in api/ for listing classes when there are none.
+Supervise two Orca workers. One adds a GET /health endpoint, with a test, in api/.
 The other adds a page that lists classes in web/.
 Give each worker its own worktree.
 Show me both Task specs before you start them.
 ```
 
 1. Open your yoga-studio repo in Orca, and start an agent there.
-2. Give the agent the request above. You should see two Task specs, each naming its Target, Change, Constraints, Ownership and Observable acceptance.
+2. Give the agent the request above. You should see two Task specs, each saying what's in scope, the change, what not to touch, what the worker may edit, and the test that proves it's done.
 3. Say "Start them." You should see two workers start, each in its own terminal or chat.
 4. Wait for both to finish. You should see a `worker_done` from each, with a summary and an outcome.
-5. Run each worker's acceptance test yourself. You should see the result match its reported outcome.
+5. Open each worker's worktree (its card in Orca's sidebar), and run the acceptance test from its Task spec there. You should see the result match its reported outcome.
 6. Read the coordinator's report. You should see each Task's outcome, the evidence, and any blocker.
 
 ### Read more
@@ -310,7 +309,7 @@ Show me both Task specs before you start them.
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint orchestration-deeper-outage-quiet
-Three Orca workers are building parts of your booking API. For twenty minutes the coordinator's waits come back with nothing, and you learn the Orca runtime was unreachable for part of that time. Why shouldn't you read the quiet as "nothing has finished yet"?
+Three Orca workers are building parts of your booking API. For twenty minutes the coordinator hears nothing, and you learn the Orca runtime was unreachable for part of that time. Why shouldn't you read the quiet as "nothing has finished yet"?
 - [x] A worker's one worker_done may have failed to send, so finished work can sit unreported.
 - [ ] Workers stop working whenever the runtime is down, so all three Tasks have already failed.
   > In the reported run the workers did not stop; one pushed three commits during the outage.
@@ -326,9 +325,9 @@ Q: What does orchestration create?
 A: A Run (the coordinator's inbox), Tasks, and a Dispatch for each attempt at a Task.
 
 Q: What must every worker's Task spec name?
-A: Target, Change, Constraints, Ownership and Observable acceptance, so it stands on its own.
+A: The target, the change, the constraints, what the worker may edit, and the evidence that proves it's done, so it stands on its own.
 
-Q: A coordinator's wait for workers times out with nothing. What does that mean?
+Q: A coordinator hears nothing from a worker for a long time. What does that mean?
 A: Nothing yet. It's a checkpoint, not a failure, so keep waiting; don't stop or relaunch the worker.
 
 Q: You want another agent to take over work in another worktree, and nobody will watch it. Which Orca Skill fits?
@@ -383,10 +382,10 @@ Why: A commit isn't a report, and a missing report isn't a failure, so the outco
 
 ```final-test orchestration-deeper-retired-run
 In the first version, `orchestration run` started a coordinator loop inside Orca. What runs that loop now?
-- [x] The coordinator agent itself, with run-create, worker-start and check --wait.
+- [x] The coordinator agent: it starts the workers, ends its turn, and Orca wakes it when one reports.
 - [ ] Orca's runtime, still started with the `orchestration run` command from the first version.
 - [ ] Each worker, which picks its next Task from the Run once it sends its worker_done.
-Why: `orchestration run` is retired, so the loop no longer lives inside Orca's runtime. The coordinator agent runs it now: it creates a Run with run-create, starts workers with worker-start and waits with check --wait. A worker doesn't take it over, because each one idles after its worker_done.
+Why: `orchestration run` is retired, so the loop no longer lives inside Orca's runtime. The coordinator agent runs it now: it creates a Run with run-create, starts workers with worker-start, then ends its turn until Orca wakes it. A worker doesn't take it over, because each one idles after its worker_done.
 ```
 
 ```final-test orchestration-parallel-tickets
@@ -395,7 +394,7 @@ You use Orca on a FastAPI backend. Three Tickets that don't block each other are
   > Right: that's `/orchestration`.
 - [ ] Write a summary document so a fresh agent can pick up the work.
   > That's `/handoff`. It passes the work to one fresh agent. Nothing waits for results or answers questions.
-- [ ] Build the Tickets with the main flow's implementer subagents.
+- [ ] Build the Tickets with fresh implementer subagents, one per Ticket, working from the Spec.
   > That's `/implement-spec`. Its implementer subagents are meant to talk to it sparsely, working from pointers to the Spec and Tickets. Here each worker must stop, ask and wait for an answer.
 Why: You want one agent waiting for results and answering questions while the others build. That's a coordinator's job, and Orca records who owns which work and when it has finished. A written summary only passes work along, and implement-spec's subagents are meant to have little back-and-forth.
 ```
@@ -406,7 +405,7 @@ It's late, and the Docker Compose setup for your website is half done. Tomorrow 
   > Right: that's `/handoff`.
 - [ ] Create an Orca Run and start a worker to finish the setup.
   > That's `/orchestration`. Nobody is supervising. For unsupervised work Orca's guide creates no Run, Task or Dispatch and doesn't monitor completion.
-- [ ] Build each Ticket of the Spec and merge it to an integration branch.
+- [ ] Build each Ticket of the Spec and merge them all into one shared branch.
   > That's `/implement-spec`. There's no Spec with Tickets here, only one half-done piece of work.
 Why: The work is going to a colleague, so what it needs is a written summary that travels with it. Nobody is supervising, so a coordinator would have nothing to do, and there's no Spec with Tickets to build.
 ```
@@ -419,7 +418,7 @@ Your Spec for an AI agent backend has been split into Tickets, and four of them 
   > That's `/to-tickets`. That's already done; the four Tickets are ready.
 - [ ] Write the Spec from this conversation and publish it as an Issue.
   > That's `/to-spec`. The Spec is already written and split.
-Why: The Spec and Tickets are done, and you've asked for supervision. So the next move is the coordinator's: it creates one Run and starts all four workers before it waits. Starting the whole group first is what lets them run at the same time.
+Why: The Spec and Tickets are done, and you've asked for supervision. So the next move is the coordinator's: it creates one Run and starts all four workers before it ends its turn. Starting the whole group first is what lets them run at the same time.
 ```
 
 ```final-test orchestration-self-contained-spec

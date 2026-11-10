@@ -11,7 +11,7 @@ Imagine the tests pass on [Ticket](/learn/issues-and-keeping-track) #13, the boo
 **code-review judges your branch's changes on two separate [axes](/learn/review-spec-and-standards), each with its own report.**
 
 - **Standards**: does the code follow the repo's documented coding standards?
-- **Spec**: does the code do what the Issue or Spec behind it asked for?
+- **Spec**: does the code do what the Issue or [Spec](/learn/issues-and-keeping-track) behind it asked for?
 
 Separate reports stop a pass on one hiding a failure on the other.
 
@@ -201,7 +201,7 @@ Why: The subagents start fresh, but the session that wrote the code still writes
 
 ### Where it goes wrong
 
-**`/code-review` may not run the reviewer you meant.** This is the Skill's most reported problem. Claude Code ships its own `/code-review`, which hunts bugs in the diff. Install Matt's Skills, and one of the two wins that name. Matt won't rename his to dodge a harness's built-ins.
+**`/code-review` may not run the reviewer you meant.** This is the Skill's most reported problem. Claude Code ships its own `/code-review`, which hunts bugs in the diff. Install Matt's Skills, and one of the two wins that name. Matt won't rename his to dodge the built-ins of a [harness](/learn/how-agents-work), the agent tool you run, such as Claude Code.
 
 With his **plugin**, a bundle of Skills you can install together, type the full name: `/mattpocock-skills:code-review`. With a plain install, your copy takes `/code-review`, and the built-in stays reachable through its alias, `/review`. To give `/code-review` back to the built-in, rename the folder and the `name:` field in your copy. But `npx skills update` undoes that rename.
 
@@ -246,7 +246,7 @@ Why: Each fix adds new code, and smells are judgement calls, so a clean run neve
 
 **A finding turns out to be wrong.** A subagent's report is "a hypothesis, not evidence." The Skill doesn't re-check each finding against the files, so one can cite the wrong place or overstate the impact. Read its citation before you act on it.
 
-**The agent count keeps climbing.** The two subagents can start their own reviews, so each one spawns two more. One report reached more than 50 agents. In October 2026 Matt ruled guards against this out of scope: "The harness should be responsible for stopping infinite subagent loops, not skills." The harness, the agent tool you run, decides what a subagent can reach, so a limit set there holds for every Skill. Claude Code caps nesting at three layers by default. The Skill has no guard, so if you run a review unattended, watch the agent count.
+**The agent count keeps climbing.** The two subagents can start their own reviews, so each one spawns two more. One report reached more than 50 agents. In October 2026 Matt ruled guards against this out of scope: "The harness should be responsible for stopping infinite subagent loops, not skills." The harness decides what a subagent can reach, so a limit set there holds for every Skill. Claude Code caps nesting at three layers by default. The Skill has no guard, so if you run a review unattended, watch the agent count.
 
 ```checkpoint quick-15
 You're about to leave a review running unattended. What should you keep an eye on?
@@ -258,7 +258,7 @@ Why: Subagents can start their own reviews, and each one spawns two more. Matt l
 
 ### Try it
 
-Run one real review, and see what it can't see. You'll need your practice project, with a branch of unmerged work for one Ticket. To get one, repeat [implement](/learn/implement)'s Try it on another open Ticket and a new branch, up to its commit.
+Run one real review, and see what it can't see. You'll need your practice project (if you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first), with a branch of unmerged work for one Ticket. To get one, repeat [implement](/learn/implement)'s Try it on a new branch with an open Ticket whose blockers are closed, such as the first Ticket from [to-tickets](/learn/to-tickets)'s Try it. Stop after its commit.
 
 1. Check out that branch.
 2. Add a `CONTRIBUTING.md` at the repo's root with one rule: `Every endpoint returns a response model, never a plain dict.`
@@ -408,17 +408,6 @@ Your FastAPI branch is still work in progress, with no pull request yet. You wan
 Why: You want changes checked against a Ticket and the standards, and that works on a branch or work in progress, with no pull request needed. You don't have to pick the comparison point first: if you name no fixed point, the review asks for one before it reads the diff.
 ```
 
-```final-test code-review-findings-on-integration
-Every Ticket of your booking site's Spec is merged into the integration branch, and a draft pull request is open. The review of that branch against main has come back with findings on both axes. What comes next?
-- [x] Fix all findings in one subagent, then mark the draft ready.
-  > Right: that's `/implement-spec`.
-- [ ] Write the pull request body now, and fix the findings after.
-  > That's `/pr`. The findings get fixed first, so the pull request describes the fixed change.
-- [ ] Turn each finding into a new Ticket, with its blocking links.
-  > That's `/to-tickets`. implement-spec fixes everything the review raised in a single fresh implementer subagent, with no new Tickets.
-Why: The review's findings get fixed together, by one fresh implementer subagent, with no new Tickets. Only then is the draft pull request marked ready for review, so whoever reads it sees the fixed change.
-```
-
 ```final-test code-review-pick-migration
 Your branch with a SQL migration that adds a cancellations table is done. You want to know two things: whether it follows the repo's CONTRIBUTING.md, and whether it does what Ticket #31 asked. Which fits best?
 - [x] Check the diff against the repo's standards and against the Ticket.
@@ -445,7 +434,7 @@ Why: Code that follows every standard can still build the wrong thing, and code 
 ```sources
 - [code-review: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/code-review/SKILL.md), Matt Pocock's Skills
 - [improve-codebase-architecture: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/improve-codebase-architecture/SKILL.md), Matt Pocock's Skills
-- [The /code-review Skill](https://www.aihero.dev/skills-code-review), Matt Pocock, 2026-08-24 (page says Updated Aug 24, 2026)
+- [The /code-review Skill](https://www.aihero.dev/skills-code-review), Matt Pocock, updated 2026-08-24
 - [Extend Claude with skills](https://code.claude.com/docs/en/skills), Anthropic
 - [pr: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/pr/SKILL.md), Matt Pocock's Skills
 - [implement: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement/SKILL.md), Matt Pocock's Skills
@@ -458,10 +447,10 @@ Why: Code that follows every standard can still build the wrong thing, and code 
 - [/code-review name clash with Claude Code built-in #483](https://github.com/mattpocock/skills/issues/483), N0tS0Lucky, 2026-07-09
 - [Renaming skills to dodge harness built-in commands (.out-of-scope/harness-name-collisions.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/harness-name-collisions.md), Matt Pocock, 2026-10-06
 - [code-review sub-agents recursively invoke /code-review and fan out #573](https://github.com/mattpocock/skills/issues/573), dmmulroy, 2026-07-14
-- [Guards against sub-agents recursing into skills (.out-of-scope/subagent-recursion.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/subagent-recursion.md), Matt Pocock (mattpocock/skills, added in PR, 2026-10-06
+- [Guards against sub-agents recursing into skills (.out-of-scope/subagent-recursion.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/subagent-recursion.md), Matt Pocock, 2026-10-06
 - [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
 - [tdd: reshape into reference-only with pre-agreed seams #393](https://github.com/mattpocock/skills/pull/393), Matt Pocock (mattpocock), 2026-06-30
 - [Create custom subagents](https://code.claude.com/docs/en/sub-agents), Anthropic (Claude Code Docs)
-- [Pull request merges](https://docs.github.com/en/pull-requests/reference/pull-request-merges)
+- [Pull request merges](https://docs.github.com/en/pull-requests/reference/pull-request-merges), GitHub Docs, read 2026-10-29
 - [ask-matt: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/SKILL.md), Matt Pocock's Skills
 ```

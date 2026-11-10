@@ -150,7 +150,7 @@ Why: That's a wide refactor, and it follows expand–contract. The new form sits
 
 ### Why it exists
 
-Left alone, an agent tends to build everything at once. Matt Pocock, who wrote the Skill, describes one "building entire layers in isolation, without ever testing whether the critical path actually works." Then you get a huge mess to clean up.
+Left alone, an agent tends to build everything at once. Matt Pocock, who wrote this [Skill](/learn/skills) (instructions your coding agent follows when you type its command), describes one "building entire layers in isolation, without ever testing whether the critical path actually works." Then you get a huge mess to clean up.
 
 The second problem is size. When a build spans several sessions, each Ticket is picked up by a session that has never seen your Spec. That's why a Ticket has to fit in one fresh context window.
 
@@ -228,7 +228,7 @@ Why: The `## Blocked by` part is left out when the link is built in. File paths 
 
 **A tracer bullet isn't a prototype here.** You may read otherwise: one of Matt's articles says tracer bullets are what [prototype](/learn/prototype) automates, "answer questions with throwaway code." But a Ticket is a complete path you can demo on its own, while a prototype's code stays out of `main`.
 
-**A wide refactor gets its own shape.** One edit breaks thousands of places at once, so no vertical slice can pass alone. The first Ticket adds the new form beside the old. Each batch of callers then gets its own Ticket, blocked by the first. CI stays green, because the old form still exists. The last Ticket deletes the old form, blocked by every batch.
+**A wide refactor gets its own shape.** One edit breaks thousands of places at once, so no vertical slice can pass alone. The first Ticket adds the new form beside the old. Each batch of callers then gets its own Ticket, blocked by the first. [CI](/learn/what-ci-cd-is), the automatic checks that run on each change, stays green (its checks keep passing), because the old form still exists. The last Ticket deletes the old form, blocked by every batch.
 
 ```checkpoint quick-14
 Why does CI stay green while a wide refactor's batches land one by one?
@@ -295,7 +295,7 @@ Why: `gh issue create` takes `--blocked-by`, and the Skill publishes blockers fi
 
 **The Tickets aren't sub-issues of the Spec.** Your `docs/agents/issue-tracker.md` is probably old. Re-run [setup-matt-pocock-skills](/learn/setup-matt-pocock-skills) to refresh it, and use `gh` 2.94 or later.
 
-**It keeps cutting off while reading your Spec.** You cleared or compacted between the two steps, so the agent has to fetch the Spec back. A very large one can come back cut short. Run both in the same context window.
+**It keeps cutting off while reading your Spec.** You cleared (`/clear`) or compacted (`/compact`, which replaces the conversation with a summary; see [The context window](/learn/context-window)) between to-spec and to-tickets, so the agent has to fetch the Spec back. A very large one can come back cut short. Run both in the same context window.
 
 **The Tickets sit there after they're published.** The Skill stops at the Tickets, and nothing starts them for you. Count the Tickets with no open blockers, and open that many agent sessions, each with a fresh context and its own [worktree](/learn/branches-and-worktrees). [implement](/learn/implement) stops at the commit and never closes the Ticket. So close it yourself, or merge a pull request that closes it.
 
@@ -303,7 +303,7 @@ Why: `gh issue create` takes `--blocked-by`, and the Skill publishes blockers fi
 
 Split the Spec from [to-spec](/learn/to-spec)'s Try it into Tickets. You'll need:
 
-- your practice project (if you haven't set it up, do the Try it step in [Issues: keeping track of work](/learn/issues-and-keeping-track) first);
+- your practice project (if you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first);
 - the session where you ran `/to-spec`, not yet cleared, or the Spec's number for `/to-tickets #N`.
 
 Then:
@@ -359,7 +359,7 @@ Q: What question catches a horizontal Ticket when to-tickets shows you its list?
 A: "What can I demo when this is done?" A Ticket with no answer is a horizontal slice.
 
 Q: An agent wrote "Blocked by" as text in an Issue's body. What went wrong, and what's the fix?
-A: It claimed `gh` had no `--blocked-by` flag, but it does. Blockers are published first, so their numbers already exist, and the Skill uses native links wherever the tracker has them.
+A: It wrote the blocker as body text, and wrongly claimed `gh issue create` has no `--blocked-by` flag. Blockers are published first, so their numbers exist. Repair it with `gh issue edit 13 --add-blocked-by 12`.
 
 Q: Where does the tracer-bullet idea come from, and what is it?
 A: The Pragmatic Programmer, by Andy Hunt and Dave Thomas: one thin line of execution that goes end to end, grown one feature at a time.

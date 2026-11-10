@@ -6,7 +6,7 @@ summary: How to-spec writes the decisions from a grilling into a Spec, one Issue
 
 ## What it's for
 
-Say [grill-with-docs](/learn/grill-with-docs) has grilled you, question by question, on the Booking API for your yoga-studio site. Most of your decisions sit only in that conversation. The build needs several sessions, and clearing this one would lose them.
+Say [grill-with-docs](/learn/grill-with-docs) has grilled you, question by question, on the Booking API for your yoga-studio site. Most of your decisions sit only in that conversation. The build needs several sessions (a session is one conversation with the agent), and clearing this one, wiping it with `/clear`, would lose them. [Context hygiene](/learn/context-hygiene) explains both.
 
 **to-spec turns that conversation into a Spec, one Issue describing the whole feature, on your [Issue tracker](/learn/issues-and-keeping-track).**
 
@@ -34,7 +34,7 @@ agent: Published "Booking API" as an Issue, labelled ready-for-agent.
 - You've been grilled, every question is settled, and the build needs more than one session.
 - The build is too big for one session, and each fresh session should pick up the work without you explaining it again.
 
-The order is grill, then to-spec, then [to-tickets](/learn/to-tickets), all in the same session. Don't clear or compact until the [Tickets](/learn/issues-and-keeping-track) are written, so all three build on the same thinking.
+The order is grill, then to-spec, then [to-tickets](/learn/to-tickets), all in the same session. Don't clear or [compact](/learn/context-hygiene) until the [Tickets](/learn/issues-and-keeping-track) are written, so all three build on the same thinking.
 
 ```checkpoint quick-2
 You've written the Spec, and the Tickets are next. Do you clear the session first?
@@ -89,7 +89,7 @@ Why: It prefers existing seams and proposes the highest it can, ideally one.
 
 ## What it creates
 
-One Spec, as an Issue on the tracker, labelled `ready-for-agent` so it needs no further triage. It creates no branches, code or Tickets.
+One Spec, as an Issue on the tracker, labelled `ready-for-agent` so it needs no further triage, the sorting of Issues by what they need next ([Issues: keeping track of work](/learn/issues-and-keeping-track)). It creates no branches, code or Tickets.
 
 ```checkpoint quick-5
 to-spec has finished. What's new on your Issue tracker and in your repo?
@@ -169,9 +169,9 @@ Why: code-review checks the diff against the Spec, so a seam nobody agreed to sh
 
 ### A real example
 
-In a July 2026 video, Matt walks through the main Flow on his AI Hero command-line tool repo. He gets grilled on one idea: to "remove most of the internal tooling on this CLI". At this point he'd normally call `implement` and let it run.
+In a July 2026 video, Matt walks through the [main flow](/learn/main-flow), his usual path through the Skills, on his AI Hero command-line tool repo. He gets grilled on one idea: to "remove most of the internal tooling on this CLI". At this point he'd normally call `implement` and let it run.
 
-To show the whole Flow, he pretends the work needs several sessions, and runs to-spec instead. It takes all 46.1k tokens of that discussion, and will "compress it into a document that we can use" later. His tracker here is local Markdown files, so the Spec lands in a local folder. He then stays in the same session for to-tickets.
+To show the whole flow, he pretends the work needs several sessions, and runs to-spec instead. It takes all 46.1k tokens (small pieces of text) of that discussion, and will "compress it into a document that we can use" later. His tracker here is local Markdown files, so the Spec lands in a local folder. He then stays in the same session for to-tickets.
 
 ```checkpoint quick-11
 You've had 46.1k tokens of discussion, and the work will span sessions. What does to-spec do with them?
@@ -199,7 +199,7 @@ Why: The Spec carries ready-for-agent too, and the agent can't see that the labe
 
 [implement-spec](/learn/implement-spec) isn't this trap. It builds a whole Spec in one run too, but it reads the Spec's Tickets and what blocks what, and works through them.
 
-**to-tickets can't read the whole Spec.** A tracker Issue may not return a very large Spec in full, and there's no local copy to use instead. So run to-tickets in the same session as to-spec. Then it "never has to fetch the spec again". Nearing the [smart zone](/learn/context-hygiene)'s limit first? Compact at the nearest phase boundary and carry on.
+**to-tickets can't read the whole Spec.** A tracker Issue may not return a very large Spec in full, and there's no local copy to use instead. So run to-tickets in the same session as to-spec. Then it "never has to fetch the spec again". Nearing the [smart zone](/learn/context-hygiene)'s limit while you're still grilling? Compact at the end of the grilling, before to-spec, and carry on. Don't compact between to-spec and to-tickets: then to-tickets has to fetch the Spec again.
 
 ```checkpoint quick-13
 You cleared the session after to-spec, and to-tickets keeps reading a cut-off Spec. What would have avoided this?
@@ -209,7 +209,7 @@ You cleared the session after to-spec, and to-tickets keeps reading a cut-off Sp
 Why: A tracker Issue may not return a very large Spec in full. In the same session, to-tickets never has to fetch it again.
 ```
 
-**The Spec no longer matches the code.** Nothing keeps a Spec in sync. It records what you knew when you wrote it, and it goes out of date the first time building teaches you something. Don't edit it: treat it as disposable after the work ships. Put anything that should last in `GLOSSARY.md` and ADRs.
+**The Spec no longer matches the code.** Nothing keeps a Spec in sync. It records what you knew when you wrote it, and it goes out of date the first time building teaches you something. Don't edit it: treat it as disposable after the work ships. Put anything that should last in `GLOSSARY.md`, the project's list of agreed words, and in ADRs, short records of one hard-to-reverse decision each, kept in `docs/adr/`. [domain-modeling](/learn/domain-modeling) covers both.
 
 ```checkpoint quick-14
 The build teaches you something that should last. Where do you put it?
@@ -246,12 +246,13 @@ You'll need your practice project, with the Skills set up. If you haven't set th
 5. Confirm the seams. You should see a new Issue on your tracker, labelled `ready-for-agent`.
 6. Read the Issue. Check that you remember making every decision in it.
 7. Read Out of Scope. Check that it lists things you really refused.
-8. If a line surprises you, the grilling missed it. Go back and grill that question.
+8. If a line surprises you, the grilling missed it. Grill that question again, run `/to-spec` again, and close the first Spec with `gh issue close <number>`.
+9. Keep this session open. The Try it in [to-tickets](/learn/to-tickets) splits this Spec next, in the same session.
 
 ### Read more
 
 - [The /to-spec Skill](https://www.aihero.dev/skills-to-spec), Matt Pocock, updated 2026-08-24
-- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (video; transcript pinned)
+- [mattpocock/skills: A complete AI Coding workflow, end-to-end](https://www.youtube.com/watch?v=M6mYodf0dJM), Matt Pocock, 2026-07-16 (video)
 - [v1.1: /wayfinder, /to-spec, /to-tickets, /grilling improvements, and much more](https://www.aihero.dev/skills/skills-changelog-v1-1-wayfinder-to-spec-to-tickets-grilling-improvements), Matt Pocock, 2026-07-08
 - [Spec (AI Coding Dictionary)](https://www.aihero.dev/ai-coding-dictionary/spec), Matt Pocock, last changed 2026-06-05
 - [History for dictionary/Spec.md](https://github.com/mattpocock/dictionary-of-ai-coding/commits/main/dictionary/Spec.md), Matt Pocock, last commit 2026-06-05
@@ -406,7 +407,7 @@ Why: The label means "no further triage needed", but an agent looking for it can
 - [to-spec: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/to-spec/SKILL.md), Matt Pocock's Skills
 - [tdd: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/tdd/SKILL.md), Matt Pocock's Skills
 - [The /grill-with-docs Skill](https://www.aihero.dev/skills-grill-with-docs), Matt Pocock
-- [The /to-spec Skill](https://www.aihero.dev/skills-to-spec), Matt Pocock, 2026-04-27 (page says "Updated Aug 24, 2026")
+- [The /to-spec Skill](https://www.aihero.dev/skills-to-spec), Matt Pocock, updated 2026-08-24
 - [ask-matt: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/SKILL.md), Matt Pocock's Skills
 - [Spec | AI Coding Dictionary](https://www.aihero.dev/ai-coding-dictionary/spec), Matt Pocock
 - [AI Skills for Real Engineers](https://www.aihero.dev/skills), Matt Pocock

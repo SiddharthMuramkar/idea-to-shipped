@@ -51,14 +51,14 @@ Why: A loop is a recurring pattern in your life or work. A weekly report repeats
 ## When to use it
 
 - You keep doing the same job by hand, and you want to hand it off.
-- You don't know what to hand off yet. Start it with no argument, and it looks for loops.
+- You don't know what to hand off yet. Type `/loop-me` with nothing after it, and it looks for loops.
 
 ```checkpoint quick-3
 You repeat plenty of work, but you can't say which job to hand off. How do you start?
-- [x] Start loop-me with no argument, and let it look.
+- [x] Type `/loop-me` with nothing after it, and let it look.
 - [ ] Pick a job first, since it needs one to start.
 - [ ] Wait until you've spotted a job you repeat.
-Why: You don't need a job in mind. Start it with no argument, and it looks for loops, including ones you haven't noticed.
+Why: You don't need a job in mind. Type `/loop-me` with nothing after it, and it looks for loops, including ones you haven't noticed.
 ```
 
 ## When not to use it
@@ -97,7 +97,7 @@ You need a folder: the current directory becomes its workspace. You install this
 
 Only you can start it, by typing `/loop-me`. The agent never starts it on its own.
 
-If `NOTES.md` is empty or thin, it first interviews you about the tools you use and the channels you read, such as email.
+loop-me keeps its notes on your world in a `NOTES.md` file in that folder. If that file is missing, empty or thin, it first interviews you about the tools you use and the channels you read, such as email.
 
 ```checkpoint quick-5
 You start loop-me in a new, empty folder. What does it do first?
@@ -261,7 +261,7 @@ You put `/loop-me` on a `/loop` timer. What happens when the timer fires?
 Why: A scheduled fire only runs Skills Claude may start on its own. loop-me is marked `disable-model-invocation: true`, so it arrives as plain text.
 ```
 
-**A job you put on `/loop` stops after a week.** `/loop` tasks only fire while Claude Code is running and idle, and recurring ones expire 7 days after creation. So a job meant to run for months needs a cloud scheduled task, a scheduled task in Claude's desktop app (which runs on your machine) or GitHub Actions. Staying on `/loop` means cancelling and recreating the task before it expires.
+**A job you put on `/loop` stops after a week.** `/loop` tasks only fire while Claude Code is running and idle, and recurring ones expire 7 days after creation. So a job meant to run for months needs a cloud scheduled task, a scheduled task in Claude's desktop app (which runs on your machine) or [GitHub Actions](/learn/agents-in-github-actions), GitHub's built-in way to run work on its own machines. Staying on `/loop` means cancelling and recreating the task before it expires.
 
 ```checkpoint quick-15
 A spec's job should run for months. Why not put it on Claude Code's `/loop`?

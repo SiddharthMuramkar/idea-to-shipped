@@ -6,7 +6,7 @@ summary: How pr gives your agent a template for a pull request's description: wh
 
 ## What it's for
 
-Say you ask the agent to open a [pull request](/learn/pull-requests) for Ticket #13, the booking endpoint (the web address your app calls). Its description comes back as a long paragraph. You can't tell what changed, whether it works, or how risky merging is.
+Say you ask the agent to open a [pull request](/learn/pull-requests) for [Ticket](/learn/issues-and-keeping-track) #13, the booking endpoint (the web address your app calls). Its description comes back as a long paragraph. You can't tell what changed, whether it works, or how risky merging is.
 
 **pr gives the agent a template for the pull request's description, its body, so a reviewer can answer all three fast.**
 
@@ -256,9 +256,9 @@ So a reviewer should read the removal and rename slowly.
 
 ### Where it goes wrong
 
-**The agent uses pr when you didn't ask.** pr loads on a plain `create pr`. That's on purpose: the AI-written triage reply on Matt's account called it "working as designed". Want it only when you type `/pr`? On a plain `npx skills` install, add `disable-model-invocation: true` to your copy of its `SKILL.md`, though `npx skills update` overwrites it. On the plugin, add `Skill(mattpocock-skills:pr)` to `permissions.deny` in `~/.claude/settings.json`, Claude Code's settings file.
+**The agent uses pr when you didn't ask.** pr loads on a plain `create pr`. That's on purpose: the AI-written triage reply on Matt's account called it "working as designed". Want it only when you type `/pr`? On a plain `npx skills` install, add `disable-model-invocation: true` to your copy of its `SKILL.md`, though `npx skills update` overwrites it. On the plugin, add `Skill(mattpocock-skills:pr)` and `Skill(mattpocock-skills:pr *)` to `permissions.deny` in `~/.claude/settings.json`, Claude Code's settings file.
 
-**The door call says two-way, but the change can't be undone.** The agent that wrote the change is the one grading it, and the diff often hides whether a change can be reversed. As one user put it, "rolling back a commit won't unsend a batch of emails". So be most suspicious of two-way with a small blast radius. Give the agent the Ticket or Spec, not only the diff. And write down which changes your repo always treats as one-way, where the agent will read them.
+**The door call says two-way, but the change can't be undone.** The agent that wrote the change is the one grading it, and the diff often hides whether a change can be reversed. As one user put it, "rolling back a commit won't unsend a batch of emails". So when the agent's call says two-way with a small blast radius, check that call hardest before you skim, because it's the call that tells you to skim. Give the agent the Ticket or the [Spec](/learn/issues-and-keeping-track), the Issue that describes the whole feature, not only the diff. And write down which changes your repo always treats as one-way, where the agent will read them.
 
 ```checkpoint quick-15
 Your change sends emails to members, and the agent's door call says two-way. Why doubt it?
@@ -296,7 +296,7 @@ Why: Evidence covers whether the change works. Nothing checks that the body matc
 
 ### Try it
 
-Check an agent's door call against your own. You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it step in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. It also needs the booking code in `api/`, which [implement](/learn/implement)'s Try it step builds.
+Check an agent's door call against your own. You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. It also needs the booking code in `api/`, which [implement](/learn/implement)'s Try it step builds.
 
 1. Run `git switch main`, then `git pull`. Then create a branch: `git switch -c waitlist-position`.
 2. Ask the agent to add a migration in `api/`: a nullable `waitlist_position` column on bookings, with a test.
@@ -338,7 +338,7 @@ An agent opened a pull request for a docs fix on your yoga-studio site. Its body
   > pr asks for the smallest view, such as a file tree. The trouble was what the tree was drawn from, not its shape.
 - [ ] The Evidence part had no screenshot, and only a screenshot can show the full change.
   > Evidence covers whether the change works. A screenshot of the docs page wouldn't show feature commits the branch carried from its base.
-Why: A body can be true about the files it names and still miss what the branch carries. In one real case a branch cut from a feature branch brought its commits along: the body described 8 docs files, the diff held 70, and the human reviewed the body, not the Commits tab. Evidence never checks the body against the diff, so read the diff too. Checked against the Ticket, a docs fix carrying feature code fails the Spec axis.
+Why: A body can be true about the files it names and still miss what the branch carries. In one real case a branch cut from a feature branch brought its commits along: the body described 8 docs files, the diff held 70, and the human reviewed the body, not the Commits tab. Evidence never checks the body against the diff, so read the diff too. Checked against the Ticket, a docs fix carrying feature code fails code-review's Spec check: the branch holds work the Ticket never asked for.
 ```
 
 ```checkpoint pr-deeper-reminder-emails-door
@@ -350,7 +350,7 @@ A pull request for your yoga-studio site adds a job that emails a reminder to ev
   > Matt's page says the diff often hides whether a change can be reversed. The size of the diff doesn't tell you what it touches out in the world.
 - [ ] The agent left out Evidence, and a door call without Evidence is never valid.
   > Evidence is its own part of the body. The door call is wrong here because of what the change does once merged, not because a part is missing.
-Why: Reverting the commit removes the code, but the emails have already gone out, so you can't get back to where you started. That makes it a one-way door, however small the diff. The agent that wrote the change is grading it, so be most suspicious of "two-way, small blast radius", and give it the Spec, not only the diff.
+Why: Reverting the commit removes the code, but the emails have already gone out, so you can't get back to where you started. That makes it a one-way door, however small the diff. The agent that wrote the change is grading it, so check a "two-way, small blast radius" call hardest, and give it the Spec, not only the diff.
 ```
 
 ## Remember
@@ -456,7 +456,7 @@ Why: A pull request body should describe a diff that has already been reviewed. 
 ```
 
 ```final-test pr-reviewed-goes-up
-A Ticket for your AI agent project is built test-first and the two-axis review came back clean. You push the branch so that CI can run and the change can be merged into main. What does the agent do next?
+A Ticket for your yoga-studio site is built test-first and the two-axis review came back clean. You push the branch so that CI can run and the change can be merged into main. What does the agent do next?
 - [x] Write the pull request body, with a before and after and a door call.
   > Right: that's `/pr`.
 - [ ] Run the two-axis review again, this time against the pushed branch.
@@ -470,7 +470,7 @@ Why: The review is done and the work is going up, so what's missing is the body.
 
 ```final-test pr-ci-goes-red
 You opened a pull request for a Ticket on your FastAPI backend. CI runs the tests, and one test on the booking endpoint the change touched now fails. The pull request can't be merged while CI is red. What comes next?
-- [x] Fix it on the branch, one red-green slice at a time, and push.
+- [x] Fix it on the branch, test-first with tdd, and push.
   > Right: that's `/tdd`.
 - [ ] Rewrite the pull request body so its Evidence explains the failure.
   > That's `/pr`. The body's Evidence should show the test passing after the change. Words don't turn CI green.
@@ -478,7 +478,7 @@ You opened a pull request for a Ticket on your FastAPI backend. CI runs the test
   > That's `/retro`. Merging a red change breaks main. Looking back suggests changes to the environment; it doesn't fix this code.
 - [ ] Run the two-axis review of the diff to find what broke the test.
   > That's `/code-review`. A review reports problems against the standards and the Spec. It doesn't make the failing test pass.
-Why: A red CI run means more work on the branch, and new words in the body can't fix that. Code is built by driving tdd, one red-green slice at a time, so the fix goes on the branch the same way. Then Evidence can show a passing test run after the change.
+Why: A red CI run means more work on the branch, and new words in the body can't fix that. Code is built by driving tdd, so the fix goes on the branch the same way. Then Evidence can show a passing test run after the change.
 ```
 
 ```final-test pr-expand-step-door

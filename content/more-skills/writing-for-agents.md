@@ -143,7 +143,7 @@ The Skill started out narrower. In v1.0.0 of his Skills, Matt Pocock replaced `w
 
 > I noticed that I was using it for stuff other than skills.
 
-He was using it for anything an agent read. So v1.2.0 renamed it `writing-for-agents`. The rename was a breaking change with no alias: the old name is gone, and you reinstall under the new one.
+He was using it for anything an agent read. So v1.2.0 renamed it `writing-for-agents`. The rename was a breaking change with no alias: the old name is gone, and you reinstall under the new one. (Matt's page on the Skill says the rename came in v1.1, but his CHANGELOG and the v1.2 release post put it in v1.2.0.)
 
 ```checkpoint quick-10
 You installed `writing-great-skills` before v1.2.0. What do you do now?
@@ -425,7 +425,7 @@ Why: A line in CLAUDE.md that names a doc is a context pointer. Its wording, not
 ```
 
 ```final-test writing-for-agents-after-retro
-A build of your Docker setup went sideways. Before clearing the session, you had the agent look back over it, and it suggested adding a line to AGENTS.md about where the compose file lives. What comes next?
+A build of your Docker setup went sideways. Before clearing the session, you had the agent look back over it, and it suggested adding a line to AGENTS.md: run the API tests inside Docker, because they need its database. What comes next?
 - [x] Write that AGENTS.md line with the reference for documents agents read.
   > Right: that's `/writing-for-agents`.
 - [ ] Start the next Ticket straight away and leave AGENTS.md as it is.
@@ -462,7 +462,7 @@ Why: Keep in the file what every run needs, and move out what only some runs nee
 ```
 
 ```final-test writing-for-agents-deeper-streamline
-You asked an agent to streamline your yoga-studio repo's CLAUDE.md. It came back half as long, and now agents forget to write an Alembic migration when they change a model. You're told to redo it by deleting one line at a time and checking the agent's behaviour after each. Why?
+You asked an agent to streamline your yoga-studio repo's CLAUDE.md. It came back half as long, and now agents forget to write a database migration when they change a model. You're told to redo it by deleting one line at a time and checking the agent's behaviour after each. Why?
 - [x] Told to streamline, an agent cuts for length, which it can see. Only behaviour shows a no-op.
 - [ ] Short files load faster, so the redo is only about how fast the agent starts each session.
   > Speed isn't the point. The trim cut a line that changed behaviour, and only checking behaviour finds the real no-ops.

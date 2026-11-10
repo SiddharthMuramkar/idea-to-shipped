@@ -4,7 +4,7 @@ slug: answers-from-other-people
 summary: Tell a question only someone else can answer from the rest, turn it into a questionnaire, and leave the map honestly waiting instead of guessing.
 ---
 
-Some tickets can't be settled by you or by the agent, because the answer is in somebody else's head. Say the rebuild needs the studio owner's refund rules, and they're busy all week. The tempting move is to let the agent fill in something sensible. Don't: write that person a questionnaire, make the wait visible on the map, and keep working.
+Some tickets can't be settled by you or by the agent, because the answer is in somebody else's head. Say you're planning the rebuild of your yoga-studio site's booking and payments as a [wayfinder](/learn/wayfinder) map of tickets, as in [Your first wayfinder session](/learn/wayfinder-first-session), and one ticket needs the studio owner's refund rules. They're busy all week. The tempting move is to let the agent fill in something sensible. Don't: write that person a questionnaire, make the wait visible on the map, and keep working.
 
 ```goals
 - You'll be able to tell a question only another person can answer from a fact or a decision of your own.
@@ -19,7 +19,7 @@ In [Your first wayfinder session](/learn/wayfinder-first-session) you saw that "
 
 **Every "I don't know" is one of three kinds, and each goes somewhere different: a fact to the agent, a decision of yours to a grilling ticket, and someone else's knowledge to `/to-questionnaire`.**
 
-A fact you don't know is the agent's job: it looks it up, or it becomes a research ticket. A decision you haven't made yet is yours, and a grilling ticket helps you make it. The third kind is what's left: the answer exists, or should exist, but only in someone else's head.
+The grilling Skill puts it plainly: finding facts is the agent's job, never yours. A fact you don't know is the agent's: it looks it up, or it becomes a research ticket. A decision you haven't made yet is yours, and a grilling ticket helps you make it. The third kind is what's left: the answer exists, or should exist, but only in someone else's head.
 
 | Kind of unknown | Where it goes | Example from the rebuild |
 |---|---|---|
@@ -32,12 +32,12 @@ Every "I don't know" is one of three kinds, and each goes somewhere different: a
 ```
 
 ```checkpoint check-1
-Halfway through a grilling, the agent asks you for a fact it could look up itself. What does the grilling Skill say about that?
+Halfway through a grilling, the agent asks you for a fact it could look up itself. Whose job is finding it?
 - [ ] You should answer it from memory
 - [ ] It becomes a decision for you to make
 - [x] Finding it is the agent's job
 - [ ] It goes straight into a questionnaire
-Why: The grilling Skill says finding facts is the agent's job, never yours: it looks the fact up, or the fact becomes a research ticket. Only decisions are put to you.
+Why: Finding facts is the agent's job, never yours: the grilling Skill has it send a sub-agent to look the fact up, and on a wayfinder map a fact can also become a research ticket. Only decisions are put to you.
 ```
 
 ```checkpoint check-2
@@ -275,7 +275,7 @@ Comment:
 
 - **While you wait,** work the rest of the frontier as normal. A claimed ticket is skipped by every other session, and everything blocked by it waits.
 - **When the answers come back,** start a session that names the task ticket. It records the facts in a resolution comment, closes the ticket, adds the map line, and stops. The answers are material, not a verdict: any decision built on them is settled in its own session, once its ticket reaches the frontier.
-- **If a grilling ticket stalls halfway,** type `/to-questionnaire` in that session. Ask the agent to add a task ticket for collecting the answers, and to block the stalled ticket on it. Then unassign the stalled ticket, so it comes back to the frontier when the answers do.
+- **If a grilling ticket stalls halfway,** type `/to-questionnaire` in that session. Ask the agent to add a task ticket for collecting the answers, assign it to you, link the questionnaire file from it, and block the stalled ticket on it. Then unassign the stalled ticket, so it comes back to the frontier when the answers do.
 
 How these pieces fit together is a suggestion: neither Skill spells it out. Each piece comes from wayfinder's own rules. A task records what was done and the facts it produced, files made along the way are linked from the ticket rather than pasted in, and an open ticket with no assignee is unclaimed.
 
@@ -298,7 +298,7 @@ Mid-grilling, part of a ticket turns out to be the studio owner's call. You run 
 - [ ] It's resolved now with the agent's best guess
 - [ ] It stays assigned to this session until answered
 - [ ] It's deleted, and a fresh one is written later
-Why: Have the agent add a task ticket for collecting the answers, block the stalled ticket on it, and unassign it, so it returns to the frontier when the answers do. That last step is a suggestion, not part of either Skill; left claimed, every other session would skip it.
+Why: Have the agent add a task ticket for collecting the answers, block the stalled ticket on it, and unassign it, so it returns to the frontier when the answers do. That last step is a suggestion, not part of either Skill; left claimed, every other session would skip it. The new task is assigned to you, so no other session takes it.
 ```
 
 ```checkpoint check-16
@@ -313,7 +313,7 @@ Why: Files made while resolving a ticket are linked from it, not pasted in. The 
 ## Try it: your first questionnaire
 
 ````try
-This one doesn't need the map, so you can send it today. You'll need the `yoga-studio` practice project, and a friend to play the studio owner.
+This one doesn't need the map, so you can send it today. You'll need the `yoga-studio` practice project, with Matt's Skills set up, and a friend to play the studio owner. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. Step 8 also uses the map from the Try it in [Your first wayfinder session](/learn/wayfinder-first-session), if you've made one.
 
 1. In the `yoga-studio` folder, start Claude Code and type `/clear`.
 2. Type `/to-questionnaire`. You should see it ask who the document is going to.
@@ -322,7 +322,7 @@ This one doesn't need the map, so you can send it today. You'll need the `yoga-s
 5. In a second terminal, in the same folder, run `ls to-questionnaire-*.md`. You should see the new file.
 6. Open it. Check that every item you named has a question, most important first, and that someone outside the conversation would know why they got it and by when to reply.
 7. Send it to your friend, and ask them to fill it in.
-8. If your map exists, add a task ticket for collecting the answers, assign it to yourself, link the file from it, and block the "(Bookkeeper)" questions on it. If it doesn't exist yet, mention at charting that this questionnaire is already out.
+8. If your map exists, ask the agent: _Add a `wayfinder:task` sub-issue to my map for collecting these answers, assign it to me, and block on it any ticket that needs the bookkeeper or the front-desk lead._ Then open that Issue with `gh issue view <number> --web` and drag the questionnaire file into a comment, so it's linked rather than pasted. You should see the task among the map's sub-issues, with you as its assignee. If your map doesn't exist yet, mention at charting that this questionnaire is already out.
 ````
 
 ```callout watch-out
@@ -366,7 +366,7 @@ Who will pay the payment service's monthly fee after launch?
 - [ ] The agent finds it
 - [ ] You decide it
 - [x] Another person knows
-Why: The studio owner owns prices and approvals, so it's theirs to answer.
+Why: It's the studio's money, so it's the studio owner's call, not yours or the agent's. It goes in a questionnaire.
 ```
 
 ```checkpoint holds-booking-form
@@ -403,7 +403,7 @@ Q: The people who hold some answers haven't been named. What do you ask first?
 A: Who fills each role, sent to the person who can name them. The questions meant for those people wait on that answer.
 
 Q: Why must the agent never fill in a person's side of a ticket?
-A: A HITL ticket only resolves when that human answers. An agent that speaks for them has broken the ticket, however plausible its answer sounds.
+A: A ticket worked with a human (HITL: human in the loop) only resolves when that human answers. An agent that speaks for them has broken the ticket, however plausible its answer sounds.
 
 Q: to-questionnaire grills the send, not the subject. What does it ask you?
 A: Who the document is going to, and what you need back. Then it writes one Markdown file in the current folder, and stops. It sends nothing.
@@ -448,7 +448,7 @@ Why: The decision waits on the task ticket, and the rest of the frontier carries
 The studio owner's answers come back. What happens next?
 - [ ] Paste them into the map's Notes part
 - [ ] Send a second questionnaire straight away
-- [ ] Turn them straight into a new ADR
+- [ ] Turn them straight into a decision record
 - [x] Record them on the task ticket, then close it
 Why: A session that names the task records the facts and closes it. Decisions built on those facts get their own sessions.
 ```
@@ -474,19 +474,19 @@ Why: Only a person knows them. Collecting answers from a person is work rather t
 ```final-test agent-offers-default
 In the grilling ticket on which passes move across, the agent says: "I'll pick a sensible cancellation deadline, two hours before class, so we can move on." What should happen?
 - [ ] Accept it, so the ticket resolves today
-- [ ] Keep it, recorded in a new ADR
+- [ ] Keep it, written up in a decision record
 - [x] Refuse, and ask the studio owner for it
 - [ ] Hand it to a research ticket instead
-Why: Cancellation rules belong to the studio owner, and an agent that fills in a person's side breaks the ticket, however plausible its rule sounds. The deadline isn't a fact to look up, and an ADR doesn't make a guess right. Collecting it is a task, with `/to-questionnaire`.
+Why: Cancellation rules belong to the studio owner, and an agent that fills in a person's side breaks the ticket, however plausible its rule sounds. The deadline isn't a fact to look up, and writing it up as an ADR (a record of one big decision) doesn't make a guess right. Collecting it is a task, with `/to-questionnaire`.
 ```
 
 ```final-test frontier-while-waiting
-Your map reads: #21 and #24 closed · #22 task, claimed, its questionnaire out to the studio owner · #23 grilling, blocked by #22 · #25 grilling, open · #26 prototype, open. You start a session without naming a ticket. What happens?
+Your map reads: #31 and #34 closed · #32 task, claimed, its questionnaire out to the studio owner · #33 grilling, blocked by #32 · #35 grilling, open · #36 prototype, open. You start a session without naming a ticket. What happens?
 - [ ] It waits until the studio owner's answers arrive
-- [ ] It settles #23 with the agent's best guess
-- [x] It takes #25, the first ticket on the frontier
-- [ ] It takes #22 and chases the studio owner
-Why: A claimed ticket is skipped by every other session, and everything blocked by it waits, but the rest of the frontier carries on as normal. #25 and #26 are both open, unblocked and unclaimed, so the first in map order goes first. Nobody guesses #23's answer.
+- [ ] It settles #33 with the agent's best guess
+- [x] It takes #35, the first ticket on the frontier
+- [ ] It takes #32 and chases the studio owner
+Why: A claimed ticket is skipped by every other session, and everything blocked by it waits, but the rest of the frontier carries on as normal. #35 and #36 are both open, unblocked and unclaimed, so the first in map order goes first. Nobody guesses #33's answer.
 ```
 
 ```sources

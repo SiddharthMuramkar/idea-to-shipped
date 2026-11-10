@@ -4,7 +4,7 @@ slug: working-the-map
 summary: Find the next ticket yourself, run one working session from start to finish, and check the tracker to see whether it really ended where it should.
 ---
 
-Charting gave you a map full of open questions, and no obvious next move. Which ticket comes first, and how do you know a session did its job? Every session after charting is the same small loop: take one ticket, settle it properly, write the answer down, and stop.
+Charting, your [first wayfinder session](/learn/wayfinder-first-session), gave you a map full of open questions, and no obvious next move. Which ticket comes first, and how do you know a session did its job? Every session after charting is the same small loop: take one ticket, settle it properly, write the answer down, and stop.
 
 ```goals
 - You'll be able to say why a session stops after one ticket, even when it's going well.
@@ -15,15 +15,17 @@ Charting gave you a map full of open questions, and no obvious next move. Which 
 
 ## Why stop after one ticket?
 
-Early in a session the agent is sharp: it remembers what you said, follows instructions closely, and makes few mistakes. Matt calls that early stretch the _smart zone_. As the session grows, the same agent gets sloppier and more forgetful, the _dumb zone_, even though plenty of room is left in the context window (the amount of text the agent can hold at once). Quality falls off long before the session runs out of room.
+Early in a session the agent is sharp: it remembers what you said, follows instructions closely, and makes few mistakes. Matt Pocock, who wrote the [wayfinder](/learn/wayfinder) Skill, calls that early stretch the _smart zone_. As the session grows, the same agent gets sloppier and more forgetful, the _dumb zone_, even though plenty of room is left in the context window (the amount of text the agent can hold at once). Quality falls off long before the session runs out of room.
 
 **So plan around the smart zone, not the window: settle one ticket per session, then `/clear`.**
 
-If you settle three tickets in one sitting, the third gets the tired end of the session. That's why wayfinder sizes every ticket to one session, about 100K tokens of work, and then stops. One ticket per session is a rule of the method, not a habit you can drop when a session is going well. The only exception is research: several research tickets can run at once in the background, because they're reading, not deciding with you.
+If you settle three tickets in one sitting, the third gets the tired end of the session. That's why wayfinder sizes every ticket to one session, about 100K [tokens](/learn/context-window) (chunks of text, each about three-quarters of a word) of work, and then stops. One ticket per session is a rule of the method, not a habit you can drop when a session is going well. The only exception is research: several research tickets can run at once in the background, because they're reading, not deciding with you.
 
-Nothing turns into a Spec or a build plan along the way, either. A settled ticket is one answered question, recorded on its ticket. `/to-spec` only comes once the whole map is clear, as [After the map is clear](/learn/after-the-map) shows.
+Nothing turns into a [Spec](/learn/to-spec) (the written plan for one feature) or a build plan along the way, either. A settled ticket is one answered question, recorded on its ticket. `/to-spec` only comes once the whole map is clear, as [After the map is clear](/learn/after-the-map) shows.
 
 Stopping feels wasteful only if the conversation is where the work lives. On a map it isn't: the ticket and the map hold everything the next session needs, so the old conversation is disposable. `/clear` empties the context window and starts you from nothing, which is what you want here. It isn't destructive either: the old session can still be resumed if you ever need to look back at how an answer was reached.
+
+Don't reach for `/compact` instead. It squeezes the conversation into a summary but carries on in the same conversation, so the next ticket would still share this session, and on a map that summary is only noise.
 
 ```callout remember
 Plan around the smart zone, not the context window: one ticket per session, then `/clear`. The ticket and the map hold everything the next session needs, so clearing costs you nothing.
@@ -48,7 +50,7 @@ Why: On a map the work lives on the tracker, not in the conversation, so the con
 ```
 
 ```checkpoint check-3
-You settle the first ticket on the rebuild map, and the answer is clear and useful. When does `/to-spec` come in?
+You settle the first ticket on a map, and the answer is clear and useful. When does `/to-spec` come in?
 - [ ] Right away, while the answer is fresh
 - [ ] When the next session first starts
 - [ ] In this session, right before `/clear`
@@ -58,7 +60,7 @@ Why: A settled ticket is one answered question, recorded on its ticket, and noth
 
 ## Your tracker speaks a dialect
 
-There's one wrinkle you'll trip over as soon as you read the Skill yourself: it's written in GitHub words. It talks about issues, labels and assigning, because GitHub is the tracker it was designed for. On GitHub Issues, as in the practice project, those words mean exactly what they say.
+There's one wrinkle you'll trip over as soon as you read the Skill yourself: it's written in GitHub words. It talks about issues, labels and assigning, because GitHub is the tracker it was designed for. On GitHub Issues, as in [the practice project](/learn/issues-and-keeping-track), those words mean exactly what they say.
 
 A project on a [local tracker](/learn/issues-and-keeping-track) keeps plain Markdown files under `.scratch/` instead. Its tracker document, `docs/agents/issue-tracker.md`, translates each GitHub word into a line in a file, in a part called "Wayfinding operations". Nothing about the method changes, only the spelling. When the Skill says "assign it to yourself", an agent on local files writes one line in a ticket file, and it means the same thing.
 
@@ -141,7 +143,7 @@ Why: It passes two of the three questions (open, unblocked) but fails the third:
 In the same example, the next session settles "What does the old booking tool's export hold?". Which ticket joins the frontier?
 - [x] "Which passes and memberships move across?"
 - [ ] "What should the checkout page look like?"
-- [ ] "Which payment service will take the payments?"
+- [ ] "Which payment service will take the studio's payments?"
 - [ ] None yet, until the claimed ticket closes
 Why: "Which passes and memberships move across?" was blocked only by the export ticket, so once that closes, it's open, unblocked and unclaimed. The checkout prototype still waits on "Which payment service…?", and that one is still claimed by another session.
 ```
@@ -209,16 +211,16 @@ Why: The map's body orients the session and a list of its open sub-issues shows 
 
 ## What each type is like from your chair
 
-The loop is the same for every ticket, but the middle step feels very different depending on the type. A grilling ticket is the interview you already know, with one useful habit to lean on. Each round arrives as a numbered list, every question comes with the agent's recommended answer, and the questions are worded so that "yes" accepts it. You can reply "yes to 1 and 3; 2: no, because…" and move on. A research ticket needs nothing from you at all.
+The loop is the same for every ticket, but the middle step feels very different depending on the type. A grilling ticket is the [grilling](/learn/grilling) interview you already know, with one useful habit to lean on. Each round arrives as a numbered list, every question comes with the agent's recommended answer, and the questions are worded so that "yes" accepts it. You can reply "yes to 1 and 3; 2: no, because…" and move on. A research ticket needs nothing from you at all.
 
 | Type | What you do | What the agent does | What lands on the tracker |
 |---|---|---|---|
-| Grilling | Answer each round; "yes" accepts a recommendation | Asks every question it can ask now, looks facts up itself, and runs domain-modeling alongside | The decision in the resolution comment; new words in `GLOSSARY.md`; an ADR only if all three tests pass |
+| Grilling | Answer each round; "yes" accepts a recommendation | Asks every question it can ask now, looks facts up itself, and runs [domain-modeling](/learn/domain-modeling) alongside | The decision in the resolution comment; new words in `GLOSSARY.md`, the project's agreed dictionary; an ADR (architecture decision record: a short file on one big decision) only if all three tests pass |
 | Research | Nothing; carry on | A background agent reads primary sources and writes a Markdown file that cites them | The findings, summed up in the resolution comment, with a link to that file |
 | Prototype | React: which version, what's wrong | Builds a rough, throwaway draft: one clickable HTML file for "how should it behave?", or several very different versions of a page for "how should it look?" | The verdict in the resolution comment; the prototype kept on a throwaway branch and linked |
 | Task | Follow its checklist, if it can't do the work alone | Does the work itself where it can, otherwise hands you precise steps | What was done, and any facts it produced (new URLs, where credentials live), in the resolution comment |
 
-Two known gaps are worth watching. On a prototype ticket, one user's agent built three versions of a page, chose one itself and closed the ticket. That choice is yours, so say which version you want before anything is recorded. And the Skill has no review step before an AFK ticket closes, so ask the agent up front to show you a research result before it resolves the ticket.
+Two known gaps are worth watching. On a prototype ticket, one user's agent built three versions of a page, chose one itself and closed the ticket. That choice is yours, so say which version you want before anything is recorded. And the Skill has no review step before an AFK ticket (one the agent works alone, "away from keyboard", such as research) closes, so ask the agent up front to show you a research result before it resolves the ticket.
 
 ```callout remember
 Only the middle step changes with the type. Grilling: answer each numbered round, where "yes" accepts the recommendation. Research: nothing. Prototype: react to rough, throwaway drafts, and make the choice yourself. Task: follow its checklist, if the agent can't do the work alone.
@@ -302,7 +304,7 @@ Why: A ticket is done when the tracker says so, not when the conversation feels 
 
 ```checkpoint check-15
 You notice the export findings written out in full on the ticket _and_ in the map's body. Why is that a problem?
-- [ ] The map grows too long to read
+- [ ] The map's link to the ticket breaks
 - [ ] Wayfinder will refuse to load the map
 - [x] One copy will go stale over time
 - [ ] The ticket can no longer be closed
@@ -391,7 +393,7 @@ You'll need the map from your first session ([Your first wayfinder session](/lea
    - the ticket has a resolution comment and is closed;
    - the map has exactly one new line under Decisions so far, naming the ticket by its title;
    - cleared fog, out-of-scope tickets and invalidated tickets are dealt with, or there were none;
-   - any word you pinned down is in `GLOSSARY.md`.
+   - any word you pinned down is in the project's `GLOSSARY.md`, in your `yoga-studio` folder (it stays a local change until you commit it; `git status` shows it).
 7. Type `/clear`. The next ticket gets its own session.
 ````
 

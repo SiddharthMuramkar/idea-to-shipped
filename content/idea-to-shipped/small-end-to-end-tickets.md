@@ -22,7 +22,7 @@ Why: A tracer bullet is a thin path through the whole system that you can see wo
 
 ## Vertical, not horizontal
 
-A **layer** is one level of the system: the database schema (its tables), the API (the addresses other code calls), the UI or the tests.
+A **layer** is one level of the system: the database schema (its tables), the API (the addresses other code calls), the UI (user interface: the pages people see and click) or the tests.
 
 A **vertical slice**, as in [test first](/learn/test-first), cuts a narrow but complete path through every layer. A **horizontal slice** does one layer at a time. For example:
 
@@ -112,7 +112,7 @@ So take three steps. Add the new column beside the old, and copy the data. Move 
 
 ## Where it shows up
 
-You'll meet this again in [to-tickets](/learn/to-tickets), which writes Tickets this way.
+You'll meet this again in [to-tickets](/learn/to-tickets), which writes Tickets this way. Then [implement](/learn/implement) builds them one at a time, or [implement-spec](/learn/implement-spec) builds the whole Spec in one run.
 
 ```checkpoint quick-7
 Which Skill writes Tickets as small, end-to-end slices?
@@ -243,20 +243,20 @@ To catch this, read the numbered list to-tickets shows you before it publishes a
 
 ### Try it
 
-You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with `ci.yml`, `api/`, `web/` and Postgres running in Docker Compose. If any is missing, ask your agent to set it up first.
+You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with the `test` check in `.github/workflows/ci.yml` that the Try it "On GitHub: a `test` check for your practice project" in [What CI/CD is](/learn/what-ci-cd-is) adds, plus `api/`, `web/` and Postgres running in Docker Compose. The FastAPI app in `api/` needs pytest, running in Docker Compose as a service called `api`. If any is missing, ask your agent to set it up first.
 
 Build a walking skeleton before your Spec's first Ticket: `Hello World` in one cell of a new table, carried up through every layer to the screen.
 
 Tickets #2 and #3 from that Try it are cut by layer; [implement](/learn/implement)'s Try it builds both.
 
-1. Run this SQL in Postgres: `CREATE TABLE hello (message text); INSERT INTO hello VALUES ('Hello World');`
+1. Run this SQL in the database your API uses. Use the service, user and database names from your Compose file (ask your agent if you're unsure), for example: `docker compose exec db psql -U postgres -d postgres -c "CREATE TABLE hello (message text); INSERT INTO hello VALUES ('Hello World');"`. You should see `INSERT 0 1`.
 2. In `api/`, add a FastAPI endpoint, `GET /hello`, that reads that row and returns it.
 3. In `web/`, make one page call `GET /hello` and show the answer.
 4. In `api/`, add one test that calls `GET /hello` and expects `Hello World`.
 5. Run the test: `docker compose exec api pytest`. You should see it pass.
-6. Open the page. You should see `Hello World`, read from the database.
-7. Ask your agent to add Postgres, with the `hello` table, to `ci.yml`.
-8. Merge it all through a pull request. You should see the `test` check pass.
+6. Start the site in `web/` (ask your agent for the command if you don't know it), and open the local address it prints. You should see `Hello World`, read from the database.
+7. Ask your agent to add Postgres, with the `hello` table, to `ci.yml`, and to add any package the new test needs to `api/requirements.txt`.
+8. Commit it all on a branch and merge it through a pull request. You should see the `test` check from [CI](/learn/what-ci-cd-is) pass.
 9. Write a title for your first booking Ticket, such as `List bookings`.
 10. Under it, answer in one line: what can I demo when this is done? If you can't answer, cut the Ticket again.
 

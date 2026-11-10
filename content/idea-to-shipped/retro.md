@@ -14,16 +14,18 @@ Imagine your booking endpoint (the web address your app calls) is finished. The 
 An agent's session was a struggle, but the endpoint works. What will retro suggest changing?
 - [x] The agent's environment, such as its checks and coding standards.
 - [ ] The endpoint's code, so that part can't go wrong a second time.
-- [ ] The Ticket's wording, so the next agent gets clearer instructions.
+- [ ] The task's wording, so the next agent gets clearer instructions.
 Why: retro suggests changes to the agent's environment, not the code: navigation pointers, automated checks, coding standards, instruction files and tools.
 ```
 
-You type `/retro`. The agent reads the session's record (a saved log of it), finds where it struggled, and lists fixes. For example:
+You type `/retro`, the command that starts this [Skill](/learn/skills). The agent reads the session's record (a saved log of it), finds where it struggled, and lists fixes. For example:
 
 ```text
 1. Automated checks: a lint rule (an automatic code check) in CI would catch that disallowed import.
 2. Navigation: a pointer in CLAUDE.md would save the long hunt for that file.
 ```
+
+Here CI is the [automated checks that run on every pull request](/learn/what-ci-cd-is), and `CLAUDE.md` is the [instruction file](/learn/instruction-files) every session reads.
 
 You pick the fixes you want, and the next build starts from a better environment.
 
@@ -34,7 +36,7 @@ retro is the last step of the [main flow](/learn/main-flow), and it closes the l
 - You've finished a build that went sideways: the agent hunted for files or repeated a mistake.
 - You've fixed a hard bug, and you want to ask what would have prevented it.
 
-Run it in the session it's looking back on, before you type `/clear`. The struggles are still in the context window then.
+Run it in the session it's looking back on, before you type `/clear`, the command that empties the session. The struggles are still in its [context window](/learn/context-window), everything the agent can see at once, until then.
 
 ```checkpoint quick-2
 You've merged Ticket #13, and the session went badly. When do you run retro?
@@ -46,7 +48,7 @@ Why: Run it in the session it's looking back on. Before you clear, the struggles
 
 ## When not to use it
 
-- If you want to know whether the code is right, use [code-review](/learn/code-review) instead, because it reviews the diff, not how the work went.
+- If you want to know whether the code is right, use [code-review](/learn/code-review) instead, because it reviews the [diff](/learn/commits-and-diffs), the lines the change adds and removes, not how the work went.
 - If you're passing unfinished work to a fresh session, use [handoff](/learn/handoff) instead, because it writes the summary for the next agent.
 
 ```checkpoint quick-3
@@ -71,7 +73,7 @@ Why: Only you can start it, by typing /retro. The agent won't start it on its ow
 
 retro needs a session to look back on: the current one by default. After clearing, point it at that session's log, the record kept on your machine, by naming the session after `/retro`.
 
-Your repo needs no checks first. A repo with no guardrail (no pre-commit hook and no [CI](/learn/what-ci-cd-is) job running lint, typecheck and tests) is itself a finding.
+Your repo needs no checks first. A repo with no guardrail (no pre-commit hook (a script that runs inside `git commit`) and no [CI](/learn/what-ci-cd-is) job running lint, typecheck and tests) is itself a finding.
 
 ```checkpoint quick-5
 Your repo has no pre-commit hook and no CI job running its checks. You type /retro. What happens?
@@ -153,7 +155,7 @@ Why: Retrospectives start from the belief that everyone did the best job they co
 
 **How a run starts.** retro's Skill file sets `disable-model-invocation: true`, a Skill setting that stops the agent starting it by itself. Once you start it, it loads [writing-for-agents](/learn/writing-for-agents), the Skill with rules for writing documents agents read.
 
-retro looks for candidates in set categories, such as navigation, automated checks and coding standards. Before it proposes a new check, it reads the repo's own check commands, because a check that exists but isn't wired up is the finding. Another category is **tool economy**: whether the agent's tool use wastes tokens.
+retro looks for candidates in set categories, such as navigation, automated checks and coding standards. Before it proposes a new check, it reads the repo's own check commands, because a check that exists but isn't wired up is the finding. Another category is **tool economy**: whether the agent's tool use wastes tokens, the units a model reads and writes.
 
 ```checkpoint quick-10
 Your repo has a lint script, but CI never runs it. What will retro report?
@@ -187,9 +189,9 @@ Why: A line in the standards file asks the reviewer to make the same call on eve
 
 ### A real example
 
-In September 2026, a user ran implement-spec end to end on one Spec, then filed issue #1010 in Matt's repo, drafted by an AI agent.
+In September 2026, a user ran implement-spec end to end on one [Spec](/learn/issues-and-keeping-track), then filed issue #1010 in Matt's repo, drafted by an AI agent.
 
-After the build, the same session ran a `/retro` Skill over its own transcript, its full record. A subagent pulled every tool call out of the log, so the counts aren't from memory. A tool call is one request to run a tool.
+After the build, the same session ran a `/retro` Skill over its own transcript, its full record. A [subagent](/learn/how-agents-work), a helper agent that does one job in its own fresh context window and reports back, pulled every tool call out of the log, so the counts aren't from memory. A tool call is one request to run a tool.
 
 A merged [Ticket](/learn/issues-and-keeping-track)'s check failed for a cause outside that Ticket. The orchestrator, the main agent running the build, investigated it itself: "60 tool calls, and most of the run's peak context." Peak context is the fullest its context window got.
 
@@ -217,7 +219,7 @@ retro ranks a small lint slip above a slow, costly search. How should you treat 
 Why: Treat the severity order as a first draft, because a quiet, expensive mistake can rank below a loud, cheap one. And discard any candidate you can't trace to a specific moment.
 ```
 
-**Most of the list can be noise.** Issue #1173 argues that triggers like a long search or a mistake are friction every real session has, so every run produces a list. The reporter's team asked the agent to prove its candidates after 15 of 17 runs. They suggest one narrow check per candidate. They add: "Zero survivors is a complete retro." The Skill doesn't do this yet, so they pass that instruction to `/retro`.
+**Most of the list can be noise.** Issue #1173 argues that triggers like a long search or a mistake are friction every real session has, so every run produces a list. The reporter's team asked the agent to prove its candidates after 15 of 17 runs. They suggest testing each candidate before you see it, with the narrowest check that could show it isn't needed, such as a `git log`, a count in the session or a docs read. Only the candidates that hold up, the survivors, reach you. They add: "Zero survivors is a complete retro." The Skill doesn't do this yet, so they pass that instruction to `/retro`.
 
 ```checkpoint quick-15
 You follow that suggestion: one narrow check per candidate, and none survives. Where does that leave the retro?
@@ -249,7 +251,7 @@ Why: retro sees one session, so it can't tell that a rule now fires too often. A
 
 ### Try it
 
-You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets it up), with a CI check on its pull requests (the Try it in [What CI/CD is](/learn/what-ci-cd-is) adds one). You'll need a session where an agent changed the booking endpoint in `api/`.
+You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets it up), with a CI check on its pull requests (the Try it in [What CI/CD is](/learn/what-ci-cd-is) adds one). You'll need a session where an agent changed the booking endpoint in `api/`: [implement](/learn/implement)'s Try it builds the endpoint in one.
 
 1. In that session, type `/retro`. If you've cleared it, type `/retro the session that changed the booking endpoint` in a fresh one.
 
@@ -258,8 +260,13 @@ You'll need your practice project (the Try it in [Issues: keeping track of work]
 2. For each candidate, find the moment in the session it came from. Cross out any you can't trace.
 3. For each one left, pick the narrowest check that could show it isn't needed. Try a `git log`, a count in the session, or a docs read.
 4. Run each check, and cross out any candidate it knocks down. If nothing mechanical is left, you're done.
-5. Ask the agent to add the mechanical one's check to `.github/workflows/ci.yml` on a new branch.
-6. Push the branch and open a pull request.
+5. Run `git switch main && git pull`. Then ask the agent to make a new branch, add the automated check that a surviving mechanical candidate proposes (such as a lint rule) to `.github/workflows/ci.yml`, and commit it.
+6. Push the branch and open a pull request:
+
+   ```sh
+   git push -u origin HEAD
+   gh pr create --fill
+   ```
 
    You should see CI run the new check on your existing code.
 
