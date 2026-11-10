@@ -57,7 +57,7 @@ Why: It covers the main flow, the on-ramps, codebase upkeep, vocabulary Skills s
 
 It also helps at a [phase boundary](/learn/context-hygiene), the gap between two phases. Check your five options top to bottom; the first yes wins:
 
-1. **Continue**, if the next phase needs this one as it happened, or fits in the [smart zone](/learn/context-hygiene) left, the room where the agent still reasons well.
+1. **Continue**, if the next phase needs this one as it happened (grilling to building is the standard yes), or fits in the [smart zone](/learn/context-hygiene) left, the room where the agent still reasons well.
 2. **`/clear`**, which empties the conversation, if nothing here matters to what's next.
 3. **`/handoff`**, which sums up the session in a file, only for a new harness (another agent tool), a new folder or repo, a colleague, or a side job.
 4. **A subagent**, a helper agent with its own fresh context, if a tightly scoped job can run without you. This session stays untouched.
@@ -100,7 +100,7 @@ Why: Mid-phase there's nothing to decide: continue, or split what's left into su
 
 ## When to use it
 
-- You can't remember which Skill fits, or what comes next in a Flow.
+- You can't remember which Skill fits, or what comes next in a Flow, a path through the Skills.
 - You have two Skills that look alike, and you want the line between them.
 - You're at a phase boundary and unsure which option fits.
 
@@ -251,7 +251,7 @@ Why: It says to start at the top of the main flow and walk down it in one unbrok
 
 Matt's comment shows what the router adds: it's "really telling you how to use your sessions as well." A list of names wouldn't do that.
 
-One detail has aged. In the video, grill-with-docs records what it learns in `context.md`. Version 1.3.0 renamed that file to `GLOSSARY.md`, so today's `SKILL.md` says `GLOSSARY.md`.
+One detail has aged. In the video, grill-with-docs records what it learns in `CONTEXT.md`. Version 1.3.0 renamed that file to `GLOSSARY.md`, so today's `SKILL.md` says `GLOSSARY.md`.
 
 ### Where it goes wrong
 
@@ -269,7 +269,7 @@ Why: This is a known bug, so the fix in a terminal is to type the slash command 
 
 **It told you to skip a step, and the step mattered.** It used to answer from its own summaries. In issue #614, it judged to-spec from a "one-line gloss in the router's own document", and never opened to-spec's `SKILL.md`. The user skipped to-spec and ran to-tickets, which made 12 Tickets. One Ticket named two places to change in an 885-line file, which had at least 7. That undercount began in the grilling, but to-spec would very likely have caught it.
 
-The fix: pull request #1194 added the rule to read first, and version 1.3.2 shipped it in October 2026. Matt's page still calls this bug "not fixed", but today's `SKILL.md` has the rule, so the `SKILL.md` decides. The page's habit is still worth keeping: before you act on a claim about another Skill, ask it to open that `SKILL.md` first.
+The fix: pull request #1194 added the rule to read first, and version 1.3.2 shipped it in October 2026. Matt's page, last updated on 24 August 2026, before the fix shipped, calls this bug "not fixed". The `SKILL.md` has had the rule since version 1.3.2, so the `SKILL.md` decides. The page's habit is still worth keeping: before you act on a claim about another Skill, ask it to open that `SKILL.md` first.
 
 ```checkpoint quick-16
 ask-matt tells you to skip to-spec, and you're about to act on that. What's the habit worth keeping?
@@ -279,7 +279,7 @@ ask-matt tells you to skip to-spec, and you're about to act on that. What's the 
 Why: Version 1.3.2 added the rule to read first, but the habit is still worth keeping. Before you act on a claim about another Skill, ask it to open that SKILL.md first.
 ```
 
-**It told you to edit a `SKILL.md`.** Someone asked how to make implement close Tickets, and it said to add a line to the Skill. That advice is often correct, but the edit rarely lasts. `npx skills update`, the command that refreshes your installed Skills, overwrites the file. A plugin install, a bundle of Skills you install together, is read-only. So put standing behaviour in your own `CLAUDE.md` or `AGENTS.md`.
+**It told you to edit a `SKILL.md`.** Someone asked how to make implement close Tickets, and it said to add a line to the Skill. That advice is often correct, but the edit rarely lasts. `npx skills update`, the command that refreshes your installed Skills, overwrites the file. A plugin install, a bundle of Skills you install together, is read-only. So put standing behaviour in your own [`CLAUDE.md` or `AGENTS.md`](/learn/instruction-files), the instruction files your agent reads at the start of every session.
 
 ```checkpoint quick-17
 You want implement to close Tickets on every future run. Where does that line go?
@@ -293,7 +293,7 @@ Why: `npx skills update` overwrites a Skill's file, and a plugin install is read
 
 ### Try it
 
-Ask the router about a real next step, then check its answer. You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Ask the router about a real next step, then check its answer. You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In a terminal, go to the project's root: `cd yoga-studio`.
 2. Start Claude Code: `claude`.
@@ -328,7 +328,7 @@ In your yoga-studio repo you describe a booking feature to /ask-matt. It says to
   > It recommends and stops; it never fires the Skill it names. Reading the file only checks the claim behind the skip.
 - [ ] to-spec can't run until its SKILL.md is open in the session, so the skip would fail anyway.
   > Typing /to-spec loads it. Opening the file is only about checking the claim behind the skip.
-Why: A one-line summary can't show what a step really does, so a skip needs the Skill's own file behind it. In issue #614, to-spec was skipped on its summary. One of the 12 Tickets made afterwards named two places in an 885-line file that had at least 7. to-spec's seam step would very likely have caught that undercount, and that's how a Ticket stays sized to its real work.
+Why: A one-line summary can't show what a step really does, so a skip needs the Skill's own file behind it. In issue #614, to-spec was skipped on its summary. One of the 12 Tickets made afterwards named two places in an 885-line file that had at least 7. to-spec's step that sketches where the feature will be tested would very likely have caught that undercount, since naming a test point makes you open the file. That's how a Ticket stays sized to its real work.
 ```
 
 ```checkpoint ask-matt-deeper-edit-skill-file
@@ -397,7 +397,7 @@ Why: You check the options top to bottom, and the first yes wins. /compact sits 
 ```
 
 ```final-test ask-matt-deeper-which-source-decides
-Matt's page calls the summaries bug "not fixed", but the current SKILL.md tells ask-matt to read a Skill's SKILL.md first. Which do you trust?
+Matt's page, last updated in August 2026, calls the summaries bug "not fixed", but the current SKILL.md tells ask-matt to read a Skill's SKILL.md first. Which do you trust?
 - [x] The SKILL.md, because it has the rule, and the changelog says version 1.3.2 shipped it.
 - [ ] Matt's page, because it's his own explainer and the SKILL.md is only the agent's summary of it.
 - [ ] Issue #614, because a user's bug report outranks both the page and the file.
@@ -435,8 +435,8 @@ In one session you've just finished grilling the plan for a booking API in FastA
 - [ ] Grilling and building have to share one session, however full it gets.
   > Room in the window matters. Near the limit, you'd compact at the boundary instead.
 - [ ] Moving on would need a handoff file first, and writing a good one takes too long.
-  > Compacting seeds a fresh session by itself, with no file. Its real cost is a lossy summary.
-Why: Continue is the first option to rule out at a boundary, and grilling to building is the standard yes. The build wants your reasoning as it happened. `/compact` and `/handoff` swap that primary source for a summary, which loses detail, and `/clear` keeps nothing.
+  > Compacting needs no file: it swaps the conversation for a summary by itself, in the same session. Its real cost is a lossy summary.
+Why: Continue is the first option to check at a boundary, and grilling to building is the standard yes. The build wants your reasoning as it happened. `/compact` and `/handoff` swap that primary source for a summary, which loses detail, and `/clear` keeps nothing.
 ```
 
 ```final-test ask-matt-new-harness

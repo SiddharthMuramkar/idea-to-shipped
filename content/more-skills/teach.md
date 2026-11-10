@@ -71,6 +71,7 @@ Why: teach is for when the learning itself is the project. One explanation in pa
 
 - If you want one question answered with sources, use [research](/learn/research) instead, because it leaves one cited file, not lessons.
 - If the agent's last message lost you, use [wait-what](/learn/wait-what) instead, because it re-explains that one message.
+- If you've done the learning and now want to build a feature whose idea is still vague, go back to its repo and use [grill-with-docs](/learn/grill-with-docs) instead, because it interviews you to sharpen the idea and saves the words and decisions you settle.
 
 ```checkpoint quick-4
 You want cited facts on connection pooling, and no lessons. Which fits?
@@ -115,6 +116,8 @@ Files in the folder you ran `/teach` in.
 - `learning-records/0001-<name>.md`: written when, for example, you show you understand something non-trivial, or a misconception, a wrong belief, is fixed. Covering a topic isn't enough.
 - `assets/`: reusable pieces shared by lessons, such as page styling and quiz code.
 - `NOTES.md`: notes the Skill keeps on your preferences.
+
+A glossary in `reference/` picks one word for each idea and lists the others as words to avoid. Once one exists, every lesson keeps to it, so each idea has one word.
 
 ```checkpoint quick-7
 A month from now, you need the rollback command fast. Where in the workspace do you look?
@@ -215,7 +218,7 @@ Why: The agent works out your zone of proximal development from your learning re
 
 In a June 2026 video, Matt shows his own course: solving a Rubik's Cube. Its `MISSION.md` said he wanted to solve a scrambled 3 by 3 Rubik's Cube "unaided at least once". Lesson one covered its anatomy, notation and the white cross, with diagrams and quizzes.
 
-In a later session he ran `teach` and said he could solve everything except the corner cycle, one algorithm. The context was empty, so the agent started by checking the state of the workspace. Then it wrote one new lesson on that algorithm alone, with an interactive tap-through of the moves.
+In a later session he ran `teach` and said he could solve everything except the corner cycle, one algorithm. The agent's [context](/learn/context-window), everything it can see at once, was empty, so the agent started by checking the state of the workspace. Then it wrote one new lesson on that algorithm alone, with an interactive tap-through of the moves.
 
 ```checkpoint quick-13
 Matt's new session starts with an empty context. What does the agent do first?
@@ -241,7 +244,7 @@ You're about to start your first teach session. How do you stop lessons assuming
 Why: teach has no assessment step, and session one has no learning records. So it has only your mission to go on, unless you say your level.
 ```
 
-**The right quiz answer kept landing first.** One contributor's fix in the instructions still left it first 33 times out of 33. In October 2026, pull request #1183 added a rule to `SKILL.md`: "Vary which position holds the correct answer across questions." Matt's page still calls this unfixed. The pull request left out a shuffle in the quiz widget, calling the written rule the smallest fix. So nothing enforces it.
+**The right quiz answer kept landing first.** One contributor's fix in the instructions still left it first 33 times out of 33. In October 2026, pull request #1183 added a rule to `SKILL.md`: "Vary which position holds the correct answer across questions." Matt's page, last updated in August 2026, before that pull request, still calls this unfixed. The pull request left out a shuffle in the quiz widget, calling the written rule the smallest fix. So nothing enforces it.
 
 If answers keep landing in one slot, ask for a quiz component in `assets/` that shuffles them. Answer order is a [mechanical mistake](/learn/fix-the-environment), so code can fix it, and wording hasn't. The agent reads `assets/` before writing a lesson and builds from what's there.
 
@@ -265,11 +268,11 @@ teach's lessons are designed around spacing, and you want to review. What do you
 Why: The lessons are designed around spacing, but "nothing schedules a review". teach won't switch from new material on its own, so you ask.
 ```
 
-**The lessons come out thin.** Results vary by model, [harness](/learn/context-hygiene) and [effort level](/learn/models-effort-ultracode). One user got "a single 30-line HTML card" through the Copilot CLI harness with Codex, a model from OpenAI. Change one of those before you rewrite your prompt.
+**The lessons come out thin.** Results vary by model, [harness](/learn/how-agents-work) and [effort level](/learn/models-effort-ultracode). One user got "a single 30-line HTML card" through the Copilot CLI harness with one of OpenAI's Codex models. Change one of those before you rewrite your prompt.
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. teach stays out of that repo, so you'll make a second one beside it.
+You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. teach stays out of that repo, so you'll make a second one beside it.
 
 Your first message will say this, with its last two sentences changed to fit you:
 
@@ -279,7 +282,7 @@ Your first message will say this, with its last two sentences changed to fit you
 
 1. From the folder holding `yoga-studio`, create the repo: `gh repo create yoga-studio-learning --private --clone`. You should see a new folder.
 2. Go into it: `cd yoga-studio-learning`.
-3. Install the Skill there: `npx skills@latest add mattpocock/skills --skill teach`. Choose Claude Code if asked.
+3. If you installed Matt's Skills with the plugin, or for your whole computer, skip this step: teach is already here. Otherwise install it for this folder: `npx skills@latest add mattpocock/skills --skill teach`, choosing Claude Code if asked.
 4. Start Claude Code: `claude`.
 5. Send the message above, and answer any questions it asks. You should see `MISSION.md`, then `RESOURCES.md`, then a file in `lessons/`.
 6. Open `RESOURCES.md`. You should see its sources listed under Knowledge and Wisdom.
@@ -391,7 +394,7 @@ You read that teach's right quiz answer always lands first. What does SKILL.md a
 - [ ] It says nothing about position, so the right answer still lands first, as Matt's page reports.
 - [ ] It ships a quiz widget in assets/ that shuffles every answer list when a lesson loads.
 - [ ] It drops quizzes from lessons, so the position of the right answer no longer matters.
-Why: A pull request in October 2026 added "Vary which position holds the correct answer across questions." to SKILL.md, and Matt's page still calls the problem unfixed. The pull request left out a mechanical shuffle in the quiz widget, so the rule is only words and nothing enforces it.
+Why: A pull request in October 2026 added "Vary which position holds the correct answer across questions." to SKILL.md, and Matt's page, last updated in August 2026, before that pull request, still calls the problem unfixed. The pull request left out a mechanical shuffle in the quiz widget, so the rule is only words and nothing enforces it.
 ```
 
 ```final-test teach-learn-sql-migrations

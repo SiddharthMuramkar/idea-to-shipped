@@ -6,13 +6,13 @@ summary: How orca-cli has your agent start a new agent in its own Orca worktree,
 
 ## What it's for
 
-Say [Ticket](/learn/issues-and-keeping-track) #12 is merged, and Ticket #13, the booking endpoint, is next. You want another agent to own #13 while you carry on. By hand, that's a [worktree](/learn/branches-and-worktrees), a terminal, an agent and a long paste.
+Say [Ticket](/learn/issues-and-keeping-track) #12 is done, closed by its merged pull request, and Ticket #13, the booking endpoint, is next. You want another agent to own #13 while you carry on. By hand, that's a [worktree](/learn/branches-and-worktrees), a terminal, an agent and a long paste.
 
 **orca-cli's handoff job: your agent starts another agent in a new Orca worktree, then stops.**
 
 orca-cli comes with [Orca](/learn/orchestration), the app that runs several coding agents side by side. Orca's makers wrote it, not Matt Pocock, whose [Skills](/learn/skills) most of this course covers.
 
-The new agent starts from your **brief**, its first prompt, and owns the work from then on. That's a [full handoff](/learn/claude-handoff).
+The new agent starts from your **brief**, its first prompt, and owns the work from then on. That's a **full handoff**.
 
 ```checkpoint quick-1
 Your agent has handed off Ticket #13 and stopped. Who owns #13 now?
@@ -132,7 +132,7 @@ Why: A Skill file you install stays as it was, while the `orca` program changes 
 ```checkpoint quick-7
 You tell your agent: hand this off to another agent. You say nothing about watching it. How is that read?
 - [x] As a full ownership transfer, since no supervision was asked for.
-- [ ] As a request to supervise, since handing off implies a coordinator.
+- [ ] As a request to supervise, since handing off implies someone will supervise.
 - [ ] As a question for you, since the wording could mean either one.
 Why: Orca gave that wording one meaning. It's a full ownership transfer, unless you explicitly ask for supervision.
 ```
@@ -207,7 +207,7 @@ Why: By default, Orca starts every supported agent with its full-autonomy flag, 
 
 One user wanted a session in plan mode, where you iterate on a plan first, and it started with permissions bypassed. To change the default, edit the agent's launch arguments in **Settings → Agents**. That user warns the change "is global and also changes every worker and every hand-opened tab".
 
-**Your agent ran an `orca orchestration` command during a handoff.** Some of those commands belong to supervision. `task-create` adds a **task row**, Orca's tracking record for a Task, and that record belongs to a coordinator. After a handoff, no coordinator is left to own it. So in June 2026 Orca forbade `task-create`, `dispatch --inject` and `check --wait` for handoffs. For a handoff, leave those commands out. And "if a task row is needed, the user asked for supervised orchestration."
+**Your agent ran an `orca orchestration` command during a handoff.** Some of those commands belong to supervision. `task-create` adds a **task row**, Orca's tracking record for a Task, one piece of supervised work. That record belongs to a **coordinator**, the agent that supervises other agents in [orchestration](/learn/orchestration). After a handoff, no coordinator is left to own it. So in June 2026 Orca forbade `task-create`, `dispatch --inject` and `check --wait` for handoffs. For a handoff, leave those commands out. And "if a task row is needed, the user asked for supervised orchestration."
 
 ```checkpoint quick-12
 You need a task row for a Ticket you're handing off. What does that tell you?
@@ -233,7 +233,7 @@ Why: Repeating it with `--retry-launch` makes Orca replay the launch it already 
 
 ### Try it
 
-You'll need your practice project (if you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first). It needs a FastAPI app in `api/` on `main`; if it's missing, have your agent add one. You'll also need Orca, with orca-cli installed: the command is under Why it exists.
+You'll need your practice project (if you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first). It needs a FastAPI app in `api/` on `main`, pushed to GitHub, because the new worktree starts from your remote's `main`. If it's missing, have your agent add one, then commit and push it. Run `git pull` on `main` first, so Orca's copy is current. You'll also need Orca, with orca-cli installed: the command is under Why it exists.
 
 Send this request:
 
@@ -248,7 +248,7 @@ Brief: add it to the FastAPI app in api/, with a test, and don't touch web/.
 4. Watch what it runs. You should see `orca skills get orca-cli`, then one `orca worktree create` with `--no-parent`.
 5. Look for `orca orchestration` in what it ran. You should see no such command.
 6. Read its last message. You should see the new worktree's id and the agent's handle.
-7. Find the new worktree's card in Orca's sidebar. You should see the agent's status: yellow while working.
+7. Find the new worktree's card in Orca's sidebar. You should see a spinner on the agent's row while it works. An amber question mark would mean it's waiting on you.
 8. Open that worktree yourself, since Orca leaves it in the background.
 9. Read the new agent's chat or terminal. You should see it working from your brief.
 

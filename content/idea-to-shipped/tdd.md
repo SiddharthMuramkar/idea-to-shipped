@@ -54,7 +54,7 @@ The rules also name three **anti-patterns**, or common mistakes:
 
 - **Implementation-coupled test**: it reaches into the code's insides instead of its interface.
 - **Tautological test**: it computes its expected value the same way the code does, so it can never disagree with the code.
-- **Horizontal slicing**: writing all the tests first, so no test can respond to what the last cycle taught you.
+- **Horizontal slicing**: writing all the tests first, so no test can respond to what the last cycle taught you. The fix is vertical slices: one test, then the code that passes it, then the next.
 
 ```checkpoint quick-3
 Your test calls a private helper instead of going through the endpoint. Which mistake is that?
@@ -204,7 +204,7 @@ rows:
 
 Matt removed that step because agents almost never performed it, and because review and implementation work better as separate sessions. The phrase "red-green-refactor" still starts the Skill, but what you get is red-green.
 
-The Skill's file is short on purpose. The loop rests on **leading words**, compact terms the model already knows and thinks with: TDD, red/green and tracer bullet. So the old Workflow section, which spelled the loop out step by step, was largely a no-op: it changed almost nothing. What's left is a reference: seams, anti-patterns and the rules of the loop.
+The Skill's file is short on purpose. The loop rests on **leading words**, compact terms the model already knows and thinks with: TDD, red/green and [tracer bullet](/learn/small-end-to-end-tickets) (a thin path you can see working end to end). So the old Workflow section, which spelled the loop out step by step, was largely a no-op: it changed almost nothing. What's left is a reference: seams, anti-patterns and the rules of the loop.
 
 ```checkpoint quick-12
 Why could Matt cut the Workflow section from tdd?
@@ -250,7 +250,7 @@ A slice really matters, and you know agents sometimes write the code first. What
 Why: No instruction makes an agent comply every time, and stricter wording gains little. If a slice matters, watch the run.
 ```
 
-**implement skipped tdd.** One user counted 17 implement runs in their transcripts, with 0 tdd calls. The issue blames no agreed seam, so nothing triggers tdd, and "where possible", which reads as optional. Matt's later change to a Skill tool call kept those words. So look in the run for a `tdd` Skill tool call, which shows the agent really loaded it, before any code changes.
+**implement skipped tdd.** One user counted 17 implement runs in their transcripts, with 0 tdd calls. The issue blames no agreed seam, so nothing triggers tdd, and "where possible", which reads as optional. Matt later changed implement to load tdd through the Skill tool, the tool an agent calls to load a Skill by name, but kept those words. So look in the run for a `tdd` Skill tool call, which shows the agent really loaded it, before any code changes.
 
 **The first red only proved a name was missing.** A model asked to reproduce a bug wrote tests against a method that didn't exist yet. It reported "confirmed red (no method named drain_settled, 4 compile errors)". The bug itself never happened, so no test guards against it coming back. Ask for a test that calls the existing code and fails on the wrong behaviour.
 
@@ -264,7 +264,7 @@ Why: That red only proves a name is missing. The bug never happened in the test,
 
 **A test vanished on the way to green.** Beck lists "disabling or deleting tests" as a sign of an AI cheating. Check the diff, and have the agent pass it for real.
 
-**The test only restates the code.** For config, wiring or glue, there's often no independent value to check against, so the loop gives you "a test that restates the implementation". Nothing in tdd decides whether a change is worth the loop. You make that call yourself, or write the rule into your `CLAUDE.md`. The request for such a rule was closed as not planned.
+**The test only restates the code.** For config, wiring or glue, there's often no independent value to check against, so the loop gives you "a test that restates the implementation". Nothing in tdd decides whether a change is worth the loop. You make that call yourself, or write the rule into your repo's [`CLAUDE.md`](/learn/instruction-files), the instruction file Claude Code reads each session. The request for such a rule was closed as not planned.
 
 **A browser test came first.** A browser test drives a real web page, and it's slow enough that the red-green loop stops paying for itself. One agent wrote one before the feature existed, then decided the test was broken. So say in your repo's `CLAUDE.md` that browser tests come after the behaviour works.
 
@@ -272,17 +272,21 @@ Why: That red only proves a name is missing. The bug never happened in the test,
 
 Use tdd to fix one bug in your practice project. Say a booking still goes through for a class that has already started. If you haven't added a full-class rule yet, a full class still taking one more booking works too.
 
-You'll need the practice project's booking endpoint. [keeping track](/learn/issues-and-keeping-track)'s Try it step sets up the project, and [implement](/learn/implement)'s builds the endpoint. It needs pytest, running in Docker Compose as a service called `api`.
+You'll need the practice project's booking endpoint. [keeping track](/learn/issues-and-keeping-track)'s Try it step sets up the project, and [implement](/learn/implement)'s builds the endpoint. It needs a FastAPI app in `api/`, with pytest, running in Docker Compose as a service called `api`. If your project doesn't have that yet, ask your agent to set it up first.
 
-1. Open a fresh session in the project and type `/tdd`.
-2. Describe the bug, and ask the agent to fix it test-first.
-3. Read the seams it proposes. You should see a note on what each one catches and misses.
-4. Confirm the seam `POST /bookings`.
-5. Read the first red. You should see pytest fail because the booking went through.
-6. Read the test's expected value, the response it asserts. It should be a literal, not computed the way the code does.
-7. Let the agent write only enough code to pass the test.
-8. Run `docker compose exec api pytest`. You should see every test pass.
-9. Commit the fix on a branch, and merge it through a pull request. You should see it on `main`.
+1. In your terminal, run `git switch main`, then `git pull`.
+2. Run `git switch -c fix-started-class`. You should see that branch checked out.
+3. Open a fresh session in the project and type `/tdd`.
+4. Describe the bug, and ask the agent to fix it test-first.
+5. Read the seams it proposes. You should see a note on what each one catches and misses.
+6. Confirm the seam `POST /bookings`.
+7. Read the first red. You should see pytest fail because the booking went through.
+8. Read the test's expected value, the response it asserts. It should be a literal, not computed the way the code does.
+9. Let the agent write only enough code to pass the test.
+10. Run `docker compose exec api pytest`. You should see every test pass.
+11. Run `git add -A && git commit -m "Refuse bookings for started classes"`, then `git push -u origin fix-started-class`.
+12. Run `gh pr create --title "Refuse bookings for started classes" --body "Fixes the started-class bug"`.
+13. Merge it once its checks pass. You should see the fix on `main`.
 
 If a seam has no note, ask for one before you confirm. If the first red is an `ImportError` or `AttributeError`, only a name is missing. Ask for a test that calls the existing endpoint and fails because the booking goes through.
 
@@ -411,7 +415,7 @@ The tests for your cancellation rule have gone green. The code works, but you'd 
 - [x] Leave the tidy-up for the review, once the building is done.
   > Right: that's `/code-review`.
 - [ ] Tidy it now, as the refactor step of the red-green loop.
-  > That's `/tdd`. Refactoring is not part of the loop. Each cycle is one test and only enough code.
+  > tdd has no refactor step: refactoring is not part of the loop. Each cycle is one test and only enough code.
 - [ ] Write the pull request body first, then tidy before merging.
   > That's `/pr`. The pull request should describe the finished change, after the review.
 Why: Refactoring isn't part of the red-green loop, so tidying waits until the building is done. The review stage then flags things like a mysterious name or duplicated code, and says how to fix them.

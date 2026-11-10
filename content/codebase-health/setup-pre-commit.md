@@ -6,7 +6,7 @@ summary: setup-pre-commit makes Git format, type-check and test your JavaScript 
 
 ## What it's for
 
-Say your agent keeps committing type errors to the yoga-studio website: code that TypeScript's checker rejects. A line in `CLAUDE.md`, the agent's instruction file, telling it to run the checks doesn't help, because a sentence can't fail.
+Say your agent keeps committing type errors to the yoga-studio website, which is written in **TypeScript** (JavaScript with types): code that TypeScript's checker rejects. A line in `CLAUDE.md`, the agent's instruction file, telling it to run the checks doesn't help, because a sentence can't fail.
 
 **setup-pre-commit makes Git format, type-check and test your code at every commit, and a failed step blocks it.**
 
@@ -28,7 +28,7 @@ Why: A pre-commit hook is a script that runs inside `git commit`, before the com
 
 The new names:
 
-- **npm** is a package installer like pip, for JavaScript, the language web browsers run.
+- **npm** is a package installer, like Python's pip, for JavaScript, the language web browsers run.
 - **npx** runs a package's tool.
 - **lint-staged** runs checks only on **staged files**, the ones marked with `git add`.
 - **Prettier**, the tool it runs here, formats code automatically.
@@ -163,7 +163,7 @@ Your hook script ends with exit status 1. What does Git do?
 Why: Anything but zero means the hook failed, and a failed hook makes Git abort the commit.
 ```
 
-**Git is picky about hook files.** It skips any file in its hooks folder without the **executable bit**, the permission that marks a file as runnable. The Skill's verify step checks `.husky/pre-commit` for that bit. Git also runs a pre-commit hook from your repo's top folder, so a hook for a subfolder has to change folder itself.
+**Git is picky about hook files.** It skips any file in its hooks folder without the **executable bit**, the permission that marks a file as runnable. Husky handles that bit for you: it points Git's hooks setting at `.husky/_`, writes runnable hook files there, and they run your `.husky/pre-commit` with `sh`, so that file works with or without the bit. The Skill's verify step still checks it for the bit, which does no harm. Git also runs a pre-commit hook from your repo's top folder, so a hook for a subfolder has to change folder itself.
 
 ```checkpoint quick-11
 A file in Git's hooks folder doesn't have the executable bit set. What does Git do with it?
@@ -173,7 +173,7 @@ A file in Git's hooks folder doesn't have the executable bit set. What does Git 
 Why: Without the executable bit, Git skips the file, so that hook never runs.
 ```
 
-**Husky does the setup.** Git looks for hooks in `.git/hooks` by default, and a setting can point it somewhere else. Husky's docs name the two jobs: "Git needs to be configured and husky needs to setup files in `.husky/`." The `prepare` script runs `husky` for you after each install.
+**Husky does the setup.** Git looks for hooks in `.git/hooks` by default, and a setting can point it somewhere else. Husky points it at `.husky/_`. Husky's docs name the two jobs: "Git needs to be configured and husky needs to setup files in `.husky/`." The `prepare` script runs `husky` for you after each install.
 
 **lint-staged puts the fixes back.** When Prettier rewrites a staged file, the new version isn't staged yet. lint-staged "automatically restages them", so the commit holds the formatted version.
 
@@ -203,7 +203,7 @@ Why: Git reads one hooks folder per repo, so it's simplest to pick one tool.
 
 Matt's own app, course-video-manager, shows a hook growing. In January 2026, a commit he made with Claude added Husky and Prettier. Its hook was one line, `npx lint-staged`, and lint-staged then ran Prettier, the type check and the tests.
 
-By October 2026, that hook ran 20 commands. The newest line came after a mistake: "Five agent worktrees were committed as gitlinks". A **gitlink** is how Git records a folder as a separate repo, not as files. The fix was to fail the hook on any future gitlink. So that mistake became one more line in the hook.
+By October 2026, that hook ran 20 commands. The newest line came after a mistake: "Five agent worktrees were committed as gitlinks". A **worktree** is a folder with one of the repo's branches checked out, here one per agent ([Branches and worktrees](/learn/branches-and-worktrees)). A **gitlink** is how Git records a folder as a separate repo, not as files. The fix was to fail the hook on any future gitlink. So that mistake became one more line in the hook.
 
 ```checkpoint quick-14
 Agent worktrees got committed as gitlinks by mistake. What stops that happening again?
@@ -257,11 +257,12 @@ Why: The Skill's first step looks only for `bun.lockb`. With no match, it falls 
 
 Watch a clean commit pass, then a broken one get blocked. Use only your practice project.
 
-You'll need that project, the yoga-studio booking site (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`, and a CI workflow in `.github/workflows/ci.yml` ([What CI/CD is](/learn/what-ci-cd-is) explains CI). `web/package.json` needs `typecheck` and `test` scripts that pass. If anything's missing, ask your agent to set it up.
+You'll need that project, the yoga-studio booking site (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`, and the CI workflow `.github/workflows/ci.yml` (the Try it in [What CI/CD is](/learn/what-ci-cd-is) adds it). `web/package.json` needs `typecheck` and `test` scripts that pass. If anything's missing, ask your agent to set it up.
 
-1. If you don't have this Skill yet, install it: `npx skills@latest add mattpocock/skills --skill setup-pre-commit`.
-2. In your repo's top folder, start your agent: `claude`.
-3. Paste this request, which asks for Husky's subfolder setup:
+1. In your repo's top folder, start a branch from an up-to-date `main`: `git switch main && git pull && git switch -c add-pre-commit`. The Skill commits to whatever branch it's on.
+2. If you don't have this Skill yet, install it: `npx skills@latest add mattpocock/skills --skill setup-pre-commit`.
+3. Start your agent: `claude`.
+4. Paste this request, which asks for Husky's subfolder setup:
 
 ```text
 Set up pre-commit hooks with setup-pre-commit, for the site in web/.
@@ -270,14 +271,15 @@ cd .. && husky web/.husky, run npm run prepare in web/, and start
 web/.husky/pre-commit with cd web.
 ```
 
-4. Wait for it to finish. In a subfolder, `.git can't be found` from `npx husky init` is expected.
-5. Open `web/.husky/pre-commit`. You should see `cd web`, then the Skill's three lines.
-6. In a second terminal in the top folder, run `git log -1 --oneline`. You should see the Skill's setup commit, which passed your new hook.
-7. In a `.ts` file your type check covers, add this line: `const broken: number = "yoga";`.
-8. Try to commit it: `git add -A && git commit -m "break a type"`. You should see the type check's error, and no new commit.
-9. If the commit went through, the hook isn't firing. In `web/`, run `npm run prepare`, then recheck `cd web`.
-10. Delete the broken line, then run `git add -A`.
-11. Open `.github/workflows/ci.yml`. If it doesn't run the type check, ask your agent to add a job that does. Then `--no-verify` can't skip it.
+5. Wait for it to finish. In a subfolder, `.git can't be found` from `npx husky init` is expected.
+6. Open `web/.husky/pre-commit`. You should see `cd web`, then the Skill's three lines.
+7. In a second terminal in the top folder, run `git log -1 --oneline`. You should see the Skill's setup commit, which passed your new hook.
+8. In a `.ts` file your type check covers, add this line: `const broken: number = "yoga";`.
+9. Try to commit it: `git add -A && git commit -m "break a type"`. You should see the type check's error, and no new commit.
+10. If the commit went through, the hook isn't firing. Undo the commit and keep its change staged: `git reset --soft HEAD~1`. In `web/`, run `npm run prepare`. Check that `web/.husky/pre-commit` starts with `cd web`, then repeat step 9.
+11. Delete the broken line, then run `git add -A`.
+12. Open `.github/workflows/ci.yml`. If it doesn't run the type check, ask your agent to add a job that does. Then `--no-verify` can't skip it.
+13. Commit and push, then open a pull request: `git commit -m "check types in CI" && git push -u origin HEAD && gh pr create --fill`. You should see `test` and the type-check job run. Then merge: `gh pr merge --squash --delete-branch`.
 
 ### Read more
 
@@ -416,12 +418,12 @@ Why: lint-staged only touches staged files, so it's fast. The type check and the
 
 ```final-test setup-pre-commit-deeper-skipped-hook
 The website's pre-commit hook runs the type check and the tests. Your `CLAUDE.md` already says "never use `--no-verify`". Still, the agent committed failing tests with `git commit --no-verify`. Why didn't the rule in `CLAUDE.md` stop it?
-- [x] A sentence can't fail, and `--no-verify` skips the whole hook; only denying the command stops it.
+- [x] A sentence can't fail, and `--no-verify` skips the whole hook, so none of its checks run.
 - [ ] The agent hadn't loaded `CLAUDE.md` in that session, so it never saw the rule against `--no-verify`.
   > In one bug report the rule sat in both `CLAUDE.md` and the agent's memory, and 6 commits with failing tests landed anyway.
 - [ ] The hook runs after Git has made the commit, so it can only report the failing tests afterwards.
   > The pre-commit hook runs before Git makes the commit. `--no-verify` meant it never ran at all.
-Why: A rule in `CLAUDE.md` is a sentence, and a sentence can't fail. `--no-verify` skips the whole hook, so none of its checks run. So the fixes block the command itself: Richardson denied the agent direct `git commit`, and the bug report's author denied the flag with `permissions.deny` rules and blocked pushes unless the hook had passed.
+Why: A rule in `CLAUDE.md` is a sentence, and a sentence can't fail. `--no-verify` skips the whole hook, so none of its checks run. So the fixes don't rely on a sentence: Richardson denied the agent direct `git commit`, and the bug report's author denied the flag with `permissions.deny` rules and blocked pushes unless the hook had passed. CI runs the same checks again.
 ```
 
 ```sources

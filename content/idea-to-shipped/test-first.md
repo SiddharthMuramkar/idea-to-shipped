@@ -6,7 +6,7 @@ summary: Write a failing test first, then only enough code to pass it, one small
 
 ## What test first is
 
-Say you ask your agent to build [Ticket](/learn/issues-and-keeping-track) #13, the endpoint (the web address your app calls) that creates a booking. It tells you it's done. But with nothing to run, looking done is all it has to go on. Every mistake waits until you notice it.
+Say you ask your agent to build [Ticket](/learn/issues-and-keeping-track) #13, the endpoint (an address in your app that answers requests) that creates a booking. It tells you it's done. But with nothing to run, looking done is all it has to go on. Every mistake waits until you notice it.
 
 ```checkpoint quick-1
 Your agent says the endpoint is done, but it had nothing to run. What does it really know?
@@ -30,7 +30,7 @@ def test_member_can_book_a_class(client):  # client: a helper that calls your ap
     assert response.status_code == 201
 ```
 
-It runs `pytest`, Python's test runner. The test is red, because the endpoint doesn't exist yet:
+It runs `pytest`, a popular test runner for Python, installed as a package. The test is red, because the endpoint doesn't exist yet:
 
 ```text
 FAILED test_bookings.py::test_member_can_book_a_class - assert 404 == 201
@@ -83,7 +83,7 @@ You're about to write every test for a feature, and then all its code. What's th
 - [x] The tests check behaviour you imagined, not behaviour you've seen.
 - [ ] The tests run too slowly, because they were all written together.
 - [ ] The code ends up too small, because the tests ask for so little.
-Why: That's horizontal slicing: doing one layer at a time. Those bulk tests check behaviour you imagined, not behaviour you've seen.
+Why: That's horizontal slicing: doing one kind of work at a time. Those bulk tests check behaviour you imagined, not behaviour you've seen.
 ```
 
 **Refactoring** means tidying code without changing what it does. Refactoring is not part of the loop: it belongs to the review stage, in [code-review](/learn/code-review).
@@ -109,7 +109,7 @@ You'll meet test first again in the [main flow](/learn/main-flow)'s Skills:
 
 - [to-spec](/learn/to-spec), which sketches the seams before any code is written and checks them with you;
 - [tdd](/learn/tdd), the Skill for test-driven development: red, then green, then the next test;
-- [implement](/learn/implement), the Skill that builds a Spec or its Tickets, test-first, then commits. It calls tdd wherever it can;
+- [implement](/learn/implement), the Skill that builds a Spec (the written plan for a whole feature, split into Tickets) or its Tickets, test-first, then commits. It calls tdd wherever it can;
 - [implement-spec](/learn/implement-spec), which gives each Ticket an **implementer subagent**: a helper agent that builds one Ticket in its own [worktree](/learn/branches-and-worktrees), and calls tdd.
 
 ```checkpoint quick-7
@@ -227,7 +227,7 @@ Why: That's a tautological test, and it could never fail. Copying the code's com
 
 **A batch of tests landed before any code.** That's horizontal slicing. Those tests check the shape of things rather than what a user sees. They stop noticing real changes, and they lock in a test structure before you understand the code. So go back to one test at a time.
 
-**A browser test won't go green, and the agent blames the test.** A browser test drives a real web page. One user's agent wrote one first, re-ran it for a long time, then decided the test was broken. The feature didn't exist yet. Browser tests are slow enough that the red-green loop stops paying for itself. So say in your repo's `CLAUDE.md` that browser tests come after the behaviour works.
+**A browser test won't go green, and the agent blames the test.** A browser test drives a real web page. One user's agent wrote one first, re-ran it for a long time, then decided the test was broken. The feature didn't exist yet. Browser tests are slow enough that the red-green loop stops paying for itself. So say in your repo's [`CLAUDE.md`](/learn/instruction-files), the instruction file Claude Code reads in every session, that browser tests come after the behaviour works.
 
 **You asked for red-green-refactor, and nothing got refactored.** The tdd Skill dropped its refactor step in June 2026. Its description and the README still say "red-green-refactor". Issue #589 on Matt's repo asks to fix the description. The phrase still loads the Skill, but what you get is red-green, so leave the tidying for review.
 
@@ -241,19 +241,24 @@ Why: The Skill dropped its refactor step, but the old name lives on. The phrase 
 
 ### Try it
 
-Add one small rule to the booking API, test first. You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it). It needs a FastAPI app in `api/`, with pytest, running in Docker Compose as a service called `api`. If your project doesn't have that yet, ask your agent to set it up first.
+Add one small rule to the booking API, test first. You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), and Docker (Docker Desktop, or Docker Engine with the Compose plugin) installed and running. The project needs a FastAPI app (FastAPI is a Python framework for web APIs) in `api/`, with pytest, run by Docker Compose (Docker's tool that starts an app's parts in containers from one file) as a service called `api`. If your project doesn't have that yet, ask your agent to set it up first.
 
-1. Run `docker compose exec api pytest`. You should see no failures.
-2. Pick one rule. Leave creating a booking to [implement](/learn/implement)'s Try it. For example: `GET /bookings` returns an empty list when nobody has booked.
-3. Ask your agent: "Which seams could test this rule? Say what each one catches and misses."
-4. Agree the seam: the HTTP API in `api/`, not a private helper.
-5. Ask for one test at that seam, and no code yet.
-6. Run `docker compose exec api pytest`. You should see the new test fail: red.
-7. Read the failure. The behaviour should be missing, rather than an import error or a typo.
-8. Ask your agent to write only enough code to pass that test.
-9. Run `docker compose exec api pytest` again. You should see it pass: green.
-10. Ask for TDD evidence: the command it ran and its output, red before and green after.
-11. Merge it all through a pull request. You should see the `test` check from [CI](/learn/what-ci-cd-is) pass. If not, add what's missing to `api/requirements.txt`.
+1. Make a branch from an up-to-date `main`: `git switch main && git pull && git switch -c list-bookings`.
+2. Start the service: `docker compose up -d`. Then run `docker compose ps`. You should see `api` listed as running.
+3. Run `docker compose exec api pytest`. You should see no failures.
+4. Pick one rule. Leave creating a booking to [implement](/learn/implement)'s Try it. For example: `GET /bookings` returns an empty list when nobody has booked.
+5. Ask your agent: "Which seams could test this rule? Say what each one catches and misses."
+6. Agree the seam: the HTTP API in `api/`, not a private helper.
+7. Ask for one test at that seam, and no code yet.
+8. Run `docker compose exec api pytest`. You should see the new test fail: red.
+9. Read the failure. The behaviour should be missing, rather than an import error or a typo.
+10. Ask your agent to write only enough code to pass that test.
+11. Run `docker compose exec api pytest` again. You should see it pass: green.
+12. Ask for TDD evidence: the command it ran and its output, red before and green after.
+13. Commit and push: `git add . && git commit -m "List bookings, test first" && git push -u origin list-bookings`.
+14. Open the pull request: `gh pr create --fill`.
+15. Watch the checks: `sleep 10 && gh pr checks --watch`. You should see the `test` check from [CI](/learn/what-ci-cd-is) pass. If it fails on a missing package, add it to `api/requirements.txt`, then commit and push again.
+16. Merge: `gh pr merge --squash --delete-branch`.
 
 ### Read more
 

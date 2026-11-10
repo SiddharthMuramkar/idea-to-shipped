@@ -92,12 +92,12 @@ Your repo's written standard allows something a code smell would flag. What happ
 - [x] It's dropped, because the repo standard always wins.
 - [ ] It's reported as a hard failure, above your standard.
 - [ ] It stays in the report, for you to settle by hand.
-Why: The baseline sits under your written rules. If a standard allows what a smell would flag, the smell is dropped. And a smell is never a hard failure anyway.
+Why: The fixed set of smells sits under your written rules. If a standard allows what a smell would flag, the smell is dropped. And a smell is never a hard failure anyway.
 ```
 
 ## Why the reviewer enforces the standards
 
-You might expect the agent writing the code to enforce the standards as it goes. But its context window is under the most pressure: it explores, writes code and debugs. The reviewing agent receives the diff, so it has no exploring to do. So the reviewer, not the writer, enforces the coding standards.
+You might expect the agent writing the code to enforce the standards as it goes. But its context window is under the most pressure: it explores, writes code and debugs. The reviewing agent receives the [diff](/learn/commits-and-diffs), the exact lines the change adds and removes, so it has no exploring to do. So the reviewer, not the writer, enforces the coding standards.
 
 ```checkpoint quick-6
 Why is the agent writing the code the wrong one to enforce the standards?
@@ -153,7 +153,7 @@ That fits code-review's rule: each smell is a rule of thumb, never a hard violat
 
 **A reviewer that didn't write the code.** Claude Code has its own built-in `/code-review`, a different command with the same name. It reviews the diff in a fresh subagent that never saw your chat. Anthropic, the company that makes Claude, says it "isn't swayed by the reasoning that produced the code."
 
-A subagent isn't better by itself. Anthropic: "A fresh reviewer does help, because it hasn't seen your reasoning". Since October 2026, Matt's code-review asks for this outright: it tells every subagent to start with a fresh context window.
+A subagent isn't better by itself. Anthropic: "A fresh reviewer does help, because it hasn't seen your reasoning". Since October 2026, Matt's code-review asks for this outright: it says to start every subagent with a fresh context window.
 
 ```checkpoint quick-10
 What do you gain by handing a review to a fresh subagent?
@@ -218,7 +218,7 @@ footer: "So Anthropic's reviewer is a Spec axis on its own."
 
 ### Where it goes wrong
 
-**You got a list of bugs, not two reports.** You reached Claude Code's built-in `/code-review`, which hunts bugs in the diff. When you install Matt's Skills, one of the two wins, depending on how you installed them.
+**You got a list of bugs, not two reports.** You reached Claude Code's built-in `/code-review`, which hunts bugs in the diff. When you install Matt's Skills, one of the two wins, depending on how you installed them. With the plugin, type the full name, `/mattpocock-skills:code-review`; with a plain install, your copy takes `/code-review`.
 
 **The review finds new problems on every run.** Each fix adds new code to review, and the judgement calls change from run to run. Matt is blunt: "Do not run it in a loop until it comes back clean, because it never will." Treat a pass as a list of leads. Act on the findings with a cited rule behind them, then stop. implement-spec differs: it reviews once, and hands every issue to a single fresh subagent to fix.
 
@@ -232,7 +232,7 @@ You've edited three files on a new branch, committed nothing, and run code-revie
 Why: It compares HEAD with the point you name, so uncommitted edits aren't in the diff. A branch with no commits yet has an empty diff. So commit first, then review.
 ```
 
-**The review runs in the session that wrote the code.** An agent reviewing in the session that wrote the code has every assumption behind that code in its context. One reader put it this way: "Same context reviewing itself isn't review, it's confirmation bias with a slash command." Since October 2026 the Skill tells the two subagents to start fresh. It has to ask: Claude Code can by default start a subagent that inherits the whole conversation. But implement still calls code-review from the writing session. That session briefs them. For an independent review, run `/code-review` yourself from a clean session.
+**The review runs in the session that wrote the code.** An agent reviewing in the session that wrote the code has every assumption behind that code in its context. One reader put it this way: "Same context reviewing itself isn't review, it's confirmation bias with a slash command." Since October 2026 the Skill says to start both subagents fresh. It has to ask: Claude Code can by default start a subagent that inherits the whole conversation. But implement still calls code-review from the writing session. That session briefs them. For an independent review, run `/code-review` yourself from a clean session.
 
 **The review starts more agents than you asked for.** Issue #573 reports that the two subagents start `/code-review` themselves, so each spawns two more. One report reached more than 50 agents. Matt's repo keeps guards like a `do not invoke this skill` line out of scope. Its reason, about the agent tool you run: "The harness should be responsible for stopping infinite subagent loops, not skills." Claude Code does set a limit: by default, subagents nest at most three layers below your main conversation.
 
@@ -248,18 +248,18 @@ Why: Its subagents can start the review again, and each one then spawns two more
 
 ### Try it
 
-Give the Standards axis a rule, then watch it catch a broken one. You'll need your practice project, with the Ticket for the endpoint that creates a booking (both set up in the Try it of [Issues: keeping track of work](/learn/issues-and-keeping-track)). Start on `main` with nothing uncommitted: step 11 deletes branch `try-review`.
+Give the Standards axis a rule, then watch it catch a broken one. You'll need your practice project, with the Ticket for the endpoint that creates a booking (both set up in the Try it of [Issues: keeping track of work](/learn/issues-and-keeping-track)). It also needs a FastAPI app in `api/`; if it's missing, ask your agent to add one first. Start on `main` with nothing uncommitted: step 11 deletes branch `try-review`.
 
 1. Create a branch for that Ticket: `git switch -c try-review`.
 2. Add a `CODING_STANDARDS.md` with one rule: `Route handlers stay thin; booking logic lives in a service module.` (A service module is a separate file for that logic.)
-3. Write the endpoint, with its booking logic in a service module.
+3. Ask your agent to write the endpoint, with its booking logic in a service module.
 4. Stage it all: `git add .`
 5. Commit, naming the Ticket: `git commit -m "feat: create a booking (Closes #<ticket>)"`. The Spec axis finds its Ticket through that number.
 6. In Claude Code, run `/clear` to start fresh.
-7. Run `/code-review main`. You should see two blocks, `## Standards` and `## Spec`, not one merged list.
-8. Move the booking logic into the route handler, then commit that change.
+7. Run `/code-review main`. You should see two blocks, `## Standards` and `## Spec`, not one merged list. If you installed Matt's Skills as a plugin, type `/mattpocock-skills:code-review main` instead.
+8. Ask your agent to move the booking logic into the route handler, then commit that change.
 9. Run `/clear` again.
-10. Run `/code-review main` again. You should see a finding under `## Standards` that names your rule.
+10. Run `/code-review main` again (or `/mattpocock-skills:code-review main` with the plugin). You should see a finding under `## Standards` that names your rule.
 11. Throw the branch away: `git switch main`, then `git branch -D try-review`. [implement](/learn/implement)'s Try it builds this Ticket for real.
 
 ### Read more
@@ -341,12 +341,12 @@ Why: Each fix adds new code to review, and the judgement calls change from run t
 - [retro: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/retro/SKILL.md), Matt Pocock's Skills
 - [implement: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement/SKILL.md), Matt Pocock's Skills
 - [implement-spec: SKILL.md](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement-spec/SKILL.md), Matt Pocock's Skills
-- [The /code-review Skill](https://www.aihero.dev/skills-code-review), Matt Pocock, 2026-08-24 (page says Updated Aug 24, 2026)
+- [The /code-review Skill](https://www.aihero.dev/skills-code-review), Matt Pocock, 2026-08-24
 - [Code Smell](https://martinfowler.com/bliki/CodeSmell.html), Martin Fowler, 2006-02-09
 - [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices), Anthropic
 - [Bug `implement` and `code-review` disagree on reviewing uncommitted changes #511](https://github.com/mattpocock/skills/issues/511), pellorao, 2026-07-10
 - [code-review sub-agents recursively invoke /code-review and fan out #573](https://github.com/mattpocock/skills/issues/573), dmmulroy, 2026-07-14
-- [Guards against sub-agents recursing into skills (.out-of-scope/subagent-recursion.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/subagent-recursion.md), Matt Pocock (mattpocock/skills, added in PR, 2026-10-06
+- [Guards against sub-agents recursing into skills (.out-of-scope/subagent-recursion.md)](https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/.out-of-scope/subagent-recursion.md), Matt Pocock (mattpocock/skills, added in PR #1190), 2026-10-06
 - [Create custom subagents](https://code.claude.com/docs/en/sub-agents), Anthropic (Claude Code Docs)
 - [Start subagents with a fresh context window, not a fork #1341](https://github.com/mattpocock/skills/pull/1341), mattpocock, 2026-10-29
 ```

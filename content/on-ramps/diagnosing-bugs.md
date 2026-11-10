@@ -61,7 +61,7 @@ $ pytest test_bookings.py -k full_class
 FAILED test_bookings.py::test_full_class - assert 201 == 409
 ```
 
-The loop must check your exact symptom, give the same verdict every run, take seconds and run unattended, with nobody watching. Phase 1 is done once the loop is that **tight** and already run.
+The loop must check your exact symptom, give the same verdict every run, take seconds and run unattended, with nobody watching. Phase 1 is done once the loop is that **tight** and already run. The Skill tells the agent to spend most of its effort here.
 
 ```checkpoint quick-3
 Your command goes red on the exact symptom, but each run takes minutes. Why isn't phase 1 done?
@@ -192,7 +192,7 @@ The agent has tried, and no loop can be built. What should it do?
 Why: With no loop, there's no way to test a theory, so the agent stops and says so. It asks for access, a redacted captured log, or permission for temporary production logging.
 ```
 
-When a person must click, the last resort is a template script in **bash**, the standard terminal shell and its scripting language. The agent runs the script, and you follow its prompts in your terminal. Your answers come back as `KEY=VALUE` lines. This stands in for running unattended.
+When a person must click, the last resort is a template script in **bash**, a common terminal shell and scripting language (a Mac's Terminal opens zsh by default, but runs bash scripts too). The agent runs the script, and you follow its prompts in your terminal. Your answers come back as `KEY=VALUE` lines. This stands in for running unattended.
 
 **Finding the commit.** If a bug appeared between two known states, the loop can drive `git bisect`, a git command that finds which commit introduced a bug. `git bisect run` runs your command on each commit it picks, and reads the **exit code**: the number a program returns when it ends.
 
@@ -216,11 +216,11 @@ For a slowdown, phase 4 swaps debug logs for a baseline measurement, then bisect
 
 In August 2026, Matt's pull request #779 closed a high-rated finding from Snyk, a security scanner. The finding was insecure handling of secrets, such as API keys. The pull request lists three ways a live secret could reach the agent's reply:
 
-- Phase 1 said "paste the invocation and its output". For a curl loop, that's an `Authorization` header.
+- Phase 1 said "paste the invocation and its output". For a curl loop, that's an `Authorization` header, the part of the request that carries your login secret.
 - With no loop, the Skill asked you for a captured log, which carries auth headers.
 - The bash script prints each captured answer back to the terminal, where the agent reads it.
 
-The fix was a Redact section at the top of the Skill. The agent writes `<REDACTED>` for every secret and builds loops against environment variables.
+The fix was a Redact section at the top of the Skill. The agent writes `<REDACTED>` for every secret and builds loops against **environment variables**, named settings your computer passes to programs, so the secret itself never shows up in a command or its output.
 
 One line there is deliberate: if the redacted output isn't enough, the agent says so and asks you. The pressure to produce a red loop would push an agent to paste the raw secret. As the pull request puts it, "the escape hatch needs writing."
 
@@ -234,7 +234,7 @@ Why: The pressure to produce a red loop could push an agent to paste the raw sec
 
 ### Where it goes wrong
 
-**You asked a quick question and got a full diagnosis.** This is the most-reported problem with the Skill, which is slow and thorough on purpose. Some models, GPT-5.6-Sol especially, start it on a plain description of a problem. Matt has said it could start lighter, but that hasn't shipped. Until then, tell the agent to answer and not diagnose, or switch off model invocation, so only you can start it. But `npx skills update` undoes that.
+**You asked a quick question and got a full diagnosis.** This is the most-reported problem with the Skill, which is slow and thorough on purpose. Some models, GPT-5.6-Sol especially, start it on a plain description of a problem. Matt has said it could start lighter, but that hasn't shipped. Until then, tell the agent to answer and not diagnose, or switch off model invocation so only you can start it. In Claude Code, type `/skills`, highlight diagnosing-bugs, press Space until it says `user-only`, then press Esc. That's saved in your settings, not in the Skill's file, so `npx skills update` leaves it alone. Adding `disable-model-invocation: true` to the Skill's file works too, but the next update undoes it. (This applies to Skills installed with `npx skills`, as in the practice project, not to plugin installs.)
 
 ```checkpoint quick-13
 You wanted a quick answer, and the agent started a full diagnosis. What can you do?
@@ -256,26 +256,28 @@ Why: The only checkpoint is the guess list, and even that doesn't wait if you're
 
 **The agent redid work that triage already did.** [triage](/learn/triage) follows the reporter's steps, a shallow version of phases 1 and 2. Expect this Skill to redo that work in full. It isn't wasted, though: it often gives you most of phase 1's raw material.
 
-**A secret showed up in the agent's output.** Older versions of the Skill told it to paste output as it was. Update the Skill. Matt's page still says nothing covers this, but the Skill's file now does.
+**A secret showed up in the agent's output.** Older versions of the Skill told it to paste output as it was. Update the Skill. [Matt's page on the Skill](https://www.aihero.dev/skills-diagnosing-bugs), last updated on 24 August 2026, says no instruction covers this, but the Skill's file has had a Redact section since version 1.2.3.
 
 **A saved prompt that calls `/diagnose` stopped working.** Version 1.0.0 renamed the Skill to `/diagnosing-bugs`. Update the prompt.
 
 ### Try it
 
-Run the Skill on one real bug. You need the practice project's booking endpoint ([implement](/learn/implement)'s Try it step builds it) and a bug in `api/`. No bug to hand? If you have the full-class rule, change its check by hand so a full class takes one more booking, then commit that. If you don't have the rule yet, add it with [tdd](/learn/tdd) first, because a missing rule is new behaviour.
+Run the Skill on one real bug. You need the practice project, the yoga-studio booking site that [keeping track](/learn/issues-and-keeping-track)'s Try it step sets up, with its booking endpoint ([implement](/learn/implement)'s Try it step builds it) and a bug in `api/`. No bug to hand? If you have the full-class rule, change its check by hand so a full class takes one more booking, then commit that. If you don't have the rule yet, add it with [tdd](/learn/tdd) first, because a missing rule is new behaviour.
 
-1. Write down the exact symptom.
-2. Open a fresh session in the project and type `/diagnosing-bugs`.
-3. Give it the symptom, and add one line: `Stop and show me the root cause before you write the fix.`
+1. In the project folder, run `git switch main && git pull`, then `git switch -c diagnose-full-class`, so the bug you plant and its fix stay off `main`.
+2. Write down the exact symptom.
+3. Open a fresh session in the project and type `/diagnosing-bugs`.
+4. Give it the symptom, and add one line: `Stop and show me the root cause before you write the fix.`
 
    You should see a command and its red output before any theory. If a theory comes first, the Skill isn't running.
 
-4. Read the ranked list. You should see 3 to 5 guesses, each with a prediction.
-5. Read the root cause when the agent stops.
-6. Reply `go ahead`. You should see a regression test go red, then green.
-7. Search for leftover logs: `grep -rn "DEBUG-" api/`. You should see nothing.
-8. Ask the agent to commit.
-9. Run `git log -1`. You should see the guess that proved right.
+5. Read the ranked list. You should see 3 to 5 guesses, each with a prediction.
+6. Read the root cause when the agent stops.
+7. Reply `go ahead`. You should see a regression test go red, then green.
+8. Search for leftover logs: `grep -rn "DEBUG-" api/`. You should see nothing.
+9. Ask the agent to commit.
+10. Run `git log -1`. You should see the guess that proved right.
+11. Push the branch with `git push -u origin diagnose-full-class`, open a pull request with `gh pr create`, and merge it once its checks pass, so the regression test reaches `main`.
 
 ### Read more
 
@@ -303,7 +305,7 @@ Why: A triage check is a shallow version of this Skill's first two phases. It sh
 ```
 
 ```checkpoint diagnosing-bugs-deeper-falsifiable-guess
-Your loop goes red on the double-booking bug. The agent's first guess reads: "the capacity code is messy". The Skill makes it rewrite the guess as "If X is the cause, then changing Y will make the bug disappear". Why?
+Your loop goes red on the full-class bug. The agent's first guess reads: "the capacity code is messy". The Skill makes it rewrite the guess as "If X is the cause, then changing Y will make the bug disappear". Why?
 - [x] A guess that predicts nothing gives no experiment that could prove it wrong.
 - [ ] The pull request message has to quote every guess in that exact sentence shape.
   > Only the guess that turned out right goes in the commit or pull request message. The shape is for testing, not for the record.

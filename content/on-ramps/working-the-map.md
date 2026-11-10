@@ -151,7 +151,7 @@ Why: "Which passes and memberships move across?" was blocked only by the export 
 Here is the whole loop as the agent runs it, in the practice project's GitHub spelling.
 
 1. **Load the map only, first.** Type `/clear`, then `/wayfinder #20`, with your map's number.
-   - It reads the map's body: the destination, the decisions so far and the fog. That low-resolution view is enough to choose a ticket.
+   - It reads the map's body (the destination, the decisions so far and the fog), then lists the map's open sub-issues to find the frontier. That's enough to choose a ticket without opening every ticket in full.
    - It opens a ticket's full text only when the work needs it, so the session starts light.
 2. **Choose and claim, next.** On GitHub the claim is `gh issue edit <n> --add-assignee @me`, the session's first write.
    - It takes the ticket you named, or else the first frontier ticket in map order.
@@ -200,11 +200,11 @@ Why: The agent works the ticket the way its `wayfinder:` label says. The questio
 
 ```checkpoint check-10
 Why does a working session start by reading the map rather than every ticket in full?
-- [x] The map is enough to choose a ticket
+- [x] The map and its open-ticket list are enough
 - [ ] Tickets can't be read until they're claimed
 - [ ] The map holds every ticket's full answer
 - [ ] Ticket text is only written at the end
-Why: The map's low-resolution view (the destination, the decisions so far, the fog) is enough to choose a ticket, so the session starts light and opens a ticket's full text only when the work needs it. Full answers live on the tickets, not the map.
+Why: The map's body orients the session and a list of its open sub-issues shows the frontier, so the session starts light and opens a ticket's full text only when the work needs it. Full answers live on the tickets, not the map.
 ```
 
 ## What each type is like from your chair

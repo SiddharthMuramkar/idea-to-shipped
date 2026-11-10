@@ -15,13 +15,13 @@ Say the studio owner wants the whole booking and payments system rebuilt on your
 
 ## Why not one big grilling?
 
-You've been grilled before, so you know the shape: the agent asks, you decide, and the plan gets sharper. That works when the whole plan fits in one conversation. The booking and payments rebuild doesn't fit.
+You've been grilled before, with [grill-with-docs](/learn/grill-with-docs), so you know the shape: the agent asks, you decide, and the plan gets sharper. That works when the whole plan fits in one conversation. The booking and payments rebuild doesn't fit.
 
 Say your notes end with a dozen open questions, from which payment service to use to which kinds of pass move across from the old booking tool. Many of the answers don't exist yet. Some need research, some need people the studio owner hasn't named yet, and some can't be settled until another question is.
 
 **So wayfinder writes each open question down as a ticket and settles one ticket per session, and the tracker, not the conversation, remembers the plan.**
 
-A _ticket_ here is a decision ticket: one question, in its own [Issue](/learn/issues-and-keeping-track), whose answer is a decision. Because the tracker holds every answer, each session can start with a clean slate.
+A _ticket_ here is a decision ticket: one question, in its own [Issue](/learn/issues-and-keeping-track), whose answer is a decision, not a slice to build. Because the tracker holds every answer, each session can start with a clean slate.
 
 ```callout remember
 Grilling settles a plan you can hold in one conversation. The rebuild doesn't fit, because many of its answers don't exist yet. So wayfinder writes each open question down as a ticket and settles one per session. The tracker remembers everything.
@@ -105,6 +105,8 @@ When a ticket is settled, the agent posts the answer as a comment on it and clos
 
 Questions you can see coming but can't phrase sharply yet go under _Not yet specified_. Wayfinder calls that the **fog**. In the example, how teachers get paid is fog until you know how the money comes in. As answers arrive, pieces of fog become clear enough to turn into new tickets.
 
+_Out of scope_ is different: it lists work you've ruled beyond the destination, like the phone app in the example. It isn't fog, and it never turns into tickets.
+
 With no tracker set up, wayfinder keeps the same map and tickets as Markdown files under `.scratch/` instead. [Working the map](/learn/working-the-map) shows how that spells each step.
 
 ```callout remember
@@ -140,7 +142,7 @@ Why: A ticket states its question and its limits, its type, and which tickets mu
 
 ## How the sessions go
 
-Matt's advice is never to start with `/wayfinder`. Start with a [grill-with-docs](/learn/grill-with-docs) session instead, and if planning gets out of hand, say `/wayfinder let's turn this into a map`. That way you never build a map for work that turns out simple. Either way, every wayfinder session is one of three kinds:
+Matt's advice is never to start with `/wayfinder`. Start with a [grill-with-docs](/learn/grill-with-docs) session instead, and if planning gets out of hand, say `/wayfinder let's turn this into a map`. That way you never build a map for work that turns out simple. Either way, the effort runs in three stages: two kinds of wayfinder session, then the hand-off:
 
 1. **Chart the map, once.** Type `/wayfinder` and your idea, or `/wayfinder let's turn this into a map` inside a grilling that has outgrown its session.
    - It asks where this effort ends: the _destination_.
@@ -155,7 +157,7 @@ Matt's advice is never to start with `/wayfinder`. Start with a [grill-with-docs
    - It posts the answer on the ticket, closes it and adds one line to the map.
    - It turns any fog that has cleared into new tickets, then stops.
    - Repeat until no tickets are left. [Working the map](/learn/working-the-map) walks through one of these sessions.
-3. **Hand off to the build, when the map is clear.** Run `/to-spec`, then `/to-tickets`, then `/implement`.
+3. **Hand off to the build, when the map is clear.** Run [`/to-spec`](/learn/to-spec), which writes a _Spec_ (the plan for building one feature), then [`/to-tickets`](/learn/to-tickets), which cuts the Spec into build _Tickets_, then [`/implement`](/learn/implement).
    - Wayfinder plans; it doesn't build. [After the map is clear](/learn/after-the-map) covers these three.
 
 ```diagram
@@ -312,10 +314,9 @@ Why: When a word gets pinned down, it goes into the project's `GLOSSARY.md` stra
 ````try
 You'll need the `yoga-studio` practice project, with Matt's Skills set up and GitHub as its tracker. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. You'll also need wayfinder's five labels, from the Try it in [wayfinder](/learn/wayfinder).
 
-1. Open a terminal in the project and bring `main` up to date, so the map starts from the latest work:
+1. In the `yoga-studio` folder, bring `main` up to date, so the map starts from the latest work:
 
 ```sh
-cd yoga-studio
 git switch main && git pull
 ```
 
@@ -330,8 +331,8 @@ git switch main && git pull
 5. Type `/wayfinder let's turn this into a map`. You should see it ask for the destination.
 6. Name the end of the whole map, not of this session. If you're unsure, use: _every open question is settled or ruled out of scope, so the rebuild can be specced_.
 7. Answer its wide questions. Expect it to ask whether everything belongs on one map: the waitlist, say, could be its own smaller effort. "I don't know" is a fine answer.
-8. When charting stops, run `gh issue list --label wayfinder:map`. You should see your map.
-9. Run `gh issue view <number> --web`, with the map's number. You should see its Destination, and its tickets as sub-issues.
+8. When charting stops, in a second terminal in the `yoga-studio` folder, run `gh issue list --label wayfinder:map`. You should see your map.
+9. In that terminal, run `gh issue view <number> --web`, with the map's number. You should see its Destination, and its tickets as sub-issues.
 10. Type `/clear` before your first working session.
 
 Research tickets save their findings on a throwaway `research/<name>` branch and push it to GitHub. That's expected: those branches are never merged into `main`. If charting stops with no map, it found no fog, so the idea fits one session.

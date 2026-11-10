@@ -96,7 +96,7 @@ Why: Tickets that already exist fit implement-spec, because it builds them as a 
 
 ## What it needs to start
 
-- A long-running goal, and a place for its wiki. If it has no wiki yet, the agent agrees the location with you first.
+- A long-running goal, and a place for its wiki. It looks for a shared wiki first; if there is none, the agent agrees the location with you first.
 - A [harness](/learn/context-hygiene) that can run [background agents](/learn/research).
 
 ```checkpoint quick-6
@@ -210,7 +210,7 @@ Why: When something changes, the agent adds a new dated claim and marks the old 
 
 For agents, that means tightly limited APIs, lint rules that force correctness, and `CODING_STANDARDS.md` files for reviewers. Agents also need **data sources**, such as logs, and no one-off workarounds. That's [Fix the environment](/learn/fix-the-environment), made a standing job.
 
-**Start every subagent fresh.** Some Codex models **fork** a subagent: it starts with a copy of the parent's whole context. Pull request #1341 says that "throws away the reason for using a subagent". So the Skill says to start every subagent with a fresh context window. That's [context hygiene](/learn/context-hygiene) applied to helpers.
+**Start every subagent fresh.** In Codex, another coding agent, some models **fork** a subagent: it starts with a copy of the parent's whole context. Pull request #1341 says that "throws away the reason for using a subagent". So the Skill says to start every subagent with a fresh context window. That's [context hygiene](/learn/context-hygiene) applied to helpers.
 
 ```checkpoint quick-12
 Your harness forks each subagent. What does each one start with?
@@ -243,7 +243,7 @@ So most of the first period went on waiting for nothing. They called it "not a c
 
 ### Where it goes wrong
 
-**The session keeps checking on helpers and finds nothing.** The Skill only says messages should be sparse, not how a helper's news gets back. Issue #1263 asked it to set up **callbacks**, messages a helper sends when it has news, and to wake the session only then. It was closed as not planned. An AI-written triage reply called your adapted copy, or a line in your `AGENTS.md`, "the right home" for them. Claude Code already sends results as notifications. On other harnesses, add the setup there. If an unmodified copy polls, the reply asks for a new issue.
+**The session keeps checking on helpers and finds nothing.** The Skill only says messages should be sparse, not how a helper's news gets back. Issue #1263 asked it to set up **callbacks**, messages a helper sends when it has news, and to wake the session only then. It was closed as not planned. An AI-written triage reply called your adapted copy, or a line in your [`AGENTS.md`](/learn/instruction-files), the instruction file many coding agents read, "the right home" for them. Claude Code already sends results as notifications. On other harnesses, add the setup there. If an unmodified copy polls, the reply asks for a new issue.
 
 ```checkpoint quick-14
 You run an adapted copy on a harness with no callbacks. Where should you set them up?
@@ -265,11 +265,11 @@ Why: Ordinary subagents on Claude Code start fresh, but by default Claude can st
 
 **A subagent follows a wiki page, and its change breaks.** Say a page states that the booking endpoint uses a table, and the table has been renamed. Ask for dated claims that cite commits, and a new dated claim when the code changes.
 
-**Your notes on the Skill go out of date.** The wiki section arrived in October 2026, and the fresh-context line ten days later. So read the current `SKILL.md` before trusting any older note, this one included.
+**Your notes on the Skill go out of date.** The wiki section arrived in October 2026, and the fresh-context line ten days later. Two days later, pull request #1363 had it look for a shared wiki first and send large chunks of work through to-spec, to-tickets and implement-spec. So read the current `SKILL.md` before trusting any older note, this one included.
 
 ### Try it
 
-You'll need your practice project with a CI check on its pull requests. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. If it has no CI check yet, ask your agent to add a GitHub Actions workflow that runs its tests on each pull request ([What CI/CD is](/learn/what-ci-cd-is) explains the idea). The plugin doesn't ship in-progress Skills, so install this one by name.
+You'll need your practice project with a CI check on its pull requests. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. If it has no CI check yet, do the Try it in [What CI/CD is](/learn/what-ci-cd-is) first: it adds a check called `test` that runs on every pull request. Matt's plugin, a bundle of his Skills you install in one step ([What a Skill is](/learn/skills)), leaves out in-progress Skills, so install this one by name.
 
 1. In your `yoga-studio` repo, install it: `npx skills@latest add mattpocock/skills --skill chief-of-staff`. Choose Claude Code if asked.
 2. Start Claude Code: `claude`.
@@ -384,7 +384,7 @@ The booking Spec for your yoga-studio site is split into six Tickets with blocki
 - [x] Run the Tickets as a task graph, with subagents onto one integration branch.
   > Right: that's `/implement-spec`.
 - [ ] Own an open-ended goal in one long session, keeping a dated wiki of decisions.
-  > That's `/chief-of-staff`. It pursues a long-running goal, with no task graph and no integration branch. The Spec's Tickets already form a task graph.
+  > That's `/chief-of-staff`. It's for a long goal with no Tickets yet. Here the Tickets already exist and form a task graph.
 - [ ] Build one ready Ticket test-first, then clear context before the next.
   > That's `/implement`. It builds one Ticket at a time, so Tickets that don't depend on each other still wait their turn.
 Why: Blocking links make these Tickets a task graph. implement-spec builds every ready Ticket at once, so the two unblocked ones needn't wait, and it ends with the whole Spec on one integration branch.

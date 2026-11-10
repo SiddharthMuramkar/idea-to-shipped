@@ -34,7 +34,7 @@ Why: implement states the Ticket's title before it starts, and if the reference 
 
 ## When to use it
 
-- You're working through the Tickets that [to-tickets](/learn/to-tickets) made, one at a time. Clear the context window between them, after any [retro](/learn/retro). Each Ticket is self-contained, so the last one's context isn't needed.
+- You're working through the Tickets that [to-tickets](/learn/to-tickets) made, one at a time. Clear the [context window](/learn/context-window), everything the agent can see at once, between them, after any [retro](/learn/retro). Each Ticket is self-contained, so the last one's context isn't needed.
 - You've finished [grilling](/learn/grill-before-you-build), and the work is small enough for one session. Build it in the same context window, with no [Spec](/learn/issues-and-keeping-track) or Tickets.
 
 ```checkpoint quick-2
@@ -241,7 +241,7 @@ On a new branch with no commits yet, code-review runs. What does it see?
 Why: code-review compares a fixed point with HEAD, the commit you have checked out. Work that isn't committed isn't in that diff, so commit first, then review.
 ```
 
-**One Ticket used over 100k tokens.** That's normal for a non-trivial Ticket, not a sign something broke. The fix is upstream: right-size the Tickets in [to-tickets](/learn/to-tickets), so each fits one fresh context window. If one keeps going over, split it rather than raising the effort level, the main control for how hard Claude thinks.
+**One Ticket used over 100k tokens.** That's normal for a non-trivial Ticket (tokens are the small chunks of text a model reads and writes, and 100k is roughly 75,000 words), not a sign something broke. The fix is upstream: right-size the Tickets in [to-tickets](/learn/to-tickets), so each fits one fresh context window. If one keeps going over, split it rather than raising the effort level, the main control for how hard Claude thinks.
 
 ```checkpoint quick-16
 A Ticket keeps going over one fresh context window. What do you change?
@@ -265,9 +265,9 @@ Why: Separate worktrees give each session its own folder, but the stash list, re
 
 ### Try it
 
-You'll need your practice project. It needs an open Ticket whose blockers are all closed, such as the endpoint that creates a booking. If you haven't set the project up, do [keeping track](/learn/issues-and-keeping-track)'s Try it step first, then ask your agent to add a FastAPI app in `api/`.
+You'll need your practice project. It needs an open Ticket whose blockers are all closed, such as #3, "Add the endpoint that creates a booking", from the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track). Its blocker #2 was closed without building the bookings table, so this run builds both. If you haven't set the project up, do that Try it first. The project also needs a FastAPI app in `api/`: if it's missing, ask your agent to add one. Finally, it needs the `test` check on its pull requests. No check yet? The second Try it in [What CI/CD is](/learn/what-ci-cd-is) adds it.
 
-1. On GitHub, open the Ticket. Add one line naming its seam: `Seam: test through POST /bookings`.
+1. On GitHub, open #3 and add two lines to its description: `Seam: test through POST /bookings` and `Also add the bookings table: #2 was closed without it.`
 2. In your terminal, run `git switch main`, then `git pull`.
 3. Run `git switch -c implement-booking`, because implement commits to whatever branch it's on. You should see that branch checked out.
 4. Start a fresh Claude Code session in the repo.
@@ -278,8 +278,9 @@ You'll need your practice project. It needs an open Ticket whose blockers are al
 9. Open the Ticket on GitHub. You should see it's still open, because implement closes nothing.
 10. Run `git push -u origin implement-booking`.
 11. Run `gh pr create --title "Create a booking" --body "Closes #N"`, with the Ticket's number.
-12. Merge the pull request once its checks pass. If CI lacks Postgres or a package, ask your agent to add it. You should see the Ticket close.
-13. Type `/clear` before you start the next Ticket.
+12. Watch the checks: `sleep 10 && gh pr checks --watch`. If `test` fails because [CI](/learn/what-ci-cd-is) lacks a package or Postgres, ask your agent to add it (a package goes in `api/requirements.txt`, Postgres as a service in `.github/workflows/ci.yml`), then push.
+13. Once `test` passes, merge: `gh pr merge --squash --delete-branch`. You should see the Ticket close.
+14. Type `/clear` before you start the next Ticket.
 
 ### Read more
 

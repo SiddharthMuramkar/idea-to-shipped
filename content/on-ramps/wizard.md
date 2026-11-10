@@ -162,7 +162,7 @@ Each line calls a helper from the library, so every wizard behaves the same way:
 - `open_url` goes first, so the page is open before the prompt.
 - `ask` shows what you type, and `ask_secret` hides it.
 - `write_env` replaces a key's line in `.env` instead of adding a second one. A new `.env` is one only you can read.
-- `set_secret` is only for values CI needs. If `gh` isn't installed or signed in, you get a warning, and the closing summary lists what's left to do by hand.
+- `set_secret` is only for values CI needs. If `gh`, GitHub's command-line tool ([What Git and GitHub are](/learn/what-git-and-github-are) sets it up), isn't installed or signed in, you get a warning, and the closing summary lists what's left to do by hand.
 
 ```checkpoint quick-9
 Your `.env` already has a line for this key. What does `write_env` do?
@@ -172,7 +172,7 @@ Your `.env` already has a line for this key. What does `write_env` do?
 Why: `write_env` replaces a key's line in `.env`, so running a wizard twice never leaves two lines for one key.
 ```
 
-**Typed keys skip the model.** You run the script, not the agent, so a key you type goes straight to `.env` or `gh secret`. In Matt's words, "the model is not connected to it." That covers only the typing. A key you paste into the chat while the agent is working out the stages is in the context window like any other text. So is a key in `.env` once an agent reads it.
+**Typed keys skip the model.** You run the script, not the agent, so a key you type goes straight to `.env` or `gh secret`. In Matt's words, "the model is not connected to it." That covers only the typing. A key you paste into the chat while the agent is working out the stages is in its [context window](/learn/context-window), the text the agent holds at once, like any other text. So is a key in `.env` once an agent reads it.
 
 ```checkpoint quick-10
 While the agent works out the stages, you paste a key into the chat. Where is it now?
@@ -240,7 +240,7 @@ Why: Bash reads a script bit by bit, which is what used to break. Every stage no
 
 ### Try it
 
-Get a real connection string into `.env` and CI. You'll need your practice project, the yoga-studio booking site, and a Neon account. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. The project also needs a CI workflow, `.github/workflows/ci.yml`, with a `- run: pytest api` step. If it has none, ask your agent to add one ([What CI/CD is](/learn/what-ci-cd-is) explains CI).
+Get a real connection string into `.env` and CI. You'll need your practice project, the yoga-studio booking site, and a Neon account. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. The project also needs its `test` CI workflow, `.github/workflows/ci.yml`, merged into `main`. If it isn't there yet, do the Try it "On GitHub: a `test` check for your practice project" in [What CI/CD is](/learn/what-ci-cd-is) first. Its last step is the `- run: pytest api` line you edit below.
 
 1. Keep secrets out of git: `echo .env >> .gitignore`.
 2. In `.github/workflows/ci.yml`, add these lines straight under `- run: pytest api`:
@@ -262,7 +262,7 @@ Get a real connection string into `.env` and CI. You'll need your practice proje
 12. Run the script again. At that prompt you should see `[Enter keeps current]`, so press Enter.
 13. Run the count from step 10 again. You should still see `1`.
 14. Undo the CI edit: `git restore .github/workflows/ci.yml`.
-15. Delete the script and the `DATABASE_URL` line in `.env`.
+15. Delete the script, the `DATABASE_URL` line in `.env`, and the GitHub secret: `gh secret delete DATABASE_URL`.
 16. Commit the `.gitignore` change on your next branch.
 
 ### Read more
@@ -402,7 +402,7 @@ The agent has read your repo and drafted the stages of a setup script: create a 
   > It reads the repo first and doesn't ask cold. It shows you what it found so you can correct it.
 - [ ] So the stages can be published as a Spec on the Issue tracker.
   > The stages stay in the conversation. They describe one script, not a whole feature.
-Why: As in a grilling, the agent looks up the facts itself, then settles the decisions with you before building. So you add, drop or reorder the stages first, and only then does it map each stage and write the script.
+Why: As in a [grilling](/learn/grilling), the agent looks up the facts itself, then settles the decisions with you before building. So you add, drop or reorder the stages first, and only then does it map each stage and write the script.
 ```
 
 ```final-test wizard-why-commit

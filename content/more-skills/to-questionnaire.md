@@ -167,7 +167,7 @@ You could ask an agent for such a document with no Skill at all, and plenty of p
 You could ask an agent for this document with no Skill. What does the Skill add?
 - [x] An interview that stays off the subject, and a shape non-technical people can fill in.
 - [ ] A way to send the document to that person, and a record of who has replied to it.
-- [ ] A check of the answers that come back, and a new Ticket opened for each of them.
+- [ ] A check of the answers that come back, and a new Issue opened for each of them.
 Why: The Skill buys two things. The interview never drifts onto the subject, and the document comes out in a shape a non-technical person can fill in.
 ```
 
@@ -198,14 +198,14 @@ rows:
   - cells: ["nobody's head yet", "[prototype](/learn/prototype)"]
 ```
 
-So to-questionnaire is the opposite of grill-me, not grill-me with every question asked at once. grill-me already asks in rounds, and each round is the whole frontier of open questions. Matt's point is that the difference is "about whose head the answers are in, not how the questions are delivered."
+So to-questionnaire is the opposite of grill-me, not grill-me with every question asked at once. grill-me already asks in rounds, and each round asks every question it can ask now, without guessing at answers it hasn't heard yet (what [grilling](/learn/grilling) calls the frontier). Matt's point is that the difference is "about whose head the answers are in, not how the questions are delivered."
 
 ```checkpoint quick-11
 How does to-questionnaire differ from grill-me?
 - [x] The answers come from someone else's head, not from yours.
 - [ ] The questions come all at once, not one small batch at a time.
 - [ ] The questions come from the codebase, not from the agent itself.
-Why: grill-me already asks the whole frontier at once in each round. The difference is whose head the answers are in.
+Why: grill-me already asks every question it can ask now, in each round. The difference is whose head the answers are in.
 ```
 
 **The questions are a flat list,** grouped under headings by theme once there are more than a handful. It isn't a tree that skips a section because of an earlier answer. Grilling recomputes its next round from your answers. A branching document would have to plan every question before any answer comes back. That design was explored and did not ship. The fair objection to it: a model "that plans more than two or three questions ahead of a real answer plans badly".
@@ -272,7 +272,7 @@ Three people each hold part of the answers. What do you do?
 Why: The whole document is pitched at one recipient, so three people means three runs. A document that routes questions by role did not ship.
 ```
 
-**The document never reached anyone.** The Skill sends nothing. It writes the file and tells you the path. Delivery is yours. Paste it into a Ticket, drop it in a Slack thread, attach it to an email, or open it on a shared screen.
+**The document never reached anyone.** The Skill sends nothing. It writes the file and tells you the path. Delivery is yours. Paste it into an Issue, drop it in a Slack thread, attach it to an email, or open it on a shared screen.
 
 ### Try it
 
@@ -288,7 +288,8 @@ Take the studio owner's questions out of your booking plan, and bring the answer
 8. Open the file, and check that every rule you named has a question.
 9. Check that someone outside the conversation would know why they got it, and by when to reply.
 10. Send the file to your friend, and ask them to fill it in.
-11. Paste their answers into the same conversation. You should see the agent carry on from them.
+11. If you closed Claude Code while you waited, start it again in the `yoga-studio` folder, type `/resume`, and pick the grilling conversation. ([The context window](/learn/context-window) covers `/resume`.)
+12. Paste their answers into that conversation. You should see the agent carry on from them.
 
 ### Read more
 
@@ -434,7 +435,7 @@ Your client's ops lead has filled in and returned the document of questions you 
 - [x] Bring the answers to an interview that sharpens the plan and records its terms.
   > Right: that's `/grill-with-docs`.
 - [ ] Have the agent build the backup feature straight from the answers, test-first, in one pass.
-  > That's `/implement`. The answers aren't a plan or Tickets yet. They're material for planning, not a build order.
+  > That's `/implement`. The answers aren't a plan or [Tickets](/learn/to-tickets) yet. They're material for planning, not a build order.
 - [ ] Write the ops lead a second document of follow-up questions about their backups.
   > That's `/to-questionnaire`. You already have the answers you needed. Now they need to feed the plan.
 Why: The answers unblock you, but they aren't a plan yet. So they're material for the main flow, and in a repo that flow starts with grill-with-docs.

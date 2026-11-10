@@ -1,12 +1,12 @@
 ---
-title: implement-spec: build a whole Spec in one run
+title: implement-spec: build a Spec in one run
 slug: implement-spec
 summary: How implement-spec builds a whole Spec in one run, handing each ready Ticket to a fresh helper agent and landing the work on one branch.
 ---
 
 ## What it's for
 
-Say your "Booking API" [Spec](/learn/issues-and-keeping-track) is split into [Tickets](/learn/to-tickets). With [implement](/learn/implement), you work one at a time, clearing the context in between, and track what's unblocked yourself. Tickets that could run side by side wait their turn.
+Say your "Booking API" [Spec](/learn/issues-and-keeping-track) is split into [Tickets](/learn/to-tickets). With [implement](/learn/implement), you work one at a time, clearing the agent's [context](/learn/context-window) (everything it can see at once) in between, and track what's unblocked yourself. Tickets that could run side by side wait their turn.
 
 ```checkpoint quick-1
 You're building a Spec with implement, and two Tickets don't depend on each other. What happens to them?
@@ -133,6 +133,8 @@ Why: Only you can start it: you clear the context, then type /implement-spec.
 - A [code-review](/learn/code-review) of that branch against the Spec, once every Ticket is complete. One more fresh implementer subagent fixes everything it raises.
 - A draft pull request closing the Spec and its Tickets, if your tracker closes work through pull requests or you ask.
 
+At the end, the pull request is marked ready and the worktrees are cleaned up. Without a pull request, the agent closes each Ticket your tracker's way.
+
 ```checkpoint quick-9
 Your tracker doesn't close work through pull requests, and you don't ask for one. What do you end up with?
 - [x] One integration branch, with every Ticket resolved your tracker's way.
@@ -140,8 +142,6 @@ Your tracker doesn't close work through pull requests, and you don't ask for one
 - [ ] No branch at all, since each Ticket's work has gone straight into main.
 Why: The draft pull request only appears if your tracker closes work through pull requests or you ask. The integration branch is there either way.
 ```
-
-At the end, the pull request is marked ready and the worktrees are cleaned up. Without a pull request, the agent closes each Ticket your tracker's way.
 
 ## Going deeper
 
@@ -200,7 +200,7 @@ Why: Its branch already holds everything the integration branch has, plus #12. S
 
 **Pointers keep prompts small.** The orchestrator and its implementers talk through context pointers, not pasted summaries. That keeps each prompt small, and leaves room in the orchestrator's context window for the graph.
 
-**Start every subagent fresh.** Some models in Codex, a coding agent, **fork** a subagent: it starts with a copy of the parent's whole context. Claude Code can too. Matt says that "throws away the reason for using a subagent: a clean context that sees only its brief". So the Skill asks for a fresh context window every time.
+**Start every subagent fresh.** Some models in Codex, a coding agent, **fork** a subagent: it starts with a copy of the parent's whole context. Claude Code can too. Both are **harnesses**: the program around a model that runs its tools ([How coding agents work](/learn/how-agents-work)). Matt says that "throws away the reason for using a subagent: a clean context that sees only its brief". So the Skill asks for a fresh context window every time.
 
 ```checkpoint quick-13
 A harness forks a new subagent from its parent. What does that throw away?
@@ -284,25 +284,20 @@ Why: A worktree holds only what git tracks, so a gitignored file isn't there. Te
 
 ### Try it
 
-You'll need your practice project. If you haven't set it up, do [keeping track](/learn/issues-and-keeping-track)'s Try it step first.
+You'll need your practice project, with a FastAPI app in `api/` on `main`. If you haven't set it up, do the "Try it: set up the practice project" part of [Issues: keeping track of work](/learn/issues-and-keeping-track). Then ask your agent to add a FastAPI app in `api/` with one passing test, and merge it into `main`, as [implement](/learn/implement)'s Try it does.
 
-1. Create a small Spec and three Tickets. Use the numbers `gh` prints for `<spec>` and `<list>`.
+1. In your `yoga-studio` folder, run `git switch main && git pull`. Then create the Spec: `gh issue create --title "Classes API" --body "Members can list classes by day."`. You should see a link ending `/issues/N`. That N is your Spec's number. Below, replace SPEC with it.
+2. Create the first Ticket: `gh issue create --title "List classes" --body "First slice." --parent SPEC`. Note the number in the link it prints. Below, replace LIST with it.
+3. Create the second Ticket, blocked by the first: `gh issue create --title "Filter classes by day" --body "Second slice." --parent SPEC --blocked-by LIST`.
+4. Create the third Ticket: `gh issue create --title "Add a version endpoint" --body "Third slice." --parent SPEC`.
+5. Open the Issues page: `gh issue list --web`. You should see a "Blocked" icon on the filter Ticket.
+6. If your tests read a gitignored `.env`, add a `.worktreeinclude` file at the repo root containing `.env`.
+7. Start Claude Code in the repo with `claude`. If a session is already open, type `/clear` instead.
+8. Type `/implement-spec` and the Spec's Issue number. You should see two implementers running at once.
+9. Wait for List classes to land. You should see a new implementer start on the filter Ticket. If it doesn't, tell the orchestrator to track merges into the integration branch itself.
+10. While the filter Ticket's implementer is still running, open its transcript, the record of what it ran: select its row in the panel below the prompt and press Enter, or run `/tasks` and press Enter on it. A finished implementer's row disappears at once. You should see tdd's failing test before the code, and no skipped tests.
 
-```bash
-gh issue create --title "Classes API" --body "Members can list classes by day."
-gh issue create --title "List classes" --body "First slice." --parent <spec>
-gh issue create --title "Filter classes by day" --body "Second slice." --parent <spec> --blocked-by <list>
-gh issue create --title "Add a version endpoint" --body "Third slice." --parent <spec>
-```
-
-2. Open the Issues page: `gh issue list --web`. You should see a "Blocked" icon on the filter Ticket.
-3. If your tests read a gitignored `.env`, add a `.worktreeinclude` file at the repo root containing `.env`.
-4. Clear the context with `/clear`.
-5. Type `/implement-spec` and the Spec's Issue number. You should see two implementers running at once.
-6. Wait for List classes to land. You should see a new implementer start on the filter Ticket. If it doesn't, tell the orchestrator to track merges into the integration branch itself.
-7. Open one implementer's trace, the record of what it ran. You should see tdd's failing test before the code, and no skipped tests.
-
-You should end on one integration branch with all three Tickets merged. If a test skipped, tell the orchestrator to run that Ticket in the main checkout. Then merge that branch into `main` through a pull request, and run `git switch main && git pull`.
+You should end on one integration branch with all three Tickets merged. If a test skipped, tell the orchestrator to run that Ticket in the main checkout. Then land it on `main`. If the run opened a pull request, merge it once its checks pass. If not, push the integration branch with `git push -u origin <branch>`, open one with `gh pr create --base main --fill`, and merge it (see [Opening a pull request](/learn/pull-requests)). Then run `git switch main && git pull`.
 
 ### Read more
 

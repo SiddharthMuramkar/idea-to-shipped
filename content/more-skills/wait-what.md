@@ -6,7 +6,7 @@ summary: How to make the agent say its last message again, with the context you 
 
 ## What it's for
 
-Say you're building [Ticket](/learn/issues-and-keeping-track) #13 of a yoga-studio booking site: the endpoint that creates a booking. The agent reports that it "lifted the session factory behind a seam and inverted the dependency". That message didn't land: you read it, and you can't tell where the work has got to.
+Say you're building [Ticket](/learn/issues-and-keeping-track) #13 of a yoga-studio booking site: the endpoint (the web address your app calls) that creates a booking. The agent reports that it "lifted the session factory behind a seam and inverted the dependency". That message didn't land: you read it, and you can't tell where the work has got to.
 
 **wait-what tells the agent its message didn't land, so the agent re-pitches it: it says the same thing again, in a way you can follow.**
 
@@ -184,7 +184,7 @@ Why: Skills against verbosity usually fail by growing, because the model copies 
 
 **_That_ can reach further back.** The body says re-pitch _that_, which is wider than _that last message_. What lost you is usually bigger than one paragraph, so the agent decides how far back to go.
 
-**The body reuses words the agent already has.** ASD-STE100 sets the register: the plain style of the sentences. The ubiquitous language, the project's shared words, supplies the nouns. Matt's global `CLAUDE.md`, his personal one for every project, uses those same terms. Where your own files use them too, typing `/wait-what` "is not a new instruction". It's a reminder.
+**The body reuses words the agent already has.** ASD-STE100 sets the register: the plain style of the sentences. The ubiquitous language, the project's shared words, supplies the nouns. Matt's global `CLAUDE.md`, the [instruction file](/learn/instruction-files) in his home folder (`~/.claude/CLAUDE.md`) that Claude Code reads in every project, uses those same terms. Where your own files use them too, typing `/wait-what` "is not a new instruction". It's a reminder.
 
 ```checkpoint quick-11
 Your instruction file and glossary already use the body's terms. What is typing `/wait-what` then?
@@ -260,7 +260,7 @@ A re-pitch came back shorter, but you're still lost. What do you do?
 Why: A good re-pitch is shorter and clearer, not shorter and blunter. When it's working, you can use it twice in a row, and it doesn't degrade into terseness.
 ```
 
-**The re-pitch uses none of your project's words.** First check that the repo has a `GLOSSARY.md`. With none, the Skill still works, and you lose only that half. Repos with several glossaries hit this too, until August 2026. The body named one root file, then called `CONTEXT.md`, and knew nothing of the map file, `CONTEXT-MAP.md`. So it "fell silent on vocabulary instead of following the map." One added clause fixed it, so check that your copy is up to date.
+**The re-pitch uses none of your project's words.** First check that the repo has a `GLOSSARY.md`. With none, the Skill still works, and you lose only that half. Repos with several glossaries hit this too, until August 2026. The body named one root file, then called `CONTEXT.md`, and knew nothing of the map file, `CONTEXT-MAP.md`. So it "fell silent on vocabulary instead of following the map." One added clause fixed it, so check that your copy is up to date. An up-to-date copy reads only `GLOSSARY.md` and `GLOSSARY-MAP.md`, the names version 1.3 gave these files. If your repo still has a `CONTEXT.md` or `CONTEXT-MAP.md`, rename them: `git mv CONTEXT.md GLOSSARY.md` and `git mv CONTEXT-MAP.md GLOSSARY-MAP.md`.
 
 ```checkpoint quick-17
 Before the fix, what did the Skill do in a repo with only a map file and no root glossary?
@@ -300,7 +300,7 @@ Get one long answer re-pitched, twice. You'll need your practice project, with M
 Optional practice: more situations like the ones in the final test.
 
 ```checkpoint wait-what-deeper-map-silent
-In August 2026, a repo had a `CONTEXT-MAP.md` pointing to several `CONTEXT.md` files and no root `CONTEXT.md`. You typed the re-pitch command there, and the answer came back with none of the project's nouns. Why did the Skill drop them?
+Before the August 2026 fix, a repo had a `CONTEXT-MAP.md` pointing to several `CONTEXT.md` files and no root `CONTEXT.md`. You typed the re-pitch command there, and the answer came back with none of the project's nouns. Why did the Skill drop them?
 - [x] Its body named only a single root `CONTEXT.md`, and had no clause telling it to follow the map file.
 - [ ] The map file made its YAML front matter invalid, so the Skill never loaded in that repo at all.
   > That YAML bug was real, but it came from an unquoted colon in the `description` line, and it stopped `npx skills` installing the Skill at all.

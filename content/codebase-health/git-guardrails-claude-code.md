@@ -18,7 +18,7 @@ Why: A line in `CLAUDE.md` only shapes what Claude tries to do. It won't stop a 
 
 **git-guardrails-claude-code sets up a hook that blocks dangerous git commands before Claude runs them.** That's [Fix the environment](/learn/fix-the-environment) at work.
 
-It's a **`PreToolUse` hook**: a script Claude Code runs automatically before a tool is used. It watches the **Bash tool**, Claude Code's built-in tool for running terminal commands.
+It's a **`PreToolUse` hook**: a script Claude Code runs automatically before a tool is used. It watches the **Bash tool**, the tool Claude Code uses to run terminal commands on a Mac or on Linux. Windows differs, as Where it goes wrong explains.
 
 Claude writes a command, and the hook compares it with a list of patterns. A match is blocked. Anything else runs as normal. A pattern describes the text to look for.
 
@@ -35,11 +35,11 @@ steps:
 
 By default it blocks:
 
-- `git push`, with or without `--force`: sends your commits to the remote;
-- `git reset --hard`: throws away uncommitted changes;
+- `git push`, with or without `--force`: sends your commits to the [remote](/learn/push-pull-and-remotes), the copy of your repo on GitHub;
+- `git reset --hard`: throws away uncommitted changes, and given a commit such as `HEAD~3`, moves the branch back so the commits after it are dropped;
 - `git clean -f` and `git clean -fd`: delete files git isn't tracking;
 - `git branch -D`: deletes a branch, even one that isn't merged;
-- `git checkout .` and `git restore .`: discard your unstaged edits.
+- `git checkout .` and `git restore .`: discard edits you haven't staged with `git add` yet ([Undo and merge conflicts](/learn/undo-and-conflicts) shows where changes live).
 
 ```checkpoint quick-2
 The agent runs `git push origin my-branch`, with no `--force`. What does the hook do by default?
@@ -228,6 +228,8 @@ You've installed the hook on a new machine. What should you check before you tru
 Why: Without `jq`, the command comes out as an empty string, no pattern matches, and the script exits 0. The Skill lists no requirements, so only its test warns you.
 ```
 
+**On Windows, the hook may never fire.** There Claude Code can run shell commands through its PowerShell tool instead of Bash, and the Skill's entry matches only `Bash`. The docs put it plainly: "A hook that matches only `Bash` never fires there." If you use Windows, change the matcher in your settings file to `Bash|PowerShell`.
+
 **A push got through, spelled another way.** The script matches text, not meaning. A pattern like `git push` needs the two words side by side. Git allows **global options**, settings that sit between `git` and a subcommand such as `push`. So `git -C /tmp push origin main` gets through. `git branch --delete --force` and `git clean -d -f` get through too: "the long and reordered spellings of `-D` and `-fd`". Even a double space gets through. To close one spelling, add a pattern to your copy, as Try it does. To cover far more, copy fszcd's fix from a comment on issue #898.
 
 **A deny rule lets the same push through.** Claude Code also has built-in **deny rules**: lines in your settings that refuse a matching tool call. Say you swap the hook for `Bash(git push *)`. A Bash rule matches the command text Claude writes, so other spellings of the same push get past it. The docs list `git -C . push origin main` among the commands it doesn't stop. For your own logic on the full command text, they point to a `PreToolUse` hook.
@@ -248,7 +250,7 @@ Why: It catches the listed spellings, not every way to run git. An overstated gu
 
 You'll need your practice project, the yoga-studio booking site, with a terminal open in its root folder. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
-1. Check `jq` is installed: `jq --version`. You should see a version number.
+1. Check `jq` is installed: `jq --version`. You should see a version number. If you see "command not found", install `jq` first: `brew install jq` on a Mac, `sudo apt-get install jq` on Ubuntu or Debian, or `winget install jqlang.jq` on Windows. Then run `jq --version` again.
 2. If you don't have this Skill yet, install it: `npx skills add mattpocock/skills/skills/misc/git-guardrails-claude-code`.
 3. In Claude Code, ask it to set up git guardrails.
 4. When it asks where to install, choose **this project only**. You should see `.claude/hooks/block-dangerous-git.sh` appear.
@@ -260,7 +262,7 @@ echo '{"tool_input":{"command":"git push origin main"}}' | .claude/hooks/block-d
 
 You should see the BLOCKED message, then `exit=2`.
 
-6. Start a fresh Claude Code session.
+6. Start a fresh Claude Code session. On Windows, first change the matcher in your settings file to `Bash|PowerShell`, and run steps 5, 8 and 10 in Git Bash.
 7. Ask Claude Code to run `git push`. You should see it fail with the BLOCKED message.
 8. Now test a spelling with a global option:
 

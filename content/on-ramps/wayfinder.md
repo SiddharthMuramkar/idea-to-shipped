@@ -237,7 +237,7 @@ Your last map stopped making sense by its thirteenth ticket. What helps with the
 Why: Scope the map to a bounded destination, not the whole product. Cheap prototypes expose what's uncertain before building depends on it.
 ```
 
-**The work turns out simple, and you've made a map you don't need.** You started with wayfinder, and the grilling showed a way simpler solution. Matt's rule: "Never start with /wayfinder". For a medium-large change, always start with a /grill-with-docs session. If planning starts to get out of hand, say `/wayfinder let's turn this into a map`.
+**The work turns out simple, and you've made a map you don't need.** You started with wayfinder, and the grilling showed a way simpler solution. Matt's rule: "Never start with /wayfinder". For a medium-large change, always start with a /grill-with-docs session. If planning starts to get out of hand, say `/wayfinder let's turn this into a map`. Matt aims this at a change you expect to be medium-large, which can turn out simpler. For an effort you already know is huge and foggy, such as a whole new platform, the Skills' own router, ask-matt, still sends you straight to `/wayfinder`.
 
 ```checkpoint quick-16
 You expect a medium-large change. Where do you start?
@@ -262,7 +262,7 @@ You may meet older advice: in July 2026, Matt wrote that wayfinder was "designed
 
 **The agent answers its own questions.** Students reported wayfinder grilling itself instead of them. v1.1 fixed that by marking every ticket type HITL or AFK: a HITL ticket resolves only through a live exchange with you. If an agent answers for you, stop it and answer yourself.
 
-**A research ticket closes before you've seen the findings.** In issue #1241, still open, the findings were posted, "the ticket closed and the map edited before the human had seen them." The Skill has no review gate before closing AFK tickets. So ask the agent up front to show you a research result before resolving the ticket.
+**A research ticket closes before you've seen the findings.** In issue #1241, filed in October 2026, the findings were posted, "the ticket closed and the map edited before the human had seen them." The Skill has no review gate before closing AFK tickets. So ask the agent up front to show you a research result before resolving the ticket.
 
 ### Try it
 
@@ -271,16 +271,16 @@ You'll need your practice project, the yoga-studio booking site. If you haven't 
 1. In the `yoga-studio` folder, create wayfinder's labels: `for t in map grilling research prototype task; do gh label create "wayfinder:$t"; done`. You should see five labels.
 2. Start Claude Code: `claude`.
 3. Type `/grill-with-docs Let any yoga studio sign up and run its own bookings.`
-4. Answer until the questions spread past one session.
+4. Answer a few rounds. When each round opens more questions than it settles (sign-up, payments, keeping studios' data apart), planning is getting out of hand: go on to step 5.
 5. Type `/wayfinder let's turn this into a map`, and answer until charting stops.
 6. Run `gh issue list --web`. You should see the map, labelled `wayfinder:map`, and its tickets.
 7. Open the map. You should see its Destination, and the tickets as sub-issues.
 8. Find the frontier: open tickets with no "Blocked" icon and no assignee.
 9. Run `/clear`.
 10. Type `/wayfinder #20`, using your map's number. You should see it claim one ticket by assigning it.
-11. If it's a grilling ticket, answer until it resolves.
+11. Work the ticket with the agent until it resolves: answer its questions (grilling), react to what it builds (prototype), or do the checklist it gives you (task).
 12. Open the map. You should see the ticket closed, and a new line under Decisions so far.
-13. Read the map's Notes. If they say the map carries execution, ask whether you wrote that.
+13. Read the map's Notes. If they say the map carries execution and you never asked for that, delete that line from the map, so later sessions plan instead of build.
 
 If charting stops with no map, it found no fog. Pick a bigger idea.
 

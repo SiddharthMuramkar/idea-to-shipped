@@ -100,9 +100,9 @@ Why: State normally lives in memory. A question about the database itself is the
 
 ## What it creates
 
-- The answer: the verdict (your one-line answer) and the question it settled, in the Issue for the real work or a commit.
+- The answer: the verdict (your one-line answer) and the question it settled, in the Issue for the real work or a [commit](/learn/commits-and-diffs) message.
 - The decision, built into the real code. A logic prototype's **module** (a unit of code callers use) is written to move across.
-- The prototype itself, kept out of `main` on a throwaway branch such as `prototype/waitlist`, with a pointer to it on that Issue. It's a **primary source**: the original thing itself, not a summary of it.
+- The prototype itself, kept out of `main` (the project's main line of work) on a throwaway [branch](/learn/branches-and-worktrees) (a separate line of work in Git) such as `prototype/waitlist`, with a pointer to it on that Issue. It's a **primary source**: the original thing itself, not a summary of it.
 
 ```checkpoint quick-7
 Your prototype answered its question, and the decision is in the real code. What happens to the prototype?
@@ -194,7 +194,7 @@ If a question could be either shape and you're away, the agent picks the one mat
 
 ### A real example
 
-In July 2026, a product person posted in the Skills repo's Discussions. They had refined a prototype until it felt right, then took it through a Spec and Tickets. What got built "kind of ignored the prototype", as if rebuilt from prose. Each written step had lost detail.
+In July 2026, a product person posted in the Skills repo's Discussions. They had refined a prototype until it felt right, then took it through a Spec (a feature's written plan, made by [to-spec](/learn/to-spec)) and Tickets (one Issue per small piece of work, made by [to-tickets](/learn/to-tickets)). What got built "kind of ignored the prototype", as if rebuilt from prose. Each written step had lost detail.
 
 ```checkpoint quick-13
 You refine a prototype, then build only from a Spec and Tickets written about it. What's the risk?
@@ -204,7 +204,7 @@ You refine a prototype, then build only from a Spec and Tickets written about it
 Why: The Spec and the Tickets are written descriptions, and each one lost detail. The build worked from that prose, so it was as if the prototype had never been looked at.
 ```
 
-Within a week, Matt's PR #488 changed the rule. A prototype used to be deleted once it had answered its question. Now it stays on a `prototype/<name>` branch, never merged, so whoever picks up the work next can re-run it. His reason: "A prose summary of a prototype loses the thing that made it convincing." Nothing shows the post caused the change.
+Within a week, Matt's [pull request](/learn/pull-requests) (PR, a proposed change) #488 changed the rule. A prototype used to be deleted once it had answered its question. Now it stays on a `prototype/<name>` branch, never merged, so whoever picks up the work next can re-run it. His reason: "A prose summary of a prototype loses the thing that made it convincing." Nothing shows the post caused the change.
 
 In August 2026, version 1.2 changed logic prototypes too. They had been terminal apps, and a terminal app needs the repo cloned and a runtime (the program that runs the code) installed. That shuts out the people a prototype needs: the designer, the product manager (PM) and the domain expert, who knows the subject. So a logic prototype became one HTML file that opens by double-click. The logic module underneath stayed the same.
 
@@ -258,7 +258,7 @@ Why: On an empty page every version looks fine, and versions that differ only in
 
 ### Try it
 
-Settle one logic question before you write the booking endpoint. You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Settle one logic question before you write the booking endpoint. You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Find the Issue for the real work, the waitlist Spec from [grill-with-docs](/learn/grill-with-docs)'s Try it. Without one, run `gh issue create --title "Add a waitlist to bookings" --body "First: does the waitlist survive a late cancel?"`. Note its number.
 2. In a fresh session, type `/prototype Does the waitlist survive a late cancel?`
@@ -273,7 +273,7 @@ Settle one logic question before you write the booking endpoint. You'll need you
 
 If step 2 answers "unknown skill", see Where it goes wrong.
 
-The checked logic is JavaScript, the language web browsers run, and your API is Python. So your Python version must match it.
+Here the module can't move across as it is: the checked logic is JavaScript, the language web browsers run, and your API is Python. So when you build the waitlist for real, rewrite those rules in Python, and make them behave exactly as the demo did.
 
 ### Read more
 

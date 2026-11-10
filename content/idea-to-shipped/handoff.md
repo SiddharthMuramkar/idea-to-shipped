@@ -43,7 +43,7 @@ Which of these is a case for handoff?
 Why: The four cases are a new harness, a new directory or repo, a colleague, and a side task forked off mid-phase. In each one, the work has to leave this session.
 ```
 
-The [main flow](/learn/main-flow)'s [prototype](/learn/prototype) detour needs it both ways, because a prototype's context doesn't belong in this session. You hand off out, build the prototype in a fresh session, then hand off back what you learned.
+The [main flow](/learn/main-flow)'s [prototype](/learn/prototype) detour needs it both ways. In [grilling](/learn/grill-before-you-build), the agent interviews you about your idea, and sometimes a question needs running code to settle it. A prototype's context doesn't belong in this session. You hand off out, build the prototype in a fresh session, then hand off back what you learned.
 
 ```checkpoint quick-3
 You're grilling, and one question needs a prototype to settle it. How does handoff fit in?
@@ -65,7 +65,7 @@ steps:
 
 ## When not to use it
 
-- If nothing is travelling, you don't need the file. Carry on here if you can, because a summary loses detail. That's why the grilling, the Spec and writing the Tickets share one session.
+- If nothing is travelling, you don't need the file. Carry on here if you can, because a summary loses detail. That's why the grilling, the Spec (the feature's written plan) and writing the Tickets share one session.
 - If you need more room on the same task, use `/compact` at the next phase boundary instead, because handoff doesn't summarise any better.
 - If you want the whole feature written down for the team, use [to-spec](/learn/to-spec) instead, because it publishes a Spec to the Issue tracker.
 
@@ -115,7 +115,7 @@ The file:
 
 - sums up the conversation;
 - has a "suggested skills" section, naming the Skills the next agent should load;
-- points at anything already written down (the Spec, ADRs, Issues) by path or URL, instead of copying it;
+- points at anything already written down by path or URL, instead of copying it: the Spec, Issues, and [ADRs](/learn/reading-a-repository), short notes that each record one big decision;
 - leaves out secrets: passwords, personal details and **API keys**, secret strings a program sends to prove who it is.
 
 ```checkpoint quick-8
@@ -140,18 +140,18 @@ You spot an out-of-scope job mid-session. Why not carry on here, or compact?
 Why: Carrying on leaves you half on each job, which Matt calls diluted context. He says compacting wipes out the progress you've made.
 ```
 
-In his May 2026 video, Matt says what he wanted instead: "I wanted to compact into another session." So he kept asking the agent for a `handoff.md` to pass to another agent. He did that so often that he made it a Skill.
+In his May 2026 video, Matt says what he wanted instead: "I wanted to compact into another session." So he kept asking the agent for a `handoff.md` to pass to another agent. He did that so often that he made it a [Skill](/learn/skills).
 
 So handoff gives the side job its own session, and the two sessions run independently.
 
-Matt has since narrowed the pitch. handoff used to read as the general bridge between context windows, and release 1.2.0 says it "was oversold". What it gives you is portability, not compression. You'll use it less often than the other four moves at a phase boundary.
+Matt has since narrowed the pitch. handoff used to read as the general bridge between [context windows](/learn/context-window) (everything an agent can see at once, counted in tokens), and release 1.2.0 says it "was oversold". What it gives you is portability, not compression. A phase is one chunk of work in a session, such as the grilling, and a phase boundary is the gap between two. There you have five moves: continue, `/clear`, `/handoff`, a subagent or `/compact` ([context hygiene](/learn/context-hygiene) puts them in order). You'll use handoff less often than the other four.
 
 ```checkpoint quick-10
 Say an old post calls handoff the general bridge between context windows. What should you go by now?
 - [x] It's narrow: it gives you portability, not compression.
 - [ ] It's general: use it each time you start a new session.
 - [ ] It's for compression: use it once a session gets long.
-Why: Release 1.2.0 says handoff was oversold. What it gives you is portability, and you'll use it less often than the other four moves.
+Why: Release 1.2.0 says handoff was oversold. What it gives you is portability, and you'll use it less often than continuing, `/clear`, a subagent or `/compact`.
 ```
 
 ### How it works underneath
@@ -238,7 +238,7 @@ So the big job got its own context window, and the grilling got back only what i
 
 **The file has vanished.** Some environments clear the temporary folder between sessions (Codex is the reported case), and a reboot empties `/private/tmp`. If the next session is over an hour away, or in a different harness, copy the file somewhere durable as soon as it's written.
 
-**The new agent missed the end of the plan.** You pasted the summary into your shell, as `claude "<summary>"`, and the shell mangled its backticks or `$(...)`: it runs what's inside them. The usual result is a summary cut short with no error, so nothing tells you. Open the fresh session and point it at the file's path instead.
+**The new agent's brief has holes.** You pasted the summary into your shell, as `claude "<summary>"`. Inside the double quotes, the shell runs whatever sits in backticks or `$(...)` and puts its output in its place, usually nothing. So file names and commands vanish from the middle of the summary. `claude` still starts as normal, and the only sign is an error line such as `command not found`, which is easy to miss. Open the fresh session and point it at the file's path instead.
 
 **The new agent built on something false.** The session guessed something, such as that the bookings table isn't built, and the document stated it as fact. "The next agent trusts the document and does not re-check it". Read the document before you hand it over, and mark anything you only assumed as not checked.
 
@@ -252,7 +252,7 @@ Why: The next agent trusts the document and doesn't re-check it, so a guess writ
 
 ### Try it
 
-Fork a side task off a working session. You need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Fork a side task off a working session. Both sessions here share one machine, harness and folder, so a harness fork would also do. You use handoff so you can see the file it writes. You need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do "Try it: set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the practice project, start a session with `claude`.
 2. Say: "Read the Ticket for the booking endpoint, then plan it."
@@ -400,13 +400,13 @@ Why: Same directory, same tool, plenty of room: nothing has to travel. The Spec 
 ```
 
 ```final-test handoff-deeper-pasted-summary
-A handoff document holds your plan for the yoga-studio booking API, with code in backticks. To start the next agent, you paste the whole summary into your shell as `claude "<summary>"`. No error shows, but the new agent seems to have missed the end of the plan. Why?
-- [x] The shell mangled the summary's backticks and `$(...)`, and cut it short without any error.
+A handoff document holds your plan for the yoga-studio booking API, with file names in backticks. To start the next agent, you paste the whole summary into your shell as `claude "<summary>"`. The agent starts as normal, but every file name is missing from its brief. Why?
+- [x] The shell ran each part in backticks as a command and put its output, here nothing, in its place.
 - [ ] The summary was longer than the new agent's context window, so the model dropped its end.
-  > A handoff document is a small fraction of the conversation it sums up. The shell, not the model, cut it short.
+  > A handoff document is a small fraction of the conversation it sums up. The shell, not the model, dropped those parts.
 - [ ] handoff had redacted the end of the plan, because it named the database's connection string.
-  > Redaction strips secrets such as keys and passwords. It doesn't cut off the plan, and it happens before you paste.
-Why: Inside `claude "<summary>"`, the shell mangles backticks and `$(...)`. The usual result is a summary cut short with no error, so nothing tells you. Open the fresh session and point it at the file's path instead, so the summary never goes through the shell.
+  > Redaction strips secrets such as keys and passwords, not file names, and it happens before you paste.
+Why: Inside `claude "<summary>"`, the shell runs what's in backticks and `$(...)` and swaps in the output, so parts of the summary vanish and the agent starts as normal. Open the fresh session and point it at the file's path instead, so the summary never goes through the shell.
 ```
 
 ```sources
