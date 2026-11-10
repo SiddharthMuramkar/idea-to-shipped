@@ -207,6 +207,33 @@ describe("the progress store", () => {
     expect(store.getSnapshot()).toEqual(NOTHING_DONE);
   });
 
+  test("marking Done keeps a save from another tab whose storage event never arrived", () => {
+    const storage = fakeStorage();
+    const events = new EventTarget();
+    const store = createProgressStore({ storage: () => storage, events });
+    store.subscribe(() => {});
+    // Another tab saved while this page sat in the back/forward cache.
+    storage.data.set(PROGRESS_KEY, saved);
+    store.markDone("tdd", 6, 8);
+    expect(Object.keys(JSON.parse(storage.data.get(PROGRESS_KEY)!).lessons).sort()).toEqual(["grilling", "tdd"]);
+  });
+
+  test("a page restored from the back/forward cache catches up on what other tabs saved", () => {
+    const storage = fakeStorage();
+    const events = new EventTarget();
+    const store = createProgressStore({ storage: () => storage, events });
+    const listener = vi.fn();
+    store.subscribe(listener);
+    storage.data.set(PROGRESS_KEY, saved);
+
+    events.dispatchEvent(Object.assign(new Event("pageshow"), { persisted: false }));
+    expect(listener).not.toHaveBeenCalled();
+
+    events.dispatchEvent(Object.assign(new Event("pageshow"), { persisted: true }));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(isDone(store.getSnapshot(), "grilling")).toBe(true);
+  });
+
   test("stops listening for other tabs once its last listener leaves, and catches up when one returns", () => {
     const storage = fakeStorage();
     const events = new EventTarget();

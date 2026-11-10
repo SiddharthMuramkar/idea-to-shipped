@@ -83,10 +83,18 @@ export function createProgressStore({
     if (sync()) emit();
   }
 
+  // Firefox and Safari fire no storage events at a page sitting in the
+  // back/forward cache (WHATWG storage#119), so read storage again when one
+  // is restored.
+  function onPageShow(event: Event) {
+    if ((event as PageTransitionEvent).persisted && sync()) emit();
+  }
+
   return {
     subscribe(listener) {
       if (listeners.size === 0) {
         events?.addEventListener("storage", onStorage);
+        events?.addEventListener("pageshow", onPageShow);
         // Nothing was listening, so a change from another tab may have been
         // missed. React reads the snapshot again after subscribing.
         sync();
@@ -94,12 +102,18 @@ export function createProgressStore({
       listeners.add(listener);
       return () => {
         listeners.delete(listener);
-        if (listeners.size === 0) events?.removeEventListener("storage", onStorage);
+        if (listeners.size === 0) {
+          events?.removeEventListener("storage", onStorage);
+          events?.removeEventListener("pageshow", onPageShow);
+        }
       };
     },
     getSnapshot,
     getServerSnapshot: () => NOTHING_DONE,
     markDone(slug, score, total) {
+      // Build on what storage holds now: a page back from the back/forward
+      // cache may have missed other tabs' saves, and this writes it all back.
+      sync();
       const next = withLessonDone(getSnapshot(), slug, score, total, now());
       save(next, (store) => {
         const raw = serializeProgress(next);
