@@ -2,6 +2,8 @@
 title: Reading a GitHub Actions workflow
 slug: reading-a-workflow
 summary: Read any workflow file and say what runs, when, on which machine, with which permissions, and which check name it reports.
+image: /images/lessons/reading-a-workflow.jpg
+imageAlt: A music box's metal cylinder studded with pins above a steel comb, the pins set in advance to play a tune.
 ---
 
 Say an agent adds a file called `ci.yml` to your `recipes` repo and opens a pull request. A minute later a green tick appears on the PR, with a name beside it. About thirty lines of YAML decided all of that: when the check ran, on which machine, with which permissions, and what the tick is called. You’re the one who has to read that file and say whether it’s right.

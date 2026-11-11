@@ -2,6 +2,8 @@
 title: Working with a coding agent on GitHub
 slug: working-with-an-agent-on-github
 summary: Let a coding agent type the git and gh commands while you decide what to ask, check its work, run two sessions at once, and organise bigger work.
+image: /images/lessons/working-with-an-agent-on-github.jpg
+imageAlt: A black tandem bicycle, two seats and two sets of pedals on one frame, parked by sand dunes under a blue sky.
 ---
 
 Say you've started using a coding agent. You type one sentence, commands scroll past, and a pull request appears on GitHub. It's fast, but is it what you asked for? Then you want two agents working at once, and your plans grow bigger than one session can hold. This lesson shows what to ask for, what to check, and how to keep parallel and bigger work in order.

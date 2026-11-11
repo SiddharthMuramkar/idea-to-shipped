@@ -2,6 +2,8 @@
 title: Answers only other people have
 slug: answers-from-other-people
 summary: Tell a question only someone else can answer from the rest, turn it into a questionnaire, and leave the map honestly waiting instead of guessing.
+image: /images/lessons/answers-from-other-people.jpg
+imageAlt: A weathered blue mailbox marked mail standing alone on a grassy hillside under a clear sky.
 ---
 
 Some tickets can't be settled by you or by the agent, because the answer is in somebody else's head. Say you're planning the rebuild of your yoga-studio site's booking and payments as a [wayfinder](/learn/wayfinder) map of tickets, as in [Your first wayfinder session](/learn/wayfinder-first-session), and one ticket needs the studio owner's refund rules. They're busy all week. The tempting move is to let the agent fill in something sensible. Don't: write that person a questionnaire, make the wait visible on the map, and keep working.

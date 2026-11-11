@@ -2,6 +2,8 @@
 title: Branches and worktrees
 slug: branches-and-worktrees
 summary: Start work on its own branch from an up-to-date main, move between branches, retire a finished one, and give an agent its own folder with a worktree.
+image: /images/lessons/branches-and-worktrees.jpg
+imageAlt: A hand-operated railway switch, its lever and lamp beside rails that split onto two tracks.
 ---
 
 Say you start adding a search box to your recipe site, and the site on `main` must keep working while you do. Later, you want two agents to build two features at once. Work straight on `main`, and half-done code sits where every new piece of work starts. Put two agents in one folder, and one agent's switch changes the files under the other.

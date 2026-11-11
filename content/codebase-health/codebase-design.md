@@ -2,6 +2,8 @@
 title: codebase-design: words for designing deep modules
 slug: codebase-design
 summary: codebase-design gives you and your agents shared words for the shape of code, aimed at deep modules: a lot of behaviour behind a small interface.
+image: /images/lessons/codebase-design.jpg
+imageAlt: An Arctic iceberg seen above and below the waterline: a small white peak over a much larger turquoise base.
 ---
 
 ## What it's for

@@ -2,6 +2,8 @@
 title: Commits and diffs
 slug: commits-and-diffs
 summary: Read git log, git show and a diff, know what belongs in a commit and what a good message looks like, and check what an agent committed.
+image: /images/lessons/commits-and-diffs.jpg
+imageAlt: Twelve photos of a galloping horse and rider in sequence, each frame a moment after the one before.
 ---
 
 Say an agent finishes a search box for your recipe site and reports "done, committed". Its branch holds six commits, seven files and over 350 added lines. Nobody reads that line by line, and you don't need to. You need to know what a commit is, and where an unfinished change can hide. Then a few commands tell you whether a commit does what you asked.

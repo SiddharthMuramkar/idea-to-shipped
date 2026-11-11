@@ -2,6 +2,8 @@
 title: One shared language
 slug: one-shared-language
 summary: Why you and your coding agents should give each thing in a project one name, and how a GLOSSARY.md file keeps those words agreed.
+image: /images/lessons/one-shared-language.jpg
+imageAlt: Close-up of the top of a Rosetta Stone replica, its dark granite carved with rows of Egyptian hieroglyphs.
 ---
 
 ## What a shared language is

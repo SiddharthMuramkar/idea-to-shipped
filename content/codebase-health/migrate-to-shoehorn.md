@@ -2,6 +2,8 @@
 title: migrate-to-shoehorn: swap test casts for partial data
 slug: migrate-to-shoehorn
 summary: migrate-to-shoehorn replaces type casts in TypeScript tests with shoehorn, a library that lets a test pass only the fields it needs.
+image: /images/lessons/migrate-to-shoehorn.jpg
+imageAlt: A hand eases a foot in a yellow patterned sock into a brown leather loafer with a metal shoehorn.
 ---
 
 ## What it's for

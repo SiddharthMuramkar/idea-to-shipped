@@ -2,6 +2,8 @@
 title: teach: learn a topic over many sessions
 slug: teach
 summary: How teach turns an empty folder into a workspace where an agent teaches you one topic over many sessions, and keeps your progress in files.
+image: /images/lessons/teach.jpg
+imageAlt: An old schoolroom from about 1910, with a large blackboard, wooden desks in rows and light from a tall window.
 ---
 
 ## What it's for

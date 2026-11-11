@@ -2,6 +2,8 @@
 title: Undo and merge conflicts
 slug: undo-and-conflicts
 summary: Pick the right undo from where a mistake lives, revert what's on GitHub instead of rewriting it, and resolve a merge conflict yourself or through an agent.
+image: /images/lessons/undo-and-conflicts.jpg
+imageAlt: A 1912 Olympic tug of war: one team leans back hard on the rope while the other team pulls from the far end.
 ---
 
 Say a coding agent rewrote the wrong recipe in your `recipes` site. Or a pull request you merged this morning broke the home page. Or GitHub says your pull request has conflicts, and its merge button won't work. Git can undo almost anything, but each undo fits one situation, and the wrong one can throw work away for good.

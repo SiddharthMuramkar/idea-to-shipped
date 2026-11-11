@@ -2,6 +2,8 @@
 title: What Git and GitHub are
 slug: what-git-and-github-are
 summary: What Git and GitHub are, how they differ, and how to install Git, open a GitHub account and get the optional gh tool ready.
+image: /images/lessons/what-git-and-github-are.jpg
+imageAlt: A small 1876 clock dial in front of the large brass gears of a tower clock's works.
 ---
 
 Say you're building a small recipe website with a coding agent. On Monday the recipe list works. On Tuesday the agent changes twelve files, and the list is blank. Which change broke it, and how do you get Monday's version back? Without a record of every version, you can't answer either question.

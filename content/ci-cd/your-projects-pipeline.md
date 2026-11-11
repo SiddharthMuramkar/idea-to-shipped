@@ -2,6 +2,8 @@
 title: Setting up your own project's pipeline
 slug: your-projects-pipeline
 summary: Plan the pipeline for your own Next.js project on Vercel: one verify script, when each gate goes on, preview tests, a database per preview, and your agent's prompt.
+image: /images/lessons/your-projects-pipeline.jpg
+imageAlt: The tall stone arches of a Roman aqueduct stretch away across green fields under a blue sky.
 ---
 
 [The lab](/learn/lab-gated-pipeline) gave you a gated pipeline on a toy app. Your own project is bigger. Say it's `recipes`: a Next.js site you're starting on Vercel, which will later keep its recipes in a Postgres database. Link that repo to Vercel, and by default every merge to `main` goes live with nothing holding it. Switch on every possible check at once, and the [gates](/learn/gates) block you for reasons nobody cares about. This lesson is the plan in between: which gates to switch on, in what order, and the prompt that sets up the first ones.

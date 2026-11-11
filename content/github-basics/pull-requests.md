@@ -2,6 +2,8 @@
 title: Opening a pull request
 slug: pull-requests
 summary: What a pull request is, when to open one or a draft, how to open it on GitHub or with gh, what to write in it, and how to read its page.
+image: /images/lessons/pull-requests.jpg
+imageAlt: Runway lights at dusk lead towards the landing light of a plane coming in to land.
 ---
 
 Say you've fixed the search bug in your recipe site on its own branch, and pushed it. Now the fix needs to reach `main`. You could merge it in yourself, but then nobody looks at the change before it lands. When a coding agent wrote the change, that look is what keeps your site safe.

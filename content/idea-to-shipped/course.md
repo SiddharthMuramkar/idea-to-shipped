@@ -3,6 +3,8 @@ title: Idea to shipped: the main flow
 slug: idea-to-shipped
 description: Matt Pocock's main flow, Skill by Skill: grill the idea, write the Spec, cut it into Tickets, build test-first, review and ship.
 order: 4
+image: /images/courses/idea-to-shipped.jpg
+imageAlt: A newly christened ship slides sideways off the slipway into a river, throwing up a huge wave of spray.
 ---
 
 ## Before you build

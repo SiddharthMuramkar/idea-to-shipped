@@ -2,6 +2,8 @@
 title: scaffold-exercises: lay out a course's exercise folders
 slug: scaffold-exercises
 summary: How scaffold-exercises turns a plan for a course section into numbered exercise folders with placeholder readmes, and why its lint step no longer runs.
+image: /images/lessons/scaffold-exercises.jpg
+imageAlt: A Hong Kong high-rise wrapped in bamboo scaffolding and yellow netting, its floors numbered before the building is done.
 ---
 
 ## What it's for

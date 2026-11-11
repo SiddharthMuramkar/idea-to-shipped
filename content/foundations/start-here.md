@@ -2,6 +2,8 @@
 title: Start here
 slug: start-here
 summary: What Idea to Shipped is, who it's for, how a lesson and its Final test work, where to begin, and what you need.
+image: /images/lessons/start-here.jpg
+imageAlt: Numbered lanes curve away from the start line of a red running track beside green grass.
 ---
 
 ## What Idea to Shipped is

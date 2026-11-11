@@ -2,6 +2,8 @@
 title: grill-with-docs: the interview that writes things down
 slug: grill-with-docs
 summary: How Matt Pocock's grill-with-docs Skill interviews you about an idea in a repo, and writes down the words and hard decisions you settle.
+image: /images/lessons/grill-with-docs.jpg
+imageAlt: A fountain pen nib writing lines of cursive notes on ruled paper in low, warm light.
 ---
 
 ## What it's for

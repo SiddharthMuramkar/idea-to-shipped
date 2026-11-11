@@ -2,6 +2,8 @@
 title: Agents in GitHub Actions
 slug: agents-in-github-actions
 summary: Tell apart on-demand, review and label-triggered agents in GitHub Actions, set one up, and check six safety rules before you switch it on.
+image: /images/lessons/agents-in-github-actions.jpg
+imageAlt: A worker in a cleanroom suit checks a tablet beside a large white robot arm in a bright, spotless factory hall.
 ---
 
 So far, every agent session you've run started the same way: you opened a terminal and typed. Say you want an agent to review each pull request on your `recipes` repo while your laptop is shut. Or to start building when you add a label to an issue. That's an agent in GitHub Actions: an event on GitHub starts it, on a machine nobody watches, and it ends in something you review. It also brings new ways to go wrong, because the agent now reads text strangers can write, and holds keys that can push code.

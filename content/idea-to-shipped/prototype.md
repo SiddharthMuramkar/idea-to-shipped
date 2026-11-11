@@ -2,6 +2,8 @@
 title: prototype: throwaway code for one question
 slug: prototype
 summary: How Matt Pocock's prototype Skill builds throwaway code to answer one design question, so you can try the answer instead of guessing.
+image: /images/lessons/prototype.jpg
+imageAlt: A slender scale test model of an aircraft mounted inside a large wind tunnel with perforated walls.
 ---
 
 ## What it's for

@@ -2,6 +2,8 @@
 title: wayfinder: map out big, foggy work
 slug: wayfinder
 summary: wayfinder plans an effort too big for one session as a shared map of decisions on your Issue tracker, resolved one session at a time.
+image: /images/lessons/wayfinder.jpg
+imageAlt: A clear baseplate compass lying on a topographic map, its red needle pointing north.
 ---
 
 ## What it's for

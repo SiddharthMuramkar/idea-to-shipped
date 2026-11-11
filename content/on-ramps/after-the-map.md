@@ -2,6 +2,8 @@
 title: After the map is clear
 slug: after-the-map
 summary: When the map is clear, three commands turn its decisions into built Tickets, and you need to know when to /clear between them.
+image: /images/lessons/after-the-map.jpg
+imageAlt: A red octagonal lighthouse on a small rocky islet in calm blue sea under soft evening clouds.
 ---
 
 When no tickets are left on the map, you have every answer, and still nothing you can build from. Wayfinder hands off at that point; it never builds. Three commands turn the settled decisions into code. Here's what each one does, what it leaves on your tracker, and the two places people clear at the wrong time.

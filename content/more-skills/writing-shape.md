@@ -2,6 +2,8 @@
 title: writing-shape: turn a pile into an article
 slug: writing-shape
 summary: How writing-shape turns a messy notes file into a separate, organised article, one block at a time, with you agreeing each block's form.
+image: /images/lessons/writing-shape.jpg
+imageAlt: A wooden type case full of metal letter sorts, with a composing stick holding a freshly set line of type.
 ---
 
 ## What it's for

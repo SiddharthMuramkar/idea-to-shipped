@@ -2,6 +2,8 @@
 title: Models, effort and ultracode
 slug: models-effort-ultracode
 summary: How to pick the model that answers, set how hard it works with effort, read a bad result, run big jobs as ultracode workflows, and use fast mode.
+image: /images/lessons/models-effort-ultracode.jpg
+imageAlt: Close-up of a sound mixer's knobs, each with its own scale, turned to different settings.
 ---
 
 ## Two dials, two jobs

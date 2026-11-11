@@ -2,6 +2,8 @@
 title: setup-pre-commit: check code at every commit
 slug: setup-pre-commit
 summary: setup-pre-commit makes Git format, type-check and test your JavaScript or TypeScript code at every commit, and a failed step blocks the commit.
+image: /images/lessons/setup-pre-commit.jpg
+imageAlt: An egg held up to a bright light so its inside can be checked before it's packed.
 ---
 
 ## What it's for

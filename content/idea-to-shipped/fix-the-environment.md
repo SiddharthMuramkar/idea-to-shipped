@@ -2,6 +2,8 @@
 title: Fix the environment, not just the code
 slug: fix-the-environment
 summary: When your coding agent repeats a mistake, fix what lets it happen with an automated check or a written standard, not only the broken line.
+image: /images/lessons/fix-the-environment.jpg
+imageAlt: Inside a glass greenhouse, lush green plants line both sides of a central path under the sunny roof.
 ---
 
 ## Fixing the next run too

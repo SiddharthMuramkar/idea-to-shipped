@@ -2,6 +2,8 @@
 title: orca-cli: hand off work inside Orca
 slug: orca-cli
 summary: How orca-cli has your agent start a new agent in its own Orca worktree, hand it the work, then stop, and how it finds the right Orca commands.
+image: /images/lessons/orca-cli.jpg
+imageAlt: Four orcas swim side by side just under the surface toward an ice floe where a seal rests, amid Antarctic pack ice.
 ---
 
 ## What it's for

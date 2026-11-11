@@ -2,6 +2,8 @@
 title: What a Skill is
 slug: skills
 summary: What a Skill is, who can start one, how to install Matt Pocock's Skills, how to set up each repo once, and which Skill to ask when you're lost.
+image: /images/lessons/skills.jpg
+imageAlt: A row of steel drill bits of different sizes laid side by side, each one made for a particular job.
 ---
 
 ## What a Skill is

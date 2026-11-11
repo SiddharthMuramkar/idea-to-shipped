@@ -2,6 +2,8 @@
 title: research: get cited facts from primary sources
 slug: research
 summary: research sends a second agent to read the sources that own the answer while you keep working, then leaves one cited Markdown file in your repo.
+image: /images/lessons/research.jpg
+imageAlt: The La Trobe Reading Room seen from above: rows of reading desks radiate out from a central octagonal desk.
 ---
 
 ## What it's for

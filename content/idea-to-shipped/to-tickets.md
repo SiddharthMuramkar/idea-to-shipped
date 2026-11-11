@@ -2,6 +2,8 @@
 title: to-tickets: cut a Spec into small Tickets
 slug: to-tickets
 summary: How to-tickets splits a Spec into small Tickets that each work end to end, with links that say which Tickets must finish first.
+image: /images/lessons/to-tickets.jpg
+imageAlt: Three old Japanese cinema ticket stubs from the late 1930s laid out on a black background.
 ---
 
 ## What it's for

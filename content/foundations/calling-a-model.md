@@ -2,6 +2,8 @@
 title: Calling a model: what's underneath
 slug: calling-a-model
 summary: Calling Claude is an ordinary API call, and an agent is typically that call in a loop.
+image: /images/lessons/calling-a-model.jpg
+imageAlt: A huge white radio dish of the Deep Space Network points up at a clear blue sky above green hills.
 ---
 
 ## One call to the model

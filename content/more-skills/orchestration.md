@@ -2,6 +2,8 @@
 title: orchestration: one agent supervises the others
 slug: orchestration
 summary: How Orca's orchestration Skill lets one agent start other agents, answer their questions and wait for their reports, and why silence proves nothing.
+image: /images/lessons/orchestration.jpg
+imageAlt: An orchestra seen from the back of the stage in Geneva's Victoria Hall, its conductor leading before a full audience.
 ---
 
 ## What it's for

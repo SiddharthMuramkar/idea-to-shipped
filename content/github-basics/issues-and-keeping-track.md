@@ -2,6 +2,8 @@
 title: Issues: keeping track of work
 slug: issues-and-keeping-track
 summary: What a GitHub Issue is, how to write and read one, and how labels, assignees, sub-issues and a Closes line keep work on track.
+image: /images/lessons/issues-and-keeping-track.jpg
+imageAlt: Rows of yellow, orange and white sticky notes, each a written-down item, arranged on an office wall.
 ---
 
 Say you're building a small recipe website. Search misses "Soup" with a capital S, a friend has asked for search by ingredient, and the About page has a broken link. A week later, which of these is fixed, and who is working on the rest? If the list lives in your head, on a sticky note or in one chat with a coding agent, it gets lost.

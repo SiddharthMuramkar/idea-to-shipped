@@ -2,6 +2,8 @@
 title: loop-me: spec out a job you repeat
 slug: loop-me
 summary: How loop-me interviews you about a job you repeat until it's written down as a spec an agent could build, without building anything itself.
+image: /images/lessons/loop-me.jpg
+imageAlt: The iron clockwork of a church tower clock: rows of gears and wheels on a frame in a wooden tower room.
 ---
 
 ## What it's for

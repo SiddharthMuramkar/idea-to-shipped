@@ -2,6 +2,8 @@
 title: Merging and cleaning up
 slug: merging-and-cleaning-up
 summary: Choose how a pull request lands on main, merge it or set auto-merge, then check its Issue closed, delete the branch and update your main.
+image: /images/lessons/merging-and-cleaning-up.jpg
+imageAlt: Aerial view of the narrow John Day River flowing into the much wider Columbia River between dry hills.
 ---
 
 Say PR #14 in your recipe site's repo has passed your [Merge check](/learn/checking-a-pr). The merge button offers three ways to merge, and you're not sure which to pick. Afterwards, Issue #12 might stay open without anyone noticing, and old branches pile up on GitHub and on your computer.

@@ -2,6 +2,8 @@
 title: diagnosing-bugs: find a hard bug's cause
 slug: diagnosing-bugs
 summary: diagnosing-bugs makes the agent build one command that fails on your bug before any theory, then find the cause, fix it and lock it in with a test.
+image: /images/lessons/diagnosing-bugs.jpg
+imageAlt: A stethoscope resting on a computer keyboard beside a curling strip of ECG heart-trace paper.
 ---
 
 ## What it's for

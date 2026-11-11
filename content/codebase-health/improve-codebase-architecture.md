@@ -2,6 +2,8 @@
 title: improve-codebase-architecture: find code worth reshaping
 slug: improve-codebase-architecture
 summary: improve-codebase-architecture surveys your code for the parts that are hard to change and reports how to reshape them, but changes no code itself.
+image: /images/lessons/improve-codebase-architecture.jpg
+imageAlt: A detailed scale model of Málaga's historic centre and harbour, laid out so the whole city can be studied at once.
 ---
 
 ## What it's for

@@ -2,6 +2,8 @@
 title: Checking a pull request before you merge
 slug: checking-a-pr
 summary: Why green checks prove only what they test, and how to read the description, diff, checks and preview, and weigh the risk, before you merge.
+image: /images/lessons/checking-a-pr.jpg
+imageAlt: A hand holds a mug up beside an approved sample, with rows of patterned mugs waiting to be inspected.
 ---
 
 Say your coding agent has opened PR #14 to fix the search bug in your recipe site. Every check is green, and the agent asks: "Shall I merge?" You may not read code well yet, and the agent sounds sure. Green feels like a yes, but it only answers part of the question.

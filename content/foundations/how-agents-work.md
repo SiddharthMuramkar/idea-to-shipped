@@ -2,6 +2,8 @@
 title: How coding agents work
 slug: how-agents-work
 summary: A coding agent is a model inside a harness. See what Claude Code does with each step Claude asks for, and which controls keep you in charge.
+image: /images/lessons/how-agents-work.jpg
+imageAlt: Two black shire horses in harness pull a plough across a field while the ploughman behind them holds the reins.
 ---
 
 ## A model inside a harness

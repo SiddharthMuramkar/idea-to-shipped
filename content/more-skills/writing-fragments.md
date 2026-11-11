@@ -2,6 +2,8 @@
 title: writing-fragments: mine raw material before any outline
 slug: writing-fragments
 summary: How writing-fragments interviews you about a piece you want to write, and saves the raw lines in one file before you commit to any structure.
+image: /images/lessons/writing-fragments.jpg
+imageAlt: Seven round pottery shards in a museum case, each scratched with a name in ancient Greek letters.
 ---
 
 ## What it's for

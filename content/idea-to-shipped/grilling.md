@@ -2,6 +2,8 @@
 title: grilling: the interview, in rounds of questions
 slug: grilling
 summary: How Matt Pocock's grilling Skill interviews you in rounds of questions until you and your coding agent share one understanding of a plan.
+image: /images/lessons/grilling.jpg
+imageAlt: A vintage chrome microphone in warm sepia tones beside an old amplifier's microphone volume knob.
 ---
 
 ## What it's for

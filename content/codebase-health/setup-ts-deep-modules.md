@@ -2,6 +2,8 @@
 title: setup-ts-deep-modules: enforce package boundaries in TypeScript
 slug: setup-ts-deep-modules
 summary: setup-ts-deep-modules adds a check to a TypeScript repo that fails when one package imports past another package's public files.
+image: /images/lessons/setup-ts-deep-modules.jpg
+imageAlt: A footbridge crossing to the gatehouse of Beeston Castle, an arched entrance between two round stone towers.
 ---
 
 ## What it's for

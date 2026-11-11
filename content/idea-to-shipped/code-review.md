@@ -2,6 +2,8 @@
 title: code-review: check changes against Spec and standards
 slug: code-review
 summary: How code-review checks your branch against the repo's coding standards and against the Spec, with a separate report for each.
+image: /images/lessons/code-review.jpg
+imageAlt: A blue magnifying glass held over a printed page, enlarging part of the text and an illustration.
 ---
 
 ## What it's for

@@ -2,6 +2,8 @@
 title: The context window
 slug: context-window
 summary: An agent sees only what's in its context window, and it reasons best while that window is far from full. Learn to read it, clear it and compact it.
+image: /images/lessons/context-window.jpg
+imageAlt: A dark ship's cabin where one small round porthole shows a bright slice of blue sea and green hillside.
 ---
 
 ## What the agent can see

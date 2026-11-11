@@ -2,6 +2,8 @@
 title: wizard: guide you through manual steps
 slug: wizard
 summary: wizard writes a script that walks you through setup steps only you can do, such as copying a key from a website, one stage at a time.
+image: /images/lessons/wizard.jpg
+imageAlt: A line of flat stepping stones crossing a clear river in a green valley in Dovedale, England.
 ---
 
 ## What it's for

@@ -2,6 +2,8 @@
 title: Your first wayfinder session
 slug: wayfinder-first-session
 summary: Your first /wayfinder session charts a map of open questions on your tracker, and every session after it settles one of them.
+image: /images/lessons/wayfinder-first-session.jpg
+imageAlt: A cairn of flat stones left by early travellers to mark the Old Spanish Trail across a Utah desert.
 ---
 
 Say the studio owner wants the whole booking and payments system rebuilt on your yoga-studio site: class passes, monthly memberships, card payments, refunds and a waitlist for full classes. You start [grilling](/learn/grilling) it, and the open questions keep spreading past what one conversation can hold. Grilling settles a plan in one conversation. This plan is too big for one, so [wayfinder](/learn/wayfinder) spreads the planning over many short sessions and keeps track of it on your Issue tracker.

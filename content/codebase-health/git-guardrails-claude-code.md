@@ -2,6 +2,8 @@
 title: git-guardrails-claude-code: block dangerous git commands
 slug: git-guardrails-claude-code
 summary: git-guardrails-claude-code sets up a Claude Code hook that blocks dangerous git commands, such as git reset --hard, before Claude runs them.
+image: /images/lessons/git-guardrails-claude-code.jpg
+imageAlt: A curving road at night lined with a yellow-and-black guardrail and chevron signs steering traffic around the bend.
 ---
 
 ## What it's for

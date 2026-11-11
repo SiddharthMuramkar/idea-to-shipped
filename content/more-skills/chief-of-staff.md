@@ -2,6 +2,8 @@
 title: chief-of-staff: one session owns a long goal
 slug: chief-of-staff
 summary: How chief-of-staff makes one long session own a weeks-long goal: subagents do the work, and a dated wiki keeps what it learns.
+image: /images/lessons/chief-of-staff.jpg
+imageAlt: Apollo 13's Mission Control in 1970: flight controllers at rows of consoles beneath a wall-sized world map and screen.
 ---
 
 ## What it's for

@@ -2,6 +2,8 @@
 title: The main flow
 slug: main-flow
 summary: A map of the path most work takes through Matt Pocock's Skills, from a rough idea to merged code: which Skill comes next, and when to clear the session.
+image: /images/lessons/main-flow.jpg
+imageAlt: Model T cars moving down a 1923 Ford assembly line in Copenhagen, with workers at each station.
 ---
 
 ## What the main flow is

@@ -2,6 +2,8 @@
 title: to-questionnaire: questions only someone else can answer
 slug: to-questionnaire
 summary: How to turn the questions only someone else can answer into a document they fill in, then bring their answers back to your agent.
+image: /images/lessons/to-questionnaire.jpg
+imageAlt: Checklists and red pens laid out on clipboards, ready to be filled in.
 ---
 
 ## What it's for

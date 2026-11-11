@@ -2,6 +2,8 @@
 title: handoff: a summary file that travels
 slug: handoff
 summary: How Matt Pocock's handoff Skill sums up your conversation in one Markdown file, so a fresh agent, tool or colleague can carry on from it.
+image: /images/lessons/handoff.jpg
+imageAlt: Boys reaching back to pass relay batons on a running track, in a black-and-white photo from 1935.
 ---
 
 ## What it's for

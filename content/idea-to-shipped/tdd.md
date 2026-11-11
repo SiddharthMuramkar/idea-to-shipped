@@ -2,6 +2,8 @@
 title: tdd: build it test-first, one slice at a time
 slug: tdd
 summary: How tdd gives your agent the rules of the red-green loop: one failing test first, then only enough code to pass it, at seams you agree.
+image: /images/lessons/tdd.jpg
+imageAlt: A traffic light at dusk with its red and green lamps both lit against a deep blue sky.
 ---
 
 ## What it's for

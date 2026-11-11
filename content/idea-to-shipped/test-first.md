@@ -2,6 +2,8 @@
 title: Test first
 slug: test-first
 summary: Write a failing test first, then only enough code to pass it, one small slice at a time, so your agent can see whether its code works.
+image: /images/lessons/test-first.jpg
+imageAlt: Two crash test dummies with yellow-and-black target markings, belted into the front seats of a car.
 ---
 
 ## What test first is

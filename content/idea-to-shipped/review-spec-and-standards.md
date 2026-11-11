@@ -2,6 +2,8 @@
 title: Review against the Spec and the standards
 slug: review-spec-and-standards
 summary: Review finished code on two axes, the repo's standards and the Spec, and keep their reports apart so a pass on one can't hide a fail on the other.
+image: /images/lessons/review-spec-and-standards.jpg
+imageAlt: A brass two-pan balance scale with an ornate central column, both pans level, on a grey background.
 ---
 
 ## Two questions, not one

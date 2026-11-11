@@ -3,6 +3,8 @@ title: Codebase health and guardrails
 slug: codebase-health
 description: Keep a codebase easy for agents to work in: deep modules, architecture reviews and TypeScript structure, plus guardrails on commits and git.
 order: 6
+image: /images/courses/codebase-health.jpg
+imageAlt: The Château de Villandry above its kitchen garden: neat geometric beds edged with low clipped box hedges.
 ---
 
 ## Codebase health

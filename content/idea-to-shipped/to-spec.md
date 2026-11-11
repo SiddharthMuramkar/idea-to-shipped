@@ -2,6 +2,8 @@
 title: to-spec: turn your conversation into a Spec
 slug: to-spec
 summary: How to-spec writes the decisions from a grilling into a Spec, one Issue describing the whole feature, so later sessions can build from it.
+image: /images/lessons/to-spec.jpg
+imageAlt: An old blue blueprint with white line drawings of doors, a roof and moulding profiles.
 ---
 
 ## What it's for

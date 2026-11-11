@@ -2,6 +2,8 @@
 title: writing-for-agents: write documents agents read
 slug: writing-for-agents
 summary: How to write a document an agent reads, such as a Skill or CLAUDE.md, so it takes little room and the agent works the same each run.
+image: /images/lessons/writing-for-agents.jpg
+imageAlt: A Jacquard loom in a museum: a chain of punched cards tells the loom which threads to lift, the same way every time.
 ---
 
 ## What it's for

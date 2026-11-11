@@ -2,6 +2,8 @@
 title: setup-matt-pocock-skills: tell the Skills about your repo
 slug: setup-matt-pocock-skills
 summary: How to run Matt Pocock's setup Skill once per repo, so every other Skill knows where your Issues, labels and project docs live.
+image: /images/lessons/setup-matt-pocock-skills.jpg
+imageAlt: Chopped green peppers, sliced sausage, minced garlic and browned chicken prepped on a cutting board.
 ---
 
 ## What it's for

@@ -2,6 +2,8 @@
 title: Reading a repository
 slug: reading-a-repository
 summary: What each common file and folder in a repository is for, a ten-minute route through any repo, and how to see its architecture without reading code.
+image: /images/lessons/reading-a-repository.jpg
+imageAlt: An open wooden card catalogue drawer packed with index cards, with library shelves behind it.
 ---
 
 Say an agent has built the first version of your recipe website, or you've opened someone else's project on GitHub. The file list shows a dozen names: `README.md`, `.gitignore`, `package.json`, `docs/adr/`, `CLAUDE.md`. Which ones matter, and which do you open first? This lesson gives each common file one plain job, and a ten-minute route through any repo.

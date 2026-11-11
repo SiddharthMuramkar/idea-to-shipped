@@ -2,6 +2,8 @@
 title: What CI/CD is
 slug: what-ci-cd-is
 summary: What CI, continuous delivery and continuous deployment mean, why checks run on a fresh machine, and the one verify command that everyone runs.
+image: /images/lessons/what-ci-cd-is.jpg
+imageAlt: Workers in 1913 stand along a moving assembly line, each adding one part to engine pieces as they pass.
 ---
 
 Say an agent opens a pull request on your `recipes` site. Does the change work? You could run the tests by hand every time, until the day you forget, and an agent writes changes faster than you can read them. This lesson gives you the words for the machine checks that catch problems first, so you can ask an agent to set them up.

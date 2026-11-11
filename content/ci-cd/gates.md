@@ -2,6 +2,8 @@
 title: Gates: checks that block
 slug: gates
 summary: The three gates (merge, look and release), what each one blocks, how each can be bypassed, and the undo for when all three miss.
+image: /images/lessons/gates.jpg
+imageAlt: A country road runs up to a level crossing whose red-and-white barriers are down, blocking the way.
 ---
 
 Say your `recipes` site is on Vercel, connected to its GitHub repo, and nothing else is set up: no ruleset, no workflow, no Deployment Check (a Vercel setting that holds a release until a check passes). By Vercel’s defaults, whatever an agent merges into `main` goes live, unchecked. This lesson is about the three gates that belong in between, and the undo behind them.

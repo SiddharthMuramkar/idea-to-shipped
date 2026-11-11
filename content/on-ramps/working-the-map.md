@@ -2,6 +2,8 @@
 title: Working the map
 slug: working-the-map
 summary: Find the next ticket yourself, run one working session from start to finish, and check the tracker to see whether it really ended where it should.
+image: /images/lessons/working-the-map.jpg
+imageAlt: Navigation dividers, a plotter, a pencil and a notebook of course notes spread across a nautical chart.
 ---
 
 Charting, your [first wayfinder session](/learn/wayfinder-first-session), gave you a map full of open questions, and no obvious next move. Which ticket comes first, and how do you know a session did its job? Every session after charting is the same small loop: take one ticket, settle it properly, write the answer down, and stop.

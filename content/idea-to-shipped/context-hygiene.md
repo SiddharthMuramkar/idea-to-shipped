@@ -2,6 +2,8 @@
 title: Context hygiene
 slug: context-hygiene
 summary: When to keep your coding agent's context window and when to clear it: one window from grilling to Tickets, then a fresh one per Ticket.
+image: /images/lessons/context-hygiene.jpg
+imageAlt: A window cleaner on ropes washing the huge glass panes of a skyscraper, seen from inside.
 ---
 
 ## What context hygiene is

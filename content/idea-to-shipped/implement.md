@@ -2,6 +2,8 @@
 title: implement: turn decided work into a commit
 slug: implement
 summary: How implement builds decided work test-first, reviews it and commits it without reopening the plan, and what it leaves for you to do.
+image: /images/lessons/implement.jpg
+imageAlt: Black-and-white photo of two bricklayers with trowels building a brick wall, stacks of bricks beside them.
 ---
 
 ## What it's for

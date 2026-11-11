@@ -2,6 +2,8 @@
 title: Instruction files
 slug: instruction-files
 summary: What CLAUDE.md and AGENTS.md files are, which ones Claude Code loads in a session, and which lines are worth keeping in them.
+image: /images/lessons/instruction-files.jpg
+imageAlt: Sheet music open on a music stand under blue light, beside a violinist's hand holding the bow ready to play.
 ---
 
 ## What an instruction file is

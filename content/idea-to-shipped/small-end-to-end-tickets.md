@@ -2,6 +2,8 @@
 title: Small Tickets that each work end to end
 slug: small-end-to-end-tickets
 summary: Cut a Spec into small Tickets that each run through every layer, so each one can be demoed on its own and fits one fresh context window.
+image: /images/lessons/small-end-to-end-tickets.jpg
+imageAlt: A slice of four-layer red velvet cake with white cream cheese icing between every layer.
 ---
 
 ## Tickets you can see working

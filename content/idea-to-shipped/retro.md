@@ -2,6 +2,8 @@
 title: retro: look back and fix the environment
 slug: retro
 summary: How retro looks back over a coding session and suggests fixes to the agent's environment, not the code, so the next session goes better.
+image: /images/lessons/retro.jpg
+imageAlt: A car's side mirror reflecting the empty road and mountains left behind on a drive in Iceland.
 ---
 
 ## What it's for

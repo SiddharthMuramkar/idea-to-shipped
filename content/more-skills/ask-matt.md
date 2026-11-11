@@ -2,6 +2,8 @@
 title: ask-matt: find which Skill fits next
 slug: ask-matt
 summary: ask-matt is a router: one Skill that names Matt Pocock's other Skills and when to reach for each, so you only need to remember one.
+image: /images/lessons/ask-matt.jpg
+imageAlt: A long row of telephone operators at a switchboard in 1946, connecting each call to the right line.
 ---
 
 ## What it's for

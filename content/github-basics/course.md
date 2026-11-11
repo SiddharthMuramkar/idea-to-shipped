@@ -3,6 +3,8 @@ title: GitHub from zero
 slug: github-basics
 description: Git and GitHub for complete beginners: repositories, commits, branches, pull requests and merging, the way teams and coding agents use them.
 order: 1
+image: /images/courses/github-basics.jpg
+imageAlt: A lone oak tree on a sunlit green slope, its trunk splitting into spreading branches against a dark wooded hillside.
 ---
 
 ## Git and repositories

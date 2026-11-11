@@ -2,6 +2,8 @@
 title: Lab: a gated pipeline with GitHub Actions and Vercel
 slug: lab-gated-pipeline
 summary: Build Brad Traversy's CI/CD pipeline yourself, with Vercel in place of Render: a Verify check, a ruleset on main, PR previews and a release gate.
+image: /images/lessons/lab-gated-pipeline.jpg
+imageAlt: The silver Trans-Alaska oil pipeline zigzags on supports across a forested valley towards snowy mountains.
 ---
 
 You've read how a pipeline works: checks that run on every change, and gates that refuse to go on until those checks pass. Reading about a gate isn't the same as watching one hold. In this lab you build the whole pipeline on a repo of your own, step by step. You follow Brad Traversy's CI/CD crash course video, with Vercel where Brad uses Render. Plan on about an hour.

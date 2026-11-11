@@ -2,6 +2,8 @@
 title: How teams protect main
 slug: how-teams-do-it
 summary: How teams guard main with rulesets, required checks and reviews, CODEOWNERS and naming conventions, and how a solo project's rules differ from a big team's.
+image: /images/lessons/how-teams-do-it.jpg
+imageAlt: A signal box lever frame: a row of red, blue and black levers, several labelled for the main line.
 ---
 
 Say `recipes` was yours alone, and you merged your own pull requests whenever you liked. Then two friends join, one to add recipes and one to fix the code. One day a rushed merge breaks the site. Another day an agent force-pushes `main`, and a friend's commit vanishes. On a shared repo, good habits aren't enough: you want rules that hold even when someone is in a hurry.

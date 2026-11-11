@@ -2,6 +2,8 @@
 title: grill-me: sharpen a plan, saving nothing
 slug: grill-me
 summary: How Matt Pocock's grill-me Skill has an agent interview you about an idea until you both see it the same way, with nothing saved.
+image: /images/lessons/grill-me.jpg
+imageAlt: A theatre spotlight hanging from a lighting rail above rows of red auditorium seats.
 ---
 
 ## What it's for

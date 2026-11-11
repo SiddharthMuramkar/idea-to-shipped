@@ -2,6 +2,8 @@
 title: triage: sort Issues other people file
 slug: triage
 summary: triage sorts Issues that other people file, with labels and checks, until each is ready to build, waiting on its reporter, or turned down.
+image: /images/lessons/triage.jpg
+imageAlt: Three paper triage tags fanned out on a dark table, each with black, red, yellow and green tear-off strips.
 ---
 
 ## What it's for

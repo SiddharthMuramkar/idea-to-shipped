@@ -2,6 +2,8 @@
 title: The build loop in practice
 slug: spec-driven-build-loop
 summary: Take a Spec to production one Ticket per pull request with /implement, or the whole Spec in one pull request with /implement-spec.
+image: /images/lessons/spec-driven-build-loop.jpg
+imageAlt: A big white Ferris wheel with brightly coloured gondolas spaced around its rim against a blue sky.
 ---
 
 Say an agent has been building your "Booking API" Spec straight onto one branch: two Tickets built, a dozen commits that `main` has never seen, and no pull request. No check has run on any of it, and nobody has reviewed it. You've met each piece on its own: `/implement` commits, `/pr` shapes a body, CI checks a pull request, Vercel builds a preview. Here they join into one loop, from a Spec to merged, deployed pull requests, with the points only you can hold marked.

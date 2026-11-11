@@ -2,6 +2,8 @@
 title: One change, start to finish
 slug: one-change-start-to-finish
 summary: Walk one change round the whole GitHub loop on a small recipe site: Issue, branch, commits, push, pull request, checks, review, merge and clean-up.
+image: /images/lessons/one-change-start-to-finish.jpg
+imageAlt: Black-and-white aerial view of an oval roundabout looping above a busy multi-lane road, cars going round it.
 ---
 
 Say you've met each piece on its own: an Issue, a branch, a commit, a push, a pull request. Now you want to make one real change to `recipes`, your small recipe website, and you're not sure which step comes when. Or a coding agent did every step at once, commands scrolled past, and you couldn't say what happened. This lesson walks one change all the way round, so each piece has its place.

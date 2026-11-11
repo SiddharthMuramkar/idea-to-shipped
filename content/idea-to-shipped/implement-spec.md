@@ -2,6 +2,8 @@
 title: implement-spec: build a Spec in one run
 slug: implement-spec
 summary: How implement-spec builds a whole Spec in one run, handing each ready Ticket to a fresh helper agent and landing the work on one branch.
+image: /images/lessons/implement-spec.jpg
+imageAlt: Dozens of men using long poles to raise the timber frame of a barn on a stone foundation, in an old photo.
 ---
 
 ## What it's for

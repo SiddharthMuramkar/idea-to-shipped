@@ -2,6 +2,8 @@
 title: domain-modeling: settle the project's words
 slug: domain-modeling
 summary: How Matt Pocock's domain-modeling Skill catches fuzzy words while you plan, and writes the settled words and hard decisions into your repo.
+image: /images/lessons/domain-modeling.jpg
+imageAlt: Samuel Johnson's 1755 dictionary open at the letter M, its pages packed with columns of word definitions.
 ---
 
 ## What it's for

@@ -2,6 +2,8 @@
 title: Grill before you build
 slug: grill-before-you-build
 summary: Why your coding agent should interview you about an idea before it writes any code, and how that interview, called grilling, works.
+image: /images/lessons/grill-before-you-build.jpg
+imageAlt: An empty small-town courtroom with the judge's bench, the witness stand and two flags behind them.
 ---
 
 ## What grilling is

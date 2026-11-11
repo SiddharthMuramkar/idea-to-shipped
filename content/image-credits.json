@@ -1,0 +1,618 @@
+{
+  "/images/courses/ci-cd.jpg": {
+    "title": "Caen Hill Locks, 2016",
+    "author": "Rwendland",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Caen_Hill_Locks,_2016.jpg"
+  },
+  "/images/courses/codebase-health.jpg": {
+    "title": "Château de Villandry - Façade sud-est et les jardins potagers",
+    "author": "Rolf Kranz",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ch%C3%A2teau_de_Villandry_-_Fa%C3%A7ade_sud-est_et_les_jardins_potagers.jpg"
+  },
+  "/images/courses/foundations.jpg": {
+    "title": "Overwaard Mill No.4, sunrise",
+    "author": "Dmytro Balkhovitin",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Overwaard_Mill_No.4,_sunrise.jpg"
+  },
+  "/images/courses/github-basics.jpg": {
+    "title": "Oak tree Sunol Regional Wilderness California 2023 dllu",
+    "author": "Daniel Lu (User:dllu)",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Oak_tree_Sunol_Regional_Wilderness_California_2023_dllu.jpg"
+  },
+  "/images/courses/idea-to-shipped.jpg": {
+    "title": "Launch of USS St. Louis at Marinette Marine, Wisconsin (USA), on 15 December 2018 (181215-N-N0101-198)",
+    "author": "U.S. Navy",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Launch_of_USS_St._Louis_at_Marinette_Marine,_Wisconsin_(USA),_on_15_December_2018_(181215-N-N0101-198).JPG"
+  },
+  "/images/courses/more-skills.jpg": {
+    "title": "Vienna - Carpenter workshop tools - 0027",
+    "author": "Jorge Royan",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Vienna_-_Carpenter_workshop_tools_-_0027.jpg"
+  },
+  "/images/courses/on-ramps.jpg": {
+    "title": "Karst peaks with sea of clouds at sunrise, South view from the top of Mount Nam Xay, Vang Vieng, Laos",
+    "author": "Basile Morin",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Karst_peaks_with_sea_of_clouds_at_sunrise,_South_view_from_the_top_of_Mount_Nam_Xay,_Vang_Vieng,_Laos.jpg"
+  },
+  "/images/home/cta.jpg": {
+    "title": "Space Shuttle Discovery Liftoff (28024328255)",
+    "author": "NASA Hubble Space Telescope",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Space_Shuttle_Discovery_Liftoff_(28024328255).jpg"
+  },
+  "/images/home/hero.jpg": {
+    "title": "Gorch Fock (Schiff, 1958) at sunset in Kiel",
+    "author": "Sascha Gniosdorz",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Gorch_Fock_(Schiff,_1958)_at_sunset_in_Kiel.jpg"
+  },
+  "/images/lessons/after-the-map.jpg": {
+    "title": "2016-11-13 01 Kjeungskjær Lighthouse, Sør-Trøndelag, Norway",
+    "author": "Gordon Leggett",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:2016-11-13_01_Kjeungskj%C3%A6r_Lighthouse,_S%C3%B8r-Tr%C3%B8ndelag,_Norway.jpg"
+  },
+  "/images/lessons/agents-in-github-actions.jpg": {
+    "title": "Reinraum BBS Automation Blaichach",
+    "author": "Clemenspool",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Reinraum_BBS_Automation_Blaichach.jpg"
+  },
+  "/images/lessons/answers-from-other-people.jpg": {
+    "title": "Rural Mailbox (3650092080)",
+    "author": "Dave Bezaire",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Rural_Mailbox_(3650092080).jpg"
+  },
+  "/images/lessons/ask-matt.jpg": {
+    "title": "Telephone Switch Board Switchover Oak Ridge (8773404536)",
+    "author": "doe-oakridge",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Telephone_Switch_Board_Switchover_Oak_Ridge_(8773404536).jpg"
+  },
+  "/images/lessons/branches-and-worktrees.jpg": {
+    "title": "Hand-operated railroad switch",
+    "author": "PIVISO",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Hand-operated_railroad_switch.jpg"
+  },
+  "/images/lessons/calling-a-model.jpg": {
+    "title": "DSS43 is a 70-meter-wide (230-feet-wide) radio antenna at the Deep Space Network's Canberra facility in Australia",
+    "author": "NASA/Canberra Deep Space Communication Complex",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:DSS43_is_a_70-meter-wide_(230-feet-wide)_radio_antenna_at_the_Deep_Space_Network's_Canberra_facility_in_Australia.jpg"
+  },
+  "/images/lessons/checking-a-pr.jpg": {
+    "title": "Quality Control of Ceramic Mugs",
+    "author": "Encik Tekateki",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Quality_Control_of_Ceramic_Mugs.jpg"
+  },
+  "/images/lessons/chief-of-staff.jpg": {
+    "title": "Mission Operations Control Room during Apollo 13",
+    "author": "NASA",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Mission_Operations_Control_Room_during_Apollo_13.jpg"
+  },
+  "/images/lessons/claude-handoff.jpg": {
+    "title": "Kenneth Evett - Changing of Horses for the Pony Express. Mural",
+    "author": "Kenneth Evett",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Kenneth_Evett_-_Changing_of_Horses_for_the_Pony_Express._Mural.png"
+  },
+  "/images/lessons/code-review.jpg": {
+    "title": "Magnifying glass with focus on paper",
+    "author": "Niabot",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Magnifying_glass_with_focus_on_paper.png"
+  },
+  "/images/lessons/codebase-design.jpg": {
+    "title": "Iceberg in the Arctic with its underside exposed",
+    "author": "AWeith",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Iceberg_in_the_Arctic_with_its_underside_exposed.jpg"
+  },
+  "/images/lessons/commits-and-diffs.jpg": {
+    "title": "Muybridge horse gallop",
+    "author": "Eadweard Muybridge",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Muybridge_horse_gallop.jpg"
+  },
+  "/images/lessons/context-hygiene.jpg": {
+    "title": "Window Cleaner The Shard",
+    "author": "It's No Game",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Window_Cleaner_The_Shard.jpg"
+  },
+  "/images/lessons/context-window.jpg": {
+    "title": "SeaDream II — View from cabin (porthole)",
+    "author": "User:Mattes",
+    "license": "CC BY 2.0 de",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/de/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:SeaDream_II_—_View_from_cabin_(porthole).JPG"
+  },
+  "/images/lessons/diagnosing-bugs.jpg": {
+    "title": "Instrumentos medicos de uso en Cardiología",
+    "author": "Ivan2010",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Instrumentos_medicos_de_uso_en_Cardiolog%C3%ADa.jpg"
+  },
+  "/images/lessons/domain-modeling.jpg": {
+    "title": "Close up Samuel Johnson Folio and Abridged dictionaries – letter M",
+    "author": "Jkarjalainen",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Close_up_Samuel_Johnson_Folio_and_Abridged_dictionaries_%E2%80%93_letter_M.JPG"
+  },
+  "/images/lessons/fix-the-environment.jpg": {
+    "title": "DSC07726 Greenhouse Interior, Blumengärten Hirschstetten, 2025-07",
+    "author": "Aciarium",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:DSC07726_Greenhouse_Interior,_Blumeng%C3%A4rten_Hirschstetten,_2025-07.jpg"
+  },
+  "/images/lessons/gates.jpg": {
+    "title": "Bahnübergang Königskamp Tinnum 2018 N mit geschlossenen Schranken",
+    "author": "Hans G. Oberlack",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bahnübergang_Königskamp_Tinnum_2018_N_mit_geschlossenen_Schranken.jpg"
+  },
+  "/images/lessons/git-guardrails-claude-code.jpg": {
+    "title": "DSCF0764 A curving well-lit city road at night with reflective chevron signs and a protective guardrail guiding traffic around a bend",
+    "author": "PattayaPatrol",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:DSCF0764_A_curving_well-lit_city_road_at_night_with_reflective_chevron_signs_and_a_protective_guardrail_guiding_traffic_around_a_bend.jpg"
+  },
+  "/images/lessons/grill-before-you-build.jpg": {
+    "title": "Pike County Courthouse (Arkansas) 009",
+    "author": "Brandonrush",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Pike_County_Courthouse_(Arkansas)_009.jpg"
+  },
+  "/images/lessons/grill-me.jpg": {
+    "title": "Leko Lite",
+    "author": "Draconichiaro",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Leko_Lite.jpg"
+  },
+  "/images/lessons/grill-with-docs.jpg": {
+    "title": "Writing with a fountain pen (Unsplash)",
+    "author": "Aaron Burden",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Writing_with_a_fountain_pen_(Unsplash).jpg"
+  },
+  "/images/lessons/grilling.jpg": {
+    "title": "Shure 520DX Green Bullet - Dynamic Harmonica Microphone, along with microphone volume knob on Gibson Kalamazoo amplifier model KEH-...",
+    "author": "Ky",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Shure_520DX_Green_Bullet_-_Dynamic_Harmonica_Microphone,_along_with_microphone_volume_knob_on_Gibson_Kalamazoo_amplifier_model_KEH-....jpg"
+  },
+  "/images/lessons/handoff.jpg": {
+    "title": "SLNSW 14329 Change of batons in the relay race Christian Brothers Sports",
+    "author": "Sam Hood",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:SLNSW_14329_Change_of_batons_in_the_relay_race_Christian_Brothers_Sports.jpg"
+  },
+  "/images/lessons/how-agents-work.jpg": {
+    "title": "Horses and Plough - Boverton - geograph.org.uk - 2072475",
+    "author": "Mick Lobb",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Horses_and_Plough_-_Boverton_-_geograph.org.uk_-_2072475.jpg"
+  },
+  "/images/lessons/how-teams-do-it.jpg": {
+    "title": "Signal box lever frame - geograph.org.uk - 2998668",
+    "author": "Roger Jones",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Signal_box_lever_frame_-_geograph.org.uk_-_2998668.jpg"
+  },
+  "/images/lessons/implement-spec.jpg": {
+    "title": "Men raising a barn (I0003941)",
+    "author": "Unknown author",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Men_raising_a_barn_(I0003941).tif"
+  },
+  "/images/lessons/implement.jpg": {
+    "title": "Museovirasto.F01DC3B5998D54BAD38E7BB867550B6E-0-original",
+    "author": "Pekka Kyytinen",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Museovirasto.F01DC3B5998D54BAD38E7BB867550B6E-0-original.jpg"
+  },
+  "/images/lessons/improve-codebase-architecture.jpg": {
+    "title": "Scale Model of the City of Málaga 02",
+    "author": "Daniel Capilla",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Scale_Model_of_the_City_of_M%C3%A1laga_02.jpg"
+  },
+  "/images/lessons/instruction-files.jpg": {
+    "title": "Sheet music on stand - Regent St Festival 2010 (photo by Garry Knight)",
+    "author": "Garry Knight from London, England",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sheet_music_on_stand_-_Regent_St_Festival_2010_(photo_by_Garry_Knight).jpg"
+  },
+  "/images/lessons/issues-and-keeping-track.jpg": {
+    "title": "Sticky notes on the wall of the Wikimedia Foundation office, 2010-10-26",
+    "author": "Ragesoss",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sticky_notes_on_the_wall_of_the_Wikimedia_Foundation_office,_2010-10-26.jpg"
+  },
+  "/images/lessons/lab-gated-pipeline.jpg": {
+    "title": "Trans-Alaska Pipeline System Luca Galuzzi 2005",
+    "author": "Luca Galuzzi (Lucag)",
+    "license": "CC BY-SA 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Trans-Alaska_Pipeline_System_Luca_Galuzzi_2005.jpg"
+  },
+  "/images/lessons/loop-me.jpg": {
+    "title": "Dülmen, Heilig-Kreuz-Kirche, Uhrwerk -- 2019 -- 3056",
+    "author": "Dietmar Rabich",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:D%C3%BClmen,_Heilig-Kreuz-Kirche,_Uhrwerk_--_2019_--_3056.jpg"
+  },
+  "/images/lessons/main-flow.jpg": {
+    "title": "Ford assembly line in Copenhagen 1923",
+    "author": "Peter Elfelt",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Ford_assembly_line_in_Copenhagen_1923.jpg"
+  },
+  "/images/lessons/merging-and-cleaning-up.jpg": {
+    "title": "John Day River mouth",
+    "author": "Sam Beebe",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:John_Day_River_mouth.jpg"
+  },
+  "/images/lessons/migrate-to-shoehorn.jpg": {
+    "title": "Shoehorn in use",
+    "author": "EncycloPetey",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Shoehorn_in_use.jpg"
+  },
+  "/images/lessons/models-effort-ultracode.jpg": {
+    "title": "Pan pot knob",
+    "author": "PolBr",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Pan_pot_knob.jpg"
+  },
+  "/images/lessons/one-change-start-to-finish.jpg": {
+    "title": "Roundabout interchange",
+    "author": "Petar Milošević",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Roundabout_interchange.jpg"
+  },
+  "/images/lessons/one-shared-language.jpg": {
+    "title": "2024-12-20 13-26-11 CZ PRG Tutankhamun exhib JHe N9",
+    "author": "Juhele_CZ",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:2024-12-20_13-26-11_CZ_PRG_Tutankhamun_exhib_JHe_N9.jpg"
+  },
+  "/images/lessons/orca-cli.jpg": {
+    "title": "Killer Whales Hunting a Crabeater Seal",
+    "author": "Callan Carpenter",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Killer_Whales_Hunting_a_Crabeater_Seal.jpg"
+  },
+  "/images/lessons/orchestration.jpg": {
+    "title": "Peace Philharmonic Orchestra Inaugural Concert Victoria Hall Geneva",
+    "author": "MacPhoto",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Peace_Philharmonic_Orchestra_Inaugural_Concert_Victoria_Hall_Geneva.jpg"
+  },
+  "/images/lessons/pr.jpg": {
+    "title": "Box of thread (AM 1995.177.195-1)",
+    "author": "W. & J. Knox Ltd",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Box_of_thread_(AM_1995.177.195-1).jpg"
+  },
+  "/images/lessons/prototype.jpg": {
+    "title": "221206-F-KN521-2020",
+    "author": "U.S. Air Force photo by Jill Pickett",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:221206-F-KN521-2020.jpg"
+  },
+  "/images/lessons/pull-requests.jpg": {
+    "title": "Night Landing IMG 5007 (12120474483)",
+    "author": "Ronnie Robertson",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Night_Landing_IMG_5007_(12120474483).jpg"
+  },
+  "/images/lessons/push-pull-and-remotes.jpg": {
+    "title": "A view of the server room at The National Archives",
+    "author": "The National Archives (UK)",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:A_view_of_the_server_room_at_The_National_Archives.jpg"
+  },
+  "/images/lessons/reading-a-repository.jpg": {
+    "title": "UNOG Library Filing Cabinet",
+    "author": "Credits to Mourad Ben Abdallah / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:UNOG_Library_Filing_Cabinet.JPG"
+  },
+  "/images/lessons/reading-a-workflow.jpg": {
+    "title": "Paillard Mandolin-Piccolo Cylinder Music Box, Sainte Croix, Switzerland, c. 1885 detail - Nethercutt Collection - Los Angeles, CA - DSC02092",
+    "author": "Daderot",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Paillard_Mandolin-Piccolo_Cylinder_Music_Box,_Sainte_Croix,_Switzerland,_c._1885_detail_-_Nethercutt_Collection_-_Los_Angeles,_CA_-_DSC02092.jpg"
+  },
+  "/images/lessons/research.jpg": {
+    "title": "Trobe Reading Room State Library of Victoria interior",
+    "author": "Bhullargraphic",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Trobe_Reading_Room_State_Library_of_Victoria_interior.jpg"
+  },
+  "/images/lessons/retro.jpg": {
+    "title": "Rear view mirror Snæfellsjökull (Unsplash)",
+    "author": "Kalle K kallek",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Rear_view_mirror_Sn%C3%A6fellsj%C3%B6kull_(Unsplash).jpg"
+  },
+  "/images/lessons/review-spec-and-standards.jpg": {
+    "title": "Balance scale MET DP318014",
+    "author": "Henry N. Hooper and Company, O.P. Drake",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Balance_scale_MET_DP318014.jpg"
+  },
+  "/images/lessons/scaffold-exercises.jpg": {
+    "title": "Bamboo scaffolding",
+    "author": "Rutger van der Maar",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bamboo_scaffolding.jpg"
+  },
+  "/images/lessons/setup-matt-pocock-skills.jpg": {
+    "title": "Main ingredients (4185442972)",
+    "author": "jeffreyw",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Main_ingredients_(4185442972).jpg"
+  },
+  "/images/lessons/setup-pre-commit.jpg": {
+    "title": "Egg candling at Los Angeles Zoo (25534481404)",
+    "author": "Pacific Southwest Region, U.S. Fish and Wildlife Service (via Flickr)",
+    "license": "Public domain",
+    "licenseUrl": "https://en.wikipedia.org/wiki/Public_domain_in_the_United_States",
+    "source": "https://commons.wikimedia.org/wiki/File:Egg_candling_at_Los_Angeles_Zoo_(25534481404).jpg"
+  },
+  "/images/lessons/setup-ts-deep-modules.jpg": {
+    "title": "The bridge and gatehouse of Beeston Castle - geograph.org.uk - 1935310",
+    "author": "Jeff Buck",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:The_bridge_and_gatehouse_of_Beeston_Castle_-_geograph.org.uk_-_1935310.jpg"
+  },
+  "/images/lessons/skills.jpg": {
+    "title": "Drill bits 2017 G1",
+    "author": "George Chernilevsky",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Drill_bits_2017_G1.jpg"
+  },
+  "/images/lessons/small-end-to-end-tickets.jpg": {
+    "title": "Red velvet cake slice",
+    "author": "Flickr user ~Twon~",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Red_velvet_cake_slice.jpg"
+  },
+  "/images/lessons/spec-driven-build-loop.jpg": {
+    "title": "Giant Ferris Wheel, Barry Island Pleasure Park (29295830244)",
+    "author": "Jeremy Segrott from Cardiff, Wales, UK",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Giant_Ferris_Wheel,_Barry_Island_Pleasure_Park_(29295830244).jpg"
+  },
+  "/images/lessons/start-here.jpg": {
+    "title": "Numbers of starting line track",
+    "author": "Santeri Viinamäki",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Numbers_of_starting_line_track.jpg"
+  },
+  "/images/lessons/tdd.jpg": {
+    "title": "Red and green lights on Saskatchwan Drive (442375874)",
+    "author": "Daniel Paquet from Regina, Canada",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Red_and_green_lights_on_Saskatchwan_Drive_(442375874).jpg"
+  },
+  "/images/lessons/teach.jpg": {
+    "title": "Karmsund folkemuseum Haugesund Norway Interior Skolestue klasserom Class room ca 1910 Skolepulter skrivepulter benker school room benches writing desks Kateter Tavle Blackboard etc 2020-06-10 DSC00312",
+    "author": "Wolfmann",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Karmsund_folkemuseum_Haugesund_Norway_Interior_Skolestue_klasserom_Class_room_ca_1910_Skolepulter_skrivepulter_benker_school_room_benches_writing_desks_Kateter_Tavle_Blackboard_etc_2020-06-10_DSC00312.jpg"
+  },
+  "/images/lessons/test-first.jpg": {
+    "title": "CEP1710-58",
+    "author": "Insurance Institute for Highway Safety",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:CEP1710-58.jpg"
+  },
+  "/images/lessons/to-questionnaire.jpg": {
+    "title": "USMC-100914-M-0646Q-45",
+    "author": "U.S. Marine Corps (released through marines.mil)",
+    "license": "Public domain",
+    "licenseUrl": "https://en.wikipedia.org/wiki/Work_of_the_United_States_Government",
+    "source": "https://commons.wikimedia.org/wiki/File:USMC-100914-M-0646Q-45.jpg"
+  },
+  "/images/lessons/to-spec.jpg": {
+    "title": "Arbetsritning för fastigheten nr 4 Hamngatan. Ytterportar och tak, blueprint - Hallwylska museet - 105258",
+    "author": "Unknown author",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Arbetsritning_f%C3%B6r_fastigheten_nr_4_Hamngatan._Ytterportar_och_tak,_blueprint_-_Hallwylska_museet_-_105258.tif"
+  },
+  "/images/lessons/to-tickets.jpg": {
+    "title": "Ticket stubs of the Hongōza Movie Theater 1937-1940",
+    "author": "Shochiku Co., Ltd.",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Ticket_stubs_of_the_Hong%C5%8Dza_Movie_Theater_1937-1940.jpg"
+  },
+  "/images/lessons/triage.jpg": {
+    "title": "Triage tags (Tokyo Fire Department)",
+    "author": "Genppy",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Triage_tags_(Tokyo_Fire_Department).jpg"
+  },
+  "/images/lessons/undo-and-conflicts.jpg": {
+    "title": "1912 summer olympics tug of war",
+    "author": "Unknown author",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:1912_summer_olympics_tug_of_war.jpg"
+  },
+  "/images/lessons/wait-what.jpg": {
+    "title": "Ear trumpet",
+    "author": "Science Museum Group Studio",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ear_trumpet.jpeg"
+  },
+  "/images/lessons/wayfinder-first-session.jpg": {
+    "title": "Cairn in Emery County (51049794931)",
+    "author": "BLMUtah",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Cairn_in_Emery_County_(51049794931).jpg"
+  },
+  "/images/lessons/wayfinder.jpg": {
+    "title": "Compass 20260810 131055",
+    "author": "Ka23 13",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Compass_20260810_131055.jpg"
+  },
+  "/images/lessons/what-ci-cd-is.jpg": {
+    "title": "Ford assembly line - 1913 (restored)",
+    "author": "Unknown author",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Ford_assembly_line_-_1913_(restored).jpg"
+  },
+  "/images/lessons/what-git-and-github-are.jpg": {
+    "title": "Small clock face, Seth Thomas clock, 1876 (961021fd-324e-47f9-976b-5c24506b6dff)",
+    "author": "NPS photo",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "source": "https://commons.wikimedia.org/wiki/File:Small_clock_face,_Seth_Thomas_clock,_1876_(961021fd-324e-47f9-976b-5c24506b6dff).jpg"
+  },
+  "/images/lessons/wizard.jpg": {
+    "title": "Stepping stones over the River Dove",
+    "author": "DJDunsie",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Stepping_stones_over_the_River_Dove.JPG"
+  },
+  "/images/lessons/working-the-map.jpg": {
+    "title": "CYA Coastal Navigation With Dead Reckoning",
+    "author": "J. S. Bond",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:CYA_Coastal_Navigation_With_Dead_Reckoning.JPG"
+  },
+  "/images/lessons/working-with-an-agent-on-github.jpg": {
+    "title": "Holland Tandem Ameland",
+    "author": "dronepicr",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Holland_Tandem_Ameland.jpg"
+  },
+  "/images/lessons/writing-beats.jpg": {
+    "title": "Hands on an old typewriter closeup",
+    "author": "Shixart1985",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hands_on_an_old_typewriter_closeup.jpg"
+  },
+  "/images/lessons/writing-for-agents.jpg": {
+    "title": "A Jacquard loom showing information punchcards, National Museum of Scotland",
+    "author": "Stephencdickson",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:A_Jacquard_loom_showing_information_punchcards,_National_Museum_of_Scotland.jpg"
+  },
+  "/images/lessons/writing-fragments.jpg": {
+    "title": "Ostraka against Themistocles, 482 BC, Agora Museum Athens, 080635",
+    "author": "Zde",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ostraka_against_Themistocles,_482_BC,_Agora_Museum_Athens,_080635.jpg"
+  },
+  "/images/lessons/writing-shape.jpg": {
+    "title": "Metal movable type",
+    "author": "Willi Heidelbach",
+    "license": "CC BY 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Metal_movable_type.jpg"
+  },
+  "/images/lessons/your-projects-pipeline.jpg": {
+    "title": "Via Appia - acquedotti 1010299",
+    "author": "Lalupa",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:Via_Appia_-_acquedotti_1010299.JPG"
+  }
+}

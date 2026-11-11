@@ -2,6 +2,8 @@
 title: claude-handoff: carry on in a background agent
 slug: claude-handoff
 summary: How claude-handoff writes up your conversation and starts a fresh Claude Code agent in the background with it, so you can carry on here.
+image: /images/lessons/claude-handoff.jpg
+imageAlt: A mural of a Pony Express rider arriving at a relay station, where he will switch to a fresh horse to carry the mail on.
 ---
 
 ## What it's for

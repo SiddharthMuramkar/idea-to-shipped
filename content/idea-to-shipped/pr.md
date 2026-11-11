@@ -2,6 +2,8 @@
 title: pr: write a fast-to-review pull request body
 slug: pr
 summary: How pr gives your agent a template for a pull request's description: what changed, proof that it works, and how risky merging is.
+image: /images/lessons/pr.jpg
+imageAlt: A brown paper parcel tied with string, with a small white tag knotted where the strings cross.
 ---
 
 ## What it's for

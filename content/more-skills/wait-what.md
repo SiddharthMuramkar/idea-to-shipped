@@ -2,6 +2,8 @@
 title: wait-what: re-pitch a message that lost you
 slug: wait-what
 summary: How to make the agent say its last message again, with the context you missed, in plain words and your project's own terms.
+image: /images/lessons/wait-what.jpg
+imageAlt: An ornate silver ear trumpet with a curved earpiece and a wide bell decorated with pierced scrollwork.
 ---
 
 ## What it's for

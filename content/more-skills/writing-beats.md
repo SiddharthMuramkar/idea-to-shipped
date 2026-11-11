@@ -2,6 +2,8 @@
 title: writing-beats: draft one move at a time
 slug: writing-beats
 summary: How writing-beats turns your notes into a first draft one beat, or move, at a time, with you picking each next move from a few options.
+image: /images/lessons/writing-beats.jpg
+imageAlt: Two hands resting on the round keys of an old black typewriter, ready to type the next line.
 ---
 
 ## What it's for
