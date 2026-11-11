@@ -243,7 +243,7 @@ To catch this, read the numbered list to-tickets shows you before it publishes a
 
 ### Try it
 
-You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with the `test` check in `.github/workflows/ci.yml` that the Try it "On GitHub: a `test` check for your practice project" in [What CI/CD is](/learn/what-ci-cd-is) adds, plus `api/`, `web/` and Postgres running in Docker Compose. The FastAPI app in `api/` needs pytest, running in Docker Compose as a service called `api`. If any is missing, ask your agent to set it up first.
+You'll need your practice project (the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with the `test` check in `.github/workflows/ci.yml` that the Try it "On GitHub: a `test` check for your practice project" in [What CI/CD is](/learn/what-ci-cd-is) adds, plus `api/`, `web/` and Postgres running in Docker Compose. The FastAPI app in `api/` needs pytest, running in Docker Compose as a service called `api`. If any is missing, ask your agent to set it up first.
 
 Build a walking skeleton before your Spec's first Ticket: `Hello World` in one cell of a new table, carried up through every layer to the screen.
 

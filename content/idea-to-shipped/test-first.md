@@ -241,7 +241,7 @@ Why: The Skill dropped its refactor step, but the old name lives on. The phrase 
 
 ### Try it
 
-Add one small rule to the booking API, test first. You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), and Docker (Docker Desktop, or Docker Engine with the Compose plugin) installed and running. The project needs a FastAPI app (FastAPI is a Python framework for web APIs) in `api/`, with pytest, run by Docker Compose (Docker's tool that starts an app's parts in containers from one file) as a service called `api`. If your project doesn't have that yet, ask your agent to set it up first.
+Add one small rule to the booking API, test first. You'll need your practice project (the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), and Docker (Docker Desktop, or Docker Engine with the Compose plugin) installed and running. The project needs a FastAPI app (FastAPI is a Python framework for web APIs) in `api/`, with pytest, run by Docker Compose (Docker's tool that starts an app's parts in containers from one file) as a service called `api`. If your project doesn't have that yet, ask your agent to set it up first.
 
 1. Make a branch from an up-to-date `main`: `git switch main && git pull && git switch -c list-bookings`.
 2. Start the service: `docker compose up -d`. Then run `docker compose ps`. You should see `api` listed as running.

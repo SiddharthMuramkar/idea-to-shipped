@@ -278,7 +278,7 @@ Why: Asking for too much up front shuts out readers who don't have it. The early
 
 ### Try it
 
-Draft the first beats of a post on bookings for studio owners. You'll need your practice project, the `yoga-studio` repo. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Draft the first beats of a post on bookings for studio owners. You'll need your practice project, the `yoga-studio` repo. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the `yoga-studio` repo, install the Skill: `npx skills@latest add mattpocock/skills --skill writing-beats`. If it asks which agent, choose Claude Code. You should see it finish with no errors.
 2. Make a pile: paste your booking Spec, notes and any fragments into `docs/notes/booking-pile.md`.

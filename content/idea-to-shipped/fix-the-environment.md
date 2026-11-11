@@ -262,7 +262,7 @@ Why: retro sees only one session, so it won't flag an old check. You prune check
 
 ### Try it
 
-Turn one mistake into a check, and watch the check catch it. You'll need your practice project, the yoga-studio booking site, on an up-to-date `main` with nothing uncommitted. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Turn one mistake into a check, and watch the check catch it. You'll need your practice project, the yoga-studio booking site, on an up-to-date `main` with nothing uncommitted. If you haven't set the project up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 It also needs a CI check called `test`: a GitHub Actions workflow, `.github/workflows/ci.yml`, that runs on every pull request. The Try it "On GitHub: a `test` check for your practice project", in [What CI/CD is](/learn/what-ci-cd-is), adds it. If you haven't done that Try it, do it first.
 

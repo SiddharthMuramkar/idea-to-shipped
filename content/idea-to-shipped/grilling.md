@@ -244,7 +244,7 @@ Matt calls that "a supported setting, not a workaround."
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 You'll type `/grilling` here to see the bare interview on its own, in a real repo where the agent can look facts up. For real work in a repo, [grill-with-docs](/learn/grill-with-docs) is the better choice, because it also writes `GLOSSARY.md` and ADRs as you go.
 

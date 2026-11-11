@@ -275,7 +275,7 @@ Why: The Skill doesn't say when to start writing, so you tell the agent. After t
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Start Claude Code in your `yoga-studio` folder: `claude`.
 2. Type this as one message: `/research What does Postgres do when two requests update the same row at once? Use its official docs. Create the file in your first few tool calls, and update it after each source.`

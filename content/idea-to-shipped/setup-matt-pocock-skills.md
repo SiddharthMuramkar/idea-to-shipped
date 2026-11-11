@@ -280,7 +280,7 @@ Why: In a fork, gh can default to the parent repo. So the GitHub template tells 
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site. The Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it and runs setup once, so do that first if you haven't. This is a deliberate re-run, which refreshes your `docs/agents/` files.
+You'll need your practice project, the yoga-studio booking site. The Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it and runs setup once, so do that first if you haven't. This is a deliberate re-run, which refreshes your `docs/agents/` files.
 
 1. Open the `yoga-studio` repo's root in Claude Code.
 2. Type `/setup-matt-pocock-skills`. Typing it is the only way to start it.

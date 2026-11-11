@@ -275,7 +275,7 @@ Which starter file does Vercel run as the app?
 - [x] `src/app.ts`, because it imports `express`
 - [ ] `dist/server.js`, after the build has run
 - [ ] `package.json`, through its `start` script
-Why: Vercel takes the file on its list that imports `express` and default-exports the app. `src/server.ts` imports `./app.js` instead, and nothing on Vercel runs `npm start`.
+Why: Vercel takes the file on its list that imports `express`, and that file must export the app as a default export (or listen on a port). `src/server.ts` imports `./app.js` instead, and nothing on Vercel runs `npm start`.
 ```
 
 ```checkpoint which-url-changes

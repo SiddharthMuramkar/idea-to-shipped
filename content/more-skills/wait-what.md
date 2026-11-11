@@ -274,7 +274,7 @@ Why: The body named one root file and knew nothing of the map, so it fell silent
 
 ### Try it
 
-Get one long answer re-pitched, twice. You'll need your practice project, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Get one long answer re-pitched, twice. You'll need your practice project, with Matt's Skills installed. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the project folder, run `cat GLOSSARY.md`. You should see at least one entry.
 2. If the file is missing, do the Try it step in [one shared language](/learn/one-shared-language) first.

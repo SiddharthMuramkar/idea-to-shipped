@@ -248,7 +248,7 @@ Why: It catches the listed spellings, not every way to run git. An overstated gu
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site, with a terminal open in its root folder. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+You'll need your practice project, the yoga-studio booking site, with a terminal open in its root folder. If you haven't set the project up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Check `jq` is installed: `jq --version`. You should see a version number. If you see "command not found", install `jq` first: `brew install jq` on a Mac, `sudo apt-get install jq` on Ubuntu or Debian, or `winget install jqlang.jq` on Windows. Then run `jq --version` again.
 2. If you don't have this Skill yet, install it: `npx skills add mattpocock/skills/skills/misc/git-guardrails-claude-code`.

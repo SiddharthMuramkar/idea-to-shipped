@@ -263,7 +263,7 @@ A part that looks shallow, such as code that shows something only under one cond
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site, with some commits in `api/`. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. If `api/` is missing, have your agent add it. Pick what you'll build next there: say, cancelling a booking.
+You'll need your practice project, the yoga-studio booking site, with some commits in `api/`. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. If `api/` is missing, have your agent add it. Pick what you'll build next there: say, cancelling a booking.
 
 1. In the `yoga-studio` folder, run `git status`, and commit anything it lists, so the working tree is clean.
 2. Start Claude Code there: `claude`.

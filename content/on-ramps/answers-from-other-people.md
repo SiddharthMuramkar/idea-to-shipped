@@ -313,7 +313,7 @@ Why: Files made while resolving a ticket are linked from it, not pasted in. The 
 ## Try it: your first questionnaire
 
 ````try
-This one doesn't need the map, so you can send it today. You'll need the `yoga-studio` practice project, with Matt's Skills set up, and a friend to play the studio owner. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. Step 8 also uses the map from the Try it in [Your first wayfinder session](/learn/wayfinder-first-session), if you've made one.
+This one doesn't need the map, so you can send it today. You'll need the `yoga-studio` practice project, with Matt's Skills set up, and a friend to play the studio owner. If you haven't set the project up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. Step 8 also uses the map from the Try it in [Your first wayfinder session](/learn/wayfinder-first-session), if you've made one.
 
 1. In the `yoga-studio` folder, start Claude Code and type `/clear`.
 2. Type `/to-questionnaire`. You should see it ask who the document is going to.

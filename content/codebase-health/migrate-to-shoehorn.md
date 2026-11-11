@@ -233,7 +233,7 @@ One real case is the ComfyUI frontend's test files. There, tsgo, a preview of Ty
 
 ### Try it
 
-Clean up one test in your practice project's TypeScript website, then watch `fromPartial` catch a mistake. You'll need the practice project, the yoga-studio booking site (if you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first), and Node.js. You'll also need a test in `web/` that fakes a class or booking with `as`, and needs only one or two fields. If `web/`, its type check or that test is missing, ask your agent to set it up first. If Claude Code doesn't offer `/migrate-to-shoehorn`, install it first: `npx skills@latest add mattpocock/skills --skill migrate-to-shoehorn`.
+Clean up one test in your practice project's TypeScript website, then watch `fromPartial` catch a mistake. You'll need the practice project, the yoga-studio booking site (if you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first), and Node.js. You'll also need a test in `web/` that fakes a class or booking with `as`, and needs only one or two fields. If `web/`, its type check or that test is missing, ask your agent to set it up first. If Claude Code doesn't offer `/migrate-to-shoehorn`, install it first: `npx skills@latest add mattpocock/skills --skill migrate-to-shoehorn`.
 
 1. Go into the website, the subfolder with its own `package.json`: `cd web`.
 2. Start Claude Code: `claude`.

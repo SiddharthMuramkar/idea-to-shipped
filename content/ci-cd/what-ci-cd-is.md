@@ -474,7 +474,7 @@ You can delete the `cicd-practice` folder afterwards. The lab starts again from 
 ````try
 Add a CI workflow that runs your practice project’s tests on every pull request, then watch its check go green, red, and green again. Its one job has the id `test` and no `name:`, so the check it reports is called `test`.
 
-**You need:** your practice project, the yoga-studio booking site, on an up-to-date `main`, and `gh`, logged in. If you haven’t set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. You don’t need Python on your machine: the runner installs it.
+**You need:** your practice project, the yoga-studio booking site, on an up-to-date `main`, and `gh`, logged in. If you haven’t set the project up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. You don’t need Python on your machine: the runner installs it.
 
 1. In your `yoga-studio` folder, update `main` and make a branch: `git switch main && git pull && git switch -c add-ci`.
 2. Make the folders: `mkdir -p api .github/workflows`.

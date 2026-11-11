@@ -266,7 +266,7 @@ You may meet older advice: in July 2026, Matt wrote that wayfinder was "designed
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the `yoga-studio` folder, create wayfinder's labels: `for t in map grilling research prototype task; do gh label create "wayfinder:$t"; done`. You should see five labels.
 2. Start Claude Code: `claude`.

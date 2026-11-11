@@ -222,7 +222,7 @@ A coding agent, such as Claude Code, can type every command above. Your job move
 | You say | The agent runs | You check |
 |---|---|---|
 | "Start Issue #7 on a new branch from an up-to-date `main`." | `git switch main`, `git pull`, `git switch -c 7-cooking-time` | `git status` starts `On branch 7-cooking-time` |
-| "Make the change. Show me the diff, then commit and push." | edits, then `git add`, `git commit`, `git push -u origin 7-cooking-time` | `git status` says the working tree is clean, and `git log --oneline main..HEAD` lists its commits |
+| "Make the change. Show me the diff, then commit and push." | edits, then `git add`, `git commit`, `git push -u origin 7-cooking-time` | `git status` says the working tree is clean, and `git log --oneline origin/main..HEAD` lists its commits |
 | "Open a pull request into `main` that closes #7. Don't merge." | `gh pr create --title "…" --body "Closes #7"` | `gh pr view` shows the base, the title and `Closes #7` |
 | After your Merge check: "Squash-merge it and delete the branch." | `gh pr merge --squash --delete-branch` | `gh issue view 7 --json state` says `CLOSED` |
 

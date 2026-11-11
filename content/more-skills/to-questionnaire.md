@@ -276,7 +276,7 @@ Why: The whole document is pitched at one recipient, so three people means three
 
 ### Try it
 
-Take the studio owner's questions out of your booking plan, and bring the answers back. You'll need your practice project, and a friend to play the studio owner. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Take the studio owner's questions out of your booking plan, and bring the answers back. You'll need your practice project, and a friend to play the studio owner. If you haven't set the project up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Open the `yoga-studio` repo in Claude Code.
 2. Type `/grill-with-docs Plan the class booking rules.` You should see numbered questions.

@@ -273,7 +273,7 @@ Why: `/loop` tasks only fire while Claude Code is running and idle, and recurrin
 
 ### Try it
 
-You'll need your practice project. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+You'll need your practice project. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the `yoga-studio` repo, make a folder and go into it: `mkdir loops && cd loops`.
 2. Install the Skill there: `npx skills@latest add mattpocock/skills --skill loop-me`. If it asks which agent, choose Claude Code.

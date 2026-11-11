@@ -312,7 +312,7 @@ Why: When a word gets pinned down, it goes into the project's `GLOSSARY.md` stra
 ## Try it: your first session
 
 ````try
-You'll need the `yoga-studio` practice project, with Matt's Skills set up and GitHub as its tracker. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. You'll also need wayfinder's five labels, from the Try it in [wayfinder](/learn/wayfinder).
+You'll need the `yoga-studio` practice project, with Matt's Skills set up and GitHub as its tracker. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. You'll also need wayfinder's five labels, from the Try it in [wayfinder](/learn/wayfinder).
 
 1. In the `yoga-studio` folder, bring `main` up to date, so the map starts from the latest work:
 

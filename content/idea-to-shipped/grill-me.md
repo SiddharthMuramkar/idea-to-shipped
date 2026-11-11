@@ -267,7 +267,7 @@ Why: The value of the session is the context you just built, so clearing it thro
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site you build for real in your own repo, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+You'll need your practice project, the yoga-studio booking site you build for real in your own repo, with Matt's Skills installed. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 You'll sharpen a business decision that no code depends on yet. You're in the repo because Matt's Skills are installed there. Being there also lets `git status` show you, at the end, that the session saved nothing.
 

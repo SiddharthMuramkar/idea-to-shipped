@@ -263,7 +263,7 @@ Why: Depth is a property of the interface, not of where files sit. So judge a mo
 
 ### Try it
 
-Describe one module in these words, and change no code. You'll need the practice project's booking endpoint. The Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets up the project, and the one in [implement](/learn/implement) builds the endpoint.
+Describe one module in these words, and change no code. You'll need the practice project's booking endpoint. The Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets up the project, and the one in [implement](/learn/implement) builds the endpoint.
 
 1. In the practice project, start a session: `claude`.
 2. Type `/codebase-design`. You should see it give you the words and stop, without reading your code.

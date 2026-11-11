@@ -294,7 +294,7 @@ The description could never trigger it, and only a literal `$writing-for-agents`
 
 ### Try it
 
-You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its root `CLAUDE.md`, a booking model in `api/`, and `web/`. If anything is missing, ask your agent to set it up. Commit everything first.
+You'll need your practice project (the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its root `CLAUDE.md`, a booking model in `api/`, and `web/`. If anything is missing, ask your agent to set it up. Commit everything first.
 
 1. Add the three example lines above to your root `CLAUDE.md`.
 2. Open a fresh session at the repo root.

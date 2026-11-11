@@ -355,11 +355,11 @@ When the agent says done, there is a commit for you to read. Four read-only comm
 | Run | Look for |
 |---|---|
 | `git status` | The right branch, and "nothing to commit, working tree clean" |
-| `git log --oneline main..HEAD` | The new commits, with subjects that name what you asked for |
+| `git log --oneline origin/main..HEAD` | The new commits, with subjects that name what you asked for |
 | `git show --stat HEAD` | Files that fit the task: code with its tests, no secrets, no build output, no lockfile change you didn't expect |
 | `git show HEAD -- <file>` | The behaviour itself, in the one or two files that carry it |
 
-In `git log`, the dots mean something else: `main..HEAD` lists the commits on your branch that `main` doesn't have. So here two dots are right.
+In `git log`, the dots mean something else: `origin/main..HEAD` lists the commits on your branch that `origin/main` doesn't have. So here two dots are right.
 
 For example, say you asked for tablespoons in the units the recipe page converts. The agent's message ends: "The units test checks the new unit too." Its stat, trimmed to the files:
 
@@ -417,7 +417,7 @@ package.json changed, the lockfile must change in the same commit.
 ```
 
 ```text
-Show me what you committed: git status, git log --oneline main..HEAD,
+Show me what you committed: git status, git log --oneline origin/main..HEAD,
 git show --stat HEAD, then the full diff of the file that does the work.
 Point to the lines that do what I asked for.
 ```
@@ -440,7 +440,7 @@ These commands only look. They change nothing, so you can run any of them at any
 git status                      # staged, unstaged, untracked
 git status -s                   # left column staged, right unstaged; ?? untracked
 git log --oneline --graph -8    # the history, newest first
-git log --oneline main..HEAD    # commits here that main doesn't have
+git log --oneline origin/main..HEAD    # commits here that origin/main doesn't have
 git show --stat <id>            # one commit's files (no id: HEAD)
 git show <id> -- <file>         # that commit's diff of one file
 git diff                        # changed, not staged
@@ -457,11 +457,11 @@ And the rules in one place:
 
 ```checkpoint cheat-sheet-pick
 You want to list the commits on your branch that `main` doesn't have yet. Which command?
-- [x] `git log --oneline main..HEAD`
+- [x] `git log --oneline origin/main..HEAD`
 - [ ] `git diff --staged`
 - [ ] `git show --stat HEAD`
 - [ ] `git status -s`
-Why: `main..HEAD` lists the commits reachable from your branch that aren't on `main`. The others show staged changes, one commit, or the working tree.
+Why: `origin/main..HEAD` lists the commits reachable from your branch that aren't on `origin/main`. The others show staged changes, one commit, or the working tree.
 ```
 
 ## Try it
@@ -568,7 +568,7 @@ Q: A secret lands in a commit. What comes first?
 A: Revoke or replace the secret. Deleting the file later doesn't remove it from the earlier snapshot.
 
 Q: What are the four commands to run after an agent says "committed"?
-A: `git status`, `git log --oneline main..HEAD`, `git show --stat HEAD`, and `git show HEAD -- <file>` for the file that does the work.
+A: `git status`, `git log --oneline origin/main..HEAD`, `git show --stat HEAD`, and `git show HEAD -- <file>` for the file that does the work.
 ```
 
 ## Final test

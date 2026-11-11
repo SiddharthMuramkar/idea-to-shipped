@@ -324,7 +324,7 @@ You need the practice PR from the Try it in [Checking a pull request before you 
 This one uses your practice project, the yoga-studio booking site from [Issues: keeping track of work](/learn/issues-and-keeping-track), with a CI check on its pull requests. You'll make `main` wait for that check with **branch protection**: a branch rule that blocks merging until checks pass. Then you'll watch a PR merge itself.
 
 ````try
-You'll need the practice project. If you haven't set it up, do its Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. No CI check yet? The Try it in [What CI/CD is](/learn/what-ci-cd-is) adds one, called `test`.
+You'll need the practice project. If you haven't set it up, do its Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. No CI check yet? The Try it in [What CI/CD is](/learn/what-ci-cd-is) adds one, called `test`.
 
 1. Go into your practice project's folder:
 

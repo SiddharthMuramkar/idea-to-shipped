@@ -273,7 +273,7 @@ So check before you clear. Go through the Spec's promises, and check that each o
 
 ### Try it
 
-Watch a decision disappear from the window. You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Watch a decision disappear from the window. You'll need your practice project, the yoga-studio booking site. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In your practice project, start a new Claude Code session.
 2. Type `A member can book at most two classes a day. Don't save that anywhere.`

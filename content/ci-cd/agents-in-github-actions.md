@@ -278,7 +278,7 @@ Rule 5 has no single fix. The action strips some hidden tricks, such as HTML com
 
 Rule 6, in practice: `--max-turns` in `claude_args`, a `timeout-minutes` on the job (the default is six hours), a `concurrency` group, and Sandcastle's `maxIterations`. One trap: if a workflow agent pushes to a pull request with the plain `GITHUB_TOKEN`, CI's run waits for your approval. So `Verify` is missing, and the merge stays blocked until you click Approve workflows to run. The gate held; nothing is broken.
 
-One more habit: pin `anthropics/claude-code-action` to a full commit SHA, not `@v1`. A tag can be moved to different code, and Anthropic moves `v1` to each new release. A SHA always means the same code.
+One more habit: pin `anthropics/claude-code-action` to a full commit SHA, not `@v1`. A tag can be moved to different code. A SHA always means the same code.
 
 ```callout remember
 Least permissions per job. Secrets never printed; tokens short-lived and narrow. No pull request code under `pull_request_target`. Untrusted text through `env:`, never pasted into `run:`. Only trusted people can start it. Caps on turns, time and parallel runs, and its pull request meets your gates and your review.

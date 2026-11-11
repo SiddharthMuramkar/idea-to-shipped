@@ -278,7 +278,7 @@ A second user confirmed it on Windows, and saw no retry after the runtime recove
 
 ### Try it
 
-Supervise two workers, then check their reports yourself. You'll need your practice project (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets it up), with `api/` and `web/` (your agent can add them), and Orca ([download it](https://www.onorca.dev/docs/install) for macOS, Windows or Linux), with its orchestration Skill. If the Skill is missing, run `npx skills add https://github.com/stablyai/orca --skill orchestration --global`. If Orca doesn't offer it, check Settings → Experimental → Agent Orchestration.
+Supervise two workers, then check their reports yourself. You'll need your practice project (the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) sets it up), with `api/` and `web/` (your agent can add them), and Orca ([download it](https://www.onorca.dev/docs/install) for macOS, Windows or Linux), with its orchestration Skill. If the Skill is missing, run `npx skills add https://github.com/stablyai/orca --skill orchestration --global`. If Orca doesn't offer it, check Settings → Experimental → Agent Orchestration.
 
 Here's what you'll ask for in step 2:
 

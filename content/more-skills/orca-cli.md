@@ -233,7 +233,7 @@ Why: Repeating it with `--retry-launch` makes Orca replay the launch it already 
 
 ### Try it
 
-You'll need your practice project (if you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first). It needs a FastAPI app in `api/` on `main`, pushed to GitHub, because the new worktree starts from your remote's `main`. If it's missing, have your agent add one, then commit and push it. Run `git pull` on `main` first, so Orca's copy is current. You'll also need Orca, with orca-cli installed: the command is under Why it exists.
+You'll need your practice project (if you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first). It needs a FastAPI app in `api/` on `main`, pushed to GitHub, because the new worktree starts from your remote's `main`. If it's missing, have your agent add one, then commit and push it. Run `git pull` on `main` first, so Orca's copy is current. You'll also need Orca, with orca-cli installed: the command is under Why it exists.
 
 Send this request:
 

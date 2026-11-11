@@ -258,7 +258,7 @@ Why: Subagents can start their own reviews, and each one spawns two more. Matt l
 
 ### Try it
 
-Run one real review, and see what it can't see. You'll need your practice project (if you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first), with a branch of unmerged work for one Ticket. To get one, repeat [implement](/learn/implement)'s Try it on a new branch with an open Ticket whose blockers are closed, such as the first Ticket from [to-tickets](/learn/to-tickets)'s Try it. Stop after its commit.
+Run one real review, and see what it can't see. You'll need your practice project (if you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first), with a branch of unmerged work for one Ticket. To get one, repeat [implement](/learn/implement)'s Try it on a new branch with an open Ticket whose blockers are closed, such as the first Ticket from [to-tickets](/learn/to-tickets)'s Try it. Stop after its commit.
 
 1. Check out that branch.
 2. Add a `CONTRIBUTING.md` at the repo's root with one rule: `Every endpoint returns a response model, never a plain dict.`

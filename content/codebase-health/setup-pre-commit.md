@@ -257,7 +257,7 @@ Why: The Skill's first step looks only for `bun.lockb`. With no match, it falls 
 
 Watch a clean commit pass, then a broken one get blocked. Use only your practice project.
 
-You'll need that project, the yoga-studio booking site (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`, and the CI workflow `.github/workflows/ci.yml` (the Try it in [What CI/CD is](/learn/what-ci-cd-is) adds it). `web/package.json` needs `typecheck` and `test` scripts that pass. If anything's missing, ask your agent to set it up.
+You'll need that project, the yoga-studio booking site (the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`, and the CI workflow `.github/workflows/ci.yml` (the Try it in [What CI/CD is](/learn/what-ci-cd-is) adds it). `web/package.json` needs `typecheck` and `test` scripts that pass. If anything's missing, ask your agent to set it up.
 
 1. In your repo's top folder, start a branch from an up-to-date `main`: `git switch main && git pull && git switch -c add-pre-commit`. The Skill commits to whatever branch it's on.
 2. If you don't have this Skill yet, install it: `npx skills@latest add mattpocock/skills --skill setup-pre-commit`.

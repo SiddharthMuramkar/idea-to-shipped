@@ -265,7 +265,7 @@ Why: Separate worktrees give each session its own folder, but the stash list, re
 
 ### Try it
 
-You'll need your practice project. It needs an open Ticket whose blockers are all closed, such as #3, "Add the endpoint that creates a booking", from the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track). Its blocker #2 was closed without building the bookings table, so this run builds both. If you haven't set the project up, do that Try it first. The project also needs a FastAPI app in `api/`: if it's missing, ask your agent to add one. Finally, it needs the `test` check on its pull requests. No check yet? The second Try it in [What CI/CD is](/learn/what-ci-cd-is) adds it.
+You'll need your practice project. It needs an open Ticket whose blockers are all closed, such as #3, "Add the endpoint that creates a booking", from the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track). Its blocker #2 was closed without building the bookings table, so this run builds both. If you haven't set the project up, do that Try it first. The project also needs a FastAPI app in `api/`: if it's missing, ask your agent to add one. Finally, it needs the `test` check on its pull requests. No check yet? The second Try it in [What CI/CD is](/learn/what-ci-cd-is) adds it.
 
 1. On GitHub, open #3 and add two lines to its description: `Seam: test through POST /bookings` and `Also add the bookings table: #2 was closed without it.`
 2. In your terminal, run `git switch main`, then `git pull`.

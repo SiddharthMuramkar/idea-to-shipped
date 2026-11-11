@@ -261,7 +261,7 @@ Why: Agents mean higher costs and the potential for compounding errors. So add a
 
 ### Try it
 
-You'll need a Git repository to work in, and Python 3.10 or later. You'll also need an account on the **Claude Console**, Anthropic's site for API keys, with credit on it. Your practice project works (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), and so does a new folder where you've run `git init`. Each call is charged to your account, so this script caps its loop.
+You'll need a Git repository to work in, and Python 3.10 or later. You'll also need an account on the **Claude Console**, Anthropic's site for API keys, with credit on it. Your practice project works (the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), and so does a new folder where you've run `git init`. Each call is charged to your account, so this script caps its loop.
 
 On Windows, use Git Bash for these steps, as in [What Git and GitHub are](/learn/what-git-and-github-are).
 

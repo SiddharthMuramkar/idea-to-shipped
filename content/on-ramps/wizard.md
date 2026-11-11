@@ -240,7 +240,7 @@ Why: Bash reads a script bit by bit, which is what used to break. Every stage no
 
 ### Try it
 
-Get a real connection string into `.env` and CI. You'll need your practice project, the yoga-studio booking site, and a Neon account. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. The project also needs its `test` CI workflow, `.github/workflows/ci.yml`, merged into `main`. If it isn't there yet, do the Try it "On GitHub: a `test` check for your practice project" in [What CI/CD is](/learn/what-ci-cd-is) first. Its last step is the `- run: pytest api` line you edit below.
+Get a real connection string into `.env` and CI. You'll need your practice project, the yoga-studio booking site, and a Neon account. If you haven't set the project up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. The project also needs its `test` CI workflow, `.github/workflows/ci.yml`, merged into `main`. If it isn't there yet, do the Try it "On GitHub: a `test` check for your practice project" in [What CI/CD is](/learn/what-ci-cd-is) first. Its last step is the `- run: pytest api` line you edit below.
 
 1. Keep secrets out of git: `echo .env >> .gitignore`.
 2. In `.github/workflows/ci.yml`, add these lines straight under `- run: pytest api`:

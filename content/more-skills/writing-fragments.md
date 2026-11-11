@@ -265,7 +265,7 @@ The fix, pull request #911, put all six descriptions in quotes, and this one is 
 
 ### Try it
 
-Mine fragments for a short post on why the booking endpoint was built test-first. You'll need your practice project, the `yoga-studio` repo. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+Mine fragments for a short post on why the booking endpoint was built test-first. You'll need your practice project, the `yoga-studio` repo. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. In the `yoga-studio` repo, run `npx skills@latest add mattpocock/skills --skill writing-fragments`. The plugin won't give you this Skill.
 2. Run `npx skills list`. You should see `writing-fragments` in the list.

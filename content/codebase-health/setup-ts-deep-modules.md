@@ -254,7 +254,7 @@ Why: The Skill spots Bun only by `bun.lockb`, so a repo with only `bun.lock` fal
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site (the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`. If `web/` is missing, ask your agent to set it up. Your `web/` and `api/` sit side by side, but no tool links them as packages, so this isn't a monorepo in the sense above. Run this Skill in `web/`, the TypeScript website, never in `api/`, the FastAPI backend.
+You'll need your practice project, the yoga-studio booking site (the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) creates it), with its TypeScript site in `web/`. If `web/` is missing, ask your agent to set it up. Your `web/` and `api/` sit side by side, but no tool links them as packages, so this isn't a monorepo in the sense above. Run this Skill in `web/`, the TypeScript website, never in `api/`, the FastAPI backend.
 
 `web/` must be on TypeScript 6 or older, because dependency-cruiser doesn't support TypeScript 7 yet. In `web/`, run `npx tsc --version`. If it prints `Version 7` and more numbers, ask your agent to move `web/` to TypeScript 6 (`npm install --save-dev typescript@6`) before you start.
 

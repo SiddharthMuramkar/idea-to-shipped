@@ -269,7 +269,7 @@ Why: Ordinary subagents on Claude Code start fresh, but by default Claude can st
 
 ### Try it
 
-You'll need your practice project with a CI check on its pull requests. If you haven't set the project up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. If it has no CI check yet, do the Try it in [What CI/CD is](/learn/what-ci-cd-is) first: it adds a check called `test` that runs on every pull request. Matt's plugin, a bundle of his Skills you install in one step ([What a Skill is](/learn/skills)), leaves out in-progress Skills, so install this one by name.
+You'll need your practice project with a CI check on its pull requests. If you haven't set the project up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first. If it has no CI check yet, do the Try it in [What CI/CD is](/learn/what-ci-cd-is) first: it adds a check called `test` that runs on every pull request. Matt's plugin, a bundle of his Skills you install in one step ([What a Skill is](/learn/skills)), leaves out in-progress Skills, so install this one by name.
 
 1. In your `yoga-studio` repo, install it: `npx skills@latest add mattpocock/skills --skill chief-of-staff`. Choose Claude Code if asked.
 2. Start Claude Code: `claude`.

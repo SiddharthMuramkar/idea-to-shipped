@@ -185,7 +185,7 @@ The **GitHub CLI**, `gh`, is GitHub's own command-line tool: CLI is short for co
 You don't need `gh` to use GitHub, because the everyday actions all have a button on github.com. Coding agents use it a lot, though, and later lessons show its commands next to the click paths. To install it:
 
 - On macOS, with Homebrew: `brew install gh`. No Homebrew? Install it from [brew.sh](https://brew.sh), then run the commands it shows under "Next steps". Or skip `gh` for now.
-- On Windows: `winget install --id GitHub.cli --source winget`. Then close the terminal and open a new window: one that was open during the install won't find `gh`.
+- On Windows, in PowerShell: `winget install --id GitHub.cli --source winget`. Then close the terminal and open a new window: one that was open during the install won't find `gh`.
 - On Linux: follow GitHub's instructions for your distribution, linked from cli.github.com.
 
 Sign in once, in your own terminal:

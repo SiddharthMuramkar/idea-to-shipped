@@ -372,7 +372,7 @@ Why: A one-way door is a change that's hard to undo. Calling it out tells the re
 
 ### Where it goes wrong
 
-**`gh pr create` says there are no commits between `main` and your branch.** Your commit isn't on this branch. `git log --oneline main..HEAD` lists the branch's own commits. If it prints nothing, ask where the commit went.
+**`gh pr create` says there are no commits between `main` and your branch.** Your commit isn't on this branch. `git log --oneline origin/main..HEAD` lists the branch's own commits. If it prints nothing, ask where the commit went.
 
 **`git push` is refused, with a warning about a private email address.** Your commit carries an email that your GitHub account keeps private. Find your `noreply` address, the stand-in address GitHub gives you for commits, on the Emails page of your GitHub settings. Set it for this repo with `git config user.email "YOUR-NOREPLY-ADDRESS"`. Then give the commit that address with `git commit --amend --reset-author --no-edit`, and push again. A plain `--amend` keeps the private address.
 

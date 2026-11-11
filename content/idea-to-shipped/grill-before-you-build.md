@@ -244,7 +244,7 @@ Why: A finished grilling leaves a context window full of design decisions. Clear
 
 ### Try it
 
-You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
+You'll need your practice project, the yoga-studio booking site, with Matt's Skills installed. If you haven't set it up, do the Try it "set up the practice project" in [Issues: keeping track of work](/learn/issues-and-keeping-track) first.
 
 1. Open the `yoga-studio` repo in Claude Code.
 2. Ask the agent to reword one line of `README.md`.

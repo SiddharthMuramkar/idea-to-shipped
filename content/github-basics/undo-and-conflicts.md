@@ -214,7 +214,7 @@ git switch -c 7-cooking-time
 git branch -f main origin/main
 ```
 
-The first makes a new branch where you are, commit included. The second moves your `main` back to `origin/main`, your copy of GitHub's `main`, and leaves your files alone. Check it with `git log --oneline main..HEAD`: you should see your one commit.
+The first makes a new branch where you are, commit included. The second moves your `main` back to `origin/main`, your copy of GitHub's `main`, and leaves your files alone. Check it with `git log --oneline origin/main..HEAD`: you should see your one commit.
 
 ```checkpoint quick-8
 The agent committed on your `main` by mistake and hasn't pushed. You also have uncommitted edits. It proposes `git reset --hard` to move the commit. What do you ask for instead?
