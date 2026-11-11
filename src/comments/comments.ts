@@ -1,7 +1,8 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import { comments } from "@/db/schema";
 import { courses } from "@/lessons/lessons";
+import { slugsOfLesson } from "@/lessons/renamed";
 import { MAX_BODY, MAX_NAME } from "./limits";
 
 export type Comment = { id: number; name: string; body: string; createdAt: string };
@@ -62,7 +63,7 @@ export async function listComments(lesson: string): Promise<Result<Comment[]>> {
   const rows = await db
     .select()
     .from(comments)
-    .where(eq(comments.lessonSlug, lesson))
+    .where(inArray(comments.lessonSlug, slugsOfLesson(lesson)))
     .orderBy(desc(comments.createdAt), desc(comments.id));
   return { ok: true, value: rows.map(toComment) };
 }

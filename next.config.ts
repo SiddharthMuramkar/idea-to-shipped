@@ -1,13 +1,9 @@
 import type { NextConfig } from "next";
 
-// Published Lessons whose Slugs changed. Their old addresses (in links and
-// search results out in the world) go permanently to the new ones.
-// course.test.ts checks this list against the Slugs it knows were renamed.
-export const RENAMED_LESSONS: Record<string, string> = {
-  "spec-and-issues": "to-spec",
-  "pr-and-ship": "pr",
-  architecture: "improve-codebase-architecture",
-};
+// Old Lesson addresses go permanently to the new ones. The map lives in
+// src/lessons/renamed.ts so the comments query can use it too.
+export { RENAMED_LESSONS } from "./src/lessons/renamed";
+import { RENAMED_LESSONS } from "./src/lessons/renamed";
 
 // Every Course's files can be read at request time: the comments API checks
 // Slugs against all of them, and every page lists the Courses (in its
