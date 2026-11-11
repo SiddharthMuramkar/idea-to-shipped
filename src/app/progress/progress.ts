@@ -98,3 +98,9 @@ export function continueFrom(
   }
   return null;
 }
+
+// The "Your progress is reset." message, only while it's still true: the page
+// can stay mounted, hidden, while the Visitor finishes a Lesson elsewhere.
+export function resetStatusToShow(status: string, total: number): string {
+  return total === 0 ? status : "";
+}

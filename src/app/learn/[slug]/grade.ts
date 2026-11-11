@@ -19,3 +19,10 @@ export function grade(questions: readonly Question[], answers: Answers): Grade {
 export function firstUnanswered(questions: readonly Question[], answers: Answers): number {
   return questions.findIndex((q) => answers[q.id] === undefined);
 }
+
+// A Final test result stands only while the store still holds the Done it
+// saved. A reset (here, on /progress, or in another tab) or a newer test in
+// another tab ends it, and the test starts fresh.
+export function resultStands(result: { doneAt: string }, done: { doneAt: string } | null): boolean {
+  return done?.doneAt === result.doneAt;
+}

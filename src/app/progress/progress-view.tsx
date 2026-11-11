@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { CourseProgress } from "@/app/done";
-import { doneCount, isDone, type CourseOutline } from "./progress";
+import { doneCount, isDone, resetStatusToShow, type CourseOutline } from "./progress";
 import { progressStore } from "./store";
 import { useHydrated, useProgress } from "./use-progress";
 
@@ -116,7 +116,7 @@ export function ProgressView({ courses }: { courses: readonly CourseOutline[] })
           )
         )}
         <p className="progress-status" role="status">
-          {status}
+          {resetStatusToShow(status, total)}
         </p>
       </div>
     </div>

@@ -7,9 +7,9 @@ import type { LessonDone } from "@/app/progress/progress";
 import { progressStore } from "@/app/progress/store";
 import { useHydrated, useProgress } from "@/app/progress/use-progress";
 import type { Question } from "@/lessons/lessons";
-import { firstUnanswered, grade, type Answers, type Grade, type OptionId } from "./grade";
+import { firstUnanswered, grade, resultStands, type Answers, type Grade, type OptionId } from "./grade";
 import { Icon } from "./icons";
-import { AnswerReveal, QuestionFields, questionIds } from "./question";
+import { AnswerReveal, QuestionFields, questionIds, radioToFocus } from "./question";
 
 // The Lesson the "Next lesson" button goes to: the next in its Course, or the
 // first of the next Course. Null after the very last Lesson.
@@ -49,10 +49,17 @@ export function FinalTest({
   const hydrated = useHydrated();
   const done = useProgress().lessons[slug] ?? null;
   const [answers, setAnswers] = useState<Answers>({});
-  const [result, setResult] = useState<Grade | null>(null);
+  const [result, setResult] = useState<(Grade & { doneAt: string }) | null>(null);
   const [nudge, setNudge] = useState("");
   const banner = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLOListElement>(null);
+
+  // This page stays mounted, hidden, while the Visitor is elsewhere, so a
+  // reset on /progress (or in another tab) must end the result here too.
+  if (result && !resultStands(result, done)) {
+    setResult(null);
+    setAnswers({});
+  }
 
   const headingId = `${id}--heading`;
   const titled = titleHtml.trim().toLowerCase() !== "final test";
@@ -62,7 +69,7 @@ export function FinalTest({
   function focusQuestion(index: number) {
     const fieldset = list.current?.querySelectorAll("fieldset")[index];
     fieldset?.scrollIntoView({ block: "center", behavior: smoothly() });
-    fieldset?.querySelector<HTMLInputElement>("input:checked, input")?.focus({ preventScroll: true });
+    if (fieldset) radioToFocus(fieldset)?.focus({ preventScroll: true });
   }
 
   function submit() {
@@ -73,11 +80,12 @@ export function FinalTest({
       return;
     }
     const graded = grade(questions, answers);
+    progressStore.markDone(slug, graded.score, graded.total);
+    const doneAt = progressStore.getSnapshot().lessons[slug]?.doneAt ?? "";
     flushSync(() => {
-      setResult(graded);
+      setResult({ ...graded, doneAt });
       setNudge("");
     });
-    progressStore.markDone(slug, graded.score, graded.total);
     banner.current?.focus({ preventScroll: true });
     banner.current?.scrollIntoView({ block: "start", behavior: smoothly() });
   }

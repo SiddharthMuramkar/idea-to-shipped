@@ -6,6 +6,7 @@ import {
   NOTHING_DONE,
   parseProgress,
   PROGRESS_KEY,
+  resetStatusToShow,
   serializeProgress,
   withLessonDone,
   type CourseOutline,
@@ -248,5 +249,15 @@ describe("the progress store", () => {
 
     store.subscribe(listener);
     expect(isDone(store.getSnapshot(), "grilling")).toBe(true);
+  });
+});
+
+describe("the reset status message", () => {
+  test("shows while nothing is Done, which is what it describes", () => {
+    expect(resetStatusToShow("Your progress is reset.", 0)).toBe("Your progress is reset.");
+  });
+
+  test("is hidden once a Lesson is Done again, so it never contradicts the page", () => {
+    expect(resetStatusToShow("Your progress is reset.", 1)).toBe("");
   });
 });

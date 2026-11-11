@@ -62,3 +62,11 @@ export function AnswerReveal({ question }: { question: Question }) {
     </details>
   );
 }
+
+// The radio to focus in a question: the one picked, else the first. (One
+// selector, "input:checked, input", would always give the first.)
+export function radioToFocus(fieldset: Pick<ParentNode, "querySelector">): HTMLInputElement | null {
+  return (
+    fieldset.querySelector<HTMLInputElement>("input:checked") ?? fieldset.querySelector<HTMLInputElement>("input")
+  );
+}
